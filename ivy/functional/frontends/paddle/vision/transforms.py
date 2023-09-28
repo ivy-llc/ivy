@@ -3,6 +3,7 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_device_and_dtypes,
 )
+from ..tensor.tensor import Tensor
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
@@ -141,6 +142,41 @@ def adjust_hue(img, hue_factor):
         raise ValueError("channels of input should be either 1 or 3.")
 
     return img_adjusted
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def hflip(img):
+    img = ivy.array(img)
+    return ivy.flip(img, axis=-1)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+def normalize(img, mean, std, data_format="CHW", to_rgb=False):
+    if ivy.is_array(img):
+        if data_format == "HWC":
+            permuted_axes = [2, 0, 1]
+        else:
+            permuted_axes = [0, 1, 2]
+
+        img_np = ivy.permute(img, permuted_axes)
+        normalized_img = ivy.divide(ivy.subtract(img_np, mean), std)
+        return normalized_img
+    else:
+        raise ValueError("Unsupported input format")
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def to_tensor(pic, data_format="CHW"):
+    array = ivy.array(pic)
+    return Tensor(array)
 
 
 @with_unsupported_device_and_dtypes(
