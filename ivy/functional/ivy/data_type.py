@@ -1464,7 +1464,10 @@ def default_uint_dtype(
         elif isinstance(input, np.ndarray):
             ret = input.dtype
         elif isinstance(input, (list, tuple, dict)):
-            is_native = lambda x: ivy.is_native_array(x)
+
+            def is_native(x):
+                return ivy.is_native_array(x)
+
             if ivy.nested_argwhere(
                 input,
                 lambda x: (

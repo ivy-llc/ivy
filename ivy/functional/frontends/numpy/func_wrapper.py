@@ -30,7 +30,9 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
             if ivy.is_bool_dtype(dtype):
                 assert_fn = ivy.is_bool_dtype
             if ivy.is_int_dtype(dtype):
-                assert_fn = lambda x: not ivy.is_float_dtype(x)
+
+                def assert_fn(x):
+                    return not ivy.is_float_dtype(x)
 
             if assert_fn:
                 ivy.utils.assertions.check_all_or_any_fn(
@@ -52,13 +54,19 @@ def _assert_no_array(args, dtype, scalar_check=False, none=False):
     if args:
         first_arg = args[0]
         fn_func = ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
-        assert_fn = lambda x: ivy.dtype(x) == fn_func
+
+        def assert_fn(x):
+            return ivy.dtype(x) == fn_func
+
         if scalar_check:
-            assert_fn = lambda x: (
-                ivy.dtype(x) == fn_func
-                if ivy.shape(x) != ()
-                else _casting_no_special_case(ivy.dtype(x), fn_func, none)
-            )
+
+            def assert_fn(x):
+                return (
+                    ivy.dtype(x) == fn_func
+                    if ivy.shape(x) != ()
+                    else _casting_no_special_case(ivy.dtype(x), fn_func, none)
+                )
+
         ivy.utils.assertions.check_all_or_any_fn(
             *args,
             fn=assert_fn,
@@ -106,9 +114,14 @@ def _assert_scalar(args, dtype):
     if args and dtype:
         assert_fn = None
         if ivy.is_int_dtype(dtype):
-            assert_fn = lambda x: not isinstance(x, float)
+
+            def assert_fn(x):
+                return not isinstance(x, float)
+
         elif ivy.is_bool_dtype(dtype):
-            assert_fn = lambda x: isinstance(x, bool)
+
+            def assert_fn(x):
+                return isinstance(x, bool)
 
         if assert_fn:
             ivy.utils.assertions.check_all_or_any_fn(
