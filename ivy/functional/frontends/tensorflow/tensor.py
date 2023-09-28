@@ -246,15 +246,13 @@ class TensorArray:
     ):
         del (flow, tensor_array_name, name)
         self._handle = None
-        # we assign a dummy value to _flow in case other code assumes it to be
-        # a Tensor
         self._flow = tf_frontend.constant(0, dtype=tf_frontend.int32)
         self._infer_shape = infer_shape
         self._element_shape = (
             ivy.Shape(element_shape) if element_shape is not None else element_shape
         )
         self._colocate_with_first_write_call = colocate_with_first_write_call
-        self._dtype = dtype
+        self._dtype = tf_frontend.as_dtype(dtype)
         self._dynamic_size = dynamic_size or False
         self._clear_after_read = True if clear_after_read is None else clear_after_read
         self._previously_read_indices = []

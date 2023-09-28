@@ -6,7 +6,11 @@ import tensorflow as tf
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
+from ivy_tests.test_ivy.helpers import (
+    handle_frontend_method,
+    BackendHandler,
+    handle_frontend_test,
+)
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
 )
@@ -68,6 +72,45 @@ def _check_query(query):
     return not isinstance(query, list) and (
         not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
     )
+
+
+@st.composite
+def _helper_random_tensorarray(draw, fn=None):
+    size = draw(st.integers(1, 10))
+    dynamic_size = draw(st.booleans())
+    clear_after_read = draw(st.booleans())
+    infer_shape = draw(st.booleans())
+    element_shape = draw(helpers.get_shape())
+    element_shape = draw(st.one_of(st.just(None), st.just(element_shape)))
+    shape = None
+    if infer_shape or element_shape is not None:
+        if element_shape is None:
+            shape = draw(helpers.get_shape())
+        else:
+            shape = element_shape
+    dtype = draw(helpers.get_dtypes(full=False, prune_function=False))[0]
+    ids_to_write = [draw(st.booleans()) for i in range(size)]
+    kwargs = {
+        "dtype": dtype,
+        "size": size,
+        "dynamic_size": dynamic_size,
+        "clear_after_read": clear_after_read,
+        "infer_shape": infer_shape,
+        "element_shape": element_shape,
+    }
+    id_write = []
+    for id, flag in enumerate(ids_to_write):
+        if flag:
+            write = np.array(
+                draw(
+                    helpers.array_values(
+                        dtype=dtype,
+                        shape=shape if shape is not None else helpers.get_shape(),
+                    )
+                )
+            )
+            id_write.append((id, write))
+    return id_write, kwargs
 
 
 # --- Main --- #
@@ -1606,3 +1649,28 @@ def test_tensorflow_tensor_shape(
         x.ivy_array.shape, ivy.Shape(shape), as_array=False
     )
     ivy.previous_backend()
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.constant", l_kwargs=_helper_random_tensorarray()  # dummy
+)
+def test_tesorarray_dtype(
+    l_kwargs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    id_write, kwargs = l_kwargs
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        local_importer = ivy_backend.utils.dynamic_import
+        function_module = local_importer.import_module(
+            "ivy.functional.frontends.tensorflow"
+        )
+        ta_frontend = function_module.tensor.TensorArray(**kwargs)
+        ta = tf.TensorArray(**kwargs)
+        for id, write in id_write:
+            ta = ta.write(id, tf.constant(write))
+            ta_frontend = ta_frontend.write(id, function_module.constant(write))
+        assert ta.dtype == ta_frontend.dtype.ivy_dtype
