@@ -1358,16 +1358,16 @@ def stft(
 
     if len(window) != win_length:
         win_length = len(window)
-        n_fft = win_length  
+        n_fft = win_length
 
     if signal_length < n_fft:
-        n_fft = signal_length     
-      
+        n_fft = signal_length
+
     if window is None or window is tf.Tensor:
         window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
     window /= tf.reduce_max(window)
 
-    window_fn = lambda *args, **kwargs: window     
+    window_fn = lambda *args, **kwargs: window
 
     stft = tf.signal.stft(
         signal,
