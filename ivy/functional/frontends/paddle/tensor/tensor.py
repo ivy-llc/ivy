@@ -801,4 +801,5 @@ class Tensor:
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def exponential_(self, name=None):
-        return paddle_frontend.exp(self._ivy_array)
+        self.ivy_array = self.exp().ivy_array
+        return self
