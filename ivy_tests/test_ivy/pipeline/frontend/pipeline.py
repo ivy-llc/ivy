@@ -5,6 +5,8 @@ from ivy_tests.test_ivy.pipeline.frontend.runners import FrontendTestCaseRunner
 
 
 class FrontendPipeline(Pipeline):
+    traced_fn = None
+
     def __init__(self):
         self._backend_handler = WithBackendHandler()
 
@@ -34,6 +36,7 @@ class FrontendPipeline(Pipeline):
             gt_fn_tree=gt_fn_tree,
             frontend=frontend,
             on_device=on_device,
+            traced_fn=FrontendPipeline.traced_fn,
             tolerance_dict=tolerance_dict,
             rtol=rtol_,
             atol=atol_,

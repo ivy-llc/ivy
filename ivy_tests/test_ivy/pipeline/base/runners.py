@@ -34,7 +34,7 @@ class TestCaseSubRunner(ABC):
 
     def compile_if_required(self, fn, test_compile=False, args=None, kwargs=None):
         if test_compile:
-            fn = self._ivy.compile(fn, args=args, kwargs=kwargs)
+            fn = self._ivy.trace_graph(fn, args=args, kwargs=kwargs)
         return fn
 
     def _flatten(self, *, ret):

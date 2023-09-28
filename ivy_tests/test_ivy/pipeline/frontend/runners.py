@@ -8,6 +8,7 @@ import numpy as np
 
 from ivy_tests.test_ivy.pipeline.base.argument_searcher import ArgumentsSearcher
 from .assertion_checker import FrontendAssertionChecker
+import ivy_tests.test_ivy.helpers.globals as t_globals
 from ivy_tests.test_ivy.pipeline.base.runners import (
     TestCaseRunner,
     TestCaseSubRunner,
@@ -24,6 +25,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         backend_handler,
         backend,
         device,
+        traced_fn,
         input_dtypes,
         test_flags,
     ):
@@ -33,6 +35,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         self.input_dtypes = input_dtypes
         self.on_device = device
         self.backend = backend
+        self.traced_fn = traced_fn
         self._backend_handler = backend_handler
         self.__ivy = self._backend_handler.set_backend(backend)
         self.local_importer = self._ivy.utils.dynamic_import
@@ -104,15 +107,20 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         )._frontend_array
 
     def _get_frontend_function(self, args, kwargs):
+        if self.traced_fn is not None and self.test_flags.test_compile:
+            return self.traced_fn
         f_submod, fn_name = self._get_frontend_submodule()
         function_module = self.local_importer.import_module(f_submod)
         frontend_fn = getattr(function_module, fn_name)
-        frontend_fn = self.compile_if_required(
-            frontend_fn,
-            test_compile=self.test_flags.test_compile,
-            args=args,
-            kwargs=kwargs,
-        )
+        if self.traced_fn is None:
+            # if t_globals.CURRENT_PIPELINE.traced_fn
+            frontend_fn = self.compile_if_required(
+                frontend_fn,
+                test_compile=self.test_flags.test_compile,
+                args=args,
+                kwargs=kwargs,
+            )
+            t_globals.CURRENT_PIPELINE.traced_fn = frontend_fn
         return frontend_fn
 
     def _flatten_ret_to_np(self, ret_flat):
@@ -392,6 +400,7 @@ class FrontendTestCaseRunner(TestCaseRunner):
         gt_fn_tree,
         frontend,
         on_device,
+        traced_fn,
         tolerance_dict,
         rtol,
         atol,
@@ -402,6 +411,7 @@ class FrontendTestCaseRunner(TestCaseRunner):
         self.gt_fn_tree = gt_fn_tree
         self.frontend = frontend
         self.on_device = on_device
+        self.traced_fn = traced_fn
         self.tolerance_dict = tolerance_dict
         self.rtol = rtol
         self.atol = atol
@@ -413,6 +423,7 @@ class FrontendTestCaseRunner(TestCaseRunner):
             self.backend_handler,
             self.backend_to_test,
             self.on_device,
+            self.traced_fn,
             input_dtypes,
             test_flags,
         )

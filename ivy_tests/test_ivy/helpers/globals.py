@@ -8,6 +8,7 @@ Should not be used inside any of the test functions.
 
 from dataclasses import dataclass
 from .pipeline_helper import get_frontend_config
+from ivy_tests.test_ivy.pipeline.frontend.pipeline import FrontendPipeline
 
 # needed for multiversion
 available_frameworks = [
@@ -48,6 +49,7 @@ CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
 CURRENT_DEVICE_STRIPPED = _Notsetval
 CURRENT_FRONTEND_STR = None
+CURRENT_PIPELINE = _Notsetval
 
 
 @dataclass(frozen=True)  # ToDo use kw_only=True when version is updated
@@ -93,6 +95,7 @@ def teardown_api_test():
 def setup_frontend_test(frontend: str, backend: str, device: str, test_data: TestData):
     if test_data is not None:
         _set_test_data(test_data)
+    _set_frotnend_pipeline()
     _set_frontend(frontend)
     _set_backend(backend)
     _set_device(device)
@@ -101,6 +104,7 @@ def setup_frontend_test(frontend: str, backend: str, device: str, test_data: Tes
 def teardown_frontend_test():
     _unset_test_data()
     _unset_frontend()
+    _unset_frotnend_pipeline()
     _unset_backend()
     _unset_device()
 
@@ -119,6 +123,13 @@ def _set_frontend(framework: str):
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     CURRENT_FRONTEND_CONFIG = get_frontend_config(framework)
     CURRENT_FRONTEND = framework
+
+
+def _set_frotnend_pipeline():
+    global CURRENT_PIPELINE
+    if CURRENT_PIPELINE is not _Notsetval:
+        raise InterruptedTest(CURRENT_RUNNING_TEST)
+    CURRENT_PIPELINE = FrontendPipeline()
 
 
 def _set_backend(framework: str):
@@ -155,6 +166,12 @@ def _unset_frontend():
     global CURRENT_FRONTEND, CURRENT_FRONTEND_CONFIG
     CURRENT_FRONTEND = _Notsetval
     CURRENT_FRONTEND_CONFIG = _Notsetval
+
+
+def _unset_frotnend_pipeline():
+    global CURRENT_PIPELINE
+    CURRENT_PIPELINE.traced_fn = None
+    CURRENT_PIPELINE = _Notsetval
 
 
 def _unset_backend():
