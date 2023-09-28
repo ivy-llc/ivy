@@ -2556,8 +2556,10 @@ def test_tensorflow_scalar_mul(
 @handle_frontend_test(
     fn_tree="tensorflow.math.segment_max",
     data=helpers.array_values(dtype=ivy.float32, shape=(10,), min_value=1, max_value=9),
-    segment_ids=helpers.array_values(
-        dtype=ivy.int32, shape=(10,), min_value=0, max_value=4
+    segment_ids=st.lists(
+        elements=st.integers(min_value=0, max_value=4),
+        min_size=10,
+        max_size=10,  # Adjust the min_size and max_size as needed
     ),
     test_with_out=st.just(False),
 )
