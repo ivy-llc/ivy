@@ -2,6 +2,9 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 from tensorflow import errors as tf_errors
+import ivy
+import pytest
+from ivy_tests.test_ivy.helpers import assert_ivy_arrays_equal
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -16,6 +19,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
     _get_splits,
+)
+from ivy.functional.frontends.tensorflow.general_functions import (
+    unique_with_counts_and_squared,
 )
 
 
@@ -2485,3 +2491,25 @@ def test_tensorflow_zeros_like(
         input=x[0],
         dtype=dtype[0],
     )
+
+def test_unique_with_counts_and_squared(
+    input_data,
+    expected_values,
+    expected_indices,
+    expected_counts,
+    expected_squared_values,
+):
+    # Convert input data to Ivy array
+    input_data = ivy.array(input_data)
+
+    # Call the function to be tested
+    result = unique_with_counts_and_squared(input_data)
+
+    # Unpack the result
+    values, indices, counts, squared_values = result
+
+    # Assert that the values, indices, counts, and squared_values match the expected values
+    assert_ivy_arrays_equal(values, expected_values)
+    assert_ivy_arrays_equal(indices, expected_indices)
+    assert_ivy_arrays_equal(counts, expected_counts)
+    assert_ivy_arrays_equal(squared_values, expected_squared_values)
