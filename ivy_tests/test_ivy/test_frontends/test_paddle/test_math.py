@@ -476,25 +476,20 @@ def test_paddle_atanh(
 # broadcast_shape
 @handle_frontend_test(
     fn_tree="paddle.broadcast_shape",
-    input_shape_x=helpers.get_shape(
-        min_num_dims=1,
-    ),
-    input_shape_y=helpers.get_shape(
-        min_num_dims=1,
+    input_shapes_x=helpers.mutually_broadcastable_shapes(
+        num_shapes=2, base_shape=(1, 1), min_dims=1, max_dims=5, min_side=1, max_side=5
     ),
 )
 def test_paddle_broadcast_shape(
     *,
-    input_shape_x,
-    input_shape_y,
+    input_shapes_x,
     on_device,
     fn_tree,
     frontend,
     backend_fw,
     test_flags,
 ):
-    x = input_shape_x
-    y = input_shape_y
+    shapes = input_shapes_x
     helpers.test_frontend_function(
         input_dtypes=["int32", "int64"],
         frontend=frontend,
@@ -502,8 +497,8 @@ def test_paddle_broadcast_shape(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x,
-        y=y,
+        x=shapes[0],
+        y=shapes[1],
     )
 
 
