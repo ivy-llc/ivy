@@ -32,7 +32,7 @@ def train(
     num_boost_round
         Number of boosting iterations.
     evals
-        List of validation sets for which metrics will evaluated during training.
+        List of validation sets for which metrics will be evaluated during training.
         Validation metrics will help us track the performance of the model.
     obj
         Custom objective function.

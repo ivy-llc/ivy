@@ -144,7 +144,7 @@ class XGBModel(XGBModelBase):
 
         return filtered
 
-    def get_num_boosting_rounds(self) -> int:
+    def get_num_boosting_rounds(self):
         """Gets the number of xgboost boosting rounds."""
         # 100 is the default number of boosting rounds
         return 100 if not self.n_estimators else self.n_estimators
@@ -176,10 +176,10 @@ class XGBModel(XGBModelBase):
         Parameters
         ----------
         X
-            Feature matrix. See :ref:`py-data` for a list of supported types.
+            Feature matrix.
 
             When the ``tree_method`` is set to ``hist``, internally, the
-            :py:class:`QuantileDMatrix` will be used instead of the :py:class:`DMatrix`
+            `QuantileDMatrix` will be used instead of the `DMatrix`
             for conserving memory. However, this has performance implications when the
             device of input data is not matched with algorithm. For instance, if the
             input is a numpy array on CPU but ``cuda`` is used for training, then the
@@ -194,10 +194,8 @@ class XGBModel(XGBModelBase):
             A list of (X, y) tuple pairs to use as validation sets, for which
             metrics will be computed.
             Validation metrics will help us track the performance of the model.
-
         eval_metric
             str, list of str, or callable, optional(deprecated in fit method).
-
         early_stopping_rounds
             int(deprecated in fit method).
         verbose
@@ -224,7 +222,7 @@ class XGBModel(XGBModelBase):
         """
         # skip all the validation as we're interested in calculations for now
         # ToDo: add handling for custom objective
-        params = self.get_params()
+        params = self.get_xgb_params()
 
         self._Booster = train(params, X, y, self.get_num_boosting_rounds())
 

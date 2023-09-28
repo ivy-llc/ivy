@@ -6,9 +6,6 @@ from ivy.functional.frontends.xgboost.linear.updater_coordinate import (
     coordinate_updater,
 )
 
-import jax
-import functools
-
 
 class GBLinear:
     def __init__(self, params=None):
@@ -107,7 +104,6 @@ class GBLinear:
 # --------------- #
 
 
-@functools.partial(jax.jit, static_argnums=(0,))
 def _get_gradient(obj, pred, label, scale_pos_weight):
     p = obj.pred_transform(pred)
 
@@ -126,7 +122,5 @@ def _get_gradient(obj, pred, label, scale_pos_weight):
     )
 
 
-# jitted helpers
-@jax.jit
 def _pred(dt, w, base):
     return ivy.matmul(dt, w[:-1]) + w[-1] + base

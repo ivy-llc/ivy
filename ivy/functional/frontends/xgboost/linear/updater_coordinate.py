@@ -6,10 +6,7 @@ from ivy.functional.frontends.xgboost.linear.coordinate_common import (
     coordinate_delta,
 )
 
-import jax
 
-
-@jax.jit
 def coordinate_updater(gpair, data, lr, weight, n_feat, n_iter, reg_alpha, reg_lambda):
     """
     Implements one step of coordinate descent. The original optimizer implements
