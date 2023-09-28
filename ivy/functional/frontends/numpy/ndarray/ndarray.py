@@ -53,7 +53,7 @@ class ndarray:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return tuple(self.ivy_array.shape.shape)
 
     @property
     def size(self):
@@ -165,7 +165,7 @@ class ndarray:
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self, axis=axis, kind=kind, order=order)
 
-    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
+    def mean(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return np_frontend.mean(
             self,
             axis=axis,

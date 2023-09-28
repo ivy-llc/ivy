@@ -12,9 +12,12 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_linalg import (
-    _get_first_matrix,
     _get_second_matrix,
     _get_cholesky_matrix,
+)
+
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_input_and_mat_vec,
 )
 
 
@@ -760,6 +763,33 @@ def test_paddle_matrix_power(
     )
 
 
+# mv
+@handle_frontend_test(
+    fn_tree="paddle.mv",
+    dtype_mat_vec=_get_dtype_input_and_mat_vec(),
+    test_with_out=st.just(False),
+)
+def test_paddle_mv(
+    dtype_mat_vec,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, mat, vec = dtype_mat_vec
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=mat,
+        vec=vec,
+    )
+
+
 # norm
 @handle_frontend_test(
     fn_tree="paddle.norm",
@@ -872,8 +902,8 @@ def test_paddle_qr(
 # solve
 @handle_frontend_test(
     fn_tree="paddle.linalg.solve",
-    x=_get_first_matrix(),
-    y=_get_second_matrix(),
+    x=helpers.get_first_solve_batch_matrix(),
+    y=helpers.get_second_solve_batch_matrix(),
     test_with_out=st.just(False),
 )
 def test_paddle_solve(
@@ -886,8 +916,8 @@ def test_paddle_solve(
     fn_tree,
     on_device,
 ):
-    input_dtype1, x1 = x
-    input_dtype2, x2 = y
+    input_dtype1, x1, _ = x
+    input_dtype2, x2, _ = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
         backend_to_test=backend_fw,
