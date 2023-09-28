@@ -226,11 +226,11 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 *args, array_fn=array_fn, **kwargs
             )
             # ivy.inplace_update with ensure_in_backend=True fails in jax and tf
-            # so update ._data directly
+            # so update .data directly
             if ivy.is_array(first_array):
-                first_array._data = ret.ivy_array._data
+                first_array._data = ret.ivy_array.data
             else:
-                first_array.ivy_array._data = ret.ivy_array._data
+                first_array.ivy_array._data = ret.ivy_array.data
             ret = first_array
 
         # logic for setting is_leaf
