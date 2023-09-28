@@ -504,7 +504,7 @@ def stft(
     if len(signal) < n_fft:
         n_fft = len(signal)
         win_length = n_fft
-        
+
     if window is None or window == "hann":
         if win_length is None:
             win_length = n_fft
