@@ -802,4 +802,3 @@ class Tensor:
     )
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
-
