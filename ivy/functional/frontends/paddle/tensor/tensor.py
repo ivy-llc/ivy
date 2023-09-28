@@ -160,9 +160,7 @@ class Tensor:
     def argmax(self, axis=None, keepdim=False, dtype=None, name=None):
         return paddle_frontend.argmax(self, axis=axis, keepdim=keepdim, dtype=dtype)
 
-    @with_unsupported_dtypes(
-        {"2.5.1 and below": ("float16", "uint16", "uint64")}, "paddle"
-    )
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "uint16")}, "paddle")
     def unsqueeze(self, axis=None, name=None):
         return paddle_frontend.Tensor(ivy.expand_dims(self._ivy_array, axis=axis))
 
