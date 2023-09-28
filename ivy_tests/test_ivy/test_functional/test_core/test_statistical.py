@@ -190,7 +190,7 @@ def test_einsum(
     # x_dtype = np.dtype(dtype[0])
     for i, x_ in enumerate(operands):
         dtype = dtypes[i][0]
-        kw["x{}".format(i)] = np.array(x_).astype(dtype)
+        kw[f"x{i}"] = np.array(x_).astype(dtype)
     # len(operands) + 1 because of the equation
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_function(
