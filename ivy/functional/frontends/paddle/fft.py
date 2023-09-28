@@ -23,6 +23,32 @@ def fft(x, n=None, axis=-1.0, norm="backward", name=None):
             "int64",
             "float32",
             "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def fftfreq(n, d=1.0, dtype=None, name=None):
+    if d * n == 0:
+        raise ValueError("d or n should not be 0.")
+
+    if dtype is None:
+        dtype = ivy.default_dtype()
+    val = 1.0 / (n * d)
+    pos_max = (n + 1) // 2
+    neg_max = n // 2
+    indices = ivy.arange(-neg_max, pos_max, dtype=dtype)
+    indices = ivy.roll(indices, -neg_max)
+    return ivy.multiply(indices, val)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
             "complex64",
             "complex128",
         )
