@@ -130,7 +130,7 @@ valid_dtypes = {
         ivy.complex128,
         ivy.bool,
     ),
-    "2.4.1 and above": (
+    "2.4.1 to 2.5.1": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -159,7 +159,7 @@ valid_numeric_dtypes = {
         ivy.complex128,
         ivy.bool,
     ),
-    "2.4.1 and above": (
+    "2.4.1 to 2.5.1": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -185,7 +185,7 @@ valid_int_dtypes = {
 }
 valid_float_dtypes = {
     "2.4.0 and below": (ivy.float16, ivy.float32, ivy.float64),
-    "2.4.1 and above": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64),
+    "2.4.1 to 2.5.1": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64),
 }
 valid_uint_dtypes = {"2.5.1 and below": (ivy.uint8,)}
 valid_complex_dtypes = {"2.5.1 and below": (ivy.complex64, ivy.complex128)}
@@ -207,7 +207,7 @@ invalid_dtypes = {
         ivy.uint64,
         ivy.bfloat16,
     ),
-    "2.4.1 and above": (
+    "2.4.1 to 2.5.1": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
@@ -221,7 +221,7 @@ invalid_numeric_dtypes = {
         ivy.uint64,
         ivy.bfloat16,
     ),
-    "2.4.1 and above": (
+    "2.4.1 to 2.5.1": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
@@ -229,7 +229,7 @@ invalid_numeric_dtypes = {
 }
 
 invalid_int_dtypes = {"2.5.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_float_dtypes = {"2.4.0 and below": (ivy.bfloat16,), "2.4.1 and above": ()}
+invalid_float_dtypes = {"2.4.0 and below": (ivy.bfloat16,), "2.4.1 to 2.5.1": ()}
 invalid_uint_dtypes = {"2.5.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
 invalid_complex_dtypes = {"2.5.1 and below": ()}
 

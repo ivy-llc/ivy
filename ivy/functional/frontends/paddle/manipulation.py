@@ -117,7 +117,7 @@ def roll(x, shifts, axis=None, name=None):
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and above": {
+        "2.5.1": {
             "cpu": (
                 "bool",
                 "int32",
