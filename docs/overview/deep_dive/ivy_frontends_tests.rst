@@ -10,12 +10,7 @@ Ivy Frontend Tests
 .. _`open task`: ../contributing/open_tasks.rst
 .. _`Ivy Tests`: ivy_tests.rst
 .. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
-<<<<<<< HEAD
-.. _`CI Pipeline`: https://unify.ai/docs/ivy/overview/deep_dive/continuous_integration.html
-.. _`setting up`: https://unify.ai/docs/ivy/tracer/setting_up.html#setting-up-testing
-=======
 .. _`CI Pipeline`: continuous_integration.rst
->>>>>>> main
 
 
 Introduction
