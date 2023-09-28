@@ -186,7 +186,7 @@ def clamp(min, x, max):
 
 @to_ivy_arrays_and_back
 def complex(x, y):
-    return ivy.add(x, y)
+    return ivy.complex(x, y)
 
 
 @to_ivy_arrays_and_back
