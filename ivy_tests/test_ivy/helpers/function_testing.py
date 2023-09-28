@@ -616,6 +616,25 @@ def test_function(
         )
 
 
+def _assert_frontend_ret(ret, for_fn=True):
+    fn_or_method = "function" if for_fn else "method"
+    if not inspect.isclass(ret):
+        is_ret_tuple = issubclass(ret.__class__, tuple)
+    else:
+        is_ret_tuple = issubclass(ret, tuple)
+    if is_ret_tuple:
+        non_frontend_idxs = ivy.nested_argwhere(
+            ret,
+            lambda _x: _is_frontend_array(_x) if ivy.is_array(_x) else True,
+        )
+        assert not non_frontend_idxs, \
+            f"Frontend {fn_or_method} return contains non-frontend arrays at positions " \
+            f"{non_frontend_idxs} (zero-based): {ret[non_frontend_idxs]}"
+    elif ivy.is_array(ret):
+        assert _is_frontend_array(ret), \
+            f"Frontend {fn_or_method} returned non-frontend arrays: {ret}"
+
+
 def test_frontend_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
@@ -771,13 +790,8 @@ def test_frontend_function(
             **kwargs_for_test,
         )
 
-        # test if frontend array was returned
-        if test_flags.generate_frontend_arrays:
-            assert ivy_backend.nested_map(
-                lambda x: (_is_frontend_array(x) if ivy_backend.is_array(x) else True),
-                ret,
-                shallow=False,
-            ), f"Frontend function returned non-frontend arrays: {ret}"
+        # test if return is frontend
+        _assert_frontend_ret(ret)
 
         if test_flags.with_out:
             if not inspect.isclass(ret):
@@ -2008,11 +2022,8 @@ def test_frontend_method(
             **kwargs_method_ivy,
         )
 
-        if method_flags.generate_frontend_arrays:
-            assert ivy_backend.nested_map(
-                lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True,
-                ret,
-            ), f"Frontend method returned non-frontend arrays: {ret}"
+        # test if return is frontend
+        _assert_frontend_ret(ret, for_fn=False)
 
         ret_np_flat = flatten_frontend_to_np(
             ret=ret,
