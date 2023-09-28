@@ -830,6 +830,9 @@ class Tensor:
     def flatten(self, start_dim=0, end_dim=-1):
         return torch_frontend.flatten(self, start_dim, end_dim)
 
+    def unflatten(self, dim, sizes):
+        return torch_frontend.unflatten(self, dim, sizes)
+
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def cumsum(self, dim, *, dtype=None):

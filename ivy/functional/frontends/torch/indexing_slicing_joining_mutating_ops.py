@@ -455,6 +455,11 @@ def unbind(input, dim=0):
 
 
 @to_ivy_arrays_and_back
+def unflatten(input, dim, sizes):
+    return ivy.unflatten(input, dim, sizes)
+
+
+@to_ivy_arrays_and_back
 def unsqueeze(input, dim=0):
     return ivy.expand_dims(input, axis=dim)
 
