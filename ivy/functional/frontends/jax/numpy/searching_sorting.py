@@ -27,6 +27,10 @@ def argmax(a, axis=None, out=None, keepdims=False):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("bfloat16",)},
+    "jax",
+)
 def argsort(a, axis=-1, kind="stable", order=None):
     if kind != "stable":
         logging.warning(
