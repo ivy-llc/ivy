@@ -3,7 +3,6 @@ from hypothesis import strategies as st, assume
 import numpy as np
 from tensorflow import errors as tf_errors
 import ivy
-import pytest
 from ivy_tests.test_ivy.helpers import assert_ivy_arrays_equal
 
 # local
@@ -2491,6 +2490,7 @@ def test_tensorflow_zeros_like(
         input=x[0],
         dtype=dtype[0],
     )
+
 
 def test_unique_with_counts_and_squared(
     input_data,

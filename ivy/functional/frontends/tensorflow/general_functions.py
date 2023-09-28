@@ -666,6 +666,47 @@ def unique_with_counts(x, out_idx="int32", name=None):
 
 
 @to_ivy_arrays_and_back
+def unique_with_counts_and_squared(x, out_idx="int32", name=None):
+    x = x.to_list() if ivy.is_array(x) else x
+
+    ivy.utils.assertions.check_equal(
+        ivy.array(x).ndim,
+        1,
+        message="unique_with_counts_and_squared expects a 1D vector.",
+    )
+    ivy.utils.assertions.check_elem_in_list(
+        out_idx,
+        ["int32", "int64"],
+        message=(
+            f"Value for attr 'out_idx' of {out_idx} is not in the list of allowed"
+            " values: [int32, int64]"
+        ),
+    )
+
+    values = []
+    indices = []
+    counts = []
+    squared_values = []
+
+    for element in x:
+        if element not in values:
+            values.append(element)
+            indices.append(len(values) - 1)
+            counts.append(1)
+            squared_values.append(element**2)
+        else:
+            index = values.index(element)
+            counts[index] += 1
+
+    return (
+        ivy.array(values),
+        ivy.array(indices, dtype=out_idx),
+        ivy.array(counts, dtype=out_idx),
+        ivy.array(squared_values),
+    )
+
+
+@to_ivy_arrays_and_back
 def unravel_index(indices, dims, out=None, name=None):
     return ivy.unravel_index(indices, dims, out=out)
 
@@ -718,44 +759,3 @@ def zeros_initializer(shape, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def zeros_like(input, dtype=None, name=None):
     return ivy.zeros_like(input, dtype=dtype)
-
-
-@to_ivy_arrays_and_back
-def unique_with_counts_and_squared(x, out_idx="int32", name=None):
-    x = x.to_list() if ivy.is_array(x) else x
-
-    ivy.utils.assertions.check_equal(
-        ivy.array(x).ndim,
-        1,
-        message="unique_with_counts_and_squared expects a 1D vector.",
-    )
-    ivy.utils.assertions.check_elem_in_list(
-        out_idx,
-        ["int32", "int64"],
-        message=(
-            f"Value for attr 'out_idx' of {out_idx} is not in the list of allowed"
-            " values: [int32, int64]"
-        ),
-    )
-
-    values = []
-    indices = []
-    counts = []
-    squared_values = []
-
-    for element in x:
-        if element not in values:
-            values.append(element)
-            indices.append(len(values) - 1)
-            counts.append(1)
-            squared_values.append(element**2)
-        else:
-            index = values.index(element)
-            counts[index] += 1
-
-    return (
-        ivy.array(values),
-        ivy.array(indices, dtype=out_idx),
-        ivy.array(counts, dtype=out_idx),
-        ivy.array(squared_values),
-    )
