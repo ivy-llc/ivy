@@ -189,13 +189,13 @@ def less_equal(x, y, /, *, name=None):
     return ivy.less_equal(x, y)
 
 
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "float16", "float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
 def less_than(x, y, /, *, name=None):
-    return ivy.less(x, y)
+    return ivy.astype(ivy.less(x, y), ivy.bool)
 
 
 @with_supported_dtypes(

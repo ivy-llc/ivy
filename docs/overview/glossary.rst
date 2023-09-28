@@ -72,4 +72,3 @@ All of these new words can get confusing! We've created a glossary to help nail 
 
     Submodule Helper Functions
         These are standalone/convenience functions that are specific to a submodule.
-
