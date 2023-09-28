@@ -1046,7 +1046,6 @@ def stft(
 
     if return_complex == False:
         stft_result = stft_result.real
-    stft_result = stft_result.transpose(1, 0)
     return stft_result
 
 
