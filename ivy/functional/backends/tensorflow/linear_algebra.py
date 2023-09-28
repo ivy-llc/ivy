@@ -2,6 +2,7 @@
 from collections import namedtuple
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
+
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
 
@@ -569,9 +570,7 @@ def svdvals(
     return ret
 
 
-@with_unsupported_dtypes(
-    {"2.13.0 and below": ("int16", "int8", "bool", "unsigned")}, backend_version
-)
+@with_supported_dtypes({"2.13.0 and below": ("float32",)}, backend_version)
 def tensordot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],

@@ -234,6 +234,12 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
     return result_t
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def rfft(x, n=None, axis=-1, norm="backward", name=None):
+    return ivy.dft(x, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
+
+
 @to_ivy_arrays_and_back
 def rfftfreq(n, d=1.0, dtype=None, name=None):
     dtype = ivy.default_dtype()
