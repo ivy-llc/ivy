@@ -406,11 +406,13 @@ def cast_filter(d, dtype, x):
 
 def cast_filter_helper(d, dtype, x, current_backend):
     with BackendHandler.update_backend(current_backend) as ivy_backend:
-        bound_dtype_bits = lambda d: (
-            ivy_backend.dtype_bits(d) / 2
-            if ivy_backend.is_complex_dtype(d)
-            else ivy_backend.dtype_bits(d)
-        )
+
+        def bound_dtype_bits(d):
+            return (
+                ivy_backend.dtype_bits(d) / 2
+                if ivy_backend.is_complex_dtype(d)
+                else ivy_backend.dtype_bits(d)
+            )
 
         if ivy_backend.is_int_dtype(d):
             max_val = ivy_backend.iinfo(d).max

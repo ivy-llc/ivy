@@ -223,8 +223,11 @@ def mel_weight_matrix(
     lower_edge_hertz = torch.tensor(lower_edge_hertz)
     upper_edge_hertz = torch.tensor(upper_edge_hertz)
     zero = torch.tensor(0.0)
+
     # mel transform lambda function
-    hz_to_mel = lambda f: 2595 * torch.log10(1 + f / 700)
+    def hz_to_mel(f):
+        return 2595 * torch.log10(1 + f / 700)
+
     nyquist_hz = sample_rate / 2
     # define a range of frequencies in HZ
     linear_freqs = torch.linspace(0, nyquist_hz, dft_length)[1:]

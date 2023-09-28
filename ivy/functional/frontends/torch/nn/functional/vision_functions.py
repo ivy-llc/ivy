@@ -8,10 +8,6 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-cubic_conv1 = lambda A, x: ((A + 2) * x - (A + 3)) * x * x + 1
-cubic_conv2 = lambda A, x: (((A * x) - (5 * A)) * x + (8 * A)) * x - (4 * A)
-
-
 # --- Helpers --- #
 # --------------- #
 
@@ -90,6 +86,14 @@ def bicubic_interp(x, t, alpha=-0.75):
     coeffs.append(ivy.reshape(cubic_conv1(alpha, 1 - t), (n, 1, h, w)))
     coeffs.append(ivy.reshape(cubic_conv2(alpha, 2 - t), (n, 1, h, w)))
     return x[0] * coeffs[0] + x[1] * coeffs[1] + x[2] * coeffs[2] + x[3] * coeffs[3]
+
+
+def cubic_conv1(A, x):
+    return ((A + 2) * x - (A + 3)) * x * x + 1
+
+
+def cubic_conv2(A, x):
+    return ((A * x - 5 * A) * x + 8 * A) * x - 4 * A
 
 
 @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")

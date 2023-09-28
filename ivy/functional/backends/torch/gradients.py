@@ -141,7 +141,8 @@ def execute_with_gradients(
 
 
 def value_and_grad(func):
-    grad_fn = lambda xs: ivy.to_native(func(xs))
+    def grad_fn(xs):
+        return ivy.to_native(func(xs))
 
     def callback_fn(xs):
         y = grad_fn(xs)
@@ -182,16 +183,18 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(
-        func(ivy.to_ivy(x_in, nested=True)),
-        nested=True,
-        include_derived=True,
-    )
-    callback_fn = lambda x_in: ivy.to_ivy(
-        torch.func.jacfwd(grad_fn)((ivy.to_native(x_in, nested=True))),
-        nested=True,
-        include_derived=True,
-    )
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
+
+    def callback_fn(x_in):
+        return ivy.to_ivy(
+            torch.func.jacfwd(grad_fn)(ivy.to_native(x_in, nested=True)),
+            nested=True,
+            include_derived=True,
+        )
+
     return callback_fn
 
 

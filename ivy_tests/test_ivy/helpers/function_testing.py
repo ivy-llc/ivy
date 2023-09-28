@@ -191,9 +191,10 @@ def test_function_backend_computation(
                 )
 
             if test_flags.test_trace:
-                target_fn = lambda instance, *args, **kwargs: instance.__getattribute__(
-                    fn_name
-                )(*args, **kwargs)
+
+                def target_fn(instance, *args, **kwargs):
+                    return instance.__getattribute__(fn_name)(*args, **kwargs)
+
                 args = [instance, *args]
             else:
                 target_fn = instance.__getattribute__(fn_name)

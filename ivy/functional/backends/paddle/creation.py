@@ -423,9 +423,10 @@ def meshgrid(
         if indexing == "ij":
             return paddle.meshgrid(*arrays)
         elif indexing == "xy":
-            index_switch = lambda x: (
-                paddle_backend.swapaxes(x, 0, 1) if x.ndim > 1 else x
-            )
+
+            def index_switch(x):
+                return paddle_backend.swapaxes(x, 0, 1) if x.ndim > 1 else x
+
             arrays = list(map(index_switch, arrays))
             ret = paddle.meshgrid(*arrays)
             return list(map(index_switch, ret))

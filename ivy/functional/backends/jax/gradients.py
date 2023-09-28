@@ -128,7 +128,8 @@ def execute_with_gradients(
 
 
 def value_and_grad(func):
-    grad_fn = lambda xs: ivy.to_native(func(xs))
+    def grad_fn(xs):
+        return ivy.to_native(func(xs))
 
     def callback_fn(xs):
         xs = ivy.nested_map(lambda x: ivy.to_native(x), xs, include_derived=True)
@@ -145,22 +146,26 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(
-        func(ivy.to_ivy(x_in, nested=True)),
-        nested=True,
-        include_derived=True,
-    )
-    callback_fn = lambda x_in: ivy.to_ivy(
-        jax.jacfwd(grad_fn)((ivy.to_native(x_in, nested=True))),
-        nested=True,
-        include_derived=True,
-    )
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
+
+    def callback_fn(x_in):
+        return ivy.to_ivy(
+            jax.jacfwd(grad_fn)(ivy.to_native(x_in, nested=True)),
+            nested=True,
+            include_derived=True,
+        )
+
     return callback_fn
 
 
 def grad(func: Callable, argnums: Union[int, Tuple[int]] = 0):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
-    callback_fn = lambda x_in: ivy.to_ivy(
-        jax.grad(grad_fn, argnums)(ivy.to_native(x_in))
-    )
+    def grad_fn(x_in):
+        return ivy.to_native(func(x_in))
+
+    def callback_fn(x_in):
+        return ivy.to_ivy(jax.grad(grad_fn, argnums)(ivy.to_native(x_in)))
+
     return callback_fn

@@ -515,7 +515,9 @@ def vmap(
     @ivy.output_to_native_arrays
     @ivy.inputs_to_native_arrays
     def _vmap(*args):
-        new_fun = lambda *args: ivy.to_native(func(*args))
+        def new_fun(*args):
+            return ivy.to_native(func(*args))
+
         new_func = functorch.vmap(new_fun, in_axes, out_axes)
         return new_func(*args)
 
