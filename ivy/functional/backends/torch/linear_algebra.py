@@ -5,7 +5,6 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
 from collections import namedtuple
 
-
 # local
 import ivy
 from ivy import inf
@@ -425,7 +424,7 @@ svdvals.support_native_out = True
 
 # ToDo: re-add int32 support once
 # (https://github.com/pytorch/pytorch/issues/84530) is fixed
-@with_unsupported_dtypes({"2.0.1 and below": ("int32",)}, backend_version)
+@with_supported_dtypes({"2.0.1 and below": ("float32",)}, backend_version)
 def tensordot(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -434,11 +433,7 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    # find the type to promote to
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
-    # type conversion to one that torch.tensordot can work with
-    x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
-
     # handle tensordot for axes==0
     # otherwise call with axes
     if axes == 0:
