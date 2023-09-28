@@ -36,6 +36,26 @@ def _filter_query(query):
     )
 
 
+# as_complex
+@st.composite
+def _get_as_complex_inputs_(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=(*shape, 2),
+            min_value=0,
+            max_value=50,
+        )
+    )
+    return x_dtype, x
+
+
 # clip
 @st.composite
 def _get_clip_inputs(draw):
@@ -756,6 +776,37 @@ def test_paddle_tensor_argsort(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# as_complex
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="as_complex",
+    dtypes_and_x=_get_as_complex_inputs_(),
+)
+def test_paddle_tensor_as_complex(
+    dtypes_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtypes_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
         on_device=on_device,
     )
 

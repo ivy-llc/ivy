@@ -778,6 +778,20 @@ class Tensor:
     def mean(self, axis=None, keepdim=False, name=None):
         return paddle_frontend.mean(self, axis=axis, keepdim=keepdim)
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def as_complex(self, name=None):
+        if self.ivy_array.shape[-1] != 2:
+            raise ivy.exceptions.IvyError(
+                "The size of the last dimension of tensor does not equals 2"
+            )
+        dtype = (
+            ivy.complex64 if ivy.dtype(self.ivy_array) == "float32" else ivy.complex128
+        )
+        re_part = self.ivy_array[..., 0]
+        im_part = ivy.multiply(1j, self.ivy_array[..., 1])
+        value = paddle_frontend.Tensor(ivy.add(re_part, im_part).astype(dtype))
+        return value
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
