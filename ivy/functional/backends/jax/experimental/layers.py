@@ -861,44 +861,48 @@ def stft(
 ) -> JaxArray:
     if axis is None:
         axis = -1
+    
+    if win_length is None:
+        win_length = n_fft
 
-    if n_fft is None:
-        n_fft = 1
-        while n_fft < win_length:
-            n_fft *= 2
-
-    if window is None:
+    if window is None or window is JaxArray:
         window = jnp.array(jnp.hanning(n_fft), dtype=signal.dtype)
+    window /= jnp.max(window)   
 
     if hop_length is None:
-        hop_length = n_fft // 4
+        hop_length = win_length // 2
+
+    if n_fft > len(signal):
+        n_fft = len(signal)
 
     if not isinstance(hop_length, int):
         raise TypeError("hop_length must be an int.")
 
     if not isinstance(n_fft, int):
         raise TypeError("n_fft must be an int.")
+    
+    if detrend == 'linaer' or detrend == 'constant':
+        detrend == False
 
-    if hop_length <= win_length:
-        noverlap = win_length - hop_length
-    hop_length = noverlap
+    noverlap = min(win_length - 1, hop_length)    
+    if isinstance(noverlap, int):
+        hop_length = noverlap
+    else:
+        hop_length = win_length - noverlap
 
     _, _, stft = jax.scipy.signal.stft(
         signal,
         fs,
         window,
         win_length,
-        noverlap,
+        hop_length,
         n_fft,
         detrend,
         onesided,
         boundary,
         pad_mode,
         axis,
-    )
-    real_part = jnp.real(stft)
-    imag_part = jnp.imag(stft)
-    stft = -real_part + 1j * imag_part
+    ) 
     return stft
 
 
