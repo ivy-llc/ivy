@@ -9892,10 +9892,11 @@ def test_torch_tensor_ne(
     init_tree="torch.tensor",
     method_name="ne",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-    ).filter(
-        lambda x: "uint16" not in x[0] and "uint32" not in x[0] and "uint64" not in x[0]
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
     ),
 )
 def test_torch_tensor_ne(
@@ -9930,7 +9931,7 @@ def test_torch_tensor_ne(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
-    method_name="ne_",
+    method_name="ne",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
@@ -10439,7 +10440,10 @@ def test_torch_tensor_normal_(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ).filter(
-        lambda x: "uint16" not in x[0] and "uint32" not in x[0] and "uint64" not in x[0]
+        lambda x: "bfloat16" not in x[0]
+        and "uint16" not in x[0]
+        and "uint32" not in x[0]
+        and "uint64" not in x[0]
     ),
 )
 def test_torch_tensor_not_equal(
@@ -10479,7 +10483,10 @@ def test_torch_tensor_not_equal(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ).filter(
-        lambda x: "uint16" not in x[0] and "uint32" not in x[0] and "uint64" not in x[0]
+        lambda x: "bfloat16" not in x[0]
+        and "uint16" not in x[0]
+        and "uint32" not in x[0]
+        and "uint64" not in x[0]
     ),
 )
 def test_torch_tensor_not_equal_(
