@@ -132,7 +132,7 @@ def squeeze(
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+            f"tried to squeeze a zero-dimensional input by axis {axis}"
         )
     return np.squeeze(x, axis=axis)
 
@@ -191,7 +191,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,
@@ -261,9 +261,9 @@ def unstack(
 
 def clip(
     x: np.ndarray,
-    x_min: Union[Number, np.ndarray],
-    x_max: Union[Number, np.ndarray],
     /,
+    x_min: Optional[Union[Number, np.ndarray]] = None,
+    x_max: Optional[Union[Number, np.ndarray]] = None,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:

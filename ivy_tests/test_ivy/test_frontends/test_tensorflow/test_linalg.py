@@ -109,28 +109,6 @@ def _get_dtype_and_sequence_of_arrays(draw):
     return array_dtype, values
 
 
-# solve
-@st.composite
-def _get_first_matrix(draw):
-    input_dtype_strategy = st.shared(
-        st.sampled_from(draw(helpers.get_dtypes("float"))),
-        key="shared_dtype",
-    )
-    input_dtype = draw(input_dtype_strategy)
-    shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
-    )
-    matrix = draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
-            min_value=2,
-            max_value=5,
-        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
-    )
-    return input_dtype, matrix
-
-
 # logdet
 @st.composite
 def _get_hermitian_pos_def_matrix(draw):
@@ -708,7 +686,7 @@ def test_tensorflow_linalg_einsum(
     kw = {}
     for i, x_ in enumerate(operands):
         dtype = dtypes[i][0]
-        kw["x{}".format(i)] = np.array(x_).astype(dtype)
+        kw[f"x{i}"] = np.array(x_).astype(dtype)
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -1024,8 +1002,8 @@ def test_tensorflow_slogdet(
 # solve
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.solve",
-    x=_get_first_matrix(),
-    y=_get_second_matrix(),
+    x=helpers.get_first_solve_batch_matrix(choose_adjoint=True),
+    y=helpers.get_second_solve_batch_matrix(allow_simplified=False),
     test_with_out=st.just(False),
 )
 def test_tensorflow_solve(
@@ -1038,8 +1016,8 @@ def test_tensorflow_solve(
     fn_tree,
     on_device,
 ):
-    input_dtype1, x1 = x
-    input_dtype2, x2 = y
+    input_dtype1, x1, adjoint = x
+    input_dtype2, x2, _ = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
         backend_to_test=backend_fw,
@@ -1051,6 +1029,7 @@ def test_tensorflow_solve(
         atol=1e-3,
         matrix=x1,
         rhs=x2,
+        adjoint=adjoint,
     )
 
 

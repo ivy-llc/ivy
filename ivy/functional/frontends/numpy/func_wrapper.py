@@ -23,14 +23,16 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
                     x, ivy.as_ivy_dtype(dtype), casting=casting
                 ),
                 type="all",
-                message="type of input is incompatible with dtype: {}".format(dtype),
+                message=f"type of input is incompatible with dtype: {dtype}",
             )
         else:
             assert_fn = None if casting == "safe" else ivy.exists
             if ivy.is_bool_dtype(dtype):
                 assert_fn = ivy.is_bool_dtype
             if ivy.is_int_dtype(dtype):
-                assert_fn = lambda x: not ivy.is_float_dtype(x)
+
+                def assert_fn(x):
+                    return not ivy.is_float_dtype(x)
 
             if assert_fn:
                 ivy.utils.assertions.check_all_or_any_fn(
@@ -43,9 +45,7 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
                         )
                     ),
                     type="all",
-                    message="type of input is incompatible with dtype: {}".format(
-                        dtype
-                    ),
+                    message=f"type of input is incompatible with dtype: {dtype}",
                 )
 
 
@@ -54,18 +54,24 @@ def _assert_no_array(args, dtype, scalar_check=False, none=False):
     if args:
         first_arg = args[0]
         fn_func = ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
-        assert_fn = lambda x: ivy.dtype(x) == fn_func
+
+        def assert_fn(x):
+            return ivy.dtype(x) == fn_func
+
         if scalar_check:
-            assert_fn = lambda x: (
-                ivy.dtype(x) == fn_func
-                if ivy.shape(x) != ()
-                else _casting_no_special_case(ivy.dtype(x), fn_func, none)
-            )
+
+            def assert_fn(x):
+                return (
+                    ivy.dtype(x) == fn_func
+                    if ivy.shape(x) != ()
+                    else _casting_no_special_case(ivy.dtype(x), fn_func, none)
+                )
+
         ivy.utils.assertions.check_all_or_any_fn(
             *args,
             fn=assert_fn,
             type="all",
-            message="type of input is incompatible with dtype: {}".format(dtype),
+            message=f"type of input is incompatible with dtype: {dtype}",
         )
 
 
@@ -76,7 +82,7 @@ def _assert_no_scalar(args, dtype, none=False):
             *args,
             fn=lambda x: type(x) == type(first_arg),  # noqa: E721
             type="all",
-            message="type of input is incompatible with dtype {}".format(dtype),
+            message=f"type of input is incompatible with dtype {dtype}",
         )
         if dtype:
             if ivy.is_int_dtype(dtype):
@@ -88,7 +94,7 @@ def _assert_no_scalar(args, dtype, none=False):
             ivy.utils.assertions.check_equal(
                 type(args[0]),
                 check_dtype,
-                message="type of input is incompatible with dtype {}".format(dtype),
+                message=f"type of input is incompatible with dtype {dtype}",
                 as_array=False,
             )
             if ivy.as_ivy_dtype(dtype) not in ["float64", "int8", "int64", "uint8"]:
@@ -108,16 +114,21 @@ def _assert_scalar(args, dtype):
     if args and dtype:
         assert_fn = None
         if ivy.is_int_dtype(dtype):
-            assert_fn = lambda x: not isinstance(x, float)
+
+            def assert_fn(x):
+                return not isinstance(x, float)
+
         elif ivy.is_bool_dtype(dtype):
-            assert_fn = lambda x: isinstance(x, bool)
+
+            def assert_fn(x):
+                return isinstance(x, bool)
 
         if assert_fn:
             ivy.utils.assertions.check_all_or_any_fn(
                 *args,
                 fn=assert_fn,
                 type="all",
-                message="type of input is incompatible with dtype: {}".format(dtype),
+                message=f"type of input is incompatible with dtype: {dtype}",
             )
 
 
@@ -413,14 +424,6 @@ def handle_numpy_out(fn: Callable) -> Callable:
                 **kwargs,
             }
             args = args[:out_pos]
-        if "out" in kwargs:
-            out = kwargs["out"]
-            if ivy.exists(out) and not ivy.nested_any(
-                out, lambda x: isinstance(x, np_frontend.ndarray)
-            ):
-                raise ivy.utils.exceptions.IvyException(
-                    "Out argument must be an ivy.frontends.numpy.ndarray object"
-                )
         return fn(*args, **kwargs)
 
     _handle_numpy_out.handle_numpy_out = True
@@ -453,7 +456,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         )
         return fn(*ivy_args, **ivy_kwargs)
 
-    _inputs_to_ivy_arrays_np.inputs_to_ivy_arrays = True
+    _inputs_to_ivy_arrays_np.inputs_to_ivy_arrays_numpy = True
     return _inputs_to_ivy_arrays_np
 
 
@@ -519,7 +522,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         order_pos = list(inspect.signature(fn).parameters).index("order")
     else:
         contains_order = False
-    _outputs_to_frontend_arrays.outputs_to_frontend_arrays = True
+    _outputs_to_frontend_arrays.outputs_to_frontend_arrays_numpy = True
     return _outputs_to_frontend_arrays
 
 
