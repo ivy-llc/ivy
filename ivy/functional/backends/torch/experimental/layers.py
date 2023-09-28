@@ -1013,32 +1013,41 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if window is None or window == "hann":
+    if axis is None:
+        axis = -1
+        
+    if window is None or window is not None:
         if win_length is None:
             win_length = n_fft
         window = torch.hann_window(win_length, dtype=torch.float32)
     else:
         window = torch.hann_window(n_fft, dtype=torch.float32)
+    
 
-    if hop_length <= 0:
-        hop_length = 1
+    if  hop_length <= 0:
+        hop_length = 1  
+    
+    if len(signal) < n_fft:
+        n_fft = len(signal)
 
-    return_complex = True
+    return_complex = True  
 
     stft_result = torch.stft(
-        signal,
-        n_fft,
-        hop_length,
-        win_length,
-        window,
-        center,
-        pad_mode,
-        normalized,
-        onesided,
-        return_complex,
-    )
-    if return_complex is False:
+            signal,
+            n_fft,
+            hop_length,
+            win_length,
+            window,
+            center,
+            pad_mode,
+            normalized,
+            onesided,
+            return_complex,
+        )
+        
+    if return_complex == False:
         stft_result = stft_result.real
+    stft_result = stft_result.transpose(1, 0)
     return stft_result
 
 
