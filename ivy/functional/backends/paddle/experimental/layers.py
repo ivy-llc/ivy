@@ -498,14 +498,19 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if hop_length <= 0:
+    if  hop_length <= 0:
         hop_length = 1
+    
+    if len(signal) < n_fft:
+        n_fft = len(signal)
 
-    if window is None or window == "hann":
+    if window is None or window == 'hann':
         if win_length is None:
             win_length = n_fft
         window = paddle.ones([win_length], dtype=signal.dtype)
-
+    else:
+        window = paddle.ones([n_fft], dtype=signal.dtype)
+        
     return paddle.signal.stft(
         signal,
         n_fft,
