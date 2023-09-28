@@ -417,7 +417,7 @@ def test_jax_atleast_1d(
     input_dtype, arrays = dtype_and_x
     arys = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
-        arys["arrs{}".format(i)] = np.asarray(array, dtype=idtype)
+        arys[f"arrs{i}"] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -451,7 +451,7 @@ def test_jax_atleast_2d(
     input_dtype, arrays = dtype_and_x
     arys = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
-        arys["arrs{}".format(i)] = np.asarray(array, dtype=idtype)
+        arys[f"arrs{i}"] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -485,7 +485,7 @@ def test_jax_atleast_3d(
     input_dtype, arrays = dtype_and_x
     arys = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
-        arys["arrs{}".format(i)] = np.asarray(array, dtype=idtype)
+        arys[f"arrs{i}"] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,

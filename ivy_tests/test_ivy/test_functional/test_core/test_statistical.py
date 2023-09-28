@@ -44,7 +44,7 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes("valid"),
             large_abs_safety_factor=large_abs_safety_factor,
             small_abs_safety_factor=small_abs_safety_factor,
             safety_factor_scale="log",
@@ -190,7 +190,7 @@ def test_einsum(
     # x_dtype = np.dtype(dtype[0])
     for i, x_ in enumerate(operands):
         dtype = dtypes[i][0]
-        kw["x{}".format(i)] = np.array(x_).astype(dtype)
+        kw[f"x{i}"] = np.array(x_).astype(dtype)
     # len(operands) + 1 because of the equation
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_function(
