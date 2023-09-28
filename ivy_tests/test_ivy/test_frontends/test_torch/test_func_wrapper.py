@@ -130,10 +130,10 @@ def test_torch_outputs_to_frontend_arrays(
         outputs_to_frontend_arrays(_fn)(
             scalar_x, scalar_x, check_default=True, dtype=dtype
         )
-        outputs_to_frontend_arrays(_fn)(
-            scalar_x, x, check_default=True, dtype=dtype
-        )
-    output = outputs_to_frontend_arrays(_fn)(x, check_default=True, dtype=dtype, inplace=inplace)
+        outputs_to_frontend_arrays(_fn)(scalar_x, x, check_default=True, dtype=dtype)
+    output = outputs_to_frontend_arrays(_fn)(
+        x, check_default=True, dtype=dtype, inplace=inplace
+    )
     assert isinstance(output, Tensor)
     if inplace:
         if generate_frontend:

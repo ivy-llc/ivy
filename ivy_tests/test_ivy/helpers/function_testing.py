@@ -627,12 +627,14 @@ def _assert_frontend_ret(ret, for_fn=True):
             ret,
             lambda _x: _is_frontend_array(_x) if ivy.is_array(_x) else True,
         )
-        assert not non_frontend_idxs, \
-            f"Frontend {fn_or_method} return contains non-frontend arrays at positions " \
+        assert not non_frontend_idxs, (
+            f"Frontend {fn_or_method} return contains non-frontend arrays at positions "
             f"{non_frontend_idxs} (zero-based): {ret[non_frontend_idxs]}"
+        )
     elif ivy.is_array(ret):
-        assert _is_frontend_array(ret), \
-            f"Frontend {fn_or_method} returned non-frontend arrays: {ret}"
+        assert _is_frontend_array(
+            ret
+        ), f"Frontend {fn_or_method} returned non-frontend arrays: {ret}"
 
 
 def test_frontend_function(
@@ -835,7 +837,11 @@ def test_frontend_function(
 
             first_array = ivy_backend.func_wrapper._get_first_array(
                 *copy_args,
-                array_fn=_is_frontend_array if test_flags.generate_frontend_arrays else ivy_backend.is_array,
+                array_fn=(
+                    _is_frontend_array
+                    if test_flags.generate_frontend_arrays
+                    else ivy_backend.is_array
+                ),
                 **copy_kwargs,
             )
             ret_ = get_frontend_ret(
