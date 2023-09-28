@@ -6,6 +6,8 @@ on:
 
 permissions:
   actions: read
+  pull-requests: write
+
 jobs:
   display_test_results:
     if: ${{ always() }}
