@@ -1917,7 +1917,6 @@ def conv3d_transpose(
         a: ivy.Shape(1, 8, 8, 8, 1),
         b: ivy.Shape(1, 8, 8, 8, 1)
     }
-
     """
 
     return ivy.current_backend(x).conv3d_transpose(
