@@ -311,8 +311,8 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
 
 @to_ivy_arrays_and_back
 def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
-    # TODO: refactor this function to use ivy.sliding_window, but ensure that the function is
-    # transpilable to all backends with varying batch size (see issue #25796)
+    # TODO: refactor this function to use ivy.sliding_window, but ensure that the
+    # function is transpilable to all backends with varying batch size(see issue #25796)
     if input.ndim != 4:
         raise ivy.utils.exceptions.IvyException("only batched 4D inputs are supported")
     stride = [stride] * 2 if isinstance(stride, int) else stride

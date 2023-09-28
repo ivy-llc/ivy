@@ -796,7 +796,8 @@ def test_tensorflow_expand_dims(
 
 # eye
 @handle_frontend_test(
-    fn_tree="tensorflow.eye",
+    fn_tree="tensorflow.linalg.eye",
+    gt_fn_tree="tensorflow.eye",
     n_rows=helpers.ints(min_value=0, max_value=10),
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
     batch_shape=st.lists(
@@ -814,6 +815,7 @@ def test_tensorflow_eye(
     backend_fw,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
@@ -822,6 +824,7 @@ def test_tensorflow_eye(
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         num_rows=n_rows,
         num_columns=n_cols,
