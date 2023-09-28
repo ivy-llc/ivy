@@ -548,7 +548,7 @@ def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
     global exception_trace_mode_stack
     trace_modes = list(trace_mode_dict.keys())
     ivy.utils.assertions.check_elem_in_list(
-        mode, trace_modes, False, "trace mode must be one of {}".format(trace_modes)
+        mode, trace_modes, False, f"trace mode must be one of {trace_modes}"
     )
     exception_trace_mode_stack.append(mode)
     ivy.__setattr__("exception_trace_mode", mode, True)
@@ -1695,7 +1695,7 @@ def arg_names(receiver):
     >>> x = ivy.arg_names(ivy.optimizers.Adam)
     >>> print(x)
     ['lr', 'beta1', 'beta2', 'epsilon', 'inplace',
-    'stop_gradients', 'compile_on_next_step', 'device']
+    'stop_gradients', 'trace_on_next_step', 'device']
     """
     return list(inspect.signature(receiver).parameters.keys())
 

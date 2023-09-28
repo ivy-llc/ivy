@@ -9,32 +9,23 @@ import numpy as np
 from ivy.utils.backend.handler import _backend_dict
 
 
-@pytest.fixture
-def compiled_backends():
-    compiled_backends = []
-    for b in _backend_dict:
-        _b = ivy.with_backend(b)
-        compiled_backends.append(_b)
-    return compiled_backends
-
-
 def test_is_local(backend_fw):
     local_ivy = ivy.with_backend(backend_fw)
     assert local_ivy.is_local()
 
 
 @settings(
-    # To be able to share compiled_backends between examples
+    # To be able to share traced_backends between examples
     suppress_health_check=[HealthCheck(9)]
 )
 @given(name=st.sampled_from(["add", "Array", "Container", "globals_vars"]))
-def test_memory_id(name, compiled_backends):
-    for b in compiled_backends:
+def test_memory_id(name, traced_backends):
+    for b in traced_backends:
         assert id(getattr(ivy, name)) != id(
             getattr(b, name)
         ), f"Shared object {name} between global Ivy and backend {b.backend}"
 
-    for comb in itertools.combinations(compiled_backends, 2):
+    for comb in itertools.combinations(traced_backends, 2):
         assert id(getattr(comb[0], name)) != id(getattr(comb[1], name)), (
             f"Shared object {name} between {comb[0].backend} and backend "
             f"{comb[1].backend}"
@@ -62,3 +53,12 @@ def test_with_backend_cached(backend_fw):
     non_cached_local_ivy = ivy.with_backend(backend_fw)
     cached_local_ivy = ivy.with_backend(backend_fw)
     assert non_cached_local_ivy == cached_local_ivy
+
+
+@pytest.fixture
+def traced_backends():
+    traced_backends = []
+    for b in _backend_dict:
+        _b = ivy.with_backend(b)
+        traced_backends.append(_b)
+    return traced_backends
