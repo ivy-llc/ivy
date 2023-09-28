@@ -1344,6 +1344,8 @@ train(images, classes, num_epochs, model, device, num_classes = num_classes, bat
 
 ## Ivy in Depth
 
+In the next section, you will learn how Ivy works as a transpiler and framework, and you will get an idea of why to use it. 
+
 <details>
 <summary><b>Ivy as a transpiler</b></summary>
 
