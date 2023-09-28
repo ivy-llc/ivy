@@ -1351,21 +1351,23 @@ def stft(
     if isinstance(n_fft, tuple):
         n_fft = n_fft[0]
 
-    signal_length = tf.shape(signal)[-1]
-
-    if signal_length < n_fft:
-        n_fft = signal_length
-
-    if len(window) != win_length:
-        win_length = len(window)
-        n_fft = win_length
-
     if hop_length <= 0:
         hop_length = 1
 
-    if window is not None:
+    signal_length = tf.shape(signal)[-1]
+
+    if len(window) != win_length:
+        win_length = len(window)
+        n_fft = win_length  
+
+    if signal_length < n_fft:
+        n_fft = signal_length     
+      
+    if window is None or window is tf.Tensor:
         window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
-    window_fn = lambda *args, **kwargs: window
+    window /= tf.reduce_max(window)
+
+    window_fn = lambda *args, **kwargs: window     
 
     stft = tf.signal.stft(
         signal,
