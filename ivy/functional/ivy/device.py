@@ -755,9 +755,8 @@ def tpu_is_available() -> bool:
 
     Examples
     --------
-    >>> ivy.set_backend("torch")
     >>> print(ivy.tpu_is_available())
-    True
+    False
     """
     return ivy.current_backend().tpu_is_available()
 

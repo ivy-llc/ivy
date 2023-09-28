@@ -46,11 +46,16 @@ def _strip(line):
 # Download all relevant binaries in binaries.json
 all_tags = list(tags.sys_tags())
 binaries_dict = json.load(open("binaries.json"))
-available_configs = json.load(open("available_configs.json"))
 binaries_paths = _get_paths_from_binaries(binaries_dict)
-version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
 terminate = False
-
+version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
+configs_response = request.urlopen(
+    "https://github.com/unifyai/binaries/raw/main/available_configs.json",
+    timeout=40,
+)
+available_configs = json.loads(
+    repr(f"{configs_response.read()}").strip(r"\"b\'").replace(r"\\n", "\n")
+)
 
 # download binaries for the tag with highest precedence
 for tag in all_tags:
@@ -75,6 +80,22 @@ for tag in all_tags:
             terminate = path == binaries_paths[-1]
         except request.HTTPError:
             break
+
+# verify if all binaries are available
+for idx, path in enumerate(binaries_paths):
+    if not os.path.exists(path):
+        if idx == 0:
+            config_str = "\n".join(
+                [
+                    f"{module} : {', '.join(configs)}"
+                    for module, configs in available_configs.items()
+                ]
+            )
+            print(f"\nFollowing are the supported configurations :\n{config_str}\n")
+        print(
+            f"Could not download {path}.",
+            end="\n\n" if idx == len(binaries_paths) - 1 else "\n",
+        )
 
 
 this_directory = Path(__file__).parent
@@ -122,10 +143,6 @@ setup(
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
-    python_requires="==3.10.*",
-    classifiers=[
-        "License :: OSI Approved :: Apache Software License",
-        "Programming Language :: Python :: 3.10",
-    ],
+    classifiers=["License :: OSI Approved :: Apache Software License"],
     license="Apache 2.0",
 )

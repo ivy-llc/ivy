@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import strategies as st
 
 # local
@@ -451,25 +450,27 @@ def test_torch_huber_loss(
 # kl_div
 @handle_frontend_test(
     fn_tree="torch.nn.functional.kl_div",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=1e-04,
-        max_value=1,
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+        shared_dtype=True,
+        min_value=0,
+        max_value=10,
+        min_num_dims=0,
+        max_num_dims=10,
+        min_dim_size=0,
+        max_dim_size=10,
+        num_arrays=2,
     ),
-    dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=1e-04,
-        max_value=1,
-    ),
-    reduction=st.sampled_from(["none", "sum", "batchmean", "mean"]),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
+    reduction=st.sampled_from(["none", "mean", "sum", "batchmean"]),
     log_target=st.booleans(),
-    size_average=st.one_of(st.just(None), st.booleans()),
-    reduce=st.one_of(st.just(None), st.booleans()),
+    test_with_out=st.just(False),
 )
 def test_torch_kl_div(
     *,
-    dtype_and_input,
-    dtype_and_target,
+    dtype_and_inputs,
     size_average,
     reduce,
     reduction,
@@ -480,20 +481,16 @@ def test_torch_kl_div(
     backend_fw,
     on_device,
 ):
-    input_dtype, input = dtype_and_input
-    input[0] = np.array(np.log(input[0]))
-    target_dtype, target = dtype_and_target
-    if log_target:
-        target[0] = np.array(np.log(target[0]))
+    inputs_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
-        input_dtypes=input_dtype + target_dtype,
+        input_dtypes=inputs_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input[0],
-        target=target[0],
+        input=inputs[0],
+        target=inputs[1],
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
@@ -505,7 +502,7 @@ def test_torch_kl_div(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.l1_loss",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,

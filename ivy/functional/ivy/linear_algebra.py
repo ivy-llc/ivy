@@ -10,7 +10,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device,
+    handle_device_shifting,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -30,7 +30,7 @@ inf = float("inf")
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -170,7 +170,7 @@ def cholesky(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def cross(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -278,7 +278,7 @@ def cross(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def det(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -352,7 +352,7 @@ def det(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def diagonal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -532,7 +532,7 @@ def diagonal(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -585,7 +585,7 @@ def eig(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -698,7 +698,7 @@ def eigh(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def eigvalsh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -806,7 +806,7 @@ def eigvalsh(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def inner(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -885,7 +885,7 @@ def inner(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def inv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -979,7 +979,7 @@ def inv(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def matmul(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1142,7 +1142,7 @@ def matmul(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1304,7 +1304,7 @@ def matrix_norm(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def matrix_power(
     x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1405,7 +1405,7 @@ def matrix_power(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1521,7 +1521,7 @@ def matrix_rank(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def matrix_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1611,7 +1611,7 @@ def matrix_transpose(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def outer(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1702,7 +1702,7 @@ def outer(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def pinv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1778,7 +1778,7 @@ def pinv(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def qr(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1890,7 +1890,7 @@ def qr(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1998,7 +1998,7 @@ def slogdet(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def solve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2073,7 +2073,7 @@ def solve(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2205,7 +2205,7 @@ def svd(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def svdvals(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -2339,7 +2339,7 @@ def svdvals(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def tensordot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2439,7 +2439,7 @@ def tensordot(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def trace(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2566,7 +2566,7 @@ def trace(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def vecdot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2663,7 +2663,7 @@ def vecdot(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2812,7 +2812,7 @@ def vector_norm(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def diag(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2896,7 +2896,7 @@ def diag(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def vander(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2970,7 +2970,7 @@ def vander(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -3005,7 +3005,7 @@ def vector_to_skew_symmetric_matrix(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device
+@handle_device_shifting
 def lu_factor(
     A: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3040,7 +3040,7 @@ def lu_factor(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def tensorsolve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],

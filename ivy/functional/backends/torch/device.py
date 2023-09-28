@@ -74,7 +74,7 @@ def as_native_dev(
 ) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
-    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+    if torch.backends.mps.is_available():
         return torch.device(ivy.Device(device).replace("gpu", "mps"))
     return torch.device(ivy.Device(device).replace("gpu", "cuda"))
 
@@ -96,9 +96,7 @@ def num_gpus() -> int:
 
 
 def gpu_is_available() -> bool:
-    return (
-        hasattr(torch.backends, "mps") and torch.backends.mps.is_available()
-    ) or torch.cuda.is_available()
+    return torch.backends.mps.is_available() or torch.cuda.is_available()
 
 
 # noinspection PyUnresolvedReferences
@@ -114,7 +112,7 @@ def handle_soft_device_variable(*args, fn, **kwargs):
     )
     # checking if this function accepts `device` argument
     # must be handled in the backend
-    if "device" in inspect.signature(fn).parameters:
+    if "device" in inspect.getfullargspec(fn).args:
         kwargs["device"] = device_shifting_dev
     return fn(*args, **kwargs)
 

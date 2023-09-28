@@ -4,6 +4,7 @@ import math
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
 from paddle.device import core
+from ivy.functional.backends.paddle.device import to_device
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_device_and_dtypes,
@@ -56,7 +57,7 @@ def vorbis_window(
 ) -> paddle.Tensor:
     if window_length == 0:
         return paddle.to_tensor([], dtype=dtype)
-    i = paddle_backend.arange(1, window_length * 2, 2)
+    i = paddle_backend.arange(1, window_length * 2, 2, device=ivy.default_device())
     pi = paddle.full(shape=i.shape, fill_value=math.pi)
     return paddle.sin((pi / 2) * (paddle.sin(pi * i / (window_length * 2)) ** 2)).cast(
         dtype
@@ -86,12 +87,18 @@ def tril_indices(
     k: Optional[int] = 0,
     /,
     *,
-    device: core.Place = None,
+    device: core.Place,
 ) -> Tuple[paddle.Tensor, ...]:
     # special case due to inconsistent behavior when n_cols=1 and n_rows=0
     if not (n_cols and n_rows):
-        return paddle.to_tensor([], dtype="int64"), paddle.to_tensor([], dtype="int64")
-    return tuple(paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"))
+        return paddle.to_tensor([], place=device, dtype="int64"), paddle.to_tensor(
+            [], place=device, dtype="int64"
+        )
+    return tuple(
+        to_device(
+            paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
+        )
+    )
 
 
 @with_supported_dtypes(

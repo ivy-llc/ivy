@@ -7,6 +7,7 @@ import ivy
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 from ivy.func_wrapper import (
+    infer_device,
     outputs_to_ivy_arrays,
     handle_nestable,
     to_native_arrays_and_back,
@@ -14,7 +15,7 @@ from ivy.func_wrapper import (
     infer_dtype,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
-    handle_device,
+    handle_device_shifting,
     handle_backend_invalid,
     handle_array_function,
 )
@@ -26,7 +27,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device
+@handle_device_shifting
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -68,7 +69,7 @@ def vorbis_window(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device
+@handle_device_shifting
 def hann_window(
     size: int,
     *,
@@ -116,7 +117,7 @@ def hann_window(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device
+@handle_device_shifting
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -275,7 +276,7 @@ hamming_window.mixed_backend_wrappers = {
     "to_add": (
         "handle_backend_invalid",
         "handle_out_argument",
-        "handle_device",
+        "handle_device_shifting",
     ),
     "to_skip": (),
 }
@@ -284,7 +285,7 @@ hamming_window.mixed_backend_wrappers = {
 @handle_exceptions
 @handle_nestable
 @outputs_to_ivy_arrays
-@handle_device
+@infer_device
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -381,7 +382,7 @@ def tril_indices(
 @handle_out_argument
 @inputs_to_ivy_arrays
 @infer_dtype
-@handle_device
+@infer_device
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -604,7 +605,7 @@ def indices(
 
 
 indices.mixed_backend_wrappers = {
-    "to_add": ("handle_device",),
+    "to_add": ("handle_device_shifting",),
     "to_skip": (),
 }
 
@@ -690,7 +691,7 @@ def unsorted_segment_sum(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device
+@handle_device_shifting
 def blackman_window(
     size: int,
     *,
@@ -1040,7 +1041,7 @@ def random_tt(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+@handle_device_shifting
 def trilu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

@@ -5,7 +5,6 @@ import os
 import copy
 import importlib
 import warnings
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -234,17 +233,17 @@ def eager_benchmark(
                     )
                     if isinstance(obj_call, ivy.Module):
                         obj_call_copy = copy.deepcopy(obj_call)
-                        obj_call_copy.trace(args=args, kwargs=kwargs)
-                        traced_fn = obj_call_copy
+                        obj_call_copy.compile(args=args, kwargs=kwargs)
+                        compiled_fn = obj_call_copy
                     else:
-                        traced_fn = ivy.trace(obj_call, args=args, kwargs=kwargs)
+                        compiled_fn = ivy.compile(obj_call, args=args, kwargs=kwargs)
                     kwargs = ivy.default(kwargs, {})
                     args = ivy.default(args, ())
-                    untraced_time = _compute_time(obj_call)(*args, **kwargs)
-                    traced_time = _compute_time(traced_fn)(*args, **kwargs)
+                    uncompiled_time = _compute_time(obj_call)(*args, **kwargs)
+                    compiled_time = _compute_time(compiled_fn)(*args, **kwargs)
                     label = obj_call.__name__ if label is None else label
                     percent_speed_up = round(
-                        abs(untraced_time - traced_time) / untraced_time * 100, 6
+                        abs(uncompiled_time - compiled_time) / uncompiled_time * 100, 6
                     )
                     df = _read_or_create_csv(output_path)
                     _write_to_csv(
@@ -254,8 +253,8 @@ def eager_benchmark(
                             label,
                             backend,
                             device,
-                            untraced_time,
-                            traced_time,
+                            uncompiled_time,
+                            compiled_time,
                             percent_speed_up,
                         ],
                         output_path,

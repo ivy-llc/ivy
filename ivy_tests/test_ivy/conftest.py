@@ -168,14 +168,14 @@ def pytest_configure(config):
             # for future access
             mod_frontend[fw] = (proc, queue)
 
-    # trace_graph
-    raw_value = config.getoption("--trace_graph")
+    # compile_graph
+    raw_value = config.getoption("--compile_graph")
     if raw_value == "both":
-        trace_modes = [True, False]
+        compile_modes = [True, False]
     elif raw_value == "true":
-        trace_modes = [True]
+        compile_modes = [True]
     else:
-        trace_modes = [False]
+        compile_modes = [False]
 
     # implicit
     raw_value = config.getoption("--with_implicit")
@@ -195,13 +195,13 @@ def pytest_configure(config):
                 in UNSUPPORTED_FRAEMWORK_DEVICES[backend_str]
             ):
                 continue
-            for trace_graph in trace_modes:
+            for compile_graph in compile_modes:
                 for implicit in implicit_modes:
                     TEST_PARAMS_CONFIG.append(
                         (
                             device,
                             backend_str,
-                            trace_graph,
+                            compile_graph,
                             implicit,
                         )
                     )
@@ -210,7 +210,7 @@ def pytest_configure(config):
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(request, on_device, backend_fw, trace_graph, implicit):
+def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
     try:
         test_globals.setup_api_test(
             backend_fw,
@@ -247,11 +247,11 @@ def pytest_generate_tests(metafunc):
             if entry[1] == metafunc.function.ground_truth_backend:
                 test_paramters.remove(entry)
         metafunc.parametrize(
-            "on_device,backend_fw,trace_graph,implicit", test_paramters
+            "on_device,backend_fw,compile_graph,implicit", test_paramters
         )
     else:
         metafunc.parametrize(
-            "on_device,backend_fw,trace_graph,implicit", TEST_PARAMS_CONFIG
+            "on_device,backend_fw,compile_graph,implicit", TEST_PARAMS_CONFIG
         )
 
 
@@ -284,9 +284,9 @@ def process_cl_flags(config) -> Dict[str, bool]:
             getopt("--skip-gradient-testing"),
             getopt("--with-gradient-testing"),
         ),
-        "test_trace": (
-            getopt("--skip-trace-testing"),
-            getopt("--with-trace-testing"),
+        "test_compile": (
+            getopt("--skip-compile-testing"),
+            getopt("--with-compile-testing"),
         ),
         "transpile": (
             False,
@@ -326,7 +326,7 @@ def pytest_addoption(parser):
 
     parser.addoption("--device", action="store", default="cpu")
     parser.addoption("-B", "--backend", action="store", default="all")
-    parser.addoption("--trace_graph", action="store_true")
+    parser.addoption("--compile_graph", action="store_true")
     parser.addoption("--with_implicit", action="store_true")
     parser.addoption("--frontend", action="store", default=None)
     parser.addoption("--env", action="store", default=None)
@@ -337,7 +337,7 @@ def pytest_addoption(parser):
     parser.addoption("--skip-nestable-testing", action="store_true")
     parser.addoption("--skip-instance-method-testing", action="store_true")
     parser.addoption("--skip-gradient-testing", action="store_true")
-    parser.addoption("--skip-trace-testing", action="store_true")
+    parser.addoption("--skip-compile-testing", action="store_true")
 
     parser.addoption("--with-variable-testing", action="store_true")
     parser.addoption("--with-native-array-testing", action="store_true")
@@ -345,7 +345,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-nestable-testing", action="store_true")
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
-    parser.addoption("--with-trace-testing", action="store_true")
+    parser.addoption("--with-compile-testing", action="store_true")
     parser.addoption("--with-transpile-frontend", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
