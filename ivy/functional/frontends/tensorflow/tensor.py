@@ -53,6 +53,9 @@ class EagerTensor:
     def get_shape(self):
         return tf_frontend.raw_ops.Shape(input=self)
 
+    def ref(self):
+        return self._ivy_array.ref()
+
     def set_shape(self, shape):
         if shape is None:
             return
