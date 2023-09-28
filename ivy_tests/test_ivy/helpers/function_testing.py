@@ -749,6 +749,12 @@ def test_frontend_function(
                 frontend_array_fn=create_frontend_array,
                 **kwargs,
             )
+            copy_args, copy_kwargs = args_to_frontend(
+                backend_to_test,
+                *args,
+                frontend_array_fn=create_frontend_array,
+                **kwargs,
+            )
         else:
             args_for_test = copy.deepcopy(args)
             kwargs_for_test = copy.deepcopy(kwargs)
