@@ -2347,10 +2347,6 @@ def unset_default_int_dtype():
     """
     Reset the current default int dtype to the previous state.
 
-    Parameters
-    ----------
-    None-
-
     Examples
     --------
     >>> ivy.set_default_int_dtype(ivy.intDtype("int16"))
