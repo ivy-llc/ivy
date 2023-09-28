@@ -945,3 +945,7 @@ class Tensor:
     )
     def tile(self, repeat_times):
         return paddle_frontend.Tensor(ivy.tile(self._ivy_array, repeats=repeat_times))
+
+    @with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
+    def lcm(self, y, name=None):
+        return paddle_frontend.lcm(self._ivy_array, y)
