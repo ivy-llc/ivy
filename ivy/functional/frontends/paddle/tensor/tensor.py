@@ -205,6 +205,10 @@ class Tensor:
         return paddle_frontend.Tensor(ivy.sum(self._ivy_array, _to_ivy_array(y)))
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def round(self, name=None):
+        return paddle_frontend.Tensor(ivy.round(self._ivy_array))
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def log10(self, name=None):
         return paddle_frontend.Tensor(ivy.log10(self._ivy_array))
 
