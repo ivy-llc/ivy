@@ -3649,7 +3649,7 @@ def test_numpy_ndarray_transpose(
     dtype_x_axis=_statistical_dtype_values(function="var"),
     dtype=helpers.get_dtypes("valid", full=False, none=True),
     where=np_frontend_helpers.where(),
-    keep_dims=st.booleans(),
+    keepdims=st.booleans(),
 )
 def test_numpy_ndarray_var(
     dtype_x_axis,
