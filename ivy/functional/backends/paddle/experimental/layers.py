@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 from .. import backend_version
+import ivy
 
 # local
 
@@ -416,6 +417,19 @@ def ifft(
     raise IvyNotImplementedException()
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("int8", "float32", "float64"),
+            "gpu": ("int8", "bfloat16", "float16", "float32", "float64"),
+        },
+        "2.4.2 and below": {
+            "cpu": ("int8", "float32", "float64"),
+            "gpu": ("int8", "float16", "float32", "float64"),
+        },
+    },
+    backend_version,
+)
 def embedding(
     weights: paddle.Tensor,
     indices: paddle.Tensor,
@@ -424,7 +438,20 @@ def embedding(
     max_norm: Optional[int] = None,
     out=None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    ivy.utils.assertions.check_equal(
+        weights.ndim, 2, message="weights must be 2-d", as_array=False
+    )
+
+    embeddings = paddle.nn.functional.embedding(x=indices, weight=weights)
+    if max_norm is not None:
+        norms = paddle.linalg.norm(embeddings, axis=-1, keepdim=True)
+        embeddings = paddle.where(
+            norms > max_norm, embeddings * max_norm / norms, embeddings
+        )
+        embeddings = paddle.where(
+            norms < -max_norm, embeddings * -max_norm / norms, embeddings
+        )
+    return embeddings
 
 
 def interpolate(

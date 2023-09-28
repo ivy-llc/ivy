@@ -68,28 +68,6 @@ def soft_margin_loss(
         return loss
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bool", "bfloat16")}, backend_version)
-def kl_div(
-    input: tf.Tensor,
-    target: tf.Tensor,
-    /,
-    *,
-    reduction: Optional[str] = "mean",
-) -> tf.Tensor:
-    size = tf.shape(input)
-
-    loss = tf.reduce_sum(input * tf.math.log(input / target), axis=-1)
-
-    if reduction == "mean":
-        loss = tf.math.reduce_mean(loss)
-    elif reduction == "sum":
-        loss = tf.math.reduce_sum(loss)
-    elif reduction == "batchmean":
-        loss = tf.math.reduce_sum(loss) / tf.cast(size[0], dtype=tf.float32)
-
-    return loss
-
-
 def _apply_loss_reduction(loss: tf.Tensor, reduction: str) -> tf.Tensor:
     if reduction == "sum":
         return tf.math.reduce_sum(loss)
