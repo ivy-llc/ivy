@@ -511,7 +511,7 @@ def stft(
     else:
         window = paddle.ones([n_fft], dtype=signal.dtype)
 
-    return paddle.signal.stft(
+    stft = paddle.signal.stft(
         signal,
         n_fft,
         hop_length,
@@ -522,6 +522,8 @@ def stft(
         normalized,
         onesided,
     )
+    stft = stft.transpose([1, 0])
+    return stft
 
 
 @with_unsupported_dtypes(
