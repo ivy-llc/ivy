@@ -30,7 +30,7 @@ def arange(
     step: float = 1,
     *,
     dtype: Optional[np.dtype] = None,
-    device: str,
+    device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype:
@@ -57,7 +57,7 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[np.dtype] = None,
-    device: str,
+    device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = _to_device(np.asarray(obj, dtype=dtype), device=device)
@@ -68,14 +68,19 @@ def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: np.dtype,
-    device: str,
+    device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.empty(shape, dtype), device=device)
 
 
 def empty_like(
-    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    dtype: np.dtype,
+    device: str = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.empty_like(x, dtype=dtype), device=device)
 
@@ -88,7 +93,7 @@ def eye(
     k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: np.dtype,
-    device: str,
+    device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if n_cols is None:
@@ -103,6 +108,10 @@ def eye(
         return _to_device(return_mat, device=device)
 
 
+def to_dlpack(x, /, *, out: Optional[np.ndarray] = None):
+    return x.__dlpack__()
+
+
 def from_dlpack(x, /, *, out: Optional[np.ndarray] = None):
     return np.from_dlpack(x)
 
@@ -112,7 +121,7 @@ def full(
     fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
-    device: str,
+    device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
@@ -128,7 +137,7 @@ def full_like(
     fill_value: Number,
     *,
     dtype: np.dtype,
-    device: str,
+    device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
@@ -143,7 +152,7 @@ def linspace(
     axis: Optional[int] = None,
     endpoint: bool = True,
     dtype: np.dtype,
-    device: str,
+    device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
@@ -172,14 +181,19 @@ def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: np.dtype,
-    device: str,
+    device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.ones(shape, dtype), device=device)
 
 
 def ones_like(
-    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    dtype: np.dtype,
+    device: str = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.ones_like(x, dtype=dtype), device=device)
 
@@ -200,14 +214,19 @@ def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: np.dtype,
-    device: str,
+    device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.zeros(shape, dtype), device=device)
 
 
 def zeros_like(
-    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    dtype: np.dtype,
+    device: str = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.zeros_like(x, dtype=dtype), device=device)
 
@@ -239,7 +258,7 @@ def one_hot(
     off_value: Optional[Number] = None,
     axis: Optional[int] = None,
     dtype: Optional[np.dtype] = None,
-    device: str,
+    device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     on_none = on_value is None
@@ -283,7 +302,7 @@ def triu_indices(
     k: int = 0,
     /,
     *,
-    device: str,
+    device: str = None,
 ) -> Tuple[np.ndarray]:
     return tuple(
         _to_device(np.asarray(np.triu_indices(n=n_rows, k=k, m=n_cols)), device=device)

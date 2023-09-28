@@ -121,7 +121,6 @@ def _determine_backend_from_args(args):
         return _get_backend_for_arg(args.__class__.__module__)
 
 
-
 def set_backend_to_specific_version(backend):
     """
     Update the backend dict to make the original function name point to the version
@@ -200,7 +199,7 @@ def current_backend(*args, **kwargs):
     return importlib.import_module(_backend_dict[implicit_backend])
 
 
-def _set_backend_as_ivy(
+def _set_module_backend(
     original_dict, target, backend, invalid_dtypes=None, backend_str=None
 ):
     invalid_dtypes = (
@@ -209,7 +208,7 @@ def _set_backend_as_ivy(
     backend_str = backend.current_backend_str() if backend_str is None else backend_str
     for k, v in original_dict.items():
         compositional = k not in backend.__dict__
-        if k not in backend.__dict__:
+        if compositional:
             if k in invalid_dtypes and k in target.__dict__:
                 del target.__dict__[k]
                 continue
@@ -222,7 +221,7 @@ def _set_backend_as_ivy(
             and "ivy.functional." in v.__name__
             and os.path.join("{}", "__init__.py").format(backend_str) not in v.__file__
         ):
-            _set_backend_as_ivy(
+            _set_module_backend(
                 v.__dict__,
                 target.__dict__[k],
                 backend.__dict__[k],
@@ -410,7 +409,7 @@ def set_backend(backend: str, dynamic: bool = False):
             ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
         backend_stack.append(backend)
         set_backend_to_specific_version(backend)
-        _set_backend_as_ivy(ivy_original_dict, ivy, backend)
+        _set_module_backend(ivy_original_dict, ivy, backend)
         # following snippet is required to update the ivy.functional namespace with
         # backend-specific functions
         for key, _ in ivy.__dict__.items():
@@ -419,7 +418,8 @@ def set_backend(backend: str, dynamic: bool = False):
 
         if dynamic:
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
-
+        for sub_backend in ivy.available_sub_backends:
+            ivy.set_sub_backend(sub_backend)
         if verbosity.level > 0:
             verbosity.cprint(f"backend stack: {backend_stack}")
     _handle_inplace_mode()
@@ -595,7 +595,7 @@ def with_backend(backend: str, cached: bool = True):
         set_backend_to_specific_version(backend_module)
         # We know for sure that the backend stack is empty
         # no need to do backend unsetting
-        ivy_pack.utils.backend.handler._set_backend_as_ivy(
+        ivy_pack.utils.backend.handler._set_module_backend(
             ivy_pack.__dict__.copy(), ivy_pack, backend_module
         )
         # TODO use a refactored code from ivy.set_backend
