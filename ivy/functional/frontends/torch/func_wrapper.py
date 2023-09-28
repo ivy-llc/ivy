@@ -43,7 +43,10 @@ class GradFn:
         assert len(inputs) <= 2
         if len(inputs) == 1 and isinstance(inputs[0], torch_frontend.Tensor):
             self._inputs.append(inputs[0].detach())
-            d_fn = lambda x: fn(x)
+
+            def d_fn(x):
+                return fn(x)
+
             self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
             if inputs[0].grad_fn is not None:
                 self.next_functions.append(inputs[0].grad_fn)
@@ -54,7 +57,10 @@ class GradFn:
         elif len(inputs) == 2:
             if isinstance(inputs[0], torch_frontend.Tensor):
                 self._inputs.append(inputs[0].detach())
-                d_fn = lambda x: fn(x, inputs[1])
+
+                def d_fn(x):
+                    return fn(x, inputs[1])
+
                 self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
                 if inputs[0].grad_fn is not None:
                     self.next_functions.append(inputs[0].grad_fn)
@@ -64,7 +70,10 @@ class GradFn:
                     self.next_functions.append(acc_grad)
             if isinstance(inputs[1], torch_frontend.Tensor):
                 self._inputs.append(inputs[1].detach())
-                d_fn = lambda x: fn(inputs[0], x)
+
+                def d_fn(x):
+                    return fn(inputs[0], x)
+
                 self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
                 if inputs[1].grad_fn is not None:
                     self.next_functions.append(inputs[1].grad_fn)
@@ -208,17 +217,20 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 ),
             ),
         )
-        array_fn = lambda x: ivy.is_array(x) or hasattr(x, "ivy_array")
+
+        def array_fn(x):
+            return ivy.is_array(x) or hasattr(x, "ivy_array")
+
         if "inplace" in kwargs and kwargs["inplace"]:
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
             # ivy.inplace_update with ensure_in_backend=True fails in jax and tf
-            # so update ._data directly
+            # so update .data directly
             if ivy.is_array(first_array):
-                first_array._data = ret.ivy_array._data
+                first_array._data = ret.ivy_array.data
             else:
-                first_array.ivy_array._data = ret.ivy_array._data
+                first_array.ivy_array._data = ret.ivy_array.data
             ret = first_array
 
         # logic for setting is_leaf

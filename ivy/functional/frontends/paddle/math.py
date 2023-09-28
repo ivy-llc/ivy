@@ -61,7 +61,7 @@ def amax(x, axis=None, keepdims=False):
             axis[i] += x.ndim
     for i in axis:
         if i < 0 or i >= x.ndim:
-            raise ValueError("axis {} is out of range [-{}:{}]".format(i, 0, x.ndim))
+            raise ValueError(f"axis {i} is out of range [-{0}:{x.ndim}]")
     return ivy.max(x, axis=axis, keepdims=keepdims)
 
 
@@ -226,6 +226,14 @@ def floor(x, name=None):
 @to_ivy_arrays_and_back
 def floor_divide(x, y, name=None):
     return ivy.floor_divide(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def floor_mod(x, y, name=None):
+    return ivy.remainder(x, y)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": "bfloat16"}, "paddle")
@@ -562,8 +570,7 @@ def take(
 ):
     if mode not in ["raise", "wrap", "clip"]:
         raise ValueError(
-            "'mode' in 'take' should be 'raise', 'wrap', 'clip', but received {}."
-            .format(mode)
+            f"'mode' in 'take' should be 'raise', 'wrap', 'clip', but received {mode}."
         )
     x = ivy.reshape(x, (-1,))
     if mode == "clip":
