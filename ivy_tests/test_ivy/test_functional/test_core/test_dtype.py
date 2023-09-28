@@ -207,7 +207,7 @@ def test_broadcast_arrays(
 
     kw = {}
     for i, (array, dtype) in enumerate(zip(arrays, input_dtypes)):
-        kw["x{}".format(i)] = np.asarray(array, dtype=dtype)
+        kw[f"x{i}"] = np.asarray(array, dtype=dtype)
     test_flags.num_positional_args = len(kw)
     helpers.test_function(
         input_dtypes=input_dtypes,
@@ -908,7 +908,7 @@ def test_result_type(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     dtype, x = helpers.as_lists(*dtype_and_x)
     kw = {}
     for i, (dtype_, x_) in enumerate(zip(dtype, x)):
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
     test_flags.num_positional_args = len(kw)
     helpers.test_function(
         input_dtypes=dtype,

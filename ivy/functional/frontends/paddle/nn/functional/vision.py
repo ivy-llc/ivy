@@ -120,9 +120,7 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
     check_equal(
         len(input_shape),
         4,
-        message="pixel shuffle requires a 4D input, but got input size {}".format(
-            input_shape
-        ),
+        message=f"pixel shuffle requires a 4D input, but got input size {input_shape}",
     )
 
     if not isinstance(upscale_factor, int):

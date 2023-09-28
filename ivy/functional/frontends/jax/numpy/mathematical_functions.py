@@ -407,7 +407,7 @@ def modf(x, /, out=None):
     dtype_size = x.itemsize * 8
     if "int8" in dtype_str or "int16" in dtype_str:
         dtype_size = 32
-    ret_type = "float{}".format(dtype_size)
+    ret_type = f"float{dtype_size}"
     return y2.astype(ret_type), y1.astype(ret_type)
 
 

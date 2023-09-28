@@ -548,7 +548,7 @@ def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
     global exception_trace_mode_stack
     trace_modes = list(trace_mode_dict.keys())
     ivy.utils.assertions.check_elem_in_list(
-        mode, trace_modes, False, "trace mode must be one of {}".format(trace_modes)
+        mode, trace_modes, False, f"trace mode must be one of {trace_modes}"
     )
     exception_trace_mode_stack.append(mode)
     ivy.__setattr__("exception_trace_mode", mode, True)

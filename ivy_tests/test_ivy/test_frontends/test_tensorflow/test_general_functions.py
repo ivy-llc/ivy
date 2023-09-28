@@ -716,7 +716,7 @@ def test_tensorflow_einsum(
     kw = {}
     i = 0
     for x_ in operands:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     # len(operands) + 1 because of the equation
     test_flags.num_positional_args = len(operands) + 1

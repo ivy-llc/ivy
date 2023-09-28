@@ -176,7 +176,7 @@ def local_response_norm(input, size, alpha=0.0001, beta=0.75, k=1.0):
     dim = len(ivy.shape(input))
     if dim < 3:
         raise ValueError(
-            "Expected 3D or higher dimensionality input (got {} dimensions)".format(dim)
+            f"Expected 3D or higher dimensionality input (got {dim} dimensions)"
         )
     if input.size == 0:
         return input

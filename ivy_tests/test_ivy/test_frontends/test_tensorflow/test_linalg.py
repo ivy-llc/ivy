@@ -686,7 +686,7 @@ def test_tensorflow_linalg_einsum(
     kw = {}
     for i, x_ in enumerate(operands):
         dtype = dtypes[i][0]
-        kw["x{}".format(i)] = np.array(x_).astype(dtype)
+        kw[f"x{i}"] = np.array(x_).astype(dtype)
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_frontend_function(
         input_dtypes=dtypes,

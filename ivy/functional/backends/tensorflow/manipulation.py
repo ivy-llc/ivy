@@ -159,9 +159,7 @@ def squeeze(
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
         if ivy.any(x.shape[axis] > 1):
-            raise ValueError(
-                "{} must be lesser than or equal to {}".format(x.shape[axis], 1)
-            )
+            raise ValueError(f"{x.shape[axis]} must be lesser than or equal to {1}")
         ret = tf.squeeze(x, axis)
     elif axis is None:
         ret = tf.squeeze(x)
