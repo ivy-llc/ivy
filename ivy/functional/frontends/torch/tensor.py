@@ -2046,6 +2046,10 @@ class Tensor:
     def xlogy(self, *, other, out=None):
         return torch_frontend.xlogy(self, other, out=out)
 
+    @with_unsupported_dtypes({"2.0.1 and below": "complex"}, "torch")
+    def minimum(self, other, *, out=None):
+        return torch_frontend.minimum(self, other=other, out=out)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
