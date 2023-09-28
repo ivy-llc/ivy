@@ -23,7 +23,7 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
                     x, ivy.as_ivy_dtype(dtype), casting=casting
                 ),
                 type="all",
-                message="type of input is incompatible with dtype: {}".format(dtype),
+                message=f"type of input is incompatible with dtype: {dtype}",
             )
         else:
             assert_fn = None if casting == "safe" else ivy.exists
@@ -43,9 +43,7 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
                         )
                     ),
                     type="all",
-                    message="type of input is incompatible with dtype: {}".format(
-                        dtype
-                    ),
+                    message=f"type of input is incompatible with dtype: {dtype}",
                 )
 
 
@@ -65,7 +63,7 @@ def _assert_no_array(args, dtype, scalar_check=False, none=False):
             *args,
             fn=assert_fn,
             type="all",
-            message="type of input is incompatible with dtype: {}".format(dtype),
+            message=f"type of input is incompatible with dtype: {dtype}",
         )
 
 
@@ -76,7 +74,7 @@ def _assert_no_scalar(args, dtype, none=False):
             *args,
             fn=lambda x: type(x) == type(first_arg),  # noqa: E721
             type="all",
-            message="type of input is incompatible with dtype {}".format(dtype),
+            message=f"type of input is incompatible with dtype {dtype}",
         )
         if dtype:
             if ivy.is_int_dtype(dtype):
@@ -88,7 +86,7 @@ def _assert_no_scalar(args, dtype, none=False):
             ivy.utils.assertions.check_equal(
                 type(args[0]),
                 check_dtype,
-                message="type of input is incompatible with dtype {}".format(dtype),
+                message=f"type of input is incompatible with dtype {dtype}",
                 as_array=False,
             )
             if ivy.as_ivy_dtype(dtype) not in ["float64", "int8", "int64", "uint8"]:
@@ -117,7 +115,7 @@ def _assert_scalar(args, dtype):
                 *args,
                 fn=assert_fn,
                 type="all",
-                message="type of input is incompatible with dtype: {}".format(dtype),
+                message=f"type of input is incompatible with dtype: {dtype}",
             )
 
 

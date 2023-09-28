@@ -6826,7 +6826,7 @@ def test_torch_tensor_expand(
         size = {}
         i = 0
         for x_ in shape:
-            size["x{}".format(i)] = x_
+            size[f"x{i}"] = x_
             i += 1
     else:
         size = {
@@ -10412,7 +10412,7 @@ def test_torch_tensor_permute(
         dims = {}
         i = 0
         for x_ in idxes:
-            dims["x{}".format(i)] = x_
+            dims[f"x{i}"] = x_
             i += 1
     else:
         dims = {
@@ -10928,7 +10928,7 @@ def test_torch_tensor_repeat(
     if unpack_repeat:
         method_flags.num_positional_args = len(repeat["repeats"]) + 1
         for i, x_ in enumerate(repeat["repeats"]):
-            repeat["x{}".format(i)] = x_
+            repeat[f"x{i}"] = x_
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -10993,7 +10993,7 @@ def test_torch_tensor_reshape(
         method_flags.num_positional_args = len(shape["shape"]) + 1
         i = 0
         for x_ in shape["shape"]:
-            shape["x{}".format(i)] = x_
+            shape[f"x{i}"] = x_
             i += 1
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
