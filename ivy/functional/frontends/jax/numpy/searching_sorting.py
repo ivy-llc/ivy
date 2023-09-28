@@ -15,7 +15,7 @@ from ivy.func_wrapper import (
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )

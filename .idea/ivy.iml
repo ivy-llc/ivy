@@ -2,7 +2,11 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
+<<<<<<< HEAD
     <orderEntry type="inheritedJdk" />
+=======
+    <orderEntry type="jdk" jdkName="Remote Python 3.10.0 Docker (unifyai/ivy:latest) (2)" jdkType="Python SDK" />
+>>>>>>> 31cc1ace5d4a0829a8b6e8a6c0c0793bdc0d6356
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

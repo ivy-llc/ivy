@@ -252,7 +252,7 @@ class _ArrayWithDataTypes(abc.ABC):
         Parameters
         ----------
         self
-            input array from which to check for float dtype.
+            Input array from which to check for float dtype.
 
         Returns
         -------
@@ -262,8 +262,12 @@ class _ArrayWithDataTypes(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([1, 2, 3], dtype=ivy.int8)
-        >>> x.is_float_dtype()
+        >>> print(x.is_float_dtype())
         False
+
+        >>> x = ivy.array([2.3, 4.5, 6.8], dtype=ivy.float32)
+        >>> print( x.is_float_dtype())
+        True
         """
         return ivy.is_float_dtype(self._data)
 

@@ -50,6 +50,8 @@ def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
 def _get_type_dict_helper(framework, kind, is_frontend_test):
     if is_frontend_test:
         framework_module = get_frontend_config(framework).supported_dtypes
+    elif ivy.current_backend_str() == framework:
+        framework_module = ivy
     else:
         with BackendHandler.update_backend(framework) as ivy_backend:
             framework_module = ivy_backend
