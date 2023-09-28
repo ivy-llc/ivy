@@ -1,0 +1,9 @@
+{
+    "compiler": [
+        "cp38-none-manylinux_2_17_x86_64",
+        "cp310-none-manylinux_2_17_x86_64"
+    ],
+    "engines": [
+        "cp310-none-manylinux_2_17_x86_64"
+    ]
+}
