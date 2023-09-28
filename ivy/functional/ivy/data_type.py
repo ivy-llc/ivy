@@ -1464,7 +1464,10 @@ def default_uint_dtype(
         elif isinstance(input, np.ndarray):
             ret = input.dtype
         elif isinstance(input, (list, tuple, dict)):
-            is_native = lambda x: ivy.is_native_array(x)
+
+            def is_native(x):
+                return ivy.is_native_array(x)
+
             if ivy.nested_argwhere(
                 input,
                 lambda x: (
@@ -2346,10 +2349,6 @@ def unset_default_float_dtype():
 def unset_default_int_dtype():
     """
     Reset the current default int dtype to the previous state.
-
-    Parameters
-    ----------
-    None-
 
     Examples
     --------

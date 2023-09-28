@@ -191,9 +191,10 @@ def test_function_backend_computation(
                 )
 
             if test_flags.test_trace:
-                target_fn = lambda instance, *args, **kwargs: instance.__getattribute__(
-                    fn_name
-                )(*args, **kwargs)
+
+                def target_fn(instance, *args, **kwargs):
+                    return instance.__getattribute__(fn_name)(*args, **kwargs)
+
                 args = [instance, *args]
             else:
                 target_fn = instance.__getattribute__(fn_name)
@@ -642,9 +643,6 @@ def test_frontend_function(
         FunctionTestFlags object that stores all testing flags, including:
         num_positional_args, with_out, instance_method, as_variable,
         native_arrays, container, gradient, precision_mode
-    all_aliases
-        a list of strings containing all aliases for that function
-        in the current frontend with their full namespaces.
     frontend
         current frontend (framework).
     fn_tree
@@ -751,6 +749,12 @@ def test_frontend_function(
                 frontend_array_fn=create_frontend_array,
                 **kwargs,
             )
+            copy_args, copy_kwargs = args_to_frontend(
+                backend_to_test,
+                *args,
+                frontend_array_fn=create_frontend_array,
+                **kwargs,
+            )
         else:
             args_for_test = copy.deepcopy(args)
             kwargs_for_test = copy.deepcopy(kwargs)
@@ -773,7 +777,7 @@ def test_frontend_function(
             assert ivy_backend.nested_map(
                 lambda x: (_is_frontend_array(x) if ivy_backend.is_array(x) else True),
                 ret,
-            ), "Frontend function returned non-frontend arrays: {}".format(ret)
+            ), f"Frontend function returned non-frontend arrays: {ret}"
 
         if test_flags.with_out:
             if not inspect.isclass(ret):
@@ -871,14 +875,14 @@ def test_frontend_function(
                     *copy_args, array_fn=array_fn, **copy_kwargs
                 )
                 ret_ = get_frontend_ret(
-                    frontend_fn=frontend_fn,
-                    backend=backend_to_test,
-                    precision_mode=test_flags.precision_mode,
+                    backend_to_test,
+                    frontend_fn,
+                    *copy_args,
                     test_trace=test_flags.test_trace,
                     frontend_array_function=(
                         create_frontend_array if test_flags.test_trace else None
                     ),
-                    *copy_args,
+                    precision_mode=test_flags.precision_mode,
                     **copy_kwargs,
                 )
                 assert first_array is ret_
@@ -957,13 +961,16 @@ def test_frontend_function(
     frontend_fw_fn = frontend_fw.__dict__[gt_fn_name]
     frontend_ret = frontend_fw_fn(*args_frontend, **kwargs_frontend)
 
-    # ToDo: only traces and does inference on ivy arrays for now
-    if test_flags.transpile and hasattr(frontend_config, "backend_str"):
+    if test_flags.transpile:
         _get_transpiled_data_if_required(
             frontend_fn,
             frontend_fw_fn,
             frontend,
+            backend_to_test,
             fn_name=f"{gt_frontend_submods}.{gt_fn_name}",
+            generate_frontend_arrays=test_flags.generate_frontend_arrays,
+            args_for_test=args_for_test,
+            kwargs_for_test=kwargs_for_test,
             frontend_fw_args=args_frontend,
             frontend_fw_kwargs=kwargs_frontend,
         )
@@ -2045,6 +2052,21 @@ def test_frontend_method(
         )
 
         ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
+        # If we have inplace operations, we need to create the frontend arrays
+        # before running the method, so that after running the method
+        # We can check whether the return is still an instance of the frontend array
+        if method_flags.inplace:
+            # make copies of the args and kwargs
+            copy_args_method = copy.deepcopy(args_method)
+            copy_kwargs_method = copy.deepcopy(kwargs_method)
+            copy_ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
+            frontend_ret_ins = copy_ins.__getattribute__(
+                frontend_method_data.method_name
+            )(*copy_args_method, **copy_kwargs_method)
+            assert frontend_ret_ins is copy_ins, (
+                "Inplace method did not return the same instance of the frontend array,"
+                " expected {}, got {}".format(copy_ins, frontend_ret_ins)
+            )
         ret = get_frontend_ret(
             backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),
@@ -2062,7 +2084,7 @@ def test_frontend_method(
             assert ivy_backend.nested_map(
                 lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True,
                 ret,
-            ), "Frontend method returned non-frontend arrays: {}".format(ret)
+            ), f"Frontend method returned non-frontend arrays: {ret}"
 
         if method_flags.generate_frontend_arrays:
             ret_np_flat = flatten_frontend_to_np(
@@ -2425,31 +2447,41 @@ def _get_transpiled_data_if_required(
     frontend_fn,
     frontend_fw_fn,
     frontend,
+    backend,
     fn_name,
+    generate_frontend_arrays,
+    args_for_test,
+    kwargs_for_test,
     frontend_fw_args,
     frontend_fw_kwargs,
 ):
     iterations = 1
-
-    # to trace the frontend function on ivy arrays
-    with BackendHandler.update_backend(frontend) as ivy_backend:
-        args, kwargs = ivy_backend.args_to_ivy(*frontend_fw_args, **frontend_fw_kwargs)
-
+    # for backend transpilation
+    with BackendHandler.update_backend(backend) as ivy_backend:
+        if generate_frontend_arrays:
+            args_for_test, kwargs_for_test = ivy.nested_map(
+                _frontend_array_to_ivy,
+                (args_for_test, kwargs_for_test),
+                include_derived={"tuple": True},
+            )
+        else:
+            args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(
+                *args_for_test, **kwargs_for_test
+            )
     traced_fn = traced_if_required(
-        frontend,
+        backend,
         frontend_fn,
         test_trace=True,
-        args=args,
-        kwargs=kwargs,
+        args=args_for_test,
+        kwargs=kwargs_for_test,
     )
-
     # running inference to get runtime
     frontend_timings = []
     frontend_fw_timings = []
     for i in range(0, iterations):
         # timing the traced_fn
         start = time.time()
-        traced_fn(*args, **kwargs)
+        traced_fn(*args_for_test, **kwargs_for_test)
         end = time.time()
         frontend_timings.append(end - start)
 
@@ -2459,12 +2491,11 @@ def _get_transpiled_data_if_required(
         end = time.time()
         frontend_fw_timings.append(end - start)
 
-    # trace to get ivy nodes
-    with BackendHandler.update_backend(frontend) as ivy_backend:
+    # compile to get ivy nodes
+    with BackendHandler.update_backend(backend) as ivy_backend:
         traced_fn_to_ivy = ivy_backend.trace_graph(
-            frontend_fn, to="ivy", args=args, kwargs=kwargs
+            frontend_fn, to="ivy", args=args_for_test, kwargs=kwargs_for_test
         )
-
     frontend_time = np.mean(frontend_timings).item()
     frontend_fw_time = np.mean(frontend_fw_timings).item()
     backend_nodes = len(traced_fn._functions)
@@ -2473,6 +2504,8 @@ def _get_transpiled_data_if_required(
     data = {
         "frontend": frontend,
         "frontend_func": fn_name,
+        "args": str(args_for_test),
+        "kwargs": str(kwargs_for_test),
         "frontend_time": frontend_time,
         "frontend_fw_time": frontend_fw_time,
         "backend_nodes": backend_nodes,
@@ -2480,7 +2513,7 @@ def _get_transpiled_data_if_required(
     }
 
     # creating json object and creating a file
-    _create_transpile_report(data, "report.json")
+    _create_transpile_report(data, backend, "report.json")
 
 
 def args_to_container(array_args):
