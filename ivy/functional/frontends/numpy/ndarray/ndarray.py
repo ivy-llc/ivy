@@ -410,7 +410,7 @@ class ndarray:
     def setfield(self, val, dtype, offset=0):
         new_dtype = np_frontend.to_ivy_dtype(dtype)
 
-        # Check if the new dtype is valid for the given value.
+        # Check if the new dtype is valid for the given valuee.
         try:
             cast_val = ivy.cast(val, new_dtype)
         except Exception as e:
