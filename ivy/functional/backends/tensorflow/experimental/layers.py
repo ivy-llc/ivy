@@ -1367,7 +1367,7 @@ def stft(
         window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
     window_fn = lambda *args, **kwargs: window
 
-    return tf.signal.stft(
+    stft = tf.signal.stft(
         signal,
         win_length,
         hop_length,
@@ -1375,6 +1375,8 @@ def stft(
         window_fn,
         pad_mode,
     )
+    stft = tf.transpose(stft, perm=[1, 0])
+    return stft
 
 
 """
