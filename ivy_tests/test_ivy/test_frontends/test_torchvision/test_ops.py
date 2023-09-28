@@ -86,7 +86,7 @@ def _roi_align_helper(draw):
     dts_boxes_scores_iou=_nms_helper(),
     test_with_out=st.just(False),
 )
-def test_torch_nms(
+def test_torchvision_nms(
     *,
     dts_boxes_scores_iou,
     on_device,
@@ -111,24 +111,26 @@ def test_torch_nms(
 
 # roi_align
 @handle_frontend_test(
+    fn_tree="torchvision.ops.roi_align",
     inputs=_roi_align_helper(),
     test_with_out=st.just(False),
 )
 def test_torchvision_roi_align(
     *,
     inputs,
+    on_device,
+    fn_tree,
+    frontend,
     test_flags,
     backend_fw,
-    fn_name,
-    on_device,
 ):
     dtypes, input, boxes, output_size, spatial_scale, sampling_ratio, aligned = inputs
-
-    helpers.test_function(
+    helpers.test_frontend_function(
         input_dtypes=dtypes,
-        test_flags=test_flags,
         backend_to_test=backend_fw,
-        fn_name=fn_name,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
         on_device=on_device,
         input=input,
         boxes=boxes,

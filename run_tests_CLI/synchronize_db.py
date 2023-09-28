@@ -16,6 +16,7 @@ module_map = {
     "misc": "test_misc",
     "paddle": "test_frontends/test_paddle",
     "scipy": "test_frontends/test_scipy",
+    "torchvision": "test_frontends/test_torchvision"
 }
 
 
@@ -59,6 +60,7 @@ submodules = (
     "test_onnx",
     "test_sklearn",
     "test_xgboost",
+    "test_torchvision",
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -78,6 +80,7 @@ db_dict = {
     "test_onnx": ["onnx", 24],
     "test_sklearn": ["sklearn", 25],
     "test_xgboost": ["xgboost", 26],
+    "test_torchvision": ["torchvision", 27],
 }
 
 
