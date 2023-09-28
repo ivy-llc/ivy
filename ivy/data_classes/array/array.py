@@ -396,7 +396,7 @@ class Array(
             self._dev_str = ivy.as_ivy_dev(self.device)
             self._pre_repr = "ivy.array"
             if "gpu" in self._dev_str:
-                self._post_repr = ", dev={})".format(self._dev_str)
+                self._post_repr = f", dev={self._dev_str})"
             else:
                 self._post_repr = ")"
         sig_fig = ivy.array_significant_figures
@@ -796,7 +796,12 @@ class Array(
         return self._data.__bool__()
 
     def __dlpack__(self, stream=None):
-        return self._data.__dlpack__()
+        # Not completely supported yet as paddle and tf
+        # doesn't support __dlpack__ and __dlpack_device__ dunders right now
+        # created issues
+        # paddle https://github.com/PaddlePaddle/Paddle/issues/56891
+        # tf https://github.com/tensorflow/tensorflow/issues/61769
+        return ivy.to_dlpack(self)
 
     def __dlpack_device__(self):
         return self._data.__dlpack_device__()
