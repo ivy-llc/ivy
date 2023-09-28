@@ -1015,7 +1015,8 @@ def stft(
                 stft_frame = stft_frame[..., : n_fft // 2 + 1]
 
         stft_result[..., i, : n_fft // 2 + 1] = stft_frame
-
+        
+    stft_result = stft_result.transpose(1, 0)
     return stft_result
 
 
