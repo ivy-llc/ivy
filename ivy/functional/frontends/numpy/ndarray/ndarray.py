@@ -408,7 +408,6 @@ class ndarray:
             f.write(string)
 
     def setfield(self, val, dtype, offset=0):
-
         new_dtype = np_frontend.to_ivy_dtype(dtype)
 
         # Check if the new dtype is valid for the given value.
