@@ -4,55 +4,6 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
-# --- Helpers --- #
-# --------------- #
-
-
-def _compute_elu(input, alpha=1.0):
-    prod = ivy.multiply(
-        alpha,
-        ivy.subtract(ivy.exp(input), 1),
-    )
-    return ivy.where(ivy.greater(input, 0), input, prod)
-
-
-def _compute_threshold(input, threshold, value):
-    return ivy.where(ivy.greater(input, threshold), input, value)
-
-
-def _rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False):
-    if training:
-        # alpha = ivy.random_uniform(low=lower, high=upper)
-        # ToDo implement alpha correctly after fixing ivy.random_uniform
-        pass
-    else:
-        alpha = (lower + upper) / 2
-    return ivy.subtract(
-        ivy.relu(input), ivy.multiply(alpha, ivy.relu(ivy.negative(input)))
-    )
-
-
-def _selu_with_inplace(input):
-    alpha = 1.6732632423543772848170429916717
-    scale = 1.0507009873554804934193349852946
-    prod = ivy.multiply(
-        alpha,
-        ivy.subtract(
-            ivy.exp(input),
-            1,
-        ),
-    )
-    min_ = ivy.multiply(
-        scale,
-        ivy.minimum(0, prod),
-    )
-    max_ = ivy.multiply(
-        scale,
-        ivy.maximum(0, input),
-    )
-    return ivy.add(min_, max_)
-
-
 # --- Main --- #
 # ------------ #
 
@@ -74,7 +25,11 @@ def celu(input, alpha=1.0, inplace=False):
 
 @to_ivy_arrays_and_back
 def elu(input, alpha=1.0, inplace=False):
-    return _compute_elu(input, alpha)
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(ivy.exp(input), 1),
+    )
+    return ivy.where(ivy.greater(input, 0), input, prod)
 
 
 def elu_(input, alpha=1.0):
@@ -330,7 +285,15 @@ def relu_(input):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
-    return _rrelu(input, lower, upper, training)
+    if training:
+        # alpha = ivy.random_uniform(low=lower, high=upper)
+        # ToDo implement alpha correctly after fixing ivy.random_uniform
+        pass
+    else:
+        alpha = (lower + upper) / 2
+    return ivy.subtract(
+        ivy.relu(input), ivy.multiply(alpha, ivy.relu(ivy.negative(input)))
+    )
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
@@ -428,7 +391,7 @@ def tanhshrink(input):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def threshold(input, threshold, value, inplace=False):
-    return _compute_threshold(input, threshold, value)
+    return ivy.where(ivy.greater(input, threshold), input, value)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
