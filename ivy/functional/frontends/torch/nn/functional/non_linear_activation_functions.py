@@ -118,12 +118,9 @@ def leaky_relu(input, negative_slope=0.01, inplace=False):
     return ivy.leaky_relu(input, alpha=negative_slope)
 
 
-@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def leaky_relu_(input, negative_slope=0.01):
-    ret = ivy.leaky_relu(input, alpha=negative_slope)
-    ivy.inplace_update(input, ret)
-    return input
+    return leaky_relu(input, negative_slope=negative_slope, inplace=True)
 
 
 @to_ivy_arrays_and_back
