@@ -743,7 +743,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def remainder(self, y, name=None):
         return paddle_frontend.remainder(self, y)
-      
+
     def fill_diagonal_tensor(
         self, x: Union[ivy.Array, ivy.NativeArray], y, dim1=0, dim2=1, name=None
     ):
