@@ -11,6 +11,7 @@ from collections.abc import Sequence
 
 
 import ivy.utils.backend.handler
+from ivy.utils import check_for_binaries
 from ivy._version import __version__ as __version__
 
 _not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
@@ -80,6 +81,10 @@ class TuckerTensor:
 
 
 class CPTensor:
+    pass
+
+
+class TRTensor:
     pass
 
 
@@ -371,27 +376,6 @@ class Shape(Sequence):
 
     def __dir__(self):
         return self._shape.__dir__()
-
-    def __pow__(self, power, modulo=None):
-        pass
-
-    def __index__(self):
-        pass
-
-    def __rdivmod__(self, other):
-        pass
-
-    def __truediv__(self, other):
-        pass
-
-    def __rtruediv__(self, other):
-        pass
-
-    def __rfloordiv__(self, other):
-        pass
-
-    def __ne__(self, other):
-        pass
 
     @property
     def shape(self):
@@ -766,8 +750,13 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
-from .data_classes.factorized_tensor import TuckerTensor, CPTensor, Parafac2Tensor
-from .data_classes.factorized_tensor import TuckerTensor, CPTensor, TTTensor
+from .data_classes.factorized_tensor import (
+    TuckerTensor,
+    CPTensor,
+    TRTensor,
+    TTTensor,
+    Parafac2Tensor,
+)
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
@@ -803,7 +792,7 @@ try:
 except:
     pass
 try:
-    from .compiler.compiler import transpile, compile, unify
+    from .compiler.compiler import transpile, trace_graph, unify
 except:  # noqa: E722
     pass  # Added for the finally statment
 finally:
@@ -1213,12 +1202,11 @@ from ivy.utils.backend.sub_backend_handler import (
     set_sub_backend,
     unset_sub_backend,
     clear_sub_backends,
-    available_sub_backends,
 )
 
 
-def current_sub_backends():
-    return []
+available_sub_backends = []
+current_sub_backends = []
 
 
 # casting modes
@@ -1523,3 +1511,8 @@ if (
     ].__class__ = IvyWithGlobalProps
 else:
     sys.modules[__name__].__class__ = IvyWithGlobalProps
+
+    # check if all expected binaries are present
+    # in this else block to avoid raising the same warning again
+    # on using with_backend
+    check_for_binaries()
