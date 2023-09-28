@@ -16,7 +16,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -49,7 +49,9 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
         return x
 
     # Convert all required arrays to float variables
-    map_fn = lambda x: ivy.nested_map(inner_fn, x, include_derived=True, shallow=False)
+    def map_fn(x):
+        return ivy.nested_map(inner_fn, x, include_derived=True, shallow=False)
+
     if xs_grad_idxs is not None:
         xs_required = ivy.multi_index_nest(xs, xs_grad_idxs)
         ivy.nested_map(map_fn, xs_required, include_derived=True)
@@ -243,31 +245,30 @@ def _process_func_ret_and_grads(func_ret, grads, retain_grads):
     return func_ret, grads
 
 
-_check_if_empty = (
-    lambda idxs: not isinstance(idxs, list)
-    or np.asarray(idxs, dtype="object").size == 0
-)
+def _check_if_empty(idxs):
+    return not isinstance(idxs, list) or np.asarray(idxs, dtype="object").size == 0
 
 
-_idxs_to_str = lambda idxs: [
-    "_".join(list(map(lambda x: str(x), idxs[i]))) for i in range(len(idxs))
-]
+def _idxs_to_str(idxs):
+    return ["_".join(list(map(lambda x: str(x), idxs[i]))) for i in range(len(idxs))]
 
 
-_to_ivy = lambda xs: ivy.nested_map(
-    lambda x: ivy.to_ivy(x) if ivy.is_array(x) else x,
-    xs,
-    include_derived=True,
-    shallow=False,
-)
+def _to_ivy(xs):
+    return ivy.nested_map(
+        lambda x: ivy.to_ivy(x) if ivy.is_array(x) else x,
+        xs,
+        include_derived=True,
+        shallow=False,
+    )
 
 
-_non_finite_to_zero = lambda xs: ivy.nested_map(
-    lambda x: ivy.where(ivy.isfinite(x), x, 0.0) if ivy.is_array(x) else x,
-    xs,
-    include_derived=True,
-    shallow=False,
-)
+def _non_finite_to_zero(xs):
+    return ivy.nested_map(
+        lambda x: ivy.where(ivy.isfinite(x), x, 0.0) if ivy.is_array(x) else x,
+        xs,
+        include_derived=True,
+        shallow=False,
+    )
 
 
 # Private Variable Helpers #
@@ -323,7 +324,7 @@ def _variable_data(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -398,7 +399,7 @@ def stop_gradient(
 
 
 @handle_exceptions
-@handle_device_shifting
+@handle_device
 def execute_with_gradients(
     func,
     xs: Union[ivy.Array, ivy.NativeArray],
