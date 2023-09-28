@@ -32,8 +32,8 @@ class TestCaseSubRunner(ABC):
     def exit(self):
         self._backend_handler.unset_backend()
 
-    def compile_if_required(self, fn, test_compile=False, args=None, kwargs=None):
-        if test_compile:
+    def trace_if_required(self, fn, test_trace=False, args=None, kwargs=None):
+        if test_trace:
             fn = self._ivy.trace_graph(fn, args=args, kwargs=kwargs)
         return fn
 

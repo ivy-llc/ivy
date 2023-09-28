@@ -107,16 +107,16 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         )._frontend_array
 
     def _get_frontend_function(self, args, kwargs):
-        if self.traced_fn is not None and self.test_flags.test_compile:
+        if self.traced_fn is not None and self.test_flags.test_trace:
             return self.traced_fn
         f_submod, fn_name = self._get_frontend_submodule()
         function_module = self.local_importer.import_module(f_submod)
         frontend_fn = getattr(function_module, fn_name)
         if self.traced_fn is None:
             # if t_globals.CURRENT_PIPELINE.traced_fn
-            frontend_fn = self.compile_if_required(
+            frontend_fn = self.trace_if_required(
                 frontend_fn,
-                test_compile=self.test_flags.test_compile,
+                test_trace=self.test_flags.test_trace,
                 args=args,
                 kwargs=kwargs,
             )
@@ -134,10 +134,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             kwargs["inplace"] = True
         array_fn = self._ivy.is_array
         conversion_fn = self._ivy.asarray
-        if (
-            self.test_flags.generate_frontend_arrays
-            and not self.test_flags.test_compile
-        ):
+        if self.test_flags.generate_frontend_arrays and not self.test_flags.test_trace:
             array_fn = FunctionTestCaseSubRunner._is_frontend_array
             conversion_fn = FunctionTestCaseSubRunner._frontend_array_to_ivy
         first_array = self._ivy.func_wrapper._get_first_array(
@@ -145,7 +142,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         )
         with self._ivy.PreciseMode(self.test_flags.precision_mode):
             ret = frontend_fn(*args, **kwargs)
-        if self.test_flags.test_compile:
+        if self.test_flags.test_trace:
             if (
                 self.test_flags.generate_frontend_arrays
                 or not self.test_flags.native_arrays[0]
@@ -224,7 +221,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         # determine the target frontend_fn
         frontend_fn = self._get_frontend_function(args, kwargs)
 
-        if self.test_flags.generate_frontend_arrays and self.test_flags.test_compile:
+        if self.test_flags.generate_frontend_arrays and self.test_flags.test_trace:
             # convert the args and kwargs to ivy arrays
             args, kwargs = self._ivy.nested_map(
                 (args, kwargs),
@@ -237,7 +234,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         else:
             with self._ivy.PreciseMode(self.test_flags.precision_mode):
                 ret = frontend_fn(*args, **kwargs)
-            if self.test_flags.test_compile:
+            if self.test_flags.test_trace:
                 ret = self._ivy.nested_map(
                     ret, self._ivy.asarray, include_derived={"tuple": True}
                 )
