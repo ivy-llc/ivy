@@ -3675,8 +3675,10 @@ def test_numpy_ndarray_view(
 
 @given(
     val=st.one_of(st.floats(allow_nan=False), st.integers(), st.booleans()),
-    dtype=st.sampled_from([np.int8, np.int16, np.int32, np.int64, np.float16, np.float32, np.float64]),
-    offset=st.integers(min_value=0, max_value=10)
+    dtype=st.sampled_from(
+        [np.int8, np.int16, np.int32, np.int64, np.float16, np.float32, np.float64]
+    ),
+    offset=st.integers(min_value=0, max_value=10),
 )
 def test_setfield(val, dtype, offset):
     arr_np = np.array([val], dtype=dtype)
