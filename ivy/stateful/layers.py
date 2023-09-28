@@ -116,6 +116,11 @@ class Linear(Module):
         """
         return ivy.linear(x, self.v.w, bias=self.v.b if self._with_bias else None)
 
+    def extra_repr(self) -> str:
+        return "in_features={}, out_features={}, with_bias={}".format(
+            self._input_channels, self._output_channels, self._with_bias is True
+        )
+
 
 # Dropout #
 # --------#
@@ -147,8 +152,7 @@ class Dropout(Module):
         """
         self._prob = prob
         self._scale = scale
-        self.training = training
-        Module.__init__(self, device=None, v=None, dtype=dtype)
+        Module.__init__(self, device=None, v=None, dtype=dtype, training=training)
 
     def _create_variables(self, device, dtype=None):
         """
@@ -187,6 +191,12 @@ class Dropout(Module):
             inputs, self._prob, scale=self._scale, training=self.training, dtype=dtype
         )
 
+    def extra_repr(self) -> str:
+        s = "prob={prob}"
+        if not self._scale:
+            s += ", scale={scale}"
+        return s.format(prob=self._prob, scale=self._scale)
+
 
 # Attention #
 # ----------#
@@ -210,6 +220,7 @@ class MultiHeadAttention(Module):
         v=None,
         build_mode="on_init",
         dtype=None,
+        training=True,
     ):
         """
         Multi Head Attention layer.
@@ -226,29 +237,27 @@ class MultiHeadAttention(Module):
             Default None.
         num_heads:
             Number of parallel attention heads. Note that ``embed_dim`` will be split
-            across ``num_heads``
-            (i.e. each head will have dimension ``embed_dim // num_heads``).
+            across ``num_heads`` (i.e. each head will have dimension ``embed_dim // num_heads``).
             Default is 8.
         head_dim
             Size of each attention head for query and key.
-            Note that only two out of (``embed_dim``, ``num_heads``, and ``head_dim``)
-            should be provided. Default is None.
+            Note that only two out of (``embed_dim``, ``num_heads``, and ``head_dim``) should be provided
+            Default is None.
         dropout_rate
-            The dropout probability used on attention weights to drop some attention
-            targets. 0 for no dropout. Default is 0.
+            The dropout probability used on attention weights to drop some attention targets. 0 for no dropout.
+            Default is 0.
         use_proj_bias
             If specified, adds bias to input / output projection layers.
             Default is True.
         attention_axes
-            axes over which the attention is applied.
-            `None` means attention over all axes, but batch, heads, and features.
+            axes over which the attention is applied. `None` means attention over all axes, but batch, heads, and features.
             Default is None.
         scale
             The value by which to scale the query-key similarity measure.
             Default is head_dim^-0.5
         device
-            device on which to create the layer's variables
-            'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+            Default is cpu.
         v
             the variables for the attention layer, as a container,
             constructed internally by default.
@@ -258,8 +267,10 @@ class MultiHeadAttention(Module):
             build(), or the first time the __call__ method is run.
             Default is on initialization.
         dtype
-            the desired data type of the internal variables to be created
-            if not provided. Default is ``None``.
+            the desired data type of the internal variables to be created if not provided.
+            Default is ``None``.
+        training
+            If True, dropout is used, otherwise dropout is not activated.
         """
         # proj
 
@@ -287,6 +298,7 @@ class MultiHeadAttention(Module):
             build_mode=build_mode,
             with_partial_v=True,
             dtype=dtype,
+            training=training,
         )
 
     def _create_variables(self, device, dtype=None):
@@ -373,7 +385,6 @@ class MultiHeadAttention(Module):
         is_causal=False,
         return_attention_weights=False,
         average_attention_weights=True,
-        training=False,
     ):
         """
         Perform forward pass of the MultiHeadAttention layer.
@@ -395,14 +406,9 @@ class MultiHeadAttention(Module):
             If True, returns attention_weights alongside the output
             as a tuple (output, attenion_weights). Defaults to `False`.
         average_attention_weights
-            If true, indicates that the returned ``attention_weights``
-            should be averaged across heads.
-            Otherwise, ``attention_weights`` are provided separately per head.
-            Note that this flag only has an effect when
-            ``return_attention_weights=True``.
-            Default: ``True`` (i.e. average weights across heads)
-        training
-            If True, dropout is used, otherwise dropout is not activated.
+            If true, indicates that the returned ``attention_weights`` should be averaged across
+            heads. Otherwise, ``attention_weights`` are provided separately per head. Note that this flag only has an
+            effect when ``return_attention_weights=True``. Default: ``True`` (i.e. average weights across heads)
 
         Returns
         -------
@@ -413,8 +419,8 @@ class MultiHeadAttention(Module):
         """
         return ivy.multi_head_attention(
             query,
-            key,
-            value,
+            key=key,
+            value=value,
             num_heads=self._num_heads,
             scale=self._scale,
             attention_mask=attention_mask,
@@ -422,13 +428,13 @@ class MultiHeadAttention(Module):
                 self.v.in_proj_weights if self._qkv_same_embed_dim else None
             ),
             q_proj_weights=(
-                self.v.q_proj_weights if not self._qkv_same_embed_dim else None
+                None if self._qkv_same_embed_dim else self.v.q_proj_weights
             ),
             k_proj_weights=(
-                self.v.k_proj_weights if not self._qkv_same_embed_dim else None
+                None if self._qkv_same_embed_dim else self.v.k_proj_weights
             ),
             v_proj_weights=(
-                self.v.v_proj_weights if not self._qkv_same_embed_dim else None
+                None if self._qkv_same_embed_dim else self.v.v_proj_weights
             ),
             out_proj_weights=self.v.out_proj_weights,
             in_proj_bias=self.v.in_proj_bias if self._use_proj_bias else None,
@@ -437,7 +443,7 @@ class MultiHeadAttention(Module):
             return_attention_weights=return_attention_weights,
             average_attention_weights=average_attention_weights,
             dropout=self._dropout_rate,
-            training=training,
+            training=self.training,
         )
 
 
@@ -574,6 +580,19 @@ class Conv1D(Module):
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
 
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_size={_filter_size},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1,)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class Conv1DTranspose(Module):
     def __init__(
@@ -709,6 +728,21 @@ class Conv1DTranspose(Module):
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
 
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_size={_filter_size},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1,)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._output_shape is not None:
+            s += ", output_shape={_output_shape}"
+        if self._data_format != "NWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class Conv2D(Module):
     def __init__(
@@ -840,6 +874,19 @@ class Conv2D(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv2DTranspose(Module):
@@ -978,6 +1025,21 @@ class Conv2DTranspose(Module):
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
 
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._output_shape is not None:
+            s += ", output_shape={_output_shape}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class DepthwiseConv2D(Module):
     def __init__(
@@ -1105,6 +1167,19 @@ class DepthwiseConv2D(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def extra_repr(self):
+        s = (
+            "num_channels={_num_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv3D(Module):
@@ -1238,6 +1313,19 @@ class Conv3D(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv3DTranspose(Module):
@@ -1378,6 +1466,21 @@ class Conv3DTranspose(Module):
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
 
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._output_shape is not None:
+            s += ", output_shape={_output_shape}"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 # LSTM #
 # -----#
@@ -1478,7 +1581,7 @@ class LSTM(Module):
         """
         input_weights = dict(
             zip(
-                ["layer_" + str(i) for i in range(self._num_layers)],
+                [f"layer_{str(i)}" for i in range(self._num_layers)],
                 [
                     {
                         "w": self._w_init.create_variables(
@@ -1502,7 +1605,7 @@ class LSTM(Module):
         )
         recurrent_weights = dict(
             zip(
-                ["layer_" + str(i) for i in range(self._num_layers)],
+                [f"layer_{str(i)}" for i in range(self._num_layers)],
                 [
                     {
                         "w": self._w_init.create_variables(
@@ -1543,8 +1646,8 @@ class LSTM(Module):
             initial_state = self.get_initial_state(
                 inputs.shape[:-2], dtype=inputs.dtype
             )
-        h_n_list = list()
-        c_n_list = list()
+        h_n_list = []
+        c_n_list = []
         h_t = inputs
         for h_0, c_0, (_, lstm_input_var), (_, lstm_recurrent_var) in zip(
             initial_state[0],
@@ -1563,77 +1666,19 @@ class LSTM(Module):
             return h_t
         return h_t, (h_n_list, c_n_list)
 
+    def extra_repr(self):
+        s = "{_input_channels}, {_output_channels}"
+        if self._num_layers != 1:
+            s += ", num_layers={_num_layers}"
+        if self._return_sequence is not True:
+            s += ", return_sequence={_return_sequence}"
+        if self._return_state is not True:
+            s += ", return_state={_return_state}"
+        return s.format(**self.__dict__)
+
 
 # Pooling #
 # --------#
-
-
-class MaxPool1D(Module):
-    def __init__(
-        self,
-        kernel_size,
-        stride,
-        padding,
-        /,
-        *,
-        data_format="NWC",
-        dilation=1,
-        ceil_mode=False,
-        device=None,
-        v=None,
-        dtype=None,
-    ):
-        """
-        Class for applying Max Pooling over a mini-batch of inputs.
-
-        Parameters
-        ----------
-        kernel_size
-            The size of the window to take a max over.
-        stride
-            The stride of the window. Default value: 1
-        padding
-            Implicit zero padding to be added on both sides.
-        data_format
-            "NWC" or "NCW". Defaults to "NWC".
-        dilaton
-            The stride between elements within a sliding window, must be > 0.
-        ceil_mode
-            If True, ceil is used instead of floor to compute the output shape.
-            This ensures that every input element is covered by a sliding window.
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-        """
-        self._kernel_size = kernel_size
-        self._stride = stride
-        self._padding = padding
-        self._data_format = data_format
-        self._dilation = dilation
-        self._ceil_mode = ceil_mode
-        Module.__init__(self, device=device, dtype=dtype)
-
-    def _forward(self, inputs):
-        """
-        Forward pass of the layer.
-
-        Parameters
-        ----------
-        x
-            The input to the layer.
-
-        Returns
-        -------
-        The output of the layer.
-        """
-        return ivy.max_pool1d(
-            inputs,
-            self._kernel_size,
-            self._stride,
-            self._padding,
-            data_format=self._data_format,
-            dilation=self._dilation,
-            ceil_mode=self._ceil_mode,
-        )
 
 
 class MaxPool2D(Module):
@@ -1645,8 +1690,6 @@ class MaxPool2D(Module):
         /,
         *,
         data_format="NHWC",
-        dilation=1,
-        ceil_mode=False,
         device=None,
         v=None,
         dtype=None,
@@ -1662,13 +1705,6 @@ class MaxPool2D(Module):
             The stride of the window. Default value: 1
         padding
             Implicit zero padding to be added on both sides.
-        data_format
-            "NHWC" or "NCHW". Defaults to "NHWC".
-        dilaton
-            The stride between elements within a sliding window, must be > 0.
-        ceil_mode
-            If True, ceil is used instead of floor to compute the output shape.
-            This ensures that every input element is covered by a sliding window.
         device
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
         """
@@ -1676,8 +1712,6 @@ class MaxPool2D(Module):
         self._stride = stride
         self._padding = padding
         self._data_format = data_format
-        self._dilation = dilation
-        self._ceil_mode = ceil_mode
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
@@ -1699,126 +1733,13 @@ class MaxPool2D(Module):
             self._stride,
             self._padding,
             data_format=self._data_format,
-            dilation=self._dilation,
-            ceil_mode=self._ceil_mode,
         )
 
-
-class MaxPool3D(Module):
-    def __init__(
-        self,
-        kernel_size,
-        stride,
-        padding,
-        /,
-        *,
-        data_format="NDHWC",
-        dilation=1,
-        ceil_mode=False,
-        device=None,
-        dtype=None,
-    ):
-        """
-        Class for applying 3D Max Pooling over 5D inputs.
-
-        Parameters
-        ----------
-        kernel_size
-            The size of the window to take a max over.
-        stride
-            The stride of the window.
-        padding
-            Implicit zero padding to be added on both sides.
-        data_format
-            "NDHWC" or "NCDHW". Defaults to "NDHWC".
-        dilaton
-            The stride between elements within a sliding window, must be > 0.
-        ceil_mode
-            If True, ceil is used instead of floor to compute the output shape.
-            This ensures that every input element is covered by a sliding window.
-        """
-        self._kernel_size = kernel_size
-        self._stride = stride
-        self._padding = padding
-        self._data_format = data_format
-        self._dilation = dilation
-        self._ceil_mode = ceil_mode
-        Module.__init__(self, device=device, dtype=dtype)
-
-    def _forward(self, x):
-        """
-        Forward pass of the layer.
-
-        Parameters
-        ----------
-        x
-            The input array to the layer.
-
-        Returns
-        -------
-        The output of the layer.
-        """
-        return ivy.max_pool3d(
-            x,
-            self._kernel_size,
-            self._stride,
-            self._padding,
-            data_format=self._data_format,
-            dilation=self._dilation,
-            ceil_mode=self._ceil_mode,
-        )
-
-
-class AvgPool1D(Module):
-    def __init__(
-        self,
-        kernel_size,
-        stride,
-        padding,
-        /,
-        *,
-        data_format="NWC",
-    ):
-        """
-        Class for applying Average Pooling over a mini-batch of inputs.
-
-        Parameters
-        ----------
-        kernel_size
-            The size of the window to take an average over.
-        stride
-            The stride of the window. Default value: 1
-        padding
-            Implicit zero padding to be added on both sides.
-        data_format
-            "NCW" or "NWC". Defaults to "NWC".
-        """
-        self._kernel_size = kernel_size
-        self._stride = stride
-        self._padding = padding
-        self._data_format = data_format
-        Module.__init__(self)
-
-    def _forward(self, inputs):
-        """
-        Forward pass of the layer.
-
-        Parameters
-        ----------
-        x
-            The input to the layer.
-
-        Returns
-        -------
-        The output of the layer.
-        """
-        return ivy.avg_pool1d(
-            inputs,
-            self._kernel_size,
-            self._stride,
-            self._padding,
-            data_format=self._data_format,
-        )
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class AvgPool2D(Module):
@@ -1874,6 +1795,131 @@ class AvgPool2D(Module):
             self._padding,
             data_format=self._data_format,
         )
+
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
+
+class MaxPool1D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NWC",
+        device=None,
+        v=None,
+        dtype=None,
+    ):
+        """
+        Class for applying Max Pooling over a mini-batch of inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take a max over.
+        stride
+            The stride of the window. Default value: 1
+        padding
+            Implicit zero padding to be added on both sides.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.max_pool1d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
+
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
+
+class MaxPool3D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NDHWC",
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying 3D Max Pooling over 5D inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take a max over.
+        stride
+            The stride of the window.
+        padding
+            Implicit zero padding to be added on both sides.
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.max_pool3d(
+            x,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
+
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class AvgPool3D(Module):
@@ -1943,6 +1989,63 @@ class AvgPool3D(Module):
             divisor_override=self._divisor_override,
         )
 
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        if self._count_include_pad is not False:
+            s += ", count_include_pad={_count_include_pad}"
+        if self._ceil_mode is not False:
+            s += ", ceil_mode={_ceil_mode}"
+        if self._divisor_override is not False:
+            s += ", divisor_override={_divisor_override}"
+
+        return s.format(**self.__dict__)
+
+
+class AdaptiveAvgPool2d(Module):
+    def __init__(
+        self,
+        output_size,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying a 2D adaptive average pooling over mini-batch of inputs.
+
+        Parameters
+        ----------
+        output_size
+            the target output size of the image.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._output_size = output_size
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        # TODO: test again once adaptive_avg_pool2d is
+        #  implemented for the missing backends.
+        return ivy.adaptive_avg_pool2d(
+            x,
+            self._output_size,
+        )
+
+    def extra_repr(self):
+        return "output_size={}".format(self._output_size)
+
 
 class AdaptiveAvgPool1d(Module):
     def __init__(
@@ -1986,50 +2089,8 @@ class AdaptiveAvgPool1d(Module):
             self._output_size,
         )
 
-
-class AdaptiveAvgPool2d(Module):
-    def __init__(
-        self,
-        output_size,
-        device=None,
-        dtype=None,
-    ):
-        """
-        Class for applying a 2D adaptive average pooling over mini-batch of inputs.
-
-        Parameters
-        ----------
-        output_size
-            the target output size of the image.
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-        """
-        self._output_size = output_size
-        Module.__init__(self, device=device, dtype=dtype)
-
-    def _forward(self, x):
-        """
-        Forward pass of the layer.
-
-        Parameters
-        ----------
-        x
-            The input array to the layer.
-
-        Returns
-        -------
-            The output array of the layer.
-        """
-        # TODO: test again once adaptive_avg_pool2d is
-        #  implemented for the missing backends.
-        return ivy.adaptive_avg_pool2d(
-            x,
-            self._output_size,
-        )
-
-
-# TRANSFORMS #
-# -----------#
+    def extra_repr(self):
+        return "output_size={}".format(self._output_size)
 
 
 class FFT(Module):
@@ -2085,6 +2146,72 @@ class FFT(Module):
             n=self._n,
             out=self._out,
         )
+
+    def extra_repr(self):
+        s = "dim={_dim}"
+        if self._norm != "backward":
+            s += ", norm={_norm}"
+        if self._n is not False:
+            s += ", n={_n}"
+        return s.format(**self.__dict__)
+
+
+class AvgPool1D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NWC",
+    ):
+        """
+        Class for applying Average Pooling over a mini-batch of inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take an average over.
+        stride
+            The stride of the window. Default value: 1
+        padding
+            Implicit zero padding to be added on both sides.
+        data_format
+            "NCW" or "NWC". Defaults to "NWC".
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.avg_pool1d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
+
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Dct(Module):
@@ -2144,6 +2271,16 @@ class Dct(Module):
             norm=self.norm,
         )
 
+    def extra_repr(self):
+        s = "type={type}"
+        if self.n is not None:
+            s += ", n={n}"
+        if self.axis != -1:
+            s += ", axis={axis}"
+        if self.norm is not None:
+            s += ", norm={norm}"
+        return s.format(**self.__dict__)
+
 
 # EMBEDDING #
 # ----------#
@@ -2164,7 +2301,9 @@ class Embedding(Module):
         dtype=None,
     ):
         """
-        Class for embedding layer.
+        Class for embedding indices into a dense representation. The Embedding layer is
+        a simple lookup table for dense vectors. It's typically used to store word
+        embeddings and query them using indices.
 
         Parameters
         ----------
@@ -2175,7 +2314,7 @@ class Embedding(Module):
         padding_idx : int
             If given, pads the output with zeros whenever it encounters the index.
         max_norm : float
-            If given, each embedding vector with norm larger than max_norm is renormalized to have norm max_norm.
+            If given, each embedding vector with L2 norm larger than max_norm is renormalized to have norm max_norm.
         weight_initializer : Initializer
             Initializer for the weights.
         device : str
@@ -2220,10 +2359,121 @@ class Embedding(Module):
 
     def _pad_embd(self, indices, embd):
         mask = ivy.expand_dims(indices == self._padding_idx, axis=-1)
-        return ivy.where(mask, 0, embd)
+        mask_val = ivy.array(0.0, dtype=embd.dtype)
+        return ivy.where(mask, mask_val, embd)
 
     def _forward(self, indices):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        indices
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
         emb = ivy.embedding(self.v.w, indices, max_norm=self._max_norm)
         if self._padding_idx is not None:
             emb = self._pad_embd(indices, emb)
         return emb
+
+    def extra_repr(self):
+        s = "num_embeddings={_num_embeddings}, embedding_dim={_embedding_dim}"
+        if self._padding_idx is not None:
+            s += ", padding_idx={_padding_idx}"
+        if self._max_norm is not None:
+            s += ", max_norm={_max_norm}"
+        return s.format(**self.__dict__)
+
+
+class Identity(Module):
+    def __init__(self):
+        """
+        Identity layer. The layer is argument insensitive and returns the input argument
+        as output when called.
+
+        It's typically used as a placeholder when no operation is to be
+        performed. It doesn't have any learnable parameter.
+        """
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array.
+        dtype
+            The desired data type of the internal variables to be created if not
+            provided. Default is ``None``.
+
+        Returns
+        -------
+            The input array as it is.
+        """
+        return x
+
+
+class IFFT(Module):
+    def __init__(
+        self,
+        dim,
+        /,
+        *,
+        norm="backward",
+        n=None,
+        out=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying IFFT to input.
+
+        Parameters
+        ----------
+        dim : int
+            Dimension along which to take the IFFT.
+        norm : str
+            Optional argument indicating the normalization mode. Possible Values : "backward", "ortho" or "forward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+            Default: "backward"
+        n : int
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing IFFT.
+            Should be a integer greater than 1. Default: None
+        out : int
+            Size of the output. Default: None
+        """
+        self._dim = dim
+        self._norm = norm
+        self._n = n
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs : array
+            Input array to take the IFFT of.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.ifft(
+            inputs,
+            self._dim,
+            norm=self._norm,
+            n=self._n,
+            out=self._out,
+        )

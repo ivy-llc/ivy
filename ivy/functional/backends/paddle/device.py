@@ -6,7 +6,10 @@ import paddle
 from typing import Optional, Union
 import time
 import ivy
-from ivy.functional.ivy.device import Profiler as BaseProfiler
+from ivy.functional.ivy.device import (
+    _shift_native_arrays_on_default_device,
+    Profiler as BaseProfiler,
+)
 from paddle.device import core
 
 
@@ -95,6 +98,20 @@ def tpu_is_available() -> bool:
     return False
 
 
+def handle_soft_device_variable(*args, fn, **kwargs):
+    args, kwargs, device_shifting_dev = _shift_native_arrays_on_default_device(
+        *args, **kwargs
+    )
+    # since there is no context manager for device in Paddle,
+    # we need to manually set the device
+    # then set it back to prev default device after the function call
+    prev_def_dev = paddle.get_device()
+    paddle.device.set_device(ivy.as_ivy_dev(device_shifting_dev))
+    ret = fn(*args, **kwargs)
+    paddle.device.set_device(ivy.as_ivy_dev(prev_def_dev))
+    return ret
+
+
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
         # ToDO: add proper Paddle profiler
@@ -108,7 +125,7 @@ class Profiler(BaseProfiler):
     def stop(self):
         time_taken = time.perf_counter() - self._start_time
         with open(os.path.join(self._save_dir, "profile.log"), "w+") as f:
-            f.write("took {} seconds to complete".format(time_taken))
+            f.write(f"took {time_taken} seconds to complete")
 
     def __enter__(self):
         self.start()

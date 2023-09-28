@@ -4,13 +4,6 @@ import ivy.functional.frontends.jax as jax_frontend
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 
 
-@to_ivy_arrays_and_back
-def _rewriting_take(
-    arr, idx, indices_are_sorted=False, unique_indices=False, mode=None, fill_value=None
-):
-    return ivy.get_item(arr, idx)
-
-
 class _IndexUpdateHelper:
     __slots__ = ("array",)
 
@@ -56,3 +49,14 @@ class _IndexUpdateRef:
         else:
             ret[self.index] = values
         return jax_frontend.Array(ret)
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+@to_ivy_arrays_and_back
+def _rewriting_take(
+    arr, idx, indices_are_sorted=False, unique_indices=False, mode=None, fill_value=None
+):
+    return ivy.get_item(arr, idx)
