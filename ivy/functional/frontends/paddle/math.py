@@ -467,24 +467,18 @@ def rsqrt(x, name=None):
             "int16",
             "int32",
             "int64",
-            "uint8",
         )
     },
     "paddle",
 )
 @to_ivy_arrays_and_back
 def scale(x, scale=1.0, bias=0.0, bias_after_scale=True, act=None, name=None):
+    scale = ivy.astype(scale, ivy.dtype(x))
+    bias = ivy.astype(bias, ivy.dtype(x))
     if bias_after_scale is True:
-        output = ivy.add(ivy.multiply(scale, x), bias)
+        output = ivy.add(ivy.multiply(x, scale), bias)
     else:
-        output = ivy.multiply(scale, ivy.add(x, bias))
-
-    if output.shape != x.shape:
-        output = ivy.reshape(output, x.shape)
-
-    if output.dtype != x.dtype:
-        output = ivy.astype(output, x.dtype)
-
+        output = ivy.multiply(ivy.add(x, bias), scale)
     return output
 
 
