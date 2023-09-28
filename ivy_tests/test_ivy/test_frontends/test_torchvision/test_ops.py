@@ -80,6 +80,10 @@ def _roi_align_helper(draw):
     )
 
 
+# --- Main --- #
+# ------------ #
+
+
 # nms
 @handle_frontend_test(
     fn_tree="torchvision.ops.nms",
