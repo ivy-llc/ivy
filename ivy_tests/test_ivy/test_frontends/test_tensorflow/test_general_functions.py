@@ -2036,6 +2036,35 @@ def test_tensorflow_strided_slice(
         raise e
 
 
+
+# tensor_scatter_nd_add
+@handle_frontend_test(
+    fn_tree="tensorflow.tensor_scatter_nd_add",
+    #input_and_ranges=_get_clip_inputs(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_tensor_scatter_nd_add(
+    *,
+    #input_and_ranges,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    #x_dtype, tensor, indices, updates = input_and_ranges
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=tensor[0],
+        indices= indices,
+        updates=updates,
+    )
+
 @handle_frontend_test(fn_tree="tensorflow.tile", all_arguments=_multiple_shape_helper())
 def test_tensorflow_tile(
     *,
