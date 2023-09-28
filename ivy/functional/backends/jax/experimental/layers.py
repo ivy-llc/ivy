@@ -859,7 +859,7 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if axis is None:
+    if axis:
         axis = -1
 
     if win_length is None:
