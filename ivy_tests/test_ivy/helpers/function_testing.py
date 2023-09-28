@@ -875,14 +875,14 @@ def test_frontend_function(
                     *copy_args, array_fn=array_fn, **copy_kwargs
                 )
                 ret_ = get_frontend_ret(
-                    frontend_fn=frontend_fn,
-                    backend=backend_to_test,
-                    precision_mode=test_flags.precision_mode,
+                    backend_to_test,
+                    frontend_fn,
+                    *copy_args,
                     test_trace=test_flags.test_trace,
                     frontend_array_function=(
                         create_frontend_array if test_flags.test_trace else None
                     ),
-                    *copy_args,
+                    precision_mode=test_flags.precision_mode,
                     **copy_kwargs,
                 )
                 assert first_array is ret_
