@@ -7,31 +7,50 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _multinomial_helper(draw):
+    input_dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=helpers.get_shape(min_num_dims=1, max_num_dims=2, min_dim_size=2),
+        )
+    )
+    num_samples = draw(st.integers(min_value=1, max_value=10))
+    if num_samples > 2:
+        replacement = True
+    else:
+        replacement = draw(st.booleans())
+
+    input_dtype, x = input_dtype_and_x
+
+    total = sum(x)
+    x = [arr / total for arr in x]
+
+    return input_dtype, x, num_samples, replacement
+
+
+# --- Main --- #
+# ------------ #
+
+
 # multinomial
 @handle_frontend_test(
     fn_tree="paddle.tensor.random.multinomial",
-    input_dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=0.25,
-        max_value=0.25,
-        min_dim_size=4,
-        max_dim_size=4,
-        shape=helpers.get_shape(min_num_dims=1, max_num_dims=2, min_dim_size=2),
-    ),
-    num_samples=st.integers(min_value=1, max_value=2),
-    replacement=st.booleans(),
+    input_dtype_and_x=_multinomial_helper(),
 )
 def test_paddle_multinomial(
     input_dtype_and_x,
-    num_samples,
-    replacement,
     test_flags,
     frontend,
     backend_fw,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = input_dtype_and_x
+    input_dtype, x, num_samples, replacement = input_dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
