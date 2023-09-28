@@ -773,7 +773,7 @@ def default_device(device=None, *, item=None, as_native=None):
     device will be converted to a native device. If the item is provided, the item's
     device is returned. If the device is not provided, the last default device is
     returned. If a default device has not been set, the first gpu is returned if
-    available, otherwise the cpu is returned.
+    available, otherwise the cpu is returned..
 
     :param device: The device to be returned or converted.
     :type device: Union[ivy.Device, ivy.NativeDevice], optional
