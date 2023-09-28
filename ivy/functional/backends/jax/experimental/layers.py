@@ -861,13 +861,13 @@ def stft(
 ) -> JaxArray:
     if axis is None:
         axis = -1
-    
+
     if win_length is None:
         win_length = n_fft
 
     if window is None or window is JaxArray:
         window = jnp.array(jnp.hanning(n_fft), dtype=signal.dtype)
-    window /= jnp.max(window)   
+    window /= jnp.max(window)
 
     if hop_length is None:
         hop_length = win_length // 2
@@ -880,10 +880,10 @@ def stft(
 
     if not isinstance(n_fft, int):
         raise TypeError("n_fft must be an int.")
-    
-    detrend = False 
-    
-    noverlap = min(win_length - 1, hop_length)    
+
+    detrend = False
+
+    noverlap = min(win_length - 1, hop_length)
     if isinstance(noverlap, int):
         hop_length = noverlap
     else:
