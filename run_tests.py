@@ -141,7 +141,7 @@ if __name__ == "__main__":
     db_priority = cluster["Ivy_tests_priority"]
     if with_gpu:
         os.system("docker pull unifyai/multicuda:base_and_requirements")
-    with open("tests_to_run") as f:
+    with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
             coll, submod, test_fn = get_submodule(test)

@@ -37,7 +37,7 @@ def sort(
     kind = "stable" if stable else "quicksort"
     ret = np.asarray(np.sort(x, axis=axis, kind=kind))
     if descending:
-        ret = np.asarray(np.flip(ret, axis))
+        ret = np.asarray((np.flip(ret, axis)))
     return ret
 
 

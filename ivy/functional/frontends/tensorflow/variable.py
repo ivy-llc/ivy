@@ -291,11 +291,11 @@ class IndexedSlices:
         return self.values.dtype
 
     def __repr__(self):
-        return "IndexedSlices(\nindices={},\nvalues={}{}\n)".format(
+        return "IndexedSlices(\nindices=%s,\nvalues=%s%s\n)" % (
             self._indices,
             self._values,
             (
-                f", dense_shape={self._dense_shape}"
+                ", dense_shape=%s" % (self._dense_shape,)
                 if self._dense_shape is not None
                 else ""
             ),

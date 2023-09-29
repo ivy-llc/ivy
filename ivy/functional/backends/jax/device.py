@@ -137,7 +137,7 @@ def tpu_is_available() -> bool:
 # noinspection PyMethodMayBeStatic
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
-        super().__init__(save_dir)
+        super(Profiler, self).__init__(save_dir)
         self._save_dir = os.path.join(self._save_dir, "profile")
 
     def start(self):

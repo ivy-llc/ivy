@@ -138,7 +138,9 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 @with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
 @to_ivy_arrays_and_back
 def global_norm(t_list, name=None):
-    l2_norms = [ivy.sqrt(ivy.sum(ivy.square(t))) ** 2 for t in t_list if t is not None]
+    l2_norms = [
+        ivy.sqrt((ivy.sum(ivy.square(t)))) ** 2 for t in t_list if t is not None
+    ]
     return ivy.sqrt(ivy.sum(ivy.asarray(l2_norms, dtype=ivy.dtype(l2_norms[0]))))
 
 

@@ -106,7 +106,7 @@ def handle_soft_device_variable(*args, fn, **kwargs):
 
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
-        super().__init__(save_dir)
+        super(Profiler, self).__init__(save_dir)
         self._options = tf.profiler.experimental.ProfilerOptions(
             host_tracer_level=3, python_tracer_level=1, device_tracer_level=1
         )
