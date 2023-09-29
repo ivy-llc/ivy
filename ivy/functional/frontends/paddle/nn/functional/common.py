@@ -28,7 +28,7 @@ def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=None):
-    if axis > 1:
+    if axis is not None and axis > 1:
         raise ValueError("Axis value can only be 0 or 1 or None.")
     elif axis is None or (isinstance(axis, list) and len(axis) == 2):
         mask = get_mask(shape=x.shape, device=ivy.dev(x), prob=p, seed=None)
