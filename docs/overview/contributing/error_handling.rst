@@ -39,7 +39,7 @@ This section, "Error Handling" aims to assist you in navigating through some com
 
    **Solution:**
 
-   As we are explicitly passing in a `dtype` which is not supported in the torch framework itself so torch backend fails here, a possible fix is adding the dtype in the unsupported dtype         decoartor which would look something like this. 
+   As we are explicitly passing in a `dtype` which is not supported in the torch framework itself so torch backend fails here, a possible fix is adding the dtype in the unsupported dtype         decoartor which would look something like this.
 
    .. code-block:: python
 
@@ -77,7 +77,7 @@ This section, "Error Handling" aims to assist you in navigating through some com
 
    **Solution:**
 
-   As both the results are pretty close to each others in this case, adding an `rtol = 10^-3` and `atol = 10^-3` would fix the failing tests here. 
+   As both the results are pretty close to each others in this case, adding an `rtol = 10^-3` and `atol = 10^-3` would fix the failing tests here.
 
          .. code-block:: python
 

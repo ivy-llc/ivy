@@ -340,6 +340,12 @@ def log(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def log10(x, name=None):
+    return ivy.log10(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def log1p(x, name=None):
     return ivy.log1p(x)
 
@@ -348,11 +354,6 @@ def log1p(x, name=None):
 @to_ivy_arrays_and_back
 def log2(x, name=None):
     return ivy.log2(x)
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def log10(x, name=None):
-    return ivy.log10(x)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
