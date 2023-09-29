@@ -100,15 +100,15 @@ enables you to:
 - 🔄 **Convert code into any framework**: Use and build on top of any model, library, or device by converting any code from one framework to another using `ivy.transpile`.
 - ⚒️ **Write framework-agnostic code**: Write your code once in ivy and then choose the most appropriate ML framework as the backend to leverage all the benefits and tools.
 
-[Join our growing community](https://discord.com/invite/sXyFF8tDtm) 🌍 to connect with people using Ivy.
+[Join our growing community](https://discord.com/invite/sXyFF8tDtm) 🌍 to connect with people using Ivy. **Let\'s** [unify.ai](https://unify.ai) **together 🦾**
 
 ------------------------------------------------------------------------
 
 # Getting started
 
-You can start by reading [our basics](https://unify.ai/docs/ivy/demos/learn_the_basics.html) and [Demos](https://unify.ai/docs/ivy/demos/examples_and_demos.html).
+The best way to get familiar with Ivy is to go through the [Demos](https://unify.ai/docs/ivy/demos/examples_and_demos.html), a good starting point is [Learn The Basics](https://unify.ai/docs/ivy/demos/learn_the_basics.html).
 
-Here is a good starting point for you:
+The most important notebooks are:
 
 - [How to convert your code between frameworks?](https://unify.ai/docs/ivy/demos/learn_the_basics/04_transpile_code.html)
 - [How to write framework-agnostic code?](https://unify.ai/docs/ivy/demos/learn_the_basics/01_write_ivy_code.html)
@@ -116,7 +116,7 @@ Here is a good starting point for you:
 - Autotune and optimize models (WIP)
 
 ------------------------------------------------------------------------
-### Installing ivy
+## Installing ivy
 
 There are various ways to use Ivy, depending on your preferred
 environment:
@@ -188,13 +188,33 @@ tutorials to do so are available!
 </details>
 
 ------------------------------------------------------------------------
-## Chosing backend and transpiling
+## Using Ivy
 
-You can quickly choose your favorite machine learning backend by setting it in the code with one line and transpile any code to it, which you will learn in the next two steps.
+After installing Ivy, you can start using it straight away, for example:
 
-1. <details>
-    <summary><b>choose your backend</b></summary>
-    here you write a code with ivy framework by using jax as backend.
+  <details>
+   <summary><b>Transpiling your code from one framework to another</b></summary>
+
+   ``` python
+   import ivy
+   import torch
+   import jax
+
+   def jax_fn(x):
+       a = jax.numpy.dot(x, x)
+       b = jax.numpy.mean(x)
+       return x * a + b
+
+   jax_x = jax.numpy.array([1, 2, 3])
+   torch_x = torch.tensor([1, 2, 3])
+   torch_fn = ivy.transpile(jax_fn, source="jax", to="torch", args=(jax_x,))
+   ret = torch_fn(torch_x)
+   ```
+
+   </details>  
+
+   <details>
+    <summary><b>Running your code with any backend</b></summary>
 
     ``` python
     import ivy
@@ -214,31 +234,10 @@ You can quickly choose your favorite machine learning backend by setting it in t
     z = ivy.add(x, y)
     ```
     </details>
-1. <details>
-    <summary><b>transpile your code</b></summary>
-    here you transpile a code from jax to torch.
-
-    ``` python
-    import ivy
-    import torch
-    import jax
-
-    def jax_fn(x):
-        a = jax.numpy.dot(x, x)
-        b = jax.numpy.mean(x)
-        return x * a + b
-
-    jax_x = jax.numpy.array([1, 2, 3])
-    torch_x = torch.tensor([1, 2, 3])
-    torch_fn = ivy.transpile(jax_fn, source="jax", to="torch", args=(jax_x,))
-    ret = torch_fn(torch_x)
-    ```
-
-    </details>
 
 
 
-## 📚 Documentation
+# Documentation
 
 You can find Ivy's documentation from this [Docs page](https://unify.ai/docs/ivy/), which includes:
 - [Motivation](https://unify.ai/docs/ivy/overview/background.html): This contextualizes the problem Ivy is trying to solve through
@@ -253,7 +252,7 @@ You can find Ivy's documentation from this [Docs page](https://unify.ai/docs/ivy
 ------------------------------------------------------------------------
 
 
-## Examples
+# Examples
 
 The [Examples page](https://unify.ai/demos/) features a wide range of
 demos and tutorials showcasing the functionalities of Ivy along with
@@ -1341,7 +1340,7 @@ train(images, classes, num_epochs, model, device, num_classes = num_classes, bat
 
 </details>
 
-## Ivy in Depth
+# Ivy in Depth
 
 In the next section, you will learn how Ivy works as a transpiler and framework, and you will get an idea of why to use it.
 
@@ -1410,7 +1409,7 @@ If you want to learn more, you can find more information in the [Ivy as
 a transpiler section of the
 docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html)
 
-### When should I use Ivy as a transpiler?
+## When should I use Ivy as a transpiler?
 
 If you want to use building blocks published in other frameworks (neural
 networks, layers, array computing libraries, training pipelines\...),
@@ -1559,7 +1558,7 @@ As always, you can find more information about [Ivy as a framework in
 the
 docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html)
 
-### When should I use Ivy as a framework?
+## When should I use Ivy as a framework?
 
 As Ivy supports multiple backends, writing code in Ivy breaks you free
 from framework limitations. If you want to publish highly flexible code
@@ -1570,7 +1569,7 @@ frameworks, then Ivy is for you!
 
 </details>
 
-## Contributing
+# Contributing
 
 We believe that everyone can contribute and make a difference. Whether
 it\'s writing code 💻, fixing bugs 🐛, or simply sharing feedback 💬,
@@ -1588,7 +1587,7 @@ our journey to unify all ML frameworks!
   <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />
 </a>
 
-## Community
+# Community
 
 In order to achieve the ambitious goal of unifying AI we definitely need
 as many hands as possible on it! Whether you are a seasoned developer or
@@ -1604,7 +1603,7 @@ great way to stay in the loop 😄
 
 Can\'t wait to see you there!
 
-## Citation
+# Citation
 
 If you use Ivy for your work, please don\'t forget to give proper credit
 by including the accompanying [paper](https://arxiv.org/abs/2102.02886)
