@@ -384,6 +384,11 @@ def maximum(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def mean(x, keepdims=False, out=None, axis=None, dtype=None, *, where=None):
+    return ivy.mean(x)
+
+
+@to_ivy_arrays_and_back
 def minimum(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.minimum(x1, x2)
@@ -726,7 +731,3 @@ def vdot(a, b):
 
 abs = absolute
 true_divide = divide
-
-@to_ivy_arrays_and_back
-def mean(x, keepdims=False, out=None, axis=None, dtype=None, *, where=None):
-    return ivy.mean(x)

@@ -2084,6 +2084,28 @@ def test_jax_maximum(
     )
 
 
+def test_jax_mean(
+    *,
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # minimum
 @handle_frontend_test(
     fn_tree="jax.numpy.minimum",
@@ -3313,25 +3335,4 @@ def test_jax_vdot(
         test_values=False,
         a=x[0],
         b=x[1],
-    )
-
-def test_jax_mean(
-    *,
-    dtype_and_x,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
     )
