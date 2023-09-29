@@ -104,7 +104,7 @@ def test_fomaml_step_overlapping_vars(
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
         # true gradient
-        all_outer_grads = list()
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -275,10 +275,10 @@ def test_fomaml_step_shared_vars(
             )
 
         # true gradient
-        true_outer_grads = list()
+        true_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            ws = list()
-            grads = list()
+            ws = []
+            grads = []
             ws.append(latent_np)
             for step in range(inner_grad_steps):
                 update_grad = loss_grad_fn(sub_batch, ws[-1])
@@ -468,7 +468,7 @@ def test_fomaml_step_unique_vars(
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
         # true gradient
-        all_outer_grads = list()
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -632,7 +632,7 @@ def test_maml_step_overlapping_vars(
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
         # true weight gradient
-        all_outer_grads = list()
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -836,10 +836,10 @@ def test_maml_step_shared_vars(
             )
 
         # true gradient
-        true_outer_grads = list()
+        true_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            ws = list()
-            grads = list()
+            ws = []
+            grads = []
             ws.append(variables_np)
             for step in range(inner_grad_steps):
                 update_grad = loss_grad_fn(sub_batch, ws[-1])
@@ -1040,7 +1040,7 @@ def test_maml_step_unique_vars(
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
         # true gradient
-        all_outer_grads = list()
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -1185,10 +1185,10 @@ def test_reptile_step(
             return -2 * sub_batch_in["x"][0] * w_in
 
         # true gradient
-        true_outer_grads = list()
+        true_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            ws = list()
-            grads = list()
+            ws = []
+            grads = []
             ws.append(latent_np)
             for step in range(inner_grad_steps):
                 update_grad = loss_grad_fn(sub_batch, ws[-1])
