@@ -9,6 +9,7 @@ permissions:
   pull-requests: write
 jobs:
   write_comment:
+    runs-on: ubuntu-latest
     steps:
       - name: Write GitHub Comment
         uses: actions/github-script@v6
