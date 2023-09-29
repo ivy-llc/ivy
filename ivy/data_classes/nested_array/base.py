@@ -96,9 +96,7 @@ class NestedArrayBase(abc.ABC):
                 list(inner_shape) if list(inner_shape) is not None else data.inner_shape
             )
         else:
-            raise TypeError(
-                "Input data must be pylist or tuple, got: {}".format(type(data))
-            )
+            raise TypeError(f"Input data must be pylist or tuple, got: {type(data)}")
 
         return cls(data, nested_rank, inner_shape, dtype, device, internal=True)
 
@@ -130,9 +128,7 @@ class NestedArrayBase(abc.ABC):
             return inspect_fn(*a, **kw)
 
         if num_nest == 0:
-            raise Exception(
-                "No RaggedArrays found in args or kwargs of function {}".format(fn)
-            )
+            raise Exception(f"No RaggedArrays found in args or kwargs of function {fn}")
         ret = ivy.NestedArray.ragged_multi_map(map_fn, nests)
         return ret
 
@@ -186,9 +182,7 @@ class NestedArrayBase(abc.ABC):
                 for dims in x:
                     if dims is not None and dims != 1:
                         raise ValueError(
-                            "Shapes {} and {} are not broadcastable".format(
-                                shapes[0], shapes[1]
-                            )
+                            f"Shapes {shapes[0]} and {shapes[1]} are not broadcastable"
                         )
                 z.append(None)
             elif 1 in x:
@@ -210,15 +204,13 @@ class NestedArrayBase(abc.ABC):
                     z.append(x[0])
                 else:
                     raise ValueError(
-                        "Shapes {} and {} are not broadcastable".format(
-                            shapes[0], shapes[1]
-                        )
+                        f"Shapes {shapes[0]} and {shapes[1]} are not broadcastable"
                     )
         return z
 
     def ragged_map(self, fn):
         arg = ivy.copy_nest(self._data)
-        ivy.nested_map(arg, lambda x: fn(x), shallow=True)
+        ivy.nested_map(lambda x: fn(x), arg, shallow=True)
         # infer dtype, shape, and device from the first array in the ret data
         arr0_id = ivy.nested_argwhere(arg, ivy.is_ivy_array, stop_after_n_found=1)[0]
         arr0 = ivy.index_nest(arg, arr0_id)

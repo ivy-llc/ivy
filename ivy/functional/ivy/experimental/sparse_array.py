@@ -316,7 +316,7 @@ def _is_valid_format(
 ):
     valid_formats = ["coo", "csr", "csc", "csc", "bsc", "bsr"]
 
-    if not isinstance(format, str) or not format.lower() in valid_formats:
+    if not isinstance(format, str) or format.lower() not in valid_formats:
         return False
 
     if format.endswith("o"):
@@ -543,7 +543,7 @@ class SparseArray(ivy.Array):
             self._dev_str = ivy.as_ivy_dev(self.device)
             self._pre_repr = "ivy.sparse_array"
             if "gpu" in self._dev_str:
-                self._post_repr = ", dev={})".format(self._dev_str)
+                self._post_repr = f", dev={self._dev_str})"
             else:
                 self._post_repr = ")"
         if self._format == "coo":

@@ -54,7 +54,7 @@ def fused_batch_norm(
             x = ivy.permute_dims(x, axes=(0, 2, 3, 4, 1))
         else:
             raise ivy.utils.exceptions.IvyException(
-                "input tensor must be of 4 or 5 dimensions, got {}".format(dims)
+                f"input tensor must be of 4 or 5 dimensions, got {dims}"
             )
 
     scale = scale.astype(ivy.float32)
