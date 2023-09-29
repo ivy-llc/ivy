@@ -4,6 +4,7 @@ import ivy.functional.frontends.paddle as paddle_frontend
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_dtypes,
+    to_ivy_arrays_and_back,
 )
 from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
 
@@ -797,6 +798,7 @@ class Tensor:
         },
         "paddle",
     )
+    @to_ivy_arrays_and_back
     def chunk(self, chunks, axis=0, name=None):
         return paddle_frontend.split(self._ivy_array, num_or_sections=chunks, axis=axis)
 
