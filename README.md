@@ -246,7 +246,7 @@ You can find Ivy's documentation in the [Docs page](https://unify.ai/docs/ivy/),
     - Explaining how we adhere to existing [standards](https://unify.ai/docs/ivy/overview/background/standardization.html#standardization) to make this happen.
 - [Related Work](https://unify.ai/docs/ivy/overview/related_work.html): Which paints a picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and abstraction level.
 - [Design](https://unify.ai/docs/ivy/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
-- [Deep Dive](https://unify.ai/docs/ivy/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented torards potential contributors to the code base.
+- [Deep Dive](https://unify.ai/docs/ivy/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented towards potential contributors to the code base.
 
 
 ------------------------------------------------------------------------
@@ -1340,9 +1340,9 @@ train(images, classes, num_epochs, model, device, num_classes = num_classes, bat
 
 </details>
 
-# Ivy in Depth
+# Diving deeper
 
-In the next section, you will learn how Ivy works as a transpiler and framework, and you will get an idea of why to use it.
+Altough the docs are the better place to learn more, in the next section we will take a look at how Ivy works as both a transpiler and a framework in a bit more of detail to get an idea of why and where to use it.
 
 <details>
 <summary><b>Ivy as a transpiler</b></summary>
