@@ -4242,17 +4242,15 @@ def log2(
     ivy.array([2.32, 0., -inf, nan])
     >>> x = ivy.array([[float('nan'), 1, 6.0, float('+inf')],
     ...               [+0, -2.0, -7, float('-inf')]])
-    >>> y = ivy.log2(x)
+    >>> y = ivy.empty_like(x)
+    >>> ivy.log2(x, out=y)
     >>> print(y)
     ivy.array([[nan, 0., 2.58, inf],[inf, nan, nan, nan]])
-
-
-    With :class:`ivy.NativeArray` input:
-    >>> x = ivy.native_array([5.0, 1.0, -0.0, -6.0])
-    >>> y = ivy.log2(x)
-    >>> print(y)
-    ivy.array([2.32, 0., -inf, nan])
-
+    >>> x = ivy.array([[float('nan'), 1, 7.0, float('+inf')],
+    ...               [+0, -3.0, -8, float('-inf')]])
+    >>> ivy.log2(x, out=x)
+    >>> print(x)
+    ivy.array([[nan, 0., 2.81, inf],[inf, nan, nan, nan]])
 
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
