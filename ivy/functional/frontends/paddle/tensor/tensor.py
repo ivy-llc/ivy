@@ -444,13 +444,6 @@ class Tensor:
     def isnan(self, name=None):
         return paddle_frontend.isnan(self)
 
-    @with_supported_dtypes(
-        {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
-        "paddle",
-    )
-    def nansum(self, name=None):
-        return paddle_frontend.nansum(self)
-
     @with_unsupported_dtypes(
         {
             "2.5.1 and below": (
