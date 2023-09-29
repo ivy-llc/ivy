@@ -7,6 +7,7 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_device_and_dtypes,
+    with_unsupported_dtypes,
 )
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
@@ -141,6 +142,9 @@ def isclose(
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("float16", "int16", "int8", "uint8")}, backend_version
+)
 def diff(
     x: Union[paddle.Tensor, list, tuple],
     /,
@@ -152,8 +156,6 @@ def diff(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
-    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        x = x.cast("float32")
 
     def _tensor(val):
         if val is not None and not isinstance(val, paddle.Tensor):
@@ -395,11 +397,10 @@ def gradient(
                     raise ValueError("distances must be either scalars or 1d")
                 if len(distances) != x.shape[axes[i]]:
                     raise ValueError(
-                        "when 1d, distances must match "
-                        "the length of the corresponding dimension {} {}".format(
-                            len(distances), x.shape[axes[i]]
-                        )
+                        "when 1d, distances must match the length of the corresponding"
+                        f" dimension {len(distances)} {x.shape[axes[i]]}"
                     )
+
                 if ivy.is_int_dtype(distances.dtype):
                     # Convert numpy integer types to float64 to avoid modular
                     # arithmetic in np.diff(distances).
@@ -743,7 +744,9 @@ def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     y = paddle.where(abs_x_small, z * pp / pq, z * pr / ps)
     result_no_underflow = paddle.where(x < 0.0, 2.0 - y, y)
 
-    is_pos_inf = lambda op: paddle.logical_and(paddle.isinf(op), op > 0)
+    def is_pos_inf(op):
+        return paddle.logical_and(paddle.isinf(op), op > 0)
+
     underflow = paddle.logical_or(
         z == 0,
         paddle.logical_or(
