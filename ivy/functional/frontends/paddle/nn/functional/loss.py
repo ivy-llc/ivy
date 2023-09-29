@@ -16,14 +16,17 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 # helpers
 def _get_reduction_func(reduction):
     if reduction == "none":
-        ret = lambda x: x
+
+        def ret(x):
+            return x
+
     elif reduction == "mean":
         ret = ivy.mean
     elif reduction == "sum":
         ret = ivy.sum
     else:
         raise ivy.utils.exceptions.IvyException(
-            "{} is not a valid value for reduction".format(reduction)
+            f"{reduction} is not a valid value for reduction"
         )
     return ret
 
