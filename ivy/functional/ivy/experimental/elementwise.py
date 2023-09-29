@@ -1204,9 +1204,8 @@ def lerp(
     if ivy.is_array(weight):
         if ivy.dtype(weight) not in weight_allowed_types:
             weight = ivy.astype(weight, "float64")
-    else:
-        if not isinstance(weight, float):
-            weight = ivy.astype(ivy.array([weight]), "float64")
+    elif not isinstance(weight, float):
+        weight = ivy.astype(ivy.array([weight]), "float64")
 
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 

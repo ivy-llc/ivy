@@ -210,14 +210,14 @@ The contents of this function are as follows:
         if backend_stack:
             f = backend_stack[-1]
             if verbosity.level > 0:
-                verbosity.cprint("Using backend from stack: {}".format(f))
+                verbosity.cprint(f"Using backend from stack: {f}")
             return f
 
         # if no global backend exists, we try to infer the backend from the arguments
         f = _determine_backend_from_args(list(args) + list(kwargs.values()))
         if f is not None:
             if verbosity.level > 0:
-                verbosity.cprint("Using backend from type: {}".format(f))
+                verbosity.cprint(f"Using backend from type: {f}")
             implicit_backend = f.current_backend_str()
             return f
         return importlib.import_module(_backend_dict[implicit_backend])
@@ -254,7 +254,8 @@ The following is a slightly simplified version of this code for illustration, wh
        # maybe log to the terminal
        if verbosity.level > 0:
            verbosity.cprint(
-               'Backend stack: {}'.format(backend_stack))
+               f'Backend stack: {backend_stack}'
+            )
 
 The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API.
 This is because many higher level functions are written as a composition of lower level Ivy functions.
@@ -321,7 +322,7 @@ A good example is :func:`ivy.lstm_update`, as shown:
         ct = init_c
 
         # lstm outputs
-        hts_list = list()
+        hts_list = []
 
         # unrolled time dimension with lstm steps
         for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(

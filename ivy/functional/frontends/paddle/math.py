@@ -61,7 +61,7 @@ def amax(x, axis=None, keepdims=False):
             axis[i] += x.ndim
     for i in axis:
         if i < 0 or i >= x.ndim:
-            raise ValueError(f"axis {i} is out of range [-{0}:{x.ndim}]")
+            raise ValueError(f"axis {i} is out of range [-0:{x.ndim}]")
     return ivy.max(x, axis=axis, keepdims=keepdims)
 
 
@@ -340,6 +340,12 @@ def log(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def log10(x, name=None):
+    return ivy.log10(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def log1p(x, name=None):
     return ivy.log1p(x)
 
@@ -348,11 +354,6 @@ def log1p(x, name=None):
 @to_ivy_arrays_and_back
 def log2(x, name=None):
     return ivy.log2(x)
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def log10(x, name=None):
-    return ivy.log10(x)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
