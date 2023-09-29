@@ -1,7 +1,6 @@
 # local
 import ivy
-import ivy.functional.frontends.paddle
-ivy.set_backends("tensorflow")
+import ivy.functional.frontends.paddle as paddle_frontend
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_dtypes,
@@ -23,7 +22,7 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
     "paddle",
 )
 @to_ivy_arrays_and_back
-def greater_equal(x, y):
+def greater_equal(x, y, name=None):
     return ivy.greater_equal(x, y)
 
 # Example usage
