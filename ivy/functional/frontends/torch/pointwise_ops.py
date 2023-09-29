@@ -86,12 +86,14 @@ def atanh(input, *, out=None):
     return ivy.atanh(input, out=out)
 
 
+@scalar_input_to_0dim_tensor
 @to_ivy_arrays_and_back
 def bitwise_and(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_and(input, other, out=out)
 
 
+@scalar_input_to_0dim_tensor
 @to_ivy_arrays_and_back
 def bitwise_left_shift(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -103,18 +105,21 @@ def bitwise_not(input, *, out=None):
     return ivy.bitwise_invert(input, out=out)
 
 
+@scalar_input_to_0dim_tensor
 @to_ivy_arrays_and_back
 def bitwise_or(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_or(input, other, out=out)
 
 
+@scalar_input_to_0dim_tensor
 @to_ivy_arrays_and_back
 def bitwise_right_shift(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.bitwise_right_shift(input, other, out=out)
 
 
+@scalar_input_to_0dim_tensor
 @to_ivy_arrays_and_back
 def bitwise_xor(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -172,6 +177,7 @@ def deg2rad(input, *, out=None):
     return ivy.array(input * ivy.pi / 180, out=out)
 
 
+@scalar_input_to_0dim_tensor
 @to_ivy_arrays_and_back
 def div(input, other, *, rounding_mode=None, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -375,6 +381,7 @@ def masked_fill(input, mask, value):
     return ivy.where(mask, value, input, out=input)
 
 
+@scalar_input_to_0dim_tensor
 @to_ivy_arrays_and_back
 def mul(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -539,6 +546,7 @@ def square(input, *, out=None):
     return ivy.square(input, out=out)
 
 
+@scalar_input_to_0dim_tensor
 @to_ivy_arrays_and_back
 def subtract(input, other, *, alpha=1, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -557,6 +565,7 @@ def tanh(input, *, out=None):
     return ivy.tanh(input, out=out)
 
 
+@scalar_input_to_0dim_tensor
 @to_ivy_arrays_and_back
 def true_divide(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
