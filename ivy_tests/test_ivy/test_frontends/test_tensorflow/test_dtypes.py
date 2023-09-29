@@ -8,7 +8,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # as_dtype
 @handle_frontend_test(
-    fn_tree="tensorflow.as_dtype",
+    fn_tree="tensorflow.dtypes.as_dtype",
+    gt_fn_tree="tensorflow.as_dtype",
     input_dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
@@ -18,6 +19,7 @@ def test_tensorflow_as_dtype(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -27,6 +29,7 @@ def test_tensorflow_as_dtype(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         type_value=input_dtype[0],
     )
@@ -34,7 +37,8 @@ def test_tensorflow_as_dtype(
 
 # cast
 @handle_frontend_test(
-    fn_tree="tensorflow.cast",
+    fn_tree="tensorflow.dtypes.cast",
+    gt_fn_tree="tensorflow.cast",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -48,6 +52,7 @@ def test_tensorflow_cast(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -58,6 +63,7 @@ def test_tensorflow_cast(
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         x=x[0],
         dtype=dtype[0],
