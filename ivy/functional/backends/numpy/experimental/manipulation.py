@@ -17,6 +17,10 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_supported_dtypes
+
+# noinspection PyProtectedMember
+from . import backend_version
 
 
 def moveaxis(
@@ -28,8 +32,6 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        a = a.copy()
     return np.moveaxis(a, source, destination)
 
 
@@ -60,8 +62,6 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        m = m.copy()
     return np.flipud(m)
 
 
@@ -95,8 +95,6 @@ def rot90(
     axes: Tuple[int, int] = (0, 1),
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        m = m.copy()
     return np.rot90(m, k, axes)
 
 
@@ -131,8 +129,6 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        m = m.copy()
     return np.fliplr(m)
 
 
@@ -172,7 +168,7 @@ def _interior_pad(operand, padding_value, padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-            new_array = np.full(new_shape, padding_value)
+            new_array = np.full(new_shape, padding_value, dtype=operand.dtype)
             src_indices = np.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
@@ -232,13 +228,7 @@ def pad(
     **kwargs: Optional[Any],
 ) -> np.ndarray:
     if mode == "dilated":
-        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
-            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
-        else:
-            padding_value = constant_values
-        padded = _interior_pad(input, padding_value, pad_width)
-        return ivy.native_array(padded)
-
+        return _interior_pad(input, constant_values, pad_width)
     if callable(mode):
         return np.pad(
             _flat_array_to_1_dim_array(input),
@@ -293,8 +283,6 @@ def vsplit(
         raise ivy.exceptions.IvyError(
             "vsplit only works on arrays of 2 or more dimensions"
         )
-    if copy:
-        ary = ary.copy()
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
@@ -309,16 +297,12 @@ def dsplit(
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
-    if copy:
-        ary = ary.copy()
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
     *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = None
 ) -> List[np.ndarray]:
-    if copy:
-        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_1d(*arys)
 
 
@@ -332,16 +316,12 @@ def dstack(
 
 
 def atleast_2d(*arys: np.ndarray, copy: Optional[bool] = None) -> List[np.ndarray]:
-    if copy:
-        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_2d(*arys)
 
 
 def atleast_3d(
     *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = None
 ) -> List[np.ndarray]:
-    if copy:
-        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_3d(*arys)
 
 
@@ -397,8 +377,6 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[np.ndarray]:
-    if copy:
-        ary = ary.copy()
     if ary.ndim == 1:
         return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
@@ -422,12 +400,10 @@ def expand(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        x = x.copy()
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
-            shape[i] = x.shape[i]
+            shape[i] = int(np.prod(x.shape) / np.prod([s for s in shape if s > 0]))
     return np.broadcast_to(x, tuple(shape))
 
 
@@ -498,10 +474,38 @@ def unique_consecutive(
 
 def fill_diagonal(
     a: np.ndarray,
-    v: Union[int, float],
+    v: Union[int, float, np.ndarray],
     /,
     *,
     wrap: bool = False,
 ) -> np.ndarray:
     np.fill_diagonal(a, v, wrap=wrap)
     return a
+
+
+def column_stack(
+    arrays: Sequence[np.ndarray], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.column_stack(arrays)
+
+
+@with_supported_dtypes(
+    {"1.25.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
+def put_along_axis(
+    arr: np.ndarray,
+    indices: np.ndarray,
+    values: Union[int, np.ndarray],
+    axis: int,
+    /,
+    *,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
+    out: Optional[np.ndarray] = None,
+):
+    ret = np.put_along_axis(arr.copy(), indices, values, axis)
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
+
+
+put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
+    "replace",
+]

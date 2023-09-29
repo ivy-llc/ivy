@@ -1,8 +1,6 @@
 Building Blocks
 ===============
 
-.. _`out argument`: https://unify.ai/docs/ivy/overview/deep_dive/inplace_updates.html#out-argument
- 
 Here we explain the components of Ivy which are fundamental to its usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
 These are the 4 parts labelled as (a) in the image below:
 
@@ -73,7 +71,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch, and NumPy, and 
 
     stack.support_native_out = True
 
-There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the `out argument`_ natively.
+There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the :ref:`overview/deep_dive/inplace_updates:out argument` natively.
 
 For more complicated functions, we need to do more than simply wrap and maybe change the name.
 For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API.
@@ -212,16 +210,16 @@ The contents of this function are as follows:
         if backend_stack:
             f = backend_stack[-1]
             if verbosity.level > 0:
-                verbosity.cprint("Using backend from stack: {}".format(f))
+                verbosity.cprint(f"Using backend from stack: {f}")
             return f
 
         # if no global backend exists, we try to infer the backend from the arguments
         f = _determine_backend_from_args(list(args) + list(kwargs.values()))
         if f is not None:
+            if verbosity.level > 0:
+                verbosity.cprint(f"Using backend from type: {f}")
             implicit_backend = f.current_backend_str()
             return f
-        if verbosity.level > 0:
-            verbosity.cprint("Using backend from type: {}".format(f))
         return importlib.import_module(_backend_dict[implicit_backend])
 
 If a global backend framework has been previously set using for example :code:`ivy.set_backend('tensorflow')`, then this globally set backend is returned.
@@ -256,7 +254,8 @@ The following is a slightly simplified version of this code for illustration, wh
        # maybe log to the terminal
        if verbosity.level > 0:
            verbosity.cprint(
-               'Backend stack: {}'.format(backend_stack))
+               f'Backend stack: {backend_stack}'
+            )
 
 The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API.
 This is because many higher level functions are written as a composition of lower level Ivy functions.
@@ -323,7 +322,7 @@ A good example is :func:`ivy.lstm_update`, as shown:
         ct = init_c
 
         # lstm outputs
-        hts_list = list()
+        hts_list = []
 
         # unrolled time dimension with lstm steps
         for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
@@ -491,7 +490,7 @@ The example above further emphasizes that the graph compiler creates a computati
 Specifically, the same Ivy code compiles to different graphs depending on the selected backend.
 However, when compiling native framework code, we are only able to compile a graph for that same framework.
 For example, we cannot take torch code and compile this into tensorflow code.
-However, we can transpile torch code into tensorflow code (see :ref:`Ivy as a Transpiler` for more details).
+However, we can transpile torch code into tensorflow code (see `Ivy as a Transpiler <ivy_as_a_transpiler.rst>`_ for more details).
 
 The graph compiler does not compile to C++, CUDA, or any other lower level language.
 It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python.

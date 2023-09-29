@@ -6,6 +6,7 @@ import argparse
 import termcolor
 import importlib
 import faulthandler
+from packaging import version
 
 faulthandler.enable()
 ERROR = False
@@ -17,15 +18,33 @@ PRINT_MSG = "\n"
 
 def parse(str_in):
     str_in = str_in.replace("\n", "")
+    import_ops = ["==", "<", "<=", ">", ">="]
     if "mod_name=" in str_in:
         mod_name = str_in.split("mod_name=")[-1].split(" ")[0].split(",")[0]
     else:
         mod_name = str_in.split("=")[0].split(" ")[0]
-    if "==" in str_in:
-        version = str_in.split("==")[-1].split(" ")[0].split(",")[0]
+    expected_version, expected_op = None, None
+    for import_op in import_ops:
+        if import_op in str_in:
+            mod_name, expected_version = str_in.split(import_op)
+            expected_version = expected_version.split(" ")[0].split(",")[0]
+            expected_op = import_op
+    return mod_name, expected_version, expected_op
+
+
+def compare(version1, version2, operator):
+    version1 = version.parse(version1)
+    version2 = version.parse(version2)
+    if operator == "==":
+        return version1 == version2
+    elif "<" in operator:
+        if operator == "<=":
+            return version1 <= version2
+        return version1 < version2
     else:
-        version = None
-    return mod_name, version
+        if operator == ">=":
+            return version1 >= version2
+        return version1 > version2
 
 
 def test_imports(fname, assert_version, update_versions):
@@ -34,21 +53,23 @@ def test_imports(fname, assert_version, update_versions):
     global WARN
     global WARN_MSG
     global PRINT_MSG
-    versions_to_update = dict()
-    msg = "\nasserting imports work for: {}\n\n".format(fname)
+    versions_to_update = {}
+    msg = f"\nasserting imports work for: {fname}\n\n"
     PRINT_MSG += msg
     ERROR_MSG += msg
     WARN_MSG += msg
-    with open(fname, "r") as f:
+    with open(fname) as f:
         file_lines = f.readlines()
     mod_names_n_versions = [parse(req) for req in file_lines]
-    for line_num, (mod_name, expected_version) in enumerate(mod_names_n_versions):
+    for line_num, (mod_name, expected_version, expected_op) in enumerate(
+        mod_names_n_versions
+    ):
         # noinspection PyBroadException
         try:
             mod = importlib.import_module(mod_name)
         except Exception as e:
             ERROR = True
-            msg = "{} could not be imported: {}\n".format(mod_name, e)
+            msg = f"{mod_name} could not be imported: {e}\n"
             ERROR_MSG += msg
             PRINT_MSG += msg
             continue
@@ -64,14 +85,12 @@ def test_imports(fname, assert_version, update_versions):
         except Exception:
             detected_version = None
         if detected_version and expected_version:
-            if detected_version == expected_version:
-                msg = "{} detected correct version: {}\n".format(
-                    mod_name, detected_version
-                )
+            if compare(detected_version, expected_version, expected_op):
+                msg = f"{mod_name} detected correct version: {detected_version}\n"
             else:
                 msg = (
-                    "expected version {} for module {}, but detected version "
-                    "{}\n".format(expected_version, mod_name, detected_version)
+                    f"expected version {expected_version} for module {mod_name}, but"
+                    f" detected version {detected_version}\n"
                 )
                 versions_to_update[line_num] = {
                     "expected": expected_version,
@@ -87,17 +106,18 @@ def test_imports(fname, assert_version, update_versions):
         else:
             if detected_version:
                 msg = (
-                    "{} detected version: {}, but no expected version "
-                    "provided\n".format(mod_name, detected_version)
+                    f"{mod_name} detected version: {detected_version}, but no expected"
+                    " version provided\n"
                 )
             elif expected_version:
-                msg = "{} expected version: {}, but unable to detect version\n".format(
-                    mod_name, expected_version
+                msg = (
+                    f"{mod_name} expected version: {expected_version}, but unable to"
+                    " detect version\n"
                 )
             else:
                 msg = (
-                    "no expected version provided, and unable to detect "
-                    "version for {}\n".format(mod_name)
+                    "no expected version provided, and unable to detect version for"
+                    f" {mod_name}\n"
                 )
             WARN = True
             PRINT_MSG += msg

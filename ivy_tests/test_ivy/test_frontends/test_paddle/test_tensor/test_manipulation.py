@@ -1,6 +1,5 @@
 # global
 from hypothesis import strategies as st
-
 import math
 
 # local
@@ -11,12 +10,12 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipul
 )
 
 
-# Helpers #
-# ------ #
+# --- Helpers --- #
+# --------------- #
 
 
 @st.composite
-def dtypes_x_reshape(draw):
+def dtypes_x_reshape_(draw):
     shape = draw(helpers.get_shape(min_num_dims=1))
     dtypes, x = draw(
         helpers.dtype_and_values(
@@ -24,24 +23,15 @@ def dtypes_x_reshape(draw):
             shape=shape,
         )
     )
-    shape = draw(
-        helpers.get_shape(min_num_dims=1).filter(
-            lambda s: math.prod(s) == math.prod(shape)
-        )
-    )
     return dtypes, x, shape
 
 
-# Tests #
-# ----- #
-
-
-# reshape
+# reshape_
 @handle_frontend_test(
-    fn_tree="paddle.reshape",
-    dtypes_x_reshape=dtypes_x_reshape(),
+    fn_tree="paddle.tensor.manipulation.reshape_",
+    dtypes_x_reshape=dtypes_x_reshape_(),
 )
-def test_paddle_reshape(
+def test_paddle_reshape_(
     *,
     dtypes_x_reshape,
     on_device,
@@ -756,3 +746,4 @@ def test_paddle_rot90(
         k=k,
         axes=tuple(axes),
     )
+    

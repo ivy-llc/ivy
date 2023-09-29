@@ -1,5 +1,6 @@
 """Collection of device Ivy functions."""
 
+
 # global
 import os
 import gc
@@ -39,11 +40,11 @@ from ivy.func_wrapper import (
 )
 from ivy.utils.exceptions import handle_exceptions
 
-default_device_stack = list()
-soft_device_mode_stack = list()
-dev_handles = dict()
-split_factors = dict()
-max_chunk_sizes = dict()
+default_device_stack = []
+soft_device_mode_stack = []
+dev_handles = {}
+split_factors = {}
+max_chunk_sizes = {}
 
 
 # Extra #
@@ -122,6 +123,7 @@ class DefaultDevice:
         Examples
         --------
         A "gpu" as device:
+
         >>> with ivy.DefaultDevice("gpu") as device:
         >>>     pass
         >>> # after with block device.__exit__() is called
@@ -131,15 +133,12 @@ class DefaultDevice:
         ivy.unset_default_device()
         ivy.unset_soft_device_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
 
-def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
-    return ivy.current_backend().handle_soft_device_variable(
-        *args, fn=fn, device_shifting_dev=device_shifting_dev, **kwargs
-    )
+def handle_soft_device_variable(*args, fn, **kwargs):
+    return ivy.current_backend().handle_soft_device_variable(*args, fn=fn, **kwargs)
 
 
 # Helpers #
@@ -155,16 +154,16 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     return handle
 
 
-def _shift_native_arrays_on_default_device(*args, device_shifting_dev=None, **kwargs):
+def _shift_native_arrays_on_default_device(*args, **kwargs):
     with ivy.ArrayMode(False):
-        default_device = ivy.default_device(device_shifting_dev, as_native=True)
+        default_device = ivy.default_device(as_native=True)
         args, kwargs = ivy.nested_map(
-            [args, kwargs],
             lambda x: (
                 ivy.to_device(x, default_device)
                 if (ivy.is_native_array(x) and ivy.dev(x) != default_device)
                 else x
             ),
+            [args, kwargs],
         )
     return args, kwargs, default_device
 
@@ -201,7 +200,7 @@ def get_all_ivy_arrays_on_dev(
     {139740789224448:ivy.array([1,0,2])},
     """
     device = ivy.as_ivy_dev(device)
-    all_arrays = list()
+    all_arrays = []
     for obj in gc.get_objects():
         if (
             obj is ivy.data_classes.array.array.Array
@@ -511,8 +510,8 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
         return psutil.virtual_memory().total / 1e9
     else:
         raise ivy.utils.exceptions.IvyException(
-            'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
-            "but found {}".format(device)
+            'Invalid device string input, must be on the form "gpu:idx" or "cpu", but'
+            f" found {device}"
         )
 
 
@@ -571,8 +570,8 @@ def used_mem_on_dev(
         return (vm.total - vm.available) / 1e9
     else:
         raise ivy.utils.exceptions.IvyException(
-            'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
-            "but found {}".format(device)
+            'Invalid device string input, must be on the form "gpu:idx" or "cpu", but'
+            f" found {device}"
         )
 
 
@@ -632,8 +631,8 @@ def percent_used_mem_on_dev(
         return (1 - (vm.available / vm.total)) * 100
     else:
         raise ivy.utils.exceptions.IvyException(
-            'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
-            "but found {}".format(device)
+            'Invalid device string input, must be on the form "gpu:idx" or "cpu", but'
+            f" found {device}"
         )
 
 
@@ -675,8 +674,8 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
         return pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
     else:
         raise ivy.utils.exceptions.IvyException(
-            'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
-            "but found {}".format(device)
+            'Invalid device string input, must be on the form "gpu:idx" or "cpu", but'
+            f" found {device}"
         )
 
 
@@ -757,8 +756,9 @@ def tpu_is_available() -> bool:
 
     Examples
     --------
+    >>> ivy.set_backend("torch")
     >>> print(ivy.tpu_is_available())
-    False
+    True
     """
     return ivy.current_backend().tpu_is_available()
 
@@ -832,7 +832,7 @@ def default_device(
             return ivy.dev(item, as_native=as_native)
     global default_device_stack
     if not default_device_stack:
-        ret = "gpu:0" if ivy.gpu_is_available() else "cpu"
+        ret = "cpu"
     else:
         ret = default_device_stack[-1]
     if as_native:
@@ -1089,9 +1089,7 @@ def split_func_call(
             max_chunk_size = max_chunk_sizes[shape_key]
         else:
             max_chunk_size = 0
-        max_dim = max(
-            [inp.cont_shape[inp_ax] for inp, inp_ax in zip(inputs, input_axes)]
-        )
+        max_dim = max(inp.cont_shape[inp_ax] for inp, inp_ax in zip(inputs, input_axes))
         if max_dim > max_chunk_size:
             max_chunk_sizes[shape_key] = max_dim
             max_chunk_size = max_dim
@@ -1151,7 +1149,7 @@ def split_func_call(
         return sums_or_means[0] if len(sums_or_means) == 1 else tuple(sums_or_means)
     rets = [func(*i) for i in zip(*inputs_split)]
     rets = [
-        tuple([post_fn(r) for r in ret]) if isinstance(ret, tuple) else (post_fn(ret),)
+        tuple(post_fn(r) for r in ret) if isinstance(ret, tuple) else (post_fn(ret),)
         for ret in rets
     ]
     num_outputs = len(rets[0])
@@ -1178,9 +1176,8 @@ def _is_valid_devices_attributes(fn: Callable) -> bool:
                     and backend_str in fn_unsupported_devices
                 ):
                     return False
-        else:
-            if isinstance(fn_unsupported_devices, tuple):
-                return False
+        elif isinstance(fn_unsupported_devices, tuple):
+            return False
     return True
 
 

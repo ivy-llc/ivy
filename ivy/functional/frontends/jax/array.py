@@ -3,6 +3,7 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 class Array:
@@ -35,7 +36,7 @@ class Array:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return tuple(self.ivy_array.shape.shape)
 
     @property
     def at(self):
@@ -73,6 +74,7 @@ class Array:
                 f"Dtype {self.dtype} is not castable to {dtype}"
             )
 
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(
         self,
         /,
@@ -87,6 +89,25 @@ class Array:
             out=out,
             keepdims=keepdims,
         )
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def argmin(
+        self,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+    ):
+        return jax_frontend.numpy.argmin(
+            self,
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+        )
+
+    def squeeze(self, axis=None):
+        return jax_frontend.numpy.squeeze(self, axis=axis)
 
     def conj(self, /):
         return jax_frontend.numpy.conj(self._ivy_array)

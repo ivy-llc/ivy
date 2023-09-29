@@ -5,6 +5,10 @@ import pytest
 from types import SimpleNamespace
 from typing import Sequence
 
+
+# local
+import ivy
+
 try:
     import torch
     import torch.nn as nn
@@ -81,18 +85,24 @@ except ImportError:
     paddle.optimizer.SGD = SimpleNamespace
     paddle.nn.L1Loss = SimpleNamespace
 
-
-# local
-import ivy
+FROM_CONVERTERS = {
+    "torch": ivy.Module.from_torch_module,
+    "jax": {
+        "haiku": ivy.Module.from_haiku_module,
+        "flax": ivy.Module.from_flax_module,
+    },
+    "tensorflow": ivy.Module.from_keras_module,
+    "paddle": ivy.Module.from_paddle_module,
+}
 
 
 class TensorflowLinear(tf.keras.Model):
     def __init__(self, out_size):
-        super(TensorflowLinear, self).__init__()
+        super().__init__()
         self._linear = tf.keras.layers.Dense(out_size)
 
     def build(self, input_shape):
-        super(TensorflowLinear, self).build(input_shape)
+        super().build(input_shape)
 
     def call(self, x):
         return self._linear(x)
@@ -100,7 +110,7 @@ class TensorflowLinear(tf.keras.Model):
 
 class TensorflowModule(tf.keras.Model):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
-        super(TensorflowModule, self).__init__()
+        super().__init__()
         self._linear0 = TensorflowLinear(hidden_size)
         self._linear1 = TensorflowLinear(hidden_size)
         self._linear2 = TensorflowLinear(out_size)
@@ -114,7 +124,7 @@ class TensorflowModule(tf.keras.Model):
 
 class TorchLinearModule(nn.Module):
     def __init__(self, in_size, out_size):
-        super(TorchLinearModule, self).__init__()
+        super().__init__()
         self._linear = nn.Linear(in_size, out_size)
 
     def forward(self, x):
@@ -123,7 +133,7 @@ class TorchLinearModule(nn.Module):
 
 class TorchModule(nn.Module):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
-        super(TorchModule, self).__init__()
+        super().__init__()
         self._linear0 = TorchLinearModule(in_size, hidden_size)
         self._linear1 = TorchLinearModule(hidden_size, hidden_size)
         self._linear2 = TorchLinearModule(hidden_size, out_size)
@@ -137,7 +147,7 @@ class TorchModule(nn.Module):
 
 class HaikuLinear(hk.Module):
     def __init__(self, out_size):
-        super(HaikuLinear, self).__init__()
+        super().__init__()
         self._linear = hk.Linear(out_size)
 
     def __call__(self, x):
@@ -146,7 +156,7 @@ class HaikuLinear(hk.Module):
 
 class HaikuModule(hk.Module):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
-        super(HaikuModule, self).__init__()
+        super().__init__()
         self._linear0 = HaikuLinear(hidden_size)
         self._linear1 = HaikuLinear(hidden_size)
         self._linear2 = HaikuLinear(out_size)
@@ -188,7 +198,7 @@ class FlaxModule(flax.linen.Module):
 
 class PaddleLinearModule(paddle.nn.Layer):
     def __init__(self, in_size, out_size):
-        super(PaddleLinearModule, self).__init__()
+        super().__init__()
         self._linear = paddle.nn.Linear(in_size, out_size)
 
     def forward(self, x):
@@ -197,7 +207,7 @@ class PaddleLinearModule(paddle.nn.Layer):
 
 class PaddleModule(paddle.nn.Layer):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
-        super(PaddleModule, self).__init__()
+        super().__init__()
         self._linear0 = PaddleLinearModule(in_size, hidden_size)
         self._linear1 = PaddleLinearModule(hidden_size, hidden_size)
         self._linear2 = PaddleLinearModule(hidden_size, out_size)
@@ -207,27 +217,6 @@ class PaddleModule(paddle.nn.Layer):
         x = paddle.nn.functional.tanh(self._linear0(x))
         x = paddle.nn.functional.tanh(self._linear1(x))
         return paddle.nn.functional.tanh(self._linear2(x))[0]
-
-
-NATIVE_MODULES = {
-    "torch": TorchModule,
-    "jax": {
-        "haiku": HaikuModule,
-        "flax": FlaxModule,
-    },
-    "tensorflow": TensorflowModule,
-    "paddle": PaddleModule,
-}
-
-FROM_CONVERTERS = {
-    "torch": ivy.Module.from_torch_module,
-    "jax": {
-        "haiku": ivy.Module.from_haiku_module,
-        "flax": ivy.Module.from_flax_module,
-    },
-    "tensorflow": ivy.Module.from_keras_module,
-    "paddle": ivy.Module.from_paddle_module,
-}
 
 
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
@@ -358,3 +347,14 @@ def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type):
     assert loss.shape == ()
     # value test
     assert (abs(grads).max() > 0).cont_all_true()
+
+
+NATIVE_MODULES = {
+    "torch": TorchModule,
+    "jax": {
+        "haiku": HaikuModule,
+        "flax": FlaxModule,
+    },
+    "tensorflow": TensorflowModule,
+    "paddle": PaddleModule,
+}
