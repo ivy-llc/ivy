@@ -1789,8 +1789,8 @@ def cache_fn(func: Callable) -> Callable:
     @wraps(func)
     def cached_fn(*args, **kwargs):
         key = "".join(
-                ([f"{str(i)}, " for i in args] + [" kw, "])
-                + [f"{str(i)}, " for i in sorted(kwargs.items())]
+            ([f"{str(i)}, " for i in args] + [" kw, "])
+            + [f"{str(i)}, " for i in sorted(kwargs.items())]
         )
         cache = FN_CACHE[func]
         if key in cache:
