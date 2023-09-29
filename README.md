@@ -239,14 +239,14 @@ After installing Ivy, you can start using it straight away, for example:
 
 # Documentation
 
-You can find Ivy's documentation from this [Docs page](https://unify.ai/docs/ivy/), which includes:
-- [Motivation](https://unify.ai/docs/ivy/overview/background.html): This contextualizes the problem Ivy is trying to solve through
+You can find Ivy's documentation in the [Docs page](https://unify.ai/docs/ivy/), which includes:
+- [Motivation](https://unify.ai/docs/ivy/overview/background.html): This contextualizes the problem Ivy is trying to solve by going over
     - The current [ML Explosion](https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion).
     - Explaining why it is important [to solve this problem](https://unify.ai/docs/ivy/overview/background/why_unify.html#why-unify).
     - Explaining how we adhere to existing [standards](https://unify.ai/docs/ivy/overview/background/standardization.html#standardization) to make this happen.
-- [Related Work](https://unify.ai/docs/ivy/overview/related_work.html): which paints a picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.
-- [Design](https://unify.ai/docs/ivy/overview/design.html): the design decision, architecture, and building blocks (layers and nodes)  of Ivy.
-- [Deep Dive](https://unify.ai/docs/ivy/overview/deep_dive.html): explains our code base and how to contribute to a specific field.
+- [Related Work](https://unify.ai/docs/ivy/overview/related_work.html): Which paints a picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and abstraction level.
+- [Design](https://unify.ai/docs/ivy/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
+- [Deep Dive](https://unify.ai/docs/ivy/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented torards potential contributors to the code base.
 
 
 ------------------------------------------------------------------------
