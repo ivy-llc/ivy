@@ -80,7 +80,7 @@ This section, "Error Handling" aims to assist you in navigating through some com
 
 <<<<<<< HEAD
    As both the results are pretty close to each others in this case, adding an `rtol = 10^-3` and `atol = 10^-3` would fix the failing tests here.
-   
+
    As both the results are pretty close to each others in this case, adding an `rtol = 10^-3` and `atol = 10^-3` would fix the failing tests here.
 
          .. code-block:: python
