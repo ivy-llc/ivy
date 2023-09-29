@@ -31,6 +31,8 @@ internal_automation_tools/
 *.so
 .DS_Store*
 fn_path_cache
+ivy/engines/XLA/rust_api/target/
+ivy/engines/XLA/rust_api/xla_extension/
 
 # Environments
 .env
