@@ -1,9 +1,9 @@
 """Collection of general Ivy functions."""
 
+
 # global
 import gc
 import inspect
-import itertools
 import math
 from functools import wraps
 from numbers import Number
@@ -20,6 +20,7 @@ from typing import (
     Literal,
 )
 import einops
+import ml_dtypes  # noqa
 import numpy as np
 
 # local
@@ -39,30 +40,32 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view_indexing,
-    handle_device_shifting,
+    handle_device,
     handle_partial_mixed_function,
     handle_backend_invalid,
 )
 from ivy.functional.ivy.device import dev
 
-FN_CACHE = dict()
+FN_CACHE = {}
 INF = float("inf")
 
-precise_mode_stack = list()
-queue_timeout_stack = list()
-array_mode_stack = list()
-shape_array_mode_stack = list()
-nestable_mode_stack = list()
-exception_trace_mode_stack = list()
-trace_mode_dict = dict()
-trace_mode_dict["frontend"] = "ivy/functional/frontends"
-trace_mode_dict["ivy"] = "ivy/"
-trace_mode_dict["full"] = ""
-trace_mode_dict["none"] = ""
-show_func_wrapper_trace_mode_stack = list()
-min_denominator_stack = list()
-min_base_stack = list()
-tmp_dir_stack = list()
+precise_mode_stack = []
+queue_timeout_stack = []
+array_mode_stack = []
+shape_array_mode_stack = []
+nestable_mode_stack = []
+exception_trace_mode_stack = []
+inplace_mode_stack = []
+trace_mode_dict = {
+    "frontend": "ivy/functional/frontends",
+    "ivy": "ivy/",
+    "full": "",
+    "none": "",
+}
+show_func_wrapper_trace_mode_stack = []
+min_denominator_stack = []
+min_base_stack = []
+tmp_dir_stack = []
 
 
 # Extra #
@@ -73,7 +76,7 @@ class PreciseMode:
     """Precise Mode Context Manager."""
 
     # noinspection PyShadowingNames
-    def __init__(self, precise_mode):
+    def __init__(self, precise_mode: bool):
         self._precise_mode = precise_mode
 
     def __enter__(self):
@@ -83,7 +86,6 @@ class PreciseMode:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_precise_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -174,29 +176,56 @@ class ArrayMode:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_array_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
 
 def get_referrers_recursive(
-    item, depth=0, max_depth=None, seen_set=None, local_set=None
-):
+    item: object,
+    depth: int = 0,
+    max_depth: int = None,
+    seen_set: set = None,
+    local_set: set = None,
+) -> ivy.Container:
     """
-    Summary.
+    Recursively retrieve referrers for an object.
+
+    This function recursively fetches referrers for the specified `item` up to a given
+    `max_depth`.
 
     Parameters
     ----------
-    item
+    item : object
+        The object for which referrers should be retrieved.
+    depth : int, optional
+        Current depth in the recursion. (default is 0)
+    max_depth : int, optional
+        Maximum depth of recursion. If `None`, there's no depth limit. (default is None)
+    seen_set : set, optional
+        Set of seen referrer IDs to prevent duplicates. (default is None)
+    local_set : set, optional
+        Set of local referrer IDs to avoid redundancy. (default is None)
 
-    depth
-         (Default value = 0)
-    max_depth
-         (Default value = None)
-    seen_set
-         (Default value = None)
-    local_set
-         (Default value = None`)
+    Returns
+    -------
+    ivy.Container
+        A container representing referrers and their sub-referrers, respecting the
+        `max_depth`.
+
+    Examples
+    --------
+    >>> import gc
+    >>> def example_function():
+    ...     obj = [1, 2, 3]
+    ...     return get_referrers_recursive(obj, max_depth=2)
+    >>> result = example_function()
+    >>> print(result)
+    Container(
+        'ref_id_1': Container(
+            'ref_id_2': 'tracked',
+            'ref_id_3': 'tracked'
+        )
+    )
     """
     seen_set = ivy.default(seen_set, set())
     local_set = ivy.default(local_set, set())
@@ -205,14 +234,16 @@ def get_referrers_recursive(
         alphabetical_keys=False,
         keyword_color_dict={"repr": "magenta"},
     )
+
     referrers = [
         ref
         for ref in gc.get_referrers(item)
         if not (
             isinstance(ref, dict)
-            and min([k in ref for k in ["depth", "max_depth", "seen_set", "local_set"]])
+            and min(k in ref for k in ["depth", "max_depth", "seen_set", "local_set"])
         )
     ]
+
     local_set.add(str(id(referrers)))
     for ref in referrers:
         ref_id = str(id(ref))
@@ -220,22 +251,28 @@ def get_referrers_recursive(
             continue
         seen = ref_id in seen_set
         seen_set.add(ref_id)
-        refs_rec = lambda: get_referrers_recursive(
-            ref, depth + 1, max_depth, seen_set, local_set
-        )
+
+        def get_referrers_recursive_inner():
+            return get_referrers_recursive(
+                ref, depth + 1, max_depth, seen_set, local_set
+            )
+
         this_repr = "tracked" if seen else str(ref).replace(" ", "")
+
         if not seen and (not max_depth or depth < max_depth):
             val = ivy.Container(
                 repr=this_repr,
                 alphabetical_keys=False,
                 keyword_color_dict={"repr": "magenta"},
             )
-            refs = refs_rec()
+
+            refs = get_referrers_recursive_inner()
             for k, v in refs.items():
                 val[k] = v
         else:
             val = this_repr
         ret_cont[str(ref_id)] = val
+
     return ret_cont
 
 
@@ -513,7 +550,7 @@ def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
     global exception_trace_mode_stack
     trace_modes = list(trace_mode_dict.keys())
     ivy.utils.assertions.check_elem_in_list(
-        mode, trace_modes, False, "trace mode must be one of {}".format(trace_modes)
+        mode, trace_modes, False, f"trace mode must be one of {trace_modes}"
     )
     exception_trace_mode_stack.append(mode)
     ivy.__setattr__("exception_trace_mode", mode, True)
@@ -607,7 +644,7 @@ def unset_show_func_wrapper_trace_mode() -> None:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def array_equal(
     x0: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -748,7 +785,7 @@ def all_equal(
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def to_numpy(
     x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
 ) -> np.ndarray:
@@ -821,7 +858,7 @@ def isscalar(x: Any, /) -> bool:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """
     Convert an array with a single element into a scalar.
@@ -840,9 +877,8 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3])
@@ -879,7 +915,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """
     Create a (possibly nested) list from input array.
@@ -980,9 +1016,8 @@ def clip_vector_norm(
     ret
         An array with the vector norm downscaled to the max norm if needed.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
@@ -1069,9 +1104,8 @@ def clip_matrix_norm(
     ret
         An array with the matrix norm downscaled to the max norm if needed.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[0., 1., 2.]])
@@ -1193,23 +1227,22 @@ def fourier_encode(
     orig_x = x
     if linear:
         scales = ivy.linspace(1.0, max_freq / 2, num_bands, device=dev(x))
+    elif ivy.backend == "torch" and isinstance(max_freq, float):
+        scales = ivy.logspace(
+            0.0,
+            ivy.log(ivy.array(max_freq / 2)) / math.log(10),
+            num_bands,
+            base=10,
+            device=dev(x),
+        )
     else:
-        if ivy.backend == "torch" and isinstance(max_freq, float):
-            scales = ivy.logspace(
-                0.0,
-                ivy.log(ivy.array(max_freq / 2)) / math.log(10),
-                num_bands,
-                base=10,
-                device=dev(x),
-            )
-        else:
-            scales = ivy.logspace(
-                0.0,
-                ivy.log(max_freq / 2) / math.log(10),
-                num_bands,
-                base=10,
-                device=dev(x),
-            )
+        scales = ivy.logspace(
+            0.0,
+            ivy.log(max_freq / 2) / math.log(10),
+            num_bands,
+            base=10,
+            device=dev(x),
+        )
     scales = ivy.astype(scales, ivy.dtype(x))
     scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
     x = x * scales * math.pi
@@ -1279,7 +1312,7 @@ def value_is_nan(
     False
     """
     x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
-    if not x_scalar == x:
+    if x_scalar != x:
         return True
     if include_infs and (x_scalar == INF or x_scalar == -INF):
         return True
@@ -1354,7 +1387,7 @@ def has_nans(
 
 
 @handle_exceptions
-def exists(x: Any) -> bool:
+def exists(x: Any, /) -> bool:
     """
     Check as to whether the input is None or not.
 
@@ -1461,8 +1494,8 @@ def default(
     ret
         x if x exists (is not None), else default.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :code:`Any` input:
 
     >>> x = None
@@ -1509,9 +1542,7 @@ def default(
     """
     with_callable = catch_exceptions or with_callable
     if rev:
-        tmp = x
-        x = default_val
-        default_val = tmp
+        x, default_val = default_val, x
     if with_callable:
         x_callable = callable(x)
         default_callable = callable(default_val)
@@ -1663,7 +1694,7 @@ def arg_names(receiver):
     >>> x = ivy.arg_names(ivy.optimizers.Adam)
     >>> print(x)
     ['lr', 'beta1', 'beta2', 'epsilon', 'inplace',
-    'stop_gradients', 'compile_on_next_step', 'device']
+    'stop_gradients', 'trace_on_next_step', 'device']
     """
     return list(inspect.signature(receiver).parameters.keys())
 
@@ -1704,12 +1735,12 @@ def match_kwargs(
     >>> print(x)
     [{'out': ivy.array([0., 0., 0.]), 'bias': ivy.array([0, 1, 2])}, {}]
     """
-    split_kwargs = list()
+    split_kwargs = []
     for receiver in receivers:
         expected_kwargs = arg_names(receiver)
         found_kwargs = {k: v for k, v in kwargs.items() if k in expected_kwargs}
         if not allow_duplicates:
-            for k in found_kwargs.keys():
+            for k in found_kwargs:
                 del kwargs[k]
         split_kwargs.append(found_kwargs)
     if len(split_kwargs) == 1:
@@ -1753,14 +1784,13 @@ def cache_fn(func: Callable) -> Callable:
     """
     global FN_CACHE
     if func not in FN_CACHE:
-        FN_CACHE[func] = dict()
+        FN_CACHE[func] = {}
 
     @wraps(func)
     def cached_fn(*args, **kwargs):
         key = "".join(
-            [str(i) + ", " for i in args]
-            + [" kw, "]
-            + [str(i) + ", " for i in sorted(kwargs.items())]
+            ([f"{str(i)}, " for i in args] + [" kw, "])
+            + [f"{str(i)}, " for i in sorted(kwargs.items())]
         )
         cache = FN_CACHE[func]
         if key in cache:
@@ -1873,24 +1903,28 @@ def einops_rearrange(
 
     Suppose we have a set of 32 images in "h w c" format (height-width-channel)
     and concatenate images along height (vertical axis), 960 = 32 * 30
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> (b h) w c')
     >>> print(x.shape)
     (960, 40, 3)
 
     # Concatenate images along horizontal axis, 1280 = 32 * 40
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> h (b w) c')
     >>> print(x.shape)
     (30, 1280, 3)
 
     # Reorder axes to "b c h w" format for deep learning
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b c h w')
     >>> print(x.shape)
     (32, 3, 30, 40)
 
     # Flatten each image into a vector, 3600 = 30 * 40 * 3
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b (c h w)')
     >>> print(x.shape)
@@ -1898,6 +1932,7 @@ def einops_rearrange(
 
     # Split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right),
     # 128 = 32 * 2 * 2
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b (h1 h) (w1 w) c -> (b h1 w1) h w c',
     ... h1=2, w1=2)
@@ -2303,6 +2338,64 @@ def stable_pow(
     -------
     ret
         The new item following the numerically stable power.
+
+    Examples
+    --------
+    With :code:`int` input:
+
+    >>> x = ivy.stable_pow(2, 2)
+    >>> print(x)
+    ivy.array(4.00004)
+
+    >>> x = ivy.stable_pow(2, 2, min_base=2)
+    >>> print(x)
+    ivy.array(16)
+
+    With float input:
+
+    >>> x = ivy.stable_pow(4.0, .5)
+    >>> print(x)
+    ivy.array(2.00000262)
+
+    With :code:`complex` input:
+
+    >>> x = ivy.stable_pow(3+4j, 2j)
+    >>> print(x)
+    ivy.array(-0.15605032-0.01208451j)
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.asarray([[2, 4],
+    ...                  [6, 8]])
+    >>> y = ivy.stable_pow(x, 2)
+    >>> print(y)
+    ivy.array([[ 4.00004, 16.00008],
+           [36.00012, 64.00016]])
+
+    >>> x = ivy.asarray([2, 4, 6])
+    >>> y = ivy.asarray([2, 3, 4])
+    >>> z = ivy.stable_pow(x, y)
+    >>> print(z)
+    ivy.array([   4.00004,   64.00048, 1296.00864])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+    >>> y = ivy.stable_pow(x, 2)
+    >>> print(y)
+    {
+        a: ivy.array([4.00004, 16.00008]),
+        b: ivy.array([36.00012, 64.00016])
+    }
+
+    >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+    >>> y = ivy.Container(a=ivy.asarray([1, 3]), b=ivy.asarray([4, 5]))
+    >>> z = ivy.stable_pow(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([2.00001, 64.00048]),
+        b: ivy.array([1296.00864, 32768.2048])
+    }
     """
     return_dtype = ivy.promote_types(
         ivy.default_dtype(item=base),
@@ -2337,7 +2430,7 @@ def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
     >>> x
     [ivy.array([0, 1, 2])]
     """
-    all_arrays = list()
+    all_arrays = []
     for obj in gc.get_objects():
         try:
             if ivy.current_backend_str() in ["", "numpy"]:
@@ -2671,9 +2764,8 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
     ivy.utils.assertions.check_true(
         ivy.supports_inplace_updates(x),
-        "Inplace operations are not supported {} types with {} backend".format(
-            type(x), ivy.current_backend_str()
-        ),
+        f"Inplace operations are not supported {type(x)} types with"
+        f" {ivy.current_backend_str()} backend",
     )
     return True
 
@@ -2683,7 +2775,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_view_indexing
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2701,21 +2793,18 @@ def get_item(
     query
         array, index array, integer indices or boolean mask.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
     ret
         New array with the values gathered at the specified indices.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> print(ivy.get_item(x, query))
@@ -2734,19 +2823,11 @@ def get_item(
         query = ivy.nonzero(query, as_tuple=False)
         ret = ivy.gather_nd(x, query)
     else:
-        query, target_shape, vector_inds = _parse_query(query, x.shape)
-        if vector_inds is not None:
-            x = ivy.permute_dims(
-                x,
-                axes=[
-                    *vector_inds,
-                    *[i for i in range(len(x.shape)) if i not in vector_inds],
-                ],
-            )
-        ret = ivy.gather_nd(x, query)
-        ret = ivy.reshape(ret, target_shape) if target_shape != list(ret.shape) else ret
-    if copy:
-        return ivy.copy_array(ret)
+        indices, target_shape = _parse_query(query, x.shape)
+        if indices is None:
+            return ivy.empty(target_shape, dtype=x.dtype)
+        ret = ivy.gather_nd(x, indices)
+        ret = ivy.reshape(ret, target_shape)
     return ret
 
 
@@ -2762,7 +2843,6 @@ get_item.mixed_backend_wrappers = {
 
 @handle_nestable
 @handle_partial_mixed_function
-@handle_view_indexing
 @inputs_to_ivy_arrays
 @handle_array_function
 def set_item(
@@ -2794,16 +2874,15 @@ def set_item(
     ret
         the array with updated values at the specified indices.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> val = ivy.array([10, 10])
     >>> ivy.set_item(x, query, val)
     >>> print(x)
-    ivy.array([10, 10, 20])
 
+    ivy.array([10, 10, 20])
     >>> x = ivy.array([[0, -1, 20], [5, 2, -8]])
     >>> query = ([1, 1])
     >>> val = ivy.array([10, 10])
@@ -2814,17 +2893,22 @@ def set_item(
     """
     if copy:
         x = ivy.copy_array(x)
-    if 0 in x.shape:
+    if not ivy.is_array(val):
+        val = ivy.array(val)
+    if 0 in x.shape or 0 in val.shape:
         return x
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             query = ivy.tile(query, (x.shape[0],))
         target_shape = ivy.get_item(x, query).shape
-        query = ivy.nonzero(query, as_tuple=False)
+        indices = ivy.nonzero(query, as_tuple=False)
     else:
-        query, target_shape = _parse_query(query, x.shape, scatter=True)
+        indices, target_shape = _parse_query(query, x.shape)
+        if indices is None:
+            return x
     val = _broadcast_to(val, target_shape).astype(x.dtype)
-    return ivy.scatter_nd(query, val, reduction="replace", out=x)
+    ret = ivy.scatter_nd(indices, val, reduction="replace", out=x)
+    return ret
 
 
 set_item.mixed_backend_wrappers = {
@@ -2837,228 +2921,39 @@ set_item.mixed_backend_wrappers = {
 }
 
 
-def _parse_query(query, x_shape, scatter=False):
-    query = (query,) if not isinstance(query, tuple) else query
+def _parse_query(query, x_shape):
+    query = query if isinstance(query, tuple) else (query,)
+    query_ = tuple(q.to_numpy() if ivy.is_array(q) else q for q in query)
 
-    # sequence and integer queries are dealt with as array queries
-    query = [ivy.array(q) if isinstance(q, (tuple, list, int)) else q for q in query]
+    # array containing all of x's flat indices
+    x_ = ivy.arange(0, _numel(x_shape)).reshape(x_shape)
 
-    # check if non-slice queries are in consecutive positions
-    # if so, they have to be moved to the front
-    # https://numpy.org/neps/nep-0021-advanced-indexing.html#mixed-indexing
-    # relevant only for gathering
-    if not scatter:
-        non_slice_q_idxs = [i for i, q in enumerate(query) if ivy.is_array(q)]
-        to_front = len(non_slice_q_idxs) > 1 and any(ivy.diff(non_slice_q_idxs) != 1)
-    else:
-        to_front = False
+    # use numpy's __getitem__ to get the queried indices
+    x_idxs = ivy.array(x_.to_numpy()[query_])
+    target_shape = x_idxs.shape
 
-    # extract newaxis queries
-    if not scatter:
-        new_axes = [i for i, q in enumerate(query) if q is None]
-    query = [q for q in query if q is not None]
-    query = [Ellipsis] if query == [] else query
+    if 0 in x_idxs.shape or 0 in x_shape:
+        return None, target_shape
 
-    # parse ellipsis
-    ellipsis_inds = None
-    if any(q is Ellipsis for q in query):
-        query, ellipsis_inds = _parse_ellipsis(query, len(x_shape))
+    # convert the flat indices to multi-D indices
+    x_idxs = ivy.unravel_index(x_idxs, x_shape)
 
-    # broadcast array queries
-    array_inds = [i for i, v in enumerate(query) if ivy.is_array(v)]
-    if array_inds:
-        new_arrays = ivy.broadcast_arrays(
-            *[v for i, v in enumerate(query) if i in array_inds]
-        )
-        new_arrays = [
-            ivy.where(arr < 0, arr + x_shape[i], arr).astype(ivy.int64)
-            for arr, i in zip(new_arrays, array_inds)
-        ]
-        for idx, arr in zip(array_inds, new_arrays):
-            query[idx] = arr
+    # stack the multi-D indices to bring them to gather_nd/scatter_nd format
+    x_idxs = ivy.stack(x_idxs, axis=-1).astype(ivy.int64)
 
-    # convert slices to range arrays and replace negative values
-    for i, idx in enumerate(query):
-        s = x_shape[i]
-        if isinstance(idx, slice):
-            q_i = _parse_slice(idx, s)
-        elif ivy.is_array(idx):
-            q_i = ivy.where(idx < 0, idx + s, idx)
-        else:
-            raise ivy.exceptions.IvyException("unsupported query format")
-        query[i] = q_i.astype(ivy.int64)
-
-    # fill in missing queries
-    if len(query) < len(x_shape):
-        query += [ivy.arange(0, s, 1).astype(ivy.int64) for s in x_shape[len(query) :]]
-
-    # calculate target_shape, i.e. the shape the gathered values should be in
-    if len(array_inds) and to_front:
-        target_shape = (
-            [list(new_arrays[0].shape)]
-            + [list(query[i].shape) for i in range(len(query)) if i not in array_inds]
-            + [[] for _ in range(len(array_inds) - 1)]
-        )
-    elif len(array_inds):
-        target_shape = (
-            [list(query[i].shape) for i in range(0, array_inds[0])]
-            + [list(new_arrays[0].shape)]
-            + [[] for _ in range(len(array_inds) - 1)]
-            + [list(query[i].shape) for i in range(array_inds[-1] + 1, len(query))]
-        )
-    else:
-        target_shape = [list(q.shape) for q in query]
-    if ellipsis_inds is not None:
-        target_shape = (
-            target_shape[: ellipsis_inds[0]]
-            + [target_shape[ellipsis_inds[0] : ellipsis_inds[1]]]
-            + target_shape[ellipsis_inds[1] :]
-        )
-    if not scatter:
-        for ax in new_axes:
-            if len(array_inds) and to_front and ax <= array_inds[-1]:
-                ax = array_inds[0] + 1
-            target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
-    target_shape = _deep_flatten(target_shape)
-
-    # calculate the indices mesh (indices in gather_nd/scatter_nd format)
-    query = [ivy.expand_dims(q) if not len(q.shape) else q for q in query]
-    if len(array_inds):
-        new_arrays = [
-            (
-                arr.reshape((-1,))
-                if len(arr.shape) > 1
-                else ivy.expand_dims(arr) if not len(arr.shape) else arr
-            )
-            for arr in new_arrays
-        ]
-    if len(array_inds) and to_front:
-        indices = ivy.array(
-            [
-                (*k, *i)
-                for k in zip(*new_arrays)
-                for i in itertools.product(
-                    *[v for i, v in enumerate(query) if i not in array_inds]
-                )
-            ]
-        ).reshape((*target_shape, len(x_shape)))
-    elif len(array_inds):
-        indices = ivy.array(
-            [
-                (*i, *k, *j)
-                for i in itertools.product(
-                    *[v for i, v in enumerate(query) if i < array_inds[0]]
-                )
-                for k in zip(*new_arrays)
-                for j in itertools.product(
-                    *[v for i, v in enumerate(query) if i > array_inds[-1]]
-                )
-            ]
-        ).reshape((*target_shape, len(x_shape)))
-    else:
-        indices = ivy.array([(*i,) for i in itertools.product(*query)]).reshape(
-            (*target_shape, len(x_shape))
-        )
-
-    if scatter:
-        return indices.astype(ivy.int64), target_shape
-    else:
-        return (
-            indices.astype(ivy.int64),
-            target_shape,
-            array_inds if len(array_inds) and to_front else None,
-        )
-
-
-def _parse_ellipsis(so, ndims):
-    pre = list()
-    for s in so:
-        if s is Ellipsis:
-            break
-        pre.append(s)
-    post = list()
-    for s in reversed(so):
-        if s is Ellipsis:
-            break
-        post.append(s)
-    ret = list(
-        pre
-        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
-        + list(reversed(post))
-    )
-    return ret, (len(pre), ndims - len(post))
-
-
-def _parse_slice(idx, s):
-    step = 1 if idx.step is None else idx.step
-    if step > 0:
-        start = 0 if idx.start is None else idx.start
-        if start >= s:
-            stop = start
-        else:
-            if start <= -s:
-                start = 0
-            elif start < 0:
-                start = start + s
-            stop = s if idx.stop is None else idx.stop
-            if stop > s:
-                stop = s
-            elif start <= -s:
-                stop = 0
-            elif stop < 0:
-                stop = stop + s
-    else:
-        start = s - 1 if idx.start is None else idx.start
-        if start <= -s:
-            stop = start
-        else:
-            if start >= s:
-                start = s - 1
-            elif start < 0:
-                start = start + s
-            if idx.stop is None:
-                stop = -1
-            else:
-                stop = idx.stop
-                if stop > s:
-                    stop = s
-                elif stop <= -s:
-                    stop = 0
-                    if start == 0:
-                        stop = -1
-                elif stop < 0:
-                    stop = stop + s
-    q_i = ivy.arange(start, stop, step).to_list()
-    q_i = [q for q in q_i if 0 <= q < s]
-    q_i = (
-        ivy.array(q_i)
-        if len(q_i) or start == stop or idx.stop is not None
-        else ivy.arange(0, s, 1)
-    )
-    return q_i
-
-
-def _deep_flatten(iterable):
-    def _flatten_gen(iterable):
-        for item in iterable:
-            if isinstance(item, list):
-                yield from _flatten_gen(item)
-            else:
-                yield item
-
-    return list(_flatten_gen(iterable))
+    return x_idxs, target_shape
 
 
 def _numel(shape):
-    return math.prod(shape) if shape != () else 1
+    shape = tuple(shape)
+    return ivy.prod(shape).to_scalar() if shape != () else 1
 
 
 def _broadcast_to(input, target_shape):
-    input = ivy.squeeze(input)
     if _numel(tuple(input.shape)) == _numel(tuple(target_shape)):
         return ivy.reshape(input, target_shape)
     else:
-        input = ivy.expand_dims(input, axis=0) if not len(input.shape) else input
+        input = input if len(input.shape) else ivy.expand_dims(input, axis=0)
         new_dims = ()
         i_i = len(input.shape) - 1
         for i_t in range(len(target_shape) - 1, -1, -1):
@@ -3077,7 +2972,7 @@ def _broadcast_to(input, target_shape):
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-# @handle_device_shifting
+@handle_device
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3178,13 +3073,86 @@ def inplace_update(
 
 inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 
+ivy.inplace_mode = inplace_mode_stack[-1] if inplace_mode_stack else "lenient"
+
+
+@handle_exceptions
+def set_inplace_mode(mode: str = "lenient") -> None:
+    """
+    Set the memory management behavior for in-place updates in Ivy.
+
+    By default, Ivy creates new arrays in the backend for in-place updates.
+    However, this behavior can be controlled by the user
+    using the 'inplace_mode' parameter.
+
+    Parameters
+    ----------
+    mode : str
+        The mode for memory management during in-place updates.
+        - 'lenient': (Default) In this mode, new arrays will be created during
+                    in-place updates to avoid breaking existing code.
+                    This is the default behavior.
+        - 'strict': In this mode, an error will be raised if the
+                    'inplace_update' function is called
+                    in a backend that doesn't support inplace updates natively.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    >>> set_inplace_mode('lenient')
+    >>> ivy.inplace_mode
+    'lenient'
+
+    >>> set_inplace_mode('strict')
+    >>> ivy.inplace_mode
+    'strict'
+
+    Note
+    ----
+    Enabling strict mode can help users have more control over memory management
+    but may lead to errors if the backend doesn't support inplace updates natively.
+    """
+    global inplace_mode_stack
+    inplace_modes = ["lenient", "strict"]
+    ivy.utils.assertions.check_elem_in_list(
+        mode, inplace_modes, False, f"inplace mode must be one of {inplace_modes}"
+    )
+    inplace_mode_stack.append(mode)
+    ivy.__setattr__("inplace_mode", mode, True)
+
+
+@handle_exceptions
+def unset_inplace_mode() -> None:
+    """
+    Reset the memory management behavior for in-place updates in Ivy to the previous
+    state.
+
+    Examples
+    --------
+    >>> set_inplace_mode('strict')
+    >>> ivy.inplace_mode
+    'strict'
+
+    >>> unset_inplace_mode()
+    >>> ivy.inplace_mode
+    'lenient'
+    """
+    global inplace_mode_stack
+    if inplace_mode_stack:
+        inplace_mode_stack.pop(-1)
+        mode = inplace_mode_stack[-1] if inplace_mode_stack else "lenient"
+        ivy.__setattr__("inplace_mode", mode, True)
+
 
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3256,7 +3224,7 @@ def inplace_decrement(
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3316,7 +3284,7 @@ def inplace_increment(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3406,7 +3374,7 @@ def scatter_flat(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3491,7 +3459,7 @@ def scatter_nd(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3602,7 +3570,7 @@ def gather(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3704,7 +3672,7 @@ def multiprocessing(context: Optional[str] = None):
 @outputs_to_ivy_shapes
 @outputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def shape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3737,7 +3705,6 @@ def shape(
 
     >>> print(z)
     ivy.array([2, 3])
-
     """
     return current_backend(x).shape(x, as_array=as_array)
 
@@ -3798,7 +3765,7 @@ def unset_shape_array_mode() -> None:
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def get_num_dims(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> int:
@@ -3893,10 +3860,8 @@ def _valid_attrib_combinations(fn, backend, dnd_dict, first_attr_name, other_att
             attr_list = attr_list.get(backend, ())
     ivy.utils.assertions.check_false(
         dnd_dict and attr_list,
-        (
-            f"Cannot specify both {first_attr_name} and {other_attr_name} "
-            "cannot both be defined for the same function"
-        ),
+        f"Cannot specify both {first_attr_name} and {other_attr_name} "
+        "cannot both be defined for the same function",
     )
 
 
@@ -3917,10 +3882,8 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
 
     ivy.utils.assertions.check_false(
         fn_unsupported_dnd and fn_supported_dnd,
-        (
-            "unsupported_device_and_dtype and supported_device_and_dtype cannot"
-            " both be defined for the same function"
-        ),
+        "unsupported_device_and_dtype and supported_device_and_dtype cannot"
+        " both be defined for the same function",
     )
 
     us = "unsupported_device_and_dtype"
@@ -4052,10 +4015,8 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
     """
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
-        (
-            "supported_device_and_dtypes and unsupported_device_and_dtypes "
-            "attributes cannot both exist in a particular backend"
-        ),
+        "supported_device_and_dtypes and unsupported_device_and_dtypes "
+        "attributes cannot both exist in a particular backend",
     )
 
     if hasattr(fn, "partial_mixed_handler"):
@@ -4103,10 +4064,8 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
     """
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
-        (
-            "supported_device_and_dtypes and unsupported_device_and_dtypes "
-            "attributes cannot both exist in a particular backend"
-        ),
+        "supported_device_and_dtypes and unsupported_device_and_dtypes "
+        "attributes cannot both exist in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
@@ -4191,7 +4150,7 @@ def vmap(
 @handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def isin(
     elements: Union[ivy.Array, ivy.NativeArray],
     test_elements: Union[ivy.Array, ivy.NativeArray],
@@ -4243,7 +4202,7 @@ def isin(
 @handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
-@handle_device_shifting
+@handle_device
 def itemsize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4276,7 +4235,7 @@ def itemsize(
 
 @handle_exceptions
 @handle_nestable
-@handle_device_shifting
+@handle_device
 def strides(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

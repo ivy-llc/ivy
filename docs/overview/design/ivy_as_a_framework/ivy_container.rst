@@ -5,7 +5,7 @@ Here, we explain how the :class:`ivy.Container` class saves you a ton of time an
 So without further ado, let’s dive in!
 
 Firstly, Dictionaries are an incredibly powerful and useful data type in Python.
-They enable a clean, readable and efficient-access (via hashing) storage of arbitrarily hierarchical data.
+They enable a clean, readable, and efficient-access (via hashing) storage of arbitrarily hierarchical data.
 
 The :class:`ivy.Container` class can be seen as a souped-up Dict, with many useful features built on top.
 It’s the backbone of most high level operations in Ivy.
@@ -145,7 +145,7 @@ Or we can flip each sub-array:
         }
     }
 
-There are about 200 such functions for the :class:`ivy.Container` class in total, check out the `code <https://github.com/unifyai/ivy/tree/main/ivy/data_classes/container>`_ or `docs <https://unify.ai/docs/ivy/docs/data_classes/data_classes/ivy.data_classes.container.html>`_ to see what they are!
+There are about 200 such functions for the :class:`ivy.Container` class in total, check out the `code <https://github.com/unifyai/ivy/tree/main/ivy/data_classes/container>`_ or `docs <../../../docs/data_classes/data_classes/ivy.data_classes.container.rst>`_ to see what they are!
 
 Built-ins
 ----------
@@ -223,7 +223,7 @@ Nested keys can also be set in one line, using either ‘/’ or ‘.’ as a de
     }
 
 One of the key benefits of using properties under the hood is the autocomplete support this introduces.
-Class attributes can be auto-completed when pressing tab midway through typing.
+Class attributes can be auto-completed when pressing the :code:`Tab` midway through typing.
 This is not possible with Dicts.
 
 .. code-block:: python
@@ -363,7 +363,7 @@ Customized Representations
 Not only does :class:`ivy.Container` print to the terminal in a very intuitive manner, but there are also helper functions to fully control this representation.
 This is very helpful when debugging networks with huge numbers of parameters with a deep hierarchical structure for example.
 
-If our networks weights go many levels deep in the nested hierarchy, we might not want to see all of them when printing our container to screen.
+If our networks weights go many levels deep in the nested hierarchy, we might not want to see all of them when printing our container to the screen.
 Consider the following nested structure.
 
 .. code-block:: python
@@ -458,7 +458,7 @@ All nested structures above this height are truncated into single keys with a �
 These are very useful methods when stepping through code and debugging complex nested structures such as the weights of a network.
 
 There are also methods: :code:`cont_with_print_limit` for controlling the printable size of arrays before the shape is instead displayed, :code:`cont_with_key_length_limit` for setting the maximum key length before string clipping, :code:`cont_with_print_indent` for controlling the nested indent, and many more.
-Check out the `docs <https://unify.ai/docs/ivy/docs/data_classes/data_classes/ivy.data_classes.container.html>`_ for more details!
+Check out the `docs <../../../docs/data_classes/data_classes/ivy.data_classes.container.rst>`_ for more details!
 
 Use Cases
 ---------
@@ -537,7 +537,7 @@ Our code will be much cleaner if we do something like the following, particularl
         agent.cams = (agent.cams - cam_min) / cam_range
 
 Of course, this argument holds for the use of custom classes or built-in containers (Python list, dict, tuple etc.), and isn’t only relevant for the Ivy container.
-However the recursive methods of the Ivy Container make things even more convenient, such as where we recursively normalize all five images in the final four lines of the :code:`update_agent` method.
+However, the recursive methods of the Ivy Container make things even more convenient, such as where we recursively normalize all five images in the final four lines of the :code:`update_agent` method.
 
 Configuration
 --------------
@@ -636,8 +636,7 @@ The following code is possible thanks to the recursive operation of the containe
         loss, grads = ivy.execute_with_gradients(
           loss_fn, model.v)
         model.v = model.v - lr * grads
-        print('step {} loss {}'.format(
-          step, ivy.to_numpy(loss).item()))
+        print(f'step {step} loss {ivy.to_numpy(loss).item()}')
 
     print(model.v)
 
