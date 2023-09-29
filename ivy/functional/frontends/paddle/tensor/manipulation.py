@@ -154,7 +154,7 @@ def take_along_axis(arr, indices, axis):
             "gpu": ("float16",),
         },
     },
-  
+
 @with_unsupported_dtypes(
     {"2.5.1 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
     "paddle",
