@@ -64,7 +64,7 @@ def _dtype_x_limited_axis(draw, *, allow_none=False):
     fn_tree="functional.ivy.argmax",
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
-    dtype=helpers.get_dtypes("integer", full=False, none=True),
+    dtype=helpers.get_dtypes("valid", full=False, none=True),
     select_last_index=st.booleans(),
 )
 def test_argmax(
@@ -147,7 +147,7 @@ def test_argwhere(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.nonzero",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_dim_size=1,
     ),

@@ -275,7 +275,6 @@ def _determine_sqrt_dtype_cast(
     Returns:
         (intermediate_dtype, output_dtype)
     """
-
     cast_and_return_float32_dtype = {
         paddle.int8,
         paddle.int16,
@@ -298,7 +297,6 @@ def _determine_sqrt_dtype_cast(
 
 def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     """Calculate the square root with type handling."""
-
     if paddle.is_complex(x):
         angle = paddle.angle(x)
         return paddle.complex(
