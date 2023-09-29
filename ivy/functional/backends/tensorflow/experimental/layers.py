@@ -1348,27 +1348,34 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if axis is None:
+        axis = -1
+    
     if isinstance(n_fft, tuple):
         n_fft = n_fft[0]
 
     if hop_length <= 0:
         hop_length = 1
-
-   window_length = tf.shape(window)[-1]
-    if window_length != win_length:
-        win_length = window_length
-        n_fft = win_length
-
+    
     signal_length = tf.shape(signal)[-1]
     if signal_length < n_fft:
-        n_fft = signal_length
+        n_fft = signal_length     
 
+    window_length = tf.shape(window)[-1]
+    if window_length != win_length:
+        win_length = window_length
+        n_fft = win_length  
+      
     if window is None or window is tf.Tensor:
         window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
 
-    window /= tf.reduce_max(window)
+    if window_length > signal_length:
+        window = signal
+        window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)    
+    
+    normalized_window = window / tf.reduce_max(window)  
 
-    window_fn = lambda *args, **kwargs: window
+    window_fn = lambda *args, **kwargs: normalized_window   
 
     stft = tf.signal.stft(
         signal,
