@@ -401,6 +401,9 @@ def scan(
     elems = ivy.asarray(elems)
     return ivy.associative_scan(elems, fn, reverse=reverse)
 
+@to_ivy_arrays_and_back
+def scatter_nd(indices, updates, shape=None, reduction="sum", out=None, name=None):
+    return ivy.scatter_nd(indices,updates,shape = shape, reduction=reduction,out=out)
 
 @to_ivy_arrays_and_back
 def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
