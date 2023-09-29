@@ -720,6 +720,7 @@ def test_paddle_tile(
         repeat_times=repeats,
     )
 
+
 @handle_frontend_test(
     fn_tree="paddle.tolist",
     dtype_and_x=helpers.dtype_and_values(
@@ -783,8 +784,7 @@ def test_paddle_unbind(
         axis=axis,
     )
 
-    
-    
+
 # unstack
 @handle_frontend_test(
     fn_tree="paddle.unstack",
