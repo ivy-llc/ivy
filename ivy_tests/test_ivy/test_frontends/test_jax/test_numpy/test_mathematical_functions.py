@@ -3246,7 +3246,7 @@ def test_jax_transpose(
         on_device=on_device,
         test_values=False,
         a=x[0],
-        axes=None,
+        axes=ivy.arange(x[0].ndim),
     )
 
 
