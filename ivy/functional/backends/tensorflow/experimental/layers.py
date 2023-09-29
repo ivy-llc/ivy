@@ -925,7 +925,7 @@ def interpolate(
 
 
 interpolate.partial_mixed_handler = (
-    lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: not align_corners
+    lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: not align_corners  # noqa: E501
     and len(x.shape) < 4
     and mode not in ["nearest", "area", "bicubic", "nd"]
 )

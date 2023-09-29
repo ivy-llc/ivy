@@ -800,9 +800,11 @@ def multi_head_attention(
     bias_v
         An additional bias added to the value sequence. Shape: `(E,)`.
     static_k
-        A static key to be used in the attention operators. Shape: `(N*num_heads, S, E//num_heads)`.
+        A static key to be used in the attention operators.
+        Shape: `(N*num_heads, S, E//num_heads)`.
     static_v
-        A static value to be used in the attention operators. Shape: `(N*num_heads, S, E//num_heads)`.
+        A static value to be used in the attention operators.
+        Shape: `(N*num_heads, S, E//num_heads)`.
     add_zero_attn
         A boolean flag indicating whether to add a batch of zeros to key and value.
     return_attention_weights

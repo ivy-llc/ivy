@@ -96,7 +96,8 @@ class Booster:
         n_inst = cache[0].shape[0]
         n_output_group = ivy.unique_values(cache[1]).shape[0]
 
-        # by default xgboost calculates the mean of a target if base_score is not provided
+        # by default xgboost calculates the mean of a target if base_score is not
+        # provided
         params["base_score"] = (
             cache[1].mean() if not params["base_score"] else params["base_score"]
         )
@@ -171,9 +172,9 @@ class Booster:
             contributions is equal to the raw untransformed margin value of the
             prediction. Note the final column is the bias term.
         approx_contribs
-            Approximate the contributions of each feature.  Used when ``pred_contribs`` or
-            ``pred_interactions`` is set to True.  Changing the default of this parameter
-            (False) is not recommended.
+            Approximate the contributions of each feature.  Used when ``pred_contribs``
+            or ``pred_interactions`` is set to True.  Changing the default of this
+            parameter (False) is not recommended.
         pred_interactions
             When this is True the output will be a matrix of size (nsample,
             nfeats + 1, nfeats + 1) indicating the SHAP interaction values for
@@ -188,17 +189,18 @@ class Booster:
             feature_names are the same.
         training
             Whether the prediction value is used for training.  This can effect `dart`
-            booster, which performs dropouts during training iterations but use all trees
-            for inference. If you want to obtain result with dropouts, set this parameter
-            to `True`.  Also, the parameter is set to true when obtaining prediction for
-            custom objective function.
+            booster, which performs dropouts during training iterations but use all
+            trees for inference. If you want to obtain result with dropouts, set this
+            parameter to `True`.  Also, the parameter is set to true when obtaining
+            prediction for custom objective function.
         iteration_range
             Specifies which layer of trees are used in prediction.  For example, if a
             random forest is trained with 100 rounds.  Specifying `iteration_range=(10,
             20)`, then only the forests built during [10, 20) (half open set) rounds are
             used in this prediction. Unsupported for gblinear booster.
         strict_shape
-            When set to True, output shape is invariant to whether classification is used.
+            When set to True, output shape is invariant to whether classification is
+            used.
             For both value and margin prediction, the output shape is (n_samples,
             n_groups), n_groups == 1 when multi-class is not used.  Default to False, in
             which case the output shape can be (n_samples, ) if multi-class is not used.
