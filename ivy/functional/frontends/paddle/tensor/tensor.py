@@ -781,7 +781,7 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("complex64", "complex128")}, "paddle")
     def real(self, name=None):
         return paddle_frontend.real(self._ivy_array)
-    
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def t(self, name=None):
         axes = list(range(len(self._ivy_array.shape)))[::-1]
