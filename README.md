@@ -97,7 +97,6 @@ Ivy is an open-source machine learning framework that
 enables you to:
 
 - 🔥 **Autotune your model**: Automatically find the optimal framework, compiler infrastructure and hardware for your specific use case using `ivy.autotune`.
-- 💥 **Boost model speed**:  Speed up your models by up to 3x using the most efficient ML infrastructure with `ivy.compile`.
 - 🔄 **Convert code into any framework**: Use and build on top of any model, library, or device by converting any code from one framework to another using `ivy.transpile`.
 - ⚒️ **Write framework-agnostic code**: Write your code once in ivy and then choose the most appropriate ML framework as the backend to leverage all the benefits and tools.
 
