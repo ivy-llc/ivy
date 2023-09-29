@@ -587,7 +587,7 @@ def power(x1, x2, /):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"0.4.14 and below": ("float32", "float64", "int32", "int64")}, "jax"
 )
 @to_ivy_arrays_and_back
 def prod(
