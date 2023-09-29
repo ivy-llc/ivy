@@ -119,8 +119,6 @@ Here is a good starting point for you:
 ------------------------------------------------------------------------
 ### Installing ivy
 
-You can find quite a lot more examples in the corresponding section below, but using Ivy is as simple as:
-
 There are various ways to use Ivy, depending on your preferred
 environment:
 
