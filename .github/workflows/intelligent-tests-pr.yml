@@ -8,6 +8,20 @@ permissions:
   actions: read
   pull-requests: write
 jobs:
+  write_comment:
+    steps:
+      - name: Write GitHub Comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Thanks for the PR. }}'
+            })
+
   display_test_results:
     if: ${{ always() }}
     runs-on: ubuntu-latest
