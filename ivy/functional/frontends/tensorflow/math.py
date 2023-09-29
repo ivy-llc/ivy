@@ -383,7 +383,7 @@ def less_equal(x, y, name="LessEqual"):
     return ivy.less_equal(x, y)
 
 
-#lgamma
+# lgamma
 @with_supported_device_and_dtypes(
     {
         "2.13.0 and below": {

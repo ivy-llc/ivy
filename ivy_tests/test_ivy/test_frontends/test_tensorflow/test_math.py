@@ -1445,7 +1445,7 @@ def test_tensorflow_less_equal(
     )
 
 
-#lgamma
+# lgamma
 @handle_frontend_test(
     fn_tree="tensorflow.math.lgamma",
     dtype_and_x=helpers.dtype_and_values(
