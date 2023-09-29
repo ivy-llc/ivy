@@ -32,7 +32,7 @@ jobs:
           then
             echo "This PR introduces the following new failing tests:\n\n"
             cat combined_failures.txt
-            echo "MESSAGE=This PR does not introduced new failing tests! could you check them please!" >> "$GITHUB_OUTPUT"
+            echo "MESSAGE=This PR does introduces new failing tests! could you fix them please?" >> "$GITHUB_OUTPUT"
           else
               echo "MESSAGE=This PR does not introduce any new test failures! Yippee!" >> "$GITHUB_OUTPUT"
           fi
