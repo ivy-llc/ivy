@@ -815,11 +815,22 @@ class Tensor:
 
     @with_supported_dtypes(
 
+
         {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
         "paddle",
     )
     def kron(self, y, name=None):
         return paddle_frontend.kron(self._ivy_array, y)
+
+
+        {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def fill_(self, value):
+        filled_tensor = paddle_frontend.full_like(self, value)
+        return ivy.inplace_update(self, filled_tensor)
+
+    @with_supported_dtypes(
 
         {
             "2.5.1 and below": (
