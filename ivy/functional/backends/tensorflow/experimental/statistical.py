@@ -115,6 +115,22 @@ def nanmean(
     return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
 
 
+# nanmin
+def nanmin(a: tf.Tensor, axis=None, keepdims=False, name=None):
+    nan_mask = tf.math.is_nan(a)
+
+    # Replace NaN values with a large positive number (or any other suitable value)
+    masked_tensor = tf.where(nan_mask, tf.constant(float("inf"), dtype=a.dtype), a)
+
+    # Use tf.math.reduce_min to find the minimum value
+    if axis is None:
+        result = tf.math.reduce_min(masked_tensor, keepdims=keepdims)
+    else:
+        result = tf.math.reduce_min(masked_tensor, axis=axis, keepdims=keepdims)
+
+    return result
+
+
 def _infer_dtype(dtype: tf.DType):
     default_dtype = ivy.infer_default_dtype(dtype)
     if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):

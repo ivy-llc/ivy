@@ -180,6 +180,17 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
             self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
 
+    # nanmin
+    def nanmin(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.nanmin(self._data, axis=axis, keepdims=keepdims, out=out)
+
     def nanprod(
         self: ivy.Array,
         /,

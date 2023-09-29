@@ -647,6 +647,27 @@ def test_nanmedian(
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.nanmin",
+    dtype_x_axis=_statistical_dtype_values(function="nanmin"),
+    keep_dims=st.booleans(),
+    test_gradients=st.just(False),
+)
+def test_nanmin(*, dtype_x_axis, keep_dims, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        atol_=1e-02,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.nanprod",
     dtype_x_axis_castable=_get_castable_float_dtype_nan(),
     keep_dims=st.booleans(),

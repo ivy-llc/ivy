@@ -162,6 +162,19 @@ def nanmean(
     return jnp.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
 
+# nanmin
+def nanmin(
+    a: jnp.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    initial: float = None,
+    out: Optional[jnp.ndarray] = None,
+) -> jnp.ndarray:
+    return jnp.nanmin(a, axis=axis, keepdims=keepdims, initial=initial, out=out)
+
+
 def nanprod(
     a: JaxArray,
     /,

@@ -253,6 +253,24 @@ def nanmean(
     )
 
 
+# nanmin
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def nanmin(
+    a: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.current_backend(a).nanmin(a, axis=axis, keepdims=keepdims, out=out)
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
