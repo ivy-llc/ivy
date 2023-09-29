@@ -6,7 +6,7 @@ ARG pycon=3.10
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install miniconda 
+# Install miniconda
 ENV CONDA_DIR /opt/miniconda/
 
 RUN apt clean && \
