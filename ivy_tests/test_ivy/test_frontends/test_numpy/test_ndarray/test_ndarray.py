@@ -3679,7 +3679,7 @@ def test_numpy_ndarray_view(
     init_tree="numpy.array",
     method_name="trace",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=["int64"],
+        available_dtypes=helpers.get_dtypes("numeric", index=9, full=False, prune_function=True).filter(lambda x: x[0] not in ["int8", "uint16"]),
         min_num_dims=2,
         min_axes_size=2,
         max_axes_size=2,
