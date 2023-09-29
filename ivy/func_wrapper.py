@@ -952,9 +952,10 @@ def handle_nestable(fn: Callable) -> Callable:
         if hasattr(ivy.Container, f"_static_{fn_name}"):
             cont_fn = getattr(ivy.Container, f"_static_{fn_name}")
         else:
-            cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
-                fn, *args, **kwargs
-            )
+
+            def cont_fn(*args, **kwargs):
+                return ivy.Container.cont_multi_map_in_function(fn, *args, **kwargs)
+
         if ivy.nestable_mode and (
             ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
             or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
@@ -989,11 +990,10 @@ def handle_ragged(fn: Callable) -> Callable:
         -------
             The return of the function, with the ragged property handled correctly.
         """
-        nested_fn = (
-            lambda *args, **kwargs: ivy.NestedArray.ragged_multi_map_in_function(
-                fn, *args, **kwargs
-            )
-        )
+
+        def nested_fn(*args, **kwargs):
+            return ivy.NestedArray.ragged_multi_map_in_function(fn, *args, **kwargs)
+
         if ivy.nested_any(
             args, ivy.is_ivy_nested_array, check_nests=True
         ) or ivy.nested_any(kwargs, ivy.is_ivy_nested_array, check_nests=True):
