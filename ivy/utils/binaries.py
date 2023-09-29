@@ -42,7 +42,7 @@ def check_for_binaries():
                         "\tSome binaries seem to be missing in your system. This could "
                         "be either because we don't have compatible binaries for your "
                         "system or that newer binaries were available. In the latter "
-                        "case, calling ivy.utils.clean_and_fetch_binaries() should "
+                        "case, calling ivy.utils.cleanup_and_fetch_binaries() should "
                         "fetch the binaries binaries. Feel free to create an issue on "
                         "https://github.com/unifyai/ivy.git in case of the former\n"
                     )
@@ -63,9 +63,9 @@ def cleanup_and_fetch_binaries(clean=True):
     if os.path.exists(binaries_path):
         binaries_dict = json.load(open(binaries_path))
         available_configs = json.load(open(available_configs_path))
-        binaries_exts = set(
-            [path.split(".")[-1] for path in _get_paths_from_binaries(binaries_dict)]
-        )
+        binaries_exts = {
+            path.split(".")[-1] for path in _get_paths_from_binaries(binaries_dict)
+        }
 
         # clean up existing binaries
         if clean:

@@ -620,7 +620,7 @@ def stft(
             windowed_frame = paddle.to_tensor(windowed_frame)
 
             fft_frame = fft(windowed_frame, -1)
-            slit = int((fft_length // 2 + 1))
+            slit = int(fft_length // 2 + 1)
             stft_result.append(fft_frame[..., 0:slit])
 
         stft = paddle.to_tensor(stft_result)
