@@ -42,9 +42,9 @@ def batch_norm(
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     if x.dtype not in [paddle.float32, paddle.float64]:
-        x, mean, variance, scale, offset = [
+        x, mean, variance, scale, offset = (
             t.cast("float32") for t in [x, mean, variance, scale, offset]
-        ]
+        )
     runningmean = mean
     runningvariance = variance
     data_formats = ["NC", "NCL", "NCHW", "NCDHW", "NLC", "NHWC", "NDHWC"]

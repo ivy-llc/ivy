@@ -2093,7 +2093,7 @@ class Size(tuple):
                 new_iterable.append(int(item))
             except Exception:
                 raise TypeError(f"Expected int, but got {type(item)} at index {i}")
-        return super(Size, cls).__new__(cls, tuple(new_iterable))
+        return super().__new__(cls, tuple(new_iterable))
 
     def __init__(self, shape) -> None:
         self._ivy_shape = (

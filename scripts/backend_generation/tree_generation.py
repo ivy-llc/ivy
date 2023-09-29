@@ -208,7 +208,7 @@ def _copy_tree(backend_reference_path: str, backend_generation_path: str):
 
 
 def _create_type_mapping(config: dict, reference_backend_init_path: str):
-    with open(reference_backend_init_path, "r") as file:
+    with open(reference_backend_init_path) as file:
         file_src = file.read()
 
     init_tree = ast.parse(file_src)
@@ -232,7 +232,7 @@ def _create_type_mapping(config: dict, reference_backend_init_path: str):
 def generate(config_file):
     global _config
 
-    with open(config_file, "r") as file:
+    with open(config_file) as file:
         _config = json.load(file)
 
     global _target_backend

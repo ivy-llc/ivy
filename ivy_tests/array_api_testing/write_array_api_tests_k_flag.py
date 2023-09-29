@@ -28,7 +28,7 @@ framework_tests_to_skip = {
 # add from each filepath
 for fpath in fpaths:
     # extract contents
-    with open(fpath, "r") as file:
+    with open(fpath) as file:
         contents = file.read()
         # update tests to run and skip
         contents = [line.replace("__", "") for line in contents.split("\n")]

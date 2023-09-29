@@ -307,7 +307,7 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
     average_attention_weights = draw(st.booleans())
 
     if len(q.shape) == 3 and not batch_first:
-        q, k, v = [np.swapaxes(x, 0, 1) if x is not None else x for x in [q, k, v]]
+        q, k, v = (np.swapaxes(x, 0, 1) if x is not None else x for x in [q, k, v])
 
     ret = (
         q,

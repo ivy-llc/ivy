@@ -58,7 +58,7 @@ def test_imports(fname, assert_version, update_versions):
     PRINT_MSG += msg
     ERROR_MSG += msg
     WARN_MSG += msg
-    with open(fname, "r") as f:
+    with open(fname) as f:
         file_lines = f.readlines()
     mod_names_n_versions = [parse(req) for req in file_lines]
     for line_num, (mod_name, expected_version, expected_op) in enumerate(

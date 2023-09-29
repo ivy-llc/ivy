@@ -443,13 +443,11 @@ class ContainerBase(dict, abc.ABC):
         # otherwise, check that the keys are aligned between each container, and apply
         # this method recursively
         return_dict = dict()
-        all_keys = set(
-            [
-                item
-                for sublist in [list(cont.keys()) for cont in containers]
-                for item in sublist
-            ]
-        )
+        all_keys = {
+            item
+            for sublist in [list(cont.keys()) for cont in containers]
+            for item in sublist
+        }
         for key in all_keys:
             keys_present = [key in cont for cont in containers]
             return_dict[key] = ivy.Container.cont_combine(
@@ -558,13 +556,11 @@ class ContainerBase(dict, abc.ABC):
         # otherwise, check that the keys are aligned between each container, and apply
         # this method recursively
         return_dict = dict()
-        all_keys = set(
-            [
-                item
-                for sublist in [list(cont.keys()) for cont in containers]
-                for item in sublist
-            ]
-        )
+        all_keys = {
+            item
+            for sublist in [list(cont.keys()) for cont in containers]
+            for item in sublist
+        }
         for key in all_keys:
             keys_present = [key in cont for cont in containers]
             all_keys_present = sum(keys_present) == num_containers
@@ -706,7 +702,7 @@ class ContainerBase(dict, abc.ABC):
             Container
         """
         # retrieve all keys and the first container if it exists
-        keys = set([])
+        keys = set()
         container0 = None
         for container in containers:
             if isinstance(container, ivy.Container):
@@ -867,7 +863,7 @@ class ContainerBase(dict, abc.ABC):
             containers = [
                 cont.cont_at_key_chains(common_key_chains) for cont in containers
             ]
-        keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
+        keys = {i for sl in [list(cont.keys()) for cont in containers] for i in sl}
 
         # noinspection PyProtectedMember
         for key in keys:
@@ -1388,7 +1384,7 @@ class ContainerBase(dict, abc.ABC):
              (Default value = '__')
         """
         # noinspection RegExpSingleCharAlternation
-        flat_keys = re.split("/|\.", key_chain)  # noqa
+        flat_keys = re.split(r"/|\.", key_chain)  # noqa
         num_keys = len(flat_keys)
         pre_keys = list()
         post_keys = list()
@@ -4066,9 +4062,9 @@ class ContainerBase(dict, abc.ABC):
                 "Invalid slice type, must be one of integer, slice "
                 "or sequences of slices."
             )
-        queue_idxs = set(
-            [np.sum(q >= self._queue_load_sizes_cum).item() for q in queue_queries]
-        )
+        queue_idxs = {
+            np.sum(q >= self._queue_load_sizes_cum).item() for q in queue_queries
+        }
         conts = list()
         for i in queue_idxs:
             if i not in self._loaded_containers_from_queues:

@@ -119,8 +119,7 @@ setup(
     include_package_data=True,
     packages=setuptools.find_packages(),
     install_requires=[
-        _strip(line)
-        for line in open("requirements/requirements.txt", "r", encoding="utf-8")
+        _strip(line) for line in open("requirements/requirements.txt", encoding="utf-8")
     ],
     python_requires="==3.10.*",
     classifiers=[

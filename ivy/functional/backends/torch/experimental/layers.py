@@ -1127,7 +1127,7 @@ def stft(
             windowed_frame = torch.tensor(windowed_frame, dtype=dtype)
 
             fft_frame = torch.fft.fft(windowed_frame, axis=-1)
-            slit = int((fft_length // 2 + 1))
+            slit = int(fft_length // 2 + 1)
             stft_result.append(fft_frame[..., 0:slit])
 
         stft = torch.stack(stft_result, axis=0)
