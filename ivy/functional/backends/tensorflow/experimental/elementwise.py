@@ -288,10 +288,8 @@ def gradient(
                 raise ValueError("distances must be either scalars or 1d")
             if len(distances) != x.shape[axes[i]]:
                 raise ValueError(
-                    "when 1d, distances must match "
-                    "the length of the corresponding dimension {} {}".format(
-                        len(distances), x.shape[axes[i]]
-                    )
+                    "when 1d, distances must match the length of the corresponding"
+                    f" dimension {len(distances)} {x.shape[axes[i]]}"
                 )
             if distances.dtype.is_integer:
                 # Convert numpy integer types to float64 to avoid modular
@@ -515,3 +513,12 @@ def digamma(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.digamma(x)
+
+
+def erfc(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.erfc(x)

@@ -18,7 +18,7 @@ def get_callable_functions(
     module_name: str,
 ):
     module = sys.modules[module_name]
-    fn_list = list()
+    fn_list = []
     for fn_name in dir(module):
         obj = getattr(module, fn_name)
         if callable(obj):
@@ -278,7 +278,7 @@ def test_tensorflow_linear(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.keras.activations.elu",
+    fn_tree="tensorflow.keras.activations.relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
@@ -339,6 +339,50 @@ def test_tensorflow_selu(
         rtol=1e-03,
         atol=1e-03,
         x=x[0],
+    )
+
+
+# serialize
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.serialize",
+    fn_name=st.sampled_from(get_callable_functions("keras.activations")).filter(
+        lambda x: not x[0].isupper()
+        and x
+        not in [
+            "deserialize",
+            "get",
+            "keras_export",
+            "serialize",
+            "deserialize_keras_object",
+            "serialize_keras_object",
+            "get_globals",
+        ]
+    ),
+    dtype_and_data=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+)
+def test_tensorflow_serialize(
+    *,
+    dtype_and_data,
+    fn_name,
+    fn_tree,
+    frontend,
+):
+    dtype_data, data = dtype_and_data
+    simple_test_two_function(
+        fn_name=fn_name,
+        x=data[0],
+        frontend=frontend,
+        fn_str="serialize",
+        dtype_data=dtype_data[0],
+        rtol_=1e-01,
+        atol_=1e-01,
+        ivy_submodules=["keras", "activations"],
+        framework_submodules=["keras", "activations"],
     )
 
 

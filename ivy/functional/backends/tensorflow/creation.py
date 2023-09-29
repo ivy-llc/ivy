@@ -41,7 +41,7 @@ def arange(
     step: float = 1,
     *,
     dtype: Optional[tf.DType] = None,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if stop is None:
@@ -86,7 +86,7 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[tf.DType] = None,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     # convert the input to a tensor using the appropriate function
@@ -104,7 +104,7 @@ def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.empty(shape, dtype)
@@ -115,7 +115,7 @@ def empty_like(
     /,
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.empty_like(x, dtype=dtype)
@@ -130,7 +130,7 @@ def eye(
     k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if n_cols is None:
@@ -171,17 +171,28 @@ def eye(
         return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
+def to_dlpack(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+):
+    if isinstance(x, tf.Variable):
+        x = x.read_value()
+    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
+    return dlcapsule
+
+
 # noinspection PyShadowingNames
 def from_dlpack(
-    x: Union[tf.Tensor, tf.Variable],
+    x,
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(x, tf.Variable):
         x = x.read_value()
-    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
-    return tf.experimental.dlpack.from_dlpack(dlcapsule)
+    return tf.experimental.dlpack.from_dlpack(x)
 
 
 def full(
@@ -189,7 +200,7 @@ def full(
     fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
@@ -202,7 +213,7 @@ def full_like(
     fill_value: Number,
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
@@ -221,7 +232,7 @@ def linspace(
     axis: Optional[int] = None,
     endpoint: bool = True,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if axis is None:
@@ -267,7 +278,7 @@ def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.ones(shape, dtype)
@@ -278,7 +289,7 @@ def ones_like(
     /,
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.ones_like(x, dtype=dtype)
@@ -312,7 +323,7 @@ def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.zeros(shape, dtype)
@@ -323,7 +334,7 @@ def zeros_like(
     /,
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.zeros_like(x, dtype=dtype)
@@ -356,7 +367,7 @@ def one_hot(
     off_value: Optional[Number] = None,
     axis: Optional[int] = None,
     dtype: Optional[tf.DType] = None,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.one_hot(
@@ -391,7 +402,7 @@ def triu_indices(
     k: int = 0,
     /,
     *,
-    device: str,
+    device: str = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable]]:
     n_cols = n_rows if n_cols is None else n_cols
 

@@ -43,7 +43,10 @@ class GradFn:
         assert len(inputs) <= 2
         if len(inputs) == 1 and isinstance(inputs[0], torch_frontend.Tensor):
             self._inputs.append(inputs[0].detach())
-            d_fn = lambda x: fn(x)
+
+            def d_fn(x):
+                return fn(x)
+
             self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
             if inputs[0].grad_fn is not None:
                 self.next_functions.append(inputs[0].grad_fn)
@@ -54,7 +57,10 @@ class GradFn:
         elif len(inputs) == 2:
             if isinstance(inputs[0], torch_frontend.Tensor):
                 self._inputs.append(inputs[0].detach())
-                d_fn = lambda x: fn(x, inputs[1])
+
+                def d_fn(x):
+                    return fn(x, inputs[1])
+
                 self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
                 if inputs[0].grad_fn is not None:
                     self.next_functions.append(inputs[0].grad_fn)
@@ -64,7 +70,10 @@ class GradFn:
                     self.next_functions.append(acc_grad)
             if isinstance(inputs[1], torch_frontend.Tensor):
                 self._inputs.append(inputs[1].detach())
-                d_fn = lambda x: fn(inputs[0], x)
+
+                def d_fn(x):
+                    return fn(inputs[0], x)
+
                 self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
                 if inputs[1].grad_fn is not None:
                     self.next_functions.append(inputs[1].grad_fn)
@@ -96,10 +105,10 @@ def _from_ivy_array_to_torch_frontend_tensor(
 ):
     if nested:
         return ivy.nested_map(
-            x,
             functools.partial(
                 _from_ivy_array_to_torch_frontend_tensor, requires_grad=requires_grad
             ),
+            x,
             include_derived,
             shallow=False,
         )
@@ -136,22 +145,16 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         into `ivy.Array` instances, and then call the function with the updated
         arguments.
         """
-        # Remove out argument if present in kwargs
-        if "out" in kwargs and not ivy.nested_any(
-            kwargs["out"], lambda x: isinstance(x, (torch_frontend.Tensor, type(None)))
-        ):
-            raise ivy.utils.exceptions.IvyException(
-                "Out argument must be an ivy.frontends.torch.Tensor object"
-            )
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
-            args, _to_ivy_array, include_derived={"tuple": True}, shallow=False
+            _to_ivy_array, args, include_derived={"tuple": True}, shallow=False
         )
         new_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived={"tuple": True}, shallow=False
+            _to_ivy_array, kwargs, include_derived={"tuple": True}, shallow=False
         )
         return fn(*new_args, **new_kwargs)
 
+    _inputs_to_ivy_arrays_torch.inputs_to_ivy_arrays_torch = True
     return _inputs_to_ivy_arrays_torch
 
 
@@ -166,6 +169,7 @@ def numpy_to_torch_style_args(func):  # noqa
         }
         return func(*args, **new_kwargs)
 
+    wrapper.numpy_to_torch_style_args = True
     return wrapper
 
 
@@ -213,17 +217,20 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 ),
             ),
         )
-        array_fn = lambda x: ivy.is_array(x) or hasattr(x, "ivy_array")
+
+        def array_fn(x):
+            return ivy.is_array(x) or hasattr(x, "ivy_array")
+
         if "inplace" in kwargs and kwargs["inplace"]:
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
             # ivy.inplace_update with ensure_in_backend=True fails in jax and tf
-            # so update ._data directly
+            # so update .data directly
             if ivy.is_array(first_array):
-                first_array._data = ret.ivy_array._data
+                first_array._data = ret.ivy_array.data
             else:
-                first_array.ivy_array._data = ret.ivy_array._data
+                first_array.ivy_array._data = ret.ivy_array.data
             ret = first_array
 
         # logic for setting is_leaf
@@ -251,6 +258,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
         return ret
 
+    outputs_to_frontend_arrays_torch.outputs_to_frontend_arrays_torch = True
     return outputs_to_frontend_arrays_torch
 
 
@@ -262,6 +270,7 @@ def outputs_to_native_arrays(fn: Callable):
             ret = ret.ivy_array.data
         return ret
 
+    outputs_to_native_arrays_torch.outputs_to_native_arrays_torch = True
     return outputs_to_native_arrays_torch
 
 
@@ -297,12 +306,13 @@ def to_ivy_shape(fn: Callable) -> Callable:
         # if any of the args are instance of torch_frontend.Size,
         # convert them to ivy.Shape.
         new_args = ivy.nested_map(
-            args,
             lambda x: (
                 x.ivy_shape if isinstance(x, ivy.functional.frontends.torch.Size) else x
             ),
+            args,
             shallow=False,
         )
         return fn(*new_args, **new_kwargs)
 
+    to_ivy_shape_torch.to_ivy_shape_torch = True
     return to_ivy_shape_torch
