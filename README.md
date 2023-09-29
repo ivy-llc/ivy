@@ -213,10 +213,10 @@ After installing Ivy, you can start using it straight away, for example:
 
    </details>
 
-   <details>
+  <details>
     <summary><b>Running your code with any backend</b></summary>
 
-    ``` python
+   ``` python
     import ivy
     import torch
     import jax
@@ -232,9 +232,9 @@ After installing Ivy, you can start using it straight away, for example:
     x = torch.tensor([1, 2, 3])
     y = torch.tensor([3, 2, 1])
     z = ivy.add(x, y)
-    ```
-   </details>
+   ```
 
+   </details>
 
 
 # Documentation
