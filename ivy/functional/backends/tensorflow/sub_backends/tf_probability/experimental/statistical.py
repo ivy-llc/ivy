@@ -8,7 +8,7 @@ from ivy.functional.backends.numpy.experimental.statistical import (
 )
 import tensorflow_probability as tfp
 import tensorflow as tf
-from ... import backend_version
+from .... import backend_version
 
 
 def histogram(

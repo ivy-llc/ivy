@@ -1,7 +1,6 @@
 # global
 from typing import Union, Optional, Sequence
 import tensorflow as tf
-from tensorflow_probability import distributions as tfd
 from tensorflow.python.framework.dtypes import DType
 
 # local
@@ -32,24 +31,8 @@ def dirichlet(
     seed: Optional[int] = None,
     dtype: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    size = size if size is not None else len(alpha)
-
-    if dtype is None:
-        dtype = tf.float64
-    else:
-        dtype = dtype
-    if seed is not None:
-        tf.random.set_seed(seed)
-    return tf.cast(
-        tfd.Dirichlet(
-            concentration=alpha,
-            validate_args=False,
-            allow_nan_stats=True,
-            force_probs_to_zero_outside_support=False,
-            name="Dirichlet",
-        ).sample(size),
-        dtype=dtype,
-    )
+    pass
+    # TODO: Implement purely in tensorflow
 
 
 def beta(

@@ -1,7 +1,8 @@
-from . import elementwise, random, statistical
+from .experimental import random, statistical
+from . import elementwise
 from .elementwise import *
-from .random import *
-from .statistical import *
+from .experimental.random import *
+from .experimental.statistical import *
 
 
 name = "tf_probability"

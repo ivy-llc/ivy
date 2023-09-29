@@ -1,13 +1,15 @@
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _check_shapes_broadcastable,
 )
 import tensorflow_probability as tfp
+from tensorflow_probability import distributions as tfd
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
 
 from typing import Optional, Sequence, Union
-
+from .... import backend_version
 import ivy
 
 
@@ -74,3 +76,42 @@ def bernoulli(
     return tfp.distributions.Bernoulli(
         logits=logits, probs=probs, dtype=dtype, allow_nan_stats=True
     ).sample(shape, seed)
+
+
+# dirichlet
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "blfoat16",
+            "float16",
+        )
+    },
+    backend_version,
+)
+def dirichlet(
+    alpha: Union[tf.Tensor, tf.Variable, float, Sequence[float]],
+    /,
+    *,
+    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    seed: Optional[int] = None,
+    dtype: Optional[tf.Tensor] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    size = size if size is not None else len(alpha)
+
+    if dtype is None:
+        dtype = tf.float64
+    else:
+        dtype = dtype
+    if seed is not None:
+        tf.random.set_seed(seed)
+    return tf.cast(
+        tfd.Dirichlet(
+            concentration=alpha,
+            validate_args=False,
+            allow_nan_stats=True,
+            force_probs_to_zero_outside_support=False,
+            name="Dirichlet",
+        ).sample(size),
+        dtype=dtype,
+    )
