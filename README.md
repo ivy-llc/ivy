@@ -211,7 +211,7 @@ After installing Ivy, you can start using it straight away, for example:
    ret = torch_fn(torch_x)
    ```
 
-   </details>  
+   </details>
 
    <details>
     <summary><b>Running your code with any backend</b></summary>
