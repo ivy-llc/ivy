@@ -13,13 +13,13 @@ from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
 )
 from ivy.functional.ivy.creation import (
-    asarray_to_native_arrays_and_back,
-    asarray_infer_device,
-    asarray_handle_nestable,
-    asarray_infer_dtype,
+    _asarray_to_native_arrays_and_back,
+    _asarray_infer_device,
+    _asarray_handle_nestable,
+    _asarray_infer_dtype,
     NestedSequence,
     SupportsBufferProtocol,
-    asarray_inputs_to_native_shapes,
+    _asarray_inputs_to_native_shapes,
     _remove_np_bfloat16,
 )
 from . import backend_version
@@ -36,7 +36,7 @@ def arange(
     step: float = 1,
     *,
     dtype: Optional[Union[ivy.Dtype, paddle.dtype]] = None,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if stop is None:
@@ -64,11 +64,11 @@ def arange(
         return paddle.arange(start, stop, step).cast(dtype)
 
 
-@asarray_to_native_arrays_and_back
-@asarray_infer_device
-@asarray_handle_nestable
-@asarray_inputs_to_native_shapes
-@asarray_infer_dtype
+@_asarray_to_native_arrays_and_back
+@_asarray_infer_device
+@_asarray_handle_nestable
+@_asarray_inputs_to_native_shapes
+@_asarray_infer_dtype
 def asarray(
     obj: Union[
         paddle.Tensor,
@@ -84,7 +84,7 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, paddle.dtype]] = None,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if isinstance(obj, paddle.Tensor):
@@ -104,7 +104,7 @@ def asarray(
         return paddle_backend.squeeze(
             paddle.to_tensor(obj, dtype=dtype, place=device), axis=0
         )
-    obj = ivy.nested_map(obj, _remove_np_bfloat16, shallow=False)
+    obj = ivy.nested_map(_remove_np_bfloat16, obj, shallow=False)
     return paddle.to_tensor(obj, dtype=dtype, place=device)
 
 
@@ -112,7 +112,7 @@ def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if isinstance(shape, int):
@@ -125,7 +125,7 @@ def empty_like(
     /,
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.empty(shape=x.shape).cast(dtype)
@@ -155,7 +155,7 @@ def eye(
     k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if n_cols is None:
@@ -193,9 +193,12 @@ def eye(
         return paddle.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
+def to_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
+    return paddle.utils.dlpack.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
-    x_d = paddle.utils.dlpack.to_dlpack(x)
-    return paddle.utils.dlpack.from_dlpack(x_d)
+    return paddle.utils.dlpack.from_dlpack(x)
 
 
 def full(
@@ -203,7 +206,7 @@ def full(
     fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, paddle.dtype]] = None,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if dtype is None:
@@ -229,7 +232,7 @@ def full_like(
     fill_value: Number,
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle_backend.full(
@@ -348,7 +351,7 @@ def linspace(
     axis: Optional[int] = None,
     endpoint: bool = True,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if not isinstance(start, (paddle.Tensor, int)):
@@ -420,9 +423,10 @@ def meshgrid(
         if indexing == "ij":
             return paddle.meshgrid(*arrays)
         elif indexing == "xy":
-            index_switch = lambda x: (
-                paddle_backend.swapaxes(x, 0, 1) if x.ndim > 1 else x
-            )
+
+            def index_switch(x):
+                return paddle_backend.swapaxes(x, 0, 1) if x.ndim > 1 else x
+
             arrays = list(map(index_switch, arrays))
             ret = paddle.meshgrid(*arrays)
             return list(map(index_switch, ret))
@@ -445,7 +449,7 @@ def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.ones(shape=shape).cast(dtype)
@@ -456,7 +460,7 @@ def ones_like(
     /,
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle_backend.ones(shape=x.shape, dtype=dtype, device=device)
@@ -504,7 +508,7 @@ def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.zeros(shape=shape).cast(dtype)
@@ -515,7 +519,7 @@ def zeros_like(
     /,
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle_backend.zeros(shape=x.shape, dtype=dtype, device=device)
@@ -552,7 +556,7 @@ def one_hot(
     off_value: Optional[paddle.Tensor] = None,
     axis: Optional[int] = None,
     dtype: Optional[paddle.dtype] = None,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     on_none = on_value is None
@@ -641,7 +645,7 @@ def triu_indices(
     k: Optional[int] = 0,
     /,
     *,
-    device: core.Place,
+    device: core.Place = None,
 ) -> Tuple[paddle.Tensor]:
     # special case due to inconsistent behavior when n_cols=1 and n_rows=0
     if n_cols == 1 and n_rows == 0:

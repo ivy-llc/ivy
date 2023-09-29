@@ -1,12 +1,8 @@
 import jax.numpy as jnp
 from typing import Optional
 from ivy.functional.backends.jax import JaxArray
-from ivy.func_wrapper import with_unsupported_dtypes
 
 
-@with_unsupported_dtypes(
-    {"0.4.14 and below": ("uint8")}, backend_version
-)
 def l1_normalize(
     x: JaxArray,
     /,
@@ -15,7 +11,7 @@ def l1_normalize(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not isinstance(x, JaxArray):
-        x=jnp.array(x)
+        x = jnp.array(x)
     if axis is None:
         norm = jnp.sum(jnp.abs(jnp.ravel(x)))
         denorm = norm * jnp.ones_like(x)

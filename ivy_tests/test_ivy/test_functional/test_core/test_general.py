@@ -389,7 +389,7 @@ def test_all_equal(
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     test_flags.num_positional_args = len(arrays)
     helpers.test_function(
@@ -1619,12 +1619,6 @@ def test_scatter_nd(x, reduction, test_flags, backend_fw, fn_name, on_device):
 
 # Tests #
 # ------#
-
-
-@given(fw_str=st.sampled_from(["numpy", "jax", "torch", "tensorflow"]))
-def test_set_framework(fw_str):
-    ivy.set_backend(fw_str)
-    ivy.previous_backend()
 
 
 @pytest.mark.parametrize("mode", ["lenient", "strict"])

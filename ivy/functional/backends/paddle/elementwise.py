@@ -93,15 +93,13 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if detect_negative and detect_positive:
-        return paddle.isinf(x)
-
-    if detect_negative:
-        return paddle_backend.equal(x, float("-inf"))
-
-    if detect_positive:
-        return paddle_backend.equal(x, float("inf"))
-
+    if not ivy.is_complex_dtype(x):
+        if detect_negative and detect_positive:
+            return paddle.isinf(x)
+        if detect_negative:
+            return paddle_backend.equal(x, float("-inf"))
+        if detect_positive:
+            return paddle_backend.equal(x, float("inf"))
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
@@ -277,7 +275,6 @@ def _determine_sqrt_dtype_cast(
     Returns:
         (intermediate_dtype, output_dtype)
     """
-
     cast_and_return_float32_dtype = {
         paddle.int8,
         paddle.int16,
@@ -300,7 +297,6 @@ def _determine_sqrt_dtype_cast(
 
 def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     """Calculate the square root with type handling."""
-
     if paddle.is_complex(x):
         angle = paddle.angle(x)
         return paddle.complex(
@@ -719,9 +715,15 @@ def tanh(
     ]:
         return paddle.tanh(x.astype("float32")).astype(x.dtype)
     if paddle.is_complex(x):
-        tanh_a = paddle.tanh(paddle.real(x))
-        tan_b = paddle.tan(paddle.imag(x))
-        return (tanh_a + 1j * tan_b) / (1 + 1j * (tanh_a * tan_b))
+        tanh_a = paddle.tanh(x.real())
+        tan_b = paddle.tan(x.imag())
+        return paddle.divide(
+            paddle.complex(tanh_a, tan_b),
+            paddle.complex(
+                paddle.ones_like(tanh_a),
+                paddle.multiply(tanh_a, tan_b),
+            ),
+        )
     return paddle.tanh(x)
 
 
@@ -800,8 +802,8 @@ def square(
     {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
 )
 def pow(
-    x1: Union[float, paddle.Tensor],
-    x2: Union[float, paddle.Tensor],
+    x1: paddle.Tensor,
+    x2: Union[int, float, paddle.Tensor],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
