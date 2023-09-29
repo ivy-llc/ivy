@@ -18,7 +18,7 @@ _slice = builtins.slice
 
 
 def _argsort_tuple(the_tuple):
-    return tuple([i for i, _ in sorted(enumerate(the_tuple), key=lambda x: x[1])])
+    return tuple(i for i, _ in sorted(enumerate(the_tuple), key=lambda x: x[1]))
 
 
 def _conv_transpose_padding(k, s, padding):
@@ -229,7 +229,7 @@ def conv_general_dilated(
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
     dim_nums = _dimension_numbers(dimension_numbers, dims + 2)
-    rhs_spec = tuple([dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0)])
+    rhs_spec = tuple(dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0))
     return ivy.permute_dims(
         ivy.conv_general_dilated(
             ivy.permute_dims(lhs, axes=dim_nums[0]),
@@ -264,7 +264,7 @@ def conv_transpose(
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
     dim_nums = _dimension_numbers(dimension_numbers, dims + 2, transp=True)
-    rhs_spec = tuple([dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0)])
+    rhs_spec = tuple(dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0))
     rhs_dilation = 1 if rhs_dilation is None else rhs_dilation
     if isinstance(padding, str):
         k_sdims = [rhs.shape[i] for i in rhs_spec[:-2]]

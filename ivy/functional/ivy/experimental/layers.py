@@ -1552,18 +1552,14 @@ def _compute_weight_mat(
     kernel_scale = ivy.maximum(inv_scale, 1.0) if antialias else 1.0
     if not align_corners:
         sample_f = (ivy.arange(output_size) + 0.5) * dim_scale_factor - 0.5
-        x = (
-            ivy.abs(
-                ivy.expand_dims(sample_f)
-                - ivy.expand_dims(ivy.arange(input_size), axis=-1)
-            )
-            / kernel_scale
-        )
     else:
         sample_f = ivy.arange(output_size) * dim_scale_factor
-        x = ivy.abs(
+    x = (
+        ivy.abs(
             ivy.expand_dims(sample_f) - ivy.expand_dims(ivy.arange(input_size), axis=-1)
-        ) / (kernel_scale)
+        )
+        / kernel_scale
+    )
     weights = kernel_fn(x)
     total_weight_sum = ivy.sum(weights, axis=0, keepdims=True)
     weights = ivy.where(
@@ -2005,7 +2001,7 @@ def _get_size(scale_factor, size, dims, x_shape):
             scale_factor = [scale_factor[0]] * dims
 
         size = tuple(
-            [int(math.floor(x_shape[2 + i] * scale_factor[i])) for i in range(dims)]
+            int(math.floor(x_shape[2 + i] * scale_factor[i])) for i in range(dims)
         )
     else:
         size = (size,) * dims if isinstance(size, int) else tuple(size)
@@ -2061,7 +2057,7 @@ def _compute_idx(in_size, out_size, device):
     maxlength = in_size // out_size + 1
     in_size_mod = in_size % out_size
     # adaptive = True iff there are kernels with different lengths
-    adaptive = not (in_size_mod == 0 or out_size % in_size_mod == 0)
+    adaptive = in_size_mod != 0 and out_size % in_size_mod != 0
     if adaptive:
         maxlength += 1
     elif in_size_mod == 0:

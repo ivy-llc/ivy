@@ -54,8 +54,8 @@ def _to_device(x: np.ndarray, device=None) -> np.ndarray:
             pass
         else:
             raise ivy.utils.exceptions.IvyException(
-                "Invalid device specified, must be in the form "
-                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
+                "Invalid device specified, must be in the form [ 'cpu:idx' | 'gpu:idx'"
+                f" ], but found {device}"
             )
     return x
 
@@ -79,8 +79,8 @@ def to_device(
             pass
         else:
             raise ivy.utils.exceptions.IvyException(
-                "Invalid device specified, must be in the form "
-                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
+                "Invalid device specified, must be in the form [ 'cpu:idx' | 'gpu:idx'"
+                f" ], but found {device}"
             )
     return x
 
