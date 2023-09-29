@@ -92,7 +92,6 @@
 <br clear="all" />
 
 ------------------------------------------------------------------------
-# Highlights
 
 Ivy is an open-source machine learning framework that
 enables you to:
@@ -118,83 +117,87 @@ here is a good starting point for you:
 - Autotune and optimize models (WIP)
 
 ------------------------------------------------------------------------
-### Ivy in 3 steps
+### Installing ivy
 
 You can find quite a lot more examples in the corresponding section below, but using Ivy is as simple as:
-1. <details>
-    <summary><b>Install</b></summary>
 
-    There are various ways to use Ivy, depending on your preferred
-    environment:
+There are various ways to use Ivy, depending on your preferred
+environment:
 
-    ### Installing using pip
+### Installing using pip
 
-    The easiest way to set up Ivy is to install it using pip with the
-    following command:
+The easiest way to set up Ivy is to install it using pip with the
+following command:
 
-    ``` bash
-    pip install ivy
-    ```
+``` bash
+pip install ivy
+```
 
-    or alternatively:
+or alternatively:
 
-    ``` bash
-    python3 -m pip install ivy
-    ```
+``` bash
+python3 -m pip install ivy
+```
 
-    <details>
-    <summary>Docker</summary>
+<details>
+<summary>Docker</summary>
 
-    If you prefer to use containers, we also have pre-built Docker images
-    with all the supported frameworks and some relevant packages already
-    installed, which you can pull from:
+If you prefer to use containers, we also have pre-built Docker images
+with all the supported frameworks and some relevant packages already
+installed, which you can pull from:
 
-    ``` bash
-    docker pull unifyai/ivy:latest
-    ```
+``` bash
+docker pull unifyai/ivy:latest
+```
 
-    If you are working on a GPU device, you can pull from:
+If you are working on a GPU device, you can pull from:
 
-    ``` bash
-    docker pull unifyai/ivy:latest-gpu
-    ```
-    </details>
+``` bash
+docker pull unifyai/ivy:latest-gpu
+```
+</details>
 
-    <details>
-    <summary>From Source</summary>
+<details>
+<summary>From Source</summary>
 
-    You can also install Ivy from source if you want to take advantage of
-    the latest changes, but we can\'t ensure everything will work as
-    expected. :sweat_smile:
+You can also install Ivy from source if you want to take advantage of
+the latest changes, but we can\'t ensure everything will work as
+expected. :sweat_smile:
 
-    ``` bash
-    git clone https://github.com/unifyai/ivy.git
-    cd ivy
-    pip install --user -e .
-    ```
+``` bash
+git clone https://github.com/unifyai/ivy.git
+cd ivy
+pip install --user -e .
+```
 
-    or alternatively, for the last step:
+or alternatively, for the last step:
 
-    ``` bash
-    python3 -m pip install --user -e .
-    ```
+``` bash
+python3 -m pip install --user -e .
+```
 
 
-    If you want to set up testing and various frameworks it\'s probably best
-    to check out the [Contributing - Setting
-    Up](https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up)
-    page, where OS-specific and IDE-specific instructions and video
-    tutorials to do so are available!
+If you want to set up testing and various frameworks it\'s probably     best
+to check out the [Contributing - Setting
+Up](https://unify.ai/docs/ivy/overview/contributing/setting_up. html#setting-up)
+page, where OS-specific and IDE-specific instructions and video
+tutorials to do so are available!
 
-    </details>
+</details>
 
 
 
-    </details>
-    </details>
+</details>
+</details>
+
+------------------------------------------------------------------------
+## Chosing backend and transpiling 
+
+You can quickly choose your favorite machine learning backend by setting it in the code with one line and transpile any code to it, which you will learn in the next two steps.
+
 1. <details>
     <summary><b>Chose your backend</b></summary>
-
+    here you write a code with ivy framework by using jax as backend.
 
     ``` python
     import ivy
@@ -216,7 +219,7 @@ You can find quite a lot more examples in the corresponding section below, but u
     </details>
 1. <details>
     <summary><b>transpile your code</b></summary>
-
+    here you transpile a code from jax to torch.
 
     ``` python
     import ivy
@@ -236,7 +239,6 @@ You can find quite a lot more examples in the corresponding section below, but u
 
     </details>
 
-------------------------------------------------------------------------
 
 
 ## 📚 Documentation
