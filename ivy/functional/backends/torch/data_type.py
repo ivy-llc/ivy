@@ -19,6 +19,7 @@ ivy_dtype_dict = {
     torch.float16: "float16",
     torch.float32: "float32",
     torch.float64: "float64",
+    torch.complex32: "complex32",
     torch.complex64: "complex64",
     torch.complex128: "complex128",
     torch.bool: "bool",
