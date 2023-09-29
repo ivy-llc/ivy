@@ -498,16 +498,16 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if  hop_length <= 0:
+    if hop_length <= 0:
         hop_length = 1
-    
+
     if win_length is None:
         win_length = n_fft
 
     if len(signal) < n_fft:
         n_fft = len(signal)
         win_length = n_fft
-    
+
     if len(window) != win_length:
         win_length = len(window)
         n_fft = win_length
