@@ -8,7 +8,7 @@ import jax.numpy as jnp
 import ivy
 from ivy import inf
 from ivy import promote_types_of_inputs
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.backends.jax import JaxArray
 from . import backend_version
 
@@ -373,7 +373,7 @@ def svdvals(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.svd(x, compute_uv=False)
 
 
-@with_unsupported_dtypes({"0.4.16 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"0.4.16 and below": ("float32", "float64")}, backend_version)
 def tensordot(
     x1: JaxArray,
     x2: JaxArray,

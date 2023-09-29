@@ -2439,13 +2439,13 @@ def tensordot(
         b: ivy.array(76.)
     }
     """
-    if batched_modes is not None:
-        axes = _get_valid_contraction_modes_for_axes(x1.shape, x2.shape, axes)
-        batched_modes = _get_valid_contraction_modes_for_batches(
-            x1.shape, x2.shape, batched_modes
-        )
-        return _tensordot_with_batched_modes(x1, x2, axes, batched_modes)
-    return ivy.tensordot(x1, x2, axes=axes, batched_modes=batched_modes, out=out)
+    if batched_modes is None:
+        batched_modes = ()
+    axes = _get_valid_contraction_modes_for_axes(x1.shape, x2.shape, axes)
+    batched_modes = _get_valid_contraction_modes_for_batches(
+        x1.shape, x2.shape, batched_modes
+    )
+    return _tensordot_helper(x1, x2, axes, batched_modes)
 
 
 tensordot.mixed_backend_wrappers = {
@@ -2458,7 +2458,7 @@ tensordot.mixed_backend_wrappers = {
 }
 
 
-def _tensordot_with_batched_modes(x1, x2, axes, batched_modes):
+def _tensordot_helper(x1, x2, axes, batched_modes):
     modes1, modes2 = axes
     batch_modes1, batch_modes2 = batched_modes
     contraction_shape = [s for (i, s) in enumerate(x1.shape) if i in modes1]
