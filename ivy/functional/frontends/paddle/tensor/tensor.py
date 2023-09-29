@@ -820,7 +820,7 @@ class Tensor:
     def fill_(self, value):
         filled_tensor = paddle_frontend.full_like(self, value)
         return ivy.inplace_update(self, filled_tensor))
-        
+
         {
             "2.5.1 and below": (
                 "bool",
@@ -835,4 +835,3 @@ class Tensor:
     )
     def unbind(self, axis=0):
         return paddle_frontend.unbind(self._ivy_array, axis=axis)
-      
