@@ -233,7 +233,7 @@ After installing Ivy, you can start using it straight away, for example:
     y = torch.tensor([3, 2, 1])
     z = ivy.add(x, y)
     ```
-    </details>
+   </details>
 
 
 
