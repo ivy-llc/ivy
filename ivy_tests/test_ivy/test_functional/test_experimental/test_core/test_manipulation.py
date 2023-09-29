@@ -194,7 +194,7 @@ def _matricize_data(draw):
         )
     )
     ndims = len(shape)
-    dims = {*range(ndims)}
+    dims = set([*range(ndims)])
     row_modes = set(
         draw(st.lists(helpers.ints(min_value=0, max_value=ndims - 1), min_size=1))
     )

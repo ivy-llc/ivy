@@ -56,7 +56,7 @@ def multi_head_attention(
     )[1]
     num_dims = query.ndim
     if num_dims == 3 and batch_first:
-        query, key, value = (torch.swapaxes(x, 0, 1) for x in [query, key, value])
+        query, key, value = [torch.swapaxes(x, 0, 1) for x in [query, key, value]]
     ret = torch.nn.functional.multi_head_attention_forward(
         query,
         key,

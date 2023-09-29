@@ -48,7 +48,7 @@ def backend_proc(input_queue, output_queue):
 
             _, fn_module, fn_name, b = data
             output_queue.put(
-                _get_supported_devices_dtypes_helper(b, fn_module, fn_name)
+                (_get_supported_devices_dtypes_helper(b, fn_module, fn_name))
             )
         elif data[0] == "method supported dtypes":
             # again stage 1, calculating and returning supported dtypes
@@ -68,17 +68,17 @@ def backend_proc(input_queue, output_queue):
         elif data[0] == "_get_type_dict_helper":
             _, framework, kind, is_frontend_test = data
             dtype_ret = _get_type_dict_helper(framework, kind, is_frontend_test)
-            output_queue.put(dtype_ret)
+            output_queue.put((dtype_ret))
 
         elif data[0] == "num_positional_args_helper":
             _, fn_name, framework = data
             dtype_ret = num_positional_args_helper(fn_name, framework)
-            output_queue.put(dtype_ret)
+            output_queue.put((dtype_ret))
 
         elif data[0] == "cast_filter_helper":
             _, d, dtype, x, current_backend = data
             dtype_ret = cast_filter_helper(d, dtype, x, current_backend)
-            output_queue.put(dtype_ret)
+            output_queue.put((dtype_ret))
 
         elif data[0] == "function_backend_computation":
             # it's the backend return computation
@@ -195,7 +195,7 @@ def backend_proc(input_queue, output_queue):
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
-            output_queue.put(grads_np_flat)
+            output_queue.put((grads_np_flat))
 
         elif data[0] == "gradient_ground_truth_computation":
             # gradient testing, part where it uses ground truth

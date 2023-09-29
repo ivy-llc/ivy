@@ -903,7 +903,7 @@ def seed(draw):
 
 def _create_transpile_report(data: dict, backend: str, file_name: str):
     if os.path.isfile(file_name):
-        with open(file_name) as outfile:
+        with open(file_name, "r") as outfile:
             # Load the file's existing data
             file_data = json.load(outfile)
             if file_data["backend_nodes"].get(backend, 0) > data["backend_nodes"]:

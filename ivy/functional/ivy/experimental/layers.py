@@ -1410,7 +1410,7 @@ def _tf_area_indices(dim_index, scale):
 
 
 def _tf_area_interpolate(x, size, dims):
-    ret = ivy.zeros(x.shape[:2] + size)
+    ret = ivy.zeros((x.shape[:2] + size))
     scale = ivy.divide(ivy.shape(x)[2:], size)
     area = 1.0 / ivy.prod(scale)
     for i, ba in enumerate(x):
@@ -1653,17 +1653,17 @@ def _upsample_bicubic2d_default(
         return a[N_idx, C_idx, y_idx, x_idx]
 
     def get_x_interp(y):
-        coeffs_x = tuple(load_bounded(y, x_ofs) for x_ofs in ixs_ofs)
+        coeffs_x = tuple((load_bounded(y, x_ofs) for x_ofs in ixs_ofs))
         return _upsample_cubic_interp1d(coeffs_x, t_x)
 
-    coeffs_y = tuple(get_x_interp(y_ofs) for y_ofs in iys_ofs)
+    coeffs_y = tuple((get_x_interp(y_ofs) for y_ofs in iys_ofs))
     result = _upsample_cubic_interp1d(coeffs_y, t_y)
 
     return result
 
 
 def area_interpolate(x, dims, size, scale):
-    ret = ivy.zeros(x.shape[:2] + size)
+    ret = ivy.zeros((x.shape[:2] + size))
     inv_scale = ivy.divide(1.0, scale)
     for i, ba in enumerate(x):
         for j, ch in enumerate(ba):

@@ -698,7 +698,7 @@ class ContainerBase(dict, abc.ABC):
             Container
         """
         # retrieve all keys and the first container if it exists
-        keys = set()
+        keys = set([])
         container0 = None
         for container in containers:
             if isinstance(container, ivy.Container):
@@ -859,7 +859,7 @@ class ContainerBase(dict, abc.ABC):
             containers = [
                 cont.cont_at_key_chains(common_key_chains) for cont in containers
             ]
-        keys = {i for sl in [list(cont.keys()) for cont in containers] for i in sl}
+        keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
 
         # noinspection PyProtectedMember
         for key in keys:
@@ -1379,7 +1379,7 @@ class ContainerBase(dict, abc.ABC):
              (Default value = '__')
         """
         # noinspection RegExpSingleCharAlternation
-        flat_keys = re.split(r"/|\.", key_chain)  # noqa
+        flat_keys = re.split("/|\.", key_chain)  # noqa
         num_keys = len(flat_keys)
         pre_keys = []
         post_keys = []

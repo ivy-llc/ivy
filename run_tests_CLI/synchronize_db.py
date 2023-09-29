@@ -129,7 +129,7 @@ def remove_empty_objects(document, key_prefix=""):
 
 def main():
     all_tests = get_all_tests()
-    all_tests = {process_test(test.split(",")[0].strip()) for test in all_tests}
+    all_tests = set([process_test(test.split(",")[0].strip()) for test in all_tests])
     mongo_key = sys.argv[1]
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa

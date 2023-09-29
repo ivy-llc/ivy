@@ -32,11 +32,6 @@ repos:
       - id: pydocstyle
         # Exclude everything in frontends except __init__.py, and func_wrapper.py
         exclude: 'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.13.0
-    hooks:
-      - id: pyupgrade
-        args: [--py38-plus]
   - repo: https://github.com/unifyai/lint-hook
     rev: 2ea80bc854c7f74b09620151028579083ff92ec2
     hooks:

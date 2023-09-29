@@ -86,9 +86,7 @@ def clip_by_norm(t, clip_norm, axes=None):
     l2sum_safe = ivy.where(pred, l2sum, ivy.ones_like(l2sum))
     l2norm = ivy.where(pred, ivy.sqrt(l2sum_safe), l2sum)
     intermediate = t * clip_norm
-    assert (
-        t.shape == intermediate.shape
-    ), "Dimensions {} and {} are not compatible".format(
+    assert t.shape == intermediate.shape, "Dimensions %s and %s are not compatible" % (
         t.shape,
         intermediate.shape,
     )
