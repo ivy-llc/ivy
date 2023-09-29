@@ -93,9 +93,10 @@ def binary_cross_entropy(
     /,
     *,
     reduction: Optional[str] = "mean",
+    out: Optional[tf.Tensor] = None
 ) -> tf.Tensor:
 
-    loss = -1 * (input * tf.math.log(target) + (1 - input) * tf.math.log(1-target))
+    loss = -1 * (target * tf.math.log(input) + (1 - target) * tf.math.log(1-input))
 
     if reduction == "mean":
         loss = tf.math.reduce_mean(loss)

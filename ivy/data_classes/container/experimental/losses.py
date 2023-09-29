@@ -922,9 +922,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Parameters
         ----------
         input
-            input array or container.
+            input array or container of arbitrary shape containing probabilities.
         target
-            input array or container containing the targeted values.
+            input array or container same shape as input with values between 0 and 1.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -982,9 +982,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input container.
+            input container containing probablities of arbitrary shape.
         target
-            input array or container containing the targeticted values.
+            input array or container with same shape as input with values between 0 and 1.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -1011,8 +1011,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 0, 1]), b=ivy.array([1, 1, 1]))
-        >>> y = ivy.Container(a=ivy.array([0.8,0.3,0.9]), b=ivy.array([0.6, 0.7, 0.9]))
+        >>> x = ivy.Container(a=ivy.array([0.8,0.3,0.9]), b=ivy.array([0.6, 0.7, 0.9])
+        >>> y = ivy.Container(a=ivy.array([1, 0, 1]), b=ivy.array([1, 1, 1])))
         >>> z = x.binary_cross_entropy(y)
         >>> print(z)
         {

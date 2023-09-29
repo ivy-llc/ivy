@@ -529,10 +529,5 @@ def binary_cross_entropy(
     >>> ivy.binary_cross_entropy(input, target, reduction='none')
     ivy.array([0.2231, 0.3567, 0.2231, 0.1054])
     """
-    loss = -1 * (input * ivy.log(target) + (1-input) * ivy.log(1-target))
-    if reduction == "sum":
-        return ivy.sum(loss, out=out)
-    elif reduction == "mean":
-        return ivy.mean(loss, out=out)
-    else:
-        return ivy.inplace_update(out, loss) if out is not None else loss
+    
+    return ivy.current_backend(input).binary_cross_entropy(input,target, reduction=reduction)

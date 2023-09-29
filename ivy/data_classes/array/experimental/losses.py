@@ -312,9 +312,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         Parameters
         ----------
         self
-            input array containing true labels.
+            input array of arbitrary shape containing probabilities.
         target
-            input array containing targeted labels.
+            input array same shape as input with values between 0 and 1.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -330,8 +330,8 @@ class _ArrayWithLossesExperimental(abc.ABC):
 
         Examples
         --------
-        >>> input = ivy.array([1.0, 0.0, 1.0])
-        >>> target = ivy.array([0.7, 0.6, 0.6])
+        >>> input = ivy.array([0.7, 0.6, 0.6])
+        >>> target = ivy.array([1.0, 0.0, 1.0])
         >>> output= x.binary_cross_entropy(y)
         >>> print(z)
         ivy.array(0.5946)
