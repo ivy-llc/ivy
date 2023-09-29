@@ -86,8 +86,9 @@ class Bfloat16Finfo:
         self.tiny = 1.17549e-38
 
     def __repr__(self):
-        return "finfo(resolution={}, min={}, max={}, dtype={})".format(
-            self.resolution, self.min, self.max, "bfloat16"
+        return (
+            f"finfo(resolution={self.resolution}, min={self.min}, max={self.max},"
+            " dtype='bfloat16')"
         )
 
 

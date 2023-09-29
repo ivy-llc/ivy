@@ -76,13 +76,12 @@ def max_pool1d(
             )
         padding = [(0, 0)] + list(padding) + [(0, 0)]
         x = tf.pad(x, padding, constant_values=-math.inf)
-    else:
-        if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
-        ):
-            raise NotImplementedError(
-                "Nonzero explicit padding is not supported for depthwise max pooling"
-            )
+    elif isinstance(padding, list) and any(
+        item != 0 for sublist in padding for item in sublist
+    ):
+        raise NotImplementedError(
+            "Nonzero explicit padding is not supported for depthwise max pooling"
+        )
 
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
@@ -145,22 +144,21 @@ def max_pool2d(
                 (pad_w // 2, pad_w - pad_w // 2),
             ]
 
-        x_shape = x.shape[1:-1]
-
         if ceil_mode:
+            x_shape = x.shape[1:-1]
+
             for i in range(dims):
                 padding[i] = _padding_ceil_mode(
                     x_shape[i], new_kernel[i], padding[i], strides[i]
                 )
         padding = [(0, 0)] + list(padding) + [(0, 0)]
         x = tf.pad(x, padding, constant_values=-math.inf)
-    else:
-        if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
-        ):
-            raise NotImplementedError(
-                "Nonzero explicit padding is not supported for depthwise max pooling"
-            )
+    elif isinstance(padding, list) and any(
+        item != 0 for sublist in padding for item in sublist
+    ):
+        raise NotImplementedError(
+            "Nonzero explicit padding is not supported for depthwise max pooling"
+        )
 
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
@@ -217,8 +215,8 @@ def max_pool3d(
     )
 
     if not depth_pooling:
-        x_shape = x.shape[1:-1]
         new_kernel = [dilation[i] * (kernel[i] - 1) + 1 for i in range(dims)]
+        x_shape = x.shape[1:-1]
         if isinstance(padding, str):
             pad_d = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
             pad_h = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
@@ -236,13 +234,12 @@ def max_pool3d(
                 )
         padding = [(0, 0)] + list(padding) + [(0, 0)]
         x = tf.pad(x, padding, constant_values=-math.inf)
-    else:
-        if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
-        ):
-            raise NotImplementedError(
-                "Nonzero explicit padding is not supported for depthwise max pooling"
-            )
+    elif isinstance(padding, list) and any(
+        item != 0 for sublist in padding for item in sublist
+    ):
+        raise NotImplementedError(
+            "Nonzero explicit padding is not supported for depthwise max pooling"
+        )
 
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
@@ -684,7 +681,7 @@ def fft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in ["backward", "ortho", "forward"]:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     if x.shape[dim] != n:
         s = list(x.shape)
@@ -727,7 +724,7 @@ def dropout(
 ) -> Union[tf.Tensor, tf.Variable]:
     x = ivy.astype(x, dtype) if dtype else x
     res = tf.nn.dropout(x, prob, noise_shape=noise_shape, seed=seed) if training else x
-    res = tf.multiply(res, (1.0 - prob)) if not scale else res
+    res = res if scale else tf.multiply(res, (1.0 - prob))
     return res
 
 
@@ -826,7 +823,7 @@ def ifft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in ["backward", "ortho", "forward"]:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     if x.shape[dim] != n:
         s = list(x.shape)
@@ -927,8 +924,9 @@ def interpolate(
     return ret
 
 
-interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-    (not align_corners and (len(x.shape) - 2) < 2)
+interpolate.partial_mixed_handler = (
+    lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: not align_corners
+    and len(x.shape) < 4
     and mode not in ["nearest", "area", "bicubic", "nd"]
 )
 
@@ -956,10 +954,10 @@ def trans_x_to_s(
     dim: Sequence[int] = (-2, -1),
 ) -> Union[tf.Tensor, tf.Variable]:
     """Change the shape of the input array x to the desired output shape s."""
-    if x.dtype != tf.complex128 and x.dtype != tf.complex64:
+    if x.dtype not in [tf.complex128, tf.complex64]:
         x = tf.cast(x, tf.float32)
     x_shape = x.shape
-    if dim == (-1, -2) or dim == (1, 0):
+    if dim in [(-1, -2), (1, 0)]:
         s = (s[1], s[0])
     if s[0] >= x_shape[0] and s[1] >= x_shape[1]:
         paddings = tf.constant([[0, s[0] - x_shape[0]], [0, s[1] - x_shape[1]]])
@@ -1081,9 +1079,9 @@ def shape_and_axes_validation(shape, axes, input_rank_tensor):
                 tf.size(shape),
                 input_rank_tensor,
                 message=(
-                    "Argument `shape` cannot have length greater than the rank of `x`. "
-                    "Received: {}"
-                ).format(shape),
+                    "Argument `shape` cannot have length greater than the rank of `x`."
+                    f" Received: {shape}"
+                ),
             )
         ]
         with tf.control_dependencies(checks_shape):
@@ -1096,9 +1094,9 @@ def shape_and_axes_validation(shape, axes, input_rank_tensor):
                 tf.size(axes),
                 input_rank_tensor,
                 message=(
-                    "Argument `axes` cannot have length greater than the rank of `x`. "
-                    "Received: {}"
-                ).format(axes),
+                    "Argument `axes` cannot have length greater than the rank of `x`."
+                    f" Received: {axes}"
+                ),
             ),
             tf.debugging.assert_less(
                 axes,
@@ -1120,9 +1118,9 @@ def shape_and_axes_validation(shape, axes, input_rank_tensor):
                 tf.size(shape),
                 tf.size(axes),
                 message=(
-                    "Arguments `shape` and `axes` must have equal length. "
-                    "Received: {}, {}"
-                ).format(shape, axes),
+                    "Arguments `shape` and `axes` must have equal length. Received:"
+                    f" {shape}, {axes}"
+                ),
             )
         ]
         with tf.control_dependencies(checks_shape_axes):
@@ -1177,7 +1175,7 @@ def rank_initialization(axes):
 def norm_initialization(norm, shape, x):
     if norm == "backward":
         norm_factor = tf.constant(1, x.dtype)
-    elif norm == "forward" or norm == "ortho":
+    elif norm in ["forward", "ortho"]:
         norm_factor = tf.cast(tf.math.reduce_prod(shape), x.dtype)
         if norm == "ortho":
             norm_factor = tf.math.sqrt(norm_factor)
@@ -1538,15 +1536,14 @@ def sliding_window(
     if isinstance(padding, str) and padding.upper() in ["VALID", "SAME"]:
         padding = padding
 
+    elif padding[0] == padding[1] == 0:
+        padding = "VALID"
+    elif padding[0] == padding[1] != 0:
+        padding = "SAME"
     else:
-        if padding[0] == padding[1] == 0:
-            padding = "VALID"
-        elif padding[0] == padding[1] != 0:
-            padding = "SAME"
-        else:
-            raise ivy.utils.exceptions.IvyError(
-                f"Cannot convert padding sequence {padding} to TensorFlow padding mode"
-            )
+        raise ivy.utils.exceptions.IvyError(
+            f"Cannot convert padding sequence {padding} to TensorFlow padding mode"
+        )
 
     return tf.image.extract_patches(
         images=input, sizes=kernel_size, strides=stride, rates=dilation, padding=padding

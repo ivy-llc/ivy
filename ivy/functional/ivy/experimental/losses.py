@@ -76,11 +76,11 @@ def log_poisson_loss(
     """
     try:
         assert true.shape == pred.shape
-    except ValueError:
+    except ValueError as e:
         raise ValueError(
             "`pred` and `true` must have the same shape, received "
             f"({pred.shape} vs {true.shape})."
-        )
+        ) from e
 
     loss = ivy.exp(pred) - pred * true
     if compute_full_loss:

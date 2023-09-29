@@ -58,7 +58,7 @@ def _asarray_handle_nestable(fn: Callable) -> Callable:
         """
         # This decorator should only be applied to ivy.asarray, so we know where
         # the container must be if there is one.
-        cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        cont_fn = getattr(ivy.Container, f"static_{fn_name}")
         if isinstance(args[0], ivy.Container):
             return cont_fn(*args, **kwargs)
 
@@ -79,11 +79,10 @@ def _ivy_to_native(x):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
             x[i] = _ivy_to_native(item)
-    else:
-        if (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
-            x = ivy.to_native(x, nested=True)
-        elif ivy.is_ivy_array(x):
-            x = ivy.to_native(x)
+    elif (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
+        x = ivy.to_native(x, nested=True)
+    elif ivy.is_ivy_array(x):
+        x = ivy.to_native(x)
     return x
 
 
@@ -94,13 +93,12 @@ def _shape_to_native(x):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
             x[i] = _shape_to_native(item)
-    else:
-        if (isinstance(x, (list, tuple)) and len(x) > 0) and (
-            isinstance(x[0], ivy.Shape) and ivy.array_mode
-        ):
-            x = ivy.nested_map(lambda x: x.shape if isinstance(x, ivy.Shape) else x, x)
-        elif isinstance(x, ivy.Shape) and ivy.array_mode:
-            x = x.shape
+    elif (isinstance(x, (list, tuple)) and len(x) > 0) and (
+        isinstance(x[0], ivy.Shape) and ivy.array_mode
+    ):
+        x = ivy.nested_map(lambda x: x.shape if isinstance(x, ivy.Shape) else x, x)
+    elif isinstance(x, ivy.Shape) and ivy.array_mode:
+        x = x.shape
     return x
 
 

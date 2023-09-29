@@ -897,16 +897,13 @@ def _set_wrap_both(padded, axis, width_pair):
 
 def _pad_simple(array, pad_width, fill_value=None):
     new_shape = tuple(
-        [left + size + right for size, (left, right) in zip(array.shape, pad_width)]
+        left + size + right for size, (left, right) in zip(array.shape, pad_width)
     )
     padded = ivy.zeros(new_shape, dtype=array.dtype)
     if fill_value is not None:
         padded = ivy.ones_like(padded) * fill_value
     original_area_slice = tuple(
-        [
-            slice(left, left + size)
-            for size, (left, right) in zip(array.shape, pad_width)
-        ]
+        slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
     )
     padded[original_area_slice] = array
     return padded, original_area_slice
@@ -951,7 +948,7 @@ def _to_dilated(x, n):
 
 
 def _check_tuple_arg(arg, name, force_integer=True):
-    is_scalar = ivy.isscalar if not force_integer else ivy.is_int_dtype
+    is_scalar = ivy.is_int_dtype if force_integer else ivy.isscalar
     flag_assert = False
     if isinstance(arg, (tuple, list)):
         for nested in arg:
@@ -965,13 +962,13 @@ def _check_tuple_arg(arg, name, force_integer=True):
     elif not is_scalar(arg):
         flag_assert = True
     if flag_assert:
-        if not force_integer:
+        if force_integer:
             raise ivy.utils.exceptions.IvyException(
-                name + " should be scalar, tuple of scalars or tuple of scalar tuples"
+                f"{name} should be int, tuple of ints or tuple of int tuples"
             )
         else:
             raise ivy.utils.exceptions.IvyException(
-                name + " should be int, tuple of ints or tuple of int tuples"
+                f"{name} should be scalar, tuple of scalars or tuple of scalar tuples"
             )
 
 
@@ -2032,16 +2029,16 @@ def _interior_pad(operand, padding_value, padding_config):
     for axis, (low, high, _) in enumerate(padding_config):
         if low > 0 and high > 0:
             pad_width[axis] = (low, high)
-        elif low > 0 and not high > 0:
+        elif low > 0:
             pad_width[axis] = (low, 0)
-        elif high > 0 and not low > 0:
+        elif high > 0:
             pad_width[axis] = (0, high)
     padded = ivy.constant_pad(padded, pad_width, value=padding_value)
     return padded
 
 
 def _interleave(a, b, axis):
-    assert a.shape[axis] == b.shape[axis] or a.shape[axis] == b.shape[axis] + 1
+    assert a.shape[axis] in [b.shape[axis], b.shape[axis] + 1]
     a_pad = [(0, 0, 0)] * a.ndim
     b_pad = [(0, 0, 0)] * b.ndim
     a_pad[axis] = (0, 1 if a.shape[axis] == b.shape[axis] else 0, 1)
@@ -2227,10 +2224,10 @@ def fill_diagonal(
             end = shape[1] * shape[1]
     else:
         step = int(1 + (ivy.cumprod(ivy.array(shape[:-1]), axis=0)).sum())
-    end = int(max_end if end > max_end else end)
+    end = int(min(end, max_end))
     a = ivy.reshape(a, (-1,))
     steps = ivy.arange(0, end, step)
-    if isinstance(v, ivy.Array) or isinstance(v, ivy.NativeArray):
+    if isinstance(v, (ivy.Array, ivy.NativeArray)):
         v = ivy.reshape(v, (-1,)).astype(a.dtype)
         v = ivy.tile(v, int(ivy.ceil(len(steps) / v.shape[0])))[: len(steps)]
     else:

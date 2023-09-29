@@ -52,7 +52,7 @@ def fn_name_from_version_specific_fn_name(name, version):
     """
     # TODO: add tests
     version = str(version)
-    if version.find("+") != -1:
+    if "+" in version:
         version = tuple(map(int, version[: version.index("+")].split(".")))
     else:
         version = tuple(map(int, version.split(".")))
@@ -102,12 +102,12 @@ def fn_name_from_version_specific_fn_name_sub_backend(
     # TODO: add tests
     sub_version = str(sub_backend_version)
     back_version = str(backend_version)
-    if sub_version.find("+") != -1:
+    if "+" in sub_version:
         sub_version = tuple(map(int, sub_version[: sub_version.index("+")].split(".")))
     else:
         sub_version = tuple(map(int, sub_version.split(".")))
 
-    if back_version.find("+") != -1:
+    if "+" in back_version:
         back_version = tuple(
             map(int, back_version[: back_version.index("+")].split("."))
         )

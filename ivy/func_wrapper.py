@@ -1355,7 +1355,7 @@ def handle_nans(fn: Callable) -> Callable:
         if nan_policy == "nothing":
             return fn(*args, **kwargs)
 
-        # check all args and kwards for presence of nans
+        # check all args and kwargs for presence of nans
         result = _nest_has_nans(args) or _nest_has_nans(kwargs)
 
         if result:

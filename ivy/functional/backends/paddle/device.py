@@ -48,7 +48,7 @@ def as_ivy_dev(device: core.Place, /):
         return ivy.Device("cpu")
     elif device.is_gpu_place():
         dev_idx = device.gpu_device_id()
-        return ivy.Device("gpu:" + str(dev_idx))
+        return ivy.Device(f"gpu:{str(dev_idx)}")
 
 
 def as_native_dev(

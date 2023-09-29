@@ -804,19 +804,16 @@ def test_frontend_function(
                     ret = arrays_to_frontend(
                         backend=backend_to_test, frontend_array_fn=create_frontend_array
                     )(ret)
-            else:
-                if is_ret_tuple:
-                    ret = ivy_backend.nested_map(
-                        lambda _x: (
-                            ivy_backend.array(_x)
-                            if not ivy_backend.is_array(_x)
-                            else _x
-                        ),
-                        ret,
-                        include_derived=True,
-                    )
-                elif not ivy_backend.is_array(ret):
-                    ret = ivy_backend.array(ret)
+            elif is_ret_tuple:
+                ret = ivy_backend.nested_map(
+                    lambda _x: (
+                        ivy_backend.array(_x) if not ivy_backend.is_array(_x) else _x
+                    ),
+                    ret,
+                    include_derived=True,
+                )
+            elif not ivy_backend.is_array(ret):
+                ret = ivy_backend.array(ret)
 
             out = ret
             # pass return value to out argument
@@ -1274,7 +1271,7 @@ def test_method_backend_computation(
     init_input_dtypes = ivy.default(init_input_dtypes, [])
 
     # Constructor arguments #
-    init_all_as_kwargs_np = ivy.default(init_all_as_kwargs_np, dict())
+    init_all_as_kwargs_np = ivy.default(init_all_as_kwargs_np, {})
     # split the arguments into their positional and keyword components
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=init_flags.num_positional_args,

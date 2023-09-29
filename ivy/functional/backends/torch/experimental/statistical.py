@@ -209,7 +209,7 @@ def nanprod(
         return a.type(dtype)
     if axis is None:
         return torch.prod(input=a, out=out).type(dtype) * initial
-    if isinstance(axis, tuple) or isinstance(axis, list):
+    if isinstance(axis, (tuple, list)):
         for i in axis:
             a = torch.prod(a, dim=i, keepdim=keepdims, out=out).type(dtype)
             if a.dtype == torch.float16:

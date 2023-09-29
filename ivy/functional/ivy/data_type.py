@@ -43,9 +43,8 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
                     and backend_str in fn_unsupported_dtypes
                 ):
                     return False
-        else:
-            if isinstance(fn_unsupported_dtypes, tuple):
-                return False
+        elif isinstance(fn_unsupported_dtypes, tuple):
+            return False
     return True
 
 
@@ -229,7 +228,7 @@ def _get_dtypes(fn, complement=True):
                 if dtype in typesets:
                     typeset_list.extend(typesets[dtype])
                     dtypes.pop(i)
-            dtypes = dtypes + typeset_list
+            dtypes += typeset_list
             supported = merge_fn(supported, set(dtypes))
 
     if complement:
@@ -819,11 +818,11 @@ def result_type(
 # Extra #
 # ------#
 
-default_dtype_stack = list()
-default_float_dtype_stack = list()
-default_int_dtype_stack = list()
-default_uint_dtype_stack = list()
-default_complex_dtype_stack = list()
+default_dtype_stack = []
+default_float_dtype_stack = []
+default_int_dtype_stack = []
+default_uint_dtype_stack = []
+default_complex_dtype_stack = []
 
 
 class DefaultDtype:
@@ -1823,19 +1822,13 @@ def is_bool_dtype(
     elif isinstance(dtype_in, np.ndarray):
         return "bool" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return (
-            True
-            if isinstance(dtype_in, (bool, np.bool)) and not isinstance(dtype_in, bool)
-            else False
-        )
+        return isinstance(dtype_in, (bool, np.bool)) and not isinstance(dtype_in, bool)
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return (
-            True
-            if ivy.nested_argwhere(
+        return bool(
+            ivy.nested_argwhere(
                 dtype_in,
                 lambda x: isinstance(x, (bool, np.bool)) and x is not int,
             )
-            else False
         )
     return "bool" in ivy.as_ivy_dtype(dtype_in)
 
@@ -1906,11 +1899,8 @@ def is_int_dtype(
     elif isinstance(dtype_in, np.ndarray):
         return "int" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return (
-            True
-            if isinstance(dtype_in, (int, np.integer))
-            and not isinstance(dtype_in, bool)
-            else False
+        return isinstance(dtype_in, (int, np.integer)) and not isinstance(
+            dtype_in, bool
         )
     elif isinstance(dtype_in, (list, tuple, dict)):
 
@@ -1920,7 +1910,7 @@ def is_int_dtype(
                 or (ivy.is_array(x) and "int" in ivy.dtype(x))
             ) and x is not bool
 
-        return True if ivy.nested_argwhere(dtype_in, nested_fun) else False
+        return bool(ivy.nested_argwhere(dtype_in, nested_fun))
     return "int" in ivy.as_ivy_dtype(dtype_in)
 
 
@@ -1979,16 +1969,14 @@ def is_float_dtype(
     elif isinstance(dtype_in, np.ndarray):
         return "float" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return True if isinstance(dtype_in, (float, np.floating)) else False
+        return isinstance(dtype_in, (float, np.floating))
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return (
-            True
-            if ivy.nested_argwhere(
+        return bool(
+            ivy.nested_argwhere(
                 dtype_in,
                 lambda x: isinstance(x, (float, np.floating))
                 or (ivy.is_array(x) and "float" in ivy.dtype(x)),
             )
-            else False
         )
     return "float" in as_ivy_dtype(dtype_in)
 

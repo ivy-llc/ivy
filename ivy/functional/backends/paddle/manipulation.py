@@ -262,9 +262,8 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
         return [x]
     if num_or_size_splits is None:
@@ -476,7 +475,7 @@ def unstack(
     if x.ndim == 0:
         return [x]
     if axis is not None:
-        axis = axis % x.ndim
+        axis %= x.ndim
     else:
         axis = 0
     if paddle.is_complex(x):

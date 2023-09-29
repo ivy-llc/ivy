@@ -395,11 +395,10 @@ def gradient(
                     raise ValueError("distances must be either scalars or 1d")
                 if len(distances) != x.shape[axes[i]]:
                     raise ValueError(
-                        "when 1d, distances must match "
-                        "the length of the corresponding dimension {} {}".format(
-                            len(distances), x.shape[axes[i]]
-                        )
+                        "when 1d, distances must match the length of the corresponding"
+                        f" dimension {len(distances)} {x.shape[axes[i]]}"
                     )
+
                 if ivy.is_int_dtype(distances.dtype):
                     # Convert numpy integer types to float64 to avoid modular
                     # arithmetic in np.diff(distances).

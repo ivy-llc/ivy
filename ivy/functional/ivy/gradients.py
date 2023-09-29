@@ -133,7 +133,7 @@ def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=Fal
         if ivy.is_array(x_):
             x_ = ivy.to_ivy(x_) if ivy.is_native_array(x_) else x_
             if create_var:
-                x_ = _variable(x_) if not _is_variable(x_, exclusive=True) else x_
+                x_ = x_ if _is_variable(x_, exclusive=True) else _variable(x_)
             if len(x_.shape) == 0:
                 return ivy.to_native(x_)
             if reshape:

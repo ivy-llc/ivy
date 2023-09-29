@@ -48,7 +48,7 @@ def _arrays_idx_n_dtypes(draw):
             size=num_arrays,
         )
     )
-    xs = list()
+    xs = []
     input_dtypes = draw(
         helpers.array_dtypes(
             available_dtypes=draw(helpers.get_dtypes("numeric")),

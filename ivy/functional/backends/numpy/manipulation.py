@@ -166,9 +166,8 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
         return [x]
     if num_or_size_splits is None:

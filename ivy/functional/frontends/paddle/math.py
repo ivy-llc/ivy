@@ -61,7 +61,7 @@ def amax(x, axis=None, keepdims=False):
             axis[i] += x.ndim
     for i in axis:
         if i < 0 or i >= x.ndim:
-            raise ValueError(f"axis {i} is out of range [-{0}:{x.ndim}]")
+            raise ValueError(f"axis {i} is out of range [-0:{x.ndim}]")
     return ivy.max(x, axis=axis, keepdims=keepdims)
 
 
