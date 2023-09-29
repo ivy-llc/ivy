@@ -1,9 +1,17 @@
 # global
+import torch
+from torch import linalg as LA
+import ivy
+import unittest
 import sys
 import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
+import ivy_test.helpers
+from ivy_test.helpers import helpers
+from ivy_test.helpers.helpers import handle_frontend_method
+from ivy_test.helpers import helper
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
@@ -948,6 +956,58 @@ def test_torch_trapezoid(
         on_device=on_device,
         **kwargs,
     )
+
+
+# triangular_solve
+class TestTriangularSolve(unittest.TestCase):
+    CLASS_TREE = {
+        "torch": {
+            "linalg": {
+                "triangular_solve": "triangular_solve"
+            }
+        }
+    }
+
+    @handle_frontend_method(
+        class_tree=CLASS_TREE,
+        init_tree="torch.tensor",
+        method_name="triangular_solve",
+        A_b=helpers.random_triang_sys_eqs(
+            available_dtypes=helpers.get_dtypes("float"),
+            num_eqs=1,
+            num_vars=3,
+            upper=True,
+            unitriangular=False,
+        ),
+    )
+    def test_triangular_solve(
+        self,
+        A_b,
+        frontend,
+        backend_fw,
+        frontend_method_data,
+        init_flags,
+        method_flags,
+    ):
+        A, b = A_b
+
+        helper.test_frontend_method(
+            init_input_dtypes=torch.float32,
+            init_all_as_kwargs_np={
+                "input_data": A,
+                "input_b": b,
+            },
+            method_input_dtypes=torch.float32,
+            method_all_as_kwargs_np={},
+            frontend_method_data=frontend_method_data,
+            init_flags=init_flags,
+            method_flags=method_flags,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+        )
+
+if __name__ == '__main__':
+    unittest.main()
 
 
 # vdot
