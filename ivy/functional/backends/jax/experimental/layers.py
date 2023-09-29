@@ -872,8 +872,9 @@ def stft(
     if hop_length is None:
         hop_length = win_length // 2
 
-    if n_fft > len(signal):
+    if len(signal) < n_fft:
         n_fft = len(signal)
+        win_length = n_fft  
 
     if not isinstance(hop_length, int):
         raise TypeError("hop_length must be an int.")
