@@ -728,5 +728,5 @@ abs = absolute
 true_divide = divide
 
 @to_ivy_arrays_and_back
-def mean(x1, /):
-    return ivy.mean(x1)
+def mean(x, keepdims=False, out=None, axis=None, dtype=None, *, where=None):
+    return ivy.mean(x)
