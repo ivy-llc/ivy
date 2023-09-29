@@ -393,7 +393,7 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
         ):
             annotation_str = str(annotation)
             if (
-                ("rray" in annotation_str or "Tensor" in annotation_str)
+                ("Array" in annotation_str or "Tensor" in annotation_str)
                 and parameter != "out"
                 and all(
                     sq not in annotation_str
@@ -1316,7 +1316,7 @@ def _leaf_has_nans(x):
         return x.has_nans()
     elif ivy.is_array(x):
         return ivy.isnan(x).any()
-    elif x == float("nan"):
+    elif np.isnan(x):
         return True
     return False
 
