@@ -792,7 +792,10 @@ def nested_argwhere(
         if check_nests and fn(nest):
             _indices.append(_index)
     else:
-        return [_index] if (cond_met := fn(nest)) else False
+        cond_met = fn(nest)
+        if cond_met:
+            return [_index]
+        return False
     return [index for index in _indices if index]
 
 

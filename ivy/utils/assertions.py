@@ -22,19 +22,13 @@ def _broadcast_inputs(x1, x2):
 
 
 def check_less(x1, x2, allow_equal=False, message="", as_array=True):
-    def comp_fn(x1, x2):
-        return ivy.any(x1 > x2), ivy.any(x1 >= x2)
-
+    comp_fn = lambda x1, x2: (ivy.any(x1 > x2), ivy.any(x1 >= x2))
     if not as_array:
-
-        def iter_comp_fn(x1_, x2_):
-            return any(x1 > x2 for x1, x2 in zip(x1_, x2_)), any(
-                x1 >= x2 for x1, x2 in zip(x1_, x2_)
-            )
-
-        def comp_fn(x1, x2):
-            return iter_comp_fn(*_broadcast_inputs(x1, x2))
-
+        iter_comp_fn = lambda x1_, x2_: (
+            any(x1 > x2 for x1, x2 in zip(x1_, x2_)),
+            any(x1 >= x2 for x1, x2 in zip(x1_, x2_)),
+        )
+        comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
     gt, gt_eq = comp_fn(x1, x2)
     # less_equal
     if allow_equal and gt:
@@ -48,19 +42,13 @@ def check_less(x1, x2, allow_equal=False, message="", as_array=True):
 
 
 def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
-    def comp_fn(x1, x2):
-        return ivy.any(x1 < x2), ivy.any(x1 <= x2)
-
+    comp_fn = lambda x1, x2: (ivy.any(x1 < x2), ivy.any(x1 <= x2))
     if not as_array:
-
-        def iter_comp_fn(x1_, x2_):
-            return any(x1 < x2 for x1, x2 in zip(x1_, x2_)), any(
-                x1 <= x2 for x1, x2 in zip(x1_, x2_)
-            )
-
-        def comp_fn(x1, x2):
-            return iter_comp_fn(*_broadcast_inputs(x1, x2))
-
+        iter_comp_fn = lambda x1_, x2_: (
+            any(x1 < x2 for x1, x2 in zip(x1_, x2_)),
+            any(x1 <= x2 for x1, x2 in zip(x1_, x2_)),
+        )
+        comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
     lt, lt_eq = comp_fn(x1, x2)
     # greater_equal
     if allow_equal and lt:
@@ -75,20 +63,11 @@ def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
 
 def check_equal(x1, x2, inverse=False, message="", as_array=True):
     # not_equal
-    def eq_fn(x1, x2):
-        return x1 == x2 if inverse else x1 != x2
-
-    def comp_fn(x1, x2):
-        return ivy.any(eq_fn(x1, x2))
-
+    eq_fn = lambda x1, x2: (x1 == x2 if inverse else x1 != x2)
+    comp_fn = lambda x1, x2: ivy.any(eq_fn(x1, x2))
     if not as_array:
-
-        def iter_comp_fn(x1_, x2_):
-            return any(eq_fn(x1, x2) for x1, x2 in zip(x1_, x2_))
-
-        def comp_fn(x1, x2):
-            return iter_comp_fn(*_broadcast_inputs(x1, x2))
-
+        iter_comp_fn = lambda x1_, x2_: any(eq_fn(x1, x2) for x1, x2 in zip(x1_, x2_))
+        comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
     eq = comp_fn(x1, x2)
     if inverse and eq:
         raise ivy.utils.exceptions.IvyException(

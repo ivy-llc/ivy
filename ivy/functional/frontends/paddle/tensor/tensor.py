@@ -825,8 +825,9 @@ class Tensor:
     )
     def fill_(self, value):
         filled_tensor = paddle_frontend.full_like(self, value)
-        return ivy.inplace_update(self, filled_tensor))
+        return ivy.inplace_update(self, filled_tensor)
 
+    @with_supported_dtypes(
         {
             "2.5.1 and below": (
                 "bool",
