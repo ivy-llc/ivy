@@ -1,21 +1,19 @@
 # global
-import numpy as np
 from hypothesis import strategies as st
-import ivy
 
 # local
-import ivy
 from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+
 @handle_frontend_test(
     fn_tree="tensorflow.keras.layers.Flatten",
     dtype_and_x=helpers.dtype_and_values(
-    available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
-     test_with_out=st.just(False)
-     )
+    test_with_out=st.just(False),
+)
 def test_tensorflow_layers_flatten(
     *,
     dtype_and_x,
@@ -25,7 +23,7 @@ def test_tensorflow_layers_flatten(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x  = dtype_and_x
+    input_dtype, x = dtype_and_x
     print(x)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -35,4 +33,4 @@ def test_tensorflow_layers_flatten(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x,
-        )
+    )
