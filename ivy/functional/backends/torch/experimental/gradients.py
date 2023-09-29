@@ -1,5 +1,6 @@
 # global
 import torch
+from typing import Callable
 
 # local
 import ivy
@@ -25,3 +26,36 @@ def bind_custom_gradient_function(func, custom_grad_fn):
 
     custom_module = _CustomModule.apply
     return inputs_to_native_arrays(custom_module)
+
+
+def vjp(func: Callable, *primals):
+    def grad_fn(*x_in):
+        return ivy.to_native(
+            func(*ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
+
+    primals_out, _vjpfun = ivy.outputs_to_ivy_arrays(torch.func.vjp)(
+        grad_fn, *ivy.to_native(primals, nested=True)
+    )
+
+    def vjpfun(x_in):
+        return ivy.to_ivy(
+            _vjpfun(ivy.to_native(x_in, nested=True)), nested=True, include_derived=True
+        )
+
+    return (primals_out, vjpfun)
+
+
+def jvp(func: Callable, primals, tangents):
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
+
+    primals_out, tangents_out = ivy.outputs_to_ivy_arrays(torch.func.jvp)(
+        grad_fn,
+        ivy.to_native(primals, nested=True),
+        ivy.to_native(tangents, nested=True),
+    )
+
+    return (primals_out, tangents_out)

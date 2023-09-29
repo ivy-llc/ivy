@@ -26,7 +26,9 @@ def vjp(func: Callable, *primals):
             func(*ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
         )
 
-    primals_out, _vjpfun = ivy.outputs_to_ivy_arrays(jax.vjp)(grad_fn, *primals)
+    primals_out, _vjpfun = ivy.outputs_to_ivy_arrays(jax.vjp)(
+        grad_fn, *ivy.to_native(primals, nested=True)
+    )
 
     def vjpfun(x_in):
         return ivy.to_ivy(
@@ -43,7 +45,9 @@ def jvp(func: Callable, primals, tangents):
         )
 
     primals_out, tangents_out = ivy.outputs_to_ivy_arrays(jax.jvp)(
-        grad_fn, primals, tangents
+        grad_fn,
+        ivy.to_native(primals, nested=True),
+        ivy.to_native(tangents, nested=True),
     )
 
     return (primals_out, tangents_out)
