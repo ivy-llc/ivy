@@ -4,12 +4,6 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
-<<<<<<< HEAD
-
-# --- Main --- #
-# ------------ #
-
-
 @to_ivy_arrays_and_back
 def celu(input, alpha=1.0, inplace=False):
     prod = ivy.multiply(
