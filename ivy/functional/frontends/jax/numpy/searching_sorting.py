@@ -56,6 +56,21 @@ def argwhere(a, /, *, size=None, fill_value=None):
     return result.reshape(result.shape[0], num_of_dimensions)
 
 
+@with_unsupported_dtypes(
+    {
+        "0.4.16 and below": (
+            "uint8",
+            "int8",
+            "bool",
+        )
+    },
+    "jax",
+)
+@to_ivy_arrays_and_back
+def count_nonzero(a, axis=None, keepdims=False):
+    return ivy.astype(ivy.count_nonzero(a, axis=axis, keepdims=keepdims), "int64")
+
+
 @to_ivy_arrays_and_back
 def extract(condition, arr):
     if condition.dtype is not bool:
