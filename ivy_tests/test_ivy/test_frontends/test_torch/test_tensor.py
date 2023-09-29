@@ -9886,6 +9886,7 @@ def test_torch_tensor_ne(
         on_device=on_device,
     )
 
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
