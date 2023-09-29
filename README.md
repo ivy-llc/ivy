@@ -191,7 +191,7 @@ tutorials to do so are available!
 </details>
 
 ------------------------------------------------------------------------
-## Chosing backend and transpiling 
+## Chosing backend and transpiling
 
 You can quickly choose your favorite machine learning backend by setting it in the code with one line and transpile any code to it, which you will learn in the next two steps.
 
