@@ -93,7 +93,7 @@ def test_tt_to_tensor(n1, n2, n3, shape1, shape2, shape3):
 
 @pytest.mark.parametrize(
     "coef",
-    [((0.2))],
+    [(0.2)],
 )
 def test_validate_tt_rank(coef):
     tensor_shape = tuple(ivy.random.randint(5, 10, shape=(4,)))

@@ -21,7 +21,7 @@ class Tensor:
     def __init__(self, array, device=None, _init_overload=False, requires_grad=False):
         if _init_overload:
             self._ivy_array = (
-                ivy.array(array) if not isinstance(array, ivy.Array) else array
+                array if isinstance(array, ivy.Array) else ivy.array(array)
             )
 
         else:
@@ -105,9 +105,7 @@ class Tensor:
 
     @ivy_array.setter
     def ivy_array(self, array):
-        self._ivy_array = (
-            ivy.array(array) if not isinstance(array, ivy.Array) else array
-        )
+        self._ivy_array = array if isinstance(array, ivy.Array) else ivy.array(array)
 
     @requires_grad.setter
     def requires_grad(self, requires_grad):
@@ -747,14 +745,13 @@ class Tensor:
         shape = self.shape
         if dim is None:
             return shape
-        else:
-            try:
-                return shape[dim]
-            except IndexError:
-                raise IndexError(
-                    "Dimension out of range (expected to be in range of [{}, {}], "
-                    "but got {}".format(len(shape), len(shape) - 1, dim)
-                )
+        try:
+            return shape[dim]
+        except IndexError:
+            raise IndexError(
+                f"Dimension out of range (expected to be in range of [{len(shape)},"
+                f" {len(shape) - 1}], but got {dim}"
+            )
 
     def matmul(self, other):
         return torch_frontend.matmul(self, other)
@@ -2046,6 +2043,10 @@ class Tensor:
     def xlogy(self, *, other, out=None):
         return torch_frontend.xlogy(self, other, out=out)
 
+    @with_unsupported_dtypes({"2.0.1 and below": "complex"}, "torch")
+    def minimum(self, other, *, out=None):
+        return torch_frontend.minimum(self, other=other, out=out)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
@@ -2080,7 +2081,7 @@ class Tensor:
 
 class Size(tuple):
     def __new__(cls, iterable=()):
-        new_iterable = list()
+        new_iterable = []
         for i, item in enumerate(iterable):
             if isinstance(item, int):
                 new_iterable.append(item)
@@ -2089,12 +2090,10 @@ class Size(tuple):
                 new_iterable.append(int(item))
             except Exception:
                 raise TypeError(f"Expected int, but got {type(item)} at index {i}")
-        return super(Size, cls).__new__(cls, tuple(new_iterable))
+        return super().__new__(cls, tuple(new_iterable))
 
     def __init__(self, shape) -> None:
-        self._ivy_shape = (
-            ivy.shape(shape) if not isinstance(shape, ivy.Shape) else shape
-        )
+        self._ivy_shape = shape if isinstance(shape, ivy.Shape) else ivy.shape(shape)
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'

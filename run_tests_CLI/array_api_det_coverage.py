@@ -14,20 +14,20 @@ def main():
     func_fnames = os.listdir(func_folder)
     func_fnames.sort()
     framework_tests_to_run = {
-        "jax": list(),
-        "numpy": list(),
-        "torch": list(),
-        "tensorflow": list(),
+        "jax": [],
+        "numpy": [],
+        "torch": [],
+        "tensorflow": [],
     }
 
     # add from each filepath
     for fname in func_fnames:
         fpath = os.path.join(func_folder, fname)
-        with open(fpath, "r") as file:
+        with open(fpath) as file:
             contents = file.read()
             contents = [line.replace("__", "") for line in contents.split("\n")]
             for framework in framework_tests_to_run:
-                tests_to_run = list()
+                tests_to_run = []
                 for s in contents:
                     if s == "":
                         continue
@@ -62,7 +62,7 @@ def main():
     )
     for backend in BACKENDS:
         k_flag_file = f"ivy_tests/array_api_testing/.array_api_tests_k_flag_{backend}"
-        with open(k_flag_file, "r") as f:
+        with open(k_flag_file) as f:
             array_api_tests_k_flag = f.read().strip()
 
         if backend == "torch":

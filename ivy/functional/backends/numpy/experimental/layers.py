@@ -1137,7 +1137,7 @@ def stft(
             windowed_frame = np.array(windowed_frame, dtype=dtype)
 
             fft_frame = np.fft.fft(windowed_frame, axis=-1)
-            slit = int((fft_length // 2 + 1))
+            slit = int(fft_length // 2 + 1)
             stft_result.append(fft_frame[..., 0:slit])
 
         stft = np.stack(stft_result, axis=0)

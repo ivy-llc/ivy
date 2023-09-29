@@ -395,11 +395,10 @@ def gradient(
                     raise ValueError("distances must be either scalars or 1d")
                 if len(distances) != x.shape[axes[i]]:
                     raise ValueError(
-                        "when 1d, distances must match "
-                        "the length of the corresponding dimension {} {}".format(
-                            len(distances), x.shape[axes[i]]
-                        )
+                        "when 1d, distances must match the length of the corresponding"
+                        f" dimension {len(distances)} {x.shape[axes[i]]}"
                     )
+
                 if ivy.is_int_dtype(distances.dtype):
                     # Convert numpy integer types to float64 to avoid modular
                     # arithmetic in np.diff(distances).
@@ -743,7 +742,9 @@ def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     y = paddle.where(abs_x_small, z * pp / pq, z * pr / ps)
     result_no_underflow = paddle.where(x < 0.0, 2.0 - y, y)
 
-    is_pos_inf = lambda op: paddle.logical_and(paddle.isinf(op), op > 0)
+    def is_pos_inf(op):
+        return paddle.logical_and(paddle.isinf(op), op > 0)
+
     underflow = paddle.logical_or(
         z == 0,
         paddle.logical_or(

@@ -12,7 +12,7 @@ def is_test_function(node):
 
 
 def extract_tests_from_file(filename):
-    with open(filename, "r") as file:
+    with open(filename) as file:
         try:
             module = ast.parse(file.read())
         except SyntaxError:

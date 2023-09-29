@@ -15,13 +15,13 @@ def main():
     )
     for backend in BACKENDS:
         k_flag_file = f"ivy_tests/array_api_testing/.array_api_tests_k_flag_{backend}"
-        with open(k_flag_file, "r") as f:
+        with open(k_flag_file) as f:
             array_api_tests_k_flag = f.read().strip()
         if backend == "torch":
             array_api_tests_k_flag += " and not (uint16 or uint32 or uint64)"
         k_flag[backend] = array_api_tests_k_flag
 
-    with open("tests_to_run", "r") as f:
+    with open("tests_to_run") as f:
         for line in f:
             test, backend = line.split(",")
             backend = backend.strip("\n")
