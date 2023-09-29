@@ -976,9 +976,7 @@ class ContainerBase(dict, abc.ABC):
                 to_apply,
                 partial,
             ),
-            "Containers were not identical:\n\n{}".format(
-                ivy.Container.cont_diff(*containers)
-            ),
+            f"Containers were not identical:\n\n{ivy.Container.cont_diff(*containers)}",
         )
 
     @staticmethod
@@ -1678,14 +1676,14 @@ class ContainerBase(dict, abc.ABC):
             dict_in = dict(
                 zip(
                     [
-                        "it_{}".format(str(i).zfill(len(str(len(dict_in)))))
+                        f"it_{str(i).zfill(len(str(len(dict_in))))}"
                         for i in range(len(dict_in))
                     ],
                     dict_in,
                 )
             )
         else:
-            raise ivy.utils.exceptions.IvyException("invalid input {}".format(dict_in))
+            raise ivy.utils.exceptions.IvyException(f"invalid input {dict_in}")
         items = sorted(dict_in.items()) if self._alphabetical_keys else dict_in.items()
         for key, value in items:
             if (
@@ -3890,10 +3888,11 @@ class ContainerBase(dict, abc.ABC):
                             rep = tuple(
                                 [
                                     (
-                                        "{} = {}".format(name, v[i])
+                                        f"{name} = {v[i]}"
                                         if v[i].size < self._print_limit
-                                        else "{} = {}, shape={}".format(
-                                            name, type(v[i]), list(v[i].shape)
+                                        else (
+                                            f"{name} = {type(v[i])},"
+                                            f" shape={list(v[i].shape)}"
                                         )
                                     )
                                     for i, name in enumerate(v._fields)
@@ -3901,22 +3900,22 @@ class ContainerBase(dict, abc.ABC):
                             )
                         else:
                             rep = (
-                                "NamedTuple({})".format(len(v)),
+                                f"NamedTuple({len(v)})",
                                 type(v[0]),
-                                "shape={}".format(list(v[0].shape)),
+                                f"shape={list(v[0].shape)}",
                             )
 
                     elif isinstance(v, tuple):
                         rep = (
-                            "tuple({})".format(len(v)),
+                            f"tuple({len(v)})",
                             type(v[0]),
-                            "shape={}".format(list(v[0].shape)),
+                            f"shape={list(v[0].shape)}",
                         )
                     else:
                         rep = (
-                            "list[{}]".format(len(v)),
+                            f"list[{len(v)}]",
                             type(v[0]),
-                            "shape={}".format(list(v[0].shape)),
+                            f"shape={list(v[0].shape)}",
                         )
 
                 else:
@@ -4015,9 +4014,7 @@ class ContainerBase(dict, abc.ABC):
             )
             # ToDo: make the solution below more elegant
             for i in range(10):
-                ret = ret.replace(
-                    "diff_{}".format(i), termcolor.colored("diff_{}".format(i), "red")
-                )
+                ret = ret.replace(f"diff_{i}", termcolor.colored(f"diff_{i}", "red"))
             for keyword, color in self._keyword_color_dict.items():
                 ret = ret.replace(keyword, termcolor.colored(keyword, color))
             return ret
@@ -4040,9 +4037,7 @@ class ContainerBase(dict, abc.ABC):
                     # raise error
                     if not hasattr(v, item):
                         raise AttributeError(
-                            "'{}' object has no attribute '{}'".format(
-                                type(v).__module__, item
-                            )
+                            f"'{type(v).__module__}' object has no attribute '{item}'"
                         )
                     attr = getattr(v, item)
                     result = attr(*args, **kwargs) if callable(attr) else attr
