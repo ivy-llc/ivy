@@ -109,7 +109,7 @@ enables you to:
 
 You can start by reading [our basics](https://unify.ai/docs/ivy/demos/learn_the_basics.html) and [Demos](https://unify.ai/docs/ivy/demos/examples_and_demos.html).
 
-here is a good starting point for you:
+Here is a good starting point for you:
 
 - [How to convert your code between frameworks?](https://unify.ai/docs/ivy/demos/learn_the_basics/04_transpile_code.html)
 - [How to write framework-agnostic code?](https://unify.ai/docs/ivy/demos/learn_the_basics/01_write_ivy_code.html)
