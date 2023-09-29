@@ -2094,6 +2094,7 @@ def test_paddle_scale(
         x=x[0],
         scale=scale,
         bias=bias,
+        rtol=0.000001,
         bias_after_scale=bias_after_scale,
     )
 
