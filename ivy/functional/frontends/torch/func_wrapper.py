@@ -274,12 +274,7 @@ def outputs_to_native_arrays(fn: Callable):
 
 
 def scalar_input_to_0dim_tensor(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so it receives `ivy.Array` instances.
-
-    Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
-    return arrays are all converted to `Tensor` instances.
-    """
+    """Wrap `fn` so that input scalars are all converted to `torch.Tensor` instances."""
 
     @functools.wraps(fn)
     def scalar_input_to_0dim_tensor_torch(*args, **kwargs):
