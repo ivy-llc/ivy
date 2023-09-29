@@ -185,3 +185,66 @@ def conv3d_transpose(
     return _conv_transpose(
         x, weight, bias, stride, padding, output_padding, dilation, groups, data_format
     )
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "float32", "float64")},
+    "paddle",
+)
+@inputs_to_ivy_arrays
+def cross_entropy(
+    input,
+    label,
+    weight=None,
+    ignore_index=-100,
+    reduction="mean",
+    soft_label=False,
+    axis=-1,
+    use_softmax=True,
+    name=None,
+):
+    result = ivy.cross_entropy(label, input)
+
+    if soft_label:
+        if use_softmax:
+            # Soft labels with softmax
+            pass
+        else:
+            # Soft labels without softmax
+            pass
+    else:
+        if use_softmax:
+            # Hard labels with softmax
+            pass
+        else:
+            # Hard labels without softmax
+            pass
+
+    if weight is not None:
+        if soft_label:
+            # Apply weight to soft labels
+            pass
+        else:
+            # Apply weight to hard labels
+            pass
+
+    # Process reduction
+    if reduction == "none":
+        return result
+    elif reduction == "sum":
+        return ivy.sum(result)
+    elif reduction == "mean":
+        if weight is None:
+            return ivy.mean(result)
+        else:
+            if soft_label:
+                # Weighted mean for soft labels
+                pass
+            else:
+                # Weighted mean for hard labels
+                pass
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def dice_loss(input, label, epsilon=0.00001, name=None):
