@@ -6,12 +6,12 @@ from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def cholesky(
-    x: Union[(None, mx.ndarray.NDArray)],
+    x: Union[None, mx.ndarray.NDArray],
     /,
     *,
     upper: bool = False,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
+    out: Optional[Union[None, mx.ndarray.NDArray]] = None,
+) -> Union[None, mx.ndarray.NDArray]:
     raise IvyNotImplementedException()
 
 

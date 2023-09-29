@@ -43,123 +43,25 @@ def cholesky(
 
     Parameters
     ----------
-    x
-        input array having shape (..., M, M) and whose innermost two dimensions form
+    x : Union[ivy.Array, ivy.NativeArray]
+        Input array having shape (..., M, M) and whose innermost two dimensions form
         square symmetric positive-definite matrices. Should have a floating-point data
         type.
-    upper
+    upper : bool, optional, default=False
         If True, the result must be the upper-triangular Cholesky factor U. If False,
-        the result must be the lower-triangular Cholesky factor L. Default: ``False``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
+        the result must be the lower-triangular Cholesky factor L.
+    out : Optional[ivy.Array], optional, default=None
+        Optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
     -------
-    ret
-        an array containing the Cholesky factors for each square matrix. If upper is
+    ret : ivy.Array
+        An array containing the Cholesky factors for each square matrix. If upper is
         False, the returned array must contain lower-triangular matrices; otherwise, the
         returned array must contain upper-triangular matrices. The returned array must
         have a floating-point data type determined by Type Promotion Rules and must have
         the same shape as x.
-
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    extensions/generated/array_api.linalg.cholesky.html>`_
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],
-    ...                [1.0, 0.5, 0.0, 0.0, 0.0],
-    ...                [2.0, 0.0, 3.0, 0.0, 0.0],
-    ...                [0.5, 0.0, 0.0, 0.625, 0.0],
-    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])
-    >>> l = ivy.cholesky(x, upper='false')
-    >>> print(l)
-    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
-               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
-               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
-
-    >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],
-    ...                [1.0, 0.5, 0.0, 0.0, 0.0],
-    ...                [2.0, 0.0, 3.0, 0.0, 0.0],
-    ...                [0.5, 0.0, 0.0, 0.625, 0.0],
-    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])
-    >>> y = ivy.zeros([5,5])
-    >>> ivy.cholesky(x, upper='false', out=y)
-    >>> print(y)
-    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
-               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
-               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
-
-    >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],
-    ...                [1.0, 0.5, 0.0, 0.0, 0.0],
-    ...                [2.0, 0.0, 3.0, 0.0, 0.0],
-    ...                [0.5, 0.0, 0.0, 0.625, 0.0],
-    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])
-    >>> ivy.cholesky(x, upper='false', out=x)
-    >>> print(x)
-    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
-               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
-               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
-               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
-
-
-    >>> x = ivy.array([[1., -2.], [2., 5.]])
-    >>> u = ivy.cholesky(x, upper='false')
-    >>> print(u)
-    ivy.array([[ 1., -2.],
-               [ 0.,  1.]])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]),
-    ...                   b=ivy.array([[2., 1.],[1., 1.]]))
-    >>> y = ivy.cholesky(x, upper='false')
-    >>> print(y)
-    {
-        a: ivy.array([[1.73, -0.577],
-                      [0., 1.63]]),
-        b: ivy.array([[1.41, 0.707],
-                      [0., 0.707]])
-    }
-
-    With multiple :class:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]),
-    ...                   b=ivy.array([[2., 1.],[1., 1.]]))
-    >>> upper = ivy.Container(a=1, b=-1)
-    >>> y = ivy.cholesky(x, upper='false')
-    >>> print(y)
-    {
-        a: ivy.array([[1.73, -0.577],
-                      [0., 1.63]]),
-        b: ivy.array([[1.41, 0.707],
-                      [0., 0.707]])
-    }
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
-
-    >>> x = ivy.array([[1., -2.], [2., 5.]])
-    >>> upper = ivy.Container(a=1, b=-1)
-    >>> y = ivy.cholesky(x, upper='false')
-    >>> print(y)
-    ivy.array([[ 1., -2.],
-               [ 0.,  1.]])
     """
     return current_backend(x).cholesky(x, upper=upper, out=out)
 

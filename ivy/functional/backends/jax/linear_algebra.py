@@ -20,8 +20,7 @@ from ivy import promote_types_of_inputs
 
 
 @with_unsupported_dtypes(
-    {"0.4.16 and below": ("bfloat16", "float16", "complex")},
-    backend_version,
+    {"0.4.16 and below": ("bfloat16", "float16", "complex")}, backend_version
 )
 def cholesky(
     x: JaxArray, /, *, upper: bool = False, out: Optional[JaxArray] = None
