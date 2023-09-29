@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_array_function,
     infer_dtype,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -74,7 +74,7 @@ def lgamma(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -82,10 +82,10 @@ def sinc(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculate an implementation-dependent approximation of the principal value of
-    the normalized sinc function, having domain ``(-infinity, +infinity)`` and
-    codomain ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``.
-    Each element ``x_i`` is assumed to be expressed in radians.
+    Calculate an implementation-dependent approximation of the principal value of the
+    normalized sinc function, having domain ``(-infinity, +infinity)`` and codomain
+    ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``. Each element
+    ``x_i`` is assumed to be expressed in radians.
 
     **Special cases**
 
@@ -150,7 +150,7 @@ def sinc(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def fmax(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -196,7 +196,7 @@ def fmax(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def float_power(
     x1: Union[ivy.Array, float, list, tuple],
     x2: Union[ivy.Array, float, list, tuple],
@@ -245,7 +245,7 @@ def float_power(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def copysign(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -293,7 +293,7 @@ def copysign(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def count_nonzero(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -353,7 +353,7 @@ def count_nonzero(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def nansum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -411,7 +411,7 @@ def nansum(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def isclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -476,7 +476,7 @@ def isclose(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def signbit(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -512,7 +512,7 @@ def signbit(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def hypot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -550,7 +550,7 @@ def hypot(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -606,7 +606,7 @@ def diff(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -681,7 +681,7 @@ def allclose(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def fix(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -720,7 +720,7 @@ def fix(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def nextafter(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -762,7 +762,7 @@ def nextafter(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def zeta(
     x: Union[ivy.Array, ivy.NativeArray],
     q: Union[ivy.Array, ivy.NativeArray],
@@ -805,7 +805,7 @@ def zeta(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -885,7 +885,7 @@ def gradient(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def xlogy(
     x: Union[ivy.Array, ivy.NativeArray],
     y: Union[ivy.Array, ivy.NativeArray],
@@ -973,7 +973,7 @@ def binarizer(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def conj(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1056,7 +1056,7 @@ def conj(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def ldexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1098,7 +1098,7 @@ def ldexp(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def lerp(
     input: Union[ivy.Array, ivy.NativeArray],
     end: Union[ivy.Array, ivy.NativeArray],
@@ -1204,9 +1204,8 @@ def lerp(
     if ivy.is_array(weight):
         if ivy.dtype(weight) not in weight_allowed_types:
             weight = ivy.astype(weight, "float64")
-    else:
-        if not isinstance(weight, float):
-            weight = ivy.astype(ivy.array([weight]), "float64")
+    elif not isinstance(weight, float):
+        weight = ivy.astype(ivy.array([weight]), "float64")
 
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 
@@ -1216,7 +1215,7 @@ lerp.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
@@ -1228,7 +1227,7 @@ lerp.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def frexp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1335,3 +1334,93 @@ def digamma(
     ivy.array([-0.7549271   0.92278427  0.9988394])
     """
     return ivy.current_backend(x).digamma(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
+def sparsify_tensor(
+    x: Union[ivy.Array, ivy.NativeArray],
+    card: int,
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Zeros out all elements in the tensor except `card` elements with maximum absolute
+    values.
+
+    Parameters
+    ----------
+    x
+        Tensor to be sparsified
+    card
+        Desired number of non-zero elements in the tensor
+    out
+        Optional output array for writing the result to.
+
+    Returns
+    -------
+    ivy.array of shape tensor.shape
+
+    Examples
+    --------
+    >>> x = ivy.arange(100)
+    >>> x = ivy.reshape(x, (10, 10))
+    >>> sparsify_tensor(x, 10)
+    ivy.array([[ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [90, 91, 92, 93, 94, 95, 96, 97, 98, 99]])
+    """
+    if card >= ivy.prod(ivy.array(x.shape)):
+        return ivy.inplace_update(out, x) if ivy.exists(out) else x
+    _shape = ivy.shape(x)
+    x = ivy.reshape(ivy.sort(ivy.abs(x)), (-1,))
+    tensor = ivy.concat([ivy.zeros(len(x) - card, dtype=x.dtype), x[-card:]], axis=0)
+
+    return ivy.reshape(tensor, _shape, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def erfc(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Complementary error function, 1 - erf(x)
+
+    Parameters
+    ----------
+    x
+        Input array of real or complex valued argument.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Values of the complementary error function.
+
+    Examples
+    --------
+    >>> x = ivy.array([2, -1., 0])
+    >>> ivy.erfc(x)
+    ivy.array([0.00467773, 1.84270084, 1.        ])
+    """
+    return ivy.current_backend(x).erfc(x, out=out)
