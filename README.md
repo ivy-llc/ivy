@@ -194,7 +194,7 @@ tutorials to do so are available!
 You can quickly choose your favorite machine learning backend by setting it in the code with one line and transpile any code to it, which you will learn in the next two steps.
 
 1. <details>
-    <summary><b>Chose your backend</b></summary>
+    <summary><b>choose your backend</b></summary>
     here you write a code with ivy framework by using jax as backend.
 
     ``` python
