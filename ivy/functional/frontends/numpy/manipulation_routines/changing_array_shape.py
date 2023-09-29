@@ -6,6 +6,11 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 
 @to_ivy_arrays_and_back
+def asanyarray(a, dtype=None, order=None, like=None):
+    return ivy.asarray(a)
+
+
+@to_ivy_arrays_and_back
 def asarray_chkfinite(a, dtype=None, order=None):
     a = ivy.asarray(a, dtype=dtype)
     if not ivy.all(ivy.isfinite(a)):

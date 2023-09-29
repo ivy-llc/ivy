@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_complex_input,
     handle_backend_invalid,
 )
@@ -38,7 +38,7 @@ def _gelu_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -128,7 +128,7 @@ def _leaky_relu_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -209,7 +209,7 @@ leaky_relu.jax_like = _leaky_relu_jax_like
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -305,7 +305,7 @@ def _relu_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def relu(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -377,7 +377,7 @@ relu.jax_like = _relu_jax_like
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -463,7 +463,7 @@ def sigmoid(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -560,7 +560,7 @@ def _softplus_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -634,7 +634,7 @@ softplus.jax_like = _softplus_jax_like
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def softsign(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -674,7 +674,7 @@ def softsign(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def mish(
     x: Union[ivy.Array, ivy.NativeArray],

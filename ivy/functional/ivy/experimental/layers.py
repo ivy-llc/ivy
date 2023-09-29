@@ -15,7 +15,7 @@ from ivy.func_wrapper import (
     handle_partial_mixed_function,
     inputs_to_ivy_arrays,
     handle_array_function,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
@@ -30,7 +30,7 @@ _max = builtins.max
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -118,7 +118,7 @@ def max_pool1d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -206,7 +206,7 @@ def max_pool2d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def max_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -292,7 +292,7 @@ def max_pool3d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def avg_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -375,7 +375,7 @@ def avg_pool1d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def avg_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -463,7 +463,7 @@ def avg_pool2d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def avg_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -630,7 +630,7 @@ def pool(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -854,7 +854,7 @@ def idct(
 idct.mixed_backend_wrappers = {
     "to_add": (
         "handle_backend_invalid",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": (),
 }
@@ -866,7 +866,7 @@ idct.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -936,7 +936,7 @@ def fft(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1012,7 +1012,7 @@ def dropout1d(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dropout2d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1078,7 +1078,7 @@ def dropout2d(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1130,7 +1130,7 @@ def dropout3d(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -1199,7 +1199,7 @@ def ifft(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1320,7 +1320,7 @@ def dft(
 
     if onesided:
         slices = [slice(0, a) for a in res.shape]
-        slices[axis] = slice(0, ivy.shape(res, as_array=True)[axis] // 2 + 1)
+        slices[axis] = slice(0, ivy.shape(res)[axis] // 2 + 1)
         res = res[tuple(slices)]
     return res
 
@@ -1410,7 +1410,7 @@ def _tf_area_indices(dim_index, scale):
 
 
 def _tf_area_interpolate(x, size, dims):
-    ret = ivy.zeros((x.shape[:2] + size))
+    ret = ivy.zeros(x.shape[:2] + size)
     scale = ivy.divide(ivy.shape(x)[2:], size)
     area = 1.0 / ivy.prod(scale)
     for i, ba in enumerate(x):
@@ -1657,17 +1657,17 @@ def _upsample_bicubic2d_default(
         return a[N_idx, C_idx, y_idx, x_idx]
 
     def get_x_interp(y):
-        coeffs_x = tuple((load_bounded(y, x_ofs) for x_ofs in ixs_ofs))
+        coeffs_x = tuple(load_bounded(y, x_ofs) for x_ofs in ixs_ofs)
         return _upsample_cubic_interp1d(coeffs_x, t_x)
 
-    coeffs_y = tuple((get_x_interp(y_ofs) for y_ofs in iys_ofs))
+    coeffs_y = tuple(get_x_interp(y_ofs) for y_ofs in iys_ofs)
     result = _upsample_cubic_interp1d(coeffs_y, t_y)
 
     return result
 
 
 def area_interpolate(x, dims, size, scale):
-    ret = ivy.zeros((x.shape[:2] + size))
+    ret = ivy.zeros(x.shape[:2] + size)
     inv_scale = ivy.divide(1.0, scale)
     for i, ba in enumerate(x):
         for j, ch in enumerate(ba):
@@ -1731,11 +1731,20 @@ def area_interpolate(x, dims, size, scale):
 def get_interpolate_kernel(mode):
     kernel_func = _triangle_kernel
     if mode == "bicubic_tensorflow":
-        kernel_func = lambda inputs: _cubic_kernel(inputs)
+
+        def kernel_func(inputs):
+            return _cubic_kernel(inputs)
+
     elif mode == "lanczos3":
-        kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
+
+        def kernel_func(inputs):
+            return _lanczos_kernel(3, inputs)
+
     elif mode == "lanczos5":
-        kernel_func = lambda inputs: _lanczos_kernel(5, inputs)
+
+        def kernel_func(inputs):
+            return _lanczos_kernel(5, inputs)
+
     return kernel_func
 
 
@@ -1982,7 +1991,7 @@ def interpolate(
 interpolate.mixed_backend_wrappers = {
     "to_add": (
         "handle_backend_invalid",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": (),
 }
@@ -2177,7 +2186,7 @@ adaptive_max_pool2d.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2257,7 +2266,7 @@ adaptive_avg_pool1d.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2347,7 +2356,7 @@ adaptive_avg_pool2d.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2596,7 +2605,7 @@ sliding_window.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2676,7 +2685,7 @@ reduce_window.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2754,7 +2763,7 @@ def fft2(
 
 
 fft2.mixed_backend_wrappers = {
-    "to_add": ("handle_device_shifting",),
+    "to_add": ("handle_device",),
     "to_skip": (),
 }
 
@@ -2935,7 +2944,7 @@ def rfftn(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def stft(
     signals: Union[ivy.Array, ivy.NativeArray],
     frame_length: int,
@@ -2994,3 +3003,123 @@ def stft(
         name=name,
         out=out,
     )
+
+
+def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
+    dims = {"1d": 1, "2d": 2, "3d": 3}
+    if isinstance(x, int):
+        return tuple([x for _ in range(dims[pool_dims])])
+
+    if len(x) == 1:
+        return tuple([x[0] for _ in range(dims[pool_dims])])
+
+    elif len(x) == dims[pool_dims]:
+        return tuple(x)
+
+    elif len(x) != dims[pool_dims]:
+        raise ValueError(
+            f"`{name}` must either be a single int, "
+            f"or a tuple of {dims[pool_dims]} ints. "
+        )
+
+
+def _cal_output_shape(
+    input_shape,
+    padding,
+    kernel_size,
+    strides,
+):
+    return [
+        (length - 1) * stride - 2 * pad + ker
+        for length, stride, pad, ker in zip(input_shape, strides, padding, kernel_size)
+    ]
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_partial_mixed_function
+@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_device
+def max_unpool1d(
+    input: ivy.Array,
+    indices: ivy.Array,
+    kernel_size: Union[Tuple[int], int],
+    /,
+    *,
+    strides: Union[int, Tuple[int]] = None,
+    padding: Union[int, Tuple[int]] = 0,
+    data_format: Optional[str] = "NCW",
+) -> ivy.Array:
+    """
+    Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+
+    Parameters
+    ----------
+    input
+        Pooled input image *[batch_size, w, d_in]*.
+    indices
+        Indices obtained from the corresponding max pooling operation.
+    kernel_size
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimension paddings.
+    data_format
+        NWC" or "NCW". Defaults to "NWC".
+
+    Returns
+    -------
+    ret
+        The result of the unpooling operation.
+    """
+    if strides is None:
+        strides = kernel_size
+    input_shape = input.shape
+    if data_format in ["NCW", "NWC"]:
+        revert = False
+        if data_format == "NWC":
+            x_len = (input_shape[1],)
+            input = input.permute_dims((0, 2, 1))
+            indices = indices.permute_dims((0, 2, 1))
+            revert = True
+        else:
+            x_len = (input_shape[-1],)
+    else:
+        raise ValueError(
+            f"data_format attr should be NCW or NWC but found {data_format}"
+        )
+    input_shape = input.shape
+    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
+    strides = _broadcast_pooling_helper(strides, "1d", name="strides")
+    output_len = _cal_output_shape(x_len, padding, kernel_size, strides)
+    output_shape = list(input_shape[:-1]) + output_len
+    one_like_mask = ivy.ones_like(indices, dtype="int32")
+    batch_shape = [input_shape[0], 1, 1]
+    batch_range = ivy.reshape(
+        ivy.arange(0, output_shape[0], dtype="int32"), batch_shape
+    )
+    b = one_like_mask * batch_range
+    feature_range = ivy.arange(0, output_shape[1], dtype="int32").reshape((1, -1, 1))
+    f = one_like_mask * feature_range
+    indices = ivy.stack([b, f, indices]).reshape((3, -1))
+    output = ivy.zeros(output_shape, dtype=input.dtype)
+    indices = tuple(indices)
+    output[indices] = input.reshape((-1,))
+    if revert:
+        output = output.permute_dims([0, 2, 1])
+    return output
+
+
+max_unpool1d.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "to_native_arrays_and_back",
+        "handle_device",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}

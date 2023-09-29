@@ -648,7 +648,9 @@ def _ifft_norm(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
-@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes(
+    {"2.13.0 and below": ("complex", "float32", "float64")}, backend_version
+)
 def fft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
@@ -658,6 +660,11 @@ def fft(
     n: Union[int, Tuple[int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # ToDo: Remove conversion from float to complex when casting mode is working
+    if x.dtype == "float32":
+        x = tf.cast(x, tf.complex64)
+    elif x.dtype == "float64":
+        x = tf.cast(x, tf.complex128)
     if not isinstance(dim, int):
         raise ivy.utils.exceptions.IvyError(
             f"Expecting <class 'int'> instead of {type(dim)}"
@@ -1061,9 +1068,7 @@ def fft2(
 def fft_input_validation(x):
     if not x.dtype.is_complex:
         raise TypeError(
-            "Invalid FFT input: `x` must be of a complex dtype. Received: {}".format(
-                x.dtype
-            )
+            f"Invalid FFT input: `x` must be of a complex dtype. Received: {x.dtype}"
         )
     return x
 
@@ -1098,16 +1103,12 @@ def shape_and_axes_validation(shape, axes, input_rank_tensor):
             tf.debugging.assert_less(
                 axes,
                 input_rank_tensor,
-                message=(
-                    "Argument `axes` contains invalid indices. Received: {}"
-                ).format(axes),
+                message=f"Argument `axes` contains invalid indices. Received: {axes}",
             ),
             tf.debugging.assert_greater_equal(
                 axes,
                 -input_rank_tensor,
-                message=(
-                    "Argument `axes` contains invalid indices. Received: {}"
-                ).format(axes),
+                message=f"Argument `axes` contains invalid indices. Received: {axes}",
             ),
         ]
         with tf.control_dependencies(checks_axes):
@@ -1336,9 +1337,7 @@ RFFTN Function
 def rfft_input_validation(x):
     if not x.dtype.is_floating:
         raise TypeError(
-            "Invalid FFT input: `x` must be of a real dtype. Received: {}".format(
-                x.dtype
-            )
+            f"Invalid FFT input: `x` must be of a real dtype. Received: {x.dtype}"
         )
     return x
 

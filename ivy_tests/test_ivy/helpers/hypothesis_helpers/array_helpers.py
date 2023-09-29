@@ -2237,3 +2237,135 @@ def create_concatenable_arrays_dtypes(
         )
         xs.append(x)
     return xs, input_dtypes
+
+
+# helpers for tests (core and frontend) related to solve function
+@st.composite
+def get_first_solve_batch_matrix(draw, choose_adjoint=False):
+    """
+    Generate non-singular left hand side of equation system possibly with a single batch
+    dimension at the begining. Use get_second_solve_batch_matrix to get the right hand
+    side.
+
+    Parameters
+    ----------
+    choose_adjoint
+        if True, randomly generates boolean
+        value for adjoint output,
+        otherwise this output is False
+
+    Returns
+    -------
+        dtype
+            Data type of the array
+        matrix
+            Generated array
+        adjoint
+            boolean value specifying whether the system should be solved for
+            adjoint of array
+    """
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    batch_size = draw(
+        st.shared(helpers.ints(min_value=0, max_value=3), key="shared_batch_size")
+    )
+
+    # adjoint of a regular matrix is also regular
+    matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple(
+                ([] if batch_size == 0 else [batch_size]) + [shared_size, shared_size]
+            ),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.all(np.linalg.cond(x) < 1 / sys.float_info.epsilon))
+    )
+
+    adjoint = False
+    if choose_adjoint:
+        adjoint = draw(st.booleans())
+
+    return input_dtype, matrix, adjoint
+
+
+@st.composite
+def get_second_solve_batch_matrix(draw, allow_simplified=True, choose_side=False):
+    """
+    Generate right hand side of equation system. Possible with a batch dimension and
+    possibly with several columns of values. Use get_first_solve_batch_matrix to
+    generate the left hand side.
+
+    Parameters
+    ----------
+    allow_simplified
+        if True, a 1D vector with correct length can be returned as the right hand side
+    choose_side
+        Randomly choose if the system to be solved is AX=B or XA=B,
+        where X is the unknown solution
+
+    Returns
+    -------
+    dtype
+        Data type of the generated array
+    matrix
+        Generated array
+    left
+        If True, the system is AX=B, otherwise it is XA=B
+    """
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    batch_size = draw(
+        st.shared(helpers.ints(min_value=0, max_value=3), key="shared_batch_size")
+    )
+    num_systems = draw(st.shared(helpers.ints(min_value=1, max_value=4)))
+    left = True
+    if choose_side:
+        left = draw(st.booleans())
+    shape = []
+    if batch_size > 0:
+        shape += [batch_size]
+    if left:
+        if (
+            allow_simplified
+            and batch_size == 0
+            and num_systems == 1
+            and draw(st.booleans())
+        ):
+            shape = tuple(shape + [shared_size])
+        else:
+            shape = tuple(shape + [shared_size, num_systems])
+    else:
+        shape = tuple(shape + [num_systems, shared_size])
+
+    return (
+        input_dtype,
+        draw(
+            helpers.array_values(
+                dtype=input_dtype, shape=shape, min_value=2, max_value=5
+            )
+        ),
+        left,
+    )

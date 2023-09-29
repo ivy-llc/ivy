@@ -443,13 +443,11 @@ class ContainerBase(dict, abc.ABC):
         # otherwise, check that the keys are aligned between each container, and apply
         # this method recursively
         return_dict = dict()
-        all_keys = set(
-            [
-                item
-                for sublist in [list(cont.keys()) for cont in containers]
-                for item in sublist
-            ]
-        )
+        all_keys = {
+            item
+            for sublist in [list(cont.keys()) for cont in containers]
+            for item in sublist
+        }
         for key in all_keys:
             keys_present = [key in cont for cont in containers]
             return_dict[key] = ivy.Container.cont_combine(
@@ -558,13 +556,11 @@ class ContainerBase(dict, abc.ABC):
         # otherwise, check that the keys are aligned between each container, and apply
         # this method recursively
         return_dict = dict()
-        all_keys = set(
-            [
-                item
-                for sublist in [list(cont.keys()) for cont in containers]
-                for item in sublist
-            ]
-        )
+        all_keys = {
+            item
+            for sublist in [list(cont.keys()) for cont in containers]
+            for item in sublist
+        }
         for key in all_keys:
             keys_present = [key in cont for cont in containers]
             all_keys_present = sum(keys_present) == num_containers
@@ -706,7 +702,7 @@ class ContainerBase(dict, abc.ABC):
             Container
         """
         # retrieve all keys and the first container if it exists
-        keys = set([])
+        keys = set()
         container0 = None
         for container in containers:
             if isinstance(container, ivy.Container):
@@ -867,7 +863,7 @@ class ContainerBase(dict, abc.ABC):
             containers = [
                 cont.cont_at_key_chains(common_key_chains) for cont in containers
             ]
-        keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
+        keys = {i for sl in [list(cont.keys()) for cont in containers] for i in sl}
 
         # noinspection PyProtectedMember
         for key in keys:
@@ -976,9 +972,7 @@ class ContainerBase(dict, abc.ABC):
                 to_apply,
                 partial,
             ),
-            "Containers were not identical:\n\n{}".format(
-                ivy.Container.cont_diff(*containers)
-            ),
+            f"Containers were not identical:\n\n{ivy.Container.cont_diff(*containers)}",
         )
 
     @staticmethod
@@ -1390,7 +1384,7 @@ class ContainerBase(dict, abc.ABC):
              (Default value = '__')
         """
         # noinspection RegExpSingleCharAlternation
-        flat_keys = re.split("/|\.", key_chain)  # noqa
+        flat_keys = re.split(r"/|\.", key_chain)  # noqa
         num_keys = len(flat_keys)
         pre_keys = list()
         post_keys = list()
@@ -1540,6 +1534,13 @@ class ContainerBase(dict, abc.ABC):
     def _cont_get_shapes(self):
         return self.cont_map(lambda x, kc: x.shape if hasattr(x, "shape") else None)
 
+    def _cont_get_dtype(self):
+        sub_dtypes = [
+            v for k, v in self.cont_map(lambda x, kc: x.dtype).cont_to_iterator() if v
+        ]
+        unique_dtypes = list(set(sub_dtypes))
+        return sub_dtypes[0] if len(unique_dtypes) == 1 else None
+
     def _cont_get_dev(self, as_native=False):
         sub_devs = [
             v
@@ -1671,14 +1672,14 @@ class ContainerBase(dict, abc.ABC):
             dict_in = dict(
                 zip(
                     [
-                        "it_{}".format(str(i).zfill(len(str(len(dict_in)))))
+                        f"it_{str(i).zfill(len(str(len(dict_in))))}"
                         for i in range(len(dict_in))
                     ],
                     dict_in,
                 )
             )
         else:
-            raise ivy.utils.exceptions.IvyException("invalid input {}".format(dict_in))
+            raise ivy.utils.exceptions.IvyException(f"invalid input {dict_in}")
         items = sorted(dict_in.items()) if self._alphabetical_keys else dict_in.items()
         for key, value in items:
             if (
@@ -3883,10 +3884,11 @@ class ContainerBase(dict, abc.ABC):
                             rep = tuple(
                                 [
                                     (
-                                        "{} = {}".format(name, v[i])
+                                        f"{name} = {v[i]}"
                                         if v[i].size < self._print_limit
-                                        else "{} = {}, shape={}".format(
-                                            name, type(v[i]), list(v[i].shape)
+                                        else (
+                                            f"{name} = {type(v[i])},"
+                                            f" shape={list(v[i].shape)}"
                                         )
                                     )
                                     for i, name in enumerate(v._fields)
@@ -3894,22 +3896,22 @@ class ContainerBase(dict, abc.ABC):
                             )
                         else:
                             rep = (
-                                "NamedTuple({})".format(len(v)),
+                                f"NamedTuple({len(v)})",
                                 type(v[0]),
-                                "shape={}".format(list(v[0].shape)),
+                                f"shape={list(v[0].shape)}",
                             )
 
                     elif isinstance(v, tuple):
                         rep = (
-                            "tuple({})".format(len(v)),
+                            f"tuple({len(v)})",
                             type(v[0]),
-                            "shape={}".format(list(v[0].shape)),
+                            f"shape={list(v[0].shape)}",
                         )
                     else:
                         rep = (
-                            "list[{}]".format(len(v)),
+                            f"list[{len(v)}]",
                             type(v[0]),
-                            "shape={}".format(list(v[0].shape)),
+                            f"shape={list(v[0].shape)}",
                         )
 
                 else:
@@ -4008,9 +4010,7 @@ class ContainerBase(dict, abc.ABC):
             )
             # ToDo: make the solution below more elegant
             for i in range(10):
-                ret = ret.replace(
-                    "diff_{}".format(i), termcolor.colored("diff_{}".format(i), "red")
-                )
+                ret = ret.replace(f"diff_{i}", termcolor.colored(f"diff_{i}", "red"))
             for keyword, color in self._keyword_color_dict.items():
                 ret = ret.replace(keyword, termcolor.colored(keyword, color))
             return ret
@@ -4033,9 +4033,7 @@ class ContainerBase(dict, abc.ABC):
                     # raise error
                     if not hasattr(v, item):
                         raise AttributeError(
-                            "'{}' object has no attribute '{}'".format(
-                                type(v).__module__, item
-                            )
+                            f"'{type(v).__module__}' object has no attribute '{item}'"
                         )
                     attr = getattr(v, item)
                     result = attr(*args, **kwargs) if callable(attr) else attr
@@ -4064,9 +4062,9 @@ class ContainerBase(dict, abc.ABC):
                 "Invalid slice type, must be one of integer, slice "
                 "or sequences of slices."
             )
-        queue_idxs = set(
-            [np.sum(q >= self._queue_load_sizes_cum).item() for q in queue_queries]
-        )
+        queue_idxs = {
+            np.sum(q >= self._queue_load_sizes_cum).item() for q in queue_queries
+        }
         conts = list()
         for i in queue_idxs:
             if i not in self._loaded_containers_from_queues:
@@ -4259,6 +4257,15 @@ class ContainerBase(dict, abc.ABC):
         arrays.
         """
         return self._cont_get_shape()
+
+    @property
+    def cont_dtype(self):
+        """
+        The dtype of the arrays in the container.
+
+        None is returned if the dtypes are not consistent.
+        """
+        return self._cont_get_dtype()
 
     @property
     def cont_shapes(self):

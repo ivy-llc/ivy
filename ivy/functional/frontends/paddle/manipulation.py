@@ -77,6 +77,12 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
+@to_ivy_arrays_and_back
+def put_along_axis(arr, indices, values, axis, reduce="assign"):
+    result = ivy.put_along_axis(arr, indices, values, axis)
+    return result
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
     "paddle",
@@ -167,6 +173,18 @@ def tile(x, repeat_times, name=None):
 @to_ivy_arrays_and_back
 def tolist(x):
     return ivy.to_list(x)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def unbind(input, axis=0):
+    shape = list(input.shape)
+    num_splits = shape[axis]
+    shape.pop(axis)
+    return tuple([x.reshape(tuple(shape)) for x in split(input, num_splits, axis=axis)])
 
 
 @with_supported_dtypes(
