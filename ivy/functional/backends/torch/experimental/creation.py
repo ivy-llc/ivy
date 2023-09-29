@@ -238,9 +238,9 @@ def mel_weight_matrix(
     )
     # create overlapping frames of size 3
     mel_edges = mel_edges.unfold(0, size=3, step=1)
-    lower_edge_mel, center_mel, upper_edge_mel = [
+    lower_edge_mel, center_mel, upper_edge_mel = (
         t.reshape((1, num_mel_bins)) for t in mel_edges.split(1, dim=1)
-    ]
+    )
     lower_slopes = (spec_bin_mels - lower_edge_mel) / (center_mel - lower_edge_mel)
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = torch.maximum(zero, torch.minimum(lower_slopes, upper_slopes))

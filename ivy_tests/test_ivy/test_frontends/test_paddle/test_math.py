@@ -1469,6 +1469,7 @@ def test_paddle_log2(
         x=x[0],
     )
 
+
 @handle_frontend_test(
     fn_tree="paddle.log10",
     dtype_and_x=helpers.dtype_and_values(
