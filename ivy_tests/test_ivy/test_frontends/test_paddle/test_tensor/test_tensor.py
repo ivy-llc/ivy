@@ -1982,6 +1982,50 @@ def test_paddle_tensor_exp_(
     )
 
 
+# fill_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="fill_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        allow_inf=False,
+    ),
+    dtype_v=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=(1,),
+        min_value=0,
+        max_value=10,
+    ),
+)
+def test_paddle_tensor_fill_(
+    dtype_and_x,
+    dtype_v,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    value_dtype, v = dtype_v
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=value_dtype,
+        method_all_as_kwargs_np={"value": v[0].item()},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # floor
 @handle_frontend_method(
     class_tree=CLASS_TREE,
