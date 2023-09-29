@@ -7,6 +7,7 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_device_and_dtypes,
+    with_unsupported_dtypes,
 )
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
@@ -141,6 +142,9 @@ def isclose(
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("float16", "int16", "int8", "uint8")}, backend_version
+)
 def diff(
     x: Union[paddle.Tensor, list, tuple],
     /,
@@ -152,8 +156,6 @@ def diff(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
-    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        x = x.cast("float32")
 
     def _tensor(val):
         if val is not None and not isinstance(val, paddle.Tensor):
