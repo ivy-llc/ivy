@@ -543,7 +543,7 @@ class SparseArray(ivy.Array):
             self._dev_str = ivy.as_ivy_dev(self.device)
             self._pre_repr = "ivy.sparse_array"
             if "gpu" in self._dev_str:
-                self._post_repr = ", dev={})".format(self._dev_str)
+                self._post_repr = f", dev={self._dev_str})"
             else:
                 self._post_repr = ")"
         if self._format == "coo":

@@ -560,7 +560,7 @@ def test_atleast_1d(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
     kw = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
-        kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
+        kw[f"x{i}"] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(kw)
     helpers.test_function(
         input_dtypes=input_dtypes,
@@ -586,7 +586,7 @@ def test_atleast_2d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
     kw = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
-        kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
+        kw[f"x{i}"] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(kw)
     helpers.test_function(
         input_dtypes=input_dtypes,
@@ -612,7 +612,7 @@ def test_atleast_3d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
     arrys = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
-        arrys["x{}".format(i)] = np.asarray(array, dtype=idtype)
+        arrys[f"x{i}"] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(arrys)
     helpers.test_function(
         input_dtypes=input_dtypes,

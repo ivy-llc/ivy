@@ -175,7 +175,7 @@ def backend_proc(input_queue, output_queue):
                 test_flags,
                 on_device,
                 fn,
-                test_compile,
+                test_trace,
                 xs_grad_idxs,
                 ret_grad_idxs,
             ) = data
@@ -191,7 +191,7 @@ def backend_proc(input_queue, output_queue):
                 test_flags,
                 on_device,
                 fn,
-                test_compile,
+                test_trace,
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
@@ -213,7 +213,7 @@ def backend_proc(input_queue, output_queue):
                 kwarg_np_vals,
                 test_flags,
                 kwargs_idxs,
-                test_compile,
+                test_trace,
                 xs_grad_idxs,
                 ret_grad_idxs,
             ) = data
@@ -230,7 +230,7 @@ def backend_proc(input_queue, output_queue):
                 kwarg_np_vals,
                 test_flags,
                 kwargs_idxs,
-                test_compile,
+                test_trace,
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
@@ -250,7 +250,7 @@ def backend_proc(input_queue, output_queue):
                 class_name,
                 method_name,
                 init_with_v,
-                test_compile,
+                test_trace,
                 method_with_v,
             ) = data
             (
@@ -278,7 +278,7 @@ def backend_proc(input_queue, output_queue):
                 class_name,
                 method_name,
                 init_with_v,
-                test_compile,
+                test_trace,
                 method_with_v,
             )
             # ret is none here, because main process doesn't import framework
@@ -315,7 +315,7 @@ def backend_proc(input_queue, output_queue):
                 method_flags,
                 class_name,
                 method_name,
-                test_compile,
+                test_trace,
                 v_np,
             ) = data
             (
@@ -337,7 +337,7 @@ def backend_proc(input_queue, output_queue):
                 method_flags,
                 class_name,
                 method_name,
-                test_compile,
+                test_trace,
                 v_np,
             )
             # ret from gt None here, because main process doesn't import framework

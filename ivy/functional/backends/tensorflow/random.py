@@ -35,7 +35,7 @@ def random_uniform(
     high: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int], tf.Tensor]] = None,
     dtype: DType,
-    device: str,
+    device: str = None,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -54,7 +54,7 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: DType,
     seed: Optional[int] = None,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     _check_valid_scale(std)
@@ -75,7 +75,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[Union[tf.Tensor, tf.Variable]] = None,
     replace: bool = True,
-    device: str,
+    device: str = None,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -128,7 +128,7 @@ def randint(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str,
+    device: str = None,
     dtype: Optional[Union[DType, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,

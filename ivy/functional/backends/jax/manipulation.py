@@ -126,7 +126,7 @@ def squeeze(
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+            f"tried to squeeze a zero-dimensional input by axis {axis}"
         )
     else:
         ret = jnp.squeeze(x, axis=axis)
@@ -203,9 +203,9 @@ def tile(
 
 def clip(
     x: JaxArray,
+    /,
     x_min: Optional[Union[Number, JaxArray]] = None,
     x_max: Optional[Union[Number, JaxArray]] = None,
-    /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
