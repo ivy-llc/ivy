@@ -1015,11 +1015,11 @@ def stft(
 ) -> torch.Tensor:
     if axis is None:
         axis = -1
-        
+
     if len(signal) < n_fft:
         n_fft = len(signal)
         win_length = n_fft
-        
+
     if window is None or window is not None:
         if win_length is None:
             win_length = n_fft
