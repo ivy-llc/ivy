@@ -299,6 +299,9 @@ def dct(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bfloat16", "bool", "float16")}, backend_version
+)
 def fft(
     x: paddle.Tensor,
     dim: int,
@@ -332,12 +335,11 @@ def fft(
             f" {valid_norm_modes}"
         )
 
-    if x.dtype in [paddle.int64, paddle.float64, paddle.complex128]:
-        x = x.cast(paddle.complex128)
-    else:
-        x = x.cast(paddle.complex64)
-
-    return paddle.fft.fft(x, n, dim, norm=norm)
+    ret = paddle.fft.fft(x, n, dim, norm=norm)
+    # to make it compatible with other backends
+    if x.dtype == paddle.int64:
+        ret = ret.astype("complex128")
+    return ret
 
 
 @with_supported_device_and_dtypes(

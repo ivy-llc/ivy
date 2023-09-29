@@ -858,7 +858,7 @@ def test_flatten(
 @handle_test(
     fn_tree="functional.ivy.experimental.fliplr",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
     ),
     test_gradients=st.just(False),
@@ -879,7 +879,7 @@ def test_fliplr(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.flipud",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-100,
         max_value=100,
         min_num_dims=1,
@@ -1059,7 +1059,7 @@ def test_matricize(*, data, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.moveaxis",
     dtype_and_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-100,
         max_value=100,
         shape=st.shared(
@@ -1283,7 +1283,7 @@ def test_put_along_axis(
 @handle_test(
     fn_tree="functional.ivy.experimental.rot90",
     dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -1328,7 +1328,7 @@ def test_soft_thresholding(*, data, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.take_along_axis",
     dtype_x_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
+        array_dtypes=helpers.get_dtypes("valid"),
         indices_dtypes=["int32", "int64"],
         min_num_dims=1,
         max_num_dims=5,
