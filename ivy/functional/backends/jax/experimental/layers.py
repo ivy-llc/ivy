@@ -859,32 +859,40 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if axis:
-        axis = -1
-
-    if win_length is None:
-        win_length = n_fft
-
-    if window is None or window is JaxArray:
-        window = jnp.array(jnp.hanning(n_fft), dtype=signal.dtype)
-    window /= jnp.max(window)
-
-    if hop_length is None:
-        hop_length = win_length // 2
-
-    if len(signal) < n_fft:
-        n_fft = len(signal)
-        win_length = n_fft
-
     if not isinstance(hop_length, int):
         raise TypeError("hop_length must be an int.")
 
     if not isinstance(n_fft, int):
         raise TypeError("n_fft must be an int.")
+    
+    if axis:
+        axis = -1
+    
+    if win_length is None:
+        win_length = n_fft
 
-    detrend = False
+    if len(signal) < n_fft:
+        n_fft = len(signal)
+        win_length = n_fft
+    
+    if hop_length is None:
+        hop_length = win_length // 2
 
-    noverlap = min(win_length - 1, hop_length)
+    if len(window) != win_length:
+        win_length = len(window)
+        n_fft = win_length          
+
+    if window is None or window is JaxArray:
+        window = jnp.array(jnp.hanning(win_length), dtype=signal.dtype)
+    window /= jnp.max(window)   
+    
+    if len(window) > len(signal):
+        window = signal
+        window = jnp.array(jnp.hanning(win_length), dtype=signal.dtype)
+    
+    detrend = False 
+    
+    noverlap = min(win_length - 1, hop_length)    
     if isinstance(noverlap, int):
         hop_length = noverlap
     else:
@@ -902,7 +910,7 @@ def stft(
         boundary,
         pad_mode,
         axis,
-    )
+    )    
     return stft
 
 
