@@ -1015,7 +1015,11 @@ def stft(
 ) -> torch.Tensor:
     if axis is None:
         axis = -1
-
+        
+    if len(signal) < n_fft:
+        n_fft = len(signal)
+        win_length = n_fft
+        
     if window is None or window is not None:
         if win_length is None:
             win_length = n_fft
@@ -1025,9 +1029,6 @@ def stft(
 
     if hop_length <= 0:
         hop_length = 1
-
-    if len(signal) < n_fft:
-        n_fft = len(signal)
 
     return_complex = True
 
