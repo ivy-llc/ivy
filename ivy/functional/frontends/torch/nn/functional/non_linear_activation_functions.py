@@ -5,12 +5,11 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 <<<<<<< HEAD
-=======
+
 # --- Main --- #
 # ------------ #
 
 
->>>>>>> upstream/main
 @to_ivy_arrays_and_back
 def celu(input, alpha=1.0, inplace=False):
     prod = ivy.multiply(
