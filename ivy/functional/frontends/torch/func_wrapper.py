@@ -126,16 +126,6 @@ def _to_ivy_array(x):
     # else if x is a frontend torch Tensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
     elif hasattr(x, "ivy_array"):
         return x.ivy_array
-    elif not ivy.is_array and ivy.isscalar(x):
-        if isinstance(x, int):
-            ret = ivy.array(x, dtype="int64")
-        elif isinstance(x, float):
-            ret = ivy.array(x, dtype="float64")
-        elif isinstance(x, bool):
-            ret = ivy.array(x, dtype="bool")
-        else:
-            raise Exception("Unknown scalar type")
-        return ret
     # else just return x
     return x
 
@@ -281,6 +271,29 @@ def outputs_to_native_arrays(fn: Callable):
 
     outputs_to_native_arrays_torch.outputs_to_native_arrays_torch = True
     return outputs_to_native_arrays_torch
+
+
+def scalar_input_to_0dim_tensor(fn: Callable) -> Callable:
+    """
+    Wrap `fn` so it receives `ivy.Array` instances.
+
+    Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
+    return arrays are all converted to `Tensor` instances.
+    """
+
+    @functools.wraps(fn)
+    def scalar_input_to_0dim_tensor_torch(*args, **kwargs):
+        new_args = ivy.nested_map(
+            lambda x: (
+                torch_frontend.Tensor(x, _init_overload=True) if ivy.isscalar(x) else x
+            ),
+            args,
+            shallow=False,
+        )
+        return fn(*new_args, **kwargs)
+
+    scalar_input_to_0dim_tensor_torch.scalar_input_to_0dim_tensor_torch = True
+    return scalar_input_to_0dim_tensor_torch
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:

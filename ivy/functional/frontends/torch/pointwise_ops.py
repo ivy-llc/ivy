@@ -5,7 +5,10 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 import ivy.functional.frontends.torch as torch_frontend
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    scalar_input_to_0dim_tensor,
+)
 
 
 @to_ivy_arrays_and_back
@@ -28,6 +31,7 @@ def acosh(input, *, out=None):
 @with_supported_dtypes(
     {"1.12.0 and below": ("float32", "float64", "int32", "int64")}, "jax"
 )
+@scalar_input_to_0dim_tensor
 @to_ivy_arrays_and_back
 def add(input, other, *, alpha=1, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
