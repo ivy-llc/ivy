@@ -9185,6 +9185,43 @@ def test_torch_tensor_matmul(
     )
 
 
+# matrix_power
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="matrix_power",
+    dtype_x=_get_dtype_and_matrix(square=True, invertible=True),
+    n=helpers.ints(min_value=2, max_value=5),
+)
+def test_torch_tensor_matrix_power(
+    dtype_x,
+    n,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "n": n,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # max
 @handle_frontend_method(
     class_tree=CLASS_TREE,
