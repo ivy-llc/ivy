@@ -6,6 +6,7 @@ on:
 
 permissions:
   actions: read
+  pull-requests: write
 jobs:
   display_test_results:
     if: ${{ always() }}
@@ -24,28 +25,35 @@ jobs:
           cat combined_test_results.txt
 
       - name: New Failures Introduced
+        id: new_failures_results
         run: |
           find . -name "new_failures_*.txt" -exec cat {} + > combined_failures.txt
           if [ -s combined_failures.txt ]
           then
-              echo "This PR introduces the following new failing tests:"
-              cat combined_failures.txt
+            echo "This PR introduces the following new failing tests:\n\n"
+            cat combined_failures.txt
+            echo "MESSAGE=This PR does not introduced new failing tests! could you check them please!" >> "$GITHUB_OUTPUT"
           else
-              echo "This PR does not introduce any new test failures! Yippee!"
+              echo "MESSAGE=This PR does not introduce any new test failures! Yippee!" >> "$GITHUB_OUTPUT"
           fi
-      - name: comment tests on PR
-        uses: machine-learning-apps/pr-comment@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Write GitHub Comment
+        uses: actions/github-script@v6
         with:
-          path: combined_failures.txt
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Thanks for the PR, ${{ steps.new_failures_results.outputs.MESSAGE }}'
+            })
 
   run_tests:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        branch: [ 2 ]
+        branch: [ 2, 3]
 
     steps:
       - name: Checkout Ivy 🛎
