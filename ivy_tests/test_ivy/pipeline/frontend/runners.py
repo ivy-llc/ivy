@@ -113,14 +113,13 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         function_module = self.local_importer.import_module(f_submod)
         frontend_fn = getattr(function_module, fn_name)
         if self.traced_fn is None:
-            # if t_globals.CURRENT_PIPELINE.traced_fn
             frontend_fn = self.trace_if_required(
                 frontend_fn,
                 test_trace=self.test_flags.test_trace,
                 args=args,
                 kwargs=kwargs,
             )
-            t_globals.CURRENT_PIPELINE.traced_fn = frontend_fn
+            t_globals.CURRENT_PIPELINE.set_traced_fn(frontend_fn)
         return frontend_fn
 
     def _flatten_ret_to_np(self, ret_flat):

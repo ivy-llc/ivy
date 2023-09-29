@@ -14,6 +14,10 @@ class FrontendPipeline(Pipeline):
     def backend_handler(self):
         return self.backend_handler
 
+    @classmethod
+    def set_traced_fn(cls, fn):
+        cls.traced_fn = fn
+
     @staticmethod
     def test_function(
         fn_tree: str,
