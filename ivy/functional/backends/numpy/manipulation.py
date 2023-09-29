@@ -132,7 +132,7 @@ def squeeze(
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+            f"tried to squeeze a zero-dimensional input by axis {axis}"
         )
     return np.squeeze(x, axis=axis)
 
