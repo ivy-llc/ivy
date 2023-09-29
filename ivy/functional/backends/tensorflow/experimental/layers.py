@@ -1365,6 +1365,7 @@ def stft(
 
     if window is None or window is tf.Tensor:
         window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
+    
     window /= tf.reduce_max(window)
 
     window_fn = lambda *args, **kwargs: window
