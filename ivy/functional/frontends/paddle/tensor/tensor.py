@@ -6,7 +6,9 @@ from ivy.func_wrapper import (
     with_unsupported_dtypes,
 )
 
-from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array, to_ivy_arrays_and_back
+from ivy.functional.frontends.paddle.func_wrapper import (
+    _to_ivy_array,
+)
 
 
 class Tensor:
@@ -745,7 +747,9 @@ class Tensor:
         "paddle",
     )
     def logcumsumexp(self, axis=None, dtype=None, name=None):
-        return paddle_frontend.logcumsumexp(self._ivy_array, axis=axis, dtype=dtype, name=name)
+        return paddle_frontend.logcumsumexp(
+            self._ivy_array, axis=axis, dtype=dtype, name=name
+        )
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def mean(self, axis=None, keepdim=False, name=None):
