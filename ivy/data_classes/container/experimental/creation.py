@@ -1212,78 +1212,57 @@ class _ContainerWithCreationExperimental(ContainerBase):
             prune_unapplied: Union[bool, ivy.Container] = False,
             map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""
-        ivy.Container instance method variant of ivy.unsorted_segment_mean. This method
-        simply wraps the function, and so the docstring for ivy.unsorted_segment_mean
-        also applies to this method with minimal changes.
+        """
+        Computes the mean of values in the input data based on segment identifiers.
 
         Parameters
         ----------
-        data
-            input array or container from which to gather the input.
-        segment_ids
-            Must be in the same size with the first dimension of `data`. Has to be
-            of integer data type. The index-th element of `segment_ids` array is
-            the segment identifier for the index-th element of `data`.
-        num_segments
+        data : ivy.Container
+            Input array or container from which to gather the input.
+        segment_ids : ivy.Container
+            An array of integers indicating the segment identifier for each element in 'data'.
+        num_segments : Union[int, ivy.Container]
             An integer or array representing the total number of distinct segment IDs.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
+        key_chains : Optional[Union[List[str], Dict[str, str], ivy.Container]], optional
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply : Union[bool, ivy.Container], optional
+            If True, the method will be applied to key-chains, otherwise key-chains will be skipped. Default is True.
+        prune_unapplied : Union[bool, ivy.Container], optional
+            Whether to prune key-chains for which the function was not applied. Default is False.
+        map_sequences : Union[bool, ivy.Container], optional
+            Whether to also map method to sequences (lists, tuples). Default is False.
 
         Returns
         -------
-        ret
-            A container, representing the result of a segmented mean operation.
-            For each segment, it computes the mean of values in `data` where
-            `segment_ids` equals to segment ID.
+        ivy.Container
+            A container representing the result of a segmented mean operation.
+            For each segment, it computes the mean of values in 'data' where
+            'segment_ids' equals the segment ID.
         """
-        return ContainerBase.cont_multi_map_in_function(
-            "unsorted_segment_mean",
-            data,
-            segment_ids,
-            num_segments,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
 
     def unsorted_segment_mean(
             self: ivy.Container,
             segment_ids: ivy.Container,
             num_segments: Union[int, ivy.Container],
     ) -> ivy.Container:
-        r"""
-        ivy.Container instance method variant of ivy.unsorted_segment_mean. This method
-        simply wraps the function, and so the docstring for ivy.unsorted_segment_mean
-        also applies to this method with minimal changes.
+        """
+        Computes the mean of values in the input array or container based on segment identifiers.
 
         Parameters
         ----------
-        self
-            input array or container from which to gather the input.
-        segment_ids
-            Must be in the same size with the first dimension of `self`. Has to be
-            of integer data type. The index-th element of `segment_ids` array is
-            the segment identifier for the index-th element of `self`.
-        num_segments
+        self : ivy.Container
+            Input array or container from which to gather the input.
+        segment_ids : ivy.Container
+            An array of integers indicating the segment identifier for each element in 'self'.
+        num_segments : Union[int, ivy.Container]
             An integer or array representing the total number of distinct segment IDs.
 
         Returns
         -------
-        ret
-            A container, representing the result of a segmented mean operation.
-            For each segment, it computes the mean of values in `self` where
-            `segment_ids` equals to segment ID.
+        ivy.Container
+            A container representing the result of a segmented mean operation.
+            For each segment, it computes the mean of values in 'self' where
+            'segment_ids' equals the segment ID.
         """
         return self.static_unsorted_segment_mean(
             self,

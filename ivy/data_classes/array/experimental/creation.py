@@ -270,23 +270,23 @@ class _ArrayWithCreationExperimental(abc.ABC):
             segment_ids: ivy.Array,
             num_segments: Union[int, ivy.Array],
     ) -> ivy.Array:
-        r"""
-        ivy.Array instance method variant of ivy.unsorted_segment_mean. This method
-        simply wraps the function, and so the docstring for ivy.unsorted_segment_mean
-        also applies to this method with minimal changes.
+        """
+        Computes the mean of values in the array 'self' based on segment identifiers.
+
         Parameters
         ----------
-        self
+        self : ivy.Array
             The array from which to gather values.
-        segment_ids
+        segment_ids : ivy.Array
             Must be in the same size with the first dimension of `self`. Has to be
             of integer data type. The index-th element of `segment_ids` array is
             the segment identifier for the index-th element of `self`.
-        num_segments
+        num_segments : Union[int, ivy.Array]
             An integer or array representing the total number of distinct segment IDs.
+
         Returns
         -------
-        ret
+        ret : ivy.Array
             The output array, representing the result of a segmented mean operation.
             For each segment, it computes the mean of values in `self` where
             `segment_ids` equals to segment ID.
