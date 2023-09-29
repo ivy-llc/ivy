@@ -1015,43 +1015,43 @@ def stft(
 ) -> torch.Tensor:
     if axis is None:
         axis = -1
-    
-    if  hop_length <= 0:
-        hop_length = 1      
+
+    if hop_length <= 0:
+        hop_length = 1
 
     if len(signal) < n_fft:
         n_fft = len(signal)
         win_length = n_fft
 
     if win_length is None:
-        win_length = n_fft     
+        win_length = n_fft
 
     if len(window) != win_length:
         win_length = len(window)
-        n_fft = win_length     
+        n_fft = win_length
 
     if window is None or window is torch.Tensor:
         window = torch.hann_window(n_fft, dtype=torch.float32)
-    
+
     if len(window) > len(signal):
         window = signal
         window = torch.hann_window(n_fft, dtype=torch.float32)
-    
-    return_complex = True  
+
+    return_complex = True
 
     stft_result = torch.stft(
-            signal,
-            n_fft,
-            hop_length,
-            win_length,
-            window,
-            center,
-            pad_mode,
-            normalized,
-            onesided,
-            return_complex,
-        )
-        
+        signal,
+        n_fft,
+        hop_length,
+        win_length,
+        window,
+        center,
+        pad_mode,
+        normalized,
+        onesided,
+        return_complex,
+    )
+
     if return_complex == False:
         stft_result = stft_result.real
     return stft_result
