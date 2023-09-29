@@ -1454,7 +1454,7 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([nan, nan, -inf, 0., 2.32, inf])
 
         >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
-                            [+0, -1.0, -5, float('-inf')]])
+                            [+0, -2.0, -5, float('-inf')]])
         >>> y = x.log2()
         >>> print(y)
         ivy.array([[nan, 0., 2.32, inf],

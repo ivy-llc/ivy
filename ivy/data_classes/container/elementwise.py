@@ -5238,7 +5238,7 @@ class _ContainerWithElementwise(ContainerBase):
         Using :code:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
-        ...                   b=ivy.array([-0., -4.9, float('+inf')]),
+        ...                   b=ivy.array([-0., -5.9, float('+inf')]),
         ...                   c=ivy.array([8.9, 2.1, 1.]))
         >>> y = ivy.log2(x)
         >>> print(y)
