@@ -271,6 +271,18 @@ def heaviside(x, y, name=None):
     return ivy.heaviside(x, y)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def increment(x, value=1.0, name=None):
+    if (
+        ivy.prod(ivy.shape(x)) != 1
+    ):  # TODO this function will be simplified as soon as ivy.increment is add
+        raise ValueError("The input tensor x must contain only one element.")
+    return ivy.add(x, value)
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def inner(x, y, name=None):
@@ -340,6 +352,12 @@ def log(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def log10(x, name=None):
+    return ivy.log10(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def log1p(x, name=None):
     return ivy.log1p(x)
 
@@ -348,11 +366,6 @@ def log1p(x, name=None):
 @to_ivy_arrays_and_back
 def log2(x, name=None):
     return ivy.log2(x)
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def log10(x, name=None):
-    return ivy.log10(x)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")

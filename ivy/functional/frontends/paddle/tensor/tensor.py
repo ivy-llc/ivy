@@ -798,3 +798,9 @@ class Tensor:
     )
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+    )
+    def increment(self, value, name=None):
+        return paddle_frontend.increment(self, value)
