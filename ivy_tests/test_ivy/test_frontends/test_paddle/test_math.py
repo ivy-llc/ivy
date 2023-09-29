@@ -1683,7 +1683,7 @@ def test_paddle_mm(
     )
 
 
-# remainder
+# mod
 @handle_frontend_test(
     fn_tree="paddle.mod",
     dtype_and_x=helpers.dtype_and_values(
