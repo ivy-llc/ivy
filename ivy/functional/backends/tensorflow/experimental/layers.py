@@ -1357,11 +1357,11 @@ def stft(
    window_length = tf.shape(window)[-1]
     if window_length != win_length:
         win_length = window_length
-        n_fft = win_length  
-    
+        n_fft = win_length
+
     signal_length = tf.shape(signal)[-1]
     if signal_length < n_fft:
-        n_fft = signal_length    
+        n_fft = signal_length
 
     if window is None or window is tf.Tensor:
         window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
