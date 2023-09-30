@@ -27,7 +27,7 @@ def variable(x, /):
         ret = x.detach()
         ret.stop_gradient = False
         return ret
-    ret = paddle_backend.copy_array(x)
+    ret = paddle_backend.copy_array(x).to_native()
     ret.stop_gradient = False
     return ret
 

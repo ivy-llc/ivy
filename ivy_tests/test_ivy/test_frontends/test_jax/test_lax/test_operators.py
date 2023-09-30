@@ -24,125 +24,8 @@ from ivy.functional.frontends.jax.lax.operators import (
 )
 
 
-# imag
-@handle_frontend_test(
-    fn_tree="jax.lax.imag",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("complex")
-    ),
-)
-def test_jax_imag(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=True,
-        x=x[0],
-    )
-
-
-# add
-@handle_frontend_test(
-    fn_tree="jax.lax.add",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_add(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-    )
-
-
-# tan
-@handle_frontend_test(
-    fn_tree="jax.lax.tan",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_jax_tan(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# max
-@handle_frontend_test(
-    fn_tree="jax.lax.max",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_max(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-    )
+# --- Helpers --- #
+# --------------- #
 
 
 # noinspection DuplicatedCode
@@ -183,1456 +66,6 @@ def _arrays_idx_n_dtypes(draw):
     return xs, input_dtypes, unique_idx
 
 
-# concat
-@handle_frontend_test(
-    fn_tree="jax.lax.concatenate",
-    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    test_with_out=st.just(False),
-)
-def test_jax_concat(
-    *,
-    xs_n_input_dtypes_n_unique_idx,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        operands=xs,
-        dimension=unique_idx,
-    )
-
-
-@st.composite
-def _fill_value(draw):
-    dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
-        if ivy_backend.is_uint_dtype(dtype):
-            return draw(helpers.ints(min_value=0, max_value=5))
-        elif ivy_backend.is_int_dtype(dtype):
-            return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(helpers.floats(min_value=-5, max_value=5))
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.full",
-    shape=helpers.get_shape(
-        allow_none=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
-    fill_value=_fill_value(),
-    dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
-)
-def test_jax_full(
-    *,
-    shape,
-    fill_value,
-    dtypes,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        shape=shape,
-        fill_value=fill_value,
-        dtype=dtypes[0],
-    )
-
-
-# abs
-@handle_frontend_test(
-    fn_tree="jax.lax.abs",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer"),
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_abs(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# sqrt
-@handle_frontend_test(
-    fn_tree="jax.lax.sqrt",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_jax_sqrt(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# acos
-@handle_frontend_test(
-    fn_tree="jax.lax.acos",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_jax_acos(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# sin
-@handle_frontend_test(
-    fn_tree="jax.lax.sin",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_jax_sin(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# sign
-@handle_frontend_test(
-    fn_tree="jax.lax.sign",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_sign(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# asin
-@handle_frontend_test(
-    fn_tree="jax.lax.asin",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_jax_asin(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# sinh
-@handle_frontend_test(
-    fn_tree="jax.lax.sinh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_jax_sinh(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# atan2
-@handle_frontend_test(
-    fn_tree="jax.lax.atan2",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-)
-def test_jax_atan2(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.min",
-    dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_min(
-    *,
-    dtypes_and_xs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, xs = dtypes_and_xs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=xs[0],
-        y=xs[1],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.eq",
-    dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_eq(
-    *,
-    dtypes_and_xs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, xs = dtypes_and_xs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=xs[0],
-        y=xs[1],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.mul",
-    dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-        small_abs_safety_factor=2,
-        large_abs_safety_factor=2,
-        safety_factor_scale="log",
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_mul(
-    *,
-    dtypes_and_xs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, xs = dtypes_and_xs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=xs[0],
-        y=xs[1],
-    )
-
-
-# atan
-@handle_frontend_test(
-    fn_tree="jax.lax.atan",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_jax_atan(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.ceil",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_ceil(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# bitwise_and
-@handle_frontend_test(
-    fn_tree="jax.lax.bitwise_and",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_bitwise_and(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-    )
-
-
-# bitwise_or
-@handle_frontend_test(
-    fn_tree="jax.lax.bitwise_or",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_bitwise_or(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-    )
-
-
-# bitwise_not
-@handle_frontend_test(
-    fn_tree="jax.lax.bitwise_not",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=1,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_bitwise_not(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.neg",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer"),
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_neg(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.argmax",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        min_dim_size=1,
-        valid_axis=True,
-        force_int_axis=True,
-        allow_neg_axes=False,
-    ),
-    index_dtype=helpers.get_dtypes("integer", full=False),
-    test_with_out=st.just(False),
-)
-def test_jax_argmax(
-    *,
-    dtype_x_axis,
-    index_dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x, axis = dtype_x_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        operand=x[0],
-        axis=axis,
-        index_dtype=index_dtype[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.argmin",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        min_dim_size=1,
-        valid_axis=True,
-        force_int_axis=True,
-        allow_neg_axes=False,
-    ),
-    index_dtype=helpers.get_dtypes("integer", full=False),
-    test_with_out=st.just(False),
-)
-def test_jax_argmin(
-    *,
-    dtype_x_axis,
-    index_dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x, axis = dtype_x_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        operand=x[0],
-        axis=axis,
-        index_dtype=index_dtype[0],
-    )
-
-
-# bitwise_xor
-@handle_frontend_test(
-    fn_tree="jax.lax.bitwise_xor",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_bitwise_xor(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.full_like",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=False, key="dtype")
-    ),
-    fill_val=_fill_value(),
-    shape=st.one_of(helpers.get_shape() | st.none()),
-    dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
-    test_with_out=st.just(False),
-)
-def test_jax_full_like(
-    *,
-    dtype_and_x,
-    fill_val,
-    shape,
-    dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    fill_val = fill_val
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        fill_value=fill_val,
-        dtype=dtype,
-        shape=shape,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.exp",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_exp(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.convert_element_type",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    new_dtype=helpers.get_dtypes("valid", full=False),
-    test_with_out=st.just(False),
-)
-def test_jax_convert_element_type(
-    *,
-    dtype_and_x,
-    new_dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    assume(can_cast(input_dtype[0], new_dtype[0]))
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype + new_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        operand=x[0],
-        new_dtype=new_dtype[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.cumprod",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_value=-5,
-        max_value=5,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    reverse=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_jax_cumprod(
-    *,
-    dtype_x_axis,
-    reverse,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x, axis = dtype_x_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
-        operand=x[0],
-        axis=axis,
-        reverse=reverse,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.cumsum",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    reverse=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_jax_cumsum(
-    *,
-    dtype_x_axis,
-    reverse,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x, axis = dtype_x_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        operand=x[0],
-        axis=axis,
-        reverse=reverse,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.ge",
-    dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_ge(
-    *,
-    dtypes_and_xs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, xs = dtypes_and_xs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=xs[0],
-        y=xs[1],
-    )
-
-
-@st.composite
-def _reshape_helper(draw):
-    # generate a shape s.t len(shape) > 0
-    shape = draw(
-        helpers.get_shape(
-            allow_none=False,
-            min_num_dims=1,
-            max_num_dims=3,
-            min_dim_size=1,
-            max_dim_size=3,
-        )
-    )
-
-    reshape_shape = draw(helpers.reshape_shapes(shape=shape))
-
-    dtypes, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            shape=shape,
-        )
-    )
-    is_dim = draw(st.booleans())
-    if is_dim:
-        dims = [x for x in range(len(shape))]
-        permut = draw(st.permutations(dims))
-        return x, dtypes, reshape_shape, permut
-    else:
-        return x, dtypes, reshape_shape, None
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.reshape",
-    x_reshape_permut=_reshape_helper(),
-    test_with_out=st.just(False),
-)
-def test_jax_reshape(
-    *,
-    x_reshape_permut,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    x, dtype, shape, dimensions = x_reshape_permut
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        operand=x[0],
-        new_sizes=shape,
-        dimensions=dimensions,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.broadcast",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-    ),
-    sizes=helpers.get_shape(min_num_dims=1),
-    test_with_out=st.just(False),
-)
-def test_jax_broadcast(
-    *,
-    dtype_and_x,
-    sizes,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        operand=x[0],
-        sizes=sizes,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.reciprocal",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_reciprocal(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.sort",
-    dtype_x_bounded_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
-    ),
-    is_stable=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_jax_sort(
-    *,
-    dtype_x_bounded_axis,
-    is_stable,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x, axis = dtype_x_bounded_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        operand=x[0],
-        dimension=axis,
-        is_stable=is_stable,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.le",
-    dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_le(
-    *,
-    dtypes_and_xs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, xs = dtypes_and_xs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=xs[0],
-        y=xs[1],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.ne",
-    dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_ne(
-    *,
-    dtypes_and_xs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, xs = dtypes_and_xs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=xs[0],
-        y=xs[1],
-    )
-
-
-# cosh
-@handle_frontend_test(
-    fn_tree="jax.lax.cosh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_jax_cosh(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.add",
-    dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_lt(
-    *,
-    dtypes_and_xs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, xs = dtypes_and_xs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=xs[0],
-        y=xs[1],
-    )
-
-
-# round
-@handle_frontend_test(
-    fn_tree="jax.lax.round",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    rounding_method=st.sampled_from([0, 1]),
-    test_with_out=st.just(False),
-)
-def test_jax_round(
-    *,
-    dtype_and_x,
-    rounding_method,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        rounding_method=rounding_method,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.pow",
-    dtypes_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_pow(
-    *,
-    dtypes_and_values,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, xs = dtypes_and_values
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=xs[0],
-        y=xs[1],
-    )
-
-
-@st.composite
-def _pad_helper(draw):
-    dtype, x, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("bool"),
-            ret_shape=True,
-            min_num_dims=1,
-            min_dim_size=2,
-            min_value=-100,
-            max_value=100,
-        ).filter(lambda _x: _x[0][0] not in ["float16", "bfloat16"])
-    )
-    ndim = len(shape)
-    min_dim = min(shape)
-    padding_config = draw(
-        st.lists(
-            st.tuples(
-                st.integers(min_value=-(min_dim - 1), max_value=min_dim - 1),
-                st.integers(min_value=-(min_dim - 1), max_value=min_dim - 1),
-                st.integers(min_value=0, max_value=min_dim - 1),
-            ),
-            min_size=ndim,
-            max_size=ndim,
-        )
-    )
-    padding_value = draw(st.booleans())
-    return dtype, x[0], padding_value, padding_config
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.pad",
-    dtype_x_params=_pad_helper(),
-    test_with_out=st.just(False),
-)
-def test_jax_pad(
-    *,
-    dtype_x_params,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtype, operand, padding_value, padding_config = dtype_x_params
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        operand=operand,
-        padding_value=padding_value,
-        padding_config=padding_config,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.gt",
-    dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_gt(
-    *,
-    dtypes_and_xs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, xs = dtypes_and_xs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=xs[0],
-        y=xs[1],
-    )
-
-
-# cos
-@handle_frontend_test(
-    fn_tree="jax.lax.cos",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_jax_cos(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@st.composite
-def _get_clamp_inputs(draw):
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
-        )
-    )
-    x_dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            shape=shape,
-        )
-    )
-
-    min = draw(
-        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=-25, max_value=0)
-    )
-    max = draw(
-        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=1, max_value=25)
-    )
-    return x_dtype, x, min, max
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.clamp",
-    dtype_x_min_max=_get_clamp_inputs(),
-    test_with_out=st.just(False),
-)
-def test_jax_clamp(
-    *,
-    dtype_x_min_max,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, x, min_vals, max_vals = dtype_x_min_max
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        min=min_vals,
-        x=x[0],
-        max=max_vals,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.log",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=1,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_log(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.rev",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        min_dim_size=2,
-        valid_axis=True,
-        force_int_axis=True,
-        allow_neg_axes=False,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_rev(
-    *,
-    dtype_x_axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x, axis = dtype_x_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        operand=x[0],
-        dimensions=(axis,),
-    )
-
-
 @st.composite
 def _div_dtypes_and_xs(draw):
     dtype, dividend, shape = draw(
@@ -1646,120 +79,23 @@ def _div_dtypes_and_xs(draw):
     return dtype, [dividend[0], divisor]
 
 
-@handle_frontend_test(
-    fn_tree="jax.lax.div",
-    dtypes_and_xs=_div_dtypes_and_xs(),
-    test_with_out=st.just(False),
-)
-def test_jax_div(
-    *,
-    dtypes_and_xs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, xs = dtypes_and_xs
-    assume(not np.any(np.isclose(xs[1], 0)))
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=xs[0],
-        y=xs[1],
+# select
+@st.composite
+def _dtype_pred_ontrue_on_false(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    pred = draw(helpers.array_values(dtype="bool", shape=shape))
+    dtypes, on_true_on_false = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=2,
+            shape=shape,
+            large_abs_safety_factor=16,
+            small_abs_safety_factor=16,
+            safety_factor_scale="log",
+            shared_dtype=True,
+        )
     )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.rsqrt",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_rsqrt(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-02,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.expm1",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_expm1(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# log1p
-@handle_frontend_test(
-    fn_tree="jax.lax.log1p",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_log1p(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
+    return dtypes, pred, on_true_on_false
 
 
 @st.composite
@@ -1783,157 +119,15 @@ def _dtype_values_dims(draw):
     return dtype, values, tuple(permutations)
 
 
-@handle_frontend_test(
-    fn_tree="jax.lax.transpose",
-    dtype_x_dims=_dtype_values_dims(),
-    test_with_out=st.just(False),
-)
-def test_jax_transpose(
-    *,
-    dtype_x_dims,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x, dims = dtype_x_dims
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        operand=x[0],
-        permutation=dims,
-    )
-
-
 @st.composite
-def _get_dtype_inputs_for_dot(draw):
-    dim_size = draw(helpers.ints(min_value=1, max_value=5))
-    dtype = draw(helpers.get_dtypes("numeric", index=1, full=False))
-    if dim_size == 1:
-        lhs = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
-            )
-        )
-        rhs = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
-            )
-        )
-    else:
-        lhs = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
-            )
-        )
-        rhs = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
-            )
-        )
-    is_pref = draw(st.booleans())
-    if is_pref:
-        dtype, values, pref = draw(
-            helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("numeric")), dtype[0], [lhs, rhs]
-            )
-        )
-        assume(can_cast(dtype, pref))
-        return [dtype], pref, values[0], values[1]
-    else:
-        return dtype, None, lhs, rhs
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.dot",
-    dtypes_and_xs=_get_dtype_inputs_for_dot(),
-    test_with_out=st.just(False),
-)
-def test_jax_dot(
-    *,
-    dtypes_and_xs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, dtype, lhs, rhs = dtypes_and_xs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
-        lhs=lhs,
-        rhs=rhs,
-        precision=None,
-        preferred_element_type=dtype,
-    )
-
-
-@st.composite
-def _get_dtype_inputs_for_batch_matmul(draw):
-    dtype, lhs = draw(
-        helpers.dtype_and_values(
-            min_num_dims=2,
-            max_num_dims=6,
-            min_value=2,
-            max_value=5,
-        )
-    )
-    lhs_shape = lhs[0].shape
-    rhs_shape = list(lhs_shape)
-    rhs_shape[-1], rhs_shape[-2] = rhs_shape[-2], rhs_shape[-1]
-    rhs_shape = tuple(rhs_shape)
-    rhs = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            shape=rhs_shape,
-            min_value=2,
-            max_value=5,
-        )
-    )
-
-    return dtype, lhs[0], rhs
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.batch_matmul",
-    dtypes_and_xs=_get_dtype_inputs_for_batch_matmul(),
-    test_with_out=st.just(False),
-)
-def test_jax_batch_matmul(
-    *,
-    dtypes_and_xs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, lhs, rhs = dtypes_and_xs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
-        lhs=lhs,
-        rhs=rhs,
-        precision=None,
-    )
+def _fill_value(draw):
+    dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        if ivy_backend.is_uint_dtype(dtype):
+            return draw(helpers.ints(min_value=0, max_value=5))
+        elif ivy_backend.is_int_dtype(dtype):
+            return draw(helpers.ints(min_value=-5, max_value=5))
+    return draw(helpers.floats(min_value=-5, max_value=5))
 
 
 @st.composite
@@ -2001,38 +195,227 @@ def _general_dot_helper(draw):
     )
 
 
-@handle_frontend_test(
-    fn_tree="jax.lax.dot_general",
-    dtypes_lr_dims=_general_dot_helper(),
-    test_with_out=st.just(False),
-)
-def test_jax_dot_general(
-    *,
-    dtypes_lr_dims,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtypes, lr, dims, dtype = dtypes_lr_dims
-    helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        lhs=lr[0],
-        rhs=lr[1],
-        dimension_numbers=dims,
-        precision=None,
-        preferred_element_type=dtype,
+@st.composite
+def _get_clamp_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
     )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+        )
+    )
+
+    min = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=-25, max_value=0)
+    )
+    max = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=1, max_value=25)
+    )
+    return x_dtype, x, min, max
 
 
 @st.composite
-def x_and_filters(draw, dim=2, transpose=False, general=False):
+def _get_dtype_inputs_for_batch_matmul(draw):
+    dtype, lhs = draw(
+        helpers.dtype_and_values(
+            min_num_dims=2,
+            max_num_dims=6,
+            min_value=2,
+            max_value=5,
+        )
+    )
+    lhs_shape = lhs[0].shape
+    rhs_shape = list(lhs_shape)
+    rhs_shape[-1], rhs_shape[-2] = rhs_shape[-2], rhs_shape[-1]
+    rhs_shape = tuple(rhs_shape)
+    rhs = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=rhs_shape,
+            min_value=2,
+            max_value=5,
+        )
+    )
+
+    return dtype, lhs[0], rhs
+
+
+@st.composite
+def _get_dtype_inputs_for_dot(draw):
+    dim_size = draw(helpers.ints(min_value=1, max_value=5))
+    dtype = draw(helpers.get_dtypes("numeric", index=1, full=False))
+    if dim_size == 1:
+        lhs = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
+        )
+        rhs = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
+        )
+    else:
+        lhs = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+        rhs = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+    is_pref = draw(st.booleans())
+    if is_pref:
+        dtype, values, pref = draw(
+            helpers.get_castable_dtype(
+                draw(helpers.get_dtypes("numeric")), dtype[0], [lhs, rhs]
+            )
+        )
+        assume(can_cast(dtype, pref))
+        return [dtype], pref, values[0], values[1]
+    else:
+        return dtype, None, lhs, rhs
+
+
+def _get_reduce_func(dtype):
+    if dtype[0] == "bool":
+        return st.sampled_from([jnp.logical_and, jnp.logical_or])
+    else:
+        return st.sampled_from([jlax.add, jlax.max, jlax.min, jlax.mul, jnp.multiply])
+
+
+@st.composite
+def _pad_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("bool"),
+            ret_shape=True,
+            min_num_dims=1,
+            min_dim_size=2,
+            min_value=-100,
+            max_value=100,
+        ).filter(lambda _x: _x[0][0] not in ["float16", "bfloat16"])
+    )
+    ndim = len(shape)
+    min_dim = min(shape)
+    padding_config = draw(
+        st.lists(
+            st.tuples(
+                st.integers(min_value=-(min_dim - 1), max_value=min_dim - 1),
+                st.integers(min_value=-(min_dim - 1), max_value=min_dim - 1),
+                st.integers(min_value=0, max_value=min_dim - 1),
+            ),
+            min_size=ndim,
+            max_size=ndim,
+        )
+    )
+    padding_value = draw(st.booleans())
+    return dtype, x[0], padding_value, padding_config
+
+
+@st.composite
+def _reshape_helper(draw):
+    # generate a shape s.t len(shape) > 0
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=1,
+            max_dim_size=3,
+        )
+    )
+
+    reshape_shape = draw(helpers.reshape_shapes(shape=shape))
+
+    dtypes, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=shape,
+        )
+    )
+    is_dim = draw(st.booleans())
+    if is_dim:
+        dims = [x for x in range(len(shape))]
+        permut = draw(st.permutations(dims))
+        return x, dtypes, reshape_shape, permut
+    else:
+        return x, dtypes, reshape_shape, None
+
+
+@st.composite
+def _slice_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            ret_shape=True,
+        ),
+    )
+    start_indices, limit_indices, strides = [], [], []
+    for i in shape:
+        start_indices += [draw(st.integers(min_value=0, max_value=i - 1))]
+        limit_indices += [
+            draw(
+                st.integers(min_value=0, max_value=i - 1).filter(
+                    lambda _x: _x > start_indices[-1]
+                )
+            )
+        ]
+        strides += [draw(st.integers(min_value=1, max_value=i))]
+    return dtype, x, start_indices, limit_indices, strides
+
+
+@st.composite
+def _slice_in_dim_helper(draw):
+    dtype, x, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            force_int_axis=True,
+            valid_axis=True,
+        ),
+    )
+    operand = x[0]
+    start_index = draw(
+        st.integers(min_value=-abs(operand.shape[axis]), max_value=operand.shape[axis])
+    )
+    if start_index < 0:
+        limit_index = draw(
+            st.integers(
+                min_value=start_index + operand.shape[axis],
+                max_value=operand.shape[axis],
+            )
+        )
+    else:
+        limit_index = draw(
+            st.integers(
+                min_value=-abs(operand.shape[axis]), max_value=operand.shape[axis]
+            ).filter(lambda _x: _x >= start_index)
+        )
+    stride = draw(st.integers(min_value=1, max_value=abs(limit_index + 1)))
+    return dtype, x, start_index, limit_index, stride, axis
+
+
+# squeeze
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
+    valid_axes = []
+    for index, axis in enumerate(shape):
+        if axis == 1:
+            valid_axes.append(index)
+    return valid_axes
+
+
+@st.composite
+def _x_and_filters(draw, dim=2, transpose=False, general=False):
     if not isinstance(dim, int):
         dim = draw(dim)
     batch_size = draw(st.integers(1, 5))
@@ -2154,9 +537,642 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
     )
 
 
+# --- Main --- #
+# ------------ #
+
+
+# abs
+@handle_frontend_test(
+    fn_tree="jax.lax.abs",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_abs(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# acos
+@handle_frontend_test(
+    fn_tree="jax.lax.acos",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_acos(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# add
+@handle_frontend_test(
+    fn_tree="jax.lax.add",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_add(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.argmax",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=1,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_neg_axes=False,
+    ),
+    index_dtype=helpers.get_dtypes("integer", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_argmax(
+    *,
+    dtype_x_axis,
+    index_dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        operand=x[0],
+        axis=axis,
+        index_dtype=index_dtype[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.argmin",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=1,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_neg_axes=False,
+    ),
+    index_dtype=helpers.get_dtypes("integer", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_argmin(
+    *,
+    dtype_x_axis,
+    index_dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=x[0],
+        axis=axis,
+        index_dtype=index_dtype[0],
+    )
+
+
+# asin
+@handle_frontend_test(
+    fn_tree="jax.lax.asin",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_asin(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# asinh
+@handle_frontend_test(
+    fn_tree="jax.lax.asinh",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_asinh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# atan
+@handle_frontend_test(
+    fn_tree="jax.lax.atan",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_atan(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# atan2
+@handle_frontend_test(
+    fn_tree="jax.lax.atan2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_jax_atan2(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# atanh
+@handle_frontend_test(
+    fn_tree="jax.lax.atanh",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_atanh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.batch_matmul",
+    dtypes_and_xs=_get_dtype_inputs_for_batch_matmul(),
+    test_with_out=st.just(False),
+)
+def test_jax_batch_matmul(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, lhs, rhs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        lhs=lhs,
+        rhs=rhs,
+        precision=None,
+    )
+
+
+# bitwise_and
+@handle_frontend_test(
+    fn_tree="jax.lax.bitwise_and",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_bitwise_and(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# bitwise_not
+@handle_frontend_test(
+    fn_tree="jax.lax.bitwise_not",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_bitwise_not(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# bitwise_or
+@handle_frontend_test(
+    fn_tree="jax.lax.bitwise_or",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_bitwise_or(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# bitwise_xor
+@handle_frontend_test(
+    fn_tree="jax.lax.bitwise_xor",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_bitwise_xor(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.broadcast",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    sizes=helpers.get_shape(min_num_dims=1),
+    test_with_out=st.just(False),
+)
+def test_jax_broadcast(
+    *,
+    dtype_and_x,
+    sizes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=x[0],
+        sizes=sizes,
+    )
+
+
+# cbrt
+@handle_frontend_test(
+    fn_tree="jax.lax.cbrt",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), min_value=0.0
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_cbrt(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.ceil",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_ceil(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.clamp",
+    dtype_x_min_max=_get_clamp_inputs(),
+    test_with_out=st.just(False),
+)
+def test_jax_clamp(
+    *,
+    dtype_x_min_max,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, x, min_vals, max_vals = dtype_x_min_max
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        min=min_vals,
+        x=x[0],
+        max=max_vals,
+    )
+
+
+# concat
+@handle_frontend_test(
+    fn_tree="jax.lax.concatenate",
+    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    test_with_out=st.just(False),
+)
+def test_jax_concat(
+    *,
+    xs_n_input_dtypes_n_unique_idx,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operands=xs,
+        dimension=unique_idx,
+    )
+
+
+# conj
+@handle_frontend_test(
+    fn_tree="jax.lax.conj",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["complex64"],
+    ),
+)
+def test_jax_conj(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 @handle_frontend_test(
     fn_tree="jax.lax.conv",
-    x_f_d_other=x_and_filters(),
+    x_f_d_other=_x_and_filters(),
     test_with_out=st.just(False),
 )
 def test_jax_conv(
@@ -2187,43 +1203,8 @@ def test_jax_conv(
 
 
 @handle_frontend_test(
-    fn_tree="jax.lax.conv_transpose",
-    x_f_d_other=x_and_filters(general=True, transpose=True),
-    test_with_out=st.just(False),
-)
-def test_jax_conv_transpose(
-    *,
-    x_f_d_other,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        lhs=x,
-        rhs=filters,
-        strides=stride,
-        padding=pad,
-        rhs_dilation=dilation,
-        dimension_numbers=dim_num,
-        transpose_kernel=False,
-        precision=None,
-        preferred_element_type=pref,
-    )
-
-
-@handle_frontend_test(
     fn_tree="jax.lax.conv_general_dilated",
-    x_f_d_other=x_and_filters(general=True),
+    x_f_d_other=_x_and_filters(general=True),
     test_with_out=st.just(False),
 )
 def test_jax_conv_general_dilated(
@@ -2262,15 +1243,79 @@ def test_jax_conv_general_dilated(
 
 
 @handle_frontend_test(
-    fn_tree="jax.lax.sub",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
+    fn_tree="jax.lax.conv_transpose",
+    x_f_d_other=_x_and_filters(general=True, transpose=True),
     test_with_out=st.just(False),
 )
-def test_jax_sub(
+def test_jax_conv_transpose(
+    *,
+    x_f_d_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lhs=x,
+        rhs=filters,
+        strides=stride,
+        padding=pad,
+        rhs_dilation=dilation,
+        dimension_numbers=dim_num,
+        transpose_kernel=False,
+        precision=None,
+        preferred_element_type=pref,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.convert_element_type",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    new_dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_convert_element_type(
+    *,
+    dtype_and_x,
+    new_dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    assume(can_cast(input_dtype[0], new_dtype[0]))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype + new_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=x[0],
+        new_dtype=new_dtype[0],
+    )
+
+
+# cos
+@handle_frontend_test(
+    fn_tree="jax.lax.cos",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_cos(
     *,
     dtype_and_x,
     on_device,
@@ -2288,7 +1333,1110 @@ def test_jax_sub(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# cosh
+@handle_frontend_test(
+    fn_tree="jax.lax.cosh",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_cosh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# cummin
+@handle_frontend_test(
+    fn_tree="jax.lax.cummin",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    reverse=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_cummin(
+    *,
+    dtype_x_axis,
+    reverse,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        operand=x[0],
+        axis=axis,
+        reverse=reverse,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.cumprod",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_value=-5,
+        max_value=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    reverse=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_cumprod(
+    *,
+    dtype_x_axis,
+    reverse,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        operand=x[0],
+        axis=axis,
+        reverse=reverse,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.cumsum",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    reverse=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_cumsum(
+    *,
+    dtype_x_axis,
+    reverse,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=x[0],
+        axis=axis,
+        reverse=reverse,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.div",
+    dtypes_and_xs=_div_dtypes_and_xs(),
+    test_with_out=st.just(False),
+)
+def test_jax_div(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    assume(not np.any(np.isclose(xs[1], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.dot",
+    dtypes_and_xs=_get_dtype_inputs_for_dot(),
+    test_with_out=st.just(False),
+)
+def test_jax_dot(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, dtype, lhs, rhs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        lhs=lhs,
+        rhs=rhs,
+        precision=None,
+        preferred_element_type=dtype,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.dot_general",
+    dtypes_lr_dims=_general_dot_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_dot_general(
+    *,
+    dtypes_lr_dims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtypes, lr, dims, dtype = dtypes_lr_dims
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lhs=lr[0],
+        rhs=lr[1],
+        dimension_numbers=dims,
+        precision=None,
+        preferred_element_type=dtype,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.eq",
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_eq(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.erf",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_erf(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        x=x[0],
+    )
+
+
+# erfc
+@handle_frontend_test(
+    fn_tree="jax.lax.erfc",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_out=st.just(False),
+)
+def test_jax_erfc(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.exp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_exp(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# expand_dims
+@handle_frontend_test(
+    fn_tree="jax.lax.expand_dims",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_expand_dims(
+    *,
+    dtype_x_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    x_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        bakcend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        array=x[0],
+        dimensions=(axis,),
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.expm1",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_expm1(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.full",
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    fill_value=_fill_value(),
+    dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
+)
+def test_jax_full(
+    *,
+    shape,
+    fill_value,
+    dtypes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        shape=shape,
+        fill_value=fill_value,
+        dtype=dtypes[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.full_like",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=False, key="dtype")
+    ),
+    fill_val=_fill_value(),
+    shape=st.one_of(helpers.get_shape() | st.none()),
+    dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
+    test_with_out=st.just(False),
+)
+def test_jax_full_like(
+    *,
+    dtype_and_x,
+    fill_val,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    fill_val = fill_val
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        fill_value=fill_val,
+        dtype=dtype,
+        shape=shape,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.ge",
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_ge(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.gt",
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_gt(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+# imag
+@handle_frontend_test(
+    fn_tree="jax.lax.imag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex")
+    ),
+)
+def test_jax_imag(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        x=x[0],
+    )
+
+
+# iota
+@handle_frontend_test(
+    fn_tree="jax.lax.iota",
+    dtypes=helpers.get_dtypes("valid", full=False),
+    size=helpers.ints(min_value=0, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_jax_iota(
+    *,
+    dtypes,
+    size,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dtype=dtypes[0],
+        size=size,
+    )
+
+
+# is_finite
+@handle_frontend_test(
+    fn_tree="jax.lax.is_finite",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_is_finite(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.le",
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_le(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.log",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_log(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# log1p
+@handle_frontend_test(
+    fn_tree="jax.lax.log1p",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_log1p(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.add",
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_lt(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+# max
+@handle_frontend_test(
+    fn_tree="jax.lax.max",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_max(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
         y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.min",
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_min(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.mul",
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+        small_abs_safety_factor=2,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_mul(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.ne",
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_ne(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.neg",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_neg(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# nextafter
+@handle_frontend_test(
+    fn_tree="jax.lax.nextafter",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_nextafter(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.pad",
+    dtype_x_params=_pad_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_pad(
+    *,
+    dtype_x_params,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, operand, padding_value, padding_config = dtype_x_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=operand,
+        padding_value=padding_value,
+        padding_config=padding_config,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.pow",
+    dtypes_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_pow(
+    *,
+    dtypes_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+# real
+@handle_frontend_test(
+    fn_tree="jax.lax.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex")
+    ),
+)
+def test_jax_real(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.reciprocal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_reciprocal(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.reduce_window",
+    all_args=_reduce_window_helper(_get_reduce_func),
+    test_with_out=st.just(False),
+)
+def test_jax_reduce_window(
+    *,
+    all_args,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtypes, operand, init_value, computation, others, padding = all_args
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=operand[0],
+        init_value=init_value[0],
+        computation=computation,
+        window_dimensions=others[0],
+        window_strides=others[1],
+        padding=padding,
+        base_dilation=others[2],
+        window_dilation=None,
     )
 
 
@@ -2327,16 +2475,105 @@ def test_jax_rem(
 
 
 @handle_frontend_test(
-    fn_tree="jax.lax.square",
-    dtype_and_x=helpers.dtype_and_values(
+    fn_tree="jax.lax.reshape",
+    x_reshape_permut=_reshape_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_reshape(
+    *,
+    x_reshape_permut,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    x, dtype, shape, dimensions = x_reshape_permut
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=x[0],
+        new_sizes=shape,
+        dimensions=dimensions,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.rev",
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        small_abs_safety_factor=2,
-        large_abs_safety_factor=2,
-        safety_factor_scale="log",
+        min_num_dims=1,
+        min_dim_size=2,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_neg_axes=False,
     ),
     test_with_out=st.just(False),
 )
-def test_jax_square(
+def test_jax_rev(
+    *,
+    dtype_x_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=x[0],
+        dimensions=(axis,),
+    )
+
+
+# round
+@handle_frontend_test(
+    fn_tree="jax.lax.round",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    rounding_method=st.sampled_from([0, 1]),
+    test_with_out=st.just(False),
+)
+def test_jax_round(
+    *,
+    dtype_and_x,
+    rounding_method,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        rounding_method=rounding_method,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.rsqrt",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_rsqrt(
     *,
     dtype_and_x,
     on_device,
@@ -2353,35 +2590,36 @@ def test_jax_square(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-02,
         x=x[0],
     )
 
 
 @handle_frontend_test(
-    fn_tree="jax.lax.erf",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    fn_tree="jax.lax.select",
+    dtype_pred_ontrue_on_false=_dtype_pred_ontrue_on_false(),
     test_with_out=st.just(False),
 )
-def test_jax_erf(
+def test_jax_select(
     *,
-    dtype_and_x,
+    dtype_pred_ontrue_on_false,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, pred, on_true_on_false = dtype_pred_ontrue_on_false
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
+        input_dtypes=["bool"] + input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
-        x=x[0],
+        pred=pred,
+        on_true=on_true_on_false[0],
+        on_false=on_true_on_false[0],
     )
 
 
@@ -2460,27 +2698,88 @@ def test_jax_shift_right_logical(
     )
 
 
-@st.composite
-def _slice_helper(draw):
-    dtype, x, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_num_dims=1,
-            ret_shape=True,
-        ),
+# sign
+@handle_frontend_test(
+    fn_tree="jax.lax.sign",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_sign(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
-    start_indices, limit_indices, strides = [], [], []
-    for i in shape:
-        start_indices += [draw(st.integers(min_value=0, max_value=i - 1))]
-        limit_indices += [
-            draw(
-                st.integers(min_value=0, max_value=i - 1).filter(
-                    lambda _x: _x > start_indices[-1]
-                )
-            )
-        ]
-        strides += [draw(st.integers(min_value=1, max_value=i))]
-    return dtype, x, start_indices, limit_indices, strides
+
+
+# sin
+@handle_frontend_test(
+    fn_tree="jax.lax.sin",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_sin(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# sinh
+@handle_frontend_test(
+    fn_tree="jax.lax.sinh",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_jax_sinh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
 
 
 @handle_frontend_test(
@@ -2510,37 +2809,6 @@ def test_jax_slice(
         limit_indices=limit_indices,
         strides=strides,
     )
-
-
-@st.composite
-def _slice_in_dim_helper(draw):
-    dtype, x, axis = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_num_dims=1,
-            force_int_axis=True,
-            valid_axis=True,
-        ),
-    )
-    operand = x[0]
-    start_index = draw(
-        st.integers(min_value=-abs(operand.shape[axis]), max_value=operand.shape[axis])
-    )
-    if start_index < 0:
-        limit_index = draw(
-            st.integers(
-                min_value=start_index + operand.shape[axis],
-                max_value=operand.shape[axis],
-            )
-        )
-    else:
-        limit_index = draw(
-            st.integers(
-                min_value=-abs(operand.shape[axis]), max_value=operand.shape[axis]
-            ).filter(lambda _x: _x >= start_index)
-        )
-    stride = draw(st.integers(min_value=1, max_value=abs(limit_index + 1)))
-    return dtype, x, start_index, limit_index, stride, axis
 
 
 @handle_frontend_test(
@@ -2573,230 +2841,48 @@ def test_jax_slice_in_dim(
     )
 
 
-# expand_dims
 @handle_frontend_test(
-    fn_tree="jax.lax.expand_dims",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+    fn_tree="jax.lax.sort",
+    dtype_x_bounded_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
-        force_int_axis=True,
         valid_axis=True,
+        force_int_axis=True,
     ),
+    is_stable=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_expand_dims(
+def test_jax_sort(
     *,
-    dtype_x_axis,
+    dtype_x_bounded_axis,
+    is_stable,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    x_dtype, x, axis = dtype_x_axis
-    helpers.test_frontend_function(
-        input_dtypes=x_dtype,
-        frontend=frontend,
-        bakcend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        array=x[0],
-        dimensions=(axis,),
-    )
-
-
-# asinh
-@handle_frontend_test(
-    fn_tree="jax.lax.asinh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_jax_asinh(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_x_bounded_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# atanh
-@handle_frontend_test(
-    fn_tree="jax.lax.atanh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_jax_atanh(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# select
-@st.composite
-def _dtype_pred_ontrue_on_false(draw):
-    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
-    pred = draw(helpers.array_values(dtype="bool", shape=shape))
-    dtypes, on_true_on_false = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            num_arrays=2,
-            shape=shape,
-            large_abs_safety_factor=16,
-            small_abs_safety_factor=16,
-            safety_factor_scale="log",
-            shared_dtype=True,
-        )
-    )
-    return dtypes, pred, on_true_on_false
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.select",
-    dtype_pred_ontrue_on_false=_dtype_pred_ontrue_on_false(),
-    test_with_out=st.just(False),
-)
-def test_jax_select(
-    *,
-    dtype_pred_ontrue_on_false,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, pred, on_true_on_false = dtype_pred_ontrue_on_false
-    helpers.test_frontend_function(
-        input_dtypes=["bool"] + input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        pred=pred,
-        on_true=on_true_on_false[0],
-        on_false=on_true_on_false[0],
-    )
-
-
-# top_k
-@handle_frontend_test(
-    fn_tree="jax.lax.top_k",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
-        min_dim_size=4,
-        max_dim_size=10,
-    ),
-    k=helpers.ints(min_value=1, max_value=4),
-    test_with_out=st.just(False),
-)
-def test_jax_top_k(
-    *,
-    dtype_and_x,
-    k,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         operand=x[0],
-        k=k,
-        # test_values=False,
+        dimension=axis,
+        is_stable=is_stable,
     )
 
 
-def _get_reduce_func(dtype):
-    if dtype[0] == "bool":
-        return st.sampled_from([jnp.logical_and, jnp.logical_or])
-    else:
-        return st.sampled_from([jlax.add, jlax.max, jlax.min, jlax.mul, jnp.multiply])
-
-
+# sqrt
 @handle_frontend_test(
-    fn_tree="jax.lax.reduce_window",
-    all_args=_reduce_window_helper(_get_reduce_func),
+    fn_tree="jax.lax.sqrt",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_reduce_window(
-    *,
-    all_args,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtypes, operand, init_value, computation, others, padding = all_args
-    helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        operand=operand[0],
-        init_value=init_value[0],
-        computation=computation,
-        window_dimensions=others[0],
-        window_strides=others[1],
-        padding=padding,
-        base_dilation=others[2],
-        window_dilation=None,
-    )
-
-
-# real
-@handle_frontend_test(
-    fn_tree="jax.lax.real",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("complex")
-    ),
-)
-def test_jax_real(
+def test_jax_sqrt(
     *,
     dtype_and_x,
     on_device,
@@ -2813,20 +2899,39 @@ def test_jax_real(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=True,
         x=x[0],
     )
 
 
-# squeeze
-@st.composite
-def _squeeze_helper(draw):
-    shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
-    valid_axes = []
-    for index, axis in enumerate(shape):
-        if axis == 1:
-            valid_axes.append(index)
-    return valid_axes
+@handle_frontend_test(
+    fn_tree="jax.lax.square",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        small_abs_safety_factor=2,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_square(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
 
 
 @handle_frontend_test(
@@ -2869,23 +2974,16 @@ def test_jax_squeeze(
     )
 
 
-# nextafter
 @handle_frontend_test(
-    fn_tree="jax.lax.nextafter",
+    fn_tree="jax.lax.sub",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"],
-        min_value=-100,
-        max_value=100,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nextafter(
+def test_jax_sub(
     *,
     dtype_and_x,
     on_device,
@@ -2900,48 +2998,20 @@ def test_jax_nextafter(
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x1=x[0],
-        x2=x[0],
-    )
-
-
-# conj
-@handle_frontend_test(
-    fn_tree="jax.lax.conj",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["complex64"],
-    ),
-)
-def test_jax_conj(
-    *,
-    dtype_and_x,
-    test_flags,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        y=x[1],
     )
 
 
-# is_finite
+# tan
 @handle_frontend_test(
-    fn_tree="jax.lax.is_finite",
+    fn_tree="jax.lax.tan",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_is_finite(
+def test_jax_tan(
     *,
     dtype_and_x,
     on_device,
@@ -2959,76 +3029,6 @@ def test_jax_is_finite(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-    )
-
-
-# cbrt
-@handle_frontend_test(
-    fn_tree="jax.lax.cbrt",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), min_value=0.0
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_cbrt(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# cummin
-@handle_frontend_test(
-    fn_tree="jax.lax.cummin",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=5,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    reverse=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_jax_cummin(
-    *,
-    dtype_x_axis,
-    reverse,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x, axis = dtype_x_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
-        operand=x[0],
-        axis=axis,
-        reverse=reverse,
     )
 
 
@@ -3064,22 +3064,60 @@ def test_jax_tie_in(
     )
 
 
-# erfc
+# top_k
 @handle_frontend_test(
-    fn_tree="jax.lax.erfc",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    fn_tree="jax.lax.top_k",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+        min_dim_size=4,
+        max_dim_size=10,
+    ),
+    k=helpers.ints(min_value=1, max_value=4),
     test_with_out=st.just(False),
 )
-def test_jax_erfc(
+def test_jax_top_k(
     *,
     dtype_and_x,
+    k,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    input_dtype, x = dtype_and_x
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=x[0],
+        k=k,
+        # test_values=False,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.transpose",
+    dtype_x_dims=_dtype_values_dims(),
+    test_with_out=st.just(False),
+)
+def test_jax_transpose(
+    *,
+    dtype_x_dims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, dims = dtype_x_dims
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -3087,36 +3125,6 @@ def test_jax_erfc(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
-        x=x[0],
-    )
-
-
-# iota
-@handle_frontend_test(
-    fn_tree="jax.lax.iota",
-    dtypes=helpers.get_dtypes("valid", full=False),
-    size=helpers.ints(min_value=0, max_value=10),
-    test_with_out=st.just(False),
-)
-def test_jax_iota(
-    *,
-    dtypes,
-    size,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        dtype=dtypes[0],
-        size=size,
+        operand=x[0],
+        permutation=dims,
     )

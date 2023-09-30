@@ -8,6 +8,10 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_nn import _x_and_filters
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
 def _batch_norm_helper(draw):
     num_dims = draw(st.integers(min_value=4, max_value=5))
@@ -41,39 +45,8 @@ def _batch_norm_helper(draw):
     return dtype + dtypes, x, epsilon, factor, training, data_format, vectors
 
 
-@handle_frontend_test(
-    fn_tree="tensorflow.compat.v1.nn.fused_batch_norm",
-    dtypes_args=_batch_norm_helper(),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_fused_batch_norm(
-    *,
-    dtypes_args,
-    test_flags,
-    frontend,
-    backend_fw,
-    fn_tree,
-    on_device,
-):
-    dtypes, x, epsilon, factor, training, data_format, vectors = dtypes_args
-    helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        atol=1e-02,
-        x=x[0],
-        scale=vectors[0],
-        offset=vectors[1],
-        mean=vectors[2],
-        variance=vectors[3],
-        epsilon=epsilon,
-        data_format=data_format,
-        is_training=training,
-        exponential_avg_factor=factor,
-    )
+# --- Main --- #
+# ------------ #
 
 
 @handle_frontend_test(
@@ -114,40 +87,37 @@ def test_tensorflow_depthwise_conv2d(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.compat.v1.nn.separable_conv2d",
-    x_f_d_df=_x_and_filters(
-        dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NHWC"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
-        type="separable",
-    ),
+    fn_tree="tensorflow.compat.v1.nn.fused_batch_norm",
+    dtypes_args=_batch_norm_helper(),
     test_with_out=st.just(False),
 )
-def test_tensorflow_separable_conv2d(
+def test_tensorflow_fused_batch_norm(
     *,
-    x_f_d_df,
-    frontend,
+    dtypes_args,
     test_flags,
-    fn_tree,
+    frontend,
     backend_fw,
+    fn_tree,
     on_device,
 ):
-    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    dtypes, x, epsilon, factor, training, data_format, vectors = dtypes_args
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         backend_to_test=backend_fw,
-        frontend=frontend,
         test_flags=test_flags,
+        frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
-        depthwise_filter=filters[0],
-        pointwise_filter=filters[1],
-        strides=stride,
-        padding=padding,
-        rate=dilation,
-        name=None,
+        atol=1e-02,
+        x=x[0],
+        scale=vectors[0],
+        offset=vectors[1],
+        mean=vectors[2],
+        variance=vectors[3],
+        epsilon=epsilon,
         data_format=data_format,
+        is_training=training,
+        exponential_avg_factor=factor,
     )
 
 
@@ -181,5 +151,43 @@ def test_tensorflow_max_pool(
         ksize=ksize,
         strides=strides,
         padding=padding,
+        data_format=data_format,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.compat.v1.nn.separable_conv2d",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="separable",
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_separable_conv2d(
+    *,
+    x_f_d_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        depthwise_filter=filters[0],
+        pointwise_filter=filters[1],
+        strides=stride,
+        padding=padding,
+        rate=dilation,
+        name=None,
         data_format=data_format,
     )

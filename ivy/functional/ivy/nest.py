@@ -217,7 +217,35 @@ def set_nest_at_index(
 
 
 @handle_exceptions
-def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /) -> None:
+def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
+    """
+    Recursively inserts a value into a nested data structure at a specified index.
+
+    This function traverses a nested data structure and inserts the provided `value`
+    at the specified `index`.
+
+    Parameters
+    ----------
+    nest : Iterable
+        The nested data structure.
+    index : Tuple
+        The index specifying the location where the `value` should be inserted.
+    value : object
+        The value to be inserted.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    >>> nest = [[1, 2], [3, 4]]
+    >>> index = (1, 1)
+    >>> value = 99
+    >>> insert_into_nest_at_index(nest, index, value)
+    >>> print(nest)
+    [[1, 2], [3, 99, 4]]
+    """
     if len(index) == 1:
         idx = index[0]
         if isinstance(nest, list):
@@ -1008,7 +1036,7 @@ def nested_map(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
     /,
     fn: Callable,
-    include_derived: Optional[Union[Dict[type, bool], bool]] = None,
+    include_derived: Optional[Union[Dict[str, bool], bool]] = None,
     to_ignore: Optional[Union[type, Tuple[type]]] = None,
     to_mutable: bool = False,
     max_depth: Optional[int] = None,
@@ -1132,12 +1160,13 @@ def nested_map(
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
-        include_derived = {tuple: True, list: True, dict: True}
+        include_derived = {"tuple": True, "list": True, "dict": True}
     elif not include_derived:
         include_derived = {}
-    for t in (tuple, list, dict):
+    for t in ("tuple", "list", "dict"):
         if t not in include_derived:
             include_derived[t] = False
+    # to ensure all keys are strings
     if ivy.exists(max_depth) and _depth > max_depth:
         return x
     class_instance = type(x)
@@ -1154,7 +1183,7 @@ def nested_map(
         _tuple_check_fn,
         (
             (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[tuple]
+            if include_derived["tuple"]
             else (lambda x_, t_: type(x_) is t_)
         ),
     )
@@ -1162,7 +1191,7 @@ def nested_map(
         _list_check_fn,
         (
             (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[list]
+            if include_derived["list"]
             else (lambda x_, t_: type(x_) is t_)
         ),
     )
@@ -1170,11 +1199,10 @@ def nested_map(
         _dict_check_fn,
         (
             (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[dict]
+            if include_derived["dict"]
             else (lambda x_, t_: type(x_) is t_)
         ),
     )
-
     if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
         ret_list = [
             nested_map(
