@@ -573,7 +573,9 @@ def test_paddle_tensor_add_(
     init_tree="paddle.to_tensor",
     method_name="add_n",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+        shared_dtype=True,
     ),
 )
 def test_paddle_tensor_add_n(
@@ -589,9 +591,9 @@ def test_paddle_tensor_add_n(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x[0]},
+        init_all_as_kwargs_np={"inputs": x},
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"y": x[1]},
+        method_all_as_kwargs_np={"inputs": x},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
