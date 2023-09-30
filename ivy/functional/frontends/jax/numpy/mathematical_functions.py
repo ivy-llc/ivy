@@ -727,8 +727,6 @@ def trunc(x):
 @to_ivy_arrays_and_back
 def unwrap(p, discont=None, axis=-1, period=2 * ivy.pi):
     p = ivy.asarray(p)
-    if p.shape == 0:
-        return p
     dtype_str = str(p.dtype)
     if "int" in dtype_str:
         dtype_size = 64
@@ -739,23 +737,12 @@ def unwrap(p, discont=None, axis=-1, period=2 * ivy.pi):
         ret_type = dtype_str
         p = p.astype(ret_type)
         dtype = p.dtype
-    if p.size == 1 and "float" in dtype_str:
-        return p
-    elif p.size == 1 and "int" in dtype_str:
-        return p.astype(ret_type)
-    if any(dim == 0 for dim in p.shape):
-        return ivy.array([], dtype=p.dtype)
     if discont is None:
         discont = period / 2
     interval = period / 2
     dd = ivy.diff(p, axis=axis)
-    dd, interval = promote_types_of_jax_inputs(dd, interval)
-    interval = ivy.full_like(dd, fill_value=interval)
-    period = ivy.full_like(dd, fill_value=period)
-    discont = ivy.full_like(dd, fill_value=discont)
-    z = ivy.zeros_like(dd)
     ddmod = ivy.remainder(dd + interval, period) - interval
-    ddmod = ivy.where((ddmod == -interval) & (dd > z), interval, ddmod)
+    ddmod = ivy.where((ddmod == -interval) & (dd > 0), interval, ddmod)
     ph_correct = ivy.where(ivy.abs(dd) < discont, 0, ddmod - dd)
     up = concatenate(
         (

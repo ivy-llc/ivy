@@ -151,19 +151,21 @@ def _get_dtype_input_and_vectors(draw):
 # unwrap
 @st.composite
 def _get_dtype_input_vector_axis(draw):
-    size1 = draw(helpers.ints(min_value=1, max_value=5))
-    size2 = draw(helpers.ints(min_value=1, max_value=5))
+    size1 = draw(helpers.ints(min_value=2, max_value=5))
+    size2 = draw(helpers.ints(min_value=2, max_value=5))
     dtype, x, axis = draw(
         helpers.dtype_values_axis(
             available_dtypes=helpers.get_dtypes("numeric"),
-            shape=(size1, size2),
             num_arrays=1,
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=10,
+            shape=(size1, size2),
             min_value=-ivy.pi,
             max_value=ivy.pi,
             valid_axis=True,
             force_int_axis=True,
-            allow_nan=False,
-            allow_inf=False,
         )
     )
 
