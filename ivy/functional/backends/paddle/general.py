@@ -104,6 +104,10 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    def _convert_negative_indices(indices):
+        # convert negative indices to their relative positive counterparts
+        return paddle.where(indices < 0, indices + params.shape[axis], indices)
+
     def _gather(params1):
         if batch_dims == 0:
             result = paddle.gather(
@@ -144,6 +148,7 @@ def gather(
         axis = axis % params.ndim
     if batch_dims is not None:
         batch_dims = batch_dims % params.ndim
+    indices = _convert_negative_indices(indices)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     if params.dtype in [
         paddle.int8,
