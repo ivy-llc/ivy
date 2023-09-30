@@ -42,7 +42,7 @@ def _arrays_idx_n_dtypes(draw):
             size=num_arrays,
         )
     )
-    xs = list()
+    xs = []
     input_dtypes = draw(
         helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("valid")))
     )
@@ -263,7 +263,7 @@ def _pad_helper(draw):
     ndim = len(shape)
     pad_width = draw(_st_tuples_or_int(ndim, min_val=0))
     kwargs = {}
-    if mode == "reflect" or mode == "symmetric":
+    if mode in ["reflect", "symmetric"]:
         kwargs["reflect_type"] = draw(st.sampled_from(["even", "odd"]))
     if mode in ["maximum", "mean", "median", "minimum"]:
         kwargs["stat_length"] = draw(_st_tuples_or_int(ndim, min_val=2))

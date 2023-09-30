@@ -611,6 +611,10 @@ class Tensor:
     def floor_divide(self, y, name=None):
         return paddle_frontend.floor_divide(self, y)
 
+    @with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
+    def mod(self, y, name=None):
+        return paddle_frontend.Tensor(ivy.fmod(self._ivy_array, _to_ivy_array(y)))
+
     # cond
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def cond(self, p=None, name=None):
@@ -812,3 +816,27 @@ class Tensor:
     )
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def fill_(self, value):
+        filled_tensor = paddle_frontend.full_like(self, value)
+        return ivy.inplace_update(self, filled_tensor)
+
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "bool",
+                "int32",
+                "int64",
+                "float16",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def unbind(self, axis=0):
+        return paddle_frontend.unbind(self._ivy_array, axis=axis)
