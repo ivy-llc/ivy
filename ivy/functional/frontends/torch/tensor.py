@@ -2080,7 +2080,7 @@ class Tensor:
         "torch",
     )
     def minimum(self, other, *, out=None):
-        return torch_frontend.minimum(self, other=other, out=out)
+        return torch_frontend.minimum(self, other=other, out=out).astype(self.dtype)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
