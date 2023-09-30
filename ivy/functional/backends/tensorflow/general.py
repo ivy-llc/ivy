@@ -111,6 +111,8 @@ def gather(
 ) -> Union[tf.Tensor, tf.Variable]:
     axis %= len(params.shape)
     batch_dims %= len(params.shape)
+    indices = tf.cast(indices, dtype=tf.int32)
+    indices = tf.where(indices < 0, tf.shape(params)[axis] + indices, indices)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
