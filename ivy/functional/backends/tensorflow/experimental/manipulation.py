@@ -1,6 +1,16 @@
 # global
 from collections import namedtuple
-from typing import Union, Optional, Sequence, Tuple, NamedTuple, List
+from typing import (
+    Union,
+    Optional,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    List,
+    Literal,
+    Callable,
+    Any,
+)
 from numbers import Number
 import tensorflow as tf
 
@@ -8,6 +18,7 @@ import tensorflow as tf
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
+from ivy.functional.ivy.experimental.manipulation import _to_tf_padding
 
 
 def moveaxis(
@@ -253,6 +264,70 @@ def broadcast_shapes(
     return tuple(desired_shape.numpy().tolist())
 
 
+def pad(
+    input: Union[tf.Tensor, tf.Variable],
+    pad_width: Union[Sequence[Sequence[int]], Union[tf.Tensor, tf.Variable], int],
+    /,
+    *,
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "reflect",
+            "wrap",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Union[Sequence[Union[tf.Tensor, tf.Variable]], int] = 1,
+    constant_values: Number = 0,
+    end_values: Number = 0,
+    reflect_type: Literal["even", "odd"] = "even",
+    **kwargs: Optional[Any],
+) -> Union[tf.Tensor, tf.Variable]:
+    pad_width = _to_tf_padding(pad_width, len(input.shape))
+    if not isinstance(pad_width, (tf.Variable, tf.Tensor)):
+        pad_width = tf.constant(pad_width)
+    return tf.pad(
+        input,
+        pad_width,
+        mode=mode,
+        constant_values=constant_values,
+    )
+
+
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_tf_pad(args[0].shape, args[1], mode, constant_values, reflect_type)
+    )
+)
+
+
+def _check_tf_pad(input_shape, pad_width, mode, constant_values, reflect_type):
+    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    return isinstance(constant_values, Number) and (
+        mode == "constant"
+        or (
+            reflect_type == "even"
+            and (
+                (
+                    mode == "reflect"
+                    and all(
+                        pad_width[i][0] < s and pad_width[i][1] < s
+                        for i, s in enumerate(input_shape)
+                    )
+                )
+                or (
+                    mode == "symmetric"
+                    and all(
+                        pad_width[i][0] <= s and pad_width[i][1] <= s
+                        for i, s in enumerate(input_shape)
+                    )
+                )
+            )
+        )
+    )
+
+
 def expand(
     x: Union[tf.Tensor, tf.Variable],
     shape: Union[List[int], List[Tuple]],
@@ -264,7 +339,9 @@ def expand(
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
-            shape[i] = x.shape[i]
+            shape[i] = x.shape.num_elements() / tf.reduce_prod(
+                [s for s in shape if s > 0]
+            )
     return tf.broadcast_to(x, shape)
 
 

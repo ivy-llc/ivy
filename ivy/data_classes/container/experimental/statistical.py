@@ -16,16 +16,16 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             Union[int, ivy.Array, ivy.NativeArray, ivy.Container, str]
         ] = None,
         axis: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        extend_lower_interval: Optional[bool] = False,
-        extend_upper_interval: Optional[bool] = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        range: Optional[Tuple[float]] = None,
+        extend_lower_interval: Optional[Union[bool, ivy.Container]] = False,
+        extend_upper_interval: Optional[Union[bool, ivy.Container]] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        range: Optional[Tuple[Union[bool, ivy.Container]]] = None,
         weights: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        density: Optional[bool] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        density: Optional[Union[bool, ivy.Container]] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -123,16 +123,16 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             Union[int, ivy.Array, ivy.NativeArray, ivy.Container, str]
         ] = None,
         axis: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        extend_lower_interval: Optional[bool] = False,
-        extend_upper_interval: Optional[bool] = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        range: Optional[Tuple[float]] = None,
+        extend_lower_interval: Optional[Union[bool, ivy.Container]] = False,
+        extend_upper_interval: Optional[Union[bool, ivy.Container]] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        range: Optional[Union[Tuple[float], ivy.Container]] = None,
         weights: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        density: Optional[bool] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        density: Optional[Union[bool, ivy.Container]] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -198,11 +198,12 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
         >>> dtype = ivy.int32
-        >>> z = ivy.histogram(x, bins=y, dtype=dtype)
-        >>> print(z.a)
-        >>> print(z.b)
-        (ivy.array([1, 1, 1, 0, 0]), ivy.array([0., 1., 2., 3., 4., 5.]))
-        (ivy.array([0, 0, 0, 1, 2]), ivy.array([0., 1., 2., 3., 4., 5.]))
+        >>> z = x.histogram(bins=y, dtype=dtype)
+        >>> print(z)
+        {
+            a: ivy.array([1, 1, 1, 0, 0]),
+            b: ivy.array([0, 0, 0, 1, 2])
+        }
         """
         return self.static_histogram(
             self,
@@ -226,13 +227,13 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         input: ivy.Container,
         /,
         *,
-        axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.median. This method simply wraps the
@@ -283,8 +284,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -330,14 +331,14 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         input: ivy.Container,
         /,
         *,
-        axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.nanmean. This method simply wraps the
@@ -355,8 +356,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             If this is set to True, the axes which are reduced are left in the result
             as dimensions with size one. With this option, the result will broadcast
             correctly against the original a. If the value is anything but the default,
-            then keepdims will be passed through to the mean or sum methods of 
-            sub-classes of ndarray. If the sub-classes methods does not implement 
+            then keepdims will be passed through to the mean or sum methods of
+            sub-classes of ndarray. If the sub-classes methods does not implement
             keepdims any exceptions will be raised.
         dtype
             The desired data type of returned tensor. Default is None.
@@ -395,9 +396,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -416,8 +417,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             If this is set to True, the axes which are reduced are left in the result
             as dimensions with size one. With this option, the result will broadcast
             correctly against the original a. If the value is anything but the default,
-            then keepdims will be passed through to the mean or sum methods of 
-            sub-classes of ndarray. If the sub-classes methods does not implement 
+            then keepdims will be passed through to the mean or sum methods of
+            sub-classes of ndarray. If the sub-classes methods does not implement
             keepdims any exceptions will be raised.
         dtype
             The desired data type of returned tensor. Default is None.
@@ -444,18 +445,152 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_quantile(
-        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        q: Union[ivy.Array, float],
+    def static_nanprod(
+        input: ivy.Container,
         /,
         *,
-        axis: Optional[Union[Sequence[int], int]] = None,
-        keepdims: bool = False,
-        interpolation: str = "linear",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        keepdims: Optional[Union[bool, ivy.Container]] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        initial: Optional[Union[int, float, complex, ivy.Container]] = 1,
+        where: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nanprod. This method simply wraps the
+        function, and so the docstring for ivy.nanprod also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        input
+            Input container including arrays.
+        axis
+            Axis or axes along which the product is computed.
+            The default is to compute the product of the flattened array.
+        dtype
+            The desired data type of returned array. Default is None.
+        out
+            optional output array, for writing the result to.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a.
+        initial
+            The starting value for this product.
+        where
+            Elements to include in the product
+
+        Returns
+        -------
+        ret
+            The product of array elements over a given axis treating
+            Not a Numbers (NaNs) as ones
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([[1, 2], [3, ivy.nan]]),\
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> ivy.Container.static_nanprod(a)
+        {
+            x: 12.0
+            y: 12.0
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "nanprod",
+            input,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            initial=initial,
+            where=where,
+        )
+
+    def nanprod(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        keepdims: Optional[Union[bool, ivy.Container]] = False,
+        out: Optional[ivy.Container] = None,
+        initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+        where: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.nanprod. This method simply wraps
+        the function, and so the docstring for ivy.nanprod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the product is computed.
+            The default is to compute the product of the flattened array.
+        dtype
+            The desired data type of returned array. Default is None.
+        out
+            optional output array, for writing the result to.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a.
+        initial
+            The starting value for this product.
+        where
+            Elements to include in the product
+
+        Returns
+        -------
+        ret
+            The product of array elements over a given axis treating
+            Not a Numbers (NaNs) as ones
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([[1, 2], [3, ivy.nan]]),\
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> a.nanprod()
+        {
+            x: 12.0
+            y: 12.0
+        }
+        """
+        return self.static_nanprod(
+            self,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            out=out,
+            initial=initial,
+            where=where,
+        )
+
+    @staticmethod
+    def static_quantile(
+        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        q: Union[ivy.Array, float, ivy.Container],
+        /,
+        *,
+        axis: Optional[Union[Sequence[int], int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        interpolation: Union[str, ivy.Container] = "linear",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -571,16 +706,16 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
     def quantile(
         self: ivy.Container,
-        q: Union[ivy.Array, float],
+        q: Union[ivy.Array, float, ivy.Container],
         /,
         *,
-        axis: Optional[Union[Sequence[int], int]] = None,
-        keepdims: bool = False,
-        interpolation: str = "linear",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[Sequence[int], int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        interpolation: Union[str, ivy.Container] = "linear",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -621,63 +756,64 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         -------
         ret
             Container with (rank(q) + N - len(axis)) dimensional arrays of same dtype
-            as input arrays in the container, or, if axis is None, rank(q) arrays. The 
+            as input arrays in the container, or, if axis is None, rank(q) arrays. The
             first rank(q) dimensions index quantiles for different values of q.
 
         Examples
         --------
         With one :class:`ivy.Container` input:
 
-        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),\
-                              y=ivy.array([1., 2., 3., 4.]))
-        >>> q = 0.5
-        >>> b = a.quantile(q)
-        >>> print(b)
+        >>> x = ivy.Container(a=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+        ...                   b=ivy.array([1., 2., 3., 4.]))
+        >>> z = ivy.array([0.5])
+        >>> y = x.quantile(z)
+        >>> print(y)
         {
-            x: 3.5,
-            y: 2.5
+            a: ivy.array(3.5),
+            b: ivy.array(2.5)
         }
 
-        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
-                              y=ivy.array([1., 2., 3., 4.]))
-        >>> q = ivy.array([0.5, 0.75])
-        >>> b = a.quantile(q)
-        >>> print(b)
+        >>> x = ivy.Container(a=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+        ...                   b=ivy.array([1., 2., 3., 4.]))
+        >>> z = ivy.array([0.5, 0.75])
+        >>> y = x.quantile(z)
+        >>> print(y)
         {
-            x: ivy.array([3.5, 6.25]),
-            y: ivy.array([2.5, 3.25])
+            a: ivy.array([3.5, 6.25]),
+            b: ivy.array([2.5, 3.25])
         }
 
-        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
-                              y=ivy.array([1., 2., 3., 4.]))
-        >>> q = ivy.array([0.5, 0.75])
-        >>> b = a.quantile(q, axis = 0)
-        >>> print(b)
+        >>> x = ivy.Container(a=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+        ...                   b=ivy.array([1., 2., 3., 4.]))
+        >>> z = ivy.array([0.5, 0.75])
+        >>> y = x.quantile(z, axis = 0)
+        >>> print(y)
         {
-            x: ivy.array([[6.5, 4.5, 2.5], 
-                        [8.25, 5.75, 3.25]]),
-            y: ivy.array([2.5, 3.25])
+            a: ivy.array([[6.5, 4.5, 2.5],
+                          [8.25, 5.75, 3.25]]),
+            b: ivy.array([2.5, 3.25])
         }
 
-        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]))
-        >>> b = a.quantile(q, axis = 1, keepdims=True)
-        >>> print(b)
+        >>> x = ivy.Container(a=ivy.array([[10., 7., 4.], [3., 2., 1.]]))
+        >>> z = ivy.array([0.5, 0.75])
+        >>> y = x.quantile(z, axis = 1, keepdims=True)
+        >>> print(y)
         {
-            x: ivy.array([[[7.], 
-                    [2.]], 
-                    [[8.5], 
-                    [2.5]]])
+            a: ivy.array([[[7.],
+                           [2.]],
+                          [[8.5],
+                           [2.5]]])
         }
 
-        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
-                              y=ivy.array([1., 2., 3., 4.]))
-        >>> q = ivy.array([0.3, 0.7])
-        >>> b = a.quantile(q, axis = 0, interpolation="lower")
-        >>> print(b)
+        >>> x = ivy.Container(a=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+        ...                   b=ivy.array([1., 2., 3., 4.]))
+        >>> z = ivy.array([0.3, 0.7])
+        >>> y = x.quantile(z, axis = 0, interpolation="lower")
+        >>> print(y)
         {
-            x: ivy.array([[3., 2., 1.],
-                        [3., 2., 1.]]),
-            y: ivy.array([1., 3.])
+            a: ivy.array([[3., 2., 1.],
+                          [3., 2., 1.]]),
+            b: ivy.array([1., 3.])
         }
         """
         return self.static_quantile(
@@ -699,12 +835,12 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         y: Optional[ivy.Container] = None,
-        rowvar: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = False,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        rowvar: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = False,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.corrcoef. This method simply wraps
@@ -733,9 +869,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
                                  z=ivy.array([[0., 1., 2.], [2., 1., 0.]]))
         >>> ivy.Container.corrcoef(a)
         {
-            w: ivy.array([[1., 1.], 
+            w: ivy.array([[1., 1.],
                           [1., 1.]]),
-            z: ivy.array([[1., -1.], 
+            z: ivy.array([[1., -1.],
                           [-1., 1.]])
         }
         """
@@ -756,7 +892,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         y: Optional[ivy.Container] = None,
-        rowvar: bool = True,
+        rowvar: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -786,9 +922,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
                                  z=ivy.array([[0., 1., 2.], [2., 1., 0.]]))
         >>> ivy.Container.corrcoef(a)
         {
-            w: ivy.array([[1., 1.], 
+            w: ivy.array([[1., 1.],
                           [1., 1.]]),
-            z: ivy.array([[1., -1.], 
+            z: ivy.array([[1., -1.],
                           [-1., 1.]])
         }
         """
@@ -799,14 +935,14 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         input: ivy.Container,
         /,
         *,
-        axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
-        overwrite_input: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        overwrite_input: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.median. This method simply wraps the
@@ -859,9 +995,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
-        overwrite_input: bool = False,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        overwrite_input: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -926,12 +1062,12 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         weights: Optional[ivy.Container] = None,
-        minlength: int = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        minlength: Union[int, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.bincount. This method simply wraps
@@ -980,7 +1116,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         weights: Optional[ivy.Container] = None,
-        minlength: int = 0,
+        minlength: Union[int, ivy.Container] = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1018,10 +1154,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1104,16 +1240,16 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
         /,
         *,
-        rowVar: bool = True,
-        bias: bool = False,
-        ddof: int = None,
-        fweights: ivy.Array = None,
-        aweights: ivy.Array = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        rowVar: Union[bool, ivy.Container] = True,
+        bias: Union[bool, ivy.Container] = False,
+        ddof: Union[int, ivy.Container] = None,
+        fweights: Union[ivy.Array, ivy.Container] = None,
+        aweights: Union[ivy.Array, ivy.Container] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.cov. This method simply wraps the
@@ -1221,16 +1357,16 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         x2: ivy.Container = None,
         /,
         *,
-        rowVar: bool = True,
-        bias: bool = False,
-        ddof: Optional[int] = None,
-        fweights: Optional[ivy.Array] = None,
-        aweights: Optional[ivy.Array] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        rowVar: Union[bool, ivy.Container] = True,
+        bias: Union[bool, ivy.Container] = False,
+        ddof: Optional[Union[int, ivy.Container]] = None,
+        fweights: Optional[Union[ivy.Array, ivy.Container]] = None,
+        aweights: Optional[Union[ivy.Array, ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.cov. This method simply wraps the
@@ -1297,11 +1433,12 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         >>> y = ivy.Container(a=ivy.array([3., 2., 1.]), b=ivy.array([3., 2., 1.]))
         >>> z = x.cov(y)
         >>> print(z)
+
         {
-            a: ivy.container([ 1., -1., -1., -1.]
-                         [ 1.,  1., -1., -1.]),
-            b: ivy.container([-1., -1.,  1.,  1.]
-                         [-1.,  1.,  1.,  1.])
+            a: ivy.array([[1., -1.],
+                          [-1., 1.]]),
+            b: ivy.array([[1., -1.],
+                          [-1., 1.]])
         }
         """
         return self.static_cov(
@@ -1323,14 +1460,14 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        axis: Union[int, ivy.Container] = 0,
+        exclusive: Union[bool, ivy.Container] = False,
+        reverse: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1374,22 +1511,26 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> y = x.cummax(axis=0)
         >>> print(y)
-        {
+        [{
             a: ivy.array([1, 2, 3]),
             b: ivy.array([4, 5, 6])
-        }
+        }, {
+            a: ivy.array([0, 1, 2]),
+            b: ivy.array([0, 1, 2])
+        }]
 
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
-                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+        ...                   b=ivy.array([[3, 4], [4, 5], [5, 6]]))
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
         >>> x.cummax(axis=1, exclusive=True, out=y)
+        >>> print(y)
         {
-            a: ivy.array([[2., 3.],
-                          [5., 7.],
-                          [11., 13.]]),
-            b: ivy.array([[3., 4.],
-                          [4., 5.],
-                          [5., 6.]])
+            a: ivy.array([[0., 1.],
+                          [0., 1.],
+                          [0., 1.]]),
+            b: ivy.array([[0., 1.],
+                          [0., 1.],
+                          [0., 1.]])
         }
         """
         return self._static_cummax(
@@ -1409,14 +1550,14 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        axis: Union[int, ivy.Container] = 0,
+        exclusive: Union[bool, ivy.Container] = False,
+        reverse: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1497,14 +1638,14 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        axis: Union[int, ivy.Container] = 0,
+        exclusive: Union[bool, ivy.Container] = False,
+        reverse: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1587,14 +1728,14 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        axis: Union[int, ivy.Container] = 0,
+        exclusive: Union[bool, ivy.Container] = False,
+        reverse: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """

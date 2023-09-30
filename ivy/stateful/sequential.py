@@ -34,7 +34,7 @@ class Sequential(Module):
         if v is not None:
             for i, submod in enumerate(sub_modules):
                 try:
-                    submod.v = v["submodules"]["v" + str(i)]
+                    submod.v = v["submodules"][f"v{str(i)}"]
                 except KeyError:
                     if submod.v:
                         raise ivy.utils.exceptions.IvyException(
@@ -45,9 +45,12 @@ class Sequential(Module):
         self._submodules = list(sub_modules)
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
+    def __iter__(self):
+        return iter(self._submodules)
+
     def _forward(self, inputs):
         """
-        Perform forward pass of the Linear layer.
+        Perform forward pass of the Sequential container.
 
         Parameters
         ----------
@@ -57,12 +60,12 @@ class Sequential(Module):
         Returns
         -------
         ret
-            The outputs following the linear operation and bias addition.
+            The output after each of the layers in the Sequential has been applied.
         """
         x = inputs
         for i, submod in enumerate(self._submodules):
             try:
-                x = submod(x, v=self.v.submodules["v" + str(i)])
+                x = submod(x, v=self.v.submodules[f"v{str(i)}"])
             except KeyError:
                 if submod.v:
                     raise ivy.utils.exceptions.IvyException(

@@ -3,7 +3,7 @@
 
 ARG UBUNTU_VERSION=20.04
 ARG CUDA=11.2
-FROM nvidia/cuda:${CUDA}.1-base-ubuntu${UBUNTU_VERSION} as base
+FROM nvidia/cuda:${CUDA}.2-base-ubuntu${UBUNTU_VERSION} as base
 WORKDIR /ivy
 
 # For TensorFlow #

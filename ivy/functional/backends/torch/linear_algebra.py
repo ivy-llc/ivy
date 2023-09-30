@@ -5,7 +5,6 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
 from collections import namedtuple
 
-
 # local
 import ivy
 from ivy import inf
@@ -143,26 +142,26 @@ def inv(
     adjoint: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if torch.linalg.det == 0:
-        ret = x
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
+    if adjoint:
+        if x.dim() < 2:
+            raise ValueError("Input must be at least 2D")
+        x_adj = x.transpose(-2, -1).conj()
+        ret = torch.linalg.inv(x_adj)
     else:
-        if adjoint is False:
-            ret = torch.inverse(x, out=out)
-            return ret
-        else:
-            x = torch.t(x)
-            ret = torch.inverse(x, out=out)
-            if ivy.exists(out):
-                return ivy.inplace_update(out, ret)
-            return ret
+        ret = torch.linalg.inv(x)
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+
+    return ret
 
 
 inv.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16", "bool")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16", "bfloat16", "bool")}, backend_version
+)
 def matmul(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -313,6 +312,7 @@ def pinv(
 pinv.support_native_out = True
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def tensorsolve(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -424,7 +424,7 @@ svdvals.support_native_out = True
 
 # ToDo: re-add int32 support once
 # (https://github.com/pytorch/pytorch/issues/84530) is fixed
-@with_unsupported_dtypes({"2.0.1 and below": ("int32",)}, backend_version)
+@with_supported_dtypes({"2.0.1 and below": ("float32",)}, backend_version)
 def tensordot(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -433,11 +433,7 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    # find the type to promote to
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
-    # type conversion to one that torch.tensordot can work with
-    x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
-
     # handle tensordot for axes==0
     # otherwise call with axes
     if axes == 0:

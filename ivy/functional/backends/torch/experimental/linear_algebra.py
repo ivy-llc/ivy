@@ -6,6 +6,7 @@ from typing import Optional, Tuple, Sequence, Union
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
@@ -154,6 +155,7 @@ def adjoint(
     return torch.adjoint(x).resolve_conj()
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def multi_dot(
     x: Sequence[torch.Tensor],
     /,
@@ -178,3 +180,32 @@ def cond(
 
 
 cond.support_native_out = False
+
+
+def lu_factor(
+    x: torch.Tensor,
+    /,
+    *,
+    pivot: Optional[bool] = True,
+    out: Optional[torch.Tensor] = None,
+) -> Tuple[torch.Tensor]:
+    raise IvyNotImplementedException()
+
+
+def dot(
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    a, b = ivy.promote_types_of_inputs(a, b)
+    if a.dim() == 0 or b.dim() == 0:
+        return torch.mul(a, b, out=out)
+    if a.dim() in [1, 2] and b.dim() in [1, 2] or (a.dim() >= 1 and b.dim() == 1):
+        return torch.matmul(a, b, out=out)
+
+    return torch.tensordot(a, b, dims=[[-1], [-2]], out=out)
+
+
+dot.support_native_out = True

@@ -11,6 +11,19 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 
 
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float16", "float32", "float64")},
+    backend_version,
+)
+def lgamma(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.lgamma(x)
+
+
 def sinc(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -242,7 +255,7 @@ def gradient(
     edge_order: int = 1,
 ) -> Union[tf.Tensor, List[tf.Tensor]]:
     # https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/function_base.py#L969-L1312
-    device = x.device
+    x.device
     x = tf.experimental.numpy.asanyarray(x)
     N = x.ndim  # number of dimensions
     if axis is None:
@@ -275,10 +288,8 @@ def gradient(
                 raise ValueError("distances must be either scalars or 1d")
             if len(distances) != x.shape[axes[i]]:
                 raise ValueError(
-                    "when 1d, distances must match "
-                    "the length of the corresponding dimension {} {}".format(
-                        len(distances), x.shape[axes[i]]
-                    )
+                    "when 1d, distances must match the length of the corresponding"
+                    f" dimension {len(distances)} {x.shape[axes[i]]}"
                 )
             if distances.dtype.is_integer:
                 # Convert numpy integer types to float64 to avoid modular
@@ -401,8 +412,7 @@ def gradient(
                 a * x[tuple(slice2)] + b * x[tuple(slice3)] + c * x[tuple(slice4)]
             )
 
-        with tf.device(device):
-            outvals.append(tf.convert_to_tensor(out))
+        outvals.append(tf.convert_to_tensor(out))
 
         # reset the slice object in this dimension to ":"
         slice1[axis] = slice(None)
@@ -485,3 +495,30 @@ def frexp(
     m = x / tf.math.pow(2, e)
     e = tf.cast(e, tf.int32)
     return m, e
+
+
+def modf(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.modf(x)
+
+
+def digamma(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.digamma(x)
+
+
+def erfc(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.erfc(x)

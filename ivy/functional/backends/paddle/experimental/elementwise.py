@@ -7,6 +7,7 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_device_and_dtypes,
+    with_unsupported_dtypes,
 )
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
@@ -18,7 +19,17 @@ from .. import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float64", "float32", "int32", "int64")},
+    {"2.5.1 and below": ("float32", "float64")},
+    backend_version,
+)
+def lgamma(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.lgamma(x)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float64", "float32", "int32", "int64")},
     backend_version,
 )
 def fmax(
@@ -34,7 +45,7 @@ def fmax(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
@@ -98,7 +109,7 @@ def copysign(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
 )
 def nansum(
     x: paddle.Tensor,
@@ -116,7 +127,7 @@ def nansum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def isclose(
     a: paddle.Tensor,
@@ -131,6 +142,9 @@ def isclose(
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("float16", "int16", "int8", "uint8")}, backend_version
+)
 def diff(
     x: Union[paddle.Tensor, list, tuple],
     /,
@@ -142,8 +156,6 @@ def diff(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
-    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        x = x.cast("float32")
 
     def _tensor(val):
         if val is not None and not isinstance(val, paddle.Tensor):
@@ -180,7 +192,7 @@ def hypot(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -220,7 +232,7 @@ def fix(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def nextafter(
     x1: paddle.Tensor,
@@ -261,7 +273,7 @@ _BERNOULLI_COEFS = [
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -339,7 +351,7 @@ def _np_ndim(x):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float64", "float32")},
+    {"2.5.1 and below": ("float64", "float32")},
     backend_version,
 )
 def gradient(
@@ -385,11 +397,10 @@ def gradient(
                     raise ValueError("distances must be either scalars or 1d")
                 if len(distances) != x.shape[axes[i]]:
                     raise ValueError(
-                        "when 1d, distances must match "
-                        "the length of the corresponding dimension {} {}".format(
-                            len(distances), x.shape[axes[i]]
-                        )
+                        "when 1d, distances must match the length of the corresponding"
+                        f" dimension {len(distances)} {x.shape[axes[i]]}"
                     )
+
                 if ivy.is_int_dtype(distances.dtype):
                     # Convert numpy integer types to float64 to avoid modular
                     # arithmetic in np.diff(distances).
@@ -596,7 +607,7 @@ def count_nonzero(
 
 @with_supported_dtypes(
     {
-        "2.5.0 and below": (
+        "2.5.1 and below": (
             "complex64",
             "complex128",
             "float32",
@@ -609,3 +620,146 @@ def count_nonzero(
 )
 def conj(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.conj(x)
+
+
+def modf(
+    x: paddle.Tensor, /, *, out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None
+) -> Tuple[paddle.Tensor, paddle.Tensor]:
+    with ivy.ArrayMode(False):
+        return paddle.modf(x, out=out)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
+def digamma(
+    x: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.digamma(x)
+
+
+# --- erfc --- #
+# Polynomials for computing erf/erfc. Originally from cephes library.
+# https://netlib.org/cephes/doubldoc.html
+kErfcPCoefficient = paddle.to_tensor(
+    [
+        2.46196981473530512524e-10,
+        5.64189564831068821977e-1,
+        7.46321056442269912687e0,
+        4.86371970985681366614e1,
+        1.96520832956077098242e2,
+        5.26445194995477358631e2,
+        9.34528527171957607540e2,
+        1.02755188689515710272e3,
+        5.57535335369399327526e2,
+    ]
+)
+kErfcQCoefficient = paddle.to_tensor(
+    [
+        1.00000000000000000000e0,
+        1.32281951154744992508e1,
+        8.67072140885989742329e1,
+        3.54937778887819891062e2,
+        9.75708501743205489753e2,
+        1.82390916687909736289e3,
+        2.24633760818710981792e3,
+        1.65666309194161350182e3,
+        5.57535340817727675546e2,
+    ]
+)
+kErfcRCoefficient = paddle.to_tensor(
+    [
+        5.64189583547755073984e-1,
+        1.27536670759978104416e0,
+        5.01905042251180477414e0,
+        6.16021097993053585195e0,
+        7.40974269950448939160e0,
+        2.97886665372100240670e0,
+    ]
+)
+kErfcSCoefficient = paddle.to_tensor(
+    [
+        1.00000000000000000000e0,
+        2.26052863220117276590e0,
+        9.39603524938001434673e0,
+        1.20489539808096656605e1,
+        1.70814450747565897222e1,
+        9.60896809063285878198e0,
+        3.36907645100081516050e0,
+    ]
+)
+
+
+# Evaluate the polynomial given coefficients and `x`.
+# N.B. Coefficients should be supplied in decreasing order.
+def _EvaluatePolynomial(x, coefficients):
+    poly = paddle.full_like(x, 0.0)
+    for c in coefficients:
+        poly = poly * x + c
+    return poly
+
+
+def _is_scalar(x):
+    """
+    Determines if the given tensor is a scalar.
+
+    Args:
+    - x (paddle.Tensor): Input tensor.
+
+    Returns:
+    - bool: True if the tensor is a scalar, False otherwise.
+    """
+    return x.size == 1 and x.dim() == 0 and tuple(x.shape) == ()
+
+
+# TODO: Repalce once native function becomes available.
+# Compute an approximation of the error function complement (1 - erf(x)).
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float64", "float32")},
+    backend_version,
+)
+def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    any_input_is_scalar = _is_scalar(x)
+    if str(x.dtype) not in ["paddle.float32", "paddle.float64"]:
+        raise ValueError("Input must be of type float32 or float64.")
+
+    abs_x = paddle.abs(x)
+    z = paddle.exp(-x * x)
+
+    pp = _EvaluatePolynomial(abs_x, kErfcPCoefficient)
+    pq = _EvaluatePolynomial(abs_x, kErfcQCoefficient)
+    pr = _EvaluatePolynomial(abs_x, kErfcRCoefficient)
+    ps = _EvaluatePolynomial(abs_x, kErfcSCoefficient)
+
+    abs_x_small = abs_x < 8.0
+    y = paddle.where(abs_x_small, z * pp / pq, z * pr / ps)
+    result_no_underflow = paddle.where(x < 0.0, 2.0 - y, y)
+
+    def is_pos_inf(op):
+        return paddle.logical_and(paddle.isinf(op), op > 0)
+
+    underflow = paddle.logical_or(
+        z == 0,
+        paddle.logical_or(
+            paddle.logical_and(is_pos_inf(pq), abs_x_small),
+            paddle.logical_and(is_pos_inf(ps), paddle.logical_not(abs_x_small)),
+        ),
+    )
+    result_underflow = paddle.where(
+        x < 0, paddle.full_like(x, 2), paddle.full_like(x, 0)
+    )
+
+    result = paddle.where(underflow, result_underflow, result_no_underflow)
+    if any_input_is_scalar:
+        result = paddle.squeeze(result, axis=-1)
+
+    return result

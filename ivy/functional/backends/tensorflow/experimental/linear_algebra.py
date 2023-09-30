@@ -7,6 +7,7 @@ import ivy
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 
@@ -93,23 +94,39 @@ def matrix_exp(
     return tf.linalg.expm(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "complex",
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def eig(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor]:
-    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
-        return tf.linalg.eig(tf.cast(x, tf.float64))
     return tf.linalg.eig(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "complex",
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def eigvals(
     x: Union[tf.Tensor, tf.Variable],
     /,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
-        return tf.linalg.eigvals(tf.cast(x, tf.float64))
     return tf.linalg.eigvals(x)
 
 
@@ -125,7 +142,7 @@ def adjoint(
 
 @with_supported_dtypes(
     {
-        "2.13.0": (
+        "2.13.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -150,6 +167,7 @@ def multi_dot(
     return dot_out
 
 
+@with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
 def cond(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -189,3 +207,40 @@ def cond(
             tf.linalg.inv(x), ord=p, axis=[-2, -1]
         )
     return k
+
+
+def lu_factor(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    pivot: Optional[bool] = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[tf.Tensor]:
+    raise IvyNotImplementedException()
+
+
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
+def dot(
+    a: tf.Tensor,
+    b: tf.Tensor,
+    /,
+    *,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    a, b = ivy.promote_types_of_inputs(a, b)
+    return tf.experimental.numpy.dot(a, b)

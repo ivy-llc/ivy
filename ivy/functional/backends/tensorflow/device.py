@@ -99,6 +99,11 @@ def tpu_is_available() -> bool:
         return False
 
 
+def handle_soft_device_variable(*args, fn, **kwargs):
+    with tf.device(ivy.default_device(as_native=True)):
+        return fn(*args, **kwargs)
+
+
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
         super(Profiler, self).__init__(save_dir)

@@ -3,6 +3,9 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
 
+_default_dtype = torch_frontend.float32
+
+
 def can_cast(from_, to):
     from_str = str(from_)
     to_str = str(to)
@@ -20,11 +23,12 @@ def can_cast(from_, to):
     return True
 
 
+def get_default_dtype():
+    return _default_dtype
+
+
 def promote_types(type1, type2, /):
     return torch_frontend.promote_types_torch(type1, type2)
-
-
-_default_dtype = torch_frontend.float32
 
 
 def set_default_dtype(d):
@@ -41,7 +45,3 @@ def set_default_dtype(d):
     global _default_dtype
     _default_dtype = d
     return
-
-
-def get_default_dtype():
-    return _default_dtype

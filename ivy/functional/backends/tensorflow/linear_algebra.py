@@ -3,10 +3,8 @@
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
-
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
-
 
 # local
 import ivy
@@ -182,7 +180,15 @@ def inner(
     return tf.experimental.numpy.inner(x1, x2)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def inv(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -190,19 +196,12 @@ def inv(
     adjoint: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if tf.math.reduce_any(tf.linalg.det(tf.cast(x, dtype="float64")) == 0):
-        return x
-    else:
-        if adjoint is False:
-            ret = tf.linalg.inv(x)
-            return ret
-        else:
-            x = tf.linalg.adjoint(x)
-            ret = tf.linalg.inv(x)
-            return ret
+    return tf.linalg.inv(x, adjoint=adjoint)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16", "bool")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("float16", "bfloat16", "bool")}, backend_version
+)
 def matmul(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -524,10 +523,6 @@ def solve(
     else:
         x1 = tf.broadcast_to(x1, output_shape + x1.shape[-2:])
         x2 = tf.broadcast_to(x2, output_shape + x2.shape[-2:])
-        if tf.math.reduce_any(tf.linalg.det(x1) == 0) or (
-            x2.shape[-1] == x2.shape[-2] and tf.math.reduce_any(tf.linalg.det(x2) == 0)
-        ):
-            return x1
         ret = tf.linalg.solve(x1, x2)
 
     if expanded_last:
@@ -575,7 +570,7 @@ def svdvals(
     return ret
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"2.13.0 and below": ("float32",)}, backend_version)
 def tensordot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -584,12 +579,7 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    # find type to promote to
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
-
-    # type casting to float32 which is acceptable for tf.tensordot
-    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-
     ret = tf.cast(tf.tensordot(x1, x2, axes=axes), dtype)
     return ret
 
@@ -614,8 +604,7 @@ def trace(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float16", "complex")},
-    backend_version,
+    {"2.13.0 and below": ("int16", "int8", "bool", "unsigned")}, backend_version
 )
 def vecdot(
     x1: Union[tf.Tensor, tf.Variable],
@@ -626,10 +615,6 @@ def vecdot(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
-    if dtype != "float64":
-        x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    else:
-        x1, x2 = tf.cast(x1, tf.float64), tf.cast(x2, tf.float64)
     return tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
 
 
@@ -698,7 +683,7 @@ def vander(
 
 @with_unsupported_dtypes(
     {
-        "2.13.0": (
+        "2.13.0 and below": (
             "int8",
             "int16",
             "int32",

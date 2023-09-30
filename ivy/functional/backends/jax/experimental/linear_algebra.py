@@ -2,11 +2,15 @@ import math
 from typing import Optional, Tuple, Sequence, Union
 import jax.numpy as jnp
 import jax.scipy.linalg as jla
+
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.backends.jax import JaxArray
 
 import ivy
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+from ivy.utils.exceptions import IvyNotImplementedException
+from . import backend_version
 
 
 def diagflat(
@@ -113,9 +117,10 @@ def eig(
     return jnp.linalg.eig(x)
 
 
+@with_supported_dtypes(
+    {"0.4.14 and below": ("complex", "float32", "float64")}, backend_version
+)
 def eigvals(x: JaxArray, /) -> JaxArray:
-    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
-        x = x.astype(jnp.float64)
     return jnp.linalg.eigvals(x)
 
 
@@ -148,3 +153,26 @@ def cond(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.linalg.cond(x, p=p)
+
+
+def lu_factor(
+    x: JaxArray,
+    /,
+    *,
+    pivot: Optional[bool] = True,
+    out: Optional[JaxArray] = None,
+) -> Tuple[JaxArray]:
+    raise IvyNotImplementedException()
+
+
+def dot(
+    a: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.dot(a, b)
+
+
+dot.support_native_out = True
