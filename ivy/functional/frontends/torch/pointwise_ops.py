@@ -31,7 +31,6 @@ def acosh(input, *, out=None):
 @to_ivy_arrays_and_back
 def add(input, other, *, alpha=1, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
-    print(f"input: {input.dtype} | other: {other.dtype}")
     return ivy.add(input, other, alpha=alpha, out=out)
 
 
