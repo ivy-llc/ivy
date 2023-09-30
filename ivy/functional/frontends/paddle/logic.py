@@ -283,7 +283,7 @@ def logical_xor(x, y, /, *, name=None, out=None):
 )
 @to_ivy_arrays_and_back
 def not_equal(x, y, /, *, name=None):
-    if(ivy.is_float_dtype(x)):
+    if ivy.is_float_dtype(x):
         diff = ivy.abs(ivy.subtract(x, y))
         res = ivy.not_equal(x, y)
         return ivy.where(diff < 1e-8, False, res)
