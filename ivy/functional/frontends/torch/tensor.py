@@ -2073,8 +2073,8 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
-                    "complex128",
-                    "complex64",
+                "complex128",
+                "complex64",
             )
         },
         "torch",
