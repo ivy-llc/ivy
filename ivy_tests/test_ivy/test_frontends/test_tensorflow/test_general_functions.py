@@ -2040,29 +2040,29 @@ def test_tensorflow_strided_slice(
 # tensor_scatter_nd_add
 @handle_frontend_test(
     fn_tree="tensorflow.tensor_scatter_nd_add",
-    #input_and_ranges=_get_clip_inputs(),
-    test_with_out=st.just(False),
+    tensor=helpers.array_values(
+        dtype=helpers.get_dtypes("integer"), shape=(8,), min_value=2, max_value=49
+    ),
+    indices=helpers.array_values(
+        dtype=helpers.get_dtypes("integer"), shape=(4, 1), min_value=0, max_value=7
+    ),
+    updates=helpers.array_values(
+        dtype=helpers.get_dtypes("integer"), shape=(4,), min_value=9,  max_value=12,
+    ),
 )
 def test_tensorflow_tensor_scatter_nd_add(
-    *,
-    #input_and_ranges,
-    frontend,
-    test_flags,
-    backend_fw,
-    fn_tree,
-    on_device,
+    *, tensor,indices,updates, frontend, test_flags, fn_tree, on_device, backend_fw
 ):
-    #x_dtype, tensor, indices, updates = input_and_ranges
     helpers.test_frontend_function(
-        input_dtypes=x_dtype,
+        input_dtypes=["int32"],
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         tensor=tensor[0],
-        indices= indices,
-        updates=updates,
+        indices=indices[0],
+        updates= updates[0],
     )
 
 @handle_frontend_test(fn_tree="tensorflow.tile", all_arguments=_multiple_shape_helper())
