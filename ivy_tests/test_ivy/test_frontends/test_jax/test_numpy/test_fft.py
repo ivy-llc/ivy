@@ -242,7 +242,6 @@ def test_jax_numpy_ifft2(
     )
 
 
-
 # ifftshift
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.ifftshift",
@@ -265,7 +264,6 @@ def test_jax_numpy_ifftshift(
         x=arr[0],
         axes=None,
     )
-
 
 
 # rfft
@@ -303,13 +301,6 @@ def test_jax_numpy_rfft(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-
-        test_values=True,
-        x=arr[0],
-        axes=None,
-    )
-
-
         a=x[0],
         n=n,
         axis=axis,
