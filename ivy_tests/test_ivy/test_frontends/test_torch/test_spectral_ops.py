@@ -35,7 +35,7 @@ def test_torch_bartlett_window(
 
 
 @handle_frontend_test(
-    window_length=helpers.ints(min_value=1, max_value=10),
+    window_length=helpers.ints(min_value=1, max_value=100),
     dtype=helpers.get_dtypes("float", full=False),
     fn_tree="torch.blackman_window",
     periodic=st.booleans(),
