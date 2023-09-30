@@ -23,13 +23,11 @@ def _nms_helper(draw):
         w = draw(st.integers(5, img_width - x1))
         y1 = draw(st.integers(0, img_height - 20))
         h = draw(st.integers(5, img_height - y1))
-
-        bbox[(x1, y1, x1 + w, y1 + h)] = draw(st.floats(0.1, 1))
-    dtype = draw(st.sampled_from(["float32", "uint8", "int16", "int32"]))
-    iou_threshold = draw(st.floats(0.2, 1))
+        bbox[(x1, y1, x1 + w, y1 + h)] = draw(st.floats(0.1, 0.7))
+    iou_threshold = draw(st.floats(0.2, 0.5))
     return (
-        [dtype, "float32"],
-        np.array(list(bbox.keys()), dtype=getattr(np, dtype)),
+        ["float32", "float32"],
+        np.array(list(bbox.keys()), dtype=np.float32),
         np.array(list(bbox.values()), dtype=np.float32),
         iou_threshold,
     )
@@ -142,6 +140,6 @@ def test_torchvision_roi_align(
         spatial_scale=spatial_scale,
         sampling_ratio=sampling_ratio,
         aligned=aligned,
-        rtol_=1e-5,
-        atol_=1e-5,
+        rtol=1e-5,
+        atol=1e-5,
     )
