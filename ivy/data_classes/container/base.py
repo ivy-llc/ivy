@@ -369,7 +369,7 @@ class ContainerBase(dict, abc.ABC):
     @staticmethod
     def _cont_sum_unify(containers, device, _=None, _1=None):
         return sum(
-            [cont.to_device(device) for cont in containers.values()],
+            (cont.to_device(device) for cont in containers.values()),
             start=ivy.zeros([]),
         )
 
@@ -539,7 +539,7 @@ class ContainerBase(dict, abc.ABC):
                             ivy.to_numpy(idxs_to_add).reshape(-1).tolist()
                         )
                         if isinstance(diff_keys, str):
-                            key = diff_keys + "_" + str(idxs_to_add_list)[1:-1]
+                            key = f"{diff_keys}_{str(idxs_to_add_list)[1:-1]}"
                         elif isinstance(diff_keys, (list, tuple)):
                             key = diff_keys[idx]
                         else:
@@ -859,7 +859,7 @@ class ContainerBase(dict, abc.ABC):
             containers = [
                 cont.cont_at_key_chains(common_key_chains) for cont in containers
             ]
-        keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
+        keys = {i for sl in [list(cont.keys()) for cont in containers] for i in sl}
 
         # noinspection PyProtectedMember
         for key in keys:
@@ -1090,10 +1090,9 @@ class ContainerBase(dict, abc.ABC):
         ivy.utils.assertions.check_greater(len(containers), 1, as_array=False)
         configs = [cont.cont_config for cont in containers]
         config0 = configs[0]
-        for k, v in config0.items():
-            if not min([config[k] == v for config in configs]):
-                return False
-        return True
+        return all(
+            min(config[k] == v for config in configs) for k, v in config0.items()
+        )
 
     @staticmethod
     def cont_identical_array_shapes(containers, exclusive=False):
@@ -1120,10 +1119,8 @@ class ContainerBase(dict, abc.ABC):
             if len(array_cont) != array_cont0_len:
                 return False
             elif not min(
-                [
-                    a.shape == a0.shape
-                    for a, a0 in zip(array_cont.values(), array_cont0.values())
-                ]
+                a.shape == a0.shape
+                for a, a0 in zip(array_cont.values(), array_cont0.values())
             ):
                 return False
         return True
@@ -1512,7 +1509,7 @@ class ContainerBase(dict, abc.ABC):
         ]
         if not sub_shapes:
             return sub_shapes
-        min_num_dims = min([len(sub_shape) for sub_shape in sub_shapes])
+        min_num_dims = min(len(sub_shape) for sub_shape in sub_shapes)
         sub_shapes_array = np.asarray(
             [sub_shape[0:min_num_dims] for sub_shape in sub_shapes]
         )
@@ -1685,11 +1682,10 @@ class ContainerBase(dict, abc.ABC):
                 )
             ) or isinstance(value, tuple(self._types_to_iteratively_nest)):
                 self[key] = ivy.Container(value, **self._config)
+            elif key in self and isinstance(self[key], ivy.Container):
+                self[key].cont_inplace_update(value)
             else:
-                if key in self and isinstance(self[key], ivy.Container):
-                    self[key].cont_inplace_update(value)
-                else:
-                    self[key] = value
+                self[key] = value
 
     def cont_all_true(
         self,
@@ -2477,12 +2473,8 @@ class ContainerBase(dict, abc.ABC):
             Whether to also check for partially complete sub-containers.
             Default is ``False``.
         """
-        return (
-            True
-            if isinstance(
-                self.cont_find_sub_structure(sub_cont, check_shapes, partial), str
-            )
-            else False
+        return isinstance(
+            self.cont_find_sub_structure(sub_cont, check_shapes, partial), str
         )
 
     def cont_assert_contains_sub_structure(
@@ -2558,8 +2550,10 @@ class ContainerBase(dict, abc.ABC):
             nonlocal key_chains_to_keep
             kc_split = re.split("[/.]", kc)
             for query_key in queries:
-                if query_key in kc_split or (
-                    containing and min([query_key in k for k in kc_split])
+                if (
+                    query_key in kc_split
+                    or containing
+                    and min(query_key in k for k in kc_split)
                 ):
                     key_chains_to_keep.append(kc)
             return x
@@ -3069,8 +3063,10 @@ class ContainerBase(dict, abc.ABC):
         )
         out_cont = ivy.Container(**self._config)
         for key, value in self.items():
-            if (absolute and key in absolute) or (
-                containing and max([con in key for con in containing])
+            if (
+                (absolute and key in absolute)
+                or containing
+                and max(con in key for con in containing)
             ):
                 if isinstance(value, ivy.Container):
                     out_cont = ivy.Container.cont_combine(out_cont, value)
@@ -3313,7 +3309,7 @@ class ContainerBase(dict, abc.ABC):
         """
         return_dict = self if inplace else {}
         for key, value in self.items():
-            this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
+            this_key_chain = key if key_chain == "" else f"{key_chain}/{key}"
             if isinstance(value, ivy.Container):
                 ret = value.cont_map_sub_conts(
                     func, key_chains, to_apply, prune_unapplied, inplace, this_key_chain
@@ -3322,16 +3318,12 @@ class ContainerBase(dict, abc.ABC):
                     continue
                 if not inplace:
                     return_dict[key] = ret
-            else:
-                if (
-                    key_chains is not None
-                    and (
-                        (this_key_chain in key_chains and not to_apply)
-                        or (this_key_chain not in key_chains and to_apply)
-                    )
-                    and prune_unapplied
-                ):
-                    continue
+            elif (
+                key_chains is None
+                or (this_key_chain not in key_chains or to_apply)
+                and (this_key_chain in key_chains or not to_apply)
+                or not prune_unapplied
+            ):
                 return_dict[key] = value
         ret = return_dict if inplace else ivy.Container(return_dict, **self._config)
         if key_chain != "" or include_self:
@@ -3484,7 +3476,7 @@ class ContainerBase(dict, abc.ABC):
             start_char = key_slice[0]
             end_char = key_slice[2]
             start_idx = min(i for i, k in enumerate(keys) if k[0] == start_char)
-            end_idx = max([i for i, k in enumerate(keys) if k[0] == end_char]) + 1
+            end_idx = max(i for i, k in enumerate(keys) if k[0] == end_char) + 1
             key_slice = slice(start_idx, end_idx, 1)
         ret = self.cont_copy()
         desired_keys = keys[key_slice]
@@ -4197,21 +4189,19 @@ class ContainerBase(dict, abc.ABC):
                 state_dict["_local_ivy"] = ivy
         if "_config_in" in state_dict:
             config_in = copy.copy(state_dict["_config_in"])
-            if "ivyh" in config_in:
-                if ivy.exists(config_in["ivyh"]):
-                    if len(config_in["ivyh"]) > 0:
-                        config_in["ivyh"] = ivy.with_backend(config_in["ivyh"])
-                    else:
-                        config_in["ivyh"] = ivy
+            if "ivyh" in config_in and ivy.exists(config_in["ivyh"]):
+                if len(config_in["ivyh"]) > 0:
+                    config_in["ivyh"] = ivy.with_backend(config_in["ivyh"])
+                else:
+                    config_in["ivyh"] = ivy
             state_dict["_config_in"] = config_in
         if "_config" in state_dict:
             config = copy.copy(state_dict["_config"])
-            if "ivyh" in config:
-                if ivy.exists(config["ivyh"]):
-                    if len(config["ivyh"]) > 0:
-                        config["ivyh"] = ivy.with_backend(config["ivyh"])
-                    else:
-                        config["ivyh"] = ivy
+            if "ivyh" in config and ivy.exists(config["ivyh"]):
+                if len(config["ivyh"]) > 0:
+                    config["ivyh"] = ivy.with_backend(config["ivyh"])
+                else:
+                    config["ivyh"] = ivy
             state_dict["_config"] = config
         self.__dict__.update(state_dict)
 

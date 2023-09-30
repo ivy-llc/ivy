@@ -69,9 +69,8 @@ def prevent_access_locally(fn):
 
 @functools.lru_cache
 def _get_backend_for_arg(arg_module_name):
-    for backend in _backend_dict:
+    for backend, module_name in _backend_dict.items():
         if backend in arg_module_name:
-            module_name = _backend_dict[backend]
             return importlib.import_module(module_name)
 
 
@@ -581,7 +580,7 @@ def choose_random_backend(excluded=None):
 @prevent_access_locally
 def with_backend(backend: str, cached: bool = True):
     # Use already compiled object
-    if cached and backend in compiled_backends.keys():
+    if cached and backend in compiled_backends:
         cached_backend = compiled_backends[backend][-1]
         return cached_backend
     with _importlib.LocalIvyImporter():

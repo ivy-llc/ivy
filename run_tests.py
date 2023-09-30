@@ -154,10 +154,10 @@ if __name__ == "__main__":
                 backends = [backend.strip()]
                 [backend_name, backend_version] = backend.split("/")
                 other_backends = [
-                    fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
+                    fw for fw in BACKENDS if fw not in [backend_name, "paddle"]
                 ]
                 for backend in other_backends:
-                    backends.append(backend + "/" + get_latest_package_version(backend))
+                    backends.append(f"{backend}/{get_latest_package_version(backend)}")
                 print("Backends:", backends)
                 ret = os.system(
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
@@ -167,24 +167,23 @@ if __name__ == "__main__":
                     f" multiversion_framework_directory.py {' '.join(backends)};cd"
                     f' ..;pytest --tb=short {test} --backend={backend}"'
                 )
+            elif with_gpu:
+                ret = os.system(
+                    f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis'
+                    " unifyai/multicuda:base_and_requirements python3 -m pytest"
+                    f" --tb=short {test} --device=gpu:0 -B={backend}"
+                    # noqa
+                )
             else:
-                if with_gpu:
-                    ret = os.system(
-                        f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
-                        f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                        ' "$(pwd)"/.hypothesis:/.hypothesis'
-                        " unifyai/multicuda:base_and_requirements python3 -m pytest"
-                        f" --tb=short {test} --device=gpu:0 -B={backend}"
-                        # noqa
-                    )
-                else:
-                    ret = os.system(
-                        f"docker run --rm --env REDIS_URL={redis_url} --env"
-                        f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                        ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
-                        f" -m pytest --tb=short {test} --backend {backend}"
-                        # noqa
-                    )
+                ret = os.system(
+                    f"docker run --rm --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
+                    f" -m pytest --tb=short {test} --backend {backend}"
+                    # noqa
+                )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
                 failed = True

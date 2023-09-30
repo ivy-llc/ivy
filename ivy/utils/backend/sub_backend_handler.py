@@ -164,7 +164,7 @@ def set_sub_backend(sub_backend_str: str):
         logging.warning("You must set a backend first")
         return
 
-    if ivy.current_backend_str() not in _backend_to_sub_backends_dict.keys():
+    if ivy.current_backend_str() not in _backend_to_sub_backends_dict:
         logging.warning(
             f"backend {ivy.current_backend_str()} does not have any"
             " supported sub_backends"

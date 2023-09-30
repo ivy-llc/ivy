@@ -868,10 +868,10 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             if isinstance(getattr(self, key, None), Module):
                 mod_str = repr(getattr(self, key))
                 mod_str = _addindent(mod_str, 2)
-                child_lines.append("(" + key + "): " + mod_str)
+                child_lines.append(f"({key}): {mod_str}")
         lines = extra_lines + child_lines
 
-        main_str = self._get_name() + "("
+        main_str = f"{self._get_name()}("
         if lines:
             # simple one-liner info, which most builtin Modules will use
             if len(extra_lines) == 1 and not child_lines:
