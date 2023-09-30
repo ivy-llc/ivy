@@ -148,6 +148,28 @@ def _get_dtype_input_and_vectors(draw):
     return dtype, vec1, vec2
 
 
+# unwrap
+@st.composite
+def _get_dtype_input_vector_axis(draw):
+    size1 = draw(helpers.ints(min_value=1, max_value=5))
+    size2 = draw(helpers.ints(min_value=1, max_value=5))
+    dtype, x, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=(size1, size2),
+            num_arrays=1,
+            min_value=-ivy.pi,
+            max_value=ivy.pi,
+            valid_axis=True,
+            force_int_axis=True,
+            allow_nan=False,
+            allow_inf=False,
+        )
+    )
+
+    return dtype, x, axis
+
+
 # --- Main --- #
 # ------------ #
 
@@ -2662,47 +2684,6 @@ def test_jax_power(
     )
 
 
-@handle_frontend_test(
-    fn_tree="jax.numpy.prod",
-    dtype_x_axis_dtype_where=_get_castable_dtypes_values(use_where=True),
-    keepdims=st.booleans(),
-    initial=st.one_of(st.floats(min_value=-100, max_value=100)),
-    promote_integers=st.booleans(),
-)
-def test_jax_prod(
-    dtype_x_axis_dtype_where,
-    keepdims,
-    initial,
-    promote_integers,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype_where
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        axis=axis,
-        dtype=dtype,
-        keepdims=keepdims,
-        initial=initial,
-        where=where,
-        promote_integers=promote_integers,
-    )
-
-
 # rad2deg
 @handle_frontend_test(
     fn_tree="jax.numpy.rad2deg",
@@ -3322,6 +3303,41 @@ def test_jax_trunc(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.unwrap",
+    dtype_x_axis=_get_dtype_input_vector_axis(),
+    discont=st.floats(min_value=0, max_value=3.0),
+    period=st.floats(min_value=2 * np.pi, max_value=10.0),
+    test_with_out=st.just(False),
+)
+def test_jax_unwrap(
+    *,
+    dtype_x_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+    discont,
+    period,
+):
+    dtype, x, axis = dtype_x_axis
+    assume(not np.any(np.isclose(x[0], 0)))
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        p=x[0],
+        discont=discont,
+        axis=axis,
+        period=period,
     )
 
 

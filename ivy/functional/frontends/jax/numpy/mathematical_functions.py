@@ -7,6 +7,8 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
+from ivy.functional.frontends.jax.lax import slice_in_dim
+from ivy.functional.frontends.jax.numpy.manipulations import concatenate
 
 
 @to_ivy_arrays_and_back
@@ -581,41 +583,6 @@ def power(x1, x2, /):
     return ivy.pow(x1, x2)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
-)
-@to_ivy_arrays_and_back
-def prod(
-    a,
-    *,
-    axis=None,
-    dtype=None,
-    keepdims=False,
-    initial=None,
-    where=None,
-    promote_integers=True,
-    out=None,
-):
-    if ivy.is_array(where):
-        a = ivy.where(where, a, ivy.default(out, ivy.ones_like(a)), out=out)
-
-    if dtype is None and promote_integers:
-        if ivy.is_uint_dtype(a.dtype):
-            dtype = "uint64"
-        elif ivy.is_int_dtype(a.dtype):
-            dtype = "int64"
-
-    if initial is not None:
-        if axis is not None:
-            s = ivy.to_list(ivy.shape(a, as_array=True))
-            s[axis] = 1
-            header = ivy.full(ivy.Shape(tuple(s)), initial)
-            a = ivy.concat([header, a], axis=axis)
-        else:
-            a[0] *= initial
-    return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
-
-
 @to_ivy_arrays_and_back
 def product(
     a,
@@ -752,6 +719,54 @@ def trapz(y, x=None, dx=1.0, axis=-1, out=None):
 @to_ivy_arrays_and_back
 def trunc(x):
     return ivy.trunc(x)
+
+
+@with_supported_dtypes(
+    {"0.4.14 and below": ("float32", "float64", "int32", "int64")}, "jax"
+)
+@to_ivy_arrays_and_back
+def unwrap(p, discont=None, axis=-1, period=2 * ivy.pi):
+    p = ivy.asarray(p)
+    if p.shape == 0:
+        return p
+    dtype_str = str(p.dtype)
+    if "int" in dtype_str:
+        dtype_size = 64
+        ret_type = "float{}".format(dtype_size)
+        p = p.astype(ret_type)
+        dtype = p.dtype
+    elif "float" in dtype_str:
+        ret_type = dtype_str
+        p = p.astype(ret_type)
+        dtype = p.dtype
+    if p.size == 1 and "float" in dtype_str:
+        return p
+    elif p.size == 1 and "int" in dtype_str:
+        return p.astype(ret_type)
+    if any(dim == 0 for dim in p.shape):
+        return ivy.array([], dtype=p.dtype)
+    if discont is None:
+        discont = period / 2
+    interval = period / 2
+    dd = ivy.diff(p, axis=axis)
+    dd, interval = promote_types_of_jax_inputs(dd, interval)
+    interval = ivy.full_like(dd, fill_value=interval)
+    period = ivy.full_like(dd, fill_value=period)
+    discont = ivy.full_like(dd, fill_value=discont)
+    z = ivy.zeros_like(dd)
+    ddmod = ivy.remainder(dd + interval, period) - interval
+    ddmod = ivy.where((ddmod == -interval) & (dd > z), interval, ddmod)
+    ph_correct = ivy.where(ivy.abs(dd) < discont, 0, ddmod - dd)
+    up = concatenate(
+        (
+            slice_in_dim(p, 0, 1, axis=axis),
+            slice_in_dim(p, 1, None, axis=axis) + ivy.cumsum(ph_correct, axis=axis),
+        ),
+        axis=axis,
+        dtype=dtype,
+    )
+
+    return up
 
 
 @to_ivy_arrays_and_back
