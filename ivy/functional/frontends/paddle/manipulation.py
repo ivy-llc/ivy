@@ -158,6 +158,27 @@ def stack(x, axis=0, name=None):
     return ivy.stack(x, axis=axis)
 
 
+# ToDo This frontend implementation will be simplified when ivy.strided_slice is developed
+# ToDo Reformat function to work with negative indexes
+@to_ivy_arrays_and_back
+def strided_slice(x, axes, starts, ends, strides):
+    for start, end, stride, axis in zip(starts, ends, strides, axes):
+        # Obtain current axes shape
+        dim_size = x.shape[axis]
+        print(start, ends, strides, axis)
+
+        #  We apply split ivy method to divide tensor along specific axis
+        segments = ivy.split(x, num_or_size_splits=dim_size, axis=axis)
+
+        # Select pointed elements
+        selected_segments = segments[start:end:stride]
+
+        # Concatenate selected elements to obtain new tensor
+        x = ivy.concat(selected_segments, axis=axis)
+
+    return x
+
+
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
