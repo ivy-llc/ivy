@@ -114,7 +114,7 @@ def _arrays_dim_idx_n_dtypes(draw):
         )
     )
 
-    xs = list()
+    xs = []
     available_input_types = draw(helpers.get_dtypes("numeric"))
     input_dtypes = draw(
         helpers.array_dtypes(
@@ -6826,7 +6826,7 @@ def test_torch_tensor_expand(
         size = {}
         i = 0
         for x_ in shape:
-            size["x{}".format(i)] = x_
+            size[f"x{i}"] = x_
             i += 1
     else:
         size = {
@@ -9185,6 +9185,43 @@ def test_torch_tensor_matmul(
     )
 
 
+# matrix_power
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="matrix_power",
+    dtype_x=_get_dtype_and_matrix(square=True, invertible=True),
+    n=helpers.ints(min_value=2, max_value=5),
+)
+def test_torch_tensor_matrix_power(
+    dtype_x,
+    n,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "n": n,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # max
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -9370,6 +9407,44 @@ def test_torch_tensor_min(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# minimum
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="minimum",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ),
+)
+def test_torch_tensor_minimum(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -10412,7 +10487,7 @@ def test_torch_tensor_permute(
         dims = {}
         i = 0
         for x_ in idxes:
-            dims["x{}".format(i)] = x_
+            dims[f"x{i}"] = x_
             i += 1
     else:
         dims = {
@@ -10928,7 +11003,7 @@ def test_torch_tensor_repeat(
     if unpack_repeat:
         method_flags.num_positional_args = len(repeat["repeats"]) + 1
         for i, x_ in enumerate(repeat["repeats"]):
-            repeat["x{}".format(i)] = x_
+            repeat[f"x{i}"] = x_
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -10993,7 +11068,7 @@ def test_torch_tensor_reshape(
         method_flags.num_positional_args = len(shape["shape"]) + 1
         i = 0
         for x_ in shape["shape"]:
-            shape["x{}".format(i)] = x_
+            shape[f"x{i}"] = x_
             i += 1
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -11760,6 +11835,42 @@ def test_torch_tensor_sqrt_(
     ),
 )
 def test_torch_tensor_square(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# square_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="square_",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        allow_inf=False,
+        max_value=1e04,
+        min_value=-1e04,
+    ),
+)
+def test_torch_tensor_square_(
     dtype_x,
     frontend,
     frontend_method_data,
