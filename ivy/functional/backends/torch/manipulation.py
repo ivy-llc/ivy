@@ -143,8 +143,8 @@ def squeeze(
     if isinstance(axis, int):
         if x.size(dim=axis) > 1:
             raise ValueError(
-                "Expected dimension of size [{}, {}], but found "
-                "dimension size {}".format(-x.dim(), x.dim(), axis)
+                f"Expected dimension of size [{-x.dim()}, {x.dim()}], but found"
+                f" dimension size {axis}"
             )
         if x.shape[axis] != 1:
             raise ivy.utils.exceptions.IvyException(
@@ -169,8 +169,8 @@ def squeeze(
         shape = x.shape[i]
         if shape > 1 and (shape < -dim or dim <= shape):
             raise ValueError(
-                "Expected dimension of size [{}, {}], "
-                "but found dimension size {}".format(-dim, dim, shape)
+                f"Expected dimension of size [{-dim}, {dim}], but found dimension size"
+                f" {shape}"
             )
         else:
             if copy:
@@ -211,9 +211,8 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
         return [x]
     dim_size: int = x.shape[axis]
@@ -284,7 +283,7 @@ def constant_pad(
         x = x.unsqueeze(0)
     if isinstance(pad_width, torch.Tensor):
         pad_width = pad_width.detach().cpu().numpy().tolist()
-    pad_width_flat: List[int] = list()
+    pad_width_flat: List[int] = []
     for pad_width_sec in reversed(pad_width):
         for item in pad_width_sec:
             pad_width_flat.append(item)
@@ -318,9 +317,9 @@ def swapaxes(
 )
 def clip(
     x: torch.Tensor,
-    x_min: Union[Number, torch.Tensor],
-    x_max: Union[Number, torch.Tensor],
     /,
+    x_min: Optional[Union[Number, torch.Tensor]] = None,
+    x_max: Optional[Union[Number, torch.Tensor]] = None,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:

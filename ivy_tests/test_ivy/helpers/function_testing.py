@@ -9,7 +9,7 @@ import inspect
 from collections import OrderedDict
 
 
-from ivy_tests.test_ivy.conftest import mod_backend
+from .globals import mod_backend
 
 try:
     import tensorflow as tf
@@ -35,10 +35,10 @@ from .assertions import (
 
 
 # Temporary (.so) configuration
-def compiled_if_required(backend: str, fn, test_compile=False, args=None, kwargs=None):
+def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=None):
     with BackendHandler.update_backend(backend) as ivy_backend:
-        if test_compile:
-            fn = ivy_backend.compile(fn, args=args, kwargs=kwargs)
+        if test_trace:
+            fn = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
     return fn
 
 
@@ -190,10 +190,11 @@ def test_function_backend_computation(
                     fw, kwargs, arrays_kwargs_indices, kwargs_instance_mask
                 )
 
-            if test_flags.test_compile:
-                target_fn = lambda instance, *args, **kwargs: instance.__getattribute__(
-                    fn_name
-                )(*args, **kwargs)
+            if test_flags.test_trace:
+
+                def target_fn(instance, *args, **kwargs):
+                    return instance.__getattribute__(fn_name)(*args, **kwargs)
+
                 args = [instance, *args]
             else:
                 target_fn = instance.__getattribute__(fn_name)
@@ -208,7 +209,7 @@ def test_function_backend_computation(
             fw,
             target_fn,
             *copy_args,
-            test_compile=test_flags.test_compile,
+            test_trace=test_flags.test_trace,
             **copy_kwargs,
         )
 
@@ -218,7 +219,7 @@ def test_function_backend_computation(
         ), f"Ivy function returned non-ivy arrays: {ret_from_target}"
 
         # Assert indices of return if the indices of the out array provided
-        if test_flags.with_out and not test_flags.test_compile:
+        if test_flags.with_out and not test_flags.test_trace:
             test_ret = (
                 ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
                 if hasattr(ivy_backend.__dict__[fn_name], "out_index")
@@ -228,16 +229,18 @@ def test_function_backend_computation(
                 ivy_backend.zeros_like, test_ret, to_mutable=True, include_derived=True
             )
             if instance_method:
-                ret_from_target, ret_np_flat_from_target = (
-                    get_ret_and_flattened_np_array(
-                        fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out
-                    )
+                (
+                    ret_from_target,
+                    ret_np_flat_from_target,
+                ) = get_ret_and_flattened_np_array(
+                    fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out
                 )
             else:
-                ret_from_target, ret_np_flat_from_target = (
-                    get_ret_and_flattened_np_array(
-                        fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out
-                    )
+                (
+                    ret_from_target,
+                    ret_np_flat_from_target,
+                ) = get_ret_and_flattened_np_array(
+                    fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out
                 )
             test_ret = (
                 ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
@@ -310,7 +313,7 @@ def test_function_ground_truth_computation(
             test_flags.ground_truth_backend,
             gt_backend.__dict__[fn_name],
             *args,
-            test_compile=test_flags.test_compile,
+            test_trace=test_flags.test_trace,
             precision_mode=test_flags.precision_mode,
             **kwargs,
         )
@@ -318,7 +321,7 @@ def test_function_ground_truth_computation(
             lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
             ret_from_gt,
         ), f"Ground-truth function returned non-ivy arrays: {ret_from_gt}"
-        if test_flags.with_out and not test_flags.test_compile:
+        if test_flags.with_out and not test_flags.test_trace:
             test_ret_from_gt = (
                 ret_from_gt[getattr(gt_backend.__dict__[fn_name], "out_index")]
                 if hasattr(gt_backend.__dict__[fn_name], "out_index")
@@ -334,7 +337,7 @@ def test_function_ground_truth_computation(
                 test_flags.ground_truth_backend,
                 gt_backend.__dict__[fn_name],
                 *args,
-                test_compile=test_flags.test_compile,
+                test_trace=test_flags.test_trace,
                 precision_mode=test_flags.precision_mode,
                 **kwargs,
                 out=out_from_gt,
@@ -515,24 +518,32 @@ def test_function(
                 fn_name,
             )
         )
-        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, test_flags, fw_list = (
-            output_queue.get()
-        )
+        (
+            ret_from_gt,
+            ret_np_from_gt_flat,
+            ret_from_gt_device,
+            test_flags,
+            fw_list,
+        ) = output_queue.get()
     else:
-        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, test_flags, fw_list = (
-            test_function_ground_truth_computation(
-                ground_truth_backend,
-                on_device,
-                args_np,
-                arg_np_arrays,
-                arrays_args_indices,
-                kwargs_np,
-                arrays_kwargs_indices,
-                kwarg_np_arrays,
-                input_dtypes,
-                test_flags,
-                fn_name,
-            )
+        (
+            ret_from_gt,
+            ret_np_from_gt_flat,
+            ret_from_gt_device,
+            test_flags,
+            fw_list,
+        ) = test_function_ground_truth_computation(
+            ground_truth_backend,
+            on_device,
+            args_np,
+            arg_np_arrays,
+            arrays_args_indices,
+            kwargs_np,
+            arrays_kwargs_indices,
+            kwarg_np_arrays,
+            input_dtypes,
+            test_flags,
+            fn_name,
         )
 
     # Gradient test
@@ -632,9 +643,6 @@ def test_frontend_function(
         FunctionTestFlags object that stores all testing flags, including:
         num_positional_args, with_out, instance_method, as_variable,
         native_arrays, container, gradient, precision_mode
-    all_aliases
-        a list of strings containing all aliases for that function
-        in the current frontend with their full namespaces.
     frontend
         current frontend (framework).
     fn_tree
@@ -660,7 +668,7 @@ def test_frontend_function(
         optional, return value from the Numpy function
     """
     # ToDo add with_backend refactor in GC
-    _switch_backend_context(test_flags.test_compile or test_flags.transpile)
+    _switch_backend_context(test_flags.test_trace or test_flags.transpile)
 
     assert (
         not test_flags.with_out or not test_flags.inplace
@@ -701,9 +709,12 @@ def test_frontend_function(
                 "jax_enable_x64", True
             )
 
-        frontend_submods, fn_name, gt_frontend_submods, gt_fn_name = (
-            _get_frontend_submodules(fn_tree, gt_fn_tree)
-        )
+        (
+            frontend_submods,
+            fn_name,
+            gt_frontend_submods,
+            gt_fn_name,
+        ) = _get_frontend_submodules(fn_tree, gt_fn_tree)
         function_module = local_importer.import_module(frontend_submods)
         frontend_fn = getattr(function_module, fn_name)
 
@@ -720,13 +731,6 @@ def test_frontend_function(
             test_flags=test_flags,
             on_device=on_device,
         )
-
-        # strip the decorator to get an Ivy array
-        # ToDo, fix testing for jax frontend for x32
-        if frontend == "jax":
-            importlib.import_module("ivy.functional.frontends.jax").config.update(
-                "jax_enable_x64", True
-            )
 
         # Make copy for arguments for functions that might use
         # inplace update by default
@@ -745,16 +749,23 @@ def test_frontend_function(
                 frontend_array_fn=create_frontend_array,
                 **kwargs,
             )
+            copy_args, copy_kwargs = args_to_frontend(
+                backend_to_test,
+                *args,
+                frontend_array_fn=create_frontend_array,
+                **kwargs,
+            )
         else:
-            args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(*args, **kwargs)
+            args_for_test = copy.deepcopy(args)
+            kwargs_for_test = copy.deepcopy(kwargs)
 
         ret = get_frontend_ret(
             backend_to_test,
             frontend_fn,
             *args_for_test,
-            test_compile=test_flags.test_compile,
+            test_trace=test_flags.test_trace,
             frontend_array_function=(
-                create_frontend_array if test_flags.test_compile else None
+                create_frontend_array if test_flags.test_trace else None
             ),
             as_ivy_arrays=(not test_flags.generate_frontend_arrays),
             precision_mode=test_flags.precision_mode,
@@ -766,7 +777,8 @@ def test_frontend_function(
             assert ivy_backend.nested_map(
                 lambda x: (_is_frontend_array(x) if ivy_backend.is_array(x) else True),
                 ret,
-            ), "Frontend function returned non-frontend arrays: {}".format(ret)
+                shallow=False,
+            ), f"Frontend function returned non-frontend arrays: {ret}"
 
         if test_flags.with_out:
             if not inspect.isclass(ret):
@@ -792,19 +804,16 @@ def test_frontend_function(
                     ret = arrays_to_frontend(
                         backend=backend_to_test, frontend_array_fn=create_frontend_array
                     )(ret)
-            else:
-                if is_ret_tuple:
-                    ret = ivy_backend.nested_map(
-                        lambda _x: (
-                            ivy_backend.array(_x)
-                            if not ivy_backend.is_array(_x)
-                            else _x
-                        ),
-                        ret,
-                        include_derived=True,
-                    )
-                elif not ivy_backend.is_array(ret):
-                    ret = ivy_backend.array(ret)
+            elif is_ret_tuple:
+                ret = ivy_backend.nested_map(
+                    lambda _x: (
+                        ivy_backend.array(_x) if not ivy_backend.is_array(_x) else _x
+                    ),
+                    ret,
+                    include_derived=True,
+                )
+            elif not ivy_backend.is_array(ret):
+                ret = ivy_backend.array(ret)
 
             out = ret
             # pass return value to out argument
@@ -846,7 +855,7 @@ def test_frontend_function(
         elif test_flags.inplace:
             assert not isinstance(ret, tuple)
 
-            if test_flags.generate_frontend_arrays and not test_flags.test_compile:
+            if test_flags.generate_frontend_arrays and not test_flags.test_trace:
                 assert _is_frontend_array(ret)
                 array_fn = _is_frontend_array
             else:
@@ -864,14 +873,14 @@ def test_frontend_function(
                     *copy_args, array_fn=array_fn, **copy_kwargs
                 )
                 ret_ = get_frontend_ret(
-                    frontend_fn=frontend_fn,
-                    backend=backend_to_test,
-                    precision_mode=test_flags.precision_mode,
-                    test_compile=test_flags.test_compile,
-                    frontend_array_function=(
-                        create_frontend_array if test_flags.test_compile else None
-                    ),
+                    backend_to_test,
+                    frontend_fn,
                     *copy_args,
+                    test_trace=test_flags.test_trace,
+                    frontend_array_function=(
+                        create_frontend_array if test_flags.test_trace else None
+                    ),
+                    precision_mode=test_flags.precision_mode,
                     **copy_kwargs,
                 )
                 assert first_array is ret_
@@ -886,9 +895,9 @@ def test_frontend_function(
                     frontend_fn=frontend_fn,
                     backend=backend_to_test,
                     precision_mode=test_flags.precision_mode,
-                    test_compile=test_flags.test_compile,
+                    test_trace=test_flags.test_trace,
                     frontend_array_function=(
-                        create_frontend_array if test_flags.test_compile else None
+                        create_frontend_array if test_flags.test_trace else None
                     ),
                     *args,
                     **kwargs,
@@ -912,24 +921,6 @@ def test_frontend_function(
                 _frontend_array_to_ivy, ret, include_derived={"tuple": True}
             )
 
-        def arrays_to_numpy(x):
-            if test_flags.generate_frontend_arrays:
-                return ivy_backend.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
-            return (
-                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
-            )
-
-        gt_args_np = ivy.nested_map(
-            arrays_to_numpy,
-            args_for_test,
-            shallow=False,
-        )
-        gt_kwargs_np = ivy.nested_map(
-            arrays_to_numpy,
-            kwargs_for_test,
-            shallow=False,
-        )
-
     # create frontend framework args
     frontend_config = get_frontend_config(frontend)
     args_frontend = ivy.nested_map(
@@ -942,12 +933,12 @@ def test_frontend_function(
                 else x
             )
         ),
-        gt_args_np,
+        args_np,
         shallow=False,
     )
     kwargs_frontend = ivy.nested_map(
         lambda x: frontend_config.native_array(x) if isinstance(x, np.ndarray) else x,
-        gt_kwargs_np,
+        kwargs_np,
         shallow=False,
     )
 
@@ -968,13 +959,16 @@ def test_frontend_function(
     frontend_fw_fn = frontend_fw.__dict__[gt_fn_name]
     frontend_ret = frontend_fw_fn(*args_frontend, **kwargs_frontend)
 
-    # ToDo: only compiles and does inference on ivy arrays for now
-    if test_flags.transpile and hasattr(frontend_config, "backend_str"):
+    if test_flags.transpile:
         _get_transpiled_data_if_required(
             frontend_fn,
             frontend_fw_fn,
             frontend,
+            backend_to_test,
             fn_name=f"{gt_frontend_submods}.{gt_fn_name}",
+            generate_frontend_arrays=test_flags.generate_frontend_arrays,
+            args_for_test=args_for_test,
+            kwargs_for_test=kwargs_for_test,
             frontend_fw_args=args_frontend,
             frontend_fw_kwargs=kwargs_frontend,
         )
@@ -1028,7 +1022,7 @@ def test_gradient_backend_computation(
     test_flags,
     on_device,
     fn,
-    test_compile,
+    test_trace,
     xs_grad_idxs,
     ret_grad_idxs,
 ):
@@ -1050,10 +1044,10 @@ def test_gradient_backend_computation(
         def _grad_fn(all_args):
             args, kwargs, i = all_args
             call_fn = ivy_backend.__dict__[fn] if isinstance(fn, str) else fn[i]
-            ret = compiled_if_required(
+            ret = traced_if_required(
                 backend_to_test,
                 call_fn,
-                test_compile=test_compile,
+                test_trace=test_trace,
                 args=args,
                 kwargs=kwargs,
             )(*args, **kwargs)
@@ -1083,7 +1077,7 @@ def test_gradient_ground_truth_computation(
     kwarg_np_vals,
     test_flags,
     kwargs_idxs,
-    test_compile,
+    test_trace,
     xs_grad_idxs,
     ret_grad_idxs,
 ):
@@ -1113,10 +1107,10 @@ def test_gradient_ground_truth_computation(
         def _gt_grad_fn(all_args):
             args, kwargs, i = all_args
             call_fn = gt_backend.__dict__[fn] if isinstance(fn, str) else fn[i]
-            ret = compiled_if_required(
+            ret = traced_if_required(
                 ground_truth_backend,
                 call_fn,
-                test_compile=test_compile,
+                test_trace=test_trace,
                 args=args,
                 kwargs=kwargs,
             )(*args, **kwargs)
@@ -1144,7 +1138,7 @@ def gradient_test(
     kwargs_np,
     input_dtypes,
     test_flags,
-    test_compile: bool = False,
+    test_trace: bool = False,
     rtol_: float = None,
     atol_: float = 1e-06,
     tolerance_dict=None,
@@ -1175,7 +1169,7 @@ def gradient_test(
                 test_flags,
                 on_device,
                 fn,
-                test_compile,
+                test_trace,
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
@@ -1195,7 +1189,7 @@ def gradient_test(
             test_flags,
             on_device,
             fn,
-            test_compile,
+            test_trace,
             xs_grad_idxs,
             ret_grad_idxs,
         )
@@ -1218,7 +1212,7 @@ def gradient_test(
                 kwarg_np_vals,
                 test_flags,
                 kwargs_idxs,
-                test_compile,
+                test_trace,
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
@@ -1238,7 +1232,7 @@ def gradient_test(
             kwarg_np_vals,
             test_flags,
             kwargs_idxs,
-            test_compile,
+            test_trace,
             xs_grad_idxs,
             ret_grad_idxs,
         )
@@ -1271,13 +1265,13 @@ def test_method_backend_computation(
     class_name,
     method_name,
     init_with_v,
-    test_compile,
+    test_trace,
     method_with_v,
 ):
     init_input_dtypes = ivy.default(init_input_dtypes, [])
 
     # Constructor arguments #
-    init_all_as_kwargs_np = ivy.default(init_all_as_kwargs_np, dict())
+    init_all_as_kwargs_np = ivy.default(init_all_as_kwargs_np, {})
     # split the arguments into their positional and keyword components
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=init_flags.num_positional_args,
@@ -1420,7 +1414,7 @@ def test_method_backend_computation(
             backend_to_test,
             ins.__getattribute__(method_name),
             *args_method,
-            test_compile=test_compile,
+            test_trace=test_trace,
             precision_mode=method_flags.precision_mode,
             **kwargs_method,
         )
@@ -1460,7 +1454,7 @@ def test_method_ground_truth_computation(
     method_flags,
     class_name,
     method_name,
-    test_compile,
+    test_trace,
     v_np,
 ):
     with BackendHandler.update_backend(ground_truth_backend) as gt_backend:
@@ -1501,7 +1495,7 @@ def test_method_ground_truth_computation(
             ground_truth_backend,
             ins_gt.__getattribute__(method_name),
             *args_gt_method,
-            test_compile=test_compile,
+            test_trace=test_trace,
             precision_mode=method_flags.precision_mode,
             **kwargs_gt_method,
         )
@@ -1543,7 +1537,7 @@ def test_method(
     test_gradients: bool = False,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
-    test_compile: bool = False,
+    test_trace: bool = False,
     backend_to_test: str,
     ground_truth_backend: str,
     on_device: str,
@@ -1609,8 +1603,8 @@ def test_method(
     ret_grad_idxs
         Indices of the returned arrays for which to return computed gradients. If None,
         gradients are returned for all returned arrays. (Default value = None)
-    test_compile
-        If True, test for the correctness of compilation.
+    test_trace
+        If True, test for the correctness of tracing.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     device_
@@ -1645,7 +1639,7 @@ def test_method(
                 class_name,
                 method_name,
                 init_with_v,
-                test_compile,
+                test_trace,
                 method_with_v,
             )
         )
@@ -1689,7 +1683,7 @@ def test_method(
             class_name,
             method_name,
             init_with_v,
-            test_compile,
+            test_trace,
             method_with_v,
         )
 
@@ -1713,32 +1707,38 @@ def test_method(
                 method_flags,
                 class_name,
                 method_name,
-                test_compile,
+                test_trace,
                 v_np,
             )
         )
-        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, fw_list2 = (
-            output_queue.get()
-        )
+        (
+            ret_from_gt,
+            ret_np_from_gt_flat,
+            ret_from_gt_device,
+            fw_list2,
+        ) = output_queue.get()
     else:
-        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, fw_list2 = (
-            test_method_ground_truth_computation(
-                ground_truth_backend,
-                on_device,
-                org_con_data,
-                args_np_method,
-                met_arg_np_vals,
-                met_args_idxs,
-                kwargs_np_method,
-                met_kwarg_np_vals,
-                met_kwargs_idxs,
-                method_input_dtypes,
-                method_flags,
-                class_name,
-                method_name,
-                test_compile,
-                v_np,
-            )
+        (
+            ret_from_gt,
+            ret_np_from_gt_flat,
+            ret_from_gt_device,
+            fw_list2,
+        ) = test_method_ground_truth_computation(
+            ground_truth_backend,
+            on_device,
+            org_con_data,
+            args_np_method,
+            met_arg_np_vals,
+            met_args_idxs,
+            kwargs_np_method,
+            met_kwarg_np_vals,
+            met_kwargs_idxs,
+            method_input_dtypes,
+            method_flags,
+            class_name,
+            method_name,
+            test_trace,
+            v_np,
         )
 
     for k, v in fw_list2.items():
@@ -1772,7 +1772,7 @@ def test_method(
     #                 kwargs_np=kwargs_np_method,
     #                 input_dtypes=method_input_dtypes,
     #                 test_flags=method_flags,
-    #                 test_compile=test_compile,
+    #                 test_trace=test_trace,
     #                 rtol_=rtol_,
     #                 atol_=atol_,
     #                 xs_grad_idxs=xs_grad_idxs,
@@ -1792,7 +1792,7 @@ def test_method(
     #             kwargs_np=kwargs_np_method,
     #             input_dtypes=method_input_dtypes,
     #             test_flags=method_flags,
-    #             test_compile=test_compile,
+    #             test_trace=test_trace,
     #             rtol_=rtol_,
     #             atol_=atol_,
     #             xs_grad_idxs=xs_grad_idxs,
@@ -1895,7 +1895,7 @@ def test_frontend_method(
         optional, return value from the Ground Truth function
     """
     # ToDo add with_backend refactor in GC
-    _switch_backend_context(method_flags.test_compile)
+    _switch_backend_context(method_flags.test_trace)
 
     # Constructor arguments #
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
@@ -2050,15 +2050,30 @@ def test_frontend_method(
         )
 
         ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
+        # If we have inplace operations, we need to create the frontend arrays
+        # before running the method, so that after running the method
+        # We can check whether the return is still an instance of the frontend array
+        if method_flags.inplace:
+            # make copies of the args and kwargs
+            copy_args_method = copy.deepcopy(args_method)
+            copy_kwargs_method = copy.deepcopy(kwargs_method)
+            copy_ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
+            frontend_ret_ins = copy_ins.__getattribute__(
+                frontend_method_data.method_name
+            )(*copy_args_method, **copy_kwargs_method)
+            assert frontend_ret_ins is copy_ins, (
+                "Inplace method did not return the same instance of the frontend array,"
+                " expected {}, got {}".format(copy_ins, frontend_ret_ins)
+            )
         ret = get_frontend_ret(
             backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),
             *args_method_ivy,
             frontend_array_function=(
-                create_frontend_array if method_flags.test_compile else None
+                create_frontend_array if method_flags.test_trace else None
             ),
             as_ivy_arrays=(not method_flags.generate_frontend_arrays),
-            test_compile=method_flags.test_compile,
+            test_trace=method_flags.test_trace,
             precision_mode=method_flags.precision_mode,
             **kwargs_method_ivy,
         )
@@ -2067,7 +2082,7 @@ def test_frontend_method(
             assert ivy_backend.nested_map(
                 lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True,
                 ret,
-            ), "Frontend method returned non-frontend arrays: {}".format(ret)
+            ), f"Frontend method returned non-frontend arrays: {ret}"
 
         if method_flags.generate_frontend_arrays:
             ret_np_flat = flatten_frontend_to_np(
@@ -2363,15 +2378,15 @@ def flatten_frontend_to_np(*, backend: str, ret, frontend_array_fn=None):
 
 
 def get_ret_and_flattened_np_array(
-    backend_to_test: str, fn, *args, test_compile=False, precision_mode=False, **kwargs
+    backend_to_test: str, fn, *args, test_trace=False, precision_mode=False, **kwargs
 ):
     """
     Run func with args and kwargs.
 
     Return the result along with its flattened version.
     """
-    fn = compiled_if_required(
-        backend_to_test, fn, test_compile=test_compile, args=args, kwargs=kwargs
+    fn = traced_if_required(
+        backend_to_test, fn, test_trace=test_trace, args=args, kwargs=kwargs
     )
     with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         with ivy_backend.PreciseMode(precision_mode):
@@ -2395,20 +2410,20 @@ def get_frontend_ret(
     frontend_array_function=None,
     as_ivy_arrays=True,
     precision_mode=False,
-    test_compile: bool = False,
+    test_trace: bool = False,
     **kwargs,
 ):
-    frontend_fn = compiled_if_required(
-        backend, frontend_fn, test_compile=test_compile, args=args, kwargs=kwargs
+    frontend_fn = traced_if_required(
+        backend, frontend_fn, test_trace=test_trace, args=args, kwargs=kwargs
     )
     with BackendHandler.update_backend(backend) as ivy_backend:
-        if not as_ivy_arrays and test_compile:
+        if not as_ivy_arrays and test_trace:
             args, kwargs = ivy_backend.nested_map(
                 _frontend_array_to_ivy, (args, kwargs), include_derived={"tuple": True}
             )
         with ivy_backend.PreciseMode(precision_mode):
             ret = frontend_fn(*args, **kwargs)
-        if test_compile and frontend_array_function is not None:
+        if test_trace and frontend_array_function is not None:
             if as_ivy_arrays:
                 ret = ivy_backend.nested_map(
                     ivy_backend.asarray, ret, include_derived={"tuple": True}
@@ -2430,31 +2445,41 @@ def _get_transpiled_data_if_required(
     frontend_fn,
     frontend_fw_fn,
     frontend,
+    backend,
     fn_name,
+    generate_frontend_arrays,
+    args_for_test,
+    kwargs_for_test,
     frontend_fw_args,
     frontend_fw_kwargs,
 ):
     iterations = 1
-
-    # to compile the frontend function on ivy arrays
-    with BackendHandler.update_backend(frontend) as ivy_backend:
-        args, kwargs = ivy_backend.args_to_ivy(*frontend_fw_args, **frontend_fw_kwargs)
-
-    compiled_fn = compiled_if_required(
-        frontend,
+    # for backend transpilation
+    with BackendHandler.update_backend(backend) as ivy_backend:
+        if generate_frontend_arrays:
+            args_for_test, kwargs_for_test = ivy.nested_map(
+                _frontend_array_to_ivy,
+                (args_for_test, kwargs_for_test),
+                include_derived={"tuple": True},
+            )
+        else:
+            args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(
+                *args_for_test, **kwargs_for_test
+            )
+    traced_fn = traced_if_required(
+        backend,
         frontend_fn,
-        test_compile=True,
-        args=args,
-        kwargs=kwargs,
+        test_trace=True,
+        args=args_for_test,
+        kwargs=kwargs_for_test,
     )
-
     # running inference to get runtime
     frontend_timings = []
     frontend_fw_timings = []
     for i in range(0, iterations):
-        # timing the compiled_fn
+        # timing the traced_fn
         start = time.time()
-        compiled_fn(*args, **kwargs)
+        traced_fn(*args_for_test, **kwargs_for_test)
         end = time.time()
         frontend_timings.append(end - start)
 
@@ -2465,19 +2490,20 @@ def _get_transpiled_data_if_required(
         frontend_fw_timings.append(end - start)
 
     # compile to get ivy nodes
-    with BackendHandler.update_backend(frontend) as ivy_backend:
-        compiled_fn_to_ivy = ivy_backend.compile(
-            frontend_fn, to="ivy", args=args, kwargs=kwargs
+    with BackendHandler.update_backend(backend) as ivy_backend:
+        traced_fn_to_ivy = ivy_backend.trace_graph(
+            frontend_fn, to="ivy", args=args_for_test, kwargs=kwargs_for_test
         )
-
     frontend_time = np.mean(frontend_timings).item()
     frontend_fw_time = np.mean(frontend_fw_timings).item()
-    backend_nodes = len(compiled_fn._functions)
-    ivy_nodes = len(compiled_fn_to_ivy._functions)
+    backend_nodes = len(traced_fn._functions)
+    ivy_nodes = len(traced_fn_to_ivy._functions)
 
     data = {
         "frontend": frontend,
         "frontend_func": fn_name,
+        "args": str(args_for_test),
+        "kwargs": str(kwargs_for_test),
         "frontend_time": frontend_time,
         "frontend_fw_time": frontend_fw_time,
         "backend_nodes": backend_nodes,
@@ -2485,7 +2511,7 @@ def _get_transpiled_data_if_required(
     }
 
     # creating json object and creating a file
-    _create_transpile_report(data, "report.json")
+    _create_transpile_report(data, backend, "report.json")
 
 
 def args_to_container(array_args):
@@ -2583,8 +2609,8 @@ def arrays_to_frontend(backend: str, frontend_array_fn=None):
     return _new_fn
 
 
-def _switch_backend_context(compile: bool):
-    if compile:
+def _switch_backend_context(trace: bool):
+    if trace:
         BackendHandler._update_context(BackendHandlerMode.SetBackend)
     else:
         (
