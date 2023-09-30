@@ -6,6 +6,38 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+@handle_frontend_test(
+    fn_tree="jax.numpy.fft.ihfft",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        max_value=1e10,
+        min_value=-1e10,
+        min_axis=-1,
+        shape=helpers.get_shape(min_num_dims=1, min_dim_size=2),
+        force_int_axis=True,
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward", None]),
+    n=st.integers(min_value=2, max_value=5) | st.none(),
+)
+def test_jax_ihfft(
+    dtype_input_axis, norm, n, backend_fw, frontend, test_flags, fn_tree, on_device
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x[0],
+        n=n,
+        axis=axis,
+        norm=norm,
+    )
+
+
 # fft
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.fft",

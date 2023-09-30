@@ -70,6 +70,29 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
     return ivy.array(ivy.ifft2(a, s=s, dim=axes, norm=norm), dtype=ivy.dtype(a))
 
 
+@with_unsupported_dtypes(
+    {
+        "0.4.16 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+@to_ivy_arrays_and_back
+def ihfft(a, n=None, axis=-1, norm=None):
+    if n is None:
+        n = a.shape[axis]
+    if norm == "forward":
+        norm = "backward"
+    elif norm == "backward":
+        norm = "forward"
+    elif norm is None:
+        norm = "forward"
+    output = ivy.conj(rfft(a, n, axis, norm=norm).ivy_array)
+    return output
+
+
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, "numpy")
 def rfft(a, n=None, axis=-1, norm=None):
