@@ -3735,7 +3735,7 @@ def test_numpy_instance_ilshift__(
         frontend_method_data=frontend_method_data,
         on_device=on_device,
     )
-  
+
     frontend,
     backend_fw,
     on_device,

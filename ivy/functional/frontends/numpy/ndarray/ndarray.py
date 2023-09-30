@@ -398,7 +398,7 @@ class ndarray:
             where=where,
             out=out,
         )
-    
+
     def byteswap(self, inplace=False):
         if inplace:
             self.ivy_array.byteswap(True)
