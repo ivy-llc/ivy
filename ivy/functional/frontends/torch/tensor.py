@@ -2073,6 +2073,10 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
+                "uint8",
+                "uint16",
+                "float16",
+                "bfloat16",
                 "complex128",
                 "complex64",
             )
