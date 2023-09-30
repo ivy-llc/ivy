@@ -68,15 +68,7 @@ def diagflat(
     diagonal_to_add = np.diag(x - np.full_like(x, padding_value), k=offset)
 
     diagonal_to_add = diagonal_to_add[tuple(slice(0, n) for n in output_array.shape)]
-    output_array += np.pad(
-        diagonal_to_add.astype(output_array.dtype),
-        [
-            (0, max([output_array.shape[0] - diagonal_to_add.shape[0], 0])),
-            (0, max([output_array.shape[1] - diagonal_to_add.shape[1], 0])),
-        ],
-        mode="constant",
-    )
-    ret = output_array.astype(out_dtype)
+    ret = diagonal_to_add.astype(out_dtype)
 
     if ivy.exists(out):
         ivy.inplace_update(out, ret)
