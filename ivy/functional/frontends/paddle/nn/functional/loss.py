@@ -16,14 +16,17 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 # helpers
 def _get_reduction_func(reduction):
     if reduction == "none":
-        ret = lambda x: x
+
+        def ret(x):
+            return x
+
     elif reduction == "mean":
         ret = ivy.mean
     elif reduction == "sum":
         ret = ivy.sum
     else:
         raise ivy.utils.exceptions.IvyException(
-            "{} is not a valid value for reduction".format(reduction)
+            f"{reduction} is not a valid value for reduction"
         )
     return ret
 
@@ -168,8 +171,8 @@ def dice_loss(input, label, epsilon=0.00001, name=None):
 def hinge_embedding_loss(input, label, margin=1.0, reduction="mean"):
     if reduction not in ["sum", "mean", "none"]:
         raise ValueError(
-            "'reduction' in 'hinge_embedding_loss' should be 'sum', 'mean' or 'none', "
-            "but received {}.".format(reduction)
+            "'reduction' in 'hinge_embedding_loss' should be 'sum', 'mean' or 'none',"
+            f" but received {reduction}."
         )
 
     zero_ = ivy.zeros([1], dtype=input.dtype)
@@ -416,8 +419,8 @@ def softmax_with_cross_entropy(
     label_dims = len(list(label.shape))
     if input_dims - 1 != label_dims and input_dims != label_dims:
         raise ValueError(
-            "Expected nput_dims - 1 = label_dims or input_dims == label_dims           "
-            "  (got nput_dims{}, label_dims{})".format(input_dims, label_dims)
+            "Expected nput_dims - 1 = label_dims or input_dims == label_dims          "
+            f"   (got nput_dims{input_dims}, label_dims{label_dims})"
         )
     logits = ivy.array(logits)
     label = ivy.array(label)

@@ -52,7 +52,7 @@ def fn_name_from_version_specific_fn_name(name, version):
     """
     # TODO: add tests
     version = str(version)
-    if version.find("+") != -1:
+    if "+" in version:
         version = tuple(map(int, version[: version.index("+")].split(".")))
     else:
         version = tuple(map(int, version.split(".")))
@@ -102,12 +102,12 @@ def fn_name_from_version_specific_fn_name_sub_backend(
     # TODO: add tests
     sub_version = str(sub_backend_version)
     back_version = str(backend_version)
-    if sub_version.find("+") != -1:
+    if "+" in sub_version:
         sub_version = tuple(map(int, sub_version[: sub_version.index("+")].split(".")))
     else:
         sub_version = tuple(map(int, sub_version.split(".")))
 
-    if back_version.find("+") != -1:
+    if "+" in back_version:
         back_version = tuple(
             map(int, back_version[: back_version.index("+")].split("."))
         )
@@ -278,7 +278,7 @@ def _unset_sub_backend_from_ivy(
 def clear_sub_backends():
     if ivy.current_sub_backends:
         ivy.__dict__.update(original_backend_dict)
-        ivy.current_sub_backends = []
+        ivy.current_sub_backends.clear()
 
 
 # This is only used in set_backend in handler.py
@@ -286,7 +286,7 @@ def _clear_current_sub_backends():
     global original_backend_dict
     original_backend_dict = None
     if ivy.current_sub_backends:
-        ivy.current_sub_backends = []
+        ivy.current_sub_backends.clear()
 
 
 def find_available_sub_backends(sub_backends_loc):

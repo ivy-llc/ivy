@@ -612,9 +612,11 @@ def test_tensorflow_cond(
     frontend,
     backend_fw,
 ):
-    _test_true_fn = lambda: var + var
+    def _test_true_fn():
+        return var + var
 
-    _test_false_fn = lambda: var * var
+    def _test_false_fn():
+        return var * var
 
     input_dtype, _ = dtype_and_x
     helpers.test_frontend_function(
@@ -716,7 +718,7 @@ def test_tensorflow_einsum(
     kw = {}
     i = 0
     for x_ in operands:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     # len(operands) + 1 because of the equation
     test_flags.num_positional_args = len(operands) + 1
