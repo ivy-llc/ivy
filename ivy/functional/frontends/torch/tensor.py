@@ -20,17 +20,9 @@ from ivy.functional.frontends.torch.func_wrapper import (
 class Tensor:
     def __init__(self, array, device=None, _init_overload=False, requires_grad=False):
         if _init_overload:
-            if isinstance(array, ivy.Array):
-                self._ivy_array = array
-            elif isinstance(array, int):
-                self._ivy_array = ivy.array(array, dtype="int64")
-            elif isinstance(array, bool):
-                self._ivy_array = ivy.array(array, dtype="bool")
-            else:
-                self._ivy_array = ivy.array(array)
-                if ivy.is_int_dtype(self._ivy_array):
-                    self._ivy_array = ivy.astype(self._ivy_array, "int64")
-
+            self._ivy_array = (
+                array if isinstance(array, ivy.Array) else ivy.array(array)
+            )
         else:
             self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
