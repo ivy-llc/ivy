@@ -61,3 +61,71 @@ def test_bind_custom_gradient_function(
     for grad, grad_from_gt in zip(grad_np, grad_np_from_gt):
         assert grad.shape == grad_from_gt.shape
         assert np.allclose(grad, grad_from_gt)
+
+
+# write a test for jvp
+@pytest.mark.parametrize(
+    "x_", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
+)
+@pytest.mark.parametrize("dtype", ["float32", "float64"])
+@pytest.mark.parametrize("func_str", ["square", "cos"])
+def test_jvp(x_, dtype, func_str, backend_fw):
+    if backend_fw in ["numpy", "paddle", "mxnet"]:
+        pytest.skip()
+
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        func = ivy_backend.__dict__[func_str]
+
+        primals = (ivy_backend.array(x_[0], dtype=dtype),)
+        tangents = (ivy_backend.array(x_[1], dtype=dtype),)
+        primals_out, jvp = ivy_backend.jvp(func, primals, tangents)
+        jvp_np = helpers.flatten_and_to_np(ret=jvp, backend=backend_fw)
+        assert jvp_np != []
+
+    with BackendHandler.update_backend("jax") as gt_backend:
+        func = gt_backend.__dict__[func_str]
+
+        primals = (gt_backend.array(x_[0], dtype=dtype),)
+        tangents = (gt_backend.array(x_[1], dtype=dtype),)
+        primals_out_gt, jvp = gt_backend.jvp(func, primals, tangents)
+        jvp_np_from_gt = helpers.flatten_and_to_np(ret=jvp, backend="jax")
+        assert jvp_np_from_gt != []
+
+    for jvp, jvp_from_gt in zip(jvp_np, jvp_np_from_gt):
+        assert np.allclose(primals_out, primals_out_gt)
+        assert np.allclose(jvp, jvp_from_gt)
+
+
+# write a test for vjp
+@pytest.mark.parametrize(
+    "x_", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
+)
+@pytest.mark.parametrize("dtype", ["float32", "float64"])
+@pytest.mark.parametrize("func_str", ["square", "cos"])
+def test_vjp(x_, dtype, func_str, backend_fw):
+    if backend_fw == "numpy":
+        pytest.skip()
+
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        func = ivy_backend.__dict__[func_str]
+
+        primals = ivy_backend.array(x_[0], dtype=dtype)
+        tangents = ivy_backend.array(x_[1], dtype=dtype)
+        primals_out, vjp_fn = ivy_backend.vjp(func, primals)
+        vjp = vjp_fn(tangents)
+        vjp_np = helpers.flatten_and_to_np(ret=vjp, backend=backend_fw)
+        assert vjp_np != []
+
+    with BackendHandler.update_backend("jax") as gt_backend:
+        func = gt_backend.__dict__[func_str]
+
+        primals = gt_backend.array(x_[0], dtype=dtype)
+        tangents = gt_backend.array(x_[1], dtype=dtype)
+        primals_out_gt, vjp_fn = gt_backend.vjp(func, primals)
+        vjp = vjp_fn(tangents)
+        vjp_np_from_gt = helpers.flatten_and_to_np(ret=vjp, backend="jax")
+        assert vjp_np_from_gt != []
+
+    for vjp, vjp_from_gt in zip(vjp_np, vjp_np_from_gt):
+        assert np.allclose(primals_out, primals_out_gt)
+        assert np.allclose(vjp, vjp_from_gt)
