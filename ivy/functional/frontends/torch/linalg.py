@@ -173,17 +173,8 @@ def matrix_power(A, n, *, out=None):
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
-def vecdot(x, y, *, dim=-1, out=None):
-    return ivy.vecdot(x, y, axis=dim, out=out)
-  
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
-)
 def matrix_rank(A, *, atol=None, rtol=None, hermitian=False, out=None):
     return ivy.matrix_rank(A, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
-
 
 
 @to_ivy_arrays_and_back
@@ -392,6 +383,14 @@ def vander(x, N=None):
     output = ivy.reshape(output, (*original_shape, N))
     output = ivy.astype(output, x.dtype)
     return output
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
+def vecdot(x, y, *, dim=-1, out=None):
+    return ivy.vecdot(x, y, axis=dim, out=out)
 
 
 @to_ivy_arrays_and_back
