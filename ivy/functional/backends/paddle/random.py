@@ -16,6 +16,7 @@ from ivy.functional.ivy.random import (
 from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
     with_supported_device_and_dtypes,
+    with_unsupported_dtypes,
 )
 from . import backend_version
 
@@ -54,9 +55,8 @@ def random_uniform(
     )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
-    backend_version,
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("float16", "int16", "int8")}, backend_version
 )
 def random_normal(
     *,
@@ -72,12 +72,7 @@ def random_normal(
     shape = _check_bounds_and_get_shape(mean, std, shape).shape
     if seed:
         paddle.seed(seed)
-    if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
-        return paddle.normal(mean, std, shape).cast(dtype)
-    if mean.dtype not in [paddle.float32, paddle.float64]:
-        mean = mean.cast("float32")
-    std = std.cast(mean.dtype)
-    return paddle.normal(mean, std).cast(dtype)
+    return paddle.normal(mean, std, shape).cast(dtype)
 
 
 @with_supported_device_and_dtypes(
@@ -161,18 +156,8 @@ def shuffle(
         _ = paddle.seed(seed)
     # Use Paddle's randperm function to generate shuffled indices
     indices = paddle.randperm(x.ndim, dtype="int64")
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            shuffled_real = paddle.index_select(x.real(), indices, axis=axis)
-            shuffled_imag = paddle.index_select(x.imag(), indices, axis=axis)
-            return paddle.complex(shuffled_real, shuffled_imag)
-        return paddle.index_select(x.cast("float32"), indices, axis=axis).cast(x.dtype)
+    if paddle.is_complex(x):
+        shuffled_real = paddle.index_select(x.real(), indices, axis=axis)
+        shuffled_imag = paddle.index_select(x.imag(), indices, axis=axis)
+        return paddle.complex(shuffled_real, shuffled_imag)
     return paddle.index_select(x, indices, axis=axis)
