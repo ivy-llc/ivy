@@ -273,24 +273,6 @@ def outputs_to_native_arrays(fn: Callable):
     return outputs_to_native_arrays_torch
 
 
-def scalar_input_to_0dim_tensor(fn: Callable) -> Callable:
-    """Wrap `fn` so that input scalars are all converted to `torch.Tensor` instances."""
-
-    @functools.wraps(fn)
-    def scalar_input_to_0dim_tensor_torch(*args, **kwargs):
-        new_args = ivy.nested_map(
-            lambda x: (
-                torch_frontend.Tensor(x, _init_overload=True) if ivy.isscalar(x) else x
-            ),
-            args,
-            shallow=False,
-        )
-        return fn(*new_args, **kwargs)
-
-    scalar_input_to_0dim_tensor_torch.scalar_input_to_0dim_tensor_torch = True
-    return scalar_input_to_0dim_tensor_torch
-
-
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     """
     Wrap `fn` so it receives and returns `ivy.Array` instances.
