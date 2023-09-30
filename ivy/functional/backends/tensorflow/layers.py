@@ -491,3 +491,21 @@ def conv_general_transpose(
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+def nms(
+    boxes,
+    scores=None,
+    iou_threshold=0.5,
+    max_output_size=None,
+    score_threshold=float("-inf"),
+):
+    if scores is None:
+        scores = tf.ones(boxes.shape[0])
+
+    boxes = tf.gather(boxes, [1, 0, 3, 2], axis=1)
+    ret = tf.image.non_max_suppression(
+        boxes, scores, max_output_size or len(boxes), iou_threshold, score_threshold
+    )
+
+    return tf.cast(ret, dtype=tf.int64)

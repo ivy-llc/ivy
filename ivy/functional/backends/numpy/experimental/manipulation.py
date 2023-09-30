@@ -17,6 +17,10 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_supported_dtypes
+
+# noinspection PyProtectedMember
+from . import backend_version
 
 
 def moveaxis(
@@ -483,3 +487,25 @@ def column_stack(
     arrays: Sequence[np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.column_stack(arrays)
+
+
+@with_supported_dtypes(
+    {"1.25.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
+def put_along_axis(
+    arr: np.ndarray,
+    indices: np.ndarray,
+    values: Union[int, np.ndarray],
+    axis: int,
+    /,
+    *,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
+    out: Optional[np.ndarray] = None,
+):
+    ret = np.put_along_axis(arr.copy(), indices, values, axis)
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
+
+
+put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
+    "replace",
+]
