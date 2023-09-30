@@ -3352,6 +3352,7 @@ def multiply(
         b: ivy.array([2.,4.,3.])
     }
     """
+
     return ivy.current_backend(x1, x2).multiply(x1, x2, out=out)
 
 
