@@ -846,3 +846,7 @@ class Tensor:
     )
     def unbind(self, axis=0):
         return paddle_frontend.unbind(self._ivy_array, axis=axis)
+
+    def cpu(self):
+        self.ivy_array = ivy.to_device(self.ivy_array, ivy.as_ivy_dev("cpu"))
+        return self
