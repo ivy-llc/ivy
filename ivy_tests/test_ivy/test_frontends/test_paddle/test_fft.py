@@ -1,6 +1,8 @@
 # global
 from hypothesis import given, strategies as st
 
+import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -255,6 +257,40 @@ def test_paddle_ifftshift(
         test_values=True,
         x=x[0],
         axes=axes,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.fft.ihfft2",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        min_dim_size=2,
+    ),
+)
+def test_paddle_ihfft2(
+    dtype_x_axis,
+    norm,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    shape = ivy.array(x).shape
+    x = ivy.reshape(x, shape)  # reshape into a 2 dimensional array.
+
+    ivy.astype(
+        helpers.test_frontend_function(
+            input_dtypes=input_dtypes,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            x=x,
+            norm=norm,
+        ),
+        ivy.default_complex_dtype(),
     )
 
 
