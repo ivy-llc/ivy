@@ -16,7 +16,7 @@ module_map = {
     "misc": "test_misc",
     "paddle": "test_frontends/test_paddle",
     "scipy": "test_frontends/test_scipy",
-    "torchvision": "test_frontends/test_torchvision"
+    "torchvision": "test_frontends/test_torchvision",
 }
 
 
