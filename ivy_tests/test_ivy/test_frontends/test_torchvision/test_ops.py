@@ -25,7 +25,7 @@ def _nms_helper(draw):
         h = draw(st.integers(5, img_height - y1))
 
         bbox[(x1, y1, x1 + w, y1 + h)] = draw(st.floats(0.1, 1))
-    dtype = st.sampled_from(["float32", "uint8", "int16", "int32"])
+    dtype = draw(st.sampled_from(["float32", "uint8", "int16", "int32"]))
     iou_threshold = draw(st.floats(0.2, 1))
     return (
         [dtype, "float32"],
