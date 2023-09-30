@@ -135,28 +135,6 @@ def _to_ivy_array(x):
 # ------------ #
 
 
-def handle_torch_scalar_exception(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so it handles scalar exceptions.
-
-    If input is scalar an exception is raised for functions that don't
-    support scalar inputs.
-    """
-
-    @functools.wraps(fn)
-    def handle_torch_scalar_exception_torch(*args, **kwargs):
-        if len(args) == 1 and any([ivy.isscalar(i) for i in args]):
-            raise ivy.utils.exceptions.IvyException(
-                "{}(): argument {} (position 1) must be Tensor, not {}".format(
-                    fn.__name__, fn.__code__.co_varnames[0], type(args[0])
-                )
-            )
-        return fn(*args, **kwargs)
-
-    handle_torch_scalar_exception_torch.handle_torch_scalar_exception_torch = True
-    return handle_torch_scalar_exception_torch
-
-
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_torch(*args, **kwargs):

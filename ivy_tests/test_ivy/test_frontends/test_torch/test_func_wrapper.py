@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy
@@ -129,6 +129,47 @@ def test_torch_outputs_to_frontend_arrays(dtype_and_x, dtype, backend_fw):
     assert ivy.all(input_ivy == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
+
+    ivy.previous_backend()
+
+
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        num_arrays=2,
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+@settings(max_examples=200)
+def test_torch_promote_types_of_torch_inputs(dtype_and_x, backend_fw):
+    x_dtype, x = dtype_and_x
+    x1, x2 = x
+    ivy.set_backend(backend_fw)
+
+    # check for ivy array
+    input_ivy1 = ivy.array(x1, dtype=x_dtype[0])
+    input_ivy2 = ivy.array(x2, dtype=x_dtype[1])
+
+    # check promoted type of arrays
+    promoted_type1, promoted_type2 = torch_frontend.promote_types_of_torch_inputs(
+        input_ivy1, input_ivy2
+    )
+    assert promoted_type1.dtype == promoted_type2.dtype
+
+    # check for native array
+    input_native1 = ivy.native_array(input_ivy1)
+    input_native2 = ivy.native_array(input_ivy2)
+    try:
+        import torch
+
+        torch_promotion_type_native = torch.promote_types(
+            input_native1.dtype, input_native2.dtype
+        )
+    except ImportError:
+        torch_promotion_type_native = None
+    if torch_promotion_type_native is not None:
+        assert (
+            str(promoted_type1.dtype) == str(torch_promotion_type_native).split(".")[1]
+        )
 
     ivy.previous_backend()
 
