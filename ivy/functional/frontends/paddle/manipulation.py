@@ -86,6 +86,12 @@ def gather_nd(x, index, name=None):
     return ivy.gather_nd(x, index)
 
 
+@with_unsupported_dtypes({"2.5.1 and below": ("float16",)}, "paddle")
+@to_ivy_arrays_and_back
+def lgamma(input, name=None):
+    return ivy.lgamma(input)
+
+
 @to_ivy_arrays_and_back
 def put_along_axis(arr, indices, values, axis, reduce="assign"):
     result = ivy.put_along_axis(arr, indices, values, axis)
