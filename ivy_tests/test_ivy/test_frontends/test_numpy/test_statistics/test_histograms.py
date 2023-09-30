@@ -78,10 +78,5 @@ def test_numpy_histogram(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-2,
-        a=x[0],
-        bins=10,
-        range=None,
-        density=None,
-        weights=None,
+        **helpers.kwargs_for_test(x, bins=10),
     )
