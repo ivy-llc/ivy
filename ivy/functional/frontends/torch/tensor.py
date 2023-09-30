@@ -100,8 +100,20 @@ class Tensor:
     def is_leaf(self):
         return self._is_leaf
 
+    @property
+    def get_device(self):
+        if self.device == "cpu":
+            return -1
+        else:
+            return int(self.device.split(":")[-1])
+
     # Setters #
     # --------#
+
+    @device.setter
+    def cuda(self, device=None):
+        self.device = device
+        return self
 
     @ivy_array.setter
     def ivy_array(self, array):
@@ -453,9 +465,40 @@ class Tensor:
     def floor(self, *, out=None):
         return torch_frontend.floor(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
     def not_equal(self, other, *, out=None):
         return torch_frontend.not_equal(self, other, out=out)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def not_equal_(self, other, *, out=None):
+        self.ivy_array = self.not_equal(other).ivy_array
+        return self
 
     def equal(self, other):
         return torch_frontend.equal(self, other)
@@ -2042,6 +2085,40 @@ class Tensor:
         {
             "2.0.1 and below": (
                 "bfloat16",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def ne(self, other):
+        return self.not_equal(other)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def ne_(self, other):
+        return self.not_equal_(other)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
                 "int8",
                 "uint8",
                 "uint32",
@@ -2104,6 +2181,7 @@ class Tensor:
     le = less_equal
     le_ = less_equal_
     ne = not_equal
+    ne_ = not_equal_
 
 
 class Size(tuple):
