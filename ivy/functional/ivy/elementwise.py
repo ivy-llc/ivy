@@ -3281,7 +3281,8 @@ def multiply(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculates the product for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    Calculates the product for each element ``x1_i`` of the input array ``x1`` with the
+     respective element ``x2_i`` of the input array ``x2``.
 
     **Special cases**
 
