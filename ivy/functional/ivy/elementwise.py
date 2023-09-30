@@ -3262,7 +3262,7 @@ def multiply(
 ) -> ivy.Array:
     """
     Calculates the product for each element ``x1_i`` of the input array ``x1`` with the
-     respective element ``x2_i`` of the input array ``x2``.
+    respective element ``x2_i`` of the input array ``x2``.
 
     **Special cases**
 
@@ -3351,7 +3351,6 @@ def multiply(
         a: ivy.array([3.,8.,15.]),
         b: ivy.array([2.,4.,3.])
     }
-
     """
     return ivy.current_backend(x1, x2).multiply(x1, x2, out=out)
 
