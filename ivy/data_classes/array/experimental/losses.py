@@ -378,6 +378,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         target: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         reduction: Optional[str] = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -392,18 +393,21 @@ class _ArrayWithLossesExperimental(abc.ABC):
             input array of arbitrary shape containing probabilities.
         target
             input array same shape as input with values between 0 and 1.
+        weight
+            input array of size nbatch to rescale the loss of each batch element.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
             ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
         out
-            optional output array, for writing the result to. It must have a shape that
+            optional array, for writing the result to. It must have a shape that
             the inputs broadcast to.
 
-        Returns
+        Returns 
         -------
         ret
-            The Binary Cross Entropy loss between the input array and the targeticted values.
+            The Binary Cross Entropy loss between the input array and the 
+            target values.
 
         Examples
         --------
@@ -413,4 +417,4 @@ class _ArrayWithLossesExperimental(abc.ABC):
         >>> print(z)
         ivy.array(0.5946)
         """
-        return ivy.binary_cross_entropy(self._data, target, reduction=reduction, out=out)
+        return ivy.binary_cross_entropy(self._data, target, weight = weight, reduction=reduction, out=out)

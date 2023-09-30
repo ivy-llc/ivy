@@ -585,6 +585,7 @@ def binary_cross_entropy(
     target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    weight: Optional[ivy.Array] = None,
     reduction: Optional[str] = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -594,9 +595,11 @@ def binary_cross_entropy(
     Parameters
     ----------
     input : array_like
-        True binary labels, of shape (batch_size,).
+        array of arbitrary shape containing probabilities.
     target : array_like
-        Predicted scores, of shape (batch_size,).
+        array same shape as input with values between 0 and 1.
+    weight : array_like, optional
+        array of size nbatch to rescale the loss of each batch element.
     reduction : {'mean', 'sum', 'none'}, optional
         Type of reduction to apply to the output. Default is 'mean'.
     out : array_like, optional
@@ -626,5 +629,4 @@ def binary_cross_entropy(
     >>> ivy.binary_cross_entropy(input, target, reduction='none')
     ivy.array([0.2231, 0.3567, 0.2231, 0.1054])
     """
-    
-    return ivy.current_backend(input).binary_cross_entropy(input,target, reduction=reduction)
+    return ivy.current_backend(input).binary_cross_entropy(input,target, weight = weight, reduction=reduction,out=out)

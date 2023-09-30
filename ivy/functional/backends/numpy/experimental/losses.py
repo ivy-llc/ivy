@@ -172,11 +172,12 @@ def binary_cross_entropy(
     target: np.ndarray,
     /,
     *,
+    weight: Optional[np.ndarray] = None,
     reduction: Optional[str] = "mean",
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
 
-    loss = -1 * (target * np.log(input) + (1-target)*np.log(1-input))
+    loss = -1 * weight * (target * np.log(input) + (1-target)*np.log(1-input))
 
     if reduction == "mean":
         loss = np.mean(loss)

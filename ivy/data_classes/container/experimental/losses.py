@@ -1109,6 +1109,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        weight: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]],
         reduction: Optional[Union[str, ivy.Container]] = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -1124,9 +1125,11 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Parameters
         ----------
         input
-            input array or container of arbitrary shape containing probabilities.
+            An array or container of arbitrary shape containing probabilities.
         target
-            input array or container same shape as input with values between 0 and 1.
+            An array or container same shape as input with values between 0 and 1.
+        weight
+            An array or container of size nbatch to rescale the loss of each batch element.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -1149,13 +1152,13 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Returns
         -------
         ret
-            The Binary Cross Entropy loss between the input array and the targeted values.
-
+            The Binary Cross Entropy loss between input array and target values.
        """
         return ContainerBase.cont_multi_map_in_function(
             "binary_cross_entropy",
             input,
             target,
+            weight=weight,
             reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1169,6 +1172,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        weight: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]],
         reduction: Optional[Union[str, ivy.Container]] = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -1184,9 +1188,11 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input container containing probablities of arbitrary shape.
+            input array or container containing probablities of arbitrary shape.
         target
-            input array or container with same shape as input with values between 0 and 1.
+            array or container with same shape as input with values between 0 and 1.
+        weight
+            An array or container of size nbatch to rescale the loss of each batch element.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -1209,8 +1215,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Returns
         -------
         ret
-            The binary cross entropy loss between the input array and the targeticted values.
-
+            The binary cross entropy loss between input array and target values.
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0.8,0.3,0.9]), b=ivy.array([0.6, 0.7, 0.9])
@@ -1225,6 +1230,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         return self._static_binary_cross_entropy(
             self,
             target,
+            weight=weight,
             reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
