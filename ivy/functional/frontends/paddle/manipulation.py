@@ -208,4 +208,11 @@ def unstack(x, axis=0, name=None):
     return ivy.unstack(x, axis=axis)
 
 
+@with_unsupported_dtypes({"2.5.1 and below": ("float16",)}, "paddle")
+@to_ivy_arrays_and_back
+def lgamma(input, name=None):
+    return ivy.lgamma(input)
+
+
 absolute = abs
+
