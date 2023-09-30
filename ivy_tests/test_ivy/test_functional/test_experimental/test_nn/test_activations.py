@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.elu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -206,7 +206,7 @@ def test_selu(*, dtype_and_input, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.silu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",

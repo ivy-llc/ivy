@@ -13,18 +13,22 @@ class GBLinear:
         self.num_boosted_rounds = 0
 
         # default parameter
-        # xgboost provides other options for it but the way to modify it remains undocumented for Python API
+        # xgboost provides other options for it but the way to modify it remains
+        # undocumented for Python API
         self.updater = coordinate_updater
 
-        # LogisticRegression corresponds to 'binary:logistic' objective in terms of calculations
-        # In xgboost LogisticClassification is used, but it simply subclasses LogisticRegression
-        # redefining the method which returns the name of objective
+        # LogisticRegression corresponds to 'binary:logistic' objective in terms of
+        # calculations
+        # In xgboost LogisticClassification is used, but it simply subclasses
+        # LogisticRegression redefining the method which returns the name of objective
         self.obj = LogisticRegression()
 
         self.base_score = self.obj.prob_to_margin(params["base_score"])
 
-        # when weights for groups are not provided this equals to a number of instances in data
-        # ToDo: add weight sum calculation from provided weights, by now always assume default behaviour
+        # when weights for groups are not provided this equals to a number of instances
+        # in data
+        # TODO: add weight sum calculation from provided weights, by now always assume
+        # default behaviour
         self.num_inst = params["num_instances"]
         self.sum_instance_weight_ = self.num_inst
         self.scale_pos_weight = (
@@ -40,13 +44,14 @@ class GBLinear:
         self.num_output_group = params["num_output_group"]
         self.num_feature = params["num_feature"]
 
-        # xgboost stores weights in a vector form, but it was decided to store them as a 2D matrix here
-        # it simplifies calculations while math remains the same
+        # xgboost stores weights in a vector form, but it was decided to store them as a
+        # 2D matrix here it simplifies calculations while math remains the same
         # added 1 in the first dim, because xgboost stores weights and biases jointly
         self.weight = ivy.zeros(
             (self.num_feature + 1, self.num_output_group), dtype=ivy.float32
         )
-        # used to calculate convergence(comparing max difference of weights to tolerance)
+        # used to calculate convergence(comparing max difference of weights to
+        # tolerance)
         self.prev_weight = self.weight.copy()
 
         # if base margin is None, use base_score instead

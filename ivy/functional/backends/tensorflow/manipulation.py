@@ -159,7 +159,7 @@ def squeeze(
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
         if ivy.any(x.shape[axis] > 1):
-            raise ValueError(f"{x.shape[axis]} must be lesser than or equal to {1}")
+            raise ValueError(f"{x.shape[axis]} must be lesser than or equal to 1")
         ret = tf.squeeze(x, axis)
     elif axis is None:
         ret = tf.squeeze(x)
@@ -177,9 +177,8 @@ def squeeze(
         for i in axis_updated_after_squeeze:
             if x.shape[i] > 1:
                 raise ValueError(
-                    "Expected dimension of size 1, but found dimension size {}".format(
-                        x.shape[i]
-                    )
+                    "Expected dimension of size 1, but found dimension size"
+                    f" {x.shape[i]}"
                 )
             else:
                 x = tf.squeeze(x, i)
@@ -219,9 +218,8 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
         return [x]
     if num_or_size_splits is None:
