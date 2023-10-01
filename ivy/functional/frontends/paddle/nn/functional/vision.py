@@ -114,19 +114,6 @@ def channel_shuffle(x, groups, data_format="NCHW", name=None):
     return x
 
 
-@with_supported_dtypes({"2.0.1 and below": ("int64",)}, "paddle")
-@to_ivy_arrays_and_back
-def one_hot(tensor, num_classes=-1):
-    if num_classes == -1:
-        num_classes = int(ivy.max(tensor) + 1)
-
-    if not isinstance(num_classes, int) or num_classes <= 0:
-        raise ValueError("num_classes must be a positive integer.")
-
-    one_hot_tensor = ivy.one_hot(tensor, num_classes)
-    return one_hot_tensor.astype(tensor.dtype)
-
-
 @to_ivy_arrays_and_back
 def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
     input_shape = ivy.shape(x)
