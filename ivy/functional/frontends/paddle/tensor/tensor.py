@@ -798,7 +798,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def t(self, name=None):
-        axes = list(range(len(self._ivy_array.shape)))[::-1]
+        axes = list(range(len(self.ivy_array.shape)))[::-1]
         return ivy.permute_dims(self._ivy_array, axes=axes)
 
     @with_supported_dtypes(
