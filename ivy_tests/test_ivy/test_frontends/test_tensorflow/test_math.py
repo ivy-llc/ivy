@@ -8,12 +8,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
-# fmt: off
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_sorting \
-    import (
-        _invert_permutation_helper,
-    )
-# fmt: on
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
@@ -442,6 +436,43 @@ def test_tensorflow_atanh(
         input_dtypes=input_dtype,
         frontend=frontend,
         backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# bessel_i1
+@handle_frontend_test(
+    fn_tree="tensorflow.math.bessel_i1",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple([ivy.float32, ivy.float64]),
+        num_arrays=1,
+        min_value=0,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_bessel_i1(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1207,33 +1238,6 @@ def test_tensorflow_in_top_k(
     )
 
 
-# invert_permutation
-@handle_frontend_test(
-    fn_tree="tensorflow.math.invert_permutation",
-    dtype_and_perm=_invert_permutation_helper(for_frontend_test=True),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_invert_permutation(
-    *,
-    dtype_and_perm,
-    frontend,
-    test_flags,
-    backend_fw,
-    fn_tree,
-    on_device,
-):
-    input_dtype, perm = dtype_and_perm
-    helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=perm,
-    )
-
-
 # is_finite
 
 
@@ -1784,40 +1788,6 @@ def test_tensorflow_minimum(
         backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-    )
-
-
-# mod
-@handle_frontend_test(
-    fn_tree="tensorflow.math.mod",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_mod(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    assume(not np.any(np.isclose(x[0], 0)))
-    assume(not np.any(np.isclose(x[1], 0)))
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
