@@ -1342,3 +1342,44 @@ def test_torch_vector_norm(
         keepdim=kd,
         dtype=dtype[0],
     )
+#ldl_factor
+@handle_frontend_test(
+    fn_tree="torch.linalg.ldl_factor",
+    dtype_and_data=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x+1])),
+        safety_factor_scale="log",
+        small_abs_safety_factor=6,
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(x[1][0][:, :-1]) != 0
+        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
+    ),
+    check=st.booleans(),
+)
+def test_torch_ldl_factor(
+    *,
+    dtype_and_data,
+    check,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, data = dtype_and_data
+    input = data[0][:, :-1]
+    other = data[0][:, -1].reshape(-1, 1)
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], input_dtype[0]],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        A=input,
+        B=other,
+        check_errors=check,
+    )
