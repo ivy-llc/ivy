@@ -1,7 +1,6 @@
 # global
 import sys
 import paddle as paddle
-import ml_dtypes  # for numpy bfloat16 support
 
 # local
 import ivy
