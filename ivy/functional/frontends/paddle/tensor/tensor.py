@@ -802,6 +802,12 @@ class Tensor:
         return value
 
     @with_supported_dtypes(
+        {"2.5.1 and below": ("int32", "int64", "float32", "float64", "bool")}, "paddle"
+    )
+    def not_equal(self, y, name=None):
+        return paddle_frontend.not_equal(self._ivy_array, y)
+
+    @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
     def less_equal(self, y, name=None):
