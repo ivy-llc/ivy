@@ -213,10 +213,10 @@ def trapezoid(y, x=None, *, dx=None, dim=-1):
 def triangular_solve(A, b, upper=False, transpose=False, unitriangular=False):
     if upper:
         A = ivy.transpose(A, (-2, -1)) if transpose else A
-        op = "T" if transpose else "N"
+        "T" if transpose else "N"
     else:
         A = ivy.transpose(A, (-2, -1)) if not transpose else A
-        op = "N" if transpose else "T"
+        "N" if transpose else "T"
     if unitriangular:
         A = ivy.expand_dims(ivy.eye(A.shape[-1], dev_str=A.dev_str, f=A.f), axis=-3) * A
     if A.ndim == 2:
