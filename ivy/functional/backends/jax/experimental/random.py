@@ -124,6 +124,6 @@ def bernoulli(
         _setRNG(RNG_)
     if logits is not None:
         probs = jax.nn.softmax(logits, axis=-1)
-    if not _check_shapes_broadcastable(shape, probs.shape):
+    if hasattr(probs, "shape") and not _check_shapes_broadcastable(shape, probs.shape):
         shape = probs.shape
     return jax.random.bernoulli(rng_input, probs, shape=shape)
