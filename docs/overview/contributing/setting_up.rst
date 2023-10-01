@@ -153,6 +153,16 @@ Using miniconda
          pip install -r requirements/optional_apple_silicon_1.txt
          pip install -r requirements/optional_apple_silicon_2.txt
 
+#. Installing array API testing dependencies.
+
+   To make sure you have all the packages for running tests available change the directory to :code:`ivy/ivy_tests/array_api_testing/test_array_api` in your cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
+
+   .. code-block:: none
+
+      pip install -r requirements.txt
+
+   This will install packages required for running the tests in Array API suite.
+
 Using venv
 **********
 
