@@ -45,6 +45,14 @@ Atan2 = to_ivy_arrays_and_back(
     )(map_raw_ops_alias(tf_frontend.math.atan2))
 )
 ConcatV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.concat))
+Conj = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": ("complex64", "complex128", "variant"),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.conj))
+)
 Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
 Cosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cosh))
 Cumprod = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumprod))
