@@ -171,6 +171,17 @@ def _transpose_helper(draw):
     return dtype, x, perm
 
 
+@st.composite
+def dims_and_offset(draw, shape):
+    shape_actual = draw(shape)
+    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
+    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
+    offset = draw(
+        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
+    )
+    return dim1, dim2, offset
+
+
 # Helpers #
 # ------ #
 
@@ -688,6 +699,49 @@ def test_paddle_eigvalsh(
     )
 
 
+# diagonal
+@handle_frontend_test(
+    fn_tree="paddle.linalg.diagonal",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
+    dims_and_offset=dims_and_offset(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
+    ),
+)
+def test_paddle_linalg_diagonal(
+    dtype_and_values,
+    axiss_and_offset,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, value = dtype_and_values
+    axis1, axis2, offset = axiss_and_offset
+    input = value[0]
+    num_dims = len(np.shape(input))
+    assume(axis1 != axis2)
+    if axis1 < 0:
+        assume(axis1 + num_dims != axis2)
+    if axis2 < 0:
+        assume(axis1 != axis2 + num_dims)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=input,
+        offset=offset,
+        axis1=axis1,
+        axis2=axis2,
+    )
+
+
 # matmul
 @handle_frontend_test(
     fn_tree="paddle.matmul",
@@ -929,45 +983,6 @@ def test_paddle_solve(
         atol=1e-3,
         x=x1,
         y=x2,
-    )
-
-
-# diagonal
-@handle_frontend_test(
-    fn_tree="paddle.linalg.diagonal",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=st.one_of(helpers.get_dtypes("numeric")),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=1,
-        max_dim_size=50,
-    ),
-    offset=helpers.ints(min_value=-10, max_value=50),
-    axes=st.lists(
-        helpers.ints(min_value=-2, max_value=1), min_size=2, max_size=2, unique=True
-    ).filter(lambda axes: axes[0] % 2 != axes[1] % 2),
-)
-def test_paddle_tensor_diagonal(
-    dtype_x_axis,
-    offset,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x, axis = dtype_x_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        on_device=on_device,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        a=x[0],
-        offset=offset,
-        axis1=axis[0],
-        axis2=axis[1],
     )
 
 
