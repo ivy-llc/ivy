@@ -567,6 +567,23 @@ def polysub(a1, a2):
 
 
 @to_ivy_arrays_and_back
+def polyval(p, x):
+    p = ivy.asarray(p)
+    x = ivy.asarray(x)
+    if len(p) == 0:
+        raise ValueError("p cannot be empty.")
+    if len(p) == 1:
+        return p[0]
+    result = ivy.zeros_like(x, dtype=p.dtype)
+    power_x = ivy.ones_like(x, dtype=p.dtype)
+    for coef in p:
+        result += coef * power_x
+        power_x *= x
+
+    return result
+
+
+@to_ivy_arrays_and_back
 def positive(
     x,
     /,
@@ -726,20 +743,3 @@ def vdot(a, b):
 
 abs = absolute
 true_divide = divide
-
-@to_ivy_arrays_and_back
-def polyval(p, x):
-    p = ivy.asarray(p)
-    x = ivy.asarray(x)
-    if len(p) == 0:
-        raise ValueError("p cannot be empty.")
-    if len(p) == 1:
-        return p[0]
-    result = ivy.zeros_like(x, dtype=p.dtype)
-    power_x = ivy.ones_like(x, dtype=p.dtype)
-    for coef in p:
-        result += coef * power_x
-        power_x *= x
-
-    return result
-
