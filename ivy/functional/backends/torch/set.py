@@ -56,14 +56,13 @@ def unique_all(
         inv_sorted = (inverse_indices + decimals).argsort()
         tot_counts = torch.cat((counts.new_zeros(1), counts.cumsum(dim=0)))[:-1]
         indices = inv_sorted[tot_counts].to(idx_dtype)
-
+    def customkey(temp):
+        return tuple(temp[1])
     if not by_value:
         sort_idx = torch.argsort(indices)
     else:
         values_ = torch.moveaxis(values, axis, 0)
         values_ = torch.reshape(values_, (values_.shape[0], -1))
-        def customkey(temp):
-            return tuple(temp[1])
         sort_idx = torch.tensor(
             [i[0] for i in sorted(list(enumerate(values_)), key=customkey]
         )
