@@ -17,7 +17,6 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
 )
 
 
-
 class TestTriangularSolve(unittest.TestCase):
     CLASS_TREE = {"torch": {"linalg": {"triangular_solve": "triangular_solve"}}}
 
@@ -1022,5 +1021,3 @@ def test_torch_vdot(
         input=vec1,
         other=vec2,
     )
-
-
