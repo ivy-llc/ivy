@@ -455,12 +455,10 @@ def test_tensorflow_atanh(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple([ivy.float32, ivy.float64]),
         num_arrays=1,
-        min_value=0,
+        min_value=-10,
         max_value=10,
         min_num_dims=1,
         max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
