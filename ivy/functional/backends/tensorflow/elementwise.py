@@ -1,7 +1,7 @@
 # global
 from typing import Union, Optional
 import tensorflow as tf
-import tensorflow_probability as tfp
+
 
 # local
 import ivy
@@ -761,7 +761,8 @@ def trapz(
     axis: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tfp.math.trapz(y, x=x, dx=dx, axis=axis, name=None)
+    pass
+    # TODO: Implement purely in tensorflow
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)

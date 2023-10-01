@@ -180,12 +180,34 @@ class _ArrayWithDataTypes(abc.ABC):
         self: ivy.Array, as_native: bool = False
     ) -> Union[ivy.Dtype, ivy.NativeDtype]:
         """
-        Examples
+        `ivy.Array` instance method variant of `ivy.dtype`. This method helps to get the
+        data type of the array.
+
+        Parameters
+        ----------
+        self
+            The input array.
+        as_native
+            Whether to return the native data type of the array.
+            If True, returns the native data type. Default is False.
+
+        Returns
         -------
+        ret
+            The data type of the array. If as_native is True,
+            returns the native data type.
+
+        Examples
+        --------
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.dtype()
         >>> print(y)
         int32
+
+        >>> x= ivy.array([1.0, 2.0, 3.0], dtype=ivy.float64)
+        >>> y = x.dtype(as_native=True)
+        >>> print(y)
+        float64
         """
         return ivy.dtype(self._data, as_native=as_native)
 
