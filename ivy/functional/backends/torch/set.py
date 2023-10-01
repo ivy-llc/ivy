@@ -62,15 +62,19 @@ def unique_all(
     else:
         values_ = torch.moveaxis(values, axis, 0)
         values_ = torch.reshape(values_, (values_.shape[0], -1))
+        def customkey(temp):
+            return tuple(temp[1])
         sort_idx = torch.tensor(
-            [i[0] for i in sorted(list(enumerate(values_)), key=lambda x: tuple(x[1]))]
+            [i[0] for i in sorted(list(enumerate(values_)), key=customkey]
         )
     ivy_torch = ivy.current_backend()
     values = ivy_torch.gather(values, sort_idx, axis=axis)
     counts = ivy_torch.gather(counts, sort_idx)
     indices = ivy_torch.gather(indices, sort_idx)
     inv_sort_idx = ivy_torch.invert_permutation(sort_idx)
-    inverse_indices = torch.vmap(lambda y: torch.gather(inv_sort_idx, 0, y))(
+    def torch_gather(y):
+        return torch.gather(inv_sort_idx, 0, y)
+    inverse_indices = torch.vmap(torch_gather)(
         inverse_indices
     )
 
