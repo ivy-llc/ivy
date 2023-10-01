@@ -86,6 +86,15 @@ def gather_nd(x, index, name=None):
     return ivy.gather_nd(x, index)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float16", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def index_add(x, index, axis, value, name=None):
+    return ivy.index_add(x, index, axis, value)
+
+
 @to_ivy_arrays_and_back
 def put_along_axis(arr, indices, values, axis, reduce="assign"):
     result = ivy.put_along_axis(arr, indices, values, axis)
