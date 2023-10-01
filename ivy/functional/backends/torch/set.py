@@ -56,8 +56,10 @@ def unique_all(
         inv_sorted = (inverse_indices + decimals).argsort()
         tot_counts = torch.cat((counts.new_zeros(1), counts.cumsum(dim=0)))[:-1]
         indices = inv_sorted[tot_counts].to(idx_dtype)
+
     def customkey(temp):
         return tuple(temp[1])
+
     if not by_value:
         sort_idx = torch.argsort(indices)
     else:
@@ -71,11 +73,11 @@ def unique_all(
     counts = ivy_torch.gather(counts, sort_idx)
     indices = ivy_torch.gather(indices, sort_idx)
     inv_sort_idx = ivy_torch.invert_permutation(sort_idx)
+
     def torch_gather(y):
         return torch.gather(inv_sort_idx, 0, y)
-    inverse_indices = torch.vmap(torch_gather)(
-        inverse_indices
-    )
+
+    inverse_indices = torch.vmap(torch_gather)(inverse_indices)
 
     return Results(
         values.to(x.dtype),
