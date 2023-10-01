@@ -64,7 +64,7 @@ def unique_all(
         values_ = torch.moveaxis(values, axis, 0)
         values_ = torch.reshape(values_, (values_.shape[0], -1))
         sort_idx = torch.tensor(
-            [i[0] for i in sorted(list(enumerate(values_)), key=customkey]
+            [i[0] for i in sorted(list(enumerate(values_)), key=customkey)]
         )
     ivy_torch = ivy.current_backend()
     values = ivy_torch.gather(values, sort_idx, axis=axis)
