@@ -155,16 +155,17 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
 
 
 def _shift_native_arrays_on_default_device(*args, **kwargs):
+    # This function was previously lambda function.
+    def shift_array(x):
+        if ivy.is_native_array(x) and ivy.dev(x) != default_device:
+            return ivy.to_device(x, default_device)
+        else:
+            return x
+
     with ivy.ArrayMode(False):
         default_device = ivy.default_device(as_native=True)
-        args, kwargs = ivy.nested_map(
-            lambda x: (
-                ivy.to_device(x, default_device)
-                if (ivy.is_native_array(x) and ivy.dev(x) != default_device)
-                else x
-            ),
-            [args, kwargs],
-        )
+        args, kwargs = ivy.nested_map(shift_array, [args, kwargs])
+
     return args, kwargs, default_device
 
 
