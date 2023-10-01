@@ -1,11 +1,17 @@
 # global
+from ctypes import Union
+from typing import Optional, Literal
+
 import numpy as np
 import torch
 from hypothesis import strategies as st, assume
+from numpy.random.mtrand import Sequence
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.backends import paddle
+from ivy.functional.backends.paddle import interpolate_linear
 from ivy_tests.test_ivy.helpers import handle_test
 
 
@@ -1083,6 +1089,21 @@ def test_interpolate(
         scale_factor=scale_factor,
         recompute_scale_factor=recompute_scale_factor,
     )
+
+
+def test_interpolate_linear(
+    x: paddle.Tensor,
+    size: Union[Sequence[int], int],
+    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
+    align_corners: Optional[bool] = False,
+    align_mode: int = 0,
+    data_format: str = "NCHW",
+    name: Optional[str] = None,
+):
+    assert paddle.nn.functional.interpolate(
+        x, size, scale_factor, mode, align_corners, align_mode, data_format, name
+    ) == interpolate_linear(x)
 
 
 @handle_test(
