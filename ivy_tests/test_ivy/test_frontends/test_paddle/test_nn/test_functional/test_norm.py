@@ -10,6 +10,40 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_norms import (
 )
 
 
+# batch_norm
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.batch_norm",
+    values_tuple=...,  # Generate appropriate test data for batch_norm
+    # Other hypothesis strategies, similar to the previous tests
+)
+def test_paddle_batch_norm(
+    *,
+    values_tuple,
+    test_flags,
+    frontend,
+    on_device,
+    backend_fw,
+    fn_tree,
+    # Other parameters
+):
+    # Unpack the values tuple
+    (dtype, x, weight, bias, running_mean, running_var) = values_tuple
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x[0],
+        weight=weight[0] if weight else None,
+        bias=bias[0] if bias else None,
+        running_mean=running_mean[0] if running_mean else None,
+        running_var=running_var[0] if running_var else None,
+        # Other parameters
+    )
+
+
 # instance_norm
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.instance_norm",
@@ -116,37 +150,3 @@ def test_paddle_normalize(
         p=p,
         axis=axis,
     )
-
-# batch_norm
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.batch_norm",
-    values_tuple=...  # Generate appropriate test data for batch_norm
-    # Other hypothesis strategies, similar to the previous tests
-)
-def test_paddle_batch_norm(
-    *,
-    values_tuple,
-    test_flags,
-    frontend,
-    on_device,
-    backend_fw,
-    fn_tree,
-    # Other parameters
-):
-    # Unpack the values tuple
-    (dtype, x, weight, bias, running_mean, running_var) = values_tuple
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        on_device=on_device,
-        fn_tree=fn_tree,
-        x=x[0],
-        weight=weight[0] if weight else None,
-        bias=bias[0] if bias else None,
-        running_mean=running_mean[0] if running_mean else None,
-        running_var=running_var[0] if running_var else None,
-        # Other parameters
-    )
-
