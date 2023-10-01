@@ -170,5 +170,5 @@ def binary_cross_entropy(
     input = tf.constant(input, dtype=input.dtype)
     target = tf.constant(target, dtype=input.dtype)
     weight = tf.constant(weight, dtype=input.dtype)
-    loss = -1 * weight *(target * tf.math.log(input) + (1 - target) * tf.math.log(1-input))
+    loss = -1.0 * weight *(target * tf.math.log(input) + (1 - target) * tf.math.log(1-input))
     return _apply_loss_reduction(loss, reduction)

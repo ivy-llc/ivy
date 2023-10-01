@@ -178,5 +178,5 @@ def binary_cross_entropy(
     input = np.asarray(input, dtype=input.dtype)
     target = np.asarray(target, dtype=input.dtype)
     weight = np.asarray(weight, dtype=input.dtype)
-    loss = -1 * weight * (target * np.log(input) + (1-target)*np.log(1-input))
+    loss = -1.0 * weight * (target * np.log(input) + (1-target)*np.log(1-input))
     return _apply_loss_reduction(loss, reduction)
