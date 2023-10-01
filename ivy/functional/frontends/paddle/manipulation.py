@@ -77,6 +77,16 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def one_hot(x, num_classes, name=None):
+    if not isinstance(num_classes, int) or num_classes <= 0:
+        raise ValueError("num_classes must be a positive integer.")
+
+    one_hot_tensor = ivy.one_hot(x, num_classes)
+    return one_hot_tensor.astype(ivy.float32)
+
+
 @to_ivy_arrays_and_back
 def repeat_interleave(x, repeats, axis=None, name=None):
     return ivy.repeat(x, repeats, axis=axis)
