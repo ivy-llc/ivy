@@ -1974,6 +1974,7 @@ def test_numpy_instance_ilshift__(
         on_device=on_device,
     )
 
+
 # __ilshift__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2023,7 +2024,8 @@ def test_numpy_instance_ilshift__(
         method_flags=method_flags,
         on_device=on_device,
     )
-    
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
