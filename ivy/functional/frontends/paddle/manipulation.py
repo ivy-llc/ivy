@@ -77,6 +77,14 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def gather_nd(x, index, name=None):
+    return ivy.gather_nd(x, index)
+
 
 @with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
 @to_ivy_arrays_and_back
@@ -86,16 +94,6 @@ def one_hot(x, num_classes, name=None):
 
     one_hot_tensor = ivy.one_hot(x, num_classes)
     return one_hot_tensor.astype(ivy.float32)
-
-
-
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def gather_nd(x, index, name=None):
-    return ivy.gather_nd(x, index)
 
 
 @to_ivy_arrays_and_back
@@ -108,7 +106,6 @@ def put_along_axis(arr, indices, values, axis, reduce="assign"):
     {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
     "paddle",
 )
-
 @to_ivy_arrays_and_back
 def repeat_interleave(x, repeats, axis=None, name=None):
     return ivy.repeat(x, repeats, axis=axis)
