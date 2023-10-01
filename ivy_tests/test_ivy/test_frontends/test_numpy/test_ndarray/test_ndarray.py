@@ -28,6 +28,9 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.te
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_manipulation_routines.test_changing_number_of_dimensions import (  # noqa
     _squeeze_helper,
 )
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    _statistical_dtype_values,
+)
 
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
 
@@ -1921,6 +1924,57 @@ def test_numpy_getitem(
     )
 
 
+# __ilshift__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__ilshift__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        max_dim_size=1,
+        max_value=2**31 - 1,
+    ),
+)
+def test_numpy_instance_ilshift__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    backend_fw,
+    on_device,
+):
+    input_dtypes, x = dtype_and_x
+    max_bits = np.iinfo(input_dtypes[0]).bits
+    max_shift = max_bits - 1
+    x[1] = np.asarray(np.clip(x[1], 0, max_shift), dtype=input_dtypes[1])
+    max_value_before_shift = 2 ** (max_bits - x[1]) - 1
+    overflow_threshold = 2 ** (max_bits - 1)
+    x[0] = np.asarray(
+        np.clip(x[0], None, max_value_before_shift), dtype=input_dtypes[0]
+    )
+    if np.any(x[0] > overflow_threshold):
+        x[0] = np.clip(x[0], None, overflow_threshold)
+    if np.any(x[0] < 0):
+        x[0] = np.abs(x[0])
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        backend_to_test=backend_fw,
+        method_all_as_kwargs_np={
+            "value": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -2766,16 +2820,16 @@ def test_numpy_ndarray_max(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="mean",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
-    ),
+    dtype_and_x=_statistical_dtype_values(function="mean"),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    where=np_frontend_helpers.where(),
+    keep_dims=st.booleans(),
 )
 def test_numpy_ndarray_mean(
-    dtype_x_axis,
+    dtype_and_x,
+    dtype,
+    where,
+    keep_dims,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -2783,18 +2837,25 @@ def test_numpy_ndarray_mean(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    input_dtypes, x, axis = dtype_and_x
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=method_flags,
+    )
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
-        method_input_dtypes=input_dtypes,
+        method_input_dtypes=input_dtypes[1:],
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_all_as_kwargs_np={
             "axis": axis,
-            "dtype": "float64",
+            "dtype": dtype[0],
             "out": None,
+            "keepdims": keep_dims,
+            "where": where,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,

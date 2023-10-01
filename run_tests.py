@@ -55,7 +55,7 @@ def get_latest_package_version(package_name):
         response.raise_for_status()
         package_info = response.json()
         return package_info["info"]["version"]
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException:
         print(f"Error: Failed to fetch package information for {package_name}.")
         return None
 
@@ -153,7 +153,9 @@ if __name__ == "__main__":
             if version_flag == "true":
                 backends = [backend.strip()]
                 [backend_name, backend_version] = backend.split("/")
-                other_backends = [fw for fw in BACKENDS if fw != backend_name]
+                other_backends = [
+                    fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
+                ]
                 for backend in other_backends:
                     backends.append(backend + "/" + get_latest_package_version(backend))
                 print("Backends:", backends)
@@ -161,9 +163,9 @@ if __name__ == "__main__":
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
                     ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
-                    ' /bin/bash -c "python docker/multiversion_framework_directory.py'
-                    f" {' '.join(backends)};pytest --tb=short"
-                    f' {test} --backend={backend}"'
+                    ' /bin/bash -c "cd docker;python'
+                    f" multiversion_framework_directory.py {' '.join(backends)};cd"
+                    f' ..;pytest --tb=short {test} --backend={backend}"'
                 )
             else:
                 if with_gpu:
