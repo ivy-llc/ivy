@@ -543,7 +543,7 @@ class Tensor:
         "paddle",
     )
     def diff(self, y, n=1, axis=-1, prepend=None, append=None, name=None):
-        self=ivy.diff(self._ivy_array, _to_ivy_array(y))
+        self = ivy.diff(self._ivy_array, _to_ivy_array(y))
         return self
 
     @with_unsupported_dtypes(
