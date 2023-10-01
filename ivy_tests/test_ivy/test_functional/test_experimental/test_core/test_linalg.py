@@ -691,6 +691,27 @@ def _truncated_svd_data(draw):
     return x_dtype, x[0], uv, n_eigen
 
 
+@st.composite
+def _tt_matrix_to_tensor_data(draw):
+    rank = 1
+    num_factors = draw(st.integers(min_value=1, max_value=3))
+    factor_dims = draw(
+        st.tuples(
+            st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3)
+        )
+    )
+    shape = (num_factors, rank, *factor_dims, rank)
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=1,
+            shape=shape,
+            shared_dtype=True,
+        )
+    )
+    return x_dtype, x
+
+
 # tucker
 @st.composite
 def _tucker_data(draw):
@@ -1701,6 +1722,25 @@ def test_truncated_svd(*, data, test_flags, backend_fw, fn_name, on_device):
             backend=backend_fw,
             ground_truth_backend=test_flags.ground_truth_backend,
         )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.tt_matrix_to_tensor",
+    data=_tt_matrix_to_tensor_data(),
+    test_gradients=st.just(False),
+)
+def test_tt_matrix_to_tensor(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = data
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e8,
+        atol_=1e8,
+        tt_matrix=x[0],
+    )
 
 
 @handle_test(

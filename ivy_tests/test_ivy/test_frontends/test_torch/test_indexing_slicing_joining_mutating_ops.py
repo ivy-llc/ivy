@@ -72,7 +72,7 @@ def _arrays_dim_idx_n_dtypes(draw):
         )
     )
 
-    xs = list()
+    xs = []
     available_input_types = draw(helpers.get_dtypes("numeric"))
     available_input_types.remove("float16")  # half summation unstable in backends
     input_dtypes = draw(
@@ -130,7 +130,7 @@ def _arrays_dim_idx_n_dtypes_extend(
         )
     )
 
-    xs = list()
+    xs = []
     available_input_types = draw(helpers.get_dtypes(support_dtypes))
 
     unstabled_dtypes = ["float16"]
@@ -182,7 +182,7 @@ def _arrays_idx_n_dtypes(draw):
             size=num_arrays,
         )
     )
-    xs = list()
+    xs = []
     input_dtypes = draw(
         helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
     )
@@ -410,6 +410,34 @@ def test_torch_chunk(
         input=x[0],
         chunks=chunks,
         dim=axis,
+    )
+
+
+# columnstack
+@handle_frontend_test(
+    fn_tree="torch.column_stack",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_columnstack(
+    *,
+    dtype_value,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=value,
     )
 
 

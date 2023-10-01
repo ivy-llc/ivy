@@ -117,8 +117,9 @@ class Linear(Module):
         return ivy.linear(x, self.v.w, bias=self.v.b if self._with_bias else None)
 
     def extra_repr(self) -> str:
-        return "in_features={}, out_features={}, with_bias={}".format(
-            self._input_channels, self._output_channels, self._with_bias is True
+        return (
+            f"in_features={self._input_channels}, out_features={self._output_channels},"
+            f" with_bias={self._with_bias is True}"
         )
 
 
@@ -2417,3 +2418,63 @@ class Identity(Module):
             The input array as it is.
         """
         return x
+
+
+class IFFT(Module):
+    def __init__(
+        self,
+        dim,
+        /,
+        *,
+        norm="backward",
+        n=None,
+        out=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying IFFT to input.
+
+        Parameters
+        ----------
+        dim : int
+            Dimension along which to take the IFFT.
+        norm : str
+            Optional argument indicating the normalization mode. Possible Values : "backward", "ortho" or "forward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+            Default: "backward"
+        n : int
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing IFFT.
+            Should be a integer greater than 1. Default: None
+        out : int
+            Size of the output. Default: None
+        """
+        self._dim = dim
+        self._norm = norm
+        self._n = n
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs : array
+            Input array to take the IFFT of.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.ifft(
+            inputs,
+            self._dim,
+            norm=self._norm,
+            n=self._n,
+            out=self._out,
+        )
