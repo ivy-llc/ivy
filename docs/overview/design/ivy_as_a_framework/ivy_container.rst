@@ -636,8 +636,7 @@ The following code is possible thanks to the recursive operation of the containe
         loss, grads = ivy.execute_with_gradients(
           loss_fn, model.v)
         model.v = model.v - lr * grads
-        print('step {} loss {}'.format(
-          step, ivy.to_numpy(loss).item()))
+        print(f'step {step} loss {ivy.to_numpy(loss).item()}')
 
     print(model.v)
 

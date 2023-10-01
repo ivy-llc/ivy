@@ -159,7 +159,7 @@ def check_docstring_examples_run(
         "set_nest_at_indices",
         "layer_norm",
         "where",
-        "compile",
+        "trace",
         "eigvalsh",
         "conv2d_transpose",
         # fails due to different backend and their view types
