@@ -3314,3 +3314,37 @@ def test_jax_vdot(
         a=x[0],
         b=x[1],
     )
+
+
+#polyval
+@handle_frontend_test(
+    fn_tree="jax.numpy.polyval",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+)
+def test_jax_polyval(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    assume("float16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        p=x[0],  # Pass the polynomial coefficients as input
+        x=x[1],  # Pass the x values as input
+    )
