@@ -206,6 +206,7 @@ def test_tensorflow_shuffle(
         seed=seed,
     )
 
+
 @handle_frontend_test(
     fn_tree="tensorflow.random.stateless_gamma",
     dtype=helpers.array_dtypes(
@@ -229,7 +230,6 @@ def test_tensorflow_shuffle(
     ),
     test_with_out=st.just(False),
 )
-
 def test_tensorflow_stateless_gamma(
     frontend,
     fn_tree,
