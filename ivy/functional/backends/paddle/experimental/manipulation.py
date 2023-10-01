@@ -14,11 +14,14 @@ from numbers import Number
 
 
 from .. import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_dtypes,
+    with_unsupported_dtypes,
+)
 import paddle
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_supported_device_and_dtypes
 from ivy.functional.ivy.experimental.manipulation import (
     _check_paddle_pad,
     _to_paddle_padding,
@@ -88,6 +91,17 @@ _i0B = [
 ]
 
 
+@with_unsupported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int16",
+            "int8",
+            "uint8",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def moveaxis(
     a: paddle.Tensor,
     source: Union[int, Sequence[int]],
@@ -101,8 +115,6 @@ def moveaxis(
         source = list(source)
     if isinstance(destination, tuple):
         source = list(destination)
-    if a.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
-        return paddle.moveaxis(a.cast("float32"), source, destination).cast(a.dtype)
     return paddle.moveaxis(a, source, destination)
 
 
@@ -186,6 +198,10 @@ def heaviside(
     return paddle.heaviside(x1, x2)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
+    backend_version,
+)
 def flipud(
     m: paddle.Tensor,
     /,
@@ -193,8 +209,6 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        return paddle.flip(m.cast("float32"), axis=0).cast(m.dtype)
     return paddle.flip(m, axis=0)
 
 
@@ -226,19 +240,8 @@ def hstack(
             return ivy.concat(arrays, axis=0)
 
 
-@with_supported_device_and_dtypes(
-    {
-        "2.5.1 and above": {
-            "cpu": (
-                "bool",
-                "int32",
-                "int64",
-                "float32",
-                "float64",
-            ),
-            "gpu": ("float16",),
-        },
-    },
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def rot90(
@@ -250,8 +253,6 @@ def rot90(
     axes: Optional[Tuple[int, int]] = (0, 1),
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if (k % 4) and m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        return paddle.rot90(m.cast("float32"), k=k, axes=axes).cast(m.dtype)
     return paddle.rot90(m, k=k, axes=axes)
 
 
@@ -282,6 +283,10 @@ def top_k(
         return topk_res(val, indices)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
+    backend_version,
+)
 def fliplr(
     m: paddle.Tensor,
     /,
@@ -289,8 +294,6 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        return paddle.flip(m.cast("float32"), axis=1).cast(m.dtype)
     return paddle.flip(m, axis=1)
 
 
@@ -473,12 +476,8 @@ def atleast_3d(
         return res
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8",)}},
-    backend_version,
-)
-@with_supported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int32", "int64", "float32", "float64")}},
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bfloat16", "bool", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def take_along_axis(
@@ -530,22 +529,10 @@ def take_along_axis(
             arr = ivy.concat([arr, fill_arr], axis=axis)
             indices = ivy.where(indices < 0, arr.shape[axis] + indices, indices)
 
-    if arr.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(arr):
-            return paddle.complex(
-                paddle.take_along_axis(arr.real(), indices, axis),
-                paddle.take_along_axis(arr.imag(), indices, axis),
-            )
-        return paddle.take_along_axis(arr.cast("float32"), indices, axis).cast(
-            arr.dtype
+    if paddle.is_complex(arr):
+        return paddle.complex(
+            paddle.take_along_axis(arr.real(), indices, axis),
+            paddle.take_along_axis(arr.imag(), indices, axis),
         )
     return paddle.take_along_axis(arr, indices, axis)
 

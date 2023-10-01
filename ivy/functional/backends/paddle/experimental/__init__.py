@@ -12,6 +12,7 @@ from .elementwise import *
 from .general import *
 from .gradients import *
 from .layers import *
+from .losses import *
 from .linear_algebra import *
 from .losses import *
 from .manipulation import *
