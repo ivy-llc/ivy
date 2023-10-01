@@ -10,6 +10,38 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_norms import (
 )
 
 
+# instance_norm
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.instance_norm",
+    values_tuple=...,  # Generate the appropriate test data for instance_norm
+    # Other hypothesis strategies, similar to the previous tests
+)
+def test_paddle_instance_norm(
+    *,
+    values_tuple,
+    test_flags,
+    frontend,
+    on_device,
+    backend_fw,
+    fn_tree,
+    # Other parameters
+):
+    # Unpack the values tuple
+    (dtype, x, weight, bias) = values_tuple
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x[0],
+        weight=weight[0] if weight else None,
+        bias=bias[0] if bias else None,
+        # Other parameters
+    )
+
+
 # layer_norm
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.layer_norm",
@@ -84,35 +116,3 @@ def test_paddle_normalize(
         p=p,
         axis=axis,
     )
-
-# instance_norm
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.instance_norm",
-    values_tuple=...  # Generate the appropriate test data for instance_norm
-    # Other hypothesis strategies, similar to the previous tests
-)
-def test_paddle_instance_norm(
-    *,
-    values_tuple,
-    test_flags,
-    frontend,
-    on_device,
-    backend_fw,
-    fn_tree,
-    # Other parameters
-):
-    # Unpack the values tuple
-    (dtype, x, weight, bias) = values_tuple
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        on_device=on_device,
-        fn_tree=fn_tree,
-        x=x[0],
-        weight=weight[0] if weight else None,
-        bias=bias[0] if bias else None,
-        # Other parameters
-    )
-
