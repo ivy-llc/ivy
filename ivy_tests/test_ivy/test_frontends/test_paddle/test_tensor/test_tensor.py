@@ -489,7 +489,7 @@ def test_paddle_tensor_add_(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_tensor_add_(
+def test_paddle_tensor_addmm(
     dtype_and_x,
     frontend_method_data,
     init_flags,
