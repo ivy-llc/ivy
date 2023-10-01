@@ -1,6 +1,8 @@
 # global
 from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 import paddle
+from hypothesis import given
+
 from ivy.functional.ivy.layers import (
     _handle_padding,
     _depth_max_pooling_helper,
@@ -661,3 +663,35 @@ def sliding_window(
     return paddle.nn.functional.unfold(
         input, kernel_size, strides=stride, paddings=padding, dilations=dilation
     )
+
+
+def interpolate_linear(
+    x: paddle.Tensor,
+    size: Union[Sequence[int], int],
+    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
+    align_corners: Optional[bool] = False,
+    align_mode: int = 0,
+    data_format: str = "NCHW",
+    name: Optional[str] = None,
+    out: Optional[paddle.Tensor] = None,
+):
+    return paddle.nn.functional.interpolate(
+        x, size, scale_factor, mode, align_corners, align_mode, data_format, name
+    )
+
+
+@given()
+def test_interpolate_linear(
+    x: paddle.Tensor,
+    size: Union[Sequence[int], int],
+    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
+    align_corners: Optional[bool] = False,
+    align_mode: int = 0,
+    data_format: str = "NCHW",
+    name: Optional[str] = None,
+):
+    assert paddle.nn.functional.interpolate(
+        x, size, scale_factor, mode, align_corners, align_mode, data_format, name
+    ) == interpolate(x)
