@@ -544,7 +544,7 @@ def test_frexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.gradient",
     dtype_n_x_n_axis=helpers.dtype_values_axis(
-        available_dtypes=("float32", "float16", "float64"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=2,
@@ -556,11 +556,19 @@ def test_frexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         min_value=-3,
         max_value=3,
     ),
+    edge_order=st.sampled_from([1, 2]),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
 def test_gradient(
-    *, dtype_n_x_n_axis, spacing, test_flags, backend_fw, fn_name, on_device
+    *,
+    dtype_n_x_n_axis,
+    spacing,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    edge_order,
 ):
     input_dtype, x, axis = dtype_n_x_n_axis
     helpers.test_function(
@@ -572,6 +580,7 @@ def test_gradient(
         x=x[0],
         spacing=spacing,
         axis=axis,
+        edge_order=edge_order,
     )
 
 
