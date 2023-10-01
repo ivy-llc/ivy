@@ -781,6 +781,8 @@ class Tensor:
     def mean(self, axis=None, keepdim=False, name=None):
         return paddle_frontend.mean(self, axis=axis, keepdim=keepdim)
 
+    
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def as_complex(self, name=None):
         if self.ivy_array.shape[-1] != 2:
@@ -845,6 +847,10 @@ class Tensor:
     )
     def unbind(self, axis=0):
         return paddle_frontend.unbind(self._ivy_array, axis=axis)
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def mode(self, axis=None, keepdim=False, name=None):
+        return paddle_frontend.mode(self, axis=axis, keepdim=keepdim)
 
     def cpu(self):
         self.ivy_array = ivy.to_device(self.ivy_array, ivy.as_ivy_dev("cpu"))
