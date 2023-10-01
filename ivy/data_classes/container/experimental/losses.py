@@ -1115,7 +1115,6 @@ class _ContainerWithLossesExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.binary_cross_entropy. This method simply wraps the
@@ -1129,7 +1128,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         target
             An array or container same shape as input with values between 0 and 1.
         weight
-            An array or container of size nbatch to rescale the loss of each batch element.
+            An array or container of batch_size to rescale the loss of each batch.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -1145,9 +1144,6 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
 
         Returns
         -------
@@ -1163,8 +1159,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
+            map_sequences=map_sequences
         )
 
     def binary_cross_entropy(
@@ -1177,8 +1172,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[ivy.Container] = None,
+        map_sequences: Union[bool, ivy.Container] = False
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.binary_cross_entropy. This method simply wraps
@@ -1192,7 +1186,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         target
             array or container with same shape as input with values between 0 and 1.
         weight
-            An array or container of size nbatch to rescale the loss of each batch element.
+            An array or container of batch_size to rescale the loss of each batch.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -1216,6 +1210,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         -------
         ret
             The binary cross entropy loss between input array and target values.
+        
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0.8,0.3,0.9]), b=ivy.array([0.6, 0.7, 0.9])
@@ -1235,6 +1230,5 @@ class _ContainerWithLossesExperimental(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
+            map_sequences=map_sequences
         )

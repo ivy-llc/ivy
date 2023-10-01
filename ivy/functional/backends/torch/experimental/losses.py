@@ -165,12 +165,10 @@ def binary_cross_entropy(
     *,
     weight: Optional[torch.Tensor] = None,
     reduction: Optional[str] = "mean",
-    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.nn.functional.binary_cross_entropy(
         input,
         target,
         weight=weight,
         reduction=reduction,
-        out = out
     )

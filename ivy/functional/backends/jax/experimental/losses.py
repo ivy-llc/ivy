@@ -161,12 +161,9 @@ def binary_cross_entropy(
     *,
     weight:Optional[JaxArray] = None,
     reduction: Optional[str] = "mean",
-    out: Optional[JaxArray] = None
 ) -> JaxArray:
-    loss = -1 * weight * (target * jnp.log(input) + (1-target)*jnp.log(1-input))
-
-    if reduction == "mean":
-        loss = jnp.mean(loss)
-    elif reduction == "sum":
-        loss = jnp.sum(loss)
-    return loss
+    input = jnp.asarray(input, dtype=input.dtype)
+    target = jnp.asarray(target, dtype=input.dtype)
+    weight = jnp.asarray(weight, dtype=input.dtype)
+    loss = -1.0 * weight * (target * jnp.log(input) + (1-target)*jnp.log(1-input))
+    return _apply_loss_reduction(loss, reduction)

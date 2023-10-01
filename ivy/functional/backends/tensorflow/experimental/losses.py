@@ -166,13 +166,9 @@ def binary_cross_entropy(
     *,
     weight: Optional[tf.Tensor] = None,
     reduction: Optional[str] = "mean",
-    out: Optional[tf.Tensor] = None
 ) -> tf.Tensor:
-
+    input = tf.constant(input, dtype=input.dtype)
+    target = tf.constant(target, dtype=input.dtype)
+    weight = tf.constant(weight, dtype=input.dtype)
     loss = -1 * weight *(target * tf.math.log(input) + (1 - target) * tf.math.log(1-input))
-
-    if reduction == "mean":
-        loss = tf.math.reduce_mean(loss)
-    elif reduction == "sum":
-        loss = tf.math.reduce_sum(loss)
-    return loss
+    return _apply_loss_reduction(loss, reduction)

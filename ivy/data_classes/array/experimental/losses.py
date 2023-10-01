@@ -380,7 +380,6 @@ class _ArrayWithLossesExperimental(abc.ABC):
         *,
         weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         reduction: Optional[str] = "mean",
-        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.binary_cross_entropy. This method simply wraps the
@@ -399,9 +398,6 @@ class _ArrayWithLossesExperimental(abc.ABC):
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
             ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
-        out
-            optional array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
 
         Returns 
         -------
@@ -417,4 +413,4 @@ class _ArrayWithLossesExperimental(abc.ABC):
         >>> print(z)
         ivy.array(0.5946)
         """
-        return ivy.binary_cross_entropy(self._data, target, weight = weight, reduction=reduction, out=out)
+        return ivy.binary_cross_entropy(self._data, target, weight = weight, reduction=reduction)
