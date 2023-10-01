@@ -185,14 +185,15 @@ def nanmean(
 nanmean.support_native_out = True
 
 
-# nanmin
 def nanmin(
     a: torch.Tensor,
     /,
     *,
-    dim: Optional[Union[int, Tuple[int]]] = None,
-    keepdim: bool = False,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
+    initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+    where: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     nan_mask = torch.isnan(a)
 
@@ -200,10 +201,10 @@ def nanmin(
     a[nan_mask] = float("inf")
 
     # Use PyTorch's reduction functions to find the minimum value
-    if dim is None:
+    if axis is None:
         result, _ = a.min(), None
     else:
-        result, _ = a.min(dim=dim, keepdim=keepdim)
+        result, _ = a.min(dim=axis, keepdim=keepdims)
 
     return result
 

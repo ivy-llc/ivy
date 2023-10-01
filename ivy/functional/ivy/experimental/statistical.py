@@ -253,11 +253,10 @@ def nanmean(
     )
 
 
-# nanmin
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
 @handle_out_argument
+@handle_nestable
+@handle_backend_invalid
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_device
 def nanmin(
@@ -265,10 +264,19 @@ def nanmin(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    return ivy.current_backend(a).nanmin(a, axis=axis, keepdims=keepdims, out=out)
+    return ivy.current_backend(a).nanmin(
+        a,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+        initial=initial,
+        where=where,
+    )
 
 
 @handle_exceptions
@@ -443,12 +451,6 @@ def corrcoef(
     return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device
 def nanmedian(
     input: ivy.Array,
     /,

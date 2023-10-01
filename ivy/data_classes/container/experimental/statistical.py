@@ -444,19 +444,20 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             self, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
 
-    # nanmin
     @staticmethod
     def static_nanmin(
         input: ivy.Container,
         /,
         *,
-        axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        keepdims: Optional[Union[bool, ivy.Container]] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Array] = None,
+        initial: Optional[Union[int, float, complex, ivy.Container]] = 1,
+        where: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "nanmin",
@@ -468,6 +469,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            initial=initial,
+            where=where,
         )
 
     @staticmethod
