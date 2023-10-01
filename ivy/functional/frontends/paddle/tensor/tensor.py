@@ -112,7 +112,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def add_n(self, inputs, name=None):
-        return paddle_frontend.Tensor(ivy.add_n(self, inputs))
+        inputs = ivy.array(inputs)
+        return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def ceil(self):
