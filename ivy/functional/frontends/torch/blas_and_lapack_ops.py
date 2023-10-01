@@ -1,6 +1,5 @@
 # global
 import ivy
-from torch import linalg as LA
 from ivy.func_wrapper import with_unsupported_dtypes
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
@@ -210,19 +209,19 @@ def trapezoid(y, x=None, *, dx=None, dim=-1):
     return ivy.trapz(y, x=x, dx=dx, axis=dim)
 
 
-@ivy.to_ivy_arrays_and_back
+@to_ivy_arrays_and_back
 def triangular_solve(A, b, upper=False, transpose=False, unitriangular=False):
     if upper:
         A = ivy.transpose(A, (-2, -1)) if transpose else A
-        "T" if transpose else "N"
+        op = "T" if transpose else "N"
     else:
         A = ivy.transpose(A, (-2, -1)) if not transpose else A
-        "N" if transpose else "T"
+        op = "N" if transpose else "T"
     if unitriangular:
         A = ivy.expand_dims(ivy.eye(A.shape[-1], dev_str=A.dev_str, f=A.f), axis=-3) * A
     if A.ndim == 2:
         A = ivy.expand_dims(A, axis=-3)
-    x, _ = LA.solve(A, b.unsqueeze(-1))
+    x, _ = ivy.solve(A, b.unsqueeze(-1))
     return x.squeeze(-1)
 
 
