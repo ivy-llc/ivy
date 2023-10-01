@@ -673,6 +673,36 @@ def test_torch_inv_ex(
     )
 
 
+# ldl_factor
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.ldl_factor",
+    input_dtype_and_input=_get_dtype_and_matrix(batch=True),
+)
+def test_torch_ldl_factor(
+    *,
+    input_dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, input = input_dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        atol=1e-02,
+        A=input[0],
+    )
+
+
 # lu_factor
 @handle_frontend_test(
     fn_tree="torch.linalg.lu_factor",
@@ -1341,32 +1371,4 @@ def test_torch_vector_norm(
         dim=axis,
         keepdim=kd,
         dtype=dtype[0],
-    )
-
-#ldl_factor
-
-@handle_frontend_test(
-    fn_tree="torch.linalg.ldl_factor",
-    input_dtype_and_input=_get_dtype_and_matrix(batch=True),
-)
-def test_torch_ldl_factor(
-    *,
-    input_dtype_and_input,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtype, input = input_dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-03,
-        atol=1e-02,
-        A=input[0],
     )
