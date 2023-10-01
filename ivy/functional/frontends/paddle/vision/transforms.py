@@ -1,7 +1,7 @@
 import ivy
 from ivy.func_wrapper import (
     with_supported_dtypes,
-    with_unsupported_device_and_dtypes,
+    with_unsupported_device_and_dtypes, 
 )
 from ..tensor.tensor import Tensor
 from ivy.functional.frontends.paddle.func_wrapper import (
@@ -117,24 +117,6 @@ def adjust_brightness(img, brightness_factor):
     return _blend_images(img, extreme_target, brightness_factor)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
-)
-def adjust_contrast(img, contrast_factor):
-    assert contrast_factor >= 0, "contrast_factor should be non-negative"
-    mean = ivy.mean(img)
-    channels = _get_image_num_channels(img, "CHW")
-    if channels == 1:
-        return img
-    elif channels == 3:
-        if ivy.dtype(img) == "uint8":
-            img = ivy.astype(img, "float32") / 255.0
-        adjusted_image = ivy.subtract(img, mean) * ivy.add(contrast_factor, mean)
-    else:
-        raise ValueError("channels of input should be either 1 or 3.")
-    return adjusted_image
-
-
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64", "uint8")}, "paddle")
 @to_ivy_arrays_and_back
 def adjust_hue(img, hue_factor):
@@ -145,7 +127,7 @@ def adjust_hue(img, hue_factor):
     if channels == 1:
         return img
     elif channels == 3:
-        if ivy.dtype(img) == "uint8":
+        if ivy.dtype(img) == "uint8":                                      
             img = ivy.astype(img, "float32") / 255.0
 
         img_hsv = _rgb_to_hsv(img)
@@ -212,3 +194,27 @@ def vflip(img, data_format="CHW"):
     elif data_format.lower() == "hwc":
         axis = -3
     return ivy.flip(img, axis=axis)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+def adjust_contrast(img, contrast_factor):
+    assert contrast_factor >= 0, "contrast_factor should be non-negative"
+
+    mean = ivy.mean(img)
+
+    channels = _get_image_num_channels(img, "CHW")
+
+    if channels == 1:
+        return img
+    elif channels == 3:
+        if ivy.dtype(img) == "uint8":
+            img = ivy.astype(img, "float32") / 255.0
+
+        adjusted_image = ivy.subtract(img, mean) * ivy.add(contrast_factor, mean)
+
+    else:
+        raise ValueError("channels of input should be either 1 or 3.")
+
+    return adjusted_image
