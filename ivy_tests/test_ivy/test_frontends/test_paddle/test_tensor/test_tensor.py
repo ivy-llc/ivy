@@ -1656,6 +1656,47 @@ def test_paddle_tensor_device(
     )
 
 
+# diagonal
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="diagonal",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=st.one_of(helpers.get_dtypes("numeric")),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=50,
+    ),
+    offset=helpers.ints(min_value=-10, max_value=50),
+    axes=st.lists(
+        helpers.ints(min_value=-2, max_value=1), min_size=2, max_size=2, unique=True
+    ).filter(lambda axes: axes[0] % 2 != axes[1] % 2),
+)
+def test_paddle_tensor_diagonal(
+    dtype_x_axis,
+    offset,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        a=x[0],
+        offset=offset,
+        axis1=axis[0],
+        axis2=axis[1],
+    )
+
+
 # digamma
 @handle_frontend_method(
     class_tree=CLASS_TREE,
