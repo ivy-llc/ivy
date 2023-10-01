@@ -330,6 +330,16 @@ def cumsum(operand, axis=None, reverse=False):
     return ivy.cumsum(operand, axis=axis, dtype=operand.dtype)
 
 
+@with_unsupported_dtypes(
+    {"0.4.16 and below": ("bfloat16", "float16", "bool", "complex64", "complex128")},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def digamma(x, name=None):
+    digamma_fun = ivy.digamma
+    return ivy.array(digamma_fun(x), dtype=x.dtype)
+
+
 @to_ivy_arrays_and_back
 def div(x, y):
     return ivy.astype(ivy.divide(x, y), x.dtype)
