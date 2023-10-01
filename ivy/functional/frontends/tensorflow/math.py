@@ -10,7 +10,6 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_tf_dtype,
     to_ivy_dtype,
-    inputs_to_ivy_arrays,
 )
 
 
@@ -210,7 +209,6 @@ def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
 
-@inputs_to_ivy_arrays
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.13.0 and below": ("float16", "float32", "float64")}, "tensorflow"
