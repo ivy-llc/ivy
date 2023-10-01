@@ -324,11 +324,13 @@ def _generate_solve_triangular_args(draw):
     a = a[0]
     b = b[0]
     upper = draw(st.booleans())
+    adjoint = draw(st.booleans())
+    unit_diagonal = draw(st.booleans())
 
     for i in range(shape_a[-2]):
         a[ivy.abs(a[..., i, i]) < 0.01, i, i] = 0.01  # Make diagonals non-zero
 
-    return upper, [dtype_a, dtype_b], [a, b]
+    return upper, adjoint, unit_diagonal, [dtype_a, dtype_b], [a, b]
 
 
 @st.composite
@@ -1547,7 +1549,7 @@ def test_partial_tucker_tensorly(tol_norm_2, tol_max_abs, modes, shape):
     test_instance_method=st.just(False),
 )
 def test_solve_triangular(*, data, test_flags, backend_fw, fn_name, on_device):
-    upper, input_dtypes, x = data
+    upper, adjoint, unit_diagonal, input_dtypes, x = data
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -1559,6 +1561,8 @@ def test_solve_triangular(*, data, test_flags, backend_fw, fn_name, on_device):
         x1=x[0],
         x2=x[1],
         upper=upper,
+        adjoint=adjoint,
+        unit_diagonal=unit_diagonal,
     )
 
 

@@ -478,6 +478,8 @@ def solve_triangular(
     /,
     *,
     upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -490,7 +492,11 @@ def solve_triangular(
     x2
         Right-hand side array B of shape (..., N, K).
     upper
-        Whether A is upper triangular.
+        Whether the input `x1` is upper triangular.
+    adjoint
+        Whether to take the adjoint (conjugate transpose) of `x1` as the matrix A.
+    unit_diagonal
+        Whether to ignore the diagonal entries of A and assume them all equal to 1.
     out
         Optional output array. If provided, the output array to store the result.
 
@@ -518,7 +524,9 @@ def solve_triangular(
                [4.],
                [2.]])
     """
-    return current_backend(x1, x2).solve_triangular(x1, x2, upper=upper, out=out)
+    return current_backend(x1, x2).solve_triangular(
+        x1, x2, upper=upper, adjoint=adjoint, unit_diagonal=unit_diagonal, out=out
+    )
 
 
 @handle_exceptions

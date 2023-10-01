@@ -149,12 +149,17 @@ def adjoint(
     return np.conjugate(np.transpose(x, axes=axes))
 
 
+_adjoint = adjoint
+
+
 def solve_triangular(
     x1: np.ndarray,
     x2: np.ndarray,
     /,
     *,
     upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     # NumPy does not expose an API for `trsm`, so we have to implement substitution
@@ -162,6 +167,15 @@ def solve_triangular(
     # Pre: `x1` is square, `x1` and `x2` have the same number `n` of rows.
     n = x1.shape[-2]
     ret = x2.copy()
+
+    if adjoint:
+        x1 = _adjoint(x1)
+        upper = not upper
+
+    if unit_diagonal:
+        for i in range(n):
+            x1[..., i, i] = 1
+
     if upper:
         for i in reversed(range(n)):
             ret[..., i, :] /= x1[..., i, np.newaxis, i]
@@ -172,6 +186,7 @@ def solve_triangular(
             ret[..., i + 1 :, :] -= (
                 x1[..., i + 1 :, np.newaxis, i] * ret[..., np.newaxis, i, :]
             )
+
     return ret
 
 

@@ -161,9 +161,16 @@ def solve_triangular(
     /,
     *,
     upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.linalg.solve_triangular(x1, x2, upper=upper, left=True, out=out)
+    if adjoint:
+        x1 = torch.adjoint(x1)
+        upper = not upper
+    return torch.linalg.solve_triangular(
+        x1, x2, upper=upper, unitriangular=unit_diagonal, out=out
+    )
 
 
 solve_triangular.support_native_out = True

@@ -138,9 +138,17 @@ def solve_triangular(
     /,
     *,
     upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jla.solve_triangular(x1, x2, lower=not upper, trans=0)
+    return jla.solve_triangular(
+        x1,
+        x2,
+        lower=not upper,
+        trans="C" if adjoint else "N",
+        unit_diagonal=unit_diagonal,
+    )
 
 
 def multi_dot(

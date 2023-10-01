@@ -133,9 +133,15 @@ def solve_triangular(
     /,
     *,
     upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.linalg.triangular_solve(x1, x2, lower=not upper, adjoint=False)
+    # Multiplying with a mask matrix can stop gradients on the diagonal.
+    if unit_diagonal:
+        w = tf.constant(tf.eye(x1.shape[-2], batch_shape=x1.shape[:-2], dtype=x1.dtype))
+        x1 = w + (1 - w) * x1
+    return tf.linalg.triangular_solve(x1, x2, lower=not upper, adjoint=adjoint)
 
 
 @with_supported_dtypes(
