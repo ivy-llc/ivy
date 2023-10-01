@@ -694,4 +694,4 @@ def test_interpolate_linear(
 ):
     assert paddle.nn.functional.interpolate(
         x, size, scale_factor, mode, align_corners, align_mode, data_format, name
-    ) == interpolate(x)
+    ) == interpolate_linear(x)
