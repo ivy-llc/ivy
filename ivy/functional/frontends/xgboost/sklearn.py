@@ -259,7 +259,8 @@ class XGBModel(XGBModelBase):
         prediction
 
         """
-        # skip the validation, as for now we simply call the predict method of underlying booster
+        # skip the validation, as for now we simply call the predict method of
+        # underlying booster
         return self.get_booster().predict(
             data=X,
             iteration_range=iteration_range,
@@ -269,7 +270,7 @@ class XGBModel(XGBModelBase):
 
 
 class XGBClassifier(XGBModel, XGBClassifierBase):
-    # as for now simply calls the init method of a parent class, because we implement a minimal
-    # subset of functionality
+    # as for now simply calls the init method of a parent class, because we implement a
+    # minimal subset of functionality
     def __init__(self, *, objective="binary:logistic", **kwargs):
         super().__init__(objective=objective, **kwargs)
