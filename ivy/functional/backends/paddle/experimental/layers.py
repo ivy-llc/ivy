@@ -500,27 +500,33 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if hop_length <= 0:
-        hop_length = 1
-
-    if win_length is None:
-        win_length = n_fft
+    if axis is None:
+        axis = -1
+    
+    if  hop_length <= 0:
+        hop_length = 1      
 
     if len(signal) < n_fft:
-        n_fft = len(signal)
-        win_length = n_fft
+        raise ValueError("Value of n_fft must less than or equal length of the signal")
+    
+    if window.shape[0] != win_length:
+        raise ValueError("Value of win_length must be equal to length of window") 
 
-    if len(window) != win_length:
-        win_length = len(window)
-        n_fft = win_length
+    if win_length is None:
+        win_length = n_fft     
 
-    if window is None:
+    if win_length > n_fft:
+        raise ValueError("Value of win_length must be less then or equal to n_fft")
+
+    if window is None or window is paddle.Tensor:
         window = paddle.ones([win_length], dtype=signal.dtype)
 
-    if len(window) > len(signal):
+    if window.shape[0] > len(signal):
         window = signal
+        n_fft = len(signal)
+        win_length = n_fft 
         window = paddle.ones([win_length], dtype=signal.dtype)
-
+        
     return paddle.signal.stft(
         signal,
         n_fft,
