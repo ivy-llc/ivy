@@ -15,6 +15,8 @@ from ivy.functional.frontends.jax.func_wrapper import (
 
 
 def _get_seed(key):
+    if "PRNGKeyArray" in repr(key):
+        key = key._base_array
     key1, key2 = int(key[0]), int(key[1])
     return ivy.to_scalar(int("".join(map(str, [key1, key2]))))
 
@@ -183,6 +185,8 @@ def exponential(key, shape=(), dtype="float64"):
 
 @to_ivy_arrays_and_back
 def fold_in(key, data):
+    if "PRNGKeyArray" in repr(key):
+        key = key._base_array
     s = ivy.bitwise_left_shift(
         ivy.asarray(data, dtype=ivy.uint32), ivy.array(32, dtype=ivy.uint32)
     )
