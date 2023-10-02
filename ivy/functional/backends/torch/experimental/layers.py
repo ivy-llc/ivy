@@ -1015,46 +1015,45 @@ def stft(
 ) -> torch.Tensor:
     if axis is None:
         axis = -1
-    
-    if  hop_length <= 0:
-        hop_length = 1      
+
+    if hop_length <= 0:
+        hop_length = 1
 
     if len(signal) < n_fft:
         raise ValueError("Value of n_fft must less than or equal length of the signal")
-    
+
     if window.shape[0] != win_length:
-        raise ValueError("Value of win_length must be equal to length of window") 
+        raise ValueError("Value of win_length must be equal to length of window")
 
     if win_length is None:
-        win_length = n_fft     
+        win_length = n_fft
 
     if win_length > n_fft:
         raise ValueError("Value of win_length must be less then or equal to n_fft")
 
     if window is None or window is torch.Tensor:
         window = torch.hann_window(n_fft, dtype=torch.float32)
-    
+
     if window.shape[0] > len(signal):
         window = signal
         n_fft = len(signal)
-        win_length = n_fft 
+        win_length = n_fft
         window = torch.hann_window(n_fft, dtype=torch.float32)
-    
-    return_complex = True  
+
+    return_complex = True
 
     return torch.stft(
-            signal,
-            n_fft,
-            hop_length,
-            win_length,
-            window,
-            center,
-            pad_mode,
-            normalized,
-            onesided,
-            return_complex,
+        signal,
+        n_fft,
+        hop_length,
+        win_length,
+        window,
+        center,
+        pad_mode,
+        normalized,
+        onesided,
+        return_complex,
     )
-        
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
