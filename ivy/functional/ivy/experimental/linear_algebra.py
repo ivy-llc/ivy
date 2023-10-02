@@ -161,6 +161,7 @@ def eigh_tridiagonal(
         return eigenvalues
     return eigenvalues, eigenvectors
 
+
 @handle_exceptions
 @handle_nestable
 @handle_backend_invalid
@@ -171,7 +172,7 @@ def eigh_tridiagonal(
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-     *,
+    *,
     offset: int = 0,
     padding_value: float = 0,
     align: str = "RIGHT_LEFT",
@@ -184,7 +185,7 @@ def diagflat(
 
     Parameters
     ----------
-      
+
        x
         Input data, which is flattened and set as the k-th diagonal of the output.
     k
