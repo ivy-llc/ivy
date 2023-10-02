@@ -124,6 +124,7 @@ def to_list(x: JaxArray, /) -> list:
 
 # ivy/utils/assertions.py
 
+
 def get_positive_axis_for_gather(axis, ndims):
     if not isinstance(axis, int):
         raise TypeError(f"{axis} must be an int; got {type(axis).__name__}")
@@ -133,14 +134,16 @@ def get_positive_axis_for_gather(axis, ndims):
         elif -ndims <= axis < 0:
             return axis + ndims
         else:
-            raise ValueError(f"{axis}={axis} out of bounds: "
-                             f"expected {-ndims}<={axis}<{ndims}")
+            raise ValueError(
+                f"{axis}={axis} out of bounds: expected {-ndims}<={axis}<{ndims}"
+            )
     elif axis < 0:
-        raise ValueError(f"{axis} may only be negative "
-                         f"if {ndims} is statically known.")
+        raise ValueError(f"{axis} may only be negative if {ndims} is statically known.")
     return axis
 
+
 # ivy/functional/backends/jax/general.py
+
 
 def gather(
     params: JaxArray,
@@ -173,7 +176,9 @@ def gather(
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
     return result
 
+
 # ivy/functional/backends/jax/general.py
+
 
 def gather(
     params: JaxArray,
