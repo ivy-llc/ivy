@@ -83,7 +83,7 @@ def elu(
     return ret
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
 def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jax.nn.sigmoid(x)
     if ivy.exists(out):

@@ -461,7 +461,7 @@ def qr(
     out: Optional[
         Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]
     ] = None,
-) -> NamedTuple:
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = tf.linalg.qr(x, full_matrices=False)
@@ -570,9 +570,7 @@ def svdvals(
     return ret
 
 
-@with_supported_dtypes({"2.13.0 and below": (
-        "float32",
-)}, backend_version)
+@with_supported_dtypes({"2.13.0 and below": ("float32",)}, backend_version)
 def tensordot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
