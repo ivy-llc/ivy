@@ -1,6 +1,6 @@
 # global
 import logging
-from typing import Union, Optional, Tuple, List, Sequence, Literal
+from typing import Union, Optional, Tuple, List, Sequence, Literal, Callable
 
 # local
 import ivy
@@ -17,6 +17,7 @@ from ivy.func_wrapper import (
 )
 from ivy.utils.exceptions import handle_exceptions
 
+
 # Helpers #
 # ------- #
 
@@ -30,16 +31,16 @@ def _check_valid_dimension_size(std):
 @handle_array_like_without_promotion
 @handle_array_function
 def eigh_tridiagonal(
-    alpha: Union[ivy.Array, ivy.NativeArray],
-    beta: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    eigvals_only: bool = True,
-    select: str = "a",
-    select_range: Optional[
-        Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]
-    ] = None,
-    tol: Optional[float] = None,
+        alpha: Union[ivy.Array, ivy.NativeArray],
+        beta: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        eigvals_only: bool = True,
+        select: str = "a",
+        select_range: Optional[
+            Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]
+        ] = None,
+        tol: Optional[float] = None,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
     """
     Compute the eigenvalues and eigenvectors of a Hermitian tridiagonal matrix.
@@ -147,8 +148,8 @@ def eigh_tridiagonal(
     eigenvectors = eigh_out.eigenvectors
 
     if select == "i":
-        eigenvalues = eigenvalues[select_range[0] : select_range[1] + 1]
-        eigenvectors = eigenvectors[:, select_range[0] : select_range[1] + 1]
+        eigenvalues = eigenvalues[select_range[0]: select_range[1] + 1]
+        eigenvectors = eigenvectors[:, select_range[0]: select_range[1] + 1]
     elif select == "v":
         condition = ivy.logical_and(
             eigenvalues.greater(select_range[0]),
@@ -170,15 +171,15 @@ def eigh_tridiagonal(
 @to_native_arrays_and_back
 @handle_device
 def diagflat(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: int = -1,
-    num_cols: int = -1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        offset: int = 0,
+        padding_value: float = 0,
+        align: str = "RIGHT_LEFT",
+        num_rows: int = -1,
+        num_cols: int = -1,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """
     Return a two-dimensional array with the flattened input as a diagonal.
@@ -237,11 +238,11 @@ def diagflat(
 @to_native_arrays_and_back
 @handle_device
 def kron(
-    a: Union[ivy.Array, ivy.NativeArray],
-    b: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        a: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the Kronecker product, a composite array made of blocks of the second array
@@ -280,10 +281,10 @@ def kron(
 @to_native_arrays_and_back
 @handle_device
 def matrix_exp(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the matrix exponential of a square matrix.
@@ -323,8 +324,8 @@ def matrix_exp(
 @to_native_arrays_and_back
 @handle_device
 def eig(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
 ) -> Tuple[ivy.Array]:
     """Compute eigenvalies and eigenvectors of x. Returns a tuple with two
     elements: first is the set of eigenvalues, second is the set of
@@ -387,8 +388,8 @@ def eig(
 @to_native_arrays_and_back
 @handle_device
 def eigvals(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
 ) -> ivy.Array:
     """
     Compute eigenvalues of x. Returns a set of eigenvalues.
@@ -432,10 +433,10 @@ def eigvals(
 @to_native_arrays_and_back
 @handle_device
 def adjoint(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the complex conjugate transpose of x.
@@ -471,10 +472,10 @@ def adjoint(
 @handle_out_argument
 @to_native_arrays_and_back
 def multi_dot(
-    x: Sequence[Union[ivy.Array, ivy.NativeArray]],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        x: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the dot product of two or more matrices in a single function call, while
@@ -531,11 +532,11 @@ multi_dot.mixed_backend_wrappers = {
 @to_native_arrays_and_back
 @handle_device
 def cond(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    p: Optional[Union[int, float, str]] = None,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        p: Optional[Union[int, float, str]] = None,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the condition number of x.
@@ -580,10 +581,10 @@ def cond(
 @to_native_arrays_and_back
 @handle_device
 def kronecker(
-    x: Sequence[Union[ivy.Array, ivy.NativeArray]],
-    skip_matrix: Optional[int] = None,
-    reverse: Optional[bool] = False,
-    out: Optional[ivy.Array] = None,
+        x: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        skip_matrix: Optional[int] = None,
+        reverse: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Kronecker product of a list of matrices.
@@ -630,11 +631,11 @@ def kronecker(
 @handle_array_function
 @handle_device
 def khatri_rao(
-    x: Sequence[Union[ivy.Array, ivy.NativeArray]],
-    weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    skip_matrix: Optional[Sequence[int]] = None,
-    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    out: Optional[ivy.Array] = None,
+        x: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        skip_matrix: Optional[Sequence[int]] = None,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Khatri-Rao product of a sequence of matrices.
@@ -733,13 +734,13 @@ def khatri_rao(
 @handle_array_function
 @handle_device
 def mode_dot(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    matrix_or_vector: Union[ivy.Array, ivy.NativeArray],
-    mode: int,
-    transpose: Optional[bool] = False,
-    *,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        matrix_or_vector: Union[ivy.Array, ivy.NativeArray],
+        mode: int,
+        transpose: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     N-mode product of a tensor and a matrix or vector at the specified mode.
@@ -826,14 +827,14 @@ def mode_dot(
 @handle_array_function
 @handle_device
 def multi_mode_dot(
-    x: Union[ivy.Array, ivy.NativeArray],
-    mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
-    /,
-    modes: Optional[Sequence[int]] = None,
-    skip: Optional[Sequence[int]] = None,
-    transpose: Optional[bool] = False,
-    *,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        modes: Optional[Sequence[int]] = None,
+        skip: Optional[Sequence[int]] = None,
+        transpose: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""
     N-mode product of a tensor and several matrices or vectors over several modes.
@@ -951,10 +952,10 @@ def _svd_checks(x, n_eigenvecs=None):
 @handle_array_function
 @handle_device
 def svd_flip(
-    U: Union[ivy.Array, ivy.NativeArray],
-    V: Union[ivy.Array, ivy.NativeArray],
-    /,
-    u_based_decision: Optional[bool] = True,
+        U: Union[ivy.Array, ivy.NativeArray],
+        V: Union[ivy.Array, ivy.NativeArray],
+        /,
+        u_based_decision: Optional[bool] = True,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
     Sign correction to ensure deterministic output from SVD. Adjusts the columns of u
@@ -1021,13 +1022,13 @@ def svd_flip(
 @handle_array_function
 @handle_device
 def make_svd_non_negative(
-    x: Union[ivy.Array, ivy.NativeArray],
-    U: Union[ivy.Array, ivy.NativeArray],
-    S: Union[ivy.Array, ivy.NativeArray],
-    V: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
+        x: Union[ivy.Array, ivy.NativeArray],
+        U: Union[ivy.Array, ivy.NativeArray],
+        S: Union[ivy.Array, ivy.NativeArray],
+        V: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
     Use NNDSVD method to transform SVD results into a non-negative form. This method
@@ -1116,10 +1117,10 @@ def make_svd_non_negative(
 @handle_array_function
 @handle_device
 def truncated_svd(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    compute_uv: bool = True,
-    n_eigenvecs: Optional[int] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        compute_uv: bool = True,
+        n_eigenvecs: Optional[int] = None,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array, ivy.Array]]:
     """
     Compute a truncated SVD on `x` using the standard SVD.
@@ -1156,15 +1157,15 @@ def truncated_svd(
 # TODO uncommment the code below when these svd
 # methods have been added
 def _svd_interface(
-    matrix,
-    method="truncated_svd",
-    n_eigenvecs=None,
-    flip_sign=True,
-    u_based_flip_sign=True,
-    non_negative=None,
-    mask=None,
-    n_iter_mask_imputation=5,
-    **kwargs,
+        matrix,
+        method="truncated_svd",
+        n_eigenvecs=None,
+        flip_sign=True,
+        u_based_flip_sign=True,
+        non_negative=None,
+        mask=None,
+        n_iter_mask_imputation=5,
+        **kwargs,
 ):
     if method == "truncated_svd":
         svd_fun = truncated_svd
@@ -1177,10 +1178,16 @@ def _svd_interface(
     else:
         raise ValueError("Invalid Choice")
 
-    U, S, V = svd_fun(matrix, n_eigenvecs=n_eigenvecs, **kwargs)
     if mask is not None and n_eigenvecs is not None:
         for _ in range(n_iter_mask_imputation):
-            S = S * ivy.eye(U.shape[-1], V.shape[-2])
+            # replace with the commented code bewlo when ivy.fill_digonal
+            # has been updated to support fill value as an array
+            # S = ivy.fill_diagonal(ivy.eye(U.shape[-1], V.shape[-2]), S)
+            max_index = min(U.shape[-1], V.shape[-2])
+            indices = ivy.arange(max_index)
+            identity = ivy.eye(U.shape[-1], V.shape[-2])
+            identity[indices, indices] = S
+            S = identity
             matrix = matrix * mask + (U @ S @ V) * (1 - mask)
             U, S, V = svd_fun(matrix, n_eigenvecs=n_eigenvecs, **kwargs)
 
@@ -1206,23 +1213,24 @@ def _svd_interface(
 @handle_array_function
 @handle_device
 def initialize_tucker(
-    x: Union[ivy.Array, ivy.NativeArray],
-    rank: Sequence[int],
-    modes: Sequence[int],
-    /,
-    *,
-    init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
-    seed: Optional[int] = None,
-    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
-    non_negative: Optional[bool] = False,
-    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    svd_mask_repeats: Optional[int] = 5,
+        x: Union[ivy.Array, ivy.NativeArray],
+        rank: Sequence[int],
+        modes: Sequence[int],
+        /,
+        *,
+        init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+        seed: Optional[int] = None,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        non_negative: Optional[bool] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
 ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
     """
     Initialize core and factors used in `tucker`. The type of initialization is set
-    using `init`. If `init == 'random'` then initialize factor matrices using
-    `random_state`. If `init == 'svd'` then initialize the `m`th factor matrix using the
-    `rank` left singular vectors of the `m`th unfolding of the input tensor.
+    using `init`. If `init == 'random'` then initialize factor matrices using from
+    uniform distribution using the given seed. If `init == 'svd'` then initialize the
+    `m`th factor matrix using the `rank` left singular vectors of the `m`th unfolding of
+    the input tensor.
 
     Parameters
     ----------
@@ -1286,12 +1294,12 @@ def initialize_tucker(
 
     elif init == "random":
         core = (
-            ivy.random_uniform(
-                shape=[rank[index] for index in range(len(modes))],
-                dtype=x.dtype,
-                seed=seed,
-            )
-            + 0.01
+                ivy.random_uniform(
+                    shape=[rank[index] for index in range(len(modes))],
+                    dtype=x.dtype,
+                    seed=seed,
+                )
+                + 0.01
         )
         factors = [
             ivy.random_uniform(
@@ -1319,20 +1327,20 @@ def initialize_tucker(
 @handle_array_function
 @handle_device
 def partial_tucker(
-    x: Union[ivy.Array, ivy.NativeArray],
-    rank: Optional[Sequence[int]] = None,
-    modes: Optional[Sequence[int]] = None,
-    /,
-    *,
-    n_iter_max: Optional[int] = 100,
-    init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
-    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
-    seed: Optional[int] = None,
-    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    svd_mask_repeats: Optional[int] = 5,
-    tol: Optional[float] = 10e-5,
-    verbose: Optional[bool] = False,
-    return_errors: Optional[bool] = False,
+        x: Union[ivy.Array, ivy.NativeArray],
+        rank: Optional[Sequence[int]] = None,
+        modes: Optional[Sequence[int]] = None,
+        /,
+        *,
+        n_iter_max: Optional[int] = 100,
+        init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        seed: Optional[int] = None,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+        tol: Optional[float] = 10e-5,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
 ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
     """
     Partial tucker decomposition via Higher Order Orthogonal Iteration (HOI)
@@ -1417,7 +1425,7 @@ def partial_tucker(
     )
 
     rec_errors = []
-    norm_tensor = ivy.sqrt(ivy.sum(x**2))
+    norm_tensor = ivy.sqrt(ivy.sum(x ** 2))
 
     for iteration in range(n_iter_max):
         if mask is not None:
@@ -1440,8 +1448,8 @@ def partial_tucker(
 
         # The factors are orthonormal and
         #  therefore do not affect the reconstructed tensor's norm
-        norm_core = ivy.sqrt(ivy.sum(core**2))
-        rec_error = ivy.sqrt(abs(norm_tensor**2 - norm_core**2)) / norm_tensor
+        norm_core = ivy.sqrt(ivy.sum(core ** 2))
+        rec_error = ivy.sqrt(abs(norm_tensor ** 2 - norm_core ** 2)) / norm_tensor
         rec_errors.append(rec_error)
 
         if iteration > 1:
@@ -1468,21 +1476,21 @@ def partial_tucker(
 @handle_array_function
 @handle_device
 def tucker(
-    x: Union[ivy.Array, ivy.NativeArray],
-    rank: Optional[Sequence[int]] = None,
-    /,
-    *,
-    fixed_factors: Optional[Sequence[int]] = None,
-    n_iter_max: Optional[int] = 100,
-    init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
-    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
-    seed: Optional[int] = None,
-    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    svd_mask_repeats: Optional[int] = 5,
-    tol: Optional[float] = 10e-5,
-    verbose: Optional[bool] = False,
-    return_errors: Optional[bool] = False,
-):
+        x: Union[ivy.Array, ivy.NativeArray],
+        rank: Optional[Sequence[int]] = None,
+        /,
+        *,
+        fixed_factors: Optional[Sequence[int]] = None,
+        n_iter_max: Optional[int] = 100,
+        init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        seed: Optional[int] = None,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+        tol: Optional[float] = 10e-5,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
+) -> Union[ivy.TuckerTensor, Tuple[ivy.TuckerTensor, List]]:
     """
     Tucker decomposition via Higher Order Orthogonal Iteration (HOI)
 
@@ -1615,10 +1623,10 @@ def tucker(
 @inputs_to_ivy_arrays
 @handle_array_function
 def tt_matrix_to_tensor(
-    tt_matrix: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        tt_matrix: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Return the full tensor whose TT-Matrix decomposition is given by 'factors' Re-
@@ -1685,11 +1693,11 @@ def tt_matrix_to_tensor(
 @handle_out_argument
 @to_native_arrays_and_back
 def dot(
-    a: Union[ivy.Array, ivy.NativeArray],
-    b: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        a: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the dot product between two arrays `a` and `b` using the current backend's
@@ -1744,13 +1752,940 @@ def dot(
 @inputs_to_ivy_arrays
 @handle_array_function
 @handle_device
+def initialize_cp(
+        x: Union[ivy.Array, ivy.NativeArray],
+        rank: int,
+        /,
+        *,
+        init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
+        seed: Optional[int] = None,
+        normalize_factors: Optional[bool] = False,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        non_negative: Optional[bool] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+) -> ivy.CPTensor:
+    r"""
+    Initialize factors used in `parafac`.
+
+    The type of initialization is set using `init`. If `init == 'random'` then
+    initialize factor matrices with uniform distribution with the given seed.
+    If `init == 'svd'` then initialize the `m`th factor matrix using the
+    `rank` left singular vectors of the `m`th unfolding of the input
+    tensor. If init is a previously initialized `cp tensor`, all
+    the weights are pulled in the last factor and then the weights
+    are set to "1" for the output tensor.
+
+    Parameters
+    ----------
+    x
+        input tensor
+    rank
+        number of components
+    init
+        initialization scheme for CP decomposition.
+    seed
+        Used to create a random seed distribution
+        when init == 'random'
+    normalize_factors
+        if True, the factors are normalized.
+    svd
+        function to use to compute the SVD
+    non_negative
+        if True, non-negative factors are returned
+    mask
+        array of booleans with the same shape as ``x`` should be 0 where
+        the values are missing and 1 everywhere else. Note:  if tensor is
+        sparse, then mask should also be sparse with a fill value of 1 (or
+        True).
+    svd_mask_repeats
+        number of iterations for imputing the values in the SVD matrix when
+        mask is not None
+    Returns
+    -------
+    factors : CPTensor
+        An initial cp tensor.
+    """
+    if init == "random":
+        kt = ivy.random_cp(
+            x.shape,
+            rank,
+            normalise_factors=False,
+            seed=seed,
+            dtype=x.dtype,
+        )
+
+    elif init == "svd":
+        factors = []
+        for mode in range(len(x.shape)):
+            mask_unfold = None if mask is None else ivy.unfold(mask, mode)
+            U, S, _ = _svd_interface(
+                ivy.unfold(x, mode),
+                n_eigenvecs=rank,
+                method=svd,
+                non_negative=non_negative,
+                mask=mask_unfold,
+                n_iter_mask_imputation=svd_mask_repeats,
+            )
+
+            # Put SVD initialization on the same scaling
+            # as the tensor in case normalize_factors=False
+            if mode == 0:
+                idx = min(rank, ivy.shape(S)[0])
+                U[:, :idx] = U[:, :idx] * S[:idx]
+
+            if x.shape[mode] < rank:
+                # TODO: this is a hack but it
+                # seems to do the job for now
+                random_part = ivy.random_uniform(
+                    shape=(U.shape[0], rank - ivy.shape(x)[mode]),
+                    dtype=x.dtype,
+                    seed=seed,
+                )
+                U = ivy.concat([U, random_part], axis=1)
+
+            factors.append(U[:, :rank])
+
+        kt = ivy.CPTensor((None, factors))
+
+    elif isinstance(init, (tuple, list, ivy.CPTensor)):
+        try:
+            if normalize_factors:
+                logging.warn(
+                    "It is not recommended to initialize a tensor with normalizing."
+                    " Consider normalizing the tensor before using this function"
+                )
+
+            kt = ivy.CPTensor(init)
+            weights, factors = kt
+
+            if ivy.all(weights == 1):
+                kt = ivy.CPTensor((None, factors))
+            else:
+                weights_avg = ivy.prod(weights) ** (1.0 / ivy.shape(weights)[0])
+                for i in range(len(factors)):
+                    factors[i] = factors[i] * weights_avg
+                kt = ivy.CPTensor((None, factors))
+
+            return kt
+        except ValueError:
+            raise ValueError(
+                "If initialization method is a mapping, then it must "
+                "be possible to convert it to a CPTensor instance"
+            )
+    else:
+        raise ValueError(f'Initialization method "{init}" not recognized')
+
+    if non_negative:
+        # Make decomposition feasible by taking
+        # the absolute value of all factor matrices
+        kt.factors = [ivy.abs(f) for f in kt[1]]
+
+    if normalize_factors:
+        kt = ivy.CPTensor.cp_normalize(kt)
+
+    return kt
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device
+def initialize_cp(
+        x: Union[ivy.Array, ivy.NativeArray],
+        rank: int,
+        /,
+        *,
+        init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
+        seed: Optional[int] = None,
+        normalize_factors: Optional[bool] = False,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        non_negative: Optional[bool] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+) -> ivy.CPTensor:
+    r"""
+    Initialize factors used in `parafac`.
+
+    The type of initialization is set using `init`. If `init == 'random'` then
+    initialize factor matrices with uniform distribution with the given seed.
+    If `init == 'svd'` then initialize the `m`th factor matrix using the
+    `rank` left singular vectors of the `m`th unfolding of the input
+    tensor. If init is a previously initialized `cp tensor`, all
+    the weights are pulled in the last factor and then the weights
+    are set to "1" for the output tensor.
+
+    Parameters
+    ----------
+    x
+        input tensor
+    rank
+        number of components
+    init
+        initialization scheme for CP decomposition.
+    seed
+        Used to create a random seed distribution
+        when init == 'random'
+    normalize_factors
+        if True, the factors are normalized.
+    svd
+        function to use to compute the SVD
+    non_negative
+        if True, non-negative factors are returned
+    mask
+        array of booleans with the same shape as ``x`` should be 0 where
+        the values are missing and 1 everywhere else. Note:  if tensor is
+        sparse, then mask should also be sparse with a fill value of 1 (or
+        True).
+    svd_mask_repeats
+        number of iterations for imputing the values in the SVD matrix when
+        mask is not None
+    Returns
+    -------
+    factors : CPTensor
+        An initial cp tensor.
+    """
+    if init == "random":
+        kt = ivy.random_cp(
+            x.shape,
+            rank,
+            normalise_factors=False,
+            seed=seed,
+            dtype=x.dtype,
+        )
+
+    elif init == "svd":
+        factors = []
+        for mode in range(len(x.shape)):
+            mask_unfold = None if mask is None else ivy.unfold(mask, mode)
+            U, S, _ = _svd_interface(
+                ivy.unfold(x, mode),
+                n_eigenvecs=rank,
+                method=svd,
+                non_negative=non_negative,
+                mask=mask_unfold,
+                n_iter_mask_imputation=svd_mask_repeats,
+            )
+
+            # Put SVD initialization on the same scaling
+            # as the tensor in case normalize_factors=False
+            if mode == 0:
+                idx = min(rank, ivy.shape(S)[0])
+                U[:, :idx] = U[:, :idx] * S[:idx]
+
+            if x.shape[mode] < rank:
+                # TODO: this is a hack but it
+                # seems to do the job for now
+                random_part = ivy.random_uniform(
+                    shape=(U.shape[0], rank - ivy.shape(x)[mode]),
+                    dtype=x.dtype,
+                    seed=seed,
+                )
+                U = ivy.concat([U, random_part], axis=1)
+
+            factors.append(U[:, :rank])
+
+        kt = ivy.CPTensor((None, factors))
+
+    elif isinstance(init, (tuple, list, ivy.CPTensor)):
+        try:
+            if normalize_factors:
+                logging.warn(
+                    "It is not recommended to initialize a tensor with normalizing."
+                    " Consider normalizing the tensor before using this function"
+                )
+
+            kt = ivy.CPTensor(init)
+            weights, factors = kt
+
+            if ivy.all(weights == 1):
+                kt = ivy.CPTensor((None, factors))
+            else:
+                weights_avg = ivy.prod(weights) ** (1.0 / ivy.shape(weights)[0])
+                for i in range(len(factors)):
+                    factors[i] = factors[i] * weights_avg
+                kt = ivy.CPTensor((None, factors))
+
+            return kt
+        except ValueError:
+            raise ValueError(
+                "If initialization method is a mapping, then it must "
+                "be possible to convert it to a CPTensor instance"
+            )
+    else:
+        raise ValueError(f'Initialization method "{init}" not recognized')
+
+    if non_negative:
+        # Make decomposition feasible by taking
+        # the absolute value of all factor matrices
+        kt.factors = [ivy.abs(f) for f in kt[1]]
+
+    if normalize_factors:
+        kt = ivy.CPTensor.cp_normalize(kt)
+
+    return kt
+
+
+def _error_calc(tensor, norm_tensor, weights, factors, sparsity, mask, mttkrp=None):
+    r"""
+    Perform the error calculation. Different forms are used here depending upon the
+    available information. If `mttkrp=None` or masking is being performed, then the full
+    tensor must be constructed. Otherwise, the mttkrp is used to reduce the calculation
+    cost.
+
+    Parameters
+    ----------
+    tensor
+        tensor
+    norm_tensor
+        The l2 norm of tensor.
+    weights
+        The current CP weights
+    factors
+        The current CP factors
+    sparsity
+        Whether we allow for a sparse component
+    mask
+        Whether masking is being performed.
+    mttkrp
+        The mttkrp product, if available.
+
+    Returns
+    -------
+    unnorml_rec_error
+        The unnormalized reconstruction error.
+    tensor
+        The tensor, in case it has been updated by masking.
+    norm_tensor
+        The tensor norm, in case it has been updated by masking.
+    """
+    # If we have to update the mask we already have to build the full tensor
+    if (mask is not None) or (mttkrp is None):
+        low_rank_component = ivy.CPTensor.cp_to_tensor((weights, factors))
+
+        # Update the tensor based on the mask
+        if mask is not None:
+            tensor = tensor * mask + low_rank_component * (1 - mask)
+            norm_tensor = ivy.sqrt(ivy.sum(ivy.abs(tensor) ** 2))
+
+        if sparsity:
+            sparse_component = ivy.sparsify_tensor(
+                tensor - low_rank_component, sparsity
+            )
+        else:
+            sparse_component = 0.0
+
+        unnorml_rec_error = ivy.sqrt(
+            ivy.sum(ivy.abs(tensor - low_rank_component - sparse_component) ** 2)
+        )
+    else:
+        if sparsity:
+            low_rank_component = ivy.CPTensor.cp_to_tensor((weights, factors))
+            sparse_component = ivy.sparsify_tensor(
+                tensor - low_rank_component, sparsity
+            )
+            unnorml_rec_error = ivy.sqrt(
+                ivy.sum(ivy.abs(tensor - low_rank_component - sparse_component) ** 2)
+            )
+        else:
+            # ||tensor - rec||^2 = ||tensor||^2 + ||rec||^2 - 2*<tensor, rec>
+            factors_norm = ivy.CPTensor.cp_norm((weights, factors))
+
+            # mttkrp and factor for the last mode. This is equivalent to the
+            # inner product <tensor, factorization>
+            iprod = ivy.sum(ivy.sum(mttkrp * ivy.conj(factors[-1]), axis=0))
+            unnorml_rec_error = ivy.sqrt(
+                ivy.abs(norm_tensor ** 2 + factors_norm ** 2 - 2 * iprod)
+            )
+
+    return unnorml_rec_error, tensor, norm_tensor
+
+
+def _sample_khatri_rao(
+        x,
+        n_samples,
+        skip_matrix=None,
+        indices_list=None,
+        seed=None,
+        return_sampled_rows=False,
+        random_state=None,
+):
+    """
+    Random subsample of the Khatri-Rao product of the given list of matrices If one
+    matrix only is given, that matrix is directly returned.
+
+    Parameters
+    ----------
+    x
+        list of matrices with the same number of columns, i.e.::
+        for i in len(x):
+            x[i].shape = (n_i, m)
+
+    n_samples
+        number of samples to be taken from the Khatri-Rao product
+
+    skip_matrix
+        if not None, index of a matrix to skip
+
+    indices_list
+        Contains, for each matrix in `matrices`,
+        a list of indices of rows to sample.
+        if None, random indices will be created
+
+    seed
+        seed to use for random number generation.
+
+    returned_sampled_rows
+        if True, also returns a list of the rows sampled from
+        the full khatri-rao product
+
+    Returns
+    -------
+    sampled_Khatri_Rao
+        The sampled matricised tensor Khatri-Rao with
+        `n_samples` rows
+
+    indices
+        a list of indices sampled for each mode
+
+    indices_kr
+        list of length `n_samples` containing the sampled row indices
+    """
+    if skip_matrix is not None:
+        x = [x[i] for i in range(len(x)) if i != skip_matrix]
+
+    # For each matrix, randomly choose n_samples indices for which to compute
+    # the khatri-rao product
+    if indices_list is None:
+        if seed is None or not isinstance(seed, int):
+            logging.warn(
+                "You are creating a new random number generator at each call.\nIf you"
+                " are calling sample_khatri_rao inside a loop this will be slow: best"
+                " to create a rng outside and pass it as argument (random_state=rng)."
+            )
+        else:
+            indices_list = [
+                ivy.randint(0, ivy.shape(m)[0], size=n_samples, dtype=int, seed=seed)
+                for m in x
+            ]
+
+    rank = ivy.shape(x[0])[1]
+    sizes = [ivy.shape(m)[0] for m in x]
+
+    if return_sampled_rows:
+        # Compute corresponding rows of the full khatri-rao product
+        indices_kr = ivy.zeros((n_samples), dtype=int)
+        for size, indices in zip(sizes, indices_list):
+            indices_kr = indices_kr * size + indices
+
+    # Compute the Khatri-Rao product for the chosen indices
+    sampled_kr = ivy.ones((n_samples, rank), dtype=x[0].dtype)
+    for indices, matrix in zip(indices_list, x):
+        sampled_kr = sampled_kr * matrix[indices, :]
+
+    if return_sampled_rows:
+        return sampled_kr, indices_list, indices_kr
+    else:
+        return sampled_kr, indices_list
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device
+def parafac(
+        x: Union[ivy.Array, ivy.NativeArray],
+        rank: int,
+        /,
+        *,
+        n_iter_max: Optional[int] = 100,
+        init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        normalize_factors: Optional[bool] = False,
+        orthogonalise: Optional[bool] = False,
+        tol: Optional[float] = 1e-8,
+        seed: Optional[int] = None,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
+        sparsity: Optional[Union[float, int]] = None,
+        l2_reg=0,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        cvg_criterion: Optional[Literal["abs_rec_error", "rec_error"]] = "abs_rec_error",
+        fixed_modes: Optional[Sequence[int]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+        linesearch: Optional[bool] = False,
+        callback: Optional[Callable] = None,
+) -> Union[ivy.CPTensor, Tuple[ivy.CPTensor, List]]:
+    """
+    CANDECOMP/PARAFAC decomposition via alternating least squares (ALS) Computes a
+    rank-`rank` decomposition of `x` [1]_ such that:
+
+    ``x = [|weights; factors[0], ..., factors[-1] |]``.
+
+    Parameters
+    ----------
+    x
+        input tensor
+    rank
+        Number of components.
+    n_iter_max
+        Maximum number of iterations for the ALS algorithm.
+    init
+        Type of factor matrix initialization.
+        If a CPTensor is passed, this is directly used for initalization.
+    svd
+        function to use to compute the SVD
+    normalize_factors
+        if True, aggregate the weights of each factor in a 1D-tensor
+        of shape (rank, ), which will contain the norms of the factors
+    tol
+        (Default: 1e-6) Relative reconstruction error tolerance. The
+        algorithm is considered to have found the global minimum when the
+        reconstruction error is less than `tol`.
+    seed
+        seed to use for random number generation.
+    verbose
+        Level of verbosity
+    return_errors
+        Activate return of iteration errors
+    mask
+        array of booleans with the same shape as ``tensor`` should be 0 where
+        the values are missing and 1 everywhere else. Note:  if tensor is
+        sparse, then mask should also be sparse with a fill value of 1 (or
+        True). Allows for missing values [2]_
+    cvg_criterion
+       Stopping criterion for ALS, works if `tol` is not None.
+       If 'rec_error',  ALS stops at current iteration if
+       ``(previous rec_error - current rec_error) < tol``.
+       If 'abs_rec_error', ALS terminates when
+        `|previous rec_error - current rec_error| < tol`.
+    sparsity
+        If `sparsity` is not None, we approximate tensor
+        as a sum of low_rank_component and sparse_component,
+        where low_rank_component = cp_to_tensor((weights, factors)).
+        `sparsity` denotes desired fraction or number of non-zero
+        elements in the sparse_component of the `tensor`.
+    fixed_modes
+        A list of modes for which the initial value is not modified.
+        The last mode cannot be fixed due to error computation.
+    svd_mask_repeats
+        If using a tensor with masked values,
+        this initializes using SVD multiple times to
+        remove the effect of these missing values on
+        the initialization.
+    linesearch
+        Whether to perform line search as proposed by Bro [3].
+
+    Returns
+    -------
+    CPTensor : (weight, factors)
+        * weights : 1D array of shape (rank, )
+
+          * all ones if normalize_factors is False (default)
+          * weights of the (normalized) factors otherwise
+
+        * factors : List of factors of the CP decomposition element
+        `i` is of shape ``(tensor.shape[i], rank)`` * sparse_component
+         ivy.array of shape x.shape. Returns only if `sparsity` is not None.
+
+    errors : list
+        A list of reconstruction errors at each iteration of the algorithms.
+
+    References
+    ----------
+    .. [1] T.G.Kolda and B.W.Bader, "Tensor Decompositions and Applications", SIAM
+           REVIEW, vol. 51, n. 3, pp. 455-500, 2009.
+    .. [2] Tomasi, Giorgio, and Rasmus Bro. "PARAFAC and missing values."
+           Chemometrics and Intelligent Laboratory Systems 75.2 (2005): 163-180.
+    .. [3] R. Bro, "Multi-Way Analysis in the Food Industry: Models, Algorithms, and
+           Applications", PhD., University of Amsterdam, 1998
+    """
+    rank = ivy.CPTensor.validate_cp_rank(x.shape, rank=rank)
+    if orthogonalise and not isinstance(orthogonalise, int):
+        orthogonalise = n_iter_max
+
+    if linesearch:
+        acc_pow = 2.0  # Extrapolate to the iteration^(1/acc_pow) ahead
+        acc_fail = 0  # How many times acceleration have failed
+        max_fail = 4  # Increase acc_pow with one after max_fail failure
+
+    weights, factors = initialize_cp(
+        x,
+        rank,
+        init=init,
+        svd=svd,
+        seed=seed,
+        normalize_factors=normalize_factors,
+        mask=mask,
+        svd_mask_repeats=svd_mask_repeats,
+    )
+    rec_errors = []
+    norm_tensor = ivy.sqrt(ivy.sum(ivy.abs(x) ** 2))
+    if l2_reg:
+        Id = ivy.eye(rank, dtype=x.dtype) * l2_reg
+    else:
+        Id = 0
+
+    if fixed_modes is None:
+        fixed_modes = []
+    else:
+        fixed_modes = list(fixed_modes)
+
+    if fixed_modes == list(range(len(x.shape))):  # Check If all modes are fixed
+        cp_tensor = ivy.CPTensor((weights, factors))
+        return cp_tensor
+
+    if len(x.shape) - 1 in fixed_modes:
+        logging.warn(
+            "You asked for fixing the last mode, which is not supported.\n The last"
+            " mode will not be fixed. Consider using ivy.move_axis()"
+        )
+        fixed_modes.remove(len(x.shape) - 1)
+    modes_list = [mode for mode in range(len(x.shape)) if mode not in fixed_modes]
+
+    if sparsity:
+        sparse_component = ivy.zeros_like(x)
+        if isinstance(sparsity, float):
+            sparsity = int(sparsity * ivy.prod(x.shape))
+        else:
+            sparsity = int(sparsity)
+
+    if callback is not None:
+        cp_tensor = ivy.CPTensor((weights, factors))
+
+        unnorml_rec_error, _, norm_tensor = _error_calc(
+            x, norm_tensor, weights, factors, sparsity, mask
+        )
+        callback_error = unnorml_rec_error / norm_tensor
+        if sparsity:
+            sparse_component = ivy.sparsify_tensor(
+                x - ivy.CPTensor.cp_to_tensor((weights, factors)), sparsity
+            )
+            callback((cp_tensor, sparse_component), callback_error)
+        else:
+            callback(cp_tensor, callback_error)
+
+    for iteration in range(n_iter_max):
+        if orthogonalise and iteration <= orthogonalise:
+            factors = [
+                ivy.qr(f)[0] if min(ivy.shape(f)) >= rank else f
+                for _, f in enumerate(factors)
+            ]
+
+        if linesearch and iteration % 2 == 0:
+            factors_last = [ivy.copy_array(f) for f in factors]
+            weights_last = ivy.copy_array(weights)
+
+        if verbose:
+            print("Starting iteration", iteration + 1)
+        for mode in modes_list:
+            if verbose:
+                print("Mode", mode, "of", len(x.shape))
+
+            pseudo_inverse = ivy.ones((rank, rank), dtype=x.dtype)
+            for i, factor in enumerate(factors):
+                if i != mode:
+                    pseudo_inverse = pseudo_inverse * ivy.dot(
+                        ivy.conj(ivy.permute_dims(factor, (1, 0))), factor
+                    )
+            pseudo_inverse += Id
+            pseudo_inverse = (
+                    ivy.reshape(weights, (-1, 1))
+                    * pseudo_inverse
+                    * ivy.reshape(weights, (1, -1))
+            )
+            mttkrp = ivy.CPTensor.unfolding_dot_khatri_rao(x, (weights, factors), mode)
+
+            factor = ivy.permute_dims(
+                ivy.solve(
+                    ivy.conj(ivy.permute_dims(pseudo_inverse, (1, 0))),
+                    ivy.permute_dims(mttkrp, (1, 0)),
+                ),
+                (1, 0),
+            )
+            factors[mode] = factor
+
+        # Will we be performing a line search iteration
+        if linesearch and iteration % 2 == 0 and iteration > 5:
+            line_iter = True
+        else:
+            line_iter = False
+
+        # Calculate the current unnormalized error if we need it
+        if (tol or return_errors) and not line_iter:
+            unnorml_rec_error, x, norm_tensor = _error_calc(
+                x, norm_tensor, weights, factors, sparsity, mask, mttkrp
+            )
+        else:
+            if mask is not None:
+                x = x * mask + ivy.CPTensor.cp_to_tensor(
+                    (weights, factors), mask=1 - mask
+                )
+
+        # Start line search if requested.
+        if line_iter:
+            jump = iteration ** (1.0 / acc_pow)
+
+            new_weights = weights_last + (weights - weights_last) * jump
+            new_factors = [
+                factors_last[ii] + (factors[ii] - factors_last[ii]) * jump
+                for ii in range(len(x.shape))
+            ]
+
+            new_rec_error, new_tensor, new_norm_tensor = _error_calc(
+                x, norm_tensor, new_weights, new_factors, sparsity, mask
+            )
+
+            if (new_rec_error / new_norm_tensor) < rec_errors[-1]:
+                factors, weights = new_factors, new_weights
+                x, norm_tensor = new_tensor, new_norm_tensor
+                unnorml_rec_error = new_rec_error
+                acc_fail = 0
+
+                if verbose:
+                    print(f"Accepted line search jump of {jump}.")
+            else:
+                unnorml_rec_error, tensor, norm_tensor = _error_calc(
+                    x, norm_tensor, weights, factors, sparsity, mask, mttkrp
+                )
+                acc_fail += 1
+
+                if verbose:
+                    print(f"Line search failed for jump of {jump}.")
+
+                if acc_fail == max_fail:
+                    acc_pow += 1.0
+                    acc_fail = 0
+
+                    if verbose:
+                        print("Reducing acceleration.")
+
+        if (tol or return_errors) and not line_iter:
+            rec_error = unnorml_rec_error / norm_tensor
+            rec_errors.append(rec_error)
+
+        if callback is not None:
+            cp_tensor = ivy.CPTensor((weights, factors))
+
+            if sparsity:
+                sparse_component = ivy.sparsify_tensor(
+                    x - ivy.CPTensor.cp_to_tensor((weights, factors)), sparsity
+                )
+                retVal = callback((cp_tensor, sparse_component), rec_error)
+            else:
+                retVal = callback(cp_tensor, rec_error)
+
+            if retVal is True:
+                if verbose:
+                    print("Received True from callback function. Exiting.")
+                break
+
+        if tol:
+            if iteration >= 1:
+                rec_error_decrease = rec_errors[-2] - rec_errors[-1]
+
+                if verbose:
+                    print(
+                        f"iteration {iteration}, reconstruction error: {rec_error},"
+                        f" decrease = {rec_error_decrease}, unnormalized ="
+                        f" {unnorml_rec_error}"
+                    )
+
+                if cvg_criterion == "abs_rec_error":
+                    stop_flag = ivy.abs(rec_error_decrease) < tol
+                elif cvg_criterion == "rec_error":
+                    stop_flag = rec_error_decrease < tol
+                else:
+                    raise TypeError("Unknown convergence criterion")
+
+                if stop_flag:
+                    if verbose:
+                        print(f"PARAFAC converged after {iteration} iterations")
+                    break
+
+            else:
+                if verbose:
+                    print(f"reconstruction error={rec_errors[-1]}")
+        if normalize_factors:
+            weights, factors = ivy.CPTensor.cp_normalize((weights, factors))
+
+    cp_tensor = ivy.CPTensor((weights, factors))
+
+    if sparsity:
+        sparse_component = ivy.sparsify_tensor(
+            x - ivy.CPTensor.cp_to_tensor((weights, factors)), sparsity
+        )
+        cp_tensor = (cp_tensor, sparse_component)
+
+    if return_errors:
+        return cp_tensor, rec_errors
+    else:
+        return cp_tensor
+
+
+def randomised_parafac(
+        x: Union[ivy.Array, ivy.NativeArray],
+        rank: int,
+        n_samples: int,
+        /,
+        *,
+        n_iter_max: Optional[int] = 100,
+        init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        max_stagnation: Optional[int] = 0,
+        tol: Optional[float] = 10e-9,
+        seed: Optional[int] = None,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
+        callback: Optional[Callable] = None,
+):
+    """
+    Randomised CP decomposition via sampled ALS [3]_
+
+    Parameters
+    ----------
+    tensor
+        Input tensor
+    rank
+        number of components
+    n_samples
+        number of samples per ALS step
+    n_iter_max
+        maximum number of iteration
+    init
+
+    svd
+        function to use to compute the SVD, acceptable values in tensorly.SVD_FUNS
+    tol
+        tolerance: the algorithm stops when the variation in
+        the reconstruction error is less than the tolerance
+    max_stagnation
+        if not zero, the maximum allowed number
+        of iterations with no decrease in fit
+    seed
+        seed to use for random number generation.
+    return_errors
+        if True, return a list of all errors
+    verbose
+        level of verbosity
+
+    Returns
+    -------
+    factors
+        list of positive factors of the CP decomposition
+        element `i` is of shape ``(tensor.shape[i], rank)``
+
+    References
+    ----------
+    .. [3] Casey Battaglino, Grey Ballard and Tamara G. Kolda,
+           "A Practical Randomized CP Tensor Decomposition",
+    """
+    rank = ivy.CPTensor.validate_cp_rank(ivy.shape(x), rank=rank)
+
+    if return_errors:
+        DeprecationWarning(
+            "return_errors argument will be removed in the next version of TensorLy."
+            " Please use a callback function instead."
+        )
+
+    weights, factors = ivy.initialize_cp(x, rank, init=init, svd=svd, seed=seed)
+    rec_errors = []
+    n_dims = len(x.shape)
+    norm_tensor = ivy.sqrt(ivy.sum(ivy.square(x)))
+    min_error = 0
+
+    weights = ivy.ones(rank, dtype=x.dtype)
+
+    if callback is not None:
+        rec_error = ivy.sqrt(
+            ivy.sum(ivy.square(x - ivy.CPTensor.cp_to_tensor((weights, factors))))
+        )
+        rec_error /= norm_tensor
+
+        callback(ivy.CPTensor((weights, factors)))
+
+    for iteration in range(n_iter_max):
+        for mode in range(n_dims):
+            kr_prod, indices_list = ivy._sample_khatri_rao(
+                factors, n_samples, skip_matrix=mode, seed=seed
+            )
+            indices_list = [i.tolist() for i in indices_list]
+            # Keep all the elements of the currently considered mode
+            indices_list.insert(mode, slice(None, None, None))
+            # MXNet will not be happy if this is a list instead of a tuple
+            indices_list = tuple(indices_list)
+            if mode:
+                sampled_unfolding = x[indices_list]
+            else:
+                sampled_unfolding = ivy.transpose(x[indices_list])
+
+            pseudo_inverse = ivy.dot(ivy.permute_dims(kr_prod, (1, 0)), kr_prod)
+            factor = ivy.dot(ivy.permute_dims(kr_prod, (1, 0)), sampled_unfolding)
+            factor = ivy.permute_dims(ivy.solve(pseudo_inverse, factor), (1, 0))
+            factors[mode] = factor
+
+        if max_stagnation or tol or (callback is not None):
+            rec_error = (
+                    ivy.sqrt(
+                        ivy.sum(
+                            ivy.square(x - ivy.CPTensor.cp_to_tensor((weights, factors)))
+                        )
+                    )
+                    / norm_tensor
+            )
+
+        if callback is not None:
+            retVal = callback(ivy.CPTensor((weights, factors)), rec_error)
+            if retVal is True:
+                if verbose:
+                    print("Received True from callback function. Exiting.")
+                break
+
+        if max_stagnation or tol:
+            if not min_error or rec_error < min_error:
+                min_error = rec_error
+                stagnation = -1
+            stagnation += 1
+
+            rec_errors.append(rec_error)
+
+            if iteration > 1:
+                if verbose:
+                    print(
+                        f"reconstruction error={rec_errors[-1]},"
+                        f" variation={rec_errors[-2] - rec_errors[-1]}."
+                    )
+
+                if (tol and abs(rec_errors[-2] - rec_errors[-1]) < tol) or (
+                        stagnation and (stagnation > max_stagnation)
+                ):
+                    if verbose:
+                        print(f"converged in {iteration} iterations.")
+                    break
+
+    if return_errors:
+        return ivy.CPTensor((weights, factors)), rec_errors
+    else:
+        return ivy.CPTensor((weights, factors))
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device
 def general_inner_product(
-    a: Union[ivy.Array, ivy.NativeArray],
-    b: Union[ivy.Array, ivy.NativeArray],
-    n_modes: Optional[int] = None,
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        a: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        n_modes: Optional[int] = None,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Generalised inner products between tensors.
@@ -1810,7 +2745,7 @@ def general_inner_product(
             )
         return ivy.sum(ivy.multiply(a, b), out=out)
 
-    common_modes = shape_a[len(shape_a) - n_modes :]
+    common_modes = shape_a[len(shape_a) - n_modes:]
     if common_modes != shape_b[:n_modes]:
         raise ValueError(
             f"Incorrect shapes for inner product along {n_modes} common modes."
@@ -1836,11 +2771,11 @@ def general_inner_product(
 @handle_array_function
 @handle_device
 def higher_order_moment(
-    x: Union[ivy.Array, ivy.NativeArray],
-    order: int,
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        order: int,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the Higher-Order Moment.
@@ -1885,10 +2820,10 @@ def higher_order_moment(
 @handle_array_function
 @handle_device
 def batched_outer(
-    tensors: Sequence[Union[ivy.Array, ivy.NativeArray]],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        tensors: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Return a generalized outer product of the tensors.
