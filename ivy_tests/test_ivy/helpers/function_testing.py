@@ -2327,7 +2327,6 @@ def flatten(*, backend: str, ret):
 
 def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
     """Return a flattened version of the frontend arrays in ret."""
-
     if not isinstance(ret, tuple):
         ret = (ret,)
 
