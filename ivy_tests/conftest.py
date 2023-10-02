@@ -11,7 +11,7 @@ from hypothesis.database import (
 from hypothesis.extra.redis import RedisExampleDatabase
 
 
-hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
+hypothesis_cache = f"{os.getcwd()}/.hypothesis/examples/"
 redis_connect_dev = None
 redis_connect_master = None
 try:
@@ -45,15 +45,20 @@ def is_db_available(master=False, credentials=None):
 
 
 def pytest_terminal_summary(terminalreporter):
+    from .test_ivy.conftest import mod_backend
+
     session = terminalreporter._session
 
     if session.testscollected == 0:
         return
 
     passed_ratio = 1 - (session.testsfailed / session.testscollected)
-    text = " {:.1%} of {} passed ".format(passed_ratio, session.testscollected)
+    text = f" {passed_ratio:.1%} of {session.testscollected} passed "
     text = text.center(terminalreporter._screen_width, "=")
     terminalreporter.write(content=Fore.GREEN + text)
+    for key in mod_backend:
+        if mod_backend[key]:
+            mod_backend[key][0].terminate()
 
 
 def pytest_addoption(parser):
@@ -78,6 +83,12 @@ def pytest_addoption(parser):
         default="full",
         type=str,
         help="ivy traceback",
+    )
+    parser.addoption(
+        "--reuse-only",
+        default=False,
+        action="store_true",
+        help="Only reuse stored examples from database",
     )
     parser.addoption(
         "-R",
@@ -130,6 +141,9 @@ def pytest_configure(config):
         profile_settings["max_examples"] = max_examples
     if deadline:
         profile_settings["deadline"] = deadline
+
+    if getopt("--reuse-only"):
+        profile_settings["phases"] = [Phase.explicit, Phase.reuse]
 
     settings.register_profile(
         "ivy_profile",

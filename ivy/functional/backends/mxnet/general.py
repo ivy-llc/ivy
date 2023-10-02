@@ -1,5 +1,5 @@
 import mxnet as mx
-from typing import Union, Optional, Tuple
+from typing import Union, Optional
 import numpy as np
 
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -33,10 +33,6 @@ def to_numpy(x: mx.ndarray.NDArray, /, *, copy: bool = True) -> np.ndarray:
 
 def itemsize(x: mx.ndarray.NDArray, /) -> int:
     return x.asnumpy().itemsize
-
-
-def strides(x: mx.ndarray.NDArray, /) -> Tuple[int]:
-    return x.asnumpy().strides
 
 
 def container_types():

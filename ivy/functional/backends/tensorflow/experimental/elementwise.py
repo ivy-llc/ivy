@@ -255,7 +255,7 @@ def gradient(
     edge_order: int = 1,
 ) -> Union[tf.Tensor, List[tf.Tensor]]:
     # https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/function_base.py#L969-L1312
-    device = x.device
+    x.device
     x = tf.experimental.numpy.asanyarray(x)
     N = x.ndim  # number of dimensions
     if axis is None:
@@ -288,15 +288,13 @@ def gradient(
                 raise ValueError("distances must be either scalars or 1d")
             if len(distances) != x.shape[axes[i]]:
                 raise ValueError(
-                    "when 1d, distances must match "
-                    "the length of the corresponding dimension {} {}".format(
-                        len(distances), x.shape[axes[i]]
-                    )
+                    "when 1d, distances must match the length of the corresponding"
+                    f" dimension {len(distances)} {x.shape[axes[i]]}"
                 )
             if distances.dtype.is_integer:
                 # Convert numpy integer types to float64 to avoid modular
                 # arithmetic in np.diff(distances).
-                distances = distances.astype(tf.experimental.numpy.float64)
+                distances = tf.cast(distances, tf.float64)
             diffx = tf.experimental.numpy.diff(distances)
             # if distances are constant reduce to the scalar case
             # since it brings a consistent speedup
@@ -325,7 +323,7 @@ def gradient(
     slice4 = [slice(None)] * N
 
     if x.dtype.is_integer:
-        x = x.astype(tf.experimental.numpy.float64)
+        x = tf.cast(x, tf.float64)
 
     for axis, ax_dx in zip(axes, dx):
         if x.shape[axis] < edge_order + 1:
@@ -414,8 +412,7 @@ def gradient(
                 a * x[tuple(slice2)] + b * x[tuple(slice3)] + c * x[tuple(slice4)]
             )
 
-        with tf.device(device):
-            outvals.append(tf.convert_to_tensor(out))
+        outvals.append(tf.convert_to_tensor(out))
 
         # reset the slice object in this dimension to ":"
         slice1[axis] = slice(None)
@@ -507,3 +504,21 @@ def modf(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.modf(x)
+
+
+def digamma(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.digamma(x)
+
+
+def erfc(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.erfc(x)
