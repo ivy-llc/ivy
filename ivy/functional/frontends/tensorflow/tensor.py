@@ -52,6 +52,9 @@ class EagerTensor:
 
     def get_shape(self):
         return tf_frontend.raw_ops.Shape(input=self)
+    
+    def floordiv(self, x, y, name="floorviv"):
+        return tf_frontend.raw_ops.FloorDiv(x, y, name)
 
     def set_shape(self, shape):
         if shape is None:
