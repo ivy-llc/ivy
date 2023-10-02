@@ -30,5 +30,7 @@ y = ivy.array([1, 3, 2])
 @to_ivy_arrays_and_back
 def greater_equal(x, y, name=None):
     return ivy.greater_equal(x, y)
+
+
 result = ivy.greater_equal(x, y)
 print(result)
