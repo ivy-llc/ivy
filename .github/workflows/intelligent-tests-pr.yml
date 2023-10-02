@@ -35,6 +35,7 @@ jobs:
               cat combined_failures.txt
               {
                 echo 'MESSAGE<<EOF'
+                echo "# Failed tests:"
                 echo "This PR introduces the following new failing tests:"
                 cat combined_failures.txt
                 echo EOF
