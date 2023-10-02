@@ -703,7 +703,7 @@ def test_paddle_eigvalsh(
 @handle_frontend_test(
     fn_tree="paddle.linalg.diagonal",
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     dims_and_offset=dims_and_offset(
