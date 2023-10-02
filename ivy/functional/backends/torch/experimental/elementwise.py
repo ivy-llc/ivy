@@ -95,14 +95,14 @@ def count_nonzero(
         return x
     if isinstance(axis, int):
         if axis == -1:
-            temp = x.dim() - 2
+            temp = x.dim() - 1
             if temp < -1:
                 temp = 0
             return x.unsqueeze(temp)
-        return x.unsqueeze(axis - 1)
+        return x.unsqueeze(axis)
     elif axis is not None:
         for d in sorted(axis):
-            x = x.unsqueeze(d - 1)
+            x = x.unsqueeze(d)
         return x
     return x
 

@@ -111,6 +111,11 @@ class Tensor:
         return paddle_frontend.acosh(self)
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def add_n(self, inputs, name=None):
+        inputs = ivy.array(inputs)
+        return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def ceil(self):
         return paddle_frontend.ceil(self)
 
@@ -611,6 +616,10 @@ class Tensor:
     def floor_divide(self, y, name=None):
         return paddle_frontend.floor_divide(self, y)
 
+    @with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
+    def mod(self, y, name=None):
+        return paddle_frontend.Tensor(ivy.fmod(self._ivy_array, _to_ivy_array(y)))
+
     # cond
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def cond(self, p=None, name=None):
@@ -772,6 +781,26 @@ class Tensor:
     def mean(self, axis=None, keepdim=False, name=None):
         return paddle_frontend.mean(self, axis=axis, keepdim=keepdim)
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def as_complex(self, name=None):
+        if self.ivy_array.shape[-1] != 2:
+            raise ivy.exceptions.IvyError(
+                "The size of the last dimension of tensor does not equals 2"
+            )
+        dtype = (
+            ivy.complex64 if ivy.dtype(self.ivy_array) == "float32" else ivy.complex128
+        )
+        re_part = self.ivy_array[..., 0]
+        im_part = ivy.multiply(1j, self.ivy_array[..., 1])
+        value = paddle_frontend.Tensor(ivy.add(re_part, im_part).astype(dtype))
+        return value
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("int32", "int64", "float32", "float64", "bool")}, "paddle"
+    )
+    def not_equal(self, y, name=None):
+        return paddle_frontend.not_equal(self._ivy_array, y)
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
@@ -799,6 +828,35 @@ class Tensor:
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
 
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def expand(self, shape, name=None):
         return paddle_frontend.expand(self._ivy_array, shape)
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def fill_(self, value):
+        filled_tensor = paddle_frontend.full_like(self, value)
+        return ivy.inplace_update(self, filled_tensor)
+
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "bool",
+                "int32",
+                "int64",
+                "float16",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def unbind(self, axis=0):
+        return paddle_frontend.unbind(self._ivy_array, axis=axis)
+
+    def cpu(self):
+        self.ivy_array = ivy.to_device(self.ivy_array, ivy.as_ivy_dev("cpu"))
+        return self
