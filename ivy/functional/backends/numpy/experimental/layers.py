@@ -13,7 +13,9 @@ from ivy.functional.ivy.layers import (
     _depth_max_pooling_helper,
 )
 from ivy.functional.backends.numpy.layers import _add_dilations
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.functional.ivy.experimental.layers import (
+    _padding_ceil_mode,
+)
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -42,7 +44,7 @@ def max_pool1d(
 ) -> np.ndarray:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCW":
@@ -144,7 +146,7 @@ def max_pool2d(
 ) -> np.ndarray:
     dims = 2
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCHW":
@@ -254,7 +256,7 @@ def max_pool3d(
 ) -> np.ndarray:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCDHW":
@@ -724,7 +726,7 @@ def fft(
     return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
-@with_supported_dtypes({"1.25.2 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"1.26.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -989,7 +991,7 @@ def ifftn(
     return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("complex",)}, backend_version)
 def embedding(
     weights: np.ndarray,
     indices: np.ndarray,

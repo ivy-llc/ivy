@@ -1,5 +1,6 @@
 # global
 import numpy as np
+import torch
 from hypothesis import strategies as st, assume
 
 # local
@@ -84,7 +85,7 @@ def _interp_args(draw, mode=None, mode_list=None):
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
     align_corners = draw(st.one_of(st.booleans(), st.none()))
-    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
         align_corners = False
     if mode == "linear":
         num_dims = 3
@@ -161,7 +162,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         )
         recompute_scale_factor = False
         scale_factor = None
-    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
         if not recompute_scale_factor:
             recompute_scale_factor = True
 
@@ -416,6 +417,42 @@ def _x_and_rfftn(draw):
     )
     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
     return dtype, x, s, axes, norm
+
+
+@st.composite
+def max_unpool1d_helper(
+    draw,
+    **data_gen_kwargs,
+):
+    dts, values, kernel_size, strides, _ = draw(
+        helpers.arrays_for_pooling(
+            min_dims=3,
+            max_dims=3,
+            data_format="channel_first",
+            **data_gen_kwargs,
+        )
+    )
+    dts.extend(["int64"])
+    values = values[0]
+    if dts[0] in ["float16", "bfloat16"]:
+        values = values.astype(np.float32)
+        dts[0] = "float32"
+    padding = draw(helpers.ints(min_value=0, max_value=2))
+    if padding > (kernel_size[0] // 2):
+        padding = 0
+
+    values, indices = torch.nn.functional.max_pool1d(
+        torch.tensor(values.astype(np.float32)),
+        kernel_size,
+        strides,
+        padding,
+        return_indices=True,
+    )
+    indices = indices.numpy().astype(np.int64)
+    max_idx = values.shape[-1] - 1
+    indices = np.where(indices > max_idx, max_idx, indices)
+    values = values.numpy().astype(dts[0])
+    return dts, values, indices, kernel_size, strides, padding
 
 
 # --- Main --- #
@@ -1077,7 +1114,7 @@ def test_max_pool1d(
     data_format = "NCW" if data_format == "channel_first" else "NWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation
-    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+    assume(backend_fw != "paddle" or max(list(dilation)) <= 1)
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -1138,7 +1175,7 @@ def test_max_pool2d(
     data_format = "NCHW" if data_format == "channel_first" else "NHWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation
-    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+    assume(backend_fw != "paddle" or max(list(dilation)) <= 1)
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -1188,7 +1225,7 @@ def test_max_pool3d(
     data_format = "NCDHW" if data_format == "channel_first" else "NDHWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation
-    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+    assume(backend_fw != "paddle" or max(list(dilation)) <= 1)
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -1205,6 +1242,38 @@ def test_max_pool3d(
         data_format=data_format,
         dilation=dilation,
         ceil_mode=ceil_mode,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.max_unpool1d",
+    x_k_s_p=max_unpool1d_helper(min_side=2, max_side=5),
+    ground_truth_backend="jax",
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_max_unpool1d(
+    *,
+    x_k_s_p,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, ind, kernel, stride, pad = x_k_s_p
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        input=x,
+        indices=ind,
+        kernel_size=kernel,
+        strides=stride,
+        padding=pad,
     )
 
 
@@ -1260,6 +1329,28 @@ def test_rfftn(
         s=s,
         axes=axes,
         norm=norm,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.sliding_window",
+    all_args=helpers.arrays_for_pooling(3, 3, 1, 2, return_dilation=True),
+    test_with_out=st.just(False),
+    ground_truth_backend="jax",
+)
+def test_sliding_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
+    dtypes, input, k, stride, padding, dilation = all_args
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        input=input,
+        window_size=k,
+        stride=stride[0],
+        dilation=dilation[0],
+        padding=padding,
     )
 
 
