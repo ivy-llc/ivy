@@ -9,7 +9,6 @@ import ivy
 from . import array_helpers, number_helpers, dtype_helpers
 from ..pipeline_helper import WithBackendContext
 from ivy.functional.ivy.layers import _deconv_length
-from ..globals import mod_backend
 from ...pipeline.base.pipeline import Pipeline
 
 
@@ -92,7 +91,7 @@ def apply_safety_factor(
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
         if Pipeline.mod_backend[backend]:
-            proc, input_queue, output_queue = mod_backend[backend]
+            proc, input_queue, output_queue = Pipeline.mod_backend[backend]
             input_queue.put(("dtype_info_helper", backend, kind_dtype, dtype))
             dtype_info = output_queue.get()
         else:
@@ -102,7 +101,7 @@ def apply_safety_factor(
     elif "int" in dtype:
         kind_dtype = "int"
         if Pipeline.mod_backend[backend]:
-            proc, input_queue, output_queue = mod_backend[backend]
+            proc, input_queue, output_queue = Pipeline.mod_backend[backend]
             input_queue.put(("dtype_info_helper", backend, kind_dtype, dtype))
             dtype_info = output_queue.get()
         else:

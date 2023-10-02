@@ -31,6 +31,11 @@ class Pipeline(ABC):
         cls.traced_fn = fn
 
     @classmethod
+    def unset_mod(cls):
+        for key in cls.mod_backend:
+            cls.mod_backend[key] = None
+
+    @classmethod
     def set_mod_backend(cls, mod_backend):
         for key in mod_backend:
             cls.mod_backend[key] = mod_backend[key]

@@ -27,6 +27,13 @@ class FrontendPipeline(Pipeline):
         for key in mod_frontend:
             cls.mod_frontend[key] = mod_frontend[key]
 
+    @classmethod
+    def unset_mod(cls):
+        for key in cls.mod_backend:
+            cls.mod_backend[key] = None
+        for key in cls.mod_frontend:
+            cls.mod_frontend[key] = None
+
     @staticmethod
     def test_function(
         fn_tree: str,

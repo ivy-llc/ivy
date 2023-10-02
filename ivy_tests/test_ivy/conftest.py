@@ -164,15 +164,16 @@ def pytest_configure(config):
             # spin up multiprocessing
             fw, ver = frontend.split("/")
             # build mp process, queue, initiation etc
-            queue = mp.Queue()
-            proc = mp.Process(target=frontend_proc, args=(queue,))
+            input_queue = mp.Queue()
+            output_queue = mp.Queue()
+            proc = mp.Process(target=frontend_proc, args=(input_queue, output_queue))
             # start the process so that it loads the framework
             proc.start()
-            queue.put(f"{fw}/{ver}")
+            input_queue.put(f"{fw}/{ver}")
             # we have the process running, the framework imported within,
             # we now pack the queue and the process and store it in dict
             # for future access
-            mod_frontend[fw] = (proc, queue)
+            mod_frontend[fw] = (proc, input_queue, output_queue)
         FrontendPipeline.set_mod_frontend(mod_frontend)
     # trace_graph
     raw_value = config.getoption("--trace_graph")

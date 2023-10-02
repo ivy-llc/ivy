@@ -104,7 +104,7 @@ def setup_frontend_test(frontend: str, backend: str, device: str, test_data: Tes
 def teardown_frontend_test():
     _unset_test_data()
     _unset_frontend()
-    _unset_frotnend_pipeline()
+    _unset_frontend_pipeline()
     _unset_backend()
     _unset_device()
 
@@ -168,9 +168,10 @@ def _unset_frontend():
     CURRENT_FRONTEND_CONFIG = _Notsetval
 
 
-def _unset_frotnend_pipeline():
+def _unset_frontend_pipeline():
     global CURRENT_PIPELINE
-    CURRENT_PIPELINE.traced_fn = None
+    CURRENT_PIPELINE.set_traced_fn(None)
+    CURRENT_PIPELINE.unset_mod()
     CURRENT_PIPELINE = _Notsetval
 
 
