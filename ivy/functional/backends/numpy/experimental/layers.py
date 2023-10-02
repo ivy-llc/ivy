@@ -966,18 +966,18 @@ def stft(
 ) -> np.ndarray:
     if axis is None:
         axis = -1
-    
-    if  hop_length <= 0:
-        hop_length = 1      
+
+    if hop_length <= 0:
+        hop_length = 1
 
     if len(signal) < n_fft:
         raise ValueError("Value of n_fft must less than or equal length of the signal")
-    
+
     if window.shape[0] != win_length:
-        raise ValueError("Value of win_length must be equal to length of window") 
+        raise ValueError("Value of win_length must be equal to length of window")
 
     if win_length is None:
-        win_length = n_fft     
+        win_length = n_fft
 
     if win_length > n_fft:
         raise ValueError("Value of win_length must be less then or equal to n_fft")
@@ -988,9 +988,9 @@ def stft(
     if window.shape[0] > len(signal):
         window = signal
         n_fft = len(signal)
-        win_length = n_fft 
-        window = np.hanning(win_length)       
-    
+        win_length = n_fft
+        window = np.hanning(win_length)
+
     num_frames = 1 + (signal.shape[-1] - n_fft) // hop_length
 
     return_complex = False
@@ -1024,7 +1024,7 @@ def stft(
 
         if onesided:
             stft_frame = stft_frame[..., : n_fft // 2 + 1]
-    
+
         if detrend is bool:
             detrend = False
             detrend_func = np.poly1d if isinstance(detrend, bool) else detrend
@@ -1034,12 +1034,12 @@ def stft(
                 stft_frame = stft_frame[..., : n_fft // 2 + 1]
 
         stft_result[..., i, : n_fft // 2 + 1] = stft_frame
-    
+
     if len(signal) > 1:
         stft_result = stft_result.transpose(1, 0)
 
     return stft_result
-    
+
 
 def fft2(
     x: np.ndarray,
