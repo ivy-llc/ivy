@@ -563,8 +563,8 @@ def strided_slice(
         if new_axis_mask[i]:
             full_slice += (ivy.newaxis,)
         else:
-            b = begin[i] if not begin_mask[i] else None
-            e = end[i] if not end_mask[i] else None
+            b = None if begin_mask[i] else begin[i]
+            e = None if end_mask[i] else end[i]
             s = strides[i]
             if b is None and e is None:
                 s = 1 if ellipsis_mask[i] else s
