@@ -1350,31 +1350,35 @@ def stft(
     if axis is None:
         axis = -1
 
-    if isinstance(n_fft, tuple):
-        n_fft = n_fft[0]
-
     if hop_length <= 0:
         hop_length = 1
-
-    signal_length = tf.shape(signal)[-1]
+    
+    signal_length = len(signal)
     if signal_length < n_fft:
-        n_fft = signal_length
+        raise ValueError("Value of n_fft must less than or equal length of the signal") 
 
-    window_length = tf.shape(window)[-1]
+    window_length = window.shape[0]
     if window_length != win_length:
-        win_length = window_length
-        n_fft = win_length
+        raise ValueError("Value of win_length must be equal to length of window") 
+    
+    if win_length is None:
+        win_length = n_fft     
 
+    if win_length > n_fft:
+        raise ValueError("Value of win_length must be less then or equal to n_fft")
+    
     if window is None or window is tf.Tensor:
         window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
 
     if window_length > signal_length:
         window = signal
-        window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
+        n_fft = signal_length
+        win_length = n_fft 
+        window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)    
 
-    normalized_window = window / tf.reduce_max(window)
+    window = window / tf.reduce_max(window)
 
-    window_fn = lambda *args, **kwargs: normalized_window
+    window_fn = lambda *args, **kwargs: window   
 
     stft = tf.signal.stft(
         signal,
@@ -1384,7 +1388,7 @@ def stft(
         window_fn,
         pad_mode,
     )
-    stft = tf.transpose(stft, perm=[1, 0])
+    stft = tf.transpose(stft)
     return stft
 
 
