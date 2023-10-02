@@ -609,7 +609,7 @@ def triu_indices(
     )
 
 
-def pad(tensor, sizes_of_pad, mode='constant', value=0):
+def pad(tensor, sizes_of_pad, mode="constant", value=0):
     if len(sizes_of_pad) == tensor.dim():
         pad_pairs = []
         for size in sizes_of_pad:
@@ -619,4 +619,3 @@ def pad(tensor, sizes_of_pad, mode='constant', value=0):
         pad_list = [item for pair in pad_pairs for item in pair]
 
         return torch.nn.functional.pad(tensor, pad_list, mode, value)
-
