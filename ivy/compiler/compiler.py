@@ -1,10 +1,8 @@
-
 import platform
 from typing import Callable, Optional, List, Union, Iterable, Tuple, Mapping
 from types import NoneType
 
-python_version = platform.python_version_tuple()
-    
+
 def trace_graph(
     *objs: Callable,
     stateful: Optional[List] = None,
@@ -91,10 +89,7 @@ def trace_graph(
     >>> print(time.time() - start)
     0.0001785755157470703"""
 
-    if python_version[1] == "8":
-        from ._compiler_38 import trace_graph as _trace_graph
-    else:
-        from ._compiler import trace_graph as _trace_graph
+    from ._compiler import trace_graph as _trace_graph
 
     return _trace_graph(
         *objs,
@@ -154,10 +149,7 @@ def transpile(
     -------
     Either a transpiled Graph or a non-initialized LazyGraph."""
 
-    if python_version[1] == "8":
-        from ._compiler_38 import transpile as _transpile
-    else:
-        from ._compiler import transpile as _transpile
+    from ._compiler import transpile as _transpile
 
     return _transpile(
         *objs,
@@ -188,12 +180,8 @@ def unify(
     with_numpy: bool = True,
     **transpile_kwargs
 ):
-    """"""
 
-    if python_version[1] == "8":
-        from ._compiler_38 import unify as _unify
-    else:
-        from ._compiler import unify as _unify
+    from ._compiler import unify as _unify
 
     return _unify(
         *objs,
