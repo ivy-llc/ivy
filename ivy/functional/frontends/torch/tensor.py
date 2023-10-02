@@ -23,6 +23,7 @@ class Tensor:
             self._ivy_array = (
                 array if isinstance(array, ivy.Array) else ivy.array(array)
             )
+
         else:
             self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
