@@ -1,6 +1,6 @@
 import ivy
 from ivy import with_supported_dtypes
-from ivy.functional.frontends.torch import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
