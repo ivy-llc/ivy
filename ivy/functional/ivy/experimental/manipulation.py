@@ -2738,3 +2738,21 @@ column_stack.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
+
+
+def concat_from_sequence(
+    sequence: Sequence[ivy.Array],
+    axis=0
+) -> ivy.Array:
+  """Concatenates a sequence of tensors along a specified axis.
+
+  Args:
+    sequence: A sequence of tensors.
+    axis: The axis along which to concatenate the tensors.
+
+  Returns:
+    A tensor that is the concatenation of the tensors in the sequence.
+  """
+
+  concatenated_tensor = ivy.concatenate(sequence, axis=axis)
+  return concatenated_tensor
