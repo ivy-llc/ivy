@@ -17,9 +17,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
 
-from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
-    _get_dtype_and_3dbatch_matrices,
-)
 
 CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
 
@@ -489,29 +486,16 @@ def test_paddle_tensor_add_(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="addmm",
-    dtype_input_xy=_get_dtype_and_3dbatch_matrices(with_input=True, input_3d=True),
-    beta=st.floats(
-        min_value=-5,
-        max_value=5,
-        allow_nan=False,
-        allow_subnormal=False,
-        allow_infinity=False,
-    ),
-    alpha=st.floats(
-        min_value=-5,
-        max_value=5,
-        allow_nan=False,
-        allow_subnormal=False,
-        allow_infinity=False,
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=3, shared_dtype=True
     ),
     alpha=helpers.floats(min_value=0.01, max_value=1),
     beta=helpers.floats(min_value=0.01, max_value=1),
 )
 def test_paddle_tensor_addmm(
-    *,
-    dtype_input_xy,
-    beta,
+    dtype_and_x,
     alpha,
+    beta,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -519,7 +503,7 @@ def test_paddle_tensor_addmm(
     on_device,
     backend_fw,
 ):
-    input_dtype, input, x, y = dtype_input_xy
+    input_dtype, input, x, y = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -527,7 +511,7 @@ def test_paddle_tensor_addmm(
             "data": input[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"x": x[0], "y": y[0], "beta": beta, "alpha": alpha},
+        method_all_as_kwargs_np={"x": x[1], "y": x[2]},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
