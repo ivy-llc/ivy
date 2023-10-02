@@ -27,7 +27,7 @@ def check_for_binaries():
     if os.path.exists(binaries_path):
         binaries_dict = json.load(open(binaries_path))
         available_configs = json.load(open(available_configs_path))
-        binaries_paths = _get_paths_from_binaries(binaries_dict)
+        binaries_paths = _get_paths_from_binaries(binaries_dict, folder_path)
         # verify if all binaries are available
         for _, path in enumerate(binaries_paths):
             if not os.path.exists(path):
@@ -63,9 +63,8 @@ def cleanup_and_fetch_binaries(clean=True):
     if os.path.exists(binaries_path):
         binaries_dict = json.load(open(binaries_path))
         available_configs = json.load(open(available_configs_path))
-        binaries_exts = set(
-            [path.split(".")[-1] for path in _get_paths_from_binaries(binaries_dict)]
-        )
+        binaries_paths = _get_paths_from_binaries(binaries_dict, folder_path)
+        binaries_exts = set([path.split(".")[-1] for path in binaries_paths])
 
         # clean up existing binaries
         if clean:
@@ -77,7 +76,6 @@ def cleanup_and_fetch_binaries(clean=True):
 
         print("Downloading new binaries...")
         all_tags = list(tags.sys_tags())
-        binaries_paths = _get_paths_from_binaries(binaries_dict)
         version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
         terminate = False
 
@@ -86,11 +84,11 @@ def cleanup_and_fetch_binaries(clean=True):
             if terminate:
                 break
             for path in binaries_paths:
-                module = path.split(os.sep)[1]
+                module = path.split(folder_path)[1][1:].split(os.sep)[1]
                 if os.path.exists(path) or str(tag) not in available_configs[module]:
                     continue
                 folders = path.split(os.sep)
-                folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
+                _, file_path = os.sep.join(folders[:-1]), folders[-1]
                 file_name = f"{file_path[:-3]}_{tag}.so"
                 search_path = f"{module}/{file_name}"
                 try:
