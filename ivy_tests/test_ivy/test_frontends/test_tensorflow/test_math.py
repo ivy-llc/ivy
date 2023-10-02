@@ -2971,6 +2971,8 @@ def test_tensorflow_truediv(
         rtol=1e-2,
         atol=1e-2,
     )
+
+
 # unsorted_segment_max
 @handle_frontend_test(
     fn_tree="tensorflow.math.unsorted_segment_max",
@@ -3001,6 +3003,7 @@ def test_tensorflow_unsorted_segment_max(
         segment_ids=segment_ids,
         num_segments=np.max(segment_ids) + 1,
     )
+
 
 # unsorted_segment_mean
 @handle_frontend_test(
