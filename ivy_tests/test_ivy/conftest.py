@@ -374,7 +374,8 @@ def pytest_collection_finish(session):
 
         for backend in Pipeline.mod_backend:
             proc = Pipeline.mod_backend[backend]
-            proc.terminate()
+            if proc:
+                proc.terminate()
         for frontend in FrontendPipeline.mod_frontend:
             proc = FrontendPipeline.mod_frontend[frontend]
             if proc:
