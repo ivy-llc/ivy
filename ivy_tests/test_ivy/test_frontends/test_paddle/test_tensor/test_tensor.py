@@ -504,6 +504,8 @@ def test_paddle_tensor_add_(
         allow_subnormal=False,
         allow_infinity=False,
     ),
+    alpha=helpers.floats(min_value=0.01, max_value=1),
+    beta=helpers.floats(min_value=0.01, max_value=1),
 )
 def test_paddle_tensor_addmm(
     *,
