@@ -61,7 +61,7 @@ def amax(x, axis=None, keepdims=False):
             axis[i] += x.ndim
     for i in axis:
         if i < 0 or i >= x.ndim:
-            raise ValueError(f"axis {i} is out of range [-{0}:{x.ndim}]")
+            raise ValueError(f"axis {i} is out of range [-0:{x.ndim}]")
     return ivy.max(x, axis=axis, keepdims=keepdims)
 
 
@@ -173,6 +173,25 @@ def cumprod(x, dim=None, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def deg2rad(x, name=None):
     return ivy.deg2rad(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+            "bool",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def diagonal(x, offset=0, axis1=0, axis2=1, name=None):
+    return ivy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
 @with_supported_dtypes(
