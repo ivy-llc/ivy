@@ -16,6 +16,10 @@ from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_linalg import (
     _get_cholesky_matrix,
 )
 
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_input_and_mat_vec,
+)
+
 
 # --- Helpers --- #
 # --------------- #
@@ -756,6 +760,33 @@ def test_paddle_matrix_power(
         on_device=on_device,
         x=x[0],
         n=n,
+    )
+
+
+# mv
+@handle_frontend_test(
+    fn_tree="paddle.mv",
+    dtype_mat_vec=_get_dtype_input_and_mat_vec(),
+    test_with_out=st.just(False),
+)
+def test_paddle_mv(
+    dtype_mat_vec,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, mat, vec = dtype_mat_vec
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=mat,
+        vec=vec,
     )
 
 
