@@ -344,7 +344,10 @@ def backend_proc(input_queue, output_queue):
             output_queue.put(
                 ((None), ret_np_from_gt_flat, ret_from_gt_device, fw_list2)
             )
-
+        if data[0] == "_run_target_frontend":
+            _, runner, input_dtypes, test_arguments, test_flags = data
+            ret = runner._run_target_helper(input_dtypes, test_arguments, test_flags)
+            output_queue.put(ret)
         if not data:
             break
         # process the data
@@ -359,6 +362,14 @@ def frontend_proc(input_queue, output_queue):
     while True:
         # subsequent arguments will be passed
         data = input_queue.get()
+
+        if data[0] == "_run_gt_frontend":
+            _, runner, input_dtypes, test_arguments, test_flags = data
+            ret = runner._run_ground_truth_helper(
+                input_dtypes, test_arguments, test_flags
+            )
+            output_queue.put(ret)
+
         if not data:
             break
         # process the data

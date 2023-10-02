@@ -1,22 +1,31 @@
 from ivy_tests.test_ivy.pipeline.base.pipeline import Pipeline
-from ivy_tests.test_ivy.pipeline.c_backend_handler import WithBackendHandler
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
+from ivy_tests.test_ivy.pipeline.frontend.multiprocessing import (
+    FrontendTestCaseRunnerMP,
+)
 from ivy_tests.test_ivy.pipeline.frontend.runners import FrontendTestCaseRunner
 
 
 class FrontendPipeline(Pipeline):
-    traced_fn = None
-
-    def __init__(self):
-        self._backend_handler = WithBackendHandler()
-
-    @property
-    def backend_handler(self):
-        return self.backend_handler
+    mod_frontend = {
+        "tensorflow": None,
+        "numpy": None,
+        "jax": None,
+        "torch": None,
+        "mindspore": None,
+        "scipy": None,
+        "paddle": None,
+        "onnx": None,
+        "pandas": None,
+        "xgboost": None,
+        "sklearn": None,
+        "mxnet": None,
+    }
 
     @classmethod
-    def set_traced_fn(cls, fn):
-        cls.traced_fn = fn
+    def set_mod_frontend(cls, mod_frontend):
+        for key in mod_frontend:
+            cls.mod_frontend[key] = mod_frontend[key]
 
     @staticmethod
     def test_function(
@@ -33,19 +42,34 @@ class FrontendPipeline(Pipeline):
         test_values: bool = True,
         **all_as_kwargs_np,
     ):
-        runner = FrontendTestCaseRunner(
-            fn_tree=fn_tree,
-            backend_handler=WithBackendHandler(),
-            backend_to_test=backend_to_test,
-            gt_fn_tree=gt_fn_tree,
-            frontend=frontend,
-            on_device=on_device,
-            traced_fn=FrontendPipeline.traced_fn,
-            tolerance_dict=tolerance_dict,
-            rtol=rtol_,
-            atol=atol_,
-        )
-
+        if not FrontendPipeline.multiprocessing_flag:
+            runner = FrontendTestCaseRunner(
+                fn_tree=fn_tree,
+                backend_handler=FrontendPipeline.backend_handler,
+                backend_to_test=backend_to_test,
+                gt_fn_tree=gt_fn_tree,
+                frontend=frontend,
+                on_device=on_device,
+                traced_fn=FrontendPipeline.traced_fn,
+                tolerance_dict=tolerance_dict,
+                rtol=rtol_,
+                atol=atol_,
+            )
+        else:
+            runner = FrontendTestCaseRunnerMP(
+                fn_tree=fn_tree,
+                backend_handler=FrontendPipeline.backend_handler,
+                backend_to_test=backend_to_test,
+                gt_fn_tree=gt_fn_tree,
+                frontend=frontend,
+                on_device=on_device,
+                traced_fn=FrontendPipeline.traced_fn,
+                tolerance_dict=tolerance_dict,
+                rtol=rtol_,
+                atol=atol_,
+                mod_backend=FrontendPipeline.mod_backend,
+                mod_frontend=FrontendPipeline.mod_frontend,
+            )
         runner.run(input_dtypes, all_as_kwargs_np, test_flags)
 
     def test_method(self):

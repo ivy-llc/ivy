@@ -12,7 +12,7 @@ from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
 from ..globals import mod_backend
-
+from ...pipeline.base.pipeline import Pipeline
 
 _dtype_kind_keys = {
     "valid",
@@ -39,7 +39,7 @@ def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"
 
 
 def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
-    if mod_backend[framework]:
+    if Pipeline.mod_backend[framework]:
         proc, input_queue, output_queue = mod_backend[framework]
         input_queue.put(("_get_type_dict_helper", framework, kind, is_frontend_test))
         return output_queue.get()
@@ -394,7 +394,7 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
 
 
 def cast_filter(d, dtype, x):
-    if mod_backend[test_globals.CURRENT_BACKEND]:
+    if Pipeline.mod_backend[test_globals.CURRENT_BACKEND]:
         proc, input_queue, output_queue = mod_backend[test_globals.CURRENT_BACKEND]
         input_queue.put(
             ("cast_filter_helper", d, dtype, x, test_globals.CURRENT_BACKEND)

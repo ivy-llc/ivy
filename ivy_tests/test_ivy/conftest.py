@@ -7,7 +7,8 @@ import multiprocessing as mp
 
 # for enabling numpy's bfloat16 behavior
 from packaging import version
-from .helpers.globals import mod_backend, mod_frontend
+
+# from .helpers.globals import mod_backend, mod_frontend
 
 multiprocessing_flag = False  # multiversion
 
@@ -22,6 +23,8 @@ from ivy_tests.test_ivy.helpers.pipeline_helper import (
     BackendHandler,
     BackendHandlerMode,
 )
+from ivy_tests.test_ivy.pipeline.base.pipeline import Pipeline
+from ivy_tests.test_ivy.pipeline.frontend.pipeline import FrontendPipeline
 
 GENERAL_CONFIG_DICT = {}
 UNSET_TEST_CONFIG = {"list": [], "flag": []}
@@ -88,6 +91,7 @@ def pytest_configure(config):
     no_mp = config.getoption("--no-mp")
 
     if not no_mp:
+        mod_backend = {}
         # we go multiprocessing, if  multiversion
         known_backends = {"tensorflow", "torch", "jax"}
         found_backends = set()
@@ -140,18 +144,20 @@ def pytest_configure(config):
                 # we now pack the queue and the process and store it in dict
                 # for future access
                 mod_backend[fw] = (proc, input_queue, output_queue)
+        Pipeline.set_mod_backend(mod_backend)
 
     else:
         # no multiprocessing if multiversion
         for fw in backend_strs:
             if "/" in fw:
-                multiprocessing_flag = True
+                multiprocessing_flag = False
                 # multiversion, but without multiprocessing
                 sys.path.insert(1, f"/opt/fw/{fw}")
 
     # frontend
     frontend = config.getoption("--frontend")
     if frontend:
+        mod_frontend = {}
         frontend_strs = frontend.split(",")
         # if we are passing a frontend flag, it has to have a version with it
         for frontend in frontend_strs:
@@ -167,7 +173,7 @@ def pytest_configure(config):
             # we now pack the queue and the process and store it in dict
             # for future access
             mod_frontend[fw] = (proc, queue)
-
+        FrontendPipeline.set_mod_frontend(mod_frontend)
     # trace_graph
     raw_value = config.getoption("--trace_graph")
     if raw_value == "both":
@@ -365,7 +371,11 @@ def pytest_collection_finish(session):
             item_path = os.path.relpath(item.path)
             print(f"{item_path}::{item.name}")
 
-        for backend in mod_backend:
-            proc = mod_backend[backend]
+        for backend in Pipeline.mod_backend:
+            proc = Pipeline.mod_backend[backend]
             proc.terminate()
+        for frontend in FrontendPipeline.mod_frontend:
+            proc = FrontendPipeline.mod_frontend[frontend]
+            if proc:
+                proc.terminate()
         pytest.exit("Done!")

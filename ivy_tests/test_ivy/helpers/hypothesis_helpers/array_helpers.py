@@ -17,6 +17,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtyp
 from . import general_helpers as gh
 from . import dtype_helpers, number_helpers
 from ..globals import mod_backend
+from ...pipeline.base.pipeline import Pipeline
 
 
 @st.composite
@@ -1503,7 +1504,7 @@ def array_values(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        if mod_backend[test_globals.CURRENT_BACKEND]:
+        if Pipeline.mod_backend[test_globals.CURRENT_BACKEND]:
             proc, input_queue, output_queue = mod_backend[test_globals.CURRENT_BACKEND]
             input_queue.put(
                 ("dtype_info_helper", test_globals.CURRENT_BACKEND, kind_dtype, dtype)
@@ -1515,7 +1516,7 @@ def array_values(
             )
     elif "int" in dtype:
         kind_dtype = "int"
-        if mod_backend[test_globals.CURRENT_BACKEND]:
+        if Pipeline.mod_backend[test_globals.CURRENT_BACKEND]:
             proc, input_queue, output_queue = mod_backend[test_globals.CURRENT_BACKEND]
             input_queue.put(
                 ("dtype_info_helper", test_globals.CURRENT_BACKEND, kind_dtype, dtype)
