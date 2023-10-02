@@ -691,6 +691,29 @@ def test_concat_from_sequence(
     )
 
 
+# concat_from_sequence
+@handle_test(
+    fn_tree="concat_from_sequence",
+    sequence=st.lists(
+        shape=st.shared(helpers.get_shape(), key="concat_from_sequence"),
+        dtypes=helpers.get_dtypes("valid"),
+    ),
+    axis=st.integers(min_value=0, max_value=sequence[0].ndim),
+)
+def test_concat_from_sequence(
+    *, sequence, axis, test_flags, backend_fw, fn_name, on_device
+):
+    concatenated_tensor = concat_from_sequence(sequence, axis=axis)
+    helpers.test_function(
+        input_dtypes=[t.dtype for t in sequence],
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        expected=[t for t in sequence],
+    )
+
+
 # dsplit
 @handle_test(
     fn_tree="functional.ivy.experimental.dsplit",
@@ -1497,24 +1520,3 @@ def test_vstack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_device):
         fn_name=fn_name,
         arrays=arrays,
     )
-
-
-# concat_from_sequence
-@handle_test(
-  fn_tree="concat_from_sequence",
-  sequence=st.lists(
-    shape=st.shared(helpers.get_shape(), key="concat_from_sequence"),
-    dtypes=helpers.get_dtypes("valid"),
-  ),
-  axis=st.integers(min_value=0, max_value=sequence[0].ndim),
-)
-def test_concat_from_sequence(*, sequence, axis, test_flags, backend_fw, fn_name, on_device):
-  concatenated_tensor = concat_from_sequence(sequence, axis=axis)
-  helpers.test_function(
-    input_dtypes=[t.dtype for t in sequence],
-    backend_to_test=backend_fw,
-    test_flags=test_flags,
-    fn_name=fn_name,
-    on_device=on_device,
-    expected=[t for t in sequence],
-  )
