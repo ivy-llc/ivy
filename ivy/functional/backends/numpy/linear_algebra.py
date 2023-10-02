@@ -1,7 +1,6 @@
 # global
 
 from collections import namedtuple
-
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
 import numpy as np
@@ -9,7 +8,7 @@ import numpy as np
 # local
 import ivy
 from ivy import inf
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from . import backend_version
 
@@ -313,17 +312,23 @@ def tensorsolve(
     return np.linalg.tensorsolve(x1, x2, axes=axes)
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, backend_version)
+@with_supported_dtypes({"1.25.2 and below": ("float32", "float64")}, backend_version)
 def tensordot(
     x1: np.ndarray,
     x2: np.ndarray,
     /,
     *,
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=axes)
+
+
+tensordot.partial_mixed_handler = (
+    lambda _, __, batched_modes, **___: batched_modes is None
+)
 
 
 @_scalar_output_to_0d_array

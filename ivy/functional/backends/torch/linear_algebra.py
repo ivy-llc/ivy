@@ -1,9 +1,9 @@
 # global
 
-import torch
+from collections import namedtuple
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
-from collections import namedtuple
+import torch
 
 # local
 import ivy
@@ -424,13 +424,14 @@ svdvals.support_native_out = True
 
 # ToDo: re-add int32 support once
 # (https://github.com/pytorch/pytorch/issues/84530) is fixed
-@with_supported_dtypes({"2.0.1 and below": ("float32",)}, backend_version)
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
 def tensordot(
     x1: torch.Tensor,
     x2: torch.Tensor,
     /,
     *,
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
@@ -441,6 +442,11 @@ def tensordot(
     else:
         ret = torch.tensordot(x1, x2, dims=axes).type(dtype)
     return ret
+
+
+tensordot.partial_mixed_handler = (
+    lambda _, __, batched_modes, **___: batched_modes is None
+)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)

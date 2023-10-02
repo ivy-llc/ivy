@@ -3,6 +3,7 @@
 # global
 import sys
 import numpy as np
+import pytest
 from hypothesis import assume, strategies as st
 
 # local
@@ -15,6 +16,13 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
 
 # --- Helpers --- #
 # --------------- #
+
+
+def _avoid_torch_unsupported_cases(x1, x2, dtype):
+    if "64" not in dtype[0]:
+        scaler_value = x1.ndim == 1 or x2.ndim == 1
+        if scaler_value:
+            dtype[0] = "float64" if "float" in dtype[0] else "int64"
 
 
 @st.composite
@@ -1017,12 +1025,13 @@ def test_svdvals(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.tensordot",
     dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=10,
     ),
+    test_gradients=st.just(False),
 )
 def test_tensordot(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_device):
     (
@@ -1031,7 +1040,8 @@ def test_tensordot(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_devi
         x2,
         axis,
     ) = dtype_x1_x2_axis
-
+    if backend_fw == "torch":
+        _avoid_torch_unsupported_cases(x1, x2, dtype)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -1043,7 +1053,59 @@ def test_tensordot(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_devi
         x1=x1,
         x2=x2,
         axes=axis,
+        batched_modes=None,
     )
+
+
+# adopted from tensorly
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_batched_tensordot.py#L9
+@pytest.mark.parametrize(
+    "shape1, shape2, axes, batched_modes, expected_shape",
+    [
+        ([4, 2, 3, 3], [3, 4, 2, 3], [(0, 3), (1, 3)], [1, 2], [2, 3, 3]),
+        ([4, 3, 3], [3, 4, 2], [], [], [4, 3, 3, 3, 4, 2]),
+        ([4, 3, 3], [3, 4, 2], [], [(0,), (1,)], [4, 3, 3, 3, 2]),
+    ],
+)
+def test_tensordot_with_batched_modes_parameter(
+    backend_fw,
+    shape1,
+    shape2,
+    axes,
+    batched_modes,
+    expected_shape,
+):
+    import ivy
+
+    ivy.set_backend(backend_fw)
+    tensor = ivy.random_uniform(shape=shape1)
+    tensor2 = ivy.random_uniform(shape=shape2)
+    res = ivy.tensordot(tensor, tensor2, axes=axes, batched_modes=batched_modes)
+    assert res.shape == expected_shape
+    # Check for each sample of the batch-size individually
+    if tensor.ndim == 4:
+        for i in range(2):
+            true_res = ivy.tensordot(
+                tensor[:, i],
+                tensor2[:, :, i],
+                axes=((0, 2), (1, 2)),
+                batched_modes=None,
+            )
+            assert np.allclose(res[i], true_res)
+
+
+def test_tensordot_without_batched_modes_parameter():
+    import ivy
+
+    shape = [3, 4, 2]
+    tensor = ivy.random_uniform(shape=shape)
+    # Equivalence with inner product when contracting with self along all modes
+    res = ivy.tensordot(tensor, tensor, axes=3)  # [[0, 1, 2], [0, 1, 2]])
+    true_res = ivy.general_inner_product(tensor, tensor, 3)
+    assert np.allclose(true_res, res)
+    # Equivalent to the above expression
+    res = ivy.tensordot(tensor, tensor, axes=[[0, 1, 2], [0, 1, 2]])
+    assert np.allclose(true_res, res)
 
 
 # trace

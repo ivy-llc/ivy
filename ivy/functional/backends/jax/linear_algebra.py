@@ -1,18 +1,16 @@
 # global
 from collections import namedtuple
-from typing import Union, Optional, Tuple, Literal, Sequence, NamedTuple
+from typing import Union, Optional, Tuple, Literal, Sequence, NamedTuple, List
 
 import jax.numpy as jnp
 
 # local
 import ivy
 from ivy import inf
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.backends.jax import JaxArray
-
-from . import backend_version
-
 from ivy import promote_types_of_inputs
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.functional.backends.jax import JaxArray
+from . import backend_version
 
 
 # Array API Standard #
@@ -375,17 +373,23 @@ def svdvals(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.svd(x, compute_uv=False)
 
 
-@with_unsupported_dtypes({"0.4.16 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"0.4.16 and below": ("float32", "float64")}, backend_version)
 def tensordot(
     x1: JaxArray,
     x2: JaxArray,
     /,
     *,
     axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
+    batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.tensordot(x1, x2, axes)
+
+
+tensordot.partial_mixed_handler = (
+    lambda _, __, batched_modes, **___: batched_modes is None
+)
 
 
 @with_unsupported_dtypes(

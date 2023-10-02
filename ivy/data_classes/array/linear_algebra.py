@@ -901,9 +901,12 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         /,
         *,
         axes: Union[int, Tuple[List[int], List[int]]] = 2,
+        batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.tensordot(self._data, x2, axes=axes, out=out)
+        return ivy.tensordot(
+            self._data, x2, axes=axes, batched_modes=batched_modes, out=out
+        )
 
     def tensorsolve(
         self: ivy.Array,

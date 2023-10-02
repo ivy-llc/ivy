@@ -1,7 +1,7 @@
 # global
-
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
+
 
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
@@ -570,18 +570,25 @@ def svdvals(
     return ret
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float32",)}, backend_version)
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, backend_version)
 def tensordot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # find type to promote to
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     ret = tf.cast(tf.tensordot(x1, x2, axes=axes), dtype)
     return ret
+
+
+tensordot.partial_mixed_handler = (
+    lambda _, __, batched_modes, **___: batched_modes is None
+)
 
 
 @with_unsupported_dtypes(

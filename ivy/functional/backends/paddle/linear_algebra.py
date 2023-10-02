@@ -535,10 +535,16 @@ def tensordot(
     /,
     *,
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret = paddle.tensordot(x1, x2, axes=axes)
     return ret.squeeze() if x1.ndim == axes else ret
+
+
+tensordot.partial_mixed_handler = (
+    lambda _, __, batched_modes, **___: batched_modes is None
+)
 
 
 @with_unsupported_device_and_dtypes(
