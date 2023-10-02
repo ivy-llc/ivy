@@ -62,7 +62,7 @@ def install_pkg(path, pkg, base="fw/"):
     else:
         subprocess.run(
             f"yes |pip3 install --upgrade {pkg} --target"
-            f" {path} --default-timeout=100   --no-cache-dir",
+            f" {path} --default-timeout=100   --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cu118",
             shell=True,
         )
 
