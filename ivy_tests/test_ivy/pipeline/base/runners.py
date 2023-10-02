@@ -80,6 +80,22 @@ class TestCaseSubRunner(ABC):
             dtype=ret_dtypes,
         )
 
+    def _get_results_from_ret_raw(self, ret):
+        ret_flat = self._flatten(ret=ret)
+        ret_devices = [
+            self._ivy.dev(ret) if self._ivy.is_array(ret) else None for ret in ret_flat
+        ]
+        ret_np_flat = self._flatten_ret_to_np(ret_flat)
+        ret_shapes = [
+            ret_np.shape if isinstance(ret_np, np.ndarray) else None
+            for ret_np in ret_np_flat
+        ]
+        ret_dtypes = [
+            ret_np.dtype if isinstance(ret_np, np.ndarray) else None
+            for ret_np in ret_np_flat
+        ]
+        return ret_np_flat, ret_shapes, ret_devices, ret_dtypes
+
     def _flatten_ret_to_np(self, ret_flat):
         return [self._ivy.to_numpy(x) for x in ret_flat]
 

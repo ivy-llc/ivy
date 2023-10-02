@@ -24,6 +24,8 @@ from .function_testing import (
     test_gradient_backend_computation,
     test_gradient_ground_truth_computation,
 )
+from ..pipeline.frontend.multiprocessing import FrontendTestCaseRunnerMP
+
 
 framework_path = "/opt/fw/"
 
@@ -50,7 +52,9 @@ def backend_proc(input_queue, output_queue):
             output_queue.put(
                 (_get_supported_devices_dtypes_helper(b, fn_module, fn_name))
             )
+
         elif data[0] == "method supported dtypes":
+            print("runnnn method supported dtypes \n\n\n")
             # again stage 1, calculating and returning supported dtypes
             _, method_name, class_module, class_name, backend_str = data
             # since class module is name, we will import it to make it a module
@@ -61,6 +65,7 @@ def backend_proc(input_queue, output_queue):
             output_queue.put(organized_dtypes)
 
         elif data[0] == "dtype_info_helper":
+            # print("runnnn dtype_info_helper \n\n\n")
             _, backend, kind_dtype, dtype = data
             dtype_info = array_helpers_dtype_info_helper(backend, kind_dtype, dtype)
             output_queue.put(dtype_info)
@@ -345,8 +350,30 @@ def backend_proc(input_queue, output_queue):
                 ((None), ret_np_from_gt_flat, ret_from_gt_device, fw_list2)
             )
         if data[0] == "_run_target_frontend":
-            _, runner, input_dtypes, test_arguments, test_flags = data
-            ret = runner._run_target_helper(input_dtypes, test_arguments, test_flags)
+            print("runnnn _run_target_frontend \n\n\n")
+            (
+                _,
+                fn_tree,
+                test_flags,
+                frontend,
+                backend_handler,
+                on_device,
+                input_dtypes,
+                test_arguments,
+                backend_to_test,
+                traced_fn,
+            ) = data
+            ret = FrontendTestCaseRunnerMP._run_target_helper(
+                fn_tree,
+                test_flags,
+                frontend,
+                backend_handler,
+                on_device,
+                input_dtypes,
+                test_arguments,
+                backend_to_test,
+                traced_fn,
+            )
             output_queue.put(ret)
         if not data:
             break
@@ -364,11 +391,34 @@ def frontend_proc(input_queue, output_queue):
         data = input_queue.get()
 
         if data[0] == "_run_gt_frontend":
-            _, runner, input_dtypes, test_arguments, test_flags = data
-            ret = runner._run_ground_truth_helper(
-                input_dtypes, test_arguments, test_flags
+            print("runnnn _run_gt_frontend \n\n\n")
+            (
+                _,
+                gt_fn_tree,
+                fn_tree,
+                test_flags,
+                frontend,
+                backend_handler,
+                on_device,
+                input_dtypes,
+                test_arguments,
+            ) = data
+            ret = FrontendTestCaseRunnerMP._run_ground_truth_helper(
+                gt_fn_tree,
+                fn_tree,
+                test_flags,
+                frontend,
+                backend_handler,
+                on_device,
+                input_dtypes,
+                test_arguments,
             )
             output_queue.put(ret)
+
+        elif data[0] == "_get_type_dict_helper":
+            _, framework, kind, is_frontend_test = data
+            dtype_ret = _get_type_dict_helper(framework, kind, is_frontend_test)
+            output_queue.put((dtype_ret))
 
         if not data:
             break

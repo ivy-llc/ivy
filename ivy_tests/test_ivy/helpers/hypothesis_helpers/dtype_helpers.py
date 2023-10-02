@@ -12,6 +12,7 @@ from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
 from ...pipeline.base.pipeline import Pipeline
+from ...pipeline.frontend.pipeline import FrontendPipeline
 
 _dtype_kind_keys = {
     "valid",
@@ -38,10 +39,13 @@ def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"
 
 
 def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
-    if Pipeline.mod_backend[framework]:
-        proc, input_queue, output_queue = Pipeline.mod_backend[framework]
+    # Todo: modify so that only in case of frontend it uses this
+    # in case of backend it will use mod_backend
+    if FrontendPipeline.mod_frontend[framework]:
+        proc, input_queue, output_queue = FrontendPipeline.mod_frontend[framework]
         input_queue.put(("_get_type_dict_helper", framework, kind, is_frontend_test))
-        return output_queue.get()
+        ret = output_queue.get()
+        return ret
     else:
         return _get_type_dict_helper(framework, kind, is_frontend_test)
 
@@ -228,9 +232,7 @@ def get_dtypes(
 
     # If being called from a frontend test
     if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
-        frontend_dtypes = _get_type_dict_helper(
-            test_globals.CURRENT_FRONTEND, kind, True
-        )
+        frontend_dtypes = _get_type_dict(test_globals.CURRENT_FRONTEND, kind, True)
         valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
     # Make sure we return dtypes that are compatible with ground truth backend

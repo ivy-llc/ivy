@@ -81,7 +81,7 @@ class FrontendConfigWithBackend(FrontendConfig):
     backend_str = None
 
     def __init__(self):
-        self.backend = ivy.with_backend(self.backend_str)
+        self.backend = ivy.set_backend(self.backend_str)
 
     @property
     def Dtype(self):
