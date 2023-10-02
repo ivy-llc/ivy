@@ -2,16 +2,15 @@
 import math
 
 import numpy as np
-from hypothesis import assume, strategies as st
-import hypothesis.extra.numpy as nph
+from hypothesis import strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
-    _get_dtype_value1_value2_axis_for_tensordot,
-)
+
+
+# --- Helpers --- #
+# --------------- #
 
 
 # helpers
@@ -57,6 +56,10 @@ def _get_repeat_interleaves_args(
     output_size = np.sum(repeats) if use_output_size else None
 
     return [values_dtype, repeats_dtype], values, repeats, axis, output_size
+
+
+# --- Main --- #
+# ------------ #
 
 
 # stft
