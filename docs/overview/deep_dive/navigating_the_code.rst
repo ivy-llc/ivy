@@ -192,9 +192,7 @@ To have a better idea on this, let's look at an example!
             )
         ):
             raise ivy.utils.exceptions.IvyException(
-                "the fill_value: {} and data type: {} are not compatible".format(
-                    fill_value, dtype
-                )
+                f"the fill_value: {fill_value} and data type: {dtype} are not compatible"
             )
 
 

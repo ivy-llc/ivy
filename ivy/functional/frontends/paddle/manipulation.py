@@ -76,23 +76,13 @@ def flip(x, axis, name=None):
 def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def gather_nd(params, indices, axis=-1, batch_dims=0, name=None):
-    return ivy.gather_nd(params, indices, axis=axis, batch_dims=batch_dims)
-
-
 @to_ivy_arrays_and_back
 def repeat_interleave(x, repeats, axis=None, name=None):
     return ivy.repeat(x, repeats, axis=axis)
 
 
 @to_ivy_arrays_and_back
-def reshape(x, shape):
+def reshape(x, shape, name=None):
     return ivy.reshape(x, shape)
 
 
@@ -168,6 +158,18 @@ def take_along_axis(arr, indices, axis):
 @to_ivy_arrays_and_back
 def tile(x, repeat_times, name=None):
     return ivy.tile(x, repeats=repeat_times)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def unbind(input, axis=0):
+    shape = list(input.shape)
+    num_splits = shape[axis]
+    shape.pop(axis)
+    return tuple([x.reshape(tuple(shape)) for x in split(input, num_splits, axis=axis)])
 
 
 @with_supported_dtypes(
