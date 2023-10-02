@@ -459,4 +459,4 @@ def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 def normal(key, shape()):
    seed = _get_seed(key)
-   return ivy.random_normal(shape=shape)
+   return ivy.random_normal(shape=shape, seed=seed)
