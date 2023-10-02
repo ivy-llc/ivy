@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.egg-info/
 **/.idea/workspace.xml
 **/.idea/tasks.xml
@@ -43,3 +44,12 @@ venv.bak/
 ivy_dev/
 *venv/
 venv*
+=======
+.vscode
+.idea/*
+**/.ipynb_checkpoints/*
+**pem**
+**fn_path_cache**
+*.DS_Store
+build/
+>>>>>>> 73a66de61fa0c78c47a3b19b29c47f34c96ef441

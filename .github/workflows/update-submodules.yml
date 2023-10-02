@@ -1,0 +1,26 @@
+name: Update submodules
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️ ivy
+        uses: actions/checkout@v4
+        with:
+          repository: unifyai/ivy
+          token: ${{ secrets.IVY_BRANCH_TOKEN }}
+          submodules: recursive
+
+      - name: Update submodules
+        run: |
+          git config --global user.email "ivy.branch@lets-unify.ai"
+          git config --global user.name "ivy-branch"
+          git submodule update --remote docs/demos
+          git add .
+          git commit -m "Update demos 🤖"
+          git push origin main
