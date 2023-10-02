@@ -166,7 +166,6 @@ def _unset_frontend():
 def _unset_frontend_pipeline():
     global CURRENT_PIPELINE
     CURRENT_PIPELINE.set_traced_fn(None)
-    CURRENT_PIPELINE.unset_mod()
     CURRENT_PIPELINE = _Notsetval
 
 

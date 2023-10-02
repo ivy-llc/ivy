@@ -62,7 +62,8 @@ class TestCaseSubRunner(ABC):
     def _get_results_from_ret(self, ret):
         ret_flat = self._flatten(ret=ret)
         ret_devices = [
-            self._ivy.dev(ret) if self._ivy.is_array(ret) else None for ret in ret_flat
+            str(self._ivy.dev(ret)) if self._ivy.is_array(ret) else None
+            for ret in ret_flat
         ]
         ret_np_flat = self._flatten_ret_to_np(ret_flat)
         ret_shapes = [
@@ -83,7 +84,8 @@ class TestCaseSubRunner(ABC):
     def _get_results_from_ret_raw(self, ret):
         ret_flat = self._flatten(ret=ret)
         ret_devices = [
-            self._ivy.dev(ret) if self._ivy.is_array(ret) else None for ret in ret_flat
+            str(self._ivy.dev(ret)) if self._ivy.is_array(ret) else None
+            for ret in ret_flat
         ]
         ret_np_flat = self._flatten_ret_to_np(ret_flat)
         ret_shapes = [

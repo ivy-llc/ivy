@@ -26,22 +26,19 @@ class FunctionTestCaseSubRunnerMP(FunctionTestCaseSubRunner):
     def _call_function(self, args, kwargs):
         # determine the target frontend_fn
         frontend_fn = self._get_frontend_function(args, kwargs)
-
         if self.test_flags.generate_frontend_arrays and self.test_flags.test_trace:
             # convert the args and kwargs to ivy arrays
             args, kwargs = self._ivy.nested_map(
                 (args, kwargs),
-                FunctionTestCaseSubRunner._frontend_array_to_ivy,
+                FunctionTestCaseSubRunnerMP._frontend_array_to_ivy,
                 include_derived={"tuple": True},
             )
-
         # testing inplace
         if self.test_flags.inplace:
             ret = self._test_inplace(frontend_fn, args, kwargs)
         else:
             with self._ivy.PreciseMode(self.test_flags.precision_mode):
                 ret = frontend_fn(*args, **kwargs)
-
             # converting ret to ivy array
             if self.test_flags.test_trace:
                 ret = self._ivy.nested_map(
@@ -69,9 +66,16 @@ class FunctionTestCaseSubRunnerMP(FunctionTestCaseSubRunner):
         if self.test_flags.with_out:
             self._test_out(ret, args, kwargs, frontend_fn)
 
-        if self.test_flags.trace_fn:
+        if self.test_flags.test_trace:
             return self._get_results_from_ret_raw(ret), frontend_fn
 
+        return self._get_results_from_ret_raw(ret), None
+
+
+class GTFunctionTestCaseSubRunnerMP(GTFunctionTestCaseSubRunner):
+    def _call_function(self, args, kwargs):
+        frontend_fn = self._get_frontend_fn()
+        ret = frontend_fn(*args, **kwargs)
         return self._get_results_from_ret_raw(ret)
 
 
@@ -107,7 +111,6 @@ class FrontendTestCaseRunnerMP(FrontendTestCaseRunner):
         self.mod_frontend = mod_frontend
 
     def _run_target(self, input_dtypes, test_arguments, test_flags):
-        print("sending _run_target_frontend")
         proc, input_queue, output_queue = self.mod_backend[self.backend_to_test]
         input_queue.put(
             (
@@ -123,7 +126,7 @@ class FrontendTestCaseRunnerMP(FrontendTestCaseRunner):
                 self.traced_fn,
             )
         )
-        (ret_np_flat, ret_shapes, ret_devices, ret_dtypes, traced_fn) = (
+        (ret_np_flat, ret_shapes, ret_devices, ret_dtypes), traced_fn = (
             output_queue.get()
         )
         if test_flags.test_trace and self.traced_fn is None:
@@ -172,7 +175,7 @@ class FrontendTestCaseRunnerMP(FrontendTestCaseRunner):
         input_dtypes,
         test_arguments,
     ):
-        sub_runner_gt = GTFunctionTestCaseSubRunner(
+        sub_runner_gt = GTFunctionTestCaseSubRunnerMP(
             gt_fn_tree,
             fn_tree,
             test_flags,
@@ -199,5 +202,10 @@ class FrontendTestCaseRunnerMP(FrontendTestCaseRunner):
                 test_arguments,
             )
         )
-        ret = output_queue.get()
-        return ret
+        ret_np_flat, ret_shapes, ret_devices, ret_dtypes = output_queue.get()
+        return TestCaseSubRunnerResult(
+            flatten_elements_np=ret_np_flat,
+            shape=ret_shapes,
+            device=ret_devices,
+            dtype=ret_dtypes,
+        )
