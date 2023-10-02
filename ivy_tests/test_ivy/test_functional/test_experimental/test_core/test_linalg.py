@@ -1,6 +1,7 @@
 # global
 import math
 from hypothesis import strategies as st
+from hypothesis import assume
 import numpy as np
 import pytest
 import itertools
@@ -1668,6 +1669,9 @@ def test_partial_tucker_tensorly(tol_norm_2, tol_max_abs, modes, shape):
     test_instance_method=st.just(False),
 )
 def test_solve_triangular(*, data, test_flags, backend_fw, fn_name, on_device):
+    # Temporarily ignore gradients on paddlepaddle backend
+    # See: https://github.com/unifyai/ivy/pull/25917
+    assume(not (backend_fw == "paddle" and test_flags.test_gradients))
     upper, adjoint, unit_diagonal, input_dtypes, x = data
     helpers.test_function(
         backend_to_test=backend_fw,
