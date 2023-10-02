@@ -1465,7 +1465,6 @@ def test_tensorflow__xor__(
     )
 
 
-
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
@@ -1495,6 +1494,47 @@ def test_tensorflow_floordiv_(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "y": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="floordiv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
+    ),
+)
+def test_tensorflow_floordiv_(
+    dtype_and_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "value": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -1565,46 +1605,6 @@ def test_tensorflow_tensor_get_shape(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        on_device=on_device,
-    )
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="tensorflow.constant",
-    method_name="floordiv",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-        large_abs_safety_factor=10,
-        small_abs_safety_factor=10,
-        safety_factor_scale="log",
-    ),
-)
-def test_tensorflow_floordiv_(
-    dtype_and_x,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "value": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "x": x[1],
-        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
