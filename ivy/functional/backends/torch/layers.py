@@ -56,7 +56,7 @@ def multi_head_attention(
     )[1]
     num_dims = query.ndim
     if num_dims == 3 and batch_first:
-        query, key, value = (torch.swapaxes(x, 0, 1) for x in [query, key, value])
+        query, key, value = [torch.swapaxes(x, 0, 1) for x in [query, key, value]]
     ret = torch.nn.functional.multi_head_attention_forward(
         query,
         key,
@@ -93,7 +93,7 @@ def multi_head_attention(
 
 
 multi_head_attention.partial_mixed_handler = (
-    lambda *args, scale=None, out_proj_weights=None, is_causal=False, attention_mask=None, return_attention_weights=False, in_proj_weights=None, q_proj_weights=None, k_proj_weights=None, v_proj_weights=None, **kwargs: not ivy.exists(
+    lambda *args, scale=None, out_proj_weights=None, is_causal=False, attention_mask=None, return_attention_weights=False, in_proj_weights=None, q_proj_weights=None, k_proj_weights=None, v_proj_weights=None, **kwargs: not ivy.exists(  # noqa: E501
         scale
     )
     and ivy.exists(out_proj_weights)

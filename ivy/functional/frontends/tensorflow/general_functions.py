@@ -86,9 +86,7 @@ def clip_by_norm(t, clip_norm, axes=None):
     l2sum_safe = ivy.where(pred, l2sum, ivy.ones_like(l2sum))
     l2norm = ivy.where(pred, ivy.sqrt(l2sum_safe), l2sum)
     intermediate = t * clip_norm
-    assert (
-        t.shape == intermediate.shape
-    ), "Dimensions {} and {} are not compatible".format(
+    assert t.shape == intermediate.shape, "Dimensions %s and %s are not compatible" % (
         t.shape,
         intermediate.shape,
     )
@@ -565,8 +563,8 @@ def strided_slice(
         if new_axis_mask[i]:
             full_slice += (ivy.newaxis,)
         else:
-            b = begin[i] if not begin_mask[i] else None
-            e = end[i] if not end_mask[i] else None
+            b = None if begin_mask[i] else begin[i]
+            e = None if end_mask[i] else end[i]
             s = strides[i]
             if b is None and e is None:
                 s = 1 if ellipsis_mask[i] else s

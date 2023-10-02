@@ -54,8 +54,8 @@ def _to_device(x: np.ndarray, device=None) -> np.ndarray:
             pass
         else:
             raise ivy.utils.exceptions.IvyException(
-                "Invalid device specified, must be in the form "
-                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
+                "Invalid device specified, must be in the form [ 'cpu:idx' | 'gpu:idx'"
+                f" ], but found {device}"
             )
     return x
 
@@ -79,8 +79,8 @@ def to_device(
             pass
         else:
             raise ivy.utils.exceptions.IvyException(
-                "Invalid device specified, must be in the form "
-                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
+                "Invalid device specified, must be in the form [ 'cpu:idx' | 'gpu:idx'"
+                f" ], but found {device}"
             )
     return x
 
@@ -92,7 +92,7 @@ def handle_soft_device_variable(*args, fn, **kwargs):
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
         # ToDO: add proper numpy profiler
-        super().__init__(save_dir)
+        super(Profiler, self).__init__(save_dir)
         os.makedirs(save_dir, exist_ok=True)
         self._start_time = None
 

@@ -155,9 +155,9 @@ def mel_weight_matrix(
         dtype=jnp.float32,
     )
     mel_edges = jnp.stack([mel_edges[i : i + 3] for i in range(num_mel_bins)])
-    lower_edge_mel, center_mel, upper_edge_mel = (
+    lower_edge_mel, center_mel, upper_edge_mel = [
         t.reshape((1, num_mel_bins)) for t in jnp.split(mel_edges, 3, axis=1)
-    )
+    ]
     lower_slopes = (spec_bin_mels - lower_edge_mel) / (center_mel - lower_edge_mel)
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = jnp.maximum(zero, jnp.minimum(lower_slopes, upper_slopes))
