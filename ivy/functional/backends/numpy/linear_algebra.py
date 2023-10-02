@@ -322,6 +322,7 @@ def tensordot(
     batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=axes)
 
 

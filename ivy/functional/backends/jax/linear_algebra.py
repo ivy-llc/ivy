@@ -383,6 +383,7 @@ def tensordot(
     batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.tensordot(x1, x2, axes)
 
 
