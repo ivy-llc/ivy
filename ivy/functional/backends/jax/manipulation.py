@@ -202,9 +202,9 @@ def tile(
 
 def clip(
     x: JaxArray,
-    /,
     x_min: Optional[Union[Number, JaxArray]] = None,
     x_max: Optional[Union[Number, JaxArray]] = None,
+    /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
