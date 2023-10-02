@@ -1396,18 +1396,18 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 @handle_array_like_without_promotion
 @handle_out_argument
 def concat_from_sequence(
-  array_sequence: Sequence[ivy.Array],
-  axis: int = 0
+    array_sequence: Sequence[ivy.Array], axis: int = 0
 ) -> ivy.Array:
-  """Concatenates a sequence of arrays along a specified axis.
+    """
+    Concatenates a sequence of arrays along a specified axis.
 
-  Args:
-    array_sequence: A sequence of arrays.
-    axis: The axis along which to concatenate the arrays.
+    Args:
+      array_sequence: A sequence of arrays.
+      axis: The axis along which to concatenate the arrays.
 
-  Returns:
-    A tensor that is the concatenation of the arrays in the sequence.
-  """
+    Returns:
+      A tensor that is the concatenation of the arrays in the sequence.
+    """
 
-  concatenated_array = ivy.concatenate(array_sequence, axis=axis)
-  return concatenated_array
+    concatenated_array = ivy.concatenate(array_sequence, axis=axis)
+    return concatenated_array
