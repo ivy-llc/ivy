@@ -1178,6 +1178,7 @@ def _svd_interface(
     else:
         raise ValueError("Invalid Choice")
 
+    U, S, V = svd_fun(matrix, n_eigenvecs=n_eigenvecs, **kwargs)
     if mask is not None and n_eigenvecs is not None:
         for _ in range(n_iter_mask_imputation):
             # replace with the commented code bewlo when ivy.fill_digonal
