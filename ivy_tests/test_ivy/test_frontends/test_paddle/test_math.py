@@ -15,6 +15,33 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops impor
 
 
 @st.composite
+def _draw_paddle_diagonal(draw):
+    _dtype, _x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=2,
+            max_num_dims=10,
+            min_dim_size=1,
+            max_dim_size=50,
+        )
+    )
+
+    offset = (draw(helpers.ints(min_value=-10, max_value=50)),)
+    axes = (
+        draw(
+            st.lists(
+                helpers.ints(min_value=-(len(_x)), max_value=len(_x)),
+                min_size=len(_x) + 1,
+                max_size=len(_x) + 1,
+                unique=True,
+            ).filter(lambda axes: axes[0] % 2 != axes[1] % 2)
+        ),
+    )
+
+    return _dtype, _x[0], offset[0], axes[0]
+
+
+@st.composite
 def _test_paddle_take_helper(draw):
     mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
 
@@ -677,6 +704,32 @@ def test_paddle_deg2rad(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# diagonal
+@handle_frontend_test(fn_tree="paddle.diagonal", data=_draw_paddle_diagonal())
+def test_paddle_diagonal(
+    *,
+    data,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    _dtype, _x, offset, axes = data
+    helpers.test_frontend_function(
+        input_dtypes=_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=_x,
+        offset=offset,
+        axis1=axes[0],
+        axis2=axes[1],
     )
 
 
