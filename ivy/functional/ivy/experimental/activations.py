@@ -584,3 +584,53 @@ def hardtanh(
     }
     """
     return current_backend(x).hardtanh(x, max_val=max_val, min_val=min_val, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def tanhshrink(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Apply the tanhshrink function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the tanhshrink activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.tanhshrink(x)
+    >>> print(y)
+    ivy.array([-0.23840582,  0.23840582,  1.03597236])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.tanhshrink()
+    >>> print(y)
+    ivy.array([-0.23840582,  0.23840582,  1.03597236])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.tanhshrink(x)
+    >>> print(y)
+    ivy.array([[-0.43827677,  2.80100036,  1.12954807],
+                [ 0.76459098,  3.20044947, -5.60000372]])
+    """
+    return current_backend(x).tanhshrink(x, out=out)

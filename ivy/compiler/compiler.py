@@ -1,5 +1,4 @@
 from typing import Callable, Optional, List, Union, Iterable, Tuple
-from types import NoneType
 
 
 def trace_graph(
@@ -12,8 +11,8 @@ def trace_graph(
     array_caching: bool = True,
     with_numpy: bool = True,
     backend_compile: bool = False,
-    static_argnums: Union[int, Iterable[int], NoneType] = None,
-    static_argnames: Union[str, Iterable[str], NoneType] = None,
+    static_argnums: Optional[Union[int, Iterable[int]]] = None,
+    static_argnames: Optional[Union[str, Iterable[str]]] = None,
     mode: Optional[str] = None,
     graph_caching: bool = False,
     args: Optional[Tuple] = None,
@@ -117,8 +116,8 @@ def transpile(
     to: Optional[str] = None,
     with_numpy: bool = True,
     backend_compile: bool = False,
-    static_argnums: Union[int, Iterable[int], NoneType] = None,
-    static_argnames: Union[str, Iterable[str], NoneType] = None,
+    static_argnums: Optional[Union[int, Iterable[int]]] = None,
+    static_argnames: Optional[Union[str, Iterable[str]]] = None,
     mode: Optional[str] = None,
     graph_caching: bool = False,
     stateful: Optional[List] = None,
