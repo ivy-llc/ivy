@@ -2074,7 +2074,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
-    ) -> ivy.Container:
+    ) -> Tuple[ivy.Container, ivy.Container]:
         """
         ivy.Container static method variant of ivy.qr. This method simply wraps the
         function, and so the docstring for ivy.qr also applies to this method with
@@ -2128,6 +2128,26 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             'reduced', the container must have shape (..., K, N), where K = min(M, N).
             The first x.ndim-2 dimensions must have the same size as those of the input
             x.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.native_array([[1., 2.], [3., 4.]]),
+        ...                   b = ivy.array([[2., 3.], [4. ,5.]]))
+        >>> q,r = ivy.Container.static_qr(x, mode='complete')
+        >>> print(q)
+        {
+            a: ivy.array([[-0.31622777, -0.9486833],
+                        [-0.9486833, 0.31622777]]),
+            b: ivy.array([[-0.4472136, -0.89442719],
+                        [-0.89442719, 0.4472136]])
+        }
+        >>> print(r)
+        {
+            a: ivy.array([[-3.16227766, -4.42718872],
+                        [0., -0.63245553]]),
+            b: ivy.array([[-4.47213595, -5.81377674],
+                        [0., -0.4472136]])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "qr",
@@ -2204,6 +2224,26 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             'reduced', the container must have shape (..., K, N), where K = min(M, N).
             The first x.ndim-2 dimensions must have the same size as those of the input
             x.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.native_array([[1., 2.], [3., 4.]]),
+        ...                   b = ivy.array([[2., 3.], [4. ,5.]]))
+        >>> q,r = x.qr(mode='complete')
+        >>> print(q)
+        {
+            a: ivy.array([[-0.31622777, -0.9486833],
+                        [-0.9486833, 0.31622777]]),
+            b: ivy.array([[-0.4472136, -0.89442719],
+                        [-0.89442719, 0.4472136]])
+        }
+        >>> print(r)
+        {
+            a: ivy.array([[-3.16227766, -4.42718872],
+                        [0., -0.63245553]]),
+            b: ivy.array([[-4.47213595, -5.81377674],
+                        [0., -0.4472136]])
+        }
         """
         return self._static_qr(
             self,

@@ -461,7 +461,7 @@ def qr(
     out: Optional[
         Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]
     ] = None,
-) -> NamedTuple:
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = tf.linalg.qr(x, full_matrices=False)

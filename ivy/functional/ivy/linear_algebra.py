@@ -1849,7 +1849,7 @@ def qr(
         [ 0.00000000e+00,  9.04534034e-01,  1.80906807e+00],
         [ 0.00000000e+00,  0.00000000e+00, -8.88178420e-16]])
 
-    # Note: if `int` values are used in `x` the output for q, r varry
+    # Note: if `int` values are used in `x` the output for q, r vary
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> q = ivy.zeros_like(x)
     >>> r = ivy.zeros_like(x)
