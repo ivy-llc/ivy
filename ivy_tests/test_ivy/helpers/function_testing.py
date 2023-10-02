@@ -2082,6 +2082,7 @@ def test_frontend_method(
             assert ivy_backend.nested_map(
                 lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True,
                 ret,
+                shallow=False,
             ), f"Frontend method returned non-frontend arrays: {ret}"
 
         if method_flags.generate_frontend_arrays:

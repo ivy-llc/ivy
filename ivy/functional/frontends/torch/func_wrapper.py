@@ -126,7 +126,6 @@ def _to_ivy_array(x):
     # else if x is a frontend torch Tensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
     elif hasattr(x, "ivy_array"):
         return x.ivy_array
-
     # else just return x
     return x
 

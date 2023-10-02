@@ -51,11 +51,11 @@ It therefore extends what is possible in any of the specific individual framewor
 
 Graph Tracers
 -------------
-Ivy’s `Graph Compiler <../one_liners/compile>`_ exhibits similar properties to many of the framework-specific graph tracers.
-Ivy’s graph compiler employs function tracing for computing the graph, and uses this graph as an intermediate representation during the transpilation process.
-Of all the graph tracers, Ivy’s graph compiler is most similar to `torch.fx`_.
+Ivy’s `Tracer <../one_liners/trace>`_ exhibits similar properties to many of the framework-specific graph tracers.
+Ivy’s tracer employs function tracing for computing the graph, and uses this graph as an intermediate representation during the transpilation process.
+Of all the graph tracers, Ivy’s tracer is most similar to `torch.fx`_.
 This is because :code:`torch.fx` also operates entirely in Python, without deferring to lower level languages for tracing and extracting the computation graph or the intermediate representation.
-The main difference is that Ivy’s graph compiler is fully framework-agnostic; Ivy’s compiler is able to compile graphs from any framework, while framework-specific compilers are of course bound to their particular framework.
+The main difference is that Ivy’s tracer is fully framework-agnostic; Ivy’s tracer is able to trace graphs from any framework, while framework-specific tracers are of course bound to their particular framework.
 
 Exchange Formats
 ----------------
