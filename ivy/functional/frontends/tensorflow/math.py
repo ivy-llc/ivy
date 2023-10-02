@@ -838,3 +838,17 @@ def zero_fraction(value, name="zero_fraction"):
 )
 def zeta(x, q, name=None):
     return ivy.zeta(x, q)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def igammac(a, x, name=None):
+    return ivy.igammac(a, x=x)
