@@ -226,6 +226,30 @@ def test_silu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
+# tanhshrink
+@handle_test(
+    fn_tree="functional.ivy.experimental.tanhshrink",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+)
+def test_tanhshrink(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
+        x=x[0],
+    )
+
+
 # thresholded_relu
 @handle_test(
     fn_tree="functional.ivy.experimental.thresholded_relu",

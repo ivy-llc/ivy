@@ -337,3 +337,26 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([-1., 1., 1.])
         """
         return ivy.hardtanh(self._data, min_val=min_val, max_val=max_val, out=out)
+
+    def tanhshrink(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.tanhshrink. This method simply wraps
+        the function, and so the docstring for ivy.tanhshrink also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.tanhshrink()
+        >>> print(y)
+        ivy.array([-0.23840582,  0.        ,  0.23840582])
+        """
+        return ivy.tanhshrink(self._data, out=out)
