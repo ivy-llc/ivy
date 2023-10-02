@@ -35,7 +35,7 @@ def _nms_helper(draw):
 
 @st.composite
 def _roi_align_helper(draw):
-    dtype = draw(helpers.get_dtypes("float", full=False))[0]
+    dtype = draw(helpers.get_dtypes("valid"))[0]
     N = draw(st.integers(1, 5))
     C = draw(st.integers(1, 5))
     H = W = draw(st.integers(5, 20))
