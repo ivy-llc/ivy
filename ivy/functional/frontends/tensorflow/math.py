@@ -326,6 +326,17 @@ def in_top_k(target, pred, k, name=None):
 
 @with_supported_dtypes(
     {
+        "2.13.0 and below": ("int32", "int64"),
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def invert_permutation(x, name=None):
+    return ivy.invert_permutation(x)
+
+
+@with_supported_dtypes(
+    {
         "2.11.0 and below": ("bfloat16", "half", "float32", "float64"),
     },
     "tensorflow",
@@ -433,6 +444,13 @@ def maximum(x, y, name=None):
 @to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16",)}, "paddle")
+def mod(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.remainder(x, y)
 
 
 @to_ivy_arrays_and_back

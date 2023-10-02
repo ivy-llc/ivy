@@ -288,15 +288,13 @@ def gradient(
                 raise ValueError("distances must be either scalars or 1d")
             if len(distances) != x.shape[axes[i]]:
                 raise ValueError(
-                    "when 1d, distances must match "
-                    "the length of the corresponding dimension {} {}".format(
-                        len(distances), x.shape[axes[i]]
-                    )
+                    "when 1d, distances must match the length of the corresponding"
+                    f" dimension {len(distances)} {x.shape[axes[i]]}"
                 )
             if distances.dtype.is_integer:
                 # Convert numpy integer types to float64 to avoid modular
                 # arithmetic in np.diff(distances).
-                distances = distances.astype(tf.experimental.numpy.float64)
+                distances = tf.cast(distances, tf.float64)
             diffx = tf.experimental.numpy.diff(distances)
             # if distances are constant reduce to the scalar case
             # since it brings a consistent speedup
@@ -325,7 +323,7 @@ def gradient(
     slice4 = [slice(None)] * N
 
     if x.dtype.is_integer:
-        x = x.astype(tf.experimental.numpy.float64)
+        x = tf.cast(x, tf.float64)
 
     for axis, ax_dx in zip(axes, dx):
         if x.shape[axis] < edge_order + 1:
@@ -515,3 +513,12 @@ def digamma(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.digamma(x)
+
+
+def erfc(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.erfc(x)

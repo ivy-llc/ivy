@@ -73,7 +73,7 @@ def _arrays_idx_n_dtypes(draw):
             size=num_arrays,
         )
     )
-    xs = list()
+    xs = []
     input_dtypes = draw(
         helpers.array_dtypes(
             available_dtypes=draw(helpers.get_dtypes("float")), shared_dtype=True
@@ -236,7 +236,7 @@ def _pow_helper_shared_dtype(draw):
     dtype1, dtype2 = dtype
     x1, x2 = x
     if "int" in dtype2:
-        x2 = ivy.nested_map(x2, lambda x: abs(x), include_derived={"list": True})
+        x2 = ivy.nested_map(lambda x: abs(x), x2, include_derived={"list": True})
 
     if ivy.is_int_dtype(dtype2):
         max_val = ivy.iinfo(dtype2).max
