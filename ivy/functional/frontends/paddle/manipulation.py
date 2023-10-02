@@ -77,6 +77,15 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def gather_nd(params, indices, axis=-1, batch_dims=0, name=None):
+    return ivy.gather_nd(params, indices, axis=axis, batch_dims=batch_dims)
+
+
 @to_ivy_arrays_and_back
 def repeat_interleave(x, repeats, axis=None, name=None):
     return ivy.repeat(x, repeats, axis=axis)
@@ -178,11 +187,3 @@ def unstack(x, axis=0, name=None):
 
 
 absolute = abs
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def gather_nd(params, indices, axis=-1, batch_dims=0, name=None):
-    return ivy.gather_nd(params, indices, axis=axis, batch_dims=batch_dims)

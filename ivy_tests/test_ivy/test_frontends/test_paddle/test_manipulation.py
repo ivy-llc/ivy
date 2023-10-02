@@ -436,6 +436,33 @@ def test_paddle_gather(
     )
 
 
+# gather_nd
+@handle_frontend_test(
+    fn_tree="paddle.gather_nd",
+    dtype_param_and_indices=_gather_helper(),
+)
+def test_paddle_gather_nd(
+    *,
+    dtype_param_and_indices,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, param, indices = dtype_param_and_indices
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        param=param[0],
+        indices=indices[0],
+    )
+
+
 # repeat_interleave
 @handle_frontend_test(
     fn_tree="paddle.repeat_interleave",
@@ -755,29 +782,4 @@ def test_paddle_unstack(
         on_device=on_device,
         x=x[0],
         axis=axis,
-    )
-
-#gather_nd
-@handle_frontend_test(
-    fn_tree="paddle.gather_nd", dtype_param_and_indices=_gather_helper(), 
-)
-def test_paddle_gather_nd(
-    *,
-    dtype_param_and_indices,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype, param, indices = dtype_param_and_indices
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        param=param[0],
-        indices=indices[0],
     )
