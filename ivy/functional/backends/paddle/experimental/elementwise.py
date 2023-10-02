@@ -743,7 +743,9 @@ def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     y = paddle.where(abs_x_small, z * pp / pq, z * pr / ps)
     result_no_underflow = paddle.where(x < 0.0, 2.0 - y, y)
 
-    is_pos_inf = lambda op: paddle.logical_and(paddle.isinf(op), op > 0)
+    def is_pos_inf(op):
+        return paddle.logical_and(paddle.isinf(op), op > 0)
+
     underflow = paddle.logical_or(
         z == 0,
         paddle.logical_or(

@@ -1094,6 +1094,20 @@ def test_tensordot_with_batched_modes_parameter(
             assert np.allclose(res[i], true_res)
 
 
+def test_tensordot_without_batched_modes_parameter():
+    import ivy
+
+    shape = [3, 4, 2]
+    tensor = ivy.random_uniform(shape=shape)
+    # Equivalence with inner product when contracting with self along all modes
+    res = ivy.tensordot(tensor, tensor, axes=3)  # [[0, 1, 2], [0, 1, 2]])
+    true_res = ivy.general_inner_product(tensor, tensor, 3)
+    assert np.allclose(true_res, res)
+    # Equivalent to the above expression
+    res = ivy.tensordot(tensor, tensor, axes=[[0, 1, 2], [0, 1, 2]])
+    assert np.allclose(true_res, res)
+
+
 # trace
 @handle_test(
     fn_tree="functional.ivy.trace",
