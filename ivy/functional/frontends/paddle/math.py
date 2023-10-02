@@ -124,6 +124,18 @@ def ceil(x, name=None):
     return ivy.ceil(x)
 
 
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def clip_(x, min=None, max=None, name=None):
+    if min is None:
+        min = ivy.min(x)
+    if max is None:
+        max = ivy.max(x)
+    return ivy.inplace_update(x, ivy.clip(x, min, max))
+
+
 @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
 @to_ivy_arrays_and_back
 def conj(x, name=None):
