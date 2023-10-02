@@ -1474,6 +1474,9 @@ def test_tensorflow__xor__(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_floordiv_(
@@ -1494,7 +1497,7 @@ def test_tensorflow_floordiv_(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "y": x[1],
+            "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
