@@ -1096,5 +1096,3 @@ def cdist(x1, x2, p=2.0, compute_mode='use_mm_for_euclid_dist_if_necessary'):
     else:
         distances = ivy.vector_norm(pairwise_diff, ord=p, axis=-1)
     return distances
-
-
