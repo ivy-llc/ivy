@@ -1,14 +1,5 @@
-from typing import Callable, Optional, List, Union, Iterable, Tuple, Any
-
-
-# TODO: create meaningful types for Graph and LazyGraph,
-# will probably need a seperate file for that
-class Graph:
-    pass
-
-
-class LazyGraph:
-    pass
+from typing import Callable, Optional, List, Union, Iterable, Tuple
+from types import NoneType
 
 
 def trace_graph(
@@ -21,32 +12,32 @@ def trace_graph(
     array_caching: bool = True,
     with_numpy: bool = True,
     backend_compile: bool = False,
-    static_argnums: Optional[Union[int, Iterable[int]]] = None,
-    static_argnames: Optional[Union[str, Iterable[str]]] = None,
+    static_argnums: Union[int, Iterable[int], NoneType] = None,
+    static_argnames: Union[str, Iterable[str], NoneType] = None,
     mode: Optional[str] = None,
     graph_caching: bool = False,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None,
-) -> Union[Graph, LazyGraph]:
+    kwargs: Optional[dict] = None
+):
     """
-    Take `fn` and traces it into a more efficient composition of backend operations.
+    Takes `fn` and traces it into a more efficient composition of backend operations.
 
     Parameters
     ----------
     objs
         callable(s) to trace and create a graph of
     stateful
-        list of instances to be considered stateful during the graph compilation
+        list of instances to be considered stateful during the graph tracing
     arg_stateful_idxs
-        positional arguments to be considered stateful during the graph compilation
+        positional arguments to be considered stateful during the graph tracing
     kwarg_stateful_idxs
-        keyword arguments to be considered stateful during the graph compilation
+        keyword arguments to be considered stateful during the graph tracing
     include_generators
         include array creation/generation functions as part of the graph
     array_caching
         cache the constant arrays that appear as arguments to the functions in the graph
     backend_compile
-        whether to apply the native compilers, i.e. tf.function, after ivy's compilation
+        whether to apply the native compilers, i.e. tf.function, after ivy's tracing
     static_argnums
         for jax's jit compilation
     static_argnames
@@ -67,7 +58,7 @@ def trace_graph(
     Examples
     --------
     >>> import ivy, time
-    >>> from ivy import compile
+    >>> from ivy import trace_graph
     >>> ivy.set_backend("torch")
     >>> x = ivy.array([1.])
 
@@ -98,7 +89,8 @@ def trace_graph(
     >>> print(time.time() - start)
     0.0001785755157470703
     """
-    from ._compiler import compile as _trace_graph
+
+    from ._compiler import trace_graph as _trace_graph
 
     return _trace_graph(
         *objs,
@@ -125,18 +117,18 @@ def transpile(
     to: Optional[str] = None,
     with_numpy: bool = True,
     backend_compile: bool = False,
-    static_argnums: Optional[Union[int, Iterable[int]]] = None,
-    static_argnames: Optional[Union[str, Iterable[str]]] = None,
+    static_argnums: Union[int, Iterable[int], NoneType] = None,
+    static_argnames: Union[str, Iterable[str], NoneType] = None,
     mode: Optional[str] = None,
     graph_caching: bool = False,
     stateful: Optional[List] = None,
     arg_stateful_idxs: Optional[List] = None,
     kwarg_stateful_idxs: Optional[List] = None,
     args: Optional[Tuple] = None,
-    kwargs: Optional[Any] = None,
+    kwargs: Optional[dict] = None,
     params_v=None,
-    v=None,  # Make this cleaner
-) -> Union[Graph, LazyGraph]:
+    v=None
+):
     """
     Transpiles Callable objects passed as arguments. If args and kwargs are specified,
     transpilation is performed eagerly, otherwise, transpilation will happen lazily.
@@ -158,6 +150,7 @@ def transpile(
     -------
     Either a transpiled Graph or a non-initialized LazyGraph.
     """
+
     from ._compiler import transpile as _transpile
 
     return _transpile(
@@ -187,8 +180,8 @@ def unify(
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
     with_numpy: bool = True,
-    **transpile_kwargs,
-) -> Callable:
+    **transpile_kwargs
+):
     from ._compiler import unify as _unify
 
     return _unify(
