@@ -51,7 +51,7 @@ def max_pool1d(
 ) -> paddle.Tensor:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NWC":
@@ -118,7 +118,7 @@ def max_pool2d(
 ) -> paddle.Tensor:
     dims = 2
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NHWC":
@@ -189,7 +189,7 @@ def max_pool3d(
 ) -> paddle.Tensor:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NDHWC":
