@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _get_type_dict_helper,
     cast_filter_helper,
 )
+from . import get_frontend_config
 
 # local
 from .testing_helpers import (
@@ -369,6 +370,11 @@ def frontend_proc(input_queue, output_queue):
                 input_dtypes, test_arguments, test_flags
             )
             output_queue.put(ret)
+
+        if data[0] == "frontend_config":
+            _, frontend = data
+            frontend_config = get_frontend_config(frontend)
+            output_queue.put(frontend_config)
 
         if not data:
             break

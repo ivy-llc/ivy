@@ -121,7 +121,13 @@ def _set_frontend(framework: str):
     global CURRENT_FRONTEND_CONFIG
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    CURRENT_FRONTEND_CONFIG = get_frontend_config(framework)
+    if FrontendPipeline.mod_frontend[framework]:
+        proc, input_queue, output_queue = FrontendPipeline.mod_frontend[framework]
+        input_queue.put(("set_config", framework))
+        frontend_config = output_queue.get()
+    else:
+        frontend_config = get_frontend_config(framework)
+    CURRENT_FRONTEND_CONFIG = frontend_config
     CURRENT_FRONTEND = framework
 
 
