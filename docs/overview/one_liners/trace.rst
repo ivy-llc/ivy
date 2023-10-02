@@ -1,35 +1,35 @@
-``ivy.compile()``
-=================
+``ivy.trace_graph()``
+=====================
 
 ..
 
-   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this doc won't work as expected as of now!
+   ⚠️ **Warning**: The tracer and the transpiler are not publicly available yet, so certain parts of this doc won't work as expected as of now!
 
 
 When we call an Ivy function, there is always a small performance hit due to added
 Python wrapping. This overhead becomes increasingly noticeable when we use large
-models with multiple function calls. The Graph Compiler improves the performance of
+models with multiple function calls. The Tracer improves the performance of
 Ivy by removing the extra wrapping around each function call.
 
-The Graph Compiler takes in any Ivy function, framework-specific (backend) function,
+The Tracer takes in any Ivy function, framework-specific (backend) function,
 or composition of both, and produces a simplified executable computation graph composed
 of functions from the backend functional API only, which results in:
 
-- Simplified code: The Graph Compiler simplifies the code by removing all the wrapping
+- Simplified code: The Tracer simplifies the code by removing all the wrapping
   and functions that don't contribute to the output: print statements, loggers, etc.
-- Improved performance: The compiled graph has no performance overhead due to Ivy's
+- Improved performance: The created graph has no performance overhead due to Ivy's
   function wrapping, likewise, redundant operations from the original function are also
   removed, increasing its overall performance.
 
-Compiler API
+Tracer API
 ------------
 
-.. py:function:: ivy.compile(*objs, stateful = None, arg_stateful_idxs = None, kwarg_stateful_idxs = None, to = None, include_generators = True, array_caching = True, return_backend_compiled_fn = False, static_argnums = None, static_argnames = None, args = None, kwargs = None,)
+.. py:function:: ivy.trace_graph(*objs, stateful = None, arg_stateful_idxs = None, kwarg_stateful_idxs = None, to = None, include_generators = True, array_caching = True, return_backend_traced_fn = False, static_argnums = None, static_argnames = None, args = None, kwargs = None,)
 
-    Compiles a ``Callable`` or set of them into an Ivy graph. If ``args`` or ``kwargs`` are specified,
+    Creates a ``Callable`` or set of them into an Ivy graph. If ``args`` or ``kwargs`` are specified,
     compilation is performed eagerly, otherwise, compilation will happen lazily.
 
-    :param objs: Callable(s) to compile and create a graph of.
+    :param objs: Callable(s) to trace and create a graph of.
     :type objs: ``Callable``
     :param stateful: List of instances to be considered stateful during the graph compilation.
     :type stateful: ``Optional[List]``
@@ -37,14 +37,14 @@ Compiler API
     :type arg_stateful_idxs: ``Optional[List]``
     :param kwarg_stateful_idxs: Keyword arguments to be considered stateful during the graph compilation.
     :type kwarg_stateful_idxs: ``Optional[List]``
-    :param to: Backend that the graph will be compiled to. If not specified, the current backend will be used.
+    :param to: Backend that the graph will be traced to. If not specified, the current backend will be used.
     :type to: ``Optional[str]``
     :param include_generators: Include array creation/generation functions as part of the graph.
     :type include_generators: ``bool``
     :param array_caching: Cache the constant arrays that appear as arguments to the functions in the graph.
     :type array_caching: ``bool``
-    :param return_backend_compiled_fn: Whether to apply the native compilers, i.e. tf.function, after ivy's compilation.
-    :type return_backend_compiled_fn: ``bool``
+    :param return_backend_traced_fn: Whether to apply the native compilers, i.e. tf.function, after ivy's compilation.
+    :type return_backend_traced_fn: ``bool``
     :param static_argnums: For jax's jit compilation.
     :type static_argnums: ``Optional[Union[int, Iterable[int]]]``
     :param static_argnames: For jax's jit compilation.
@@ -54,12 +54,12 @@ Compiler API
     :param kwargs: Keyword arguments for obj.
     :type kwargs: ``Optional[dict]``
     :rtype: ``Union[Graph, LazyGraph, ivy.Module, ModuleType]``
-    :return: A compiled ``Graph`` or a non-initialized ``LazyGraph``. If the object is an ``ivy.Module``, the forward pass will be compiled and the same module will be returned. If the object is a ``ModuleType``, the function will return a copy of the module with every method lazily compiled.
+    :return: A ``Graph`` or a non-initialized ``LazyGraph``. If the object is an ``ivy.Module``, the forward pass will be traced and the same module will be returned. If the object is a ``ModuleType``, the function will return a copy of the module with every method lazily traced.
 
-Using the compiler
+Using the tracer
 ------------------
 
-To use the ``ivy.compile()`` function, you need to pass a callable object and the corresponding inputs
+To use the ``ivy.trace_graph()`` function, you need to pass a callable object and the corresponding inputs
 to the function.
 
 Let's start with a simple function:
@@ -81,10 +81,10 @@ Let's start with a simple function:
     x = ivy.array([1, 2, 3])
     y = ivy.array([2, 3, 4])
 
-    # Compile the function
-    compiled_fn = ivy.compile(fn, args=(x, y))
+    # Trace the function
+    traced_fn = ivy.trace_graph(fn, args=(x, y))
 
-In this case, the compiled graph would be:
+In this case, the created graph would be:
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/compiler/figure1.png
 
@@ -93,49 +93,49 @@ From the graph, we can observe that:
 1. As ``x`` and ``y`` are the only variables used when calculating the returned value ``z``,
    the non-contributing variable(s), ``k`` was not included in the graph. Function calls that
    don't contribute to the output like the ``print`` function were also excluded.
-2. As we set the backend to ``torch`` during the compilation process, the compiled
+2. As we set the backend to ``torch`` during the compilation process, the traced
    functions are torch functions, and the input and output types are torch tensors.
 3. The tensor shape in the graph only indicates the shape of the inputs the graph was
-   traced with. The compiler doesn't impose additional restrictions on the shape or
+   traced with. The tracer doesn't impose additional restrictions on the shape or
    datatype of the input array(s).
 
 .. code-block:: python
 
     # Original set of inputs
-    out = compiled_fn(x, y)
+    out = traced_fn(x, y)
 
     # Inputs of different shape
     a = ivy.array([[1., 2.]])
     b = ivy.array([[2., 3.]])
 
     # New set of inputs
-    out = compiled_fn(a, b)
+    out = traced_fn(a, b)
 
 Eager vs lazy Compilation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The graph compiler runs the original function under the hood and tracks its computation
-to create the compiled graph. The **eager compilation** method traces the graph in the
-corresponding function call with the specified inputs before we use the compiled
+The Tracer runs the original function under the hood and tracks its computation
+to create the created graph. The **eager compilation** method traces the graph in the
+corresponding function call with the specified inputs before we use the traced
 function.
 
-Instead of compiling functions before using them, Ivy also allows you to compile the
+Instead of compiling functions before using them, Ivy also allows you to trace the
 function dynamically. This can be done by passing only the function to the
-compile method and not including the function arguments. In this case, the output will be a
+trace method and not including the function arguments. In this case, the output will be a
 ``LazyGraph`` instead of a ``Graph`` instance. When this ``LazyGraph`` object is first invoked with
-function arguments, it compiles the function and returns the output of the compiled
+function arguments, it Creates the function and returns the output of the traced
 function. Once the graph has been initialized, calls to the ``LazyGraph`` object will
-use the compiled function to compute the outputs directly.
+use the traced function to compute the outputs directly.
 
 .. code-block:: python
 
-    # Compile the function eagerly (compilation happens here)
-    eager_graph = ivy.compile(fn, args=(x, y))
+    # Trace the function eagerly (compilation happens here)
+    eager_graph = ivy.trace_graph(fn, args=(x, y))
 
-    # Compile the function lazily (compilation does not happen here)
-    lazy_graph = ivy.compile(fn)
+    # Trace the function lazily (compilation does not happen here)
+    lazy_graph = ivy.trace_graph(fn)
 
-    # Compile and return the output
+    # Trace and return the output
     out = lazy_graph(x, y)
 
 To sum up, lazy compilation enables you to delay the compilation process until you have
@@ -144,12 +144,12 @@ compiling libraries, where it’s not feasible to provide valid arguments for ev
 function call.
 
 Now let's look at additional functionalities that you can find in the
-compiler.
+tracer.
 
 Array caching
 ~~~~~~~~~~~~~
 
-The compiler is able to cache constant arrays and their operations through the
+The tracer is able to cache constant arrays and their operations through the
 ``array_caching`` flag, reducing computation time after compilation.
 
 .. code-block:: python
@@ -164,9 +164,9 @@ The compiler is able to cache constant arrays and their operations through the
         z = x ** (a + b)
         return z
 
-    comp_func = ivy.compile(fn, args=(x,))
+    comp_func = ivy.trace_graph(fn, args=(x,))
 
-When calling ``ivy.compile()``, the ``array_caching`` argument is set to ``True`` by
+When calling ``ivy.trace_graph()``, the ``array_caching`` argument is set to ``True`` by
 default, which returns the following graph.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/compiler/figure2.png
@@ -196,7 +196,7 @@ are included as nodes or "baked" into the graph.
         z = x ** a
         return z + torch.rand([1])
 
-    comp_func = ivy.compile(fn, include_generators=True, args=(x,))
+    comp_func = ivy.trace_graph(fn, include_generators=True, args=(x,))
 
 Returns:
 
@@ -215,7 +215,7 @@ And instead,
         z = x * a
         return z + torch.rand([1])
 
-    comp_func = ivy.compile(fn, include_generators=False, args=(x,))
+    comp_func = ivy.trace_graph(fn, include_generators=False, args=(x,))
 
 Returns:
 
@@ -241,32 +241,32 @@ arbitrary classes using the ``stateful`` parameters.
     cont = ivy.Container(x=x)
 
     args = (cont.cont_deep_copy(), x)
-    comp_func = ivy.compile(fn, arg_stateful_idxs=[[0]], args=args)
+    comp_func = ivy.trace_graph(fn, arg_stateful_idxs=[[0]], args=args)
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/compiler/figure6.png
 
 Sharp bits
 ----------
 
-As some parts of the graph compiler are still under development, there are some sharp
+As some parts of the Tracer are still under development, there are some sharp
 bits to take into account when using it. All of these points are WIP, so they'll be
 removed soon!
 
-1. **Dynamic control flow**: The compiled graph is built using function tracing at the
+1. **Dynamic control flow**: The created graph is built using function tracing at the
    moment, so dynamic control flow such as conditional branches or conditional loops
    will not be registered correctly. As an example, if there is a while loop in your
    code that depends on a changing value, the number of iterations in the final graph
    will be the same as the number of iterations performed with the input passed to the
-   compile function.
-2. **Non-framework-specific code**: As the compiler traces the function using the
+   trace function.
+2. **Non-framework-specific code**: As the tracer traces the function using the
    functional API of the underlying framework, any piece of code inside the model that
    is not from the said framework will not be correctly registered, this includes other
    frameworks code (such as NumPy statements inside a torch model) or python statements
    such as len().
 3. **Incorrectly cached parts of the graph**: There are certain cases where compilation
    can succeed but hide some cached parts of the graph which shouldn't really be cached.
-   To check this, it's recommended to compile with a noise array of the same shape and
-   then check if the output of the original function and the compiled graph with another
+   To check this, it's recommended to trace with a noise array of the same shape and
+   then check if the output of the original function and the created graph with another
    input is the same. If you find out that the graph is not right, feel free to open an
    `issue <https://github.com/unifyai/ivy/issues>`_ with a minimal example and we'll look
    into it!
@@ -274,7 +274,7 @@ removed soon!
 Examples
 --------
 
-Below, we compile a ResNet50 model from
+Below, we trace a ResNet50 model from
 `Hugging Face <https://huggingface.co/microsoft/resnet-50>`_ and use it to classify the
 breed of a cat.
 
@@ -306,15 +306,15 @@ Normally, we would then feed these inputs to the model itself without compiling 
     with torch.no_grad():
     logits = model(**inputs).logits
 
-With ivy, you can compile your model to a computation graph for increased performance.
+With ivy, you can trace your model to a computation graph for increased performance.
 
 .. code-block:: python
 
     # Compiling the model
-    compiled_graph = ivy.compile(model, args=(**inputs,))
+    traced_graph = ivy.trace_graph(model, args=(**inputs,))
 
-    # Using the compiled function
-    logits = compiled_graph(**inputs).logits
+    # Using the traced function
+    logits = traced_graph(**inputs).logits
 
 Time for the final output of our computation graph.
 
