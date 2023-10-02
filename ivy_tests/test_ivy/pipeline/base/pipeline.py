@@ -40,8 +40,6 @@ class Pipeline(ABC):
         for key in mod_backend:
             cls.mod_backend[key] = mod_backend[key]
         cls.multiprocessing_flag = True
-        print("mod backenddddddd")
-        print(cls.mod_backend)
 
     @abstractmethod
     def test_function(self):
