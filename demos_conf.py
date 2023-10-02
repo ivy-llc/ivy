@@ -9,6 +9,7 @@ youtube_map = {
     "demos/learn_the_basics/07_transpile_any_library": "j7YkPlm8Pfg",
     "demos/learn_the_basics/08_transpile_any_model": "u3Rig2KuaEo",
     "demos/guides/01_transpiling_a_torch_model": "wTragLBdqRw",
+    "demos/guides/03_transpiling_a_tf_model": "0JgfFVA5LeI",
 }
 
 nbsphinx_execute = 'never'
