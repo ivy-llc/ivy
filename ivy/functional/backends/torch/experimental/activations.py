@@ -80,6 +80,7 @@ def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
     return ivy.astype(ret, x.dtype)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def hardtanh(
     x: torch.Tensor,
     /,
