@@ -184,6 +184,10 @@ def min(*input, dim=None, keepdim=False, out=None):
 def moveaxis(input, source, destination):
     return ivy.moveaxis(input, source, destination)
 
+@numpy_to_torch_style_args
+@to_ivy_arrays_and_back
+def nanmedian(input, dim=None, keepdim=False, *, out=None):
+    return ivy.nanmedian(input, axis=dim, keepdims=keepdim, out=out)
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
