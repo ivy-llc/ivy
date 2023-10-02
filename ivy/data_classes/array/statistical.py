@@ -199,7 +199,9 @@ class _ArrayWithStatistical(abc.ABC):
             if ``False``, the reduced axes (dimensions) must not be included in
             the result. Default: ``False``.
         dtype
-            Type to use in computing the mean. For integer inputs, the default is float64; for floating point inputs, it is the same as the input dtype
+            Type to use in computing the mean.
+            For integer inputs, the default is float64; for floating point inputs,
+            it is the same as the input dtype.
         where
             Elements to include in the mean
         out
@@ -289,11 +291,15 @@ class _ArrayWithStatistical(abc.ABC):
             variance must be computed over the entire array. If a tuple of integers,
             variances must be computed over multiple axes. Default: ``None``.
         dtype
-            Type to use in computing the mean. For integer inputs, the default is float64; for floating point inputs, it is the same as the input dtype
+            Type to use in computing the mean. For integer inputs,
+            the default is float64; for floating point inputs,
+            it is the same as the input dtype
         where
             Elements to include in the mean
         ddof
-            “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is zero.
+            “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof,
+            where N represents the number of elements.
+            By default ddof is zero.
 
         correction
             degrees of freedom adjustment. Setting this parameter to a value other
@@ -491,7 +497,9 @@ class _ArrayWithStatistical(abc.ABC):
         Returns
         -------
         ret
-            An array with the same shape as a, with the specified axis removed. If a is a 0-d array, or if axis is None, a scalar is returned. If an output array is specified, a reference to out is returned..
+            An array with the same shape as a, with the specified axis removed.
+            If a is a 0-d array, or if axis is None, a scalar is returned.
+            If an output array is specified, a reference to out is returned..
 
         Examples
         --------
@@ -543,11 +551,14 @@ class _ArrayWithStatistical(abc.ABC):
             If a tuple of integers, products must be computed over multiple
             axes. Default: ``None``.
         dtype
-            Type to use in computing the standard deviation. For integer inputs, the default is float64; for floating point inputs, it is the same as the input dtype
+            Type to use in computing the standard deviation.
+            For integer inputs, the default is float64;
+            for floating point inputs, it is the same as the input dtype
         where
             Elements to include in the mean
         ddof
-            “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is zero.
+            “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof,
+            where N represents the number of elements. By default ddof is zero.
         keepdims
             bool, if True, the reduced axes (dimensions) must be
             included in the result as singleton dimensions, and,
@@ -561,7 +572,8 @@ class _ArrayWithStatistical(abc.ABC):
         Returns
         -------
         ret
-            If out is None, return a new array containing the standard deviation, otherwise return a reference to the output array.
+            If out is None, return a new array containing the standard deviation,
+            otherwise return a reference to the output array.
 
         Examples
         --------
@@ -780,25 +792,20 @@ class _ArrayWithStatistical(abc.ABC):
             seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes
             should be consistent with equation.
         casting
-            Controls what kind of data casting may occur. Setting this to ‘unsafe’ is not recommended, as it can adversely affect accumulations.
-
-            ‘no’ means the data types should not be cast at all.
-
-            ‘equiv’ means only byte-order changes are allowed.
-
-            ‘safe’ means only casts which can preserve values are allowed.
-
-            ‘same_kind’ means only safe casts or casts within a kind, like float64 to float32, are allowed.
-
-            ‘unsafe’ means any data conversions may be done.
-
-            Default is ‘safe’.
+            Controls what kind of data casting may occur.
+            Setting this to ‘unsafe’ is not recommended,
+            as it can adversely affect accumulations.
         optimize
-            Controls if intermediate optimization should occur. No optimization will occur if False and True will default to the ‘greedy’ algorithm
+            Controls if intermediate optimization should occur.
+            No optimization will occur if False and True will
+            default to the greedy algorithm
         order
-            Controls the memory layout of the output. ‘C’ means it should be C contiguous. ‘F’ means it should be Fortran contiguous, ‘A’ means it should be ‘F’ if the inputs are all ‘F’, ‘C’ otherwise. ‘K’ means it should be as close to the layout as the inputs as is possible, including arbitrarily
+            Controls the memory layout of the output.
         dtype
-            If provided, forces the calculation to use the data type specified. Note that you may have to also give a more liberal casting parameter to allow the conversions. Default is None.
+            If provided, forces the calculation to use the data type specified.
+            Note that you may have to also give a more liberal casting parameter
+            to allow the conversions.
+            Default is None.
         out
             optional output array, for writing the result to.
 
