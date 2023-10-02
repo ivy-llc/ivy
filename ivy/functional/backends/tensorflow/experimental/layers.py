@@ -1352,33 +1352,33 @@ def stft(
 
     if hop_length <= 0:
         hop_length = 1
-    
+
     signal_length = len(signal)
     if signal_length < n_fft:
-        raise ValueError("Value of n_fft must less than or equal length of the signal") 
+        raise ValueError("Value of n_fft must less than or equal length of the signal")
 
     window_length = window.shape[0]
     if window_length != win_length:
-        raise ValueError("Value of win_length must be equal to length of window") 
-    
+        raise ValueError("Value of win_length must be equal to length of window")
+
     if win_length is None:
-        win_length = n_fft     
+        win_length = n_fft
 
     if win_length > n_fft:
         raise ValueError("Value of win_length must be less then or equal to n_fft")
-    
+
     if window is None or window is tf.Tensor:
         window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
 
     if window_length > signal_length:
         window = signal
         n_fft = signal_length
-        win_length = n_fft 
-        window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)    
+        win_length = n_fft
+        window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
 
     window = window / tf.reduce_max(window)
 
-    window_fn = lambda *args, **kwargs: window   
+    window_fn = lambda *args, **kwargs: window
 
     stft = tf.signal.stft(
         signal,
