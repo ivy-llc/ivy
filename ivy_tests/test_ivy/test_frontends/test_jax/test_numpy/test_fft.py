@@ -123,6 +123,40 @@ def test_jax_numpy_fftshift(
     )
 
 
+# hfft
+@handle_frontend_test(
+    fn_tree="jax.numpy.fft.hfft",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("complex"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    n=st.integers(min_value=2, max_value=10),
+    norm=st.sampled_from(["backward", "ortho", "forward", None]),
+)
+def test_jax_numpy_hfft(
+    dtype_values_axis, n, norm, frontend, backend_fw, test_flags, fn_tree, on_device
+):
+    dtype, values, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=values[0],
+        n=n,
+        axis=axis,
+        norm=norm,
+        atol=1e-02,
+        rtol=1e-02,
+    )
+
+
 # ifft
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.ifft",
