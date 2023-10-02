@@ -276,6 +276,65 @@ def test_paddle_avg_pool2d(
     )
 
 
+# max_pool3d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.max_pool3d",
+    dtype_x_k_s=helpers.arrays_for_pooling(
+        min_dims=5,
+        max_dims=5,
+        min_side=2,
+        max_side=6,
+    ),
+    ceil_mode=st.booleans(),
+    data_format=st.sampled_from(["NCDHW", "NDHWC"]),
+    padding_algorithm=st.sampled_from(["SAME", "VALID"]),
+    return_indices=st.booleans(),
+)
+def test_paddle_max_pool3d(
+    dtype_x_k_s,
+    ceil_mode,
+    data_format,
+    padding_algorithm,
+    return_indices,
+    *,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, kernel, stride, padding = dtype_x_k_s
+
+    if data_format == "NCDHW":
+        x[0] = x[0].reshape(
+            (x[0].shape[0], x[0].shape[4], x[0].shape[1], x[0].shape[2], x[0].shape[3])
+        )
+    if len(stride) == 1:
+        stride = (stride[0], stride[0], stride[0])
+    if padding == "SAME":
+        padding = test_pooling_functions.calculate_same_padding(
+            kernel, stride, x[0].shape[2:]
+        )
+    else:
+        padding = (0, 0, 0)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        kernel_size=kernel,
+        stride=stride,
+        padding=padding,
+        ceil_mode=ceil_mode,
+        data_format=data_format,
+        padding_algorithm=padding_algorithm,
+        return_indices=return_indices,
+    )
+
+
 # max_unpool1d
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.max_unpool1d",
