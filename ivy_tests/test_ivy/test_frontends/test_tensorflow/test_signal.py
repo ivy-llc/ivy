@@ -32,6 +32,24 @@ def _valid_idct(draw):
 
 
 @st.composite
+def _valid_mdct(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            max_value=65280,
+            min_value=-65280,
+            min_num_dims=1,
+            min_dim_size=2,
+            shared_dtype=True,
+        )
+    )
+    frame_length = draw(helpers.ints(min_value=16, max_value=100))
+    norm = draw(st.sampled_from([None, "ortho"]))
+
+    return dtype, x, frame_length, norm
+
+
+@st.composite
 def _valid_stft(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
@@ -209,6 +227,38 @@ def test_tensorflow_kaiser_window(
         window_length=window_length,
         beta=beta,
         dtype=dtype,
+    )
+
+
+# mdct
+@handle_frontend_test(
+    fn_tree="tensorflow.signal.mdct",
+    dtype_x_and_args=_valid_mdct(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_mdct(
+    *,
+    dtype_x_and_args,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, frame_length, norm = dtype_x_and_args
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        signals=x[0],
+        frame_length=frame_length,
+        window_fn=None,
+        pad_end=True,
+        norm=norm,
+        atol=1e-01,
     )
 
 

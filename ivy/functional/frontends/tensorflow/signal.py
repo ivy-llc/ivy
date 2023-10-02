@@ -38,6 +38,27 @@ def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
     return ivy.kaiser_window(window_length, periodic=False, beta=beta, dtype=dtype)
 
 
+# mdct
+@to_ivy_arrays_and_back
+def mdct(
+    signals,
+    frame_length,
+    window_fn=None,
+    pad_end=False,
+    norm=None,
+    name=None,
+):
+    signals = ivy.asarray(signals)
+    return ivy.mdct(
+        signals,
+        frame_length,
+        window_fn=window_fn,
+        pad_end=pad_end,
+        norm=norm,
+        name=name,
+    )
+
+
 # stft
 @to_ivy_arrays_and_back
 def stft(
