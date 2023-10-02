@@ -130,3 +130,16 @@ def tanhshrink(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndar
 
 
 tanhshrink.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def softshrink(
+    x: np.ndarray, /, *, lambd: float = 0.5, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    ret = np.where(x > lambd, x - lambd, np.where(x < -lambd, x + lambd, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+softshrink.support_native_out = True

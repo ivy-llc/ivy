@@ -102,3 +102,12 @@ def tanhshrink(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret
+
+
+def softshrink(
+    x: JaxArray, /, *, lambd: float = 0.5, out: Optional[JaxArray] = None
+) -> JaxArray:
+    ret = jnp.where(x > lambd, x - lambd, jnp.where(x < -lambd, x + lambd, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret

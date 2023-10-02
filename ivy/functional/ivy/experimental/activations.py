@@ -634,3 +634,59 @@ def tanhshrink(
                 [ 0.76459098,  3.20044947, -5.60000372]])
     """
     return current_backend(x).tanhshrink(x, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def softshrink(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    lambd: float = 0.5,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Apply the softshrink function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    lambd
+        the value of the lower bound of the linear region range. Default: 0.5
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the softshrink activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.softshrink(x)
+    >>> print(y)
+    ivy.array([-0.5,  0.5,  1.5])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.softshrink()
+    >>> print(y)
+    ivy.array([-0.5,  0.5,  1.5])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.softshrink(x)
+    >>> print(y)
+    ivy.array([[-0.3,  3.3,  1.6],
+                [ 1.2,  3.7, -6.1]])
+    """
+    return current_backend(x).softshrink(x, lambd=lambd, out=out)

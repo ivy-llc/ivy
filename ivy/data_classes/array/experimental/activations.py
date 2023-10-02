@@ -360,3 +360,34 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([-0.23840582,  0.        ,  0.23840582])
         """
         return ivy.tanhshrink(self._data, out=out)
+
+    def softshrink(
+        self: ivy.Array,
+        /,
+        *,
+        lambd: float = 0.5,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.softshrink. This method simply wraps
+        the function, and so the docstring for ivy.softshrink also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        lambd
+            the value of the lower bound of the linear region range. Default: 0.5
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.softshrink()
+        >>> print(y)
+        ivy.array([-0.5,  0. ,  0.5])
+        """
+        return ivy.softshrink(self._data, lambd=lambd, out=out)
