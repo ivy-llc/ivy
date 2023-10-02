@@ -2299,7 +2299,9 @@ def _handle_padding(x, strides, filters, padding):
     return pad
 
 
-def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dims, data_format):
+def _validate_max_pool_params(
+    kernel, strides, padding, dilation, ceil_mode, dims, data_format
+):
     if isinstance(kernel, int):
         kernel = (kernel,) * dims
     elif len(kernel) == 1:
@@ -2354,12 +2356,12 @@ def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dim
 
     # Account for dilation when padding > kernel/2. Not the case in torch by default.
     if len(dilation) < len(kernel):
-        if data_format[:2] == 'NC':
+        if data_format[:2] == "NC":
             dilation = [1, 1, *dilation]
         else:
             dilation = [1, *dilation, 1]
     elif len(dilation) > len(kernel):
-        if data_format[:2] == 'NC':
+        if data_format[:2] == "NC":
             kernel = [1, 1, *kernel]
         else:
             kernel = [1, *kernel, 1]
