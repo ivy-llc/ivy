@@ -1,79 +1,38 @@
 # global
 
 import paddle
-from typing import Callable
-import ivy.functional.backends.paddle.gradients as paddle_gradients
 import ivy
+from ivy.functional.backends.paddle.gradients import variable
+from ivy.func_wrapper import inputs_to_native_arrays
+from ivy.functional.ivy.gradients import _get_required_float_variables
 
 
-def bind_custom_gradient_function(func: Callable, custom_grad_fn: Callable) -> Callable:
-    def wrapped_func(*args, **kwargs):
-        def variable(x):
-            if ivy.is_int_dtype(x.dtype):
-                x = x.astype(ivy.default_float_dtype())
-            if not x.is_leaf:
-                ret = x.detach()
-                ret.stop_gradient = False
-                return ret
-            ret = paddle_gradients.copy_array(x).to_native()
-            ret.stop_gradient = False
-            return ret
+def bind_custom_gradient_function(func, custom_grad_fn):
+    def custom_forward(x):
+        x, _, _, _, _ = _get_required_float_variables(x, xs_grad_idxs=None)
+        ret = func(x)
+        return ivy.to_native((ret, x), nested=True, include_derived=True)
 
-        def is_variable(x, *, exclusive: bool = False):
-            return isinstance(x, paddle.Tensor) and not x.stop_gradient
-
-        def variable_data(x: paddle.Tensor) -> paddle.Tensor:
-            return x.value()
-
-        def _grad_func(y, xs, retain_grads):
-            # Compute gradients using Paddle's gradient function
-            grads = paddle.grad(
-                outputs=y,
-                inputs=xs,
-                retain_graph=True,
-                create_graph=retain_grads,
-                allow_unused=True,
-            )
-            # Handle cases where grads is None (no gradient)
-            grads = [
-                grad if grad is not None else paddle.zeros_like(x)
-                for x, grad in zip(xs, grads)
-            ]
-            return grads
-
-        def execute_with_gradients(
-            func, xs, *, retain_grads=False, xs_grad_idxs=[[0]], ret_grad_idxs=[[0]]
-        ):
-            # Convert inputs to variables if needed
-            xs = [variable(x) if is_variable(x) else x for x in xs]
-
-            # Forward pass through the original function
-            y = func(*xs, **kwargs)
-
-            # Compute gradients using Paddle's gradient function
-            grads = _grad_func(y, xs, retain_grads)
-
-            # Return the function output and gradients
-            return y, grads
-
-        def value_and_grad(func):
-            def callback_fn(xs):
-                # Execute the function and compute gradients
-                ret, grads = execute_with_gradients(func, xs, retain_grads=True)
-                return ret, grads
-
-            return callback_fn
-
-        # Convert inputs to variables if needed
-        args = [variable(arg) if is_variable(arg) else arg for arg in args]
-
-        # Forward pass through the original function
-        y = func(*args, **kwargs)
-
+    def custom_backward(dy, x):
         # Compute gradients using the custom gradient function
-        grads = custom_grad_fn(y, *args, **kwargs)
+        grads = custom_grad_fn((x, dy))
+        return grads
 
-        # Return the function output and gradients
-        return y, grads
+    def custom_func(x):
+        ret, x = custom_forward(x)
+        # Create a variable from x to ensure gradient tracking
+        x = variable(x)
+        # Compute gradients using PaddlePaddle's autograd
+        x.stop_gradient = False  # Enable gradient tracking
+        grads = paddle.autograd.grad(
+            outputs=ret,
+            inputs=x,
+            grad_outputs=None,
+            retain_graph=True,  # Retain computation graph for backpropagation
+            allow_unused=True,
+        )
+        # Compute custom gradients
+        custom_grads = custom_backward(grads[0], x)
+        return ret, custom_grads
 
-    return wrapped_func
+    return inputs_to_native_arrays(custom_func)
