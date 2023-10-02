@@ -116,6 +116,7 @@ The most important notebooks are:
 - Autotune and optimize models (WIP)
 
 ------------------------------------------------------------------------
+
 ## Installing ivy
 
 There are various ways to use Ivy, depending on your preferred
@@ -188,6 +189,7 @@ tutorials to do so are available!
 </details>
 
 ------------------------------------------------------------------------
+
 ## Using Ivy
 
 After installing Ivy, you can start using it straight away, for example:
@@ -236,6 +238,7 @@ After installing Ivy, you can start using it straight away, for example:
 
    </details>
 
+------------------------------------------------------------------------
 
 # Documentation
 
@@ -250,7 +253,6 @@ You can find Ivy's documentation in the [Docs page](https://unify.ai/docs/ivy/),
 
 
 ------------------------------------------------------------------------
-
 
 # Examples
 
@@ -1340,6 +1342,8 @@ train(images, classes, num_epochs, model, device, num_classes = num_classes, bat
 
 </details>
 
+------------------------------------------------------------------------
+
 # Diving deeper
 
 Altough the [Docs](https://unify.ai/docs/ivy/) are the best place to learn more, in the next section we will take a look at how Ivy works as both a transpiler and a framework in a bit more of detail to get an idea of why and where to use it.
@@ -1408,6 +1412,7 @@ ret = lazy_graph(x1)
 If you want to learn more, you can find more information in the [Ivy as
 a transpiler section of the
 docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html)
+
 
 ## When should I use Ivy as a transpiler?
 
@@ -1569,7 +1574,10 @@ frameworks, then Ivy is for you!
 
 </details>
 
+------------------------------------------------------------------------
+
 # Contributing
+
 
 We believe that everyone can contribute and make a difference. Whether
 it\'s writing code 💻, fixing bugs 🐛, or simply sharing feedback 💬,
@@ -1587,7 +1595,10 @@ our journey to unify all ML frameworks!
   <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />
 </a>
 
+------------------------------------------------------------------------
+
 # Community
+
 
 In order to achieve the ambitious goal of unifying AI we definitely need
 as many hands as possible on it! Whether you are a seasoned developer or
@@ -1603,12 +1614,15 @@ great way to stay in the loop 😄
 
 Can\'t wait to see you there!
 
+------------------------------------------------------------------------
+
 # Citation
 
 If you use Ivy for your work, please don\'t forget to give proper credit
 by including the accompanying [paper](https://arxiv.org/abs/2102.02886)
 📄 in your references. It\'s a small way to show appreciation and help
 to continue to support this and other open source projects 🙌
+
 
     @article{lenton2021ivy,
       title={Ivy: Templated deep learning for inter-framework portability},
