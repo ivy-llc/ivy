@@ -839,8 +839,8 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 Note: Currently you do not need to comment out the :code:`conftest.py` file in the :code:`array_api_tests` directory.
 
 
-Setting up the Binaries
------------------------
+The Binaries
+------------
 
 Some features in :code:`ivy` are served as compiled binaries, such as the transpiler.
 These binaries aren't maintained in the :code:`ivy` repository directly, but on a separate :code:`binaries` repository.
