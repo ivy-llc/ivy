@@ -4,11 +4,13 @@ import subprocess
 from pydriller import Repository
 import os  # noqa
 import bz2
-import _pickle as cPickle
+import pickle as cPickle
 import sys
 from run_tests_CLI.get_all_tests import get_all_tests
 
 MAX_TESTS = 10
+
+
 
 
 def get_tests(_tests_file, _line):

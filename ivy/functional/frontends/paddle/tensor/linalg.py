@@ -6,7 +6,6 @@ from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 
-
 @with_supported_dtypes(
     {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -183,3 +182,19 @@ def bincount(x, weights=None, minlength=0, name=None):
 def dist(x, y, p=2):
     ret = ivy.vector_norm(ivy.subtract(x, y), ord=p)
     return ivy.reshape(ret, (1,))
+
+@with_supported_dtypes({"2.4.1 and above": ("int64",)}, "paddle")
+@to_ivy_arrays_and_back
+def linear_algebra_histogram(d, num_bins):
+    min_value = ivy.min(d)
+    max_value = ivy.max(d)
+    bin_width = (max_value - min_value) / num_bins
+    bin_edges = ivy.arange(min_value, max_value + bin_width, bin_width)
+
+ # Count the number of values in each bin.
+    bin_counts = ivy.zeros(num_bins)
+    for value in d:
+        bin_index = ivy.searchsorted(bin_edges, value)
+        bin_counts[bin_index] += 1
+    return ivy.bin_counts
+        
