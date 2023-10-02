@@ -439,7 +439,7 @@ def test_paddle_gather(
 # gather_nd
 @handle_frontend_test(
     fn_tree="paddle.gather_nd",
-    )
+)
 
 # repeat_interleave
 @handle_frontend_test(
