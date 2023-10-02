@@ -846,9 +846,9 @@ class Tensor:
     def unbind(self, axis=0):
         return paddle_frontend.unbind(self._ivy_array, axis=axis)
 
-    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle")
     def mode(self, axis=None, keepdim=False, name=None):
-        return paddle_frontend.mode(self, axis=axis, keepdim=keepdim)
+        return self.ivy_array.mode(axis=axis, keepdim=False,)
 
     def cpu(self):
         self.ivy_array = ivy.to_device(self.ivy_array, ivy.as_ivy_dev("cpu"))
