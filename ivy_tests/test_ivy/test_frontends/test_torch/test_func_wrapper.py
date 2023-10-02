@@ -142,12 +142,11 @@ def test_torch_outputs_to_frontend_arrays(dtype_and_x, dtype, backend_fw):
 @settings(max_examples=200)
 def test_torch_promote_types_of_torch_inputs(dtype_and_x, backend_fw):
     x_dtype, x = dtype_and_x
-    x1, x2 = x
     ivy.set_backend(backend_fw)
 
     # check for ivy array
-    input_ivy1 = ivy.array(x1, dtype=x_dtype[0])
-    input_ivy2 = ivy.array(x2, dtype=x_dtype[1])
+    input_ivy1 = ivy.array(x[0], dtype=x_dtype[0])
+    input_ivy2 = ivy.array(x[1], dtype=x_dtype[1])
 
     # check promoted type of arrays
     promoted_type1, promoted_type2 = torch_frontend.promote_types_of_torch_inputs(
@@ -155,21 +154,18 @@ def test_torch_promote_types_of_torch_inputs(dtype_and_x, backend_fw):
     )
     assert promoted_type1.dtype == promoted_type2.dtype
 
-    # check for native array
-    input_native1 = ivy.native_array(input_ivy1)
-    input_native2 = ivy.native_array(input_ivy2)
     try:
         import torch
 
-        torch_promotion_type_native = torch.promote_types(
-            input_native1.dtype, input_native2.dtype
+        x1_torch_dtype, x2_torch_dtype = (
+            torch.from_numpy(x[0]).dtype,
+            torch.from_numpy(x[1]).dtype,
         )
+        torch_promoted_type = torch.promote_types(x1_torch_dtype, x2_torch_dtype)
     except ImportError:
-        torch_promotion_type_native = None
-    if torch_promotion_type_native is not None:
-        assert (
-            str(promoted_type1.dtype) == str(torch_promotion_type_native).split(".")[1]
-        )
+        torch_promoted_type = None
+    if torch_promoted_type is not None:
+        assert str(promoted_type1.dtype) == str(torch_promoted_type).split(".")[1]
 
     ivy.previous_backend()
 

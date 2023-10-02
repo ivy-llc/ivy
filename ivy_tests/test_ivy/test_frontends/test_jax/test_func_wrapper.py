@@ -1,5 +1,5 @@
 # global
-from hypothesis import given
+from hypothesis import given, settings
 
 # local
 import ivy
@@ -61,6 +61,42 @@ def test_jax_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
     assert isinstance(output, ivy.Array)
     assert input_frontend.dtype == output.dtype
     assert ivy.all(input_frontend.ivy_array == output)
+    ivy.previous_backend()
+
+
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        num_arrays=2,
+    ),
+)
+@settings(max_examples=200)
+def test_jax_numpy_promote_types_of_jax_input(dtype_and_x, backend_fw):
+    x_dtype, x = dtype_and_x
+    x1, x2 = x
+    ivy.set_backend(backend_fw)
+    # convert inputs to ivy arrays
+    input_ivy1 = ivy.array(x1, dtype=x_dtype[0])
+    input_ivy2 = ivy.array(x2, dtype=x_dtype[1])
+
+    # check promoted type of arrays
+    jax_frontend.config.jax_enable_x64 = True
+    promoted_type1, promoted_type2 = jax_frontend.numpy.promote_types_of_jax_inputs(
+        input_ivy1, input_ivy2
+    )
+    assert promoted_type1.dtype == promoted_type2.dtype
+
+    try:
+        import jax
+
+        x1_dtype, x2_dtype = jax.numpy.dtype(x_dtype[0]), jax.numpy.dtype(x_dtype[1])
+        promoted_type_jax = jax.numpy.promote_types(x1_dtype, x2_dtype)
+    except ImportError:
+        promoted_type_jax = None
+    if promoted_type_jax is not None:
+        assert str(promoted_type1.dtype) == str(promoted_type_jax)
+    jax_frontend.config.jax_enable_x64 = False
+
     ivy.previous_backend()
 
 
