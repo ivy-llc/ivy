@@ -177,7 +177,9 @@ def nanmin(
     where: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.nanmin(a=a, axis=axis, keepdims=keepdims, initial=initial, out=out)
+    return np.nanmin(
+        a=a, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+    )
 
 
 nanmin.support_native_out = True

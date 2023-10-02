@@ -269,6 +269,42 @@ def nanmin(
     initial: Optional[Union[int, float, complex]] = None,
     where: Optional[ivy.Array] = None,
 ) -> ivy.Array:
+    """
+    Return minimum of an array or minimum along an axis, ignoring any NaNs.
+
+    Parameters
+    ----------
+    a
+        Input array.
+    axis
+        Axis or axes along which the minimum is computed.
+        The default is to compute the minimum of the flattened array.
+    out
+        optional output array, for writing the result to.
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original a.
+    initial
+        The maximum value of an output element.
+    where
+        Elements to compare for the minimum
+
+    Returns
+    -------
+    ret
+        Return minimum of an array or minimum along an axis, ignoring any NaNs
+
+    Functional Examples
+    -------------------
+    >>> a = ivy.array([[1, ivy.nan], [3, 4]])
+    >>> ivy.nanmin(a)
+    1.0
+    >>> ivy.nanmin(a, axis=1)
+    [1. 3.]
+    >>> ivy.nanmin(a, axis=0, keepdims=True)
+    [[1. 2.]]
+    """
     return ivy.current_backend(a).nanmin(
         a,
         axis=axis,

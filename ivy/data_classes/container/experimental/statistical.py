@@ -459,7 +459,45 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         initial: Optional[Union[int, float, complex, ivy.Container]] = 1,
         where: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        """
+        ivy.Container static method variant of ivy.nanmin. This method simply wraps the
+        function, and so the docstring for ivy.nanmin also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        input
+            Input container including arrays.
+        axis
+            Axis or axes along which the minimum is computed.
+            The default is to compute the minimum of the flattened array.
+        out
+            optional output array, for writing the result to.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a.
+        initial
+            The maximum value of an output element
+        where
+            Elements to compare for the minimum
+
+        Returns
+        -------
+        ret
+            Return minimum of an array or minimum along an axis, ignoring any NaNs.
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([[1, 2], [3, ivy.nan]]),\
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> ivy.Container.static_nanmin(a)
+        {
+            x: 1.
+            y: 1.
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
             "nanmin",
             input,
             axis=axis,
@@ -468,6 +506,63 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            out=out,
+            initial=initial,
+            where=where,
+        )
+
+    def nanmin(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        keepdims: Optional[Union[bool, ivy.Container]] = False,
+        out: Optional[ivy.Container] = None,
+        initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+        where: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.nanmin. This method simply wraps
+        the function, and so the docstring for ivy.nanmin also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the minimum is computed.
+            The default is to compute the minimum of the flattened array.
+        out
+            optional output array, for writing the result to.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a.
+        initial
+            The maximum value of an output element.
+        where
+            Elements to compare for the minimum.
+
+        Returns
+        -------
+        ret
+            Return minimum of an array or minimum along an axis, ignoring any NaNs
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([[1, 2], [3, ivy.nan]]),\
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> a.nanmin()
+        {
+            x: 12.0
+            y: 12.0
+        }
+        """
+        return self.static_nanmin(
+            self,
+            axis=axis,
+            keepdims=keepdims,
             out=out,
             initial=initial,
             where=where,

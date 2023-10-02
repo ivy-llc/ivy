@@ -168,11 +168,13 @@ def nanmin(
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[JaxArray] = None,
     initial: Optional[Union[int, float, complex]] = None,
     where: Optional[JaxArray] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.nanmin(a, axis=axis, keepdims=keepdims, initial=initial, out=out)
+    return jnp.nanmin(
+        a, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+    )
 
 
 def nanprod(
