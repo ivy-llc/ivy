@@ -65,7 +65,6 @@ def backend_proc(input_queue, output_queue):
             output_queue.put(organized_dtypes)
 
         elif data[0] == "dtype_info_helper":
-            # print("runnnn dtype_info_helper \n\n\n")
             _, backend, kind_dtype, dtype = data
             dtype_info = array_helpers_dtype_info_helper(backend, kind_dtype, dtype)
             output_queue.put(dtype_info)
