@@ -163,6 +163,7 @@ def eigh_tridiagonal(
 
 @handle_exceptions
 @handle_nestable
+@handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -170,6 +171,7 @@ def eigh_tridiagonal(
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
+     *,
     offset: int = 0,
     padding_value: float = 0,
     align: str = "RIGHT_LEFT",
@@ -182,21 +184,17 @@ def diagflat(
 
     Parameters
     ----------
-    x : Union[ivy.Array, ivy.NativeArray]
-        Input data, which is flattened and set as the diagonal of the output.
-    offset : int, optional
-        Diagonal offset. Positive value means superdiagonal, 0 refers to the main diagonal,
-        and negative value means subdiagonal. Default is 0.
-    padding_value : float, optional
-        Value to fill the off-diagonal elements with. Default is 0.
-    align : str, optional
-        Alignment of the diagonal within the output array. Default is "RIGHT_LEFT".
-    num_rows : int, optional
-        Number of rows in the output array. If not specified (-1), it is inferred from the input data.
-    num_cols : int, optional
-        Number of columns in the output array. If not specified (-1), it is inferred from the input data.
-    out : Optional[Union[ivy.Array, ivy.NativeArray]], optional
-        Optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+      
+       x
+        Input data, which is flattened and set as the k-th diagonal of the output.
+    k
+        Diagonal to set.
+        Positive value means superdiagonal,
+        0 refers to the main diagonal,
+        and negative value means subdiagonal.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
