@@ -266,8 +266,7 @@ class Tensor:
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def addmm(self, x, y, beta=1.0, alpha=1.0, name=None):
-        self = paddle_frontend.addmm(self, x, y, beta, alpha)
-        return self
+        return paddle_frontend.addmm(self, x, y, beta, alpha)
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def add_(self, y, name=None):
