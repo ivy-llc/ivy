@@ -1085,6 +1085,8 @@ def view_as_real(input):
         )
     return ivy.corrcoef(input, y=None, rowvar=True)
 
+
+
 @to_ivy_arrays_and_back
 def cdist(x1, x2, p=2.0, compute_mode='use_mm_for_euclid_dist_if_necessary'):
     pairwise_diff = x1[:, :, None] - x2[:, None, :]
@@ -1096,5 +1098,3 @@ def cdist(x1, x2, p=2.0, compute_mode='use_mm_for_euclid_dist_if_necessary'):
     else:
         distances = ivy.vector_norm(pairwise_diff, ord=p, axis=-1)
     return distances
-
-
