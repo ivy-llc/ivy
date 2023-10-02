@@ -102,3 +102,17 @@ def tanhshrink(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret
+
+
+def threshold(
+    x: JaxArray,
+    /,
+    *,
+    threshold: Union[int, float],
+    value: Union[int, float],
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    ret = jnp.where(x > threshold, x, value).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)  # type: ignore
+    return ret

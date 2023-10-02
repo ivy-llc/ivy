@@ -111,3 +111,18 @@ def tanhshrink(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+def threshold(
+    x: Tensor,
+    /,
+    *,
+    threshold: Union[int, float],
+    value: Union[int, float],
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    ret = tf.where(x > threshold, x, value)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)

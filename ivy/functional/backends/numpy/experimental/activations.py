@@ -130,3 +130,21 @@ def tanhshrink(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndar
 
 
 tanhshrink.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def threshold(
+    x: np.ndarray,
+    /,
+    *,
+    threshold: float,
+    value: float,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ret = np.where(x > threshold, x, value)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+threshold.support_native_out = True

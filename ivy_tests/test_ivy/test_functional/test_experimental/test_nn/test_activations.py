@@ -250,6 +250,38 @@ def test_tanhshrink(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
+# threshold
+@handle_test(
+    fn_tree="functional.ivy.experimental.threshold",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    threshold=st.one_of(
+        st.floats(min_value=-0.10, max_value=10.0),
+    ),
+    value=st.one_of(
+        st.floats(min_value=-0.10, max_value=10.0),
+    ),
+)
+def test_threshold(
+    *, dtype_and_x, threshold, value, test_flags, backend_fw, fn_name, on_device
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        threshold=threshold,
+        value=value,
+    )
+
+
 # thresholded_relu
 @handle_test(
     fn_tree="functional.ivy.experimental.thresholded_relu",

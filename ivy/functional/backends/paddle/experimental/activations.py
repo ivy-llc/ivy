@@ -160,3 +160,24 @@ def tanhshrink(
     if paddle.is_complex(x):
         return paddle.complex(F.tanhshrink(x.real()), F.tanhshrink(x.imag()))
     return F.tanhshrink(x.cast("float32")).cast(x.dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+)
+def threshold(
+    x: paddle.Tensor,
+    /,
+    *,
+    threshold: float,
+    value: float,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return paddle_backend.where(paddle_backend.greater(x, threshold), x, value)
+    if paddle.is_complex(x):
+        return paddle_backend.where(paddle_backend.greater(x, threshold), x, value)
+    x = x.cast("float32")
+    return paddle_backend.where(paddle_backend.greater(x, threshold), x, value).cast(
+        x.dtype
+    )
