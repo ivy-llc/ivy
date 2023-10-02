@@ -163,6 +163,7 @@ def eigh_tridiagonal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_backend_invalid
 @handle_array_like_without_promotion
