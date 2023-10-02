@@ -1,9 +1,8 @@
-
 import platform
 from typing import Callable, Optional, List, Union, Iterable, Tuple, Mapping
 from types import NoneType
 
-    
+
 def trace_graph(
     *objs: Callable,
     stateful: Optional[List] = None,
@@ -193,4 +192,6 @@ def unify(
         with_numpy=with_numpy,
         **transpile_kwargs,
     )
+
+
 
