@@ -1158,7 +1158,6 @@ def truncated_svd(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
 def tensor_train(
     input_tensor: Union[ivy.Array, ivy.NativeArray],
     rank: Union[int, Sequence[int]],
