@@ -14,7 +14,9 @@ class _ArrayWithStatistical(abc.ABC):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
+        keepdims: Optional[bool] = False,
+        initial: Optional[Union[int, float, complex]] = None,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -37,6 +39,10 @@ class _ArrayWithStatistical(abc.ABC):
             array (see :ref:`broadcasting`). Otherwise, if ``False``, the
             reduced axes (dimensions) must not be included in the
             result. Default: ``False``.
+        initial
+            The starting value for the output element.
+        where
+            Elements to compare for minimum
         out
             optional output array, for writing the result to.
 
@@ -69,14 +75,23 @@ class _ArrayWithStatistical(abc.ABC):
         >>> print(y)
         ivy.array(0.1)
         """
-        return ivy.min(self._data, axis=axis, keepdims=keepdims, out=out)
+        return ivy.min(
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            where=where,
+            initial=initial,
+            out=out,
+        )
 
     def max(
         self: ivy.Array,
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
+        keepdims: Optional[bool] = False,
+        initial: Optional[Union[int, float, complex]] = None,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -99,6 +114,10 @@ class _ArrayWithStatistical(abc.ABC):
             result must be compatible with the input array
             (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
             (dimensions) must not be included in the result. Default: ``False``.
+        initial
+            The starting value for the output element.
+        where
+            Elements to compare for maximum
         out
             optional output array, for writing the result to.
 
@@ -132,14 +151,23 @@ class _ArrayWithStatistical(abc.ABC):
         >>> print(y)
         ivy.array([[4, 6, 10]])
         """
-        return ivy.max(self._data, axis=axis, keepdims=keepdims, out=out)
+        return ivy.max(
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            where=where,
+            initial=initial,
+            out=out,
+        )
 
     def mean(
         self: ivy.Array,
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
+        keepdims: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -170,6 +198,10 @@ class _ArrayWithStatistical(abc.ABC):
             compatible with the input array (see :ref:`broadcasting`). Otherwise,
             if ``False``, the reduced axes (dimensions) must not be included in
             the result. Default: ``False``.
+        dtype
+            Type to use in computing the mean. For integer inputs, the default is float64; for floating point inputs, it is the same as the input dtype
+        where
+            Elements to include in the mean
         out
             optional output array, for writing the result to.
 
@@ -219,15 +251,20 @@ class _ArrayWithStatistical(abc.ABC):
         >>> print(y)
         ivy.array([1., 4.])
         """
-        return ivy.mean(self._data, axis=axis, keepdims=keepdims, out=out)
+        return ivy.mean(
+            self._data, axis=axis, keepdims=keepdims, dtype=dtype, where=where, out=out
+        )
 
     def var(
         self: ivy.Array,
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        where: Optional[ivy.Array] = None,
+        ddof: Optional[int] = 0,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False,
+        keepdims: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -251,6 +288,13 @@ class _ArrayWithStatistical(abc.ABC):
             axis or axes along which variances must be computed. By default, the
             variance must be computed over the entire array. If a tuple of integers,
             variances must be computed over multiple axes. Default: ``None``.
+        dtype
+            Type to use in computing the mean. For integer inputs, the default is float64; for floating point inputs, it is the same as the input dtype
+        where
+            Elements to include in the mean
+        ddof
+            “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is zero.
+
         correction
             degrees of freedom adjustment. Setting this parameter to a value other
             than 0 has the effect of adjusting the divisor during the calculation
@@ -304,7 +348,14 @@ class _ArrayWithStatistical(abc.ABC):
         ivy.array([0.667, 0.667, 9.33 ])
         """
         return ivy.var(
-            self._data, axis=axis, correction=correction, keepdims=keepdims, out=out
+            self._data,
+            axis=axis,
+            correction=correction,
+            ddof=ddof,
+            dtype=dtype,
+            where=where,
+            keepdims=keepdims,
+            out=out,
         )
 
     def prod(
@@ -312,7 +363,9 @@ class _ArrayWithStatistical(abc.ABC):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
+        where: Optional[ivy.Array] = None,
+        initial: Optional[Union[int, float, complex]] = None,
+        keepdims: Optional[bool] = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -339,6 +392,10 @@ class _ArrayWithStatistical(abc.ABC):
             the result. Default: ``False``.
         dtype
             data type of the returned array.
+        initial
+            The starting value for the output element.
+        where
+            Elements to compare for minimum
         out
             optional output array, for writing the result to.
 
@@ -380,26 +437,95 @@ class _ArrayWithStatistical(abc.ABC):
         >>> print(y)
         ivy.array([2., 9.])
         """
-        return ivy.prod(self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+        return ivy.prod(
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            initial=initial,
+            where=where,
+            out=out,
+        )
 
     def sum(
         self: ivy.Array,
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
+        keepdims: Optional[bool] = False,
+        where: Optional[ivy.Array] = None,
+        initial: Optional[Union[int, float, complex]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.sum(self, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+        """
+        ivy.array instance method variant of ivy.sum. This method simply wraps the
+        function, and so the docstring for ivy.sum also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a floating-point data type.
+        axis
+            axis or axes along which sum must be computed. By default,
+            the sum must be computed over the entire array. If a
+            tuple of integers, sum must be computed over multiple
+            axes. Default: ``None``.
+        keepdims
+            bool, if True, the reduced axes (dimensions) must be
+            included in the result as singleton dimensions, and,
+            accordingly, the result must be compatible with the
+            input array (see Broadcasting). Otherwise, if False,
+            the reduced axes (dimensions) must not be included in
+            the result. Default: ``False``.
+        dtype
+            data type of the returned array.
+        initial
+            The starting value for the output element.
+        where
+            Elements to included for sum
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            An array with the same shape as a, with the specified axis removed. If a is a 0-d array, or if axis is None, a scalar is returned. If an output array is specified, a reference to out is returned..
+
+        Examples
+        --------
+        With: class: `ivy.Array` input:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> z = x.sum()
+        >>> print(z)
+        ivy.array(6)
+
+        >>> x = ivy.array([1, 0, 3])
+        >>> z = x.sum()
+        >>> print(z)
+        ivy.array(4)
+        """
+        return ivy.sum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            where=where,
+            initial=initial,
+            out=out,
+        )
 
     def std(
         self: ivy.Array,
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        correction: Union[int, float] = 0.0,
-        keepdims: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        where: Optional[ivy.Array] = None,
+        ddof: Optional[int] = 0,
+        keepdims: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -416,23 +542,12 @@ class _ArrayWithStatistical(abc.ABC):
             By default, the product must be computed over the entire array.
             If a tuple of integers, products must be computed over multiple
             axes. Default: ``None``.
-        correction
-            degrees of freedom adjustment. Setting this parameter to a
-            value other than ``0`` has the effect of adjusting the
-            divisor during the calculation of the standard deviation
-            according to ``N-c`` where ``N`` corresponds to the total
-            number of elements over which the standard deviation is
-            computed and ``c`` corresponds to the provided degrees of
-            freedom adjustment. When computing the standard deviation
-            of a population, setting this parameter to ``0`` is the
-            standard choice (i.e., the provided array contains data
-            constituting an entire population). When computing
-            the corrected sample standard deviation, setting this
-            parameter to ``1`` is the standard choice (i.e., the
-            provided array contains data sampled from a larger
-            population; this is commonly referred to as Bessel's
-            correction). Default: ``0``.
-
+        dtype
+            Type to use in computing the standard deviation. For integer inputs, the default is float64; for floating point inputs, it is the same as the input dtype
+        where
+            Elements to include in the mean
+        ddof
+            “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is zero.
         keepdims
             bool, if True, the reduced axes (dimensions) must be
             included in the result as singleton dimensions, and,
@@ -446,10 +561,7 @@ class _ArrayWithStatistical(abc.ABC):
         Returns
         -------
         ret
-            container, if the product was computed over the entire array,
-            a zero-dimensional array containing the product;
-            otherwise, a non-zero-dimensional array containing the products.
-            The returned array must have the same data type as ``self``.
+            If out is None, return a new array containing the standard deviation, otherwise return a reference to the output array.
 
         Examples
         --------
@@ -482,7 +594,13 @@ class _ArrayWithStatistical(abc.ABC):
         ivy.array([0.5, 0. ])
         """
         return ivy.std(
-            self, axis=axis, correction=correction, keepdims=keepdims, out=out
+            self,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            ddof=ddof,
+            where=where,
+            out=out,
         )
 
     # Extra #
@@ -490,10 +608,11 @@ class _ArrayWithStatistical(abc.ABC):
 
     def cumsum(
         self: ivy.Array,
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
+        /,
         *,
+        axis: Optional[int] = 0,
+        exclusive: Optional[bool] = False,
+        reverse: Optional[bool] = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -566,9 +685,9 @@ class _ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
+        axis: Optional[int] = 0,
+        exclusive: Optional[bool] = False,
+        reverse: Optional[bool] = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -638,8 +757,13 @@ class _ArrayWithStatistical(abc.ABC):
         )
 
     def einsum(
+        subscripts: str,
         self: ivy.Array,
         equation: str,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        order: Optional[str] = "K",
+        casting: Optional[str] = "safe",
+        optimize: Optional[str] = "False",
         *operands: Union[ivy.Array, ivy.NativeArray],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -655,6 +779,26 @@ class _ArrayWithStatistical(abc.ABC):
         operands
             seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes
             should be consistent with equation.
+        casting
+            Controls what kind of data casting may occur. Setting this to ‘unsafe’ is not recommended, as it can adversely affect accumulations.
+
+            ‘no’ means the data types should not be cast at all.
+
+            ‘equiv’ means only byte-order changes are allowed.
+
+            ‘safe’ means only casts which can preserve values are allowed.
+
+            ‘same_kind’ means only safe casts or casts within a kind, like float64 to float32, are allowed.
+
+            ‘unsafe’ means any data conversions may be done.
+
+            Default is ‘safe’.
+        optimize
+            Controls if intermediate optimization should occur. No optimization will occur if False and True will default to the ‘greedy’ algorithm
+        order
+            Controls the memory layout of the output. ‘C’ means it should be C contiguous. ‘F’ means it should be Fortran contiguous, ‘A’ means it should be ‘F’ if the inputs are all ‘F’, ‘C’ otherwise. ‘K’ means it should be as close to the layout as the inputs as is possible, including arbitrarily
+        dtype
+            If provided, forces the calculation to use the data type specified. Note that you may have to also give a more liberal casting parameter to allow the conversions. Default is None.
         out
             optional output array, for writing the result to.
 
@@ -712,4 +856,12 @@ class _ArrayWithStatistical(abc.ABC):
         >>> print(C)
         ivy.array(510)
         """
-        return ivy.einsum(equation, *(self._data,) + operands, out=out)
+        return ivy.einsum(
+            equation=equation,
+            *(self._data,) + operands,
+            dtype=dtype,
+            order=order,
+            casting=casting,
+            optimize=optimize,
+            out=out,
+        )
