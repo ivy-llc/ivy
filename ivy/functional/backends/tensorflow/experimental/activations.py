@@ -98,3 +98,16 @@ def hardtanh(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+def tanhshrink(
+    x: Tensor,
+    /,
+    *,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    ret = tf.math.subtract(x, tf.math.tanh(x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)

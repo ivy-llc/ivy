@@ -347,11 +347,11 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
 
 
 def _np_ndim(x):
-    return ivy.array(x).ndim
+    return paddle.to_tensor(x).ndim
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float64", "float32")},
+    {"2.5.1 and below": ("float32", "float64")},
     backend_version,
 )
 def gradient(
@@ -365,213 +365,215 @@ def gradient(
     """Https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/
     function_base.py#L969-L1312."""
     # TODO: Remove % x.shape[axis] once scatter_nd supports negative indices
-    with ivy.ArrayMode(False):
-        N = x.ndim  # number of dimensions
-        if axis is None:
-            axes = tuple(range(N))
-        else:
-            axes = _normalize_axis_tuple(axis, N)
+    N = x.ndim  # number of dimensions
+    if axis is None:
+        axes = tuple(range(N))
+    else:
+        axes = _normalize_axis_tuple(axis, N)
 
-        len_axes = len(axes)
-        n = (
-            -1
-            if spacing is None
-            else (0 if type(spacing) in (int, float) else len(spacing))
-        )
-        if n == -1:
-            # no spacing argument - use 1 in all axes
-            dx = [1.0] * len_axes
-        elif n == 0:
-            dx = [spacing] * len_axes
-        elif n == 1 and _np_ndim(spacing[0]) == 0:
-            # single scalar for all axes
-            dx = spacing * len_axes
-        elif n == len_axes:
-            # scalar or 1d array for each axis
-            dx = list(spacing)
-            for i, distances in enumerate(dx):
-                distances = paddle.to_tensor(distances)
-                if _np_ndim(distances) == 0:
-                    continue
-                elif _np_ndim(distances) != 1:
-                    raise ValueError("distances must be either scalars or 1d")
-                if len(distances) != x.shape[axes[i]]:
-                    raise ValueError(
-                        "when 1d, distances must match the length of the corresponding"
-                        f" dimension {len(distances)} {x.shape[axes[i]]}"
-                    )
-
-                if ivy.is_int_dtype(distances.dtype):
-                    # Convert numpy integer types to float64 to avoid modular
-                    # arithmetic in np.diff(distances).
-                    distances = distances.astype("float64")
-                diffx = ivy.diff(distances)
-                # if distances are constant reduce to the scalar case
-                # since it brings a consistent speedup
-                # cmp = diffx == diffx[0]
-                if ivy.all(ivy.equal(diffx, diffx[0])):
-                    diffx = diffx[0]
-                # if tf.reduce_sum(tf.cast(cmp, tf.int32)) == cmp.numel():
-                #     print(diffx, (diffx == diffx[0]))
-                #     diffx = diffx[0]
-                dx[i] = diffx
-        else:
-            raise TypeError("invalid number of arguments")
-
-        if edge_order > 2:
-            raise ValueError("'edge_order' greater than 2 not supported")
-
-        # use central differences on interior and one-sided differences on the
-        # endpoints. This preserves second order-accuracy over the full domain.
-
-        outvals = []
-
-        # create slice objects --- initially all are [:, :, ..., :]
-        slice1 = [slice(None)] * N
-        slice2 = [slice(None)] * N
-        slice3 = [slice(None)] * N
-        slice4 = [slice(None)] * N
-
-        if ivy.is_int_dtype(x.dtype):
-            x = x.astype("float64")
-        for axis, ax_dx in zip(axes, dx):
-            if x.shape[axis] < edge_order + 1:
+    len_axes = len(axes)
+    n = (
+        -1
+        if spacing is None
+        else (0 if type(spacing) in (int, float) else len(spacing))
+    )
+    if n == -1:
+        # no spacing argument - use 1 in all axes
+        dx = [1.0] * len_axes
+    elif n == 0:
+        dx = [spacing] * len_axes
+    elif n == 1 and _np_ndim(spacing[0]) == 0:
+        # single scalar for all axes
+        dx = spacing * len_axes
+    elif n == len_axes:
+        # scalar or 1d array for each axis
+        dx = list(spacing)
+        for i, distances in enumerate(dx):
+            distances = paddle.to_tensor(distances)
+            if _np_ndim(distances) == 0:
+                continue
+            elif _np_ndim(distances) != 1:
+                raise ValueError("distances must be either scalars or 1d")
+            if len(distances) != x.shape[axes[i]]:
                 raise ValueError(
-                    "Shape of array too small to calculate a numerical gradient, "
-                    "at least (edge_order + 1) elements are required."
+                    "when 1d, distances must match the length of the corresponding"
+                    f" dimension {len(distances)} {x.shape[axes[i]]}"
                 )
-            # result allocation
-            out = ivy.empty_like(x)  # x.clone()
 
-            # spacing for the current axis
-            uniform_spacing = _np_ndim(ax_dx) == 0
+            if paddle.is_integer(distances):
+                # Convert numpy integer types to float64 to avoid modular
+                # arithmetic in np.diff(distances).
+                distances = distances.astype("float64")
+            diffx = paddle.diff(distances)
+            # if distances are constant reduce to the scalar case
+            # since it brings a consistent speedup
+            # cmp = diffx == diffx[0]
+            if paddle.all(paddle.equal(diffx, diffx[0])):
+                diffx = diffx[0]
+            # if tf.reduce_sum(tf.cast(cmp, tf.int32)) == cmp.numel():
+            #     print(diffx, (diffx == diffx[0]))
+            #     diffx = diffx[0]
+            dx[i] = diffx
+    else:
+        raise TypeError("invalid number of arguments")
 
-            # Numerical differentiation: 2nd order interior
-            slice1[axis] = slice(1, -1)
-            slice2[axis] = slice(None, -2)
-            slice3[axis] = slice(1, -1)
-            slice4[axis] = slice(2, None)
+    if edge_order > 2:
+        raise ValueError("'edge_order' greater than 2 not supported")
+
+    # use central differences on interior and one-sided differences on the
+    # endpoints. This preserves second order-accuracy over the full domain.
+
+    outvals = []
+    dx = paddle.to_tensor(dx)
+    # create slice objects --- initially all are [:, :, ..., :]
+    slice1 = [slice(None)] * N
+    slice2 = [slice(None)] * N
+    slice3 = [slice(None)] * N
+    slice4 = [slice(None)] * N
+
+    if paddle.is_integer(x):
+        x = x.astype("float64")
+    for axis, ax_dx in zip(axes, dx):
+        if x.shape[axis] < edge_order + 1:
+            raise ValueError(
+                "Shape of array too small to calculate a numerical gradient, "
+                "at least (edge_order + 1) elements are required."
+            )
+        # result allocation
+        out = paddle.empty_like(x)  # x.clone()
+
+        # spacing for the current axis
+        uniform_spacing = _np_ndim(ax_dx) == 0
+
+        # Numerical differentiation: 2nd order interior
+        slice1[axis] = slice(1, -1)
+        slice2[axis] = slice(None, -2)
+        slice3[axis] = slice(1, -1)
+        slice4[axis] = slice(2, None)
+        if uniform_spacing:
+            x_slice2 = x[tuple(slice2)]
+            x_slice4 = x[tuple(slice4)]
+            # since paddle doesn't support elementwise operations for empty tensors
+            # numpy behaviour needs to be replicated manually
+            if 0 not in x_slice2.shape + x_slice4.shape:
+                out[tuple(slice1)] = x_slice4 - x_slice2 / (2.0 * ax_dx)
+        else:
+            # fix the shape for broadcasting
+            shape = [1] * N
+            shape[axis] = -1
+
+            dx1 = ax_dx[0:-1]
+            dx2 = ax_dx[1:]
+            a = (-(dx2) / (dx1 * (dx1 + dx2))).reshape(shape)
+            b = ((dx2 - dx1) / (dx1 * dx2)).reshape(shape)
+            c = (dx1 / (dx2 * (dx1 + dx2))).reshape(shape)
+
+            x_slice2 = x[tuple(slice2)]
+            x_slice3 = x[tuple(slice3)]
+            x_slice4 = x[tuple(slice4)]
+            # 1D equivalent -- out[1:-1] = a * f[:-2] + b * f[1:-1] + c * f[2:]
+            if (
+                0
+                not in x_slice2.shape
+                + x_slice3.shape
+                + x_slice4.shape
+                + a.shape
+                + b.shape
+                + c.shape
+            ):
+                out[tuple(slice1)] = a * x_slice2 + b * x_slice3 + c * x_slice4
+
+        # Numerical differentiation: 1st order edges
+        if edge_order == 1:
+            slice1[axis] = 0
+            slice2[axis] = 1
+            slice3[axis] = 0
+            dx_0 = ax_dx if uniform_spacing else ax_dx[0]
+
+            x_slice2 = x[tuple(slice2)]
+            x_slice3 = x[tuple(slice3)]
+            # 1D equivalent -- out[0] = (f[1] - f[0]) / (x[1] - x[0])
+            if 0 not in x_slice2.shape + x_slice3.shape:
+                out[tuple(slice1)] = (x_slice2 - x_slice3) / dx_0
+
+            slice1[axis] = -1
+            slice2[axis] = -1
+            slice3[axis] = -2
+            dx_n = ax_dx if uniform_spacing else ax_dx[-1]
+
+            x_slice2 = x[tuple(slice2)]
+            x_slice3 = x[tuple(slice3)]
+            # 1D equivalent -- out[-1] = (f[-1] - f[-2]) / (x[-1] - x[-2])
+            if 0 not in x_slice2.shape + x_slice3.shape:
+                out[tuple(slice1)] = (x_slice2 - x_slice3) / dx_n
+
+        # Numerical differentiation: 2nd order edges
+        else:
+            slice1[axis] = 0
+            slice2[axis] = 0
+            slice3[axis] = 1
+            slice4[axis] = 2
             if uniform_spacing:
-                x_slice2 = ivy.get_item(x, tuple(slice2))
-                x_slice4 = ivy.get_item(x, tuple(slice4))
-                # since paddle doesn't support elementwise operations for empty tensors
-                # numpy behaviour needs to be replicated manually
-                if 0 not in x_slice2.shape + x_slice4.shape:
-                    updates = ivy.divide(
-                        ivy.subtract(x_slice2, x_slice4),
-                        ivy.multiply(2.0, ax_dx),
-                    )
-                    ivy.scatter_nd(tuple(slice1), updates, reduction="replace", out=out)
+                a = -1.5 / ax_dx
+                b = 2.0 / ax_dx
+                c = -0.5 / ax_dx
             else:
-                dx1 = ax_dx[0:-1]
-                dx2 = ax_dx[1:]
-                a = -(dx2) / (dx1 * (dx1 + dx2))
-                b = (dx2 - dx1) / (dx1 * dx2)
-                c = dx1 / (dx2 * (dx1 + dx2))
-                ivy.scatter_nd(
-                    tuple(slice1),
-                    (
-                        a * x[tuple(slice2)]
-                        + b * x[tuple(slice3)]
-                        + c * x[tuple(slice4)]
-                    ),
-                    reduction="replace",
-                    out=out,
-                )
+                dx1 = ax_dx[0]
+                dx2 = ax_dx[1]
+                a = -(2.0 * dx1 + dx2) / (dx1 * (dx1 + dx2))
+                b = (dx1 + dx2) / (dx1 * dx2)
+                c = -dx1 / (dx2 * (dx1 + dx2))
+            # 1D equivalent -- out[0] = a * f[0] + b * f[1] + c * f[2]
+            x_slice2 = x[tuple(slice2)]
+            x_slice3 = x[tuple(slice3)]
+            x_slice4 = x[tuple(slice4)]
+            if (
+                0
+                not in x_slice2.shape
+                + x_slice3.shape
+                + x_slice4.shape
+                + a.shape
+                + b.shape
+                + c.shape
+            ):
+                out[tuple(slice1)] = a * x_slice2 + b * x_slice3 + c * x_slice4
 
-            # Numerical differentiation: 1st order edges
-            if edge_order == 1:
-                slice1[axis] = 0
-                slice2[axis] = 1
-                slice3[axis] = 0
-                dx_0 = ax_dx if uniform_spacing else ax_dx[0]
-                # 1D equivalent -- out[0] = (f[1] - f[0]) / (x[1] - x[0])
-                x_slice2 = ivy.get_item(x, tuple(slice2))
-                x_slice3 = ivy.get_item(x, tuple(slice3))
-                updates = ivy.divide(ivy.subtract(x_slice2, x_slice3), dx_0)
-                ivy.scatter_nd(
-                    tuple(slice1),
-                    updates,
-                    reduction="replace",
-                    out=out,
-                )
-
-                slice1[axis] = -1 % x.shape[axis]
-                slice2[axis] = -1 % x.shape[axis]
-                slice3[axis] = -2 % x.shape[axis]
-                dx_n = ax_dx if uniform_spacing else ax_dx[-1]
-                # 1D equivalent -- out[-1] = (f[-1] - f[-2]) / (x[-1] - x[-2])
-                x_slice2 = ivy.get_item(x, tuple(slice2))
-                x_slice3 = ivy.get_item(x, tuple(slice3))
-                updates = ivy.divide(ivy.subtract(x_slice2, x_slice3), dx_n)
-                ivy.scatter_nd(
-                    tuple(slice1),
-                    updates,
-                    reduction="replace",
-                    out=out,
-                )
-
-            # Numerical differentiation: 2nd order edges
+            slice1[axis] = -1
+            slice2[axis] = -3
+            slice3[axis] = -2
+            slice4[axis] = -1
+            if uniform_spacing:
+                a = 0.5 / ax_dx
+                b = -2.0 / ax_dx
+                c = 1.5 / ax_dx
             else:
-                slice1[axis] = 0
-                slice2[axis] = 0
-                slice3[axis] = 1
-                slice4[axis] = 2
-                if uniform_spacing:
-                    a = -1.5 / ax_dx
-                    b = 2.0 / ax_dx
-                    c = -0.5 / ax_dx
-                else:
-                    dx1 = ax_dx[0]
-                    dx2 = ax_dx[1]
-                    a = -(2.0 * dx1 + dx2) / (dx1 * (dx1 + dx2))
-                    b = (dx1 + dx2) / (dx1 * dx2)
-                    c = -dx1 / (dx2 * (dx1 + dx2))
-                # 1D equivalent -- out[0] = a * f[0] + b * f[1] + c * f[2]
-                ivy.scatter_nd(
-                    tuple(slice1),
-                    (
-                        a * x[tuple(slice2)]
-                        + b * x[tuple(slice3)]
-                        + c * x[tuple(slice4)]
-                    ),
-                    reduction="replace",
-                    out=out,
-                )
+                dx1 = ax_dx[-2]
+                dx2 = ax_dx[-1]
+                a = (dx2) / (dx1 * (dx1 + dx2))
+                b = -(dx2 + dx1) / (dx1 * dx2)
+                c = (2.0 * dx2 + dx1) / (dx2 * (dx1 + dx2))
+            # 1D equivalent -- out[-1] = a * f[-3] + b * f[-2] + c * f[-1]
+            x_slice2 = x[tuple(slice2)]
+            x_slice3 = x[tuple(slice3)]
+            x_slice4 = x[tuple(slice4)]
+            if (
+                0
+                not in x_slice2.shape
+                + x_slice3.shape
+                + x_slice4.shape
+                + a.shape
+                + b.shape
+                + c.shape
+            ):
+                out[tuple(slice1)] = a * x_slice2 + b * x_slice3 + c * x_slice4
 
-                slice1[axis] = -1 % x.shape[axis]
-                slice2[axis] = -3 % x.shape[axis]
-                slice3[axis] = -2 % x.shape[axis]
-                slice4[axis] = -1 % x.shape[axis]
-                if uniform_spacing:
-                    a = 0.5 / ax_dx
-                    b = -2.0 / ax_dx
-                    c = 1.5 / ax_dx
-                else:
-                    dx1 = ax_dx[-2]
-                    dx2 = ax_dx[-1]
-                    a = (dx2) / (dx1 * (dx1 + dx2))
-                    b = -(dx2 + dx1) / (dx1 * dx2)
-                    c = (2.0 * dx2 + dx1) / (dx2 * (dx1 + dx2))
-                # 1D equivalent -- out[-1] = a * f[-3] + b * f[-2] + c * f[-1]
-                ivy.scatter_nd(
-                    tuple(slice1),
-                    (
-                        a * x[tuple(slice2)]
-                        + b * x[tuple(slice3)]
-                        + c * x[tuple(slice4)]
-                    ),
-                    reduction="replace",
-                    out=out,
-                )
+        outvals.append(out)
 
-            outvals.append(out)
-
-            # reset the slice object in this dimension to ":"
-            slice1[axis] = slice(None)
-            slice2[axis] = slice(None)
-            slice3[axis] = slice(None)
-            slice4[axis] = slice(None)
+        # reset the slice object in this dimension to ":"
+        slice1[axis] = slice(None)
+        slice2[axis] = slice(None)
+        slice3[axis] = slice(None)
+        slice4[axis] = slice(None)
 
     if len_axes == 1:
         return outvals[0]
