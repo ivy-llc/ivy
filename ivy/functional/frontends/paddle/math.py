@@ -1,13 +1,19 @@
 # global
 import ivy
-import ivy.functional.frontends.tensorflow as tf_frontend
-import ivy.functional.frontends.paddle as paddle
-ivy.set_backend("tensorflow")
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_dtypes,
 )
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
+
+
+from ivy.core.framework import ivy
+from ivy_framework_hooks import to_ivy_arrays_and_back, with_supported_dtypes
+
+
+# Example usage:
+x = ivy.array([1, 4, 5, 2], dtype="float32")  # Creates a synthetic array
+
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
@@ -182,6 +188,25 @@ def deg2rad(x, name=None):
 
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
+    return ivy.diff(x, n=n, axis=axis, prepend=prepend, append=append)
+
+
+# Defines the `diff` function with dtype support and Ivy array conversion
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float16",
+            "float32",
+            "float64",
+            "bool",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
 )
 @to_ivy_arrays_and_back
 def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
@@ -586,31 +611,7 @@ def tanh(x, name=None):
 @to_ivy_arrays_and_back
 def trunc(x, name=None):
     return ivy.trunc(x)
-
-from ivy.core.framework import ivy
-from ivy.core.config import RuntimeConfig
-from ivy_framework_hooks import to_ivy_arrays_and_back, with_supported_dtypes
-
-
-# Defines the `diff` function with dtype support and Ivy array conversion
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "float16",
-            "float32",
-            "float64",
-            "bool",
-            "int32",
-            "int64",
-        )
-    },
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
-    return ivy.diff(x, n=n, axis=axis, prepend=prepend, append=append)
-
-# Example usage:
-x = ivy.array([1, 4, 5, 2], dtype='float32')  # Creates a synthetic array
 result = diff(x, n=1, axis=-1, prepend=None, append=None)
+
+ivy.set_backend("tensorflow")
 print(result)
