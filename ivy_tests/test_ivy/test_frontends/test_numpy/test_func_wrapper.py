@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 import platform
 
 # local
@@ -241,4 +241,35 @@ def test_numpy_to_ivy_arrays_and_back(dtype_x_shape, dtype, backend_fw):
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
+    ivy.previous_backend()
+
+
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        num_arrays=2,
+    ),
+)
+@settings(max_examples=200)
+def test_promote_types_of_numpy_input(dtype_and_x, backend_fw):
+    x_dtype, x = dtype_and_x
+    ivy.set_backend(backend_fw)
+    # convert inputs to ivy arrays
+    input_ivy1 = ivy.array(x[0], dtype=x_dtype[0])
+    input_ivy2 = ivy.array(x[1], dtype=x_dtype[1])
+
+    # check promoted type of arrays
+    promoted_type1, promoted_type2 = np_frontend.promote_types_of_numpy_inputs(
+        input_ivy1, input_ivy2
+    )
+    assert promoted_type1.dtype == promoted_type2.dtype
+    try:
+        import numpy as np
+
+        promoted_type_numpy = np.promote_types(x_dtype[0], x_dtype[1])
+    except ImportError:
+        promoted_type_numpy = None
+    if promoted_type_numpy is not None:
+        assert str(promoted_type1.dtype) == str(promoted_type_numpy)
+
     ivy.previous_backend()

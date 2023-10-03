@@ -73,11 +73,10 @@ def test_jax_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
 @settings(max_examples=200)
 def test_jax_numpy_promote_types_of_jax_input(dtype_and_x, backend_fw):
     x_dtype, x = dtype_and_x
-    x1, x2 = x
     ivy.set_backend(backend_fw)
     # convert inputs to ivy arrays
-    input_ivy1 = ivy.array(x1, dtype=x_dtype[0])
-    input_ivy2 = ivy.array(x2, dtype=x_dtype[1])
+    input_ivy1 = ivy.array(x[0], dtype=x_dtype[0])
+    input_ivy2 = ivy.array(x[1], dtype=x_dtype[1])
 
     # check promoted type of arrays
     jax_frontend.config.jax_enable_x64 = True
@@ -89,8 +88,7 @@ def test_jax_numpy_promote_types_of_jax_input(dtype_and_x, backend_fw):
     try:
         import jax
 
-        x1_dtype, x2_dtype = jax.numpy.dtype(x_dtype[0]), jax.numpy.dtype(x_dtype[1])
-        promoted_type_jax = jax.numpy.promote_types(x1_dtype, x2_dtype)
+        promoted_type_jax = jax.numpy.promote_types(x_dtype[0], x_dtype[1])
     except ImportError:
         promoted_type_jax = None
     if promoted_type_jax is not None:
