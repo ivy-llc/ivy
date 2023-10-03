@@ -111,6 +111,11 @@ class Tensor:
         return paddle_frontend.acosh(self)
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def add_n(self, inputs, name=None):
+        inputs = ivy.array(inputs)
+        return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def ceil(self):
         return paddle_frontend.ceil(self)
 
@@ -263,6 +268,10 @@ class Tensor:
     def add_(self, y, name=None):
         self.ivy_array = paddle_frontend.add(self, y).ivy_array
         return self
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def addmm(self, x, y, beta=1.0, alpha=1.0, name=None):
+        return paddle_frontend.addmm(self, x, y, beta, alpha)
 
     @with_supported_dtypes(
         {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
@@ -789,6 +798,12 @@ class Tensor:
         im_part = ivy.multiply(1j, self.ivy_array[..., 1])
         value = paddle_frontend.Tensor(ivy.add(re_part, im_part).astype(dtype))
         return value
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("int32", "int64", "float32", "float64", "bool")}, "paddle"
+    )
+    def not_equal(self, y, name=None):
+        return paddle_frontend.not_equal(self._ivy_array, y)
 
     @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
