@@ -611,6 +611,8 @@ def tanh(x, name=None):
 @to_ivy_arrays_and_back
 def trunc(x, name=None):
     return ivy.trunc(x)
+
+
 result = diff(x, n=1, axis=-1, prepend=None, append=None)
 
 ivy.set_backend("tensorflow")
