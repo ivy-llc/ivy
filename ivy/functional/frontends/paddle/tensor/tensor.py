@@ -859,3 +859,10 @@ class Tensor:
     def cpu(self):
         self.ivy_array = ivy.to_device(self.ivy_array, ivy.as_ivy_dev("cpu"))
         return self
+
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("int16", "complex64", "complex128")},
+        "paddle",
+    )
+    def split(self, num_or_sections, axis=0, name=None):
+        return paddle_frontend.split(self._ivy_array, num_or_sections, axis, name)
