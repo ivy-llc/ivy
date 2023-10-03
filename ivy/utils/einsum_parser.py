@@ -179,14 +179,7 @@ def convert_subscripts(old_sub: List[Any], symbol_map: Dict[Any, Any]) -> str:
     >>> oe.parser.convert_subscripts([Ellipsis, object], {object:'a'})
     '...a'
     """
-    new_sub = ""
-    for s in old_sub:
-        if s is Ellipsis:
-            new_sub += "..."
-        else:
-            # no need to try/except here because symbol_map has already been checked
-            new_sub += symbol_map[s]
-    return new_sub
+    return "".join("..." if s is Ellipsis else symbol_map[s] for s in old_sub)
 
 
 def convert_interleaved_input(
@@ -328,7 +321,7 @@ def legalise_einsum_expr(*operands: Any) -> str:
             output_subscript = find_output_str(subscripts)
             normal_inds = "".join(sorted(set(output_subscript) - set(out_ellipse)))
 
-            subscripts += "->" + out_ellipse + normal_inds
+            subscripts += f"->{out_ellipse}{normal_inds}"
 
     # Build output string if does not exist
     if "->" in subscripts:
@@ -339,9 +332,7 @@ def legalise_einsum_expr(*operands: Any) -> str:
     # Make sure output subscripts are in the input
     for char in output_subscript:
         if char not in input_subscripts:
-            raise ValueError(
-                "Output character '{}' did not appear in the input".format(char)
-            )
+            raise ValueError(f"Output character '{char}' did not appear in the input")
 
     # Make sure number operands is equivalent to the number of terms
     if len(input_subscripts.split(",")) != len(operands):
@@ -350,5 +341,5 @@ def legalise_einsum_expr(*operands: Any) -> str:
             f" equal to the number of operands, {len(operands)}."
         )
 
-    eqn = input_subscripts + "->" + output_subscript
+    eqn = f"{input_subscripts}->{output_subscript}"
     return eqn

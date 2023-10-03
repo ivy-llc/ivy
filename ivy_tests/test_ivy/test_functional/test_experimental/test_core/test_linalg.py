@@ -1,6 +1,7 @@
 # global
 import math
 from hypothesis import strategies as st
+from hypothesis import assume
 import numpy as np
 import pytest
 import itertools
@@ -13,6 +14,24 @@ import ivy
 
 # --- Helpers --- #
 # --------------- #
+
+
+# batched_outer
+@st.composite
+def _batched_outer_data(draw):
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=3))
+    tensors_num = draw(helpers.ints(min_value=1, max_value=5))
+    dtype, tensors = draw(
+        helpers.dtype_and_values(
+            num_arrays=tensors_num,
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    return dtype, tensors
 
 
 @st.composite
@@ -291,6 +310,48 @@ def _generate_multi_dot_dtype_and_arrays(draw):
     return input_dtype, [matrix_1[1][0], matrix_2[1][0], matrix_3[1][0]]
 
 
+# solve_triangular
+@st.composite
+def _generate_solve_triangular_args(draw):
+    shape = draw(
+        st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=5)
+    )
+    shape_b = list(shape)
+    shape_a = list(shape)
+    shape_a[-1] = shape_a[-2]  # Make square
+
+    dtype_a, a = draw(
+        helpers.dtype_and_values(
+            shape=shape_a,
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    dtype_b, b = draw(
+        helpers.dtype_and_values(
+            shape=shape_b,
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    dtype_a = dtype_a[0]
+    dtype_b = dtype_b[0]
+    a = a[0]
+    b = b[0]
+    upper = draw(st.booleans())
+    adjoint = draw(st.booleans())
+    unit_diagonal = draw(st.booleans())
+
+    for i in range(shape_a[-2]):
+        a[ivy.abs(a[..., i, i]) < 0.01, i, i] = 0.01  # Make diagonals non-zero
+
+    return upper, adjoint, unit_diagonal, [dtype_a, dtype_b], [a, b]
+
+
 @st.composite
 def _get_dtype_value1_value2_cov(
     draw,
@@ -378,6 +439,23 @@ def _get_dtype_value1_value2_cov(
     )
 
     return [dtype], value1, value2, rowVar, bias, ddof, fweights, aweights
+
+
+# higher_order_moment
+@st.composite
+def _higher_order_moment_data(draw):
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=4))
+    order = draw(helpers.ints(min_value=0, max_value=5))
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    return dtype, x[0], order
 
 
 # intialize tucker
@@ -656,6 +734,27 @@ def _truncated_svd_data(draw):
     return x_dtype, x[0], uv, n_eigen
 
 
+@st.composite
+def _tt_matrix_to_tensor_data(draw):
+    rank = 1
+    num_factors = draw(st.integers(min_value=1, max_value=3))
+    factor_dims = draw(
+        st.tuples(
+            st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3)
+        )
+    )
+    shape = (num_factors, rank, *factor_dims, rank)
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=1,
+            shape=shape,
+            shared_dtype=True,
+        )
+    )
+    return x_dtype, x
+
+
 # tucker
 @st.composite
 def _tucker_data(draw):
@@ -761,6 +860,47 @@ def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
         fn_name=fn_name,
         x=x[0],
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.batched_outer",
+    data=_batched_outer_data(),
+)
+def test_batched_outer(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, tensors = data
+    if backend_fw == "paddle":
+        # to avoid large dimension results since paddle don't support them
+        tensors = tensors[:2]
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-1,
+        rtol_=1e-1,
+        input_dtypes=input_dtypes,
+        tensors=tensors,
+    )
+
+
+# test adapted from tensorly
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_outer_product.py#L22
+@pytest.mark.skip(
+    reason=(
+        "ivy.tensordot does not support batched_modes argument for the moment. "
+        "TODO please remove this when the functionality is added. "
+        "see https://github.com/unifyai/ivy/issues/21914"
+    )
+)
+def test_batched_outer_product():
+    batch_size = 3
+    X = ivy.random_uniform(shape=(batch_size, 4, 5, 6))
+    Y = ivy.random_uniform(shape=(batch_size, 3))
+    Z = ivy.random_uniform(shape=(batch_size, 2))
+    res = ivy.batched_outer([X, Y, Z])
+    true_res = ivy.tensordot(X, Y, (), batched_modes=0)
+    true_res = ivy.tensordot(true_res, Z, (), batched_modes=0)
+    np.testing.assert_array_almost_equal(res, true_res)
 
 
 @handle_test(
@@ -895,12 +1035,13 @@ def test_dot(*, data, test_flags, backend_fw, fn_name, on_device):
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_eig(dtype_x, test_flags, backend_fw, fn_name):
+def test_eig(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         test_values=False,
         x=x[0],
@@ -1002,12 +1143,13 @@ def test_eigh_tridiagonal(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_eigvals(dtype_x, test_flags, backend_fw, fn_name):
+def test_eigvals(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         test_values=False,
         x=x[0],
@@ -1031,6 +1173,28 @@ def test_general_inner_product(*, data, test_flags, backend_fw, fn_name, on_devi
         a=x[0],
         b=x[1],
         n_modes=n_modes,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.higher_order_moment",
+    data=_higher_order_moment_data(),
+)
+def test_higher_order_moment(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, order = data
+    if backend_fw == "paddle":
+        # to avoid large dimension results since paddle don't support them
+        order = min(order, 2)
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-1,
+        rtol_=1e-1,
+        input_dtypes=input_dtypes,
+        x=x,
+        order=order,
     )
 
 
@@ -1500,6 +1664,32 @@ def test_partial_tucker_tensorly(tol_norm_2, tol_max_abs, modes, shape):
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.solve_triangular",
+    data=_generate_solve_triangular_args(),
+    test_instance_method=st.just(False),
+)
+def test_solve_triangular(*, data, test_flags, backend_fw, fn_name, on_device):
+    # Temporarily ignore gradients on paddlepaddle backend
+    # See: https://github.com/unifyai/ivy/pull/25917
+    assume(not (backend_fw == "paddle" and test_flags.test_gradients))
+    upper, adjoint, unit_diagonal, input_dtypes, x = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-3,
+        atol_=1e-3,
+        input_dtypes=input_dtypes,
+        x1=x[0],
+        x2=x[1],
+        upper=upper,
+        adjoint=adjoint,
+        unit_diagonal=unit_diagonal,
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.svd_flip",
     uv=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1601,6 +1791,25 @@ def test_truncated_svd(*, data, test_flags, backend_fw, fn_name, on_device):
             backend=backend_fw,
             ground_truth_backend=test_flags.ground_truth_backend,
         )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.tt_matrix_to_tensor",
+    data=_tt_matrix_to_tensor_data(),
+    test_gradients=st.just(False),
+)
+def test_tt_matrix_to_tensor(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = data
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e8,
+        atol_=1e8,
+        tt_matrix=x[0],
+    )
 
 
 @handle_test(

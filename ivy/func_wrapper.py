@@ -16,8 +16,7 @@ from ivy.utils.exceptions import IvyValueError
 # for wrapping (sequence matters)
 FN_DECORATORS = [
     "handle_complex_input",
-    "infer_device",
-    "handle_device_shifting",
+    "handle_device",
     "infer_dtype",
     "handle_array_function",
     "outputs_to_ivy_arrays",
@@ -217,8 +216,8 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
             return True, result
 
     raise TypeError(
-        "no implementation found for {} on types that implement "
-        "__ivy_array_function__: {}".format(func, list(map(type, overloaded_args)))
+        f"no implementation found for {func} on types that implement"
+        f" __ivy_array_function__: {list(map(type, overloaded_args))}"
     )
 
 
@@ -244,11 +243,10 @@ def _get_first_array(*args, **kwargs):
 def _build_view(original, view, fn, args, kwargs, index=None):
     if ivy.exists(original._base):
         base = original._base
-        view._base = base
         view._manipulation_stack = python_copy.copy(original._manipulation_stack)
     else:
         base = original
-        view._base = base
+    view._base = base
     base._view_refs.append(weakref.ref(view))
     view._manipulation_stack.append((fn, args[1:], kwargs, index))
 
@@ -508,8 +506,8 @@ def inputs_to_native_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_native_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
-            [args, kwargs],
             lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
+            [args, kwargs],
         )
         return fn(*args, **kwargs)
 
@@ -521,8 +519,8 @@ def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_ivy_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
-            [args, kwargs],
             lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
+            [args, kwargs],
         )
         return fn(*args, **kwargs)
 
@@ -635,8 +633,8 @@ def frontend_outputs_to_ivy_arrays(fn: Callable) -> Callable:
     def _outputs_to_ivy_arrays(*args, **kwargs):
         ret = fn(*args, **kwargs)
         return ivy.nested_map(
-            ret,
             lambda x: x.ivy_array if hasattr(x, "ivy_array") else x,
+            ret,
             shallow=False,
         )
 
@@ -697,7 +695,7 @@ def handle_view_indexing(fn: Callable) -> Callable:
         if ("copy" in kwargs and kwargs["copy"]) or not ivy.is_ivy_array(args[0]):
             return ret
         query = kwargs["query"] if "query" in kwargs else args[1]
-        query = (query,) if not isinstance(query, tuple) else query
+        query = query if isinstance(query, tuple) else (query,)
         if [i for i in query if not isinstance(i, (slice, int))]:
             return ret
         original = args[0]
@@ -779,42 +777,9 @@ def infer_dtype(fn: Callable) -> Callable:
 # ----------------#
 
 
-def infer_device(fn: Callable) -> Callable:
+def handle_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _infer_device(*args, device=None, **kwargs):
-        """
-        Determine the correct `device`, and then calls the function with the `device`
-        passed explicitly.
-
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
-
-        device
-            The device for the function.
-
-        kwargs
-            The keyword arguments to be passed to the function.
-
-        Returns
-        -------
-            The return of the function, with `device` passed explicitly.
-        """
-        # find the first array argument, if required
-        arr = None if ivy.exists(device) else _get_first_array(*args, **kwargs)
-        # infer the correct device
-        device = ivy.default_device(device, item=arr, as_native=True)
-        # call the function with device provided explicitly
-        return fn(*args, device=device, **kwargs)
-
-    _infer_device.infer_device = True
-    return _infer_device
-
-
-def handle_device_shifting(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def _handle_device_shifting(*args, **kwargs):
+    def _handle_device(*args, **kwargs):
         """
         Move all array inputs of the function to `ivy.default_device()`.
 
@@ -857,8 +822,8 @@ def handle_device_shifting(fn: Callable) -> Callable:
             )
         return fn(*args, **kwargs)
 
-    _handle_device_shifting.handle_device_shifting = True
-    return _handle_device_shifting
+    _handle_device.handle_device = True
+    return _handle_device
 
 
 # Inplace Update Handling #
@@ -938,9 +903,7 @@ def _update_torch_views(x, visited_view=None):
         if fn == "rot90":
             kwargs = kwargs.copy()
             kwargs["k"] = -kwargs["k"]
-            parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
-        else:
-            parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
+        parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
     if ivy.exists(x._torch_base):
         _update_torch_views(x._torch_base, visited_view=x)
 
@@ -986,12 +949,13 @@ def handle_nestable(fn: Callable) -> Callable:
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
         # the passed arguments.
-        if hasattr(ivy.Container, "_static_" + fn_name):
-            cont_fn = getattr(ivy.Container, "_static_" + fn_name)
+        if hasattr(ivy.Container, f"_static_{fn_name}"):
+            cont_fn = getattr(ivy.Container, f"_static_{fn_name}")
         else:
-            cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
-                fn, *args, **kwargs
-            )
+
+            def cont_fn(*args, **kwargs):
+                return ivy.Container.cont_multi_map_in_function(fn, *args, **kwargs)
+
         if ivy.nestable_mode and (
             ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
             or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
@@ -1026,11 +990,10 @@ def handle_ragged(fn: Callable) -> Callable:
         -------
             The return of the function, with the ragged property handled correctly.
         """
-        nested_fn = (
-            lambda *args, **kwargs: ivy.NestedArray.ragged_multi_map_in_function(
-                fn, *args, **kwargs
-            )
-        )
+
+        def nested_fn(*args, **kwargs):
+            return ivy.NestedArray.ragged_multi_map_in_function(fn, *args, **kwargs)
+
         if ivy.nested_any(
             args, ivy.is_ivy_nested_array, check_nests=True
         ) or ivy.nested_any(kwargs, ivy.is_ivy_nested_array, check_nests=True):
@@ -1074,9 +1037,9 @@ def _wrap_function(
     """
     Apply wrapping to backend implementation `to_wrap` if the original implementation
     `original` is also wrapped, and if `to_wrap` is not already wrapped. Attributes
-    `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to us
-    whether a certain function has been wrapped or not. Also handles wrapping of the
-    `linalg` namespace.
+    `handle_nestable` etc are set during wrapping, hence indicate to us whether a
+    certain function has been wrapped or not. Also handles wrapping of the `linalg`
+    namespace.
 
     Parameters
     ----------
@@ -1194,8 +1157,8 @@ def casting_modes_ops(fn):
                 x = ivy.to_native(ivy.astype(x, ivy.as_native_dtype(dtype)))
             return x
 
-        args = ivy.nested_map(args, mini_helper, include_derived=True)
-        kwargs = ivy.nested_map(kwargs, mini_helper)
+        args = ivy.nested_map(mini_helper, args, include_derived=True)
+        kwargs = ivy.nested_map(mini_helper, kwargs)
         return fn(*args, **kwargs)
 
     return method
@@ -1312,14 +1275,14 @@ def _dtype_device_wrapper_creator(attrib, t):
                         # applied to the function, but they are not same
                         # and aren't in conflicting dict either
                         setattr(func, attrib, val)
-                        setattr(func, "dictionary_info", version_dict)
+                        setattr(func, "dictionary_info", (version_dict, version))
                     elif hasattr(func, "exclusive"):
                         if attrib == attribs:
                             # we see a higher decorator with exclusivity applied
                             # we use this decorator's dict information
                             # and previous decorator's dict information
                             # to update this
-                            old_version_dict = getattr(func, "dictionary_info")
+                            old_version_dict = getattr(func, "dictionary_info")[0]
                             old_version_dict.update(version_dict)
                             val = _versioned_attribute_factory(
                                 lambda: _dtype_from_version(
@@ -1333,7 +1296,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                             pass
             else:
                 setattr(func, attrib, val)
-                setattr(func, "dictionary_info", version_dict)
+                setattr(func, "dictionary_info", (version_dict, version))
             if "frontends" in func.__module__:
                 # it's a frontend func, no casting modes for this
                 return func
@@ -1353,7 +1316,7 @@ def _leaf_has_nans(x):
         return x.has_nans()
     elif ivy.is_array(x):
         return ivy.isnan(x).any()
-    elif x is float("nan"):
+    elif x == float("nan"):
         return True
     return False
 
@@ -1392,7 +1355,7 @@ def handle_nans(fn: Callable) -> Callable:
         if nan_policy == "nothing":
             return fn(*args, **kwargs)
 
-        # check all args and kwards for presence of nans
+        # check all args and kwargs for presence of nans
         result = _nest_has_nans(args) or _nest_has_nans(kwargs)
 
         if result:
@@ -1589,7 +1552,7 @@ def handle_backend_invalid(fn: Callable) -> Callable:
                 )
             return x
 
-        ivy.nested_map(array_vals, func, include_derived=True)
+        ivy.nested_map(func, array_vals, include_derived=True)
 
         return fn(*args, **kwargs)
 

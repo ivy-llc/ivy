@@ -393,7 +393,7 @@ class SparseArray(ivy.Array):
 
             if format == "coo":
                 self._init_coo_components(coo_indices, values, dense_shape, format)
-            elif format == "csr" or format == "bsr":
+            elif format in ["csr", "bsr"]:
                 self._init_compressed_row_components(
                     crow_indices, col_indices, values, dense_shape, format
                 )
@@ -543,7 +543,7 @@ class SparseArray(ivy.Array):
             self._dev_str = ivy.as_ivy_dev(self.device)
             self._pre_repr = "ivy.sparse_array"
             if "gpu" in self._dev_str:
-                self._post_repr = ", dev={})".format(self._dev_str)
+                self._post_repr = f", dev={self._dev_str})"
             else:
                 self._post_repr = ")"
         if self._format == "coo":
@@ -551,7 +551,7 @@ class SparseArray(ivy.Array):
                 f"indices={self._coo_indices}, values={self._values},"
                 f" dense_shape={self._dense_shape}"
             )
-        elif self._format == "csr" or self._format == "bsr":
+        elif self._format in ["csr", "bsr"]:
             repr = (
                 f"crow_indices={self._crow_indices}, col_indices={self._col_indices},"
                 f" values={self._values}, dense_shape={self._dense_shape}"
