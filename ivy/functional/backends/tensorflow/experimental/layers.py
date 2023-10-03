@@ -44,7 +44,7 @@ def max_pool1d(
 ) -> Union[tf.Tensor, tf.Variable]:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCW":
@@ -108,7 +108,7 @@ def max_pool2d(
 ) -> Union[tf.Tensor, tf.Variable]:
     dims = 2
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCHW":
@@ -172,7 +172,7 @@ def max_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -188,7 +188,7 @@ def max_pool3d(
 ) -> Union[tf.Tensor, tf.Variable]:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCDHW":
@@ -277,7 +277,7 @@ def _handle_manual_pad_avg_pool(x, kernel, strides, padding, ceil_mode, dims):
     return padding, pad_specific, c
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "float64")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],
@@ -348,7 +348,7 @@ def avg_pool1d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool2d(
     x: Union[tf.Tensor, tf.Variable],
@@ -440,7 +440,7 @@ def avg_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -545,7 +545,7 @@ def avg_pool3d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def pool(
     x: Union[tf.Tensor, tf.Variable],
@@ -571,7 +571,7 @@ def pool(
     )
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -646,7 +646,7 @@ def _ifft_norm(
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("complex", "float32", "float64")}, backend_version
+    {"2.14.0 and below": ("complex", "float32", "float64")}, backend_version
 )
 def fft(
     x: Union[tf.Tensor, tf.Variable],
@@ -709,7 +709,7 @@ def fft(
     return ret
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def dropout(
     x: Union[tf.Tensor, tf.Variable],
     prob: float,
@@ -851,7 +851,7 @@ def ifft(
     return ret
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def embedding(
     weights: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
@@ -1038,7 +1038,7 @@ def _fft2_helper(x, shape, axes):
     return x
 
 
-@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def fft2(
     x: Union[tf.Tensor, tf.Variable],
     *,
@@ -1490,6 +1490,71 @@ def rfftn(
     else:
         # return result
         return tf.cast(result, tf.complex128)
+
+      
+# stft
+@with_supported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
+def stft(
+    signals: Union[tf.Tensor, tf.Variable],
+    frame_length: int,
+    frame_step: int,
+    /,
+    *,
+    fft_length: Optional[int] = None,
+    window_fn: Optional[Callable] = None,
+    pad_end: Optional[bool] = False,
+    name: Optional[str] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if not isinstance(frame_length, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_length)}"
+        )
+
+    if frame_length < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if not isinstance(frame_step, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_step)}"
+        )
+
+    if frame_step < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if fft_length is not None:
+        if not isinstance(fft_length, int):
+            raise ivy.utils.exceptions.IvyError(
+                f"Expecting <class 'int'> instead of {type(fft_length)}"
+            )
+
+        if fft_length < 1:
+            raise ivy.utils.exceptions.IvyError(
+                f"Invalid data points {frame_length}, expecting frame_length larger"
+                " than or equal to 1"
+            )
+
+    result = tf.signal.stft(
+        signals,
+        frame_length,
+        frame_step,
+        fft_length=fft_length,
+        window_fn=window_fn,
+        pad_end=pad_end,
+        name=name,
+    )
+
+    if out is not None:
+        return out
+
+    else:
+        return result
 
 
 def _to_4d(x):
