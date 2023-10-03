@@ -640,6 +640,11 @@ def remainder(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def rint(x, /):
+    return ivy.round(x)
+
+
+@to_ivy_arrays_and_back
 def round(a, decimals=0, out=None):
     return ivy.round(a, decimals=decimals, out=out)
 
