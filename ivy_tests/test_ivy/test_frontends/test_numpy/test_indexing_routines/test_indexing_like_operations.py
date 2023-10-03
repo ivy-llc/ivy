@@ -153,9 +153,7 @@ def test_numpy_put_along_axis(
 @handle_frontend_test(
     fn_tree="numpy.putmask",
     dtypes_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes(
-            kind="numeric", prune_function=True, mixed_fn_compos=False
-        ),
+        available_dtypes=helpers.get_dtypes(kind="numeric", prune_function=True),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=10,
