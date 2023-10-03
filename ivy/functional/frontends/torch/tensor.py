@@ -23,7 +23,6 @@ class Tensor:
             self._ivy_array = (
                 array if isinstance(array, ivy.Array) else ivy.array(array)
             )
-
         else:
             self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
@@ -2146,6 +2145,9 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": "complex"}, "torch")
     def minimum(self, other, *, out=None):
         return torch_frontend.minimum(self, other=other, out=out)
+
+    def rad2deg(self, *, out=None):
+        return torch_frontend.rad2deg(self, out=out)
 
     # Method aliases
     absolute, absolute_ = abs, abs_

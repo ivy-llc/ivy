@@ -269,6 +269,10 @@ class Tensor:
         self.ivy_array = paddle_frontend.add(self, y).ivy_array
         return self
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def addmm(self, x, y, beta=1.0, alpha=1.0, name=None):
+        return paddle_frontend.addmm(self, x, y, beta, alpha)
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
         "paddle",
@@ -828,6 +832,10 @@ class Tensor:
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
 
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def bmm(self, y, transpose_x=False, transpose_y=False, name=None):
+        return paddle_frontend.bmm(self, y, transpose_x, transpose_y)
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
         "paddle",
@@ -855,3 +863,9 @@ class Tensor:
     def cpu(self):
         self.ivy_array = ivy.to_device(self.ivy_array, ivy.as_ivy_dev("cpu"))
         return self
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def frac(self, name=None):
+        return paddle_frontend.frac(self._ivy_array)

@@ -33,6 +33,7 @@ FN_DECORATORS = [
     "handle_nestable",
     "handle_ragged",
     "handle_backend_invalid",
+    "temp_asarray_wrapper",
     "handle_exceptions",
     "handle_nans",
 ]
@@ -1026,6 +1027,44 @@ def handle_partial_mixed_function(fn) -> Callable:
 
     _handle_partial_mixed_function.handle_partial_mixed_function = True
     return _handle_partial_mixed_function
+
+
+# Temporary asarray wrapper (Please request my review before removing)
+
+
+def temp_asarray_wrapper(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _temp_asarray_wrapper(*args, **kwargs):
+        """
+        Convert `Tensor` into `ivy.Array` instances.
+
+        Convert all `Tensor` instances in both the positional and keyword arguments
+        into `ivy.Array` instances, and then call the function with the updated
+        arguments.
+        """
+
+        def _to_ivy_array(x):
+            # if x is a native array return it as an ivy array
+            if isinstance(x, ivy.NativeArray):
+                return ivy.array(x)
+
+            # else if x is a frontend torch Tensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
+            elif hasattr(x, "ivy_array"):
+                return x.ivy_array
+            # else just return x
+            return x
+
+        # convert all input arrays to ivy.Array instances
+        new_args = ivy.nested_map(
+            _to_ivy_array, args, include_derived={"tuple": True}, shallow=False
+        )
+        new_kwargs = ivy.nested_map(
+            _to_ivy_array, kwargs, include_derived={"tuple": True}, shallow=False
+        )
+        return fn(*new_args, **new_kwargs)
+
+    _temp_asarray_wrapper.temp_asarray_wrapper = True
+    return _temp_asarray_wrapper
 
 
 # Functions #

@@ -119,3 +119,14 @@ def hardtanh(
 
 
 hardtanh.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def tanhshrink(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    ret = np.subtract(x, np.tanh(x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+tanhshrink.support_native_out = True
