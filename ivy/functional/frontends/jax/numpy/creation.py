@@ -310,3 +310,9 @@ def zeros_like(a, dtype=None, shape=None):
     if shape:
         return ivy.zeros(shape, dtype=dtype)
     return ivy.zeros_like(a, dtype=dtype)
+
+
+@ivy.to_ivy_arrays_and_back
+def integer(x):
+    return ivy.cast(x, x.dtype)
+    
