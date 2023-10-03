@@ -814,12 +814,12 @@ class Tensor:
         return paddle_frontend.cast(self, dtype)
 
     @with_supported_dtypes(
-
         {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
     )
     def increment(self, value, name=None):
         return paddle_frontend.increment(self, value)
 
+    @with_supported_dtypes(
         {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
         "paddle",
     )
@@ -842,4 +842,3 @@ class Tensor:
     )
     def unbind(self, axis=0):
         return paddle_frontend.unbind(self._ivy_array, axis=axis)
-         main
