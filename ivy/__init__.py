@@ -2,6 +2,7 @@
 import copy
 import re
 import warnings
+import logging
 import builtins
 import numpy as np
 import sys
@@ -11,6 +12,7 @@ from collections.abc import Sequence
 
 
 import ivy.utils.backend.handler
+from ivy.utils import check_for_binaries
 from ivy._version import __version__ as __version__
 
 _not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
@@ -375,27 +377,6 @@ class Shape(Sequence):
 
     def __dir__(self):
         return self._shape.__dir__()
-
-    def __pow__(self, power, modulo=None):
-        pass
-
-    def __index__(self):
-        pass
-
-    def __rdivmod__(self, other):
-        pass
-
-    def __truediv__(self, other):
-        pass
-
-    def __rtruediv__(self, other):
-        pass
-
-    def __rfloordiv__(self, other):
-        pass
-
-    def __ne__(self, other):
-        pass
 
     @property
     def shape(self):
@@ -812,7 +793,7 @@ try:
 except:
     pass
 try:
-    from .compiler.compiler import transpile, compile, unify
+    from .compiler.compiler import transpile, trace_graph, unify
 except:  # noqa: E722
     pass  # Added for the finally statment
 finally:
@@ -1531,3 +1512,8 @@ if (
     ].__class__ = IvyWithGlobalProps
 else:
     sys.modules[__name__].__class__ = IvyWithGlobalProps
+
+    # check if all expected binaries are present
+    # in this else block to avoid raising the same warning again
+    # on using with_backend
+    check_for_binaries()

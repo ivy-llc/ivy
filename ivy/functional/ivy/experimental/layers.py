@@ -15,7 +15,7 @@ from ivy.func_wrapper import (
     handle_partial_mixed_function,
     inputs_to_ivy_arrays,
     handle_array_function,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
@@ -31,7 +31,7 @@ _max = builtins.max
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -119,7 +119,7 @@ def max_pool1d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -207,7 +207,7 @@ def max_pool2d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def max_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -293,7 +293,7 @@ def max_pool3d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def avg_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -376,7 +376,7 @@ def avg_pool1d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def avg_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -464,7 +464,7 @@ def avg_pool2d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def avg_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -631,7 +631,7 @@ def pool(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -855,7 +855,7 @@ def idct(
 idct.mixed_backend_wrappers = {
     "to_add": (
         "handle_backend_invalid",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": (),
 }
@@ -941,6 +941,8 @@ def irfft(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
+@handle_device
+
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -1010,7 +1012,7 @@ def fft(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1086,7 +1088,7 @@ def dropout1d(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dropout2d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1152,7 +1154,7 @@ def dropout2d(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1204,7 +1206,7 @@ def dropout3d(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -1273,7 +1275,7 @@ def ifft(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1626,18 +1628,14 @@ def _compute_weight_mat(
     kernel_scale = ivy.maximum(inv_scale, 1.0) if antialias else 1.0
     if not align_corners:
         sample_f = (ivy.arange(output_size) + 0.5) * dim_scale_factor - 0.5
-        x = (
-            ivy.abs(
-                ivy.expand_dims(sample_f)
-                - ivy.expand_dims(ivy.arange(input_size), axis=-1)
-            )
-            / kernel_scale
-        )
     else:
         sample_f = ivy.arange(output_size) * dim_scale_factor
-        x = ivy.abs(
+    x = (
+        ivy.abs(
             ivy.expand_dims(sample_f) - ivy.expand_dims(ivy.arange(input_size), axis=-1)
-        ) / (kernel_scale)
+        )
+        / kernel_scale
+    )
     weights = kernel_fn(x)
     total_weight_sum = ivy.sum(weights, axis=0, keepdims=True)
     weights = ivy.where(
@@ -2056,7 +2054,7 @@ def interpolate(
 interpolate.mixed_backend_wrappers = {
     "to_add": (
         "handle_backend_invalid",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": (),
 }
@@ -2070,7 +2068,7 @@ def _get_size(scale_factor, size, dims, x_shape):
             scale_factor = [scale_factor[0]] * dims
 
         size = tuple(
-            [int(math.floor(x_shape[2 + i] * scale_factor[i])) for i in range(dims)]
+            int(math.floor(x_shape[2 + i] * scale_factor[i])) for i in range(dims)
         )
     else:
         size = (size,) * dims if isinstance(size, int) else tuple(size)
@@ -2126,7 +2124,7 @@ def _compute_idx(in_size, out_size, device):
     maxlength = in_size // out_size + 1
     in_size_mod = in_size % out_size
     # adaptive = True iff there are kernels with different lengths
-    adaptive = not (in_size_mod == 0 or out_size % in_size_mod == 0)
+    adaptive = in_size_mod != 0 and out_size % in_size_mod != 0
     if adaptive:
         maxlength += 1
     elif in_size_mod == 0:
@@ -2251,7 +2249,7 @@ adaptive_max_pool2d.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2331,7 +2329,7 @@ adaptive_avg_pool1d.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2421,7 +2419,7 @@ adaptive_avg_pool2d.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2606,7 +2604,7 @@ def sliding_window(
             padding=padding,
         )
 
-    if ivy.current_backend_str == "tensorflow":
+    if ivy.current_backend_str() == "tensorflow":
         return ivy.current_backend(input).sliding_window(
             input,
             kernel_size,
@@ -2615,7 +2613,7 @@ def sliding_window(
             padding=padding,
         )
 
-    if ivy.current_backend_str == "paddle":
+    if ivy.current_backend_str() == "paddle":
         return ivy.current_backend(input).sliding_window(
             input,
             kernel_size,
@@ -2670,7 +2668,7 @@ sliding_window.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2750,7 +2748,7 @@ reduce_window.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2828,7 +2826,7 @@ def fft2(
 
 
 fft2.mixed_backend_wrappers = {
-    "to_add": ("handle_device_shifting",),
+    "to_add": ("handle_device",),
     "to_skip": (),
 }
 
@@ -3009,7 +3007,7 @@ def rfftn(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def stft(
     signals: Union[ivy.Array, ivy.NativeArray],
     frame_length: int,
@@ -3105,7 +3103,7 @@ def _cal_output_shape(
 @handle_partial_mixed_function
 @to_native_arrays_and_back
 @inputs_to_ivy_arrays
-@handle_device_shifting
+@handle_device
 def max_unpool1d(
     input: ivy.Array,
     indices: ivy.Array,
@@ -3184,7 +3182,7 @@ max_unpool1d.mixed_backend_wrappers = {
     "to_add": (
         "handle_backend_invalid",
         "to_native_arrays_and_back",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
