@@ -710,7 +710,7 @@ def test_concat_from_sequence(
     test_flags.num_positional_args = len(kw)
 }
     for i, (sequence, idtype) in enumerate(zip(sequences, dtypes)):
-        
+
     ivy.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
