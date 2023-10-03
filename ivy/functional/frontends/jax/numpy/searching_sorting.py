@@ -147,6 +147,36 @@ def sort_complex(a):
 
 
 @to_ivy_arrays_and_back
+def union1d(ar1, ar2, *, size=None, fill_value=None):
+    x = ivy.array(ar1)
+    y = ivy.array(ar2)
+    # concatenating arrays
+    result_concat = ivy.concat((x, y))
+    result_unique_values = ivy.unique_values(result_concat)
+    result_arranged = ivy.sort(result_unique_values)
+    data_type = ivy.dtype(result_arranged)
+    n = len(result_unique_values)
+    if size is None:
+        result = result_arranged
+    else:
+        if size <= n:
+            result = result_arranged[0:size]
+        else:
+            width = size - n
+            if fill_value is None:
+                if result_arranged[0] <= 0:
+                    fill_value = 0.0
+                else:
+                    fill_value = result_arranged[0]
+            constant_pad = ivy.linspace(
+                fill_value, fill_value, num=width, dtype=data_type
+            )
+            result = ivy.concat((result_arranged, constant_pad))
+
+    return result
+
+
+@to_ivy_arrays_and_back
 def unique(
     ar,
     return_index=False,
@@ -181,34 +211,6 @@ def unique(
     return uniques[0] if len(uniques) == 1 else uniques
 
 
-@to_ivy_arrays_and_back
-def union1d(ar1, ar2, *, size=None, fill_value=None):
-    x = ivy.array(ar1)
-    y = ivy.array(ar2)
-    # concatenating arrays
-    result_concat = ivy.concat((x, y))
-    result_unique_values = ivy.unique_values(result_concat)
-    result_arranged = ivy.sort(result_unique_values)
-    data_type = ivy.dtype(result_arranged)
-    n = len(result_unique_values)
-    if size is None:
-        result = result_arranged
-    else:
-        if size <= n:
-            result = result_arranged[0:size]
-        else:
-            width = size - n
-            if fill_value is None:
-                if result_arranged[0] <= 0:
-                    fill_value = 0.0
-                else:
-                    fill_value = result_arranged[0]
-            constant_pad = ivy.linspace(fill_value,fill_value, num=width, dtype=data_type)
-            result = ivy.concat((result_arranged, constant_pad))
-
-    return result
-  
-  
 def where(condition, x=None, y=None, *, size=None, fill_value=0):
     if x is None and y is None:
         return nonzero(condition, size=size, fill_value=fill_value)
