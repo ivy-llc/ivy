@@ -684,6 +684,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         out : Array, optional
             Optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
+
         Returns
         -------
         Array
@@ -695,6 +696,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             where k is the length of the input conversion axis.
             If the output is an odd number, you need to specify the value of 'n',
             such as 2 * k-1 in some cases.
+
         Examples
         --------
         >>> import numpy as np
@@ -794,8 +796,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         size: Union[Sequence[int], int],
         /,
         *,
-        mode: Union[
-            Literal[
+        mode: Literal[
                 "linear",
                 "bilinear",
                 "trilinear",
@@ -804,8 +805,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
                 "nearest_exact",
                 "tf_area",
                 "bicubic",
-            ]
-        ] = "linear",
+            ] = "linear",
         scale_factor: Optional[Union[Sequence[int], int]] = None,
         recompute_scale_factor: Optional[bool] = None,
         align_corners: Optional[bool] = None,

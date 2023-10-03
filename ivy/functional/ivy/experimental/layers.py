@@ -907,6 +907,7 @@ def irfft(
     out : Array, optional
         Optional output array, for writing the result to.
         It must have a shape that the inputs broadcast to.
+
     Returns
     -------
     Array
@@ -918,6 +919,7 @@ def irfft(
         where k is the length of the input conversion axis.
         If the output is an odd number, you need to specify the value of 'n',
         such as 2 * k-1 in some cases.
+
     Examples
     --------
     >>> import numpy as np

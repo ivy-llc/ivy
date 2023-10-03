@@ -1538,6 +1538,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         - out (`Optional`[`Container`], default: `None`) :
             Optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
+
         Returns
         -------
             The transformed input.
@@ -1548,6 +1549,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             where k is the length of the input conversion axis.
             If the output is an odd number, you need to specify the value of 'n',
             such as 2 * k-1 in some cases.
+
         Examples
         --------
         >>> import numpy as np
@@ -1600,10 +1602,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
         out : Optional[Union[ivy.Array, ivy.Container]], optional
             An output array where the result is stored.
             If not provided, it defaults to None.
+
         Returns
         -------
         ivy.Container
             The inverse discrete Fourier Transform.
+
         Examples
         --------
         >>> import ivy
