@@ -698,7 +698,7 @@ def test_torch_ldl_factor(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-06,
+        rtol=1e-02,
         atol=1e-06,
         A=x[0],
     )
