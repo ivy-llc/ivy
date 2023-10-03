@@ -56,6 +56,15 @@ def kthvalue(x, k, axis=None, keepdim=False, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def index_sample(x, index):
+    return x[ivy.arange(x.shape[0])[:, None], index]
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
