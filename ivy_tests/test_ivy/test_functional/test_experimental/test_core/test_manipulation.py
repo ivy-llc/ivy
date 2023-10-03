@@ -678,7 +678,7 @@ def test_column_stack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_devi
       *, dtypes_arrays_axis, new_axis, test_flags, backend_fw, fn_name, on_device
     ):
       dtypes, arrays, axis = dtypes_arrays_axis
-    
+
       helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
@@ -689,7 +689,7 @@ def test_column_stack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_devi
         new_axis=new_axis,
         axis=axis,
       )
-    
+
 
 # dsplit
 @handle_test(
