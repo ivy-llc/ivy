@@ -2740,16 +2740,41 @@ column_stack.mixed_backend_wrappers = {
 }
 
 
-def concat_from_sequence(sequence: Sequence[ivy.Array], axis=0) -> ivy.Array:
+def concat_from_sequence(
+    sequence: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    axis: int = 0,
+) -> ivy.Array:
     """
     Concatenates a sequence of tensors along a specified axis.
 
-    Args:
-        sequence: A sequence of tensors.
-        axis: The axis along which to concatenate the tensors.
+    Parameters
+    ----------
+    sequence : Sequence[Union[ivy.Array, ivy.NativeArray]]
+        A sequence of tensors.
+    axis : int, optional
+        The axis along which to concatenate the tensors. Default is 0.
 
-    Returns:
+    Returns
+    -------
+    ivy.Array
         A tensor that is the concatenation of the tensors in the sequence.
+
+    Examples
+    --------
+    Concatenate tensors along the first axis:
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([4, 5, 6])
+    >>> c = ivy.array([7, 8, 9])
+    >>> ivy.concat_from_sequence((a, b, c), axis=0)
+    ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+    Concatenate tensors along the second axis:
+    >>> x = ivy.array([[1], [2], [3]])
+    >>> y = ivy.array([[4], [5], [6]])
+    >>> ivy.concat_from_sequence((x, y), axis=1)
+    ivy.array([[1, 4],
+               [2, 5],
+               [3, 6]])
     """
     concatenated_tensor = ivy.concatenate(sequence, axis=axis)
     return concatenated_tensor
