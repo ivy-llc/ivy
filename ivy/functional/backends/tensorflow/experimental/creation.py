@@ -13,7 +13,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.13.0 and below": {"cpu": ("bfloat16",)}},
+    {"2.14.0 and below": {"cpu": ("bfloat16",)}},
     backend_version,
 )
 def kaiser_window(
@@ -126,7 +126,7 @@ def unsorted_segment_sum(
     return tf.math.unsorted_segment_sum(data, segment_ids, num_segments)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
 def trilu(
     x: Union[tf.Tensor, tf.Variable],
     /,
