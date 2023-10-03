@@ -84,6 +84,20 @@ def put_along_axis(arr, indices, values, axis):
 
 
 @to_ivy_arrays_and_back
+def putmask(a, mask, values):
+    values = ivy.asarray(values)
+    if mask.shape != a.shape:
+        raise ValueError("mask and a must have the same shape")
+    mask_indices = ivy.where(mask)
+    if values.shape != () and values.shape != (1,):
+        if values.shape != a.shape:
+            values = ivy.array(
+                [values[i % len(values)] for i in range(a.size)]
+            ).reshape(a.shape)
+    a[mask_indices] = values[mask_indices]
+
+
+@to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
