@@ -2146,6 +2146,9 @@ class Tensor:
     def minimum(self, other, *, out=None):
         return torch_frontend.minimum(self, other=other, out=out)
 
+    def rad2deg(self, *, out=None):
+        return torch_frontend.rad2deg(self, out=out)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
