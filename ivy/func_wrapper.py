@@ -187,10 +187,10 @@ def cross_caster(intersect):
     valid_float = sorted(ivy.valid_float_dtypes)
     valid_int = sorted(ivy.valid_int_dtypes)
     intersect = sorted(intersect)
-    if intersect == valid_int:
+    if set(valid_int).issubset(intersect):
         # make dtype equal to default float
         dtype = ivy.default_float_dtype()
-    elif intersect == valid_float:
+    elif set(valid_float).issubset(intersect):
         # make dtype equal to default int
         dtype = ivy.default_int_dtype()
 
@@ -1156,21 +1156,6 @@ def casting_modes_ops(fn, ret_dtype_target=None):
             if dtype:
                 kwargs["dtype"] = ivy.as_native_dtype(dtype)
 
-        if not to_cast and ret_dtype_target:
-            for arg in ret_dtype_target:
-                to_cast = ivy.promote_types(
-                    to_cast,
-                    (
-                        ivy.dtype(
-                            args[arg_names.index(arg)]
-                            if arg not in kwargs
-                            else kwargs[arg]
-                        )
-                        if arg
-                        else None
-                    ),
-                )
-
         def mini_helper(x):
             if not hasattr(x, "dtype"):
                 return x
@@ -1179,15 +1164,38 @@ def casting_modes_ops(fn, ret_dtype_target=None):
                 x = ivy.to_native(ivy.astype(x, ivy.as_native_dtype(dtype)))
             return x
 
+        args = ivy.nested_map(mini_helper, args, include_derived=True)
+        kwargs = ivy.nested_map(mini_helper, kwargs)
 
-        args = ivy.nested_map(args, mini_helper, include_derived=True)
-        kwargs = ivy.nested_map(kwargs, mini_helper)
+        if not to_cast and ret_dtype_target:
+            for arg in ret_dtype_target:
+                if arg:
+                    to_cast, arg_mod = ivy.promote_types_of_inputs(
+                        to_cast,
+                        (
+                            args[arg_names.index(arg)]
+                            if arg not in kwargs
+                            else kwargs[arg]
+                        ),
+                    )
+                    if arg not in kwargs:
+                        args[arg_names.index(arg)] = (
+                            arg_mod
+                            if not ivy.isarray(args[arg_names.index(arg)])
+                            else args[arg_names.index(arg)]
+                        )
+                    else:
+                        kwargs[arg] = (
+                            arg_mod
+                            if not ivy.isarray(args[arg_names.index(arg)])
+                            else kwargs[arg]
+                        )
+
         return (
             ivy.astype(fn(*args, **kwargs), ivy.to_native(to_cast))
             if to_cast
             else fn(*args, **kwargs)
         )
-
 
     return method
 
