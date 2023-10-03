@@ -46,6 +46,43 @@ def mocked_func(dim=None, keepdim=None, input=None, other=None):
 
 @given(
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        num_arrays=2,
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+@settings(max_examples=200)
+def test_promote_types_of_torch_inputs(dtype_and_x, backend_fw):
+    x_dtype, x = dtype_and_x
+    ivy.set_backend(backend_fw)
+
+    # check for ivy array
+    input_ivy1 = ivy.array(x[0], dtype=x_dtype[0])
+    input_ivy2 = ivy.array(x[1], dtype=x_dtype[1])
+
+    # check promoted type of arrays
+    promoted_type1, promoted_type2 = torch_frontend.promote_types_of_torch_inputs(
+        input_ivy1, input_ivy2
+    )
+    assert promoted_type1.dtype == promoted_type2.dtype
+
+    try:
+        import torch
+
+        x1_torch_dtype, x2_torch_dtype = (
+            torch.from_numpy(x[0]).dtype,
+            torch.from_numpy(x[1]).dtype,
+        )
+        torch_promoted_type = torch.promote_types(x1_torch_dtype, x2_torch_dtype)
+    except ImportError:
+        torch_promoted_type = None
+    if torch_promoted_type is not None:
+        assert str(promoted_type1.dtype) == str(torch_promoted_type).split(".")[1]
+
+    ivy.previous_backend()
+
+
+@given(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0])
 )
@@ -129,43 +166,6 @@ def test_torch_outputs_to_frontend_arrays(dtype_and_x, dtype, backend_fw):
     assert ivy.all(input_ivy == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
-
-    ivy.previous_backend()
-
-
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
-        num_arrays=2,
-    ).filter(lambda x: "bfloat16" not in x[0]),
-)
-@settings(max_examples=200)
-def test_torch_promote_types_of_torch_inputs(dtype_and_x, backend_fw):
-    x_dtype, x = dtype_and_x
-    ivy.set_backend(backend_fw)
-
-    # check for ivy array
-    input_ivy1 = ivy.array(x[0], dtype=x_dtype[0])
-    input_ivy2 = ivy.array(x[1], dtype=x_dtype[1])
-
-    # check promoted type of arrays
-    promoted_type1, promoted_type2 = torch_frontend.promote_types_of_torch_inputs(
-        input_ivy1, input_ivy2
-    )
-    assert promoted_type1.dtype == promoted_type2.dtype
-
-    try:
-        import torch
-
-        x1_torch_dtype, x2_torch_dtype = (
-            torch.from_numpy(x[0]).dtype,
-            torch.from_numpy(x[1]).dtype,
-        )
-        torch_promoted_type = torch.promote_types(x1_torch_dtype, x2_torch_dtype)
-    except ImportError:
-        torch_promoted_type = None
-    if torch_promoted_type is not None:
-        assert str(promoted_type1.dtype) == str(torch_promoted_type).split(".")[1]
 
     ivy.previous_backend()
 
