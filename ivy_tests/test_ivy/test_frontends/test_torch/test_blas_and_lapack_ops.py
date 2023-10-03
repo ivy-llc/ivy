@@ -580,9 +580,13 @@ def test_torch_cholesky_solve(
     backend_fw,
 ):
     # `input2` M * M, `input` M * K
-    # `input2` does not need to be triangular; half of it will be ignored
+    # `input2` does not need to be actually triangular; half of it will be ignored
     dtype, input2, input = dtype_and_matrices
-    assume(matrix_is_stable(input2, cond_limit=30))  # nonsingular
+
+    # `input2` needs to be nonsingular as a triangular matrix (i.e. has no zero on
+    # diagonal) to ensure a unique solution
+    assume(np.min(np.abs(np.diagonal(input2, axis1=-2, axis2=-1))) > 1e-3)
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,

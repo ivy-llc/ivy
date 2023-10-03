@@ -97,7 +97,7 @@ def cholesky(input, upper=False, *, out=None):
 @to_ivy_arrays_and_back
 def cholesky_solve(input, input2, upper=False, *, out=None):
     t = ivy.solve_triangular(input2, input, upper=upper, adjoint=upper)
-    ivy.solve_triangular(input2, t, upper=upper, adjoint=not upper, out=out)
+    return ivy.solve_triangular(input2, t, upper=upper, adjoint=not upper, out=out)
 
 
 @to_ivy_arrays_and_back
