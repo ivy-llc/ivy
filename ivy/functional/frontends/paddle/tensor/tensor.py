@@ -869,3 +869,9 @@ class Tensor:
     def cpu(self):
         self.ivy_array = ivy.to_device(self.ivy_array, ivy.as_ivy_dev("cpu"))
         return self
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def frac(self, name=None):
+        return paddle_frontend.frac(self._ivy_array)
