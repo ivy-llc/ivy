@@ -73,7 +73,7 @@ def _check_query(query):
     )
 
 
-def _helper_init(backend_fw, l_kwargs):
+def _helper_init_tensorarray(backend_fw, l_kwargs):
     id_write, kwargs = l_kwargs
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         local_importer = ivy_backend.utils.dynamic_import
@@ -1666,50 +1666,12 @@ def test_tensorflow_tensor_shape(
     ivy.previous_backend()
 
 
-@given(l_kwargs=_helper_random_tensorarray())  # dummy
-def test_tesorarray_dtype(
-    l_kwargs,
-    backend_fw,
-):
-    id_write, kwargs = l_kwargs
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        local_importer = ivy_backend.utils.dynamic_import
-        function_module = local_importer.import_module(
-            "ivy.functional.frontends.tensorflow"
-        )
-        ta_frontend = function_module.tensor.TensorArray(**kwargs)
-        ta = tf.TensorArray(**kwargs)
-        for id, write in id_write:
-            ta = ta.write(id, tf.constant(write))
-            ta_frontend = ta_frontend.write(id, function_module.constant(write))
-        assert ta.dtype == ta_frontend.dtype.ivy_dtype
-
-
-@given(l_kwargs=_helper_random_tensorarray())  # dummy
-def test_tesorarray_dtype(
-    l_kwargs,
-    backend_fw,
-):
-    id_write, kwargs = l_kwargs
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        local_importer = ivy_backend.utils.dynamic_import
-        function_module = local_importer.import_module(
-            "ivy.functional.frontends.tensorflow"
-        )
-        ta_frontend = function_module.tensor.TensorArray(**kwargs)
-        ta = tf.TensorArray(**kwargs)
-        for id, write in id_write:
-            ta = ta.write(id, tf.constant(write))
-            ta_frontend = ta_frontend.write(id, function_module.constant(write))
-        assert ta.dtype == ta_frontend.dtype.ivy_dtype
-
-
 @given(l_kwargs=_helper_random_tensorarray())
 def test_tesorarray_dtype(
     l_kwargs,
     backend_fw,
 ):
-    ta, ta_frontend = _helper_init(backend_fw, l_kwargs)
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
     assert ta.dtype == ta_frontend.dtype.ivy_dtype
 
 
@@ -1718,7 +1680,7 @@ def test_tesorarray_read(
     l_kwargs,
     backend_fw,
 ):
-    ta, ta_frontend = _helper_init(backend_fw, l_kwargs)
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
     id_read, _ = l_kwargs
     for id, read in id_read:
         helpers.value_test(
