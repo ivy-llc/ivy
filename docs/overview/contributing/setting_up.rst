@@ -122,7 +122,7 @@ Using miniconda
 
    .. code-block:: none
 
-      pip install e .
+      pip install -e .
 
 #. Setup the interpreter by:
 
