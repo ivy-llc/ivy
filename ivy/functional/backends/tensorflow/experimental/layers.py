@@ -1491,7 +1491,7 @@ def rfftn(
         # return result
         return tf.cast(result, tf.complex128)
 
-      
+
 # stft
 @with_supported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def stft(
