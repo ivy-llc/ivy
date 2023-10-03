@@ -1684,6 +1684,18 @@ def test_tensorflow_tensor_shape(
 
 
 @given(l_kwargs=_helper_random_tensorarray())
+def test_tesorarray_close(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
+    ta_frontend.close()
+    ta.close()
+    assert np.array(ta_frontend.size()) == 0
+    assert np.array(ta.size()) == 0
+
+
+@given(l_kwargs=_helper_random_tensorarray())
 def test_tesorarray_dtype(
     l_kwargs,
     backend_fw,
