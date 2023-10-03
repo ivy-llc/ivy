@@ -1,5 +1,6 @@
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
     numpy_to_torch_style_args,
@@ -17,6 +18,7 @@ def argwhere(input):
     return ivy.argwhere(input)
 
 
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def cat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, axis=dim, out=out)
@@ -43,6 +45,19 @@ def chunk(input, chunks, dim=0):
                     ),
                     axis=dim,
                 )
+
+
+@to_ivy_arrays_and_back
+def column_stack(tensors, *, out=None):
+    reshaped_tensors = []
+    for t in tensors:
+        dim_num = ivy.get_num_dims(t, as_array=False)
+        if dim_num <= 1:
+            reshaped_tensor = ivy.reshape(t, (-1, 1))
+        else:
+            reshaped_tensor = t
+        reshaped_tensors.append(reshaped_tensor)
+    return ivy.hstack(reshaped_tensors, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -168,6 +183,105 @@ def index_copy(input, dim, index, source, *, out=None):
     return ivy.swapaxes(res, 0, dim, out=out)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+            "complex128",
+            "complex64",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def index_reduce(input, dim, index, source, reduce, *, include_self=True, out=None):
+    result = ivy.copy_array(input)
+    counts = (
+        ivy.ones_like(result, dtype=result.dtype)
+        if include_self
+        else ivy.zeros_like(result, dtype=result.dtype)
+    )
+
+    index = index.astype(ivy.int64)
+
+    def init_val(reduce):
+        if reduce == "prod":
+            return 1
+        elif reduce == "amax":
+            return -ivy.inf
+        elif reduce == "amin":
+            return ivy.inf
+        else:
+            return 0
+
+    if not include_self:
+        result[index, ...] = init_val(reduce)
+
+    numel = index.size
+    index_contig = ivy.copy_array(index)
+
+    def update_counts(reduce, counts, dim, input_index):
+        if reduce == "mean":
+            counts_slice = [slice(None)] * counts.ndim
+            counts_slice[dim] = input_index
+            counts[tuple(counts_slice)] += 1
+        return counts
+
+    def update_result(result, reduce, input_data, source_data):
+        if reduce == "prod":
+            return input_data * source_data
+        elif reduce == "amin":
+            return ivy.minimum(input_data, source_data)
+        elif reduce == "amax":
+            return ivy.maximum(input_data, source_data)
+        else:
+            return input_data + source_data
+
+    if result.ndim > 1:
+        for i in range(numel):
+            input_index = index_contig[i]
+            if not (0 <= input_index < result.shape[dim]):
+                raise IndexError("Index out of range in self")
+
+            input_data = ivy.gather(result, [input_index], axis=dim)
+            source_data = ivy.gather(source, [i], axis=dim)
+
+            result_slice = [slice(None)] * result.ndim
+            result_slice[dim] = input_index
+
+            update_data = update_result(result, reduce, input_data, source_data)
+            slide_shape = result[tuple(result_slice)].shape
+            result[tuple(result_slice)] = ivy.reshape(update_data, slide_shape)
+
+            counts = update_counts(reduce, counts, dim, input_index)
+
+    elif result.ndim == 1:
+        for i in range(numel):
+            input_index = index_contig[i]
+            if not (0 <= input_index < result.size):
+                raise IndexError("Index out of range in self")
+
+            input_data = ivy.flatten(result)[input_index]
+            source_data = ivy.flatten(source)[i]
+
+            result[input_index] = update_result(result, reduce, input_data, source_data)
+            counts[input_index] += 1
+
+    if reduce == "mean":
+        if ivy.any(counts == ivy.array(0)):
+            counts[counts == ivy.array(0)] = ivy.array(1)
+        result /= counts
+
+        if not input.is_float_dtype():
+            result = ivy.floor(result)
+            result = result.astype(input.dtype)
+
+    return result
+
+
 @to_ivy_arrays_and_back
 def index_select(input, dim, index, *, out=None):
     return ivy.gather(input, index, axis=dim, out=out)
@@ -209,7 +323,7 @@ def nonzero(input, *, out=None, as_tuple=False):
 
 @to_ivy_arrays_and_back
 def permute(input, dims):
-    return ivy.permute_dims(input, axes=dims)
+    return ivy.permute_dims(input, axes=dims, copy=False)
 
 
 @to_ivy_shape
