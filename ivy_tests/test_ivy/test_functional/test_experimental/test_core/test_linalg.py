@@ -676,17 +676,15 @@ def _partial_tucker_data(draw):
 def _tensor_train_data(draw):
     x_dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float", prune_function=False).filter(
-                lambda x: "float16" not in x[0]
-            ),
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=0.1,
+            max_value=10,
             min_num_dims=2,
             max_num_dims=5,
             min_dim_size=2,
             max_dim_size=5,
-            min_value=0.1,
-            max_value=10.0,
             ret_shape=True,
-        )
+        ).filter(lambda x: "float16" not in x[0] and "bfloat16" not in x[0])
     )
     dims = len(shape)
     rank = [1]
