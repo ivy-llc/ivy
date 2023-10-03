@@ -290,7 +290,7 @@ def process_cl_flags(config) -> Dict[str, bool]:
         ),
         "transpile": (
             False,
-            getopt("--with-transpile-frontend"),
+            getopt("--with-transpile"),
         ),
     }
 
@@ -346,7 +346,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
     parser.addoption("--with-trace-testing", action="store_true")
-    parser.addoption("--with-transpile-frontend", action="store_true")
+    parser.addoption("--with-transpile", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
         "--my_test_dump",
