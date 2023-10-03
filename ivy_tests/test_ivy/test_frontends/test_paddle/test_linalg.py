@@ -691,7 +691,7 @@ def test_paddle_eigvalsh(
 @handle_frontend_test(
     fn_tree="paddle.lu_unpack",
     dtype_x=_get_dtype_and_square_matrix(real_and_complex_only=True),
-    p=st.lists(st.floats(1,5), max_size=5),
+    p=st.lists(st.floats(1, 5), max_size=5),
     unpack_datas=st.booleans(),
     unpack_pivots=st.booleans(),
 )

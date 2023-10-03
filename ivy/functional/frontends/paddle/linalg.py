@@ -110,7 +110,7 @@ def lu_unpack(lu_data, lu_pivots, unpack_datas=True, unpack_pivots=True, *, out=
     U = ivy.triu(A)
     for i in range(m):
         if i != lu_pivots[i] - 1:
-            pivot_matrix[[i, lu_pivots[i]-1]] = pivot_matrix[[lu_pivots[i]-1, i]]
+            pivot_matrix[[i, lu_pivots[i] - 1]] = pivot_matrix[[lu_pivots[i] - 1, i]]
         P = pivot_matrix
     if not unpack_datas:
         L = ivy.zeros(n)
