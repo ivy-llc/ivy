@@ -673,53 +673,23 @@ def test_column_stack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_devi
     new_axis=st.integers(min_value=0, max_value=1),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
-)
-def test_concat_from_sequence(
-    *, dtypes_arrays_axis, new_axis, test_flags, backend_fw, fn_name, on_device
-):
-    dtypes, arrays, axis = dtypes_arrays_axis
-
-    helpers.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        input_sequence=arrays,
-        new_axis=new_axis,
-        axis=axis,
     )
-
-
-# concat_from_sequence
-@handle_test(
-    fn_tree="functional.ivy.experimental.concat_from_sequence",
-    dtype_and_sequences=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=5),
-    ),
-    test_with_out=st.just(False),
-    test_gradients=st.just(False),
-)
-def test_concat_from_sequence(
-    *, dtype_and_sequences, test_flags, backend_to_test, fn_name, on_device
-):
-    dtypes, sequences = dtype_and_sequences
-
-    kw = {kw[f"x{i}"] = np.asarray(sequence, dtype=idtype)
-    test_flags.num_positional_args = len(kw)
-}
-    for i, (sequence, idtype) in enumerate(zip(sequences, dtypes)):
-
-    ivy.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        backend_to_test=backend_to_test,
-        fn_name=fn_name,
-        on_device=on_device,
-        **kw,
-    )
-
+    def test_concat_from_sequence(
+      *, dtypes_arrays_axis, new_axis, test_flags, backend_fw, fn_name, on_device
+    ):
+      dtypes, arrays, axis = dtypes_arrays_axis
+    
+      helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        *input_sequence=arrays,
+        new_axis=new_axis,
+        axis=axis,
+      )
+    
 
 # dsplit
 @handle_test(
