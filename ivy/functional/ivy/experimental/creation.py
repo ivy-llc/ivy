@@ -1066,7 +1066,7 @@ def random_tt_matrix(
 
     Returns
     -------
-        ivy.TTTensor
+        ivy.TTMatrix
     """
     n_dim = len(shape) // 2
     left_shape = shape[:n_dim]
