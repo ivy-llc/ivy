@@ -1238,11 +1238,11 @@ class _ContainerWithActivationExperimental(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-        >>> y = x.threshold(threshold=0.5, value=0.0)
+        >>> y = x._static_threshold(threshold=0.5, value=0.0)
         >>> print(y)
         {
-            a: ivy.array([1.0, 0.0]),
-            b: ivy.array([0.4, 0.0])
+            a: ivy.array([1., 0.]),
+            b: ivy.array([0., 0.])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1310,8 +1310,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> y = x.threshold(threshold=0.5, value=0.0)
         >>> print(y)
         {
-            a: ivy.array([1.0, 0.0]),
-            b: ivy.array([0.4, 0.0])
+            a: ivy.array([1., 0.]),
+            b: ivy.array([0., 0.])
         }
         """
         return self._static_threshold(

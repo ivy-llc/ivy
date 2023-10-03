@@ -394,7 +394,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([-1., 0., 1.])
-        >>> y = x.threshold(threshold=0.5, value=0.5)
+        >>> y = x.hreshold(threshold=0.5, value=0.0)
         >>> print(y)
         ivy.array([0.5, 0.5 , 1. ])
         """

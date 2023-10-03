@@ -676,20 +676,20 @@ def threshold(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1.0, 1.0, 2.0])
-    >>> y = ivy.threshold(x, threshold=1.5)
+    >>> y = ivy.threshold(x,value=0.0, threshold=1.5)
     >>> print(y)
     ivy.array([0., 0., 2.])
 
     >>> x = ivy.array([-1.0, 1.0, 2.0])
-    >>> y = x.threshold(threshold=1.5)
+    >>> x.threshold(value=0.0, threshold=1.5)
     >>> print(y)
     ivy.array([0., 0., 2.])
 
 
     >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
-    >>> y = ivy.threshold(x, threshold=1.5)
+    >>> y = ivy.threshold(x, value=0.0, threshold=1.5)
     >>> print(y)
-    ivy.array([[-0., 3.8, 2.1],
-                [1.7, 4.2, -6.6]])
+    ivy.array([[0.        , 3.79999995, 2.0999999 ],
+            [1.70000005, 4.19999981, 0.        ]])
     """
     return current_backend(x).threshold(x, threshold=threshold, value=value, out=out)
