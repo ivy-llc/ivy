@@ -414,7 +414,7 @@ def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.0.1 and below": ("float", "complex")}, "torch"
+    {"2.0.1 and below": ("numeic", "float", "complex")}, "torch"
 )
 def ldl_factor(A, *, hermitian=False, out=None):
     return ivy.ldl_factor(A, hermitian=hermitian, out=out)
