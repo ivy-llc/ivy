@@ -675,9 +675,12 @@ def test_torch_inv_ex(
 
 # ldl_factor
 
+
 @handle_frontend_test(
     fn_tree="torch.linalg.ldl_factor",
-    input_dtype_and_input=_get_dtype_and_matrix(dtype="numeric", batch=True, square=True),
+    input_dtype_and_input=_get_dtype_and_matrix(
+        dtype="numeric", batch=True, square=True
+    ),
 )
 def test_torch_ldl_factor(
     *,
