@@ -942,7 +942,6 @@ def irfft(
 @to_native_arrays_and_back
 @handle_device_shifting
 @handle_device
-
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
