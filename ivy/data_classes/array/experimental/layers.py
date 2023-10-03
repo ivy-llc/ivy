@@ -644,7 +644,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             n=n,
             out=out,
         )
-    
+
     def irfft(
         self: ivy.Array,
         /,
@@ -659,6 +659,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.ifft. This method simply wraps the
         function, and so the docstring for ivy.ifft also applies to this method with
         minimal changes.
+
         Parameters
         ----------
         self : Array

@@ -1,5 +1,6 @@
 """Collection of general Ivy functions."""
 
+
 # global
 import gc
 import inspect
@@ -39,31 +40,32 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view_indexing,
-    handle_device_shifting,
+    handle_device,
     handle_partial_mixed_function,
     handle_backend_invalid,
 )
 from ivy.functional.ivy.device import dev
 
-FN_CACHE = dict()
+FN_CACHE = {}
 INF = float("inf")
 
-precise_mode_stack = list()
-queue_timeout_stack = list()
-array_mode_stack = list()
-shape_array_mode_stack = list()
-nestable_mode_stack = list()
-exception_trace_mode_stack = list()
-inplace_mode_stack = list()
-trace_mode_dict = dict()
-trace_mode_dict["frontend"] = "ivy/functional/frontends"
-trace_mode_dict["ivy"] = "ivy/"
-trace_mode_dict["full"] = ""
-trace_mode_dict["none"] = ""
-show_func_wrapper_trace_mode_stack = list()
-min_denominator_stack = list()
-min_base_stack = list()
-tmp_dir_stack = list()
+precise_mode_stack = []
+queue_timeout_stack = []
+array_mode_stack = []
+shape_array_mode_stack = []
+nestable_mode_stack = []
+exception_trace_mode_stack = []
+inplace_mode_stack = []
+trace_mode_dict = {
+    "frontend": "ivy/functional/frontends",
+    "ivy": "ivy/",
+    "full": "",
+    "none": "",
+}
+show_func_wrapper_trace_mode_stack = []
+min_denominator_stack = []
+min_base_stack = []
+tmp_dir_stack = []
 
 
 # Extra #
@@ -180,6 +182,7 @@ class ArrayMode:
 
 def get_referrers_recursive(
     item: object,
+    *,
     depth: int = 0,
     max_depth: int = None,
     seen_set: set = None,
@@ -193,20 +196,20 @@ def get_referrers_recursive(
 
     Parameters
     ----------
-    item : object
+    item
         The object for which referrers should be retrieved.
-    depth : int, optional
+    depth
         Current depth in the recursion. (default is 0)
-    max_depth : int, optional
+    max_depth
         Maximum depth of recursion. If `None`, there's no depth limit. (default is None)
-    seen_set : set, optional
+    seen_set
         Set of seen referrer IDs to prevent duplicates. (default is None)
-    local_set : set, optional
+    local_set
         Set of local referrer IDs to avoid redundancy. (default is None)
 
     Returns
     -------
-    ivy.Container
+    ret
         A container representing referrers and their sub-referrers, respecting the
         `max_depth`.
 
@@ -238,7 +241,7 @@ def get_referrers_recursive(
         for ref in gc.get_referrers(item)
         if not (
             isinstance(ref, dict)
-            and min([k in ref for k in ["depth", "max_depth", "seen_set", "local_set"]])
+            and min(k in ref for k in ["depth", "max_depth", "seen_set", "local_set"])
         )
     ]
 
@@ -548,7 +551,7 @@ def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
     global exception_trace_mode_stack
     trace_modes = list(trace_mode_dict.keys())
     ivy.utils.assertions.check_elem_in_list(
-        mode, trace_modes, False, "trace mode must be one of {}".format(trace_modes)
+        mode, trace_modes, False, f"trace mode must be one of {trace_modes}"
     )
     exception_trace_mode_stack.append(mode)
     ivy.__setattr__("exception_trace_mode", mode, True)
@@ -642,7 +645,7 @@ def unset_show_func_wrapper_trace_mode() -> None:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def array_equal(
     x0: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -783,7 +786,7 @@ def all_equal(
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def to_numpy(
     x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
 ) -> np.ndarray:
@@ -856,7 +859,7 @@ def isscalar(x: Any, /) -> bool:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """
     Convert an array with a single element into a scalar.
@@ -913,7 +916,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """
     Create a (possibly nested) list from input array.
@@ -1225,23 +1228,22 @@ def fourier_encode(
     orig_x = x
     if linear:
         scales = ivy.linspace(1.0, max_freq / 2, num_bands, device=dev(x))
+    elif ivy.backend == "torch" and isinstance(max_freq, float):
+        scales = ivy.logspace(
+            0.0,
+            ivy.log(ivy.array(max_freq / 2)) / math.log(10),
+            num_bands,
+            base=10,
+            device=dev(x),
+        )
     else:
-        if ivy.backend == "torch" and isinstance(max_freq, float):
-            scales = ivy.logspace(
-                0.0,
-                ivy.log(ivy.array(max_freq / 2)) / math.log(10),
-                num_bands,
-                base=10,
-                device=dev(x),
-            )
-        else:
-            scales = ivy.logspace(
-                0.0,
-                ivy.log(max_freq / 2) / math.log(10),
-                num_bands,
-                base=10,
-                device=dev(x),
-            )
+        scales = ivy.logspace(
+            0.0,
+            ivy.log(max_freq / 2) / math.log(10),
+            num_bands,
+            base=10,
+            device=dev(x),
+        )
     scales = ivy.astype(scales, ivy.dtype(x))
     scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
     x = x * scales * math.pi
@@ -1311,7 +1313,7 @@ def value_is_nan(
     False
     """
     x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
-    if not x_scalar == x:
+    if x_scalar != x:
         return True
     if include_infs and (x_scalar == INF or x_scalar == -INF):
         return True
@@ -1541,9 +1543,7 @@ def default(
     """
     with_callable = catch_exceptions or with_callable
     if rev:
-        tmp = x
-        x = default_val
-        default_val = tmp
+        x, default_val = default_val, x
     if with_callable:
         x_callable = callable(x)
         default_callable = callable(default_val)
@@ -1695,7 +1695,7 @@ def arg_names(receiver):
     >>> x = ivy.arg_names(ivy.optimizers.Adam)
     >>> print(x)
     ['lr', 'beta1', 'beta2', 'epsilon', 'inplace',
-    'stop_gradients', 'compile_on_next_step', 'device']
+    'stop_gradients', 'trace_on_next_step', 'device']
     """
     return list(inspect.signature(receiver).parameters.keys())
 
@@ -1736,12 +1736,12 @@ def match_kwargs(
     >>> print(x)
     [{'out': ivy.array([0., 0., 0.]), 'bias': ivy.array([0, 1, 2])}, {}]
     """
-    split_kwargs = list()
+    split_kwargs = []
     for receiver in receivers:
         expected_kwargs = arg_names(receiver)
         found_kwargs = {k: v for k, v in kwargs.items() if k in expected_kwargs}
         if not allow_duplicates:
-            for k in found_kwargs.keys():
+            for k in found_kwargs:
                 del kwargs[k]
         split_kwargs.append(found_kwargs)
     if len(split_kwargs) == 1:
@@ -1785,14 +1785,13 @@ def cache_fn(func: Callable) -> Callable:
     """
     global FN_CACHE
     if func not in FN_CACHE:
-        FN_CACHE[func] = dict()
+        FN_CACHE[func] = {}
 
     @wraps(func)
     def cached_fn(*args, **kwargs):
         key = "".join(
-            [str(i) + ", " for i in args]
-            + [" kw, "]
-            + [str(i) + ", " for i in sorted(kwargs.items())]
+            ([f"{str(i)}, " for i in args] + [" kw, "])
+            + [f"{str(i)}, " for i in sorted(kwargs.items())]
         )
         cache = FN_CACHE[func]
         if key in cache:
@@ -2432,7 +2431,7 @@ def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
     >>> x
     [ivy.array([0, 1, 2])]
     """
-    all_arrays = list()
+    all_arrays = []
     for obj in gc.get_objects():
         try:
             if ivy.current_backend_str() in ["", "numpy"]:
@@ -2766,9 +2765,8 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
     ivy.utils.assertions.check_true(
         ivy.supports_inplace_updates(x),
-        "Inplace operations are not supported {} types with {} backend".format(
-            type(x), ivy.current_backend_str()
-        ),
+        f"Inplace operations are not supported {type(x)} types with"
+        f" {ivy.current_backend_str()} backend",
     )
     return True
 
@@ -2778,7 +2776,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_view_indexing
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2925,8 +2923,8 @@ set_item.mixed_backend_wrappers = {
 
 
 def _parse_query(query, x_shape):
-    query = (query,) if not isinstance(query, tuple) else query
-    query_ = tuple([q.to_numpy() if ivy.is_array(q) else q for q in query])
+    query = query if isinstance(query, tuple) else (query,)
+    query_ = tuple(q.to_numpy() if ivy.is_array(q) else q for q in query)
 
     # array containing all of x's flat indices
     x_ = ivy.arange(0, _numel(x_shape)).reshape(x_shape)
@@ -2956,7 +2954,7 @@ def _broadcast_to(input, target_shape):
     if _numel(tuple(input.shape)) == _numel(tuple(target_shape)):
         return ivy.reshape(input, target_shape)
     else:
-        input = ivy.expand_dims(input, axis=0) if not len(input.shape) else input
+        input = input if len(input.shape) else ivy.expand_dims(input, axis=0)
         new_dims = ()
         i_i = len(input.shape) - 1
         for i_t in range(len(target_shape) - 1, -1, -1):
@@ -2975,7 +2973,7 @@ def _broadcast_to(input, target_shape):
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3155,7 +3153,7 @@ def unset_inplace_mode() -> None:
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3227,7 +3225,7 @@ def inplace_decrement(
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3287,7 +3285,7 @@ def inplace_increment(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3377,7 +3375,7 @@ def scatter_flat(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3462,7 +3460,7 @@ def scatter_nd(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3573,7 +3571,7 @@ def gather(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3675,7 +3673,7 @@ def multiprocessing(context: Optional[str] = None):
 @outputs_to_ivy_shapes
 @outputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def shape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3768,7 +3766,7 @@ def unset_shape_array_mode() -> None:
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def get_num_dims(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> int:
@@ -4153,7 +4151,7 @@ def vmap(
 @handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def isin(
     elements: Union[ivy.Array, ivy.NativeArray],
     test_elements: Union[ivy.Array, ivy.NativeArray],
@@ -4205,7 +4203,7 @@ def isin(
 @handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
-@handle_device_shifting
+@handle_device
 def itemsize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4238,7 +4236,7 @@ def itemsize(
 
 @handle_exceptions
 @handle_nestable
-@handle_device_shifting
+@handle_device
 def strides(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

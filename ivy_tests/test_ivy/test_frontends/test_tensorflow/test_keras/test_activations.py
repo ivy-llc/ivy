@@ -18,7 +18,7 @@ def get_callable_functions(
     module_name: str,
 ):
     module = sys.modules[module_name]
-    fn_list = list()
+    fn_list = []
     for fn_name in dir(module):
         obj = getattr(module, fn_name)
         if callable(obj):

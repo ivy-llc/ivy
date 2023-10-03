@@ -85,7 +85,7 @@ def _interp_args(draw, mode=None, mode_list=None):
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
     align_corners = draw(st.one_of(st.booleans(), st.none()))
-    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
         align_corners = False
     if mode == "linear":
         num_dims = 3
@@ -162,7 +162,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         )
         recompute_scale_factor = False
         scale_factor = None
-    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
         if not recompute_scale_factor:
             recompute_scale_factor = True
 
@@ -383,6 +383,7 @@ def _x_and_ifftn(draw):
     )
 
     return dtype, x, s, axes, norm
+
 
 @st.composite
 def _x_and_irfft(draw):
@@ -1120,6 +1121,7 @@ def test_interpolate(
         recompute_scale_factor=recompute_scale_factor,
     )
 
+
 @handle_test(
     fn_tree="functional.ivy.experimental.irfft",
     dtype_x_and_args=_x_and_irfft(),
@@ -1178,7 +1180,7 @@ def test_max_pool1d(
     data_format = "NCW" if data_format == "channel_first" else "NWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation
-    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+    assume(backend_fw != "paddle" or max(list(dilation)) <= 1)
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -1239,7 +1241,7 @@ def test_max_pool2d(
     data_format = "NCHW" if data_format == "channel_first" else "NHWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation
-    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+    assume(backend_fw != "paddle" or max(list(dilation)) <= 1)
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -1289,7 +1291,7 @@ def test_max_pool3d(
     data_format = "NCDHW" if data_format == "channel_first" else "NDHWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation
-    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+    assume(backend_fw != "paddle" or max(list(dilation)) <= 1)
 
     helpers.test_function(
         input_dtypes=dtype,

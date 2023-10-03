@@ -39,7 +39,7 @@ Please, follow the next process when you work on your subtask:
 
 ### Important Notes:
 
-- if your PR is not created within 7 days of creating the issue, then a warning message will appear on the issue, we do this in order to keep our ToDo lists moving quickly, 
+- if your PR is not created within 7 days of creating the issue, then a warning message will appear on the issue, we do this in order to keep our ToDo lists moving quickly,
 - Please don't take it personally if your issue or PR gets closed because of this 7-day inactivity time limit.
 
 - Finally, we limit the maximum number of open and incomplete sub-task issues to three per person.

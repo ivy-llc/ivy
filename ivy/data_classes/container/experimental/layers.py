@@ -1495,7 +1495,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             n=n,
             out=out,
         )
-    
+
     @staticmethod
     def static_irfft(
         x: ivy.Container,
@@ -1513,6 +1513,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         ivy.Container static method variant of ivy.irfft. This method simply wraps the
         function, and so the docstring for ivy.irfft also applies to this method with
         minimal changes.
+
         Parameters
         ----------
         - x(`Container`) :
@@ -1588,6 +1589,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.irfft. This method simply wraps the
         function, and so the docstring for ivy.irfft also applies to this method with
         minimal changes.
+
         Parameters
         ----------
         self : ivy.Container

@@ -44,7 +44,7 @@ def max_pool1d(
 ) -> np.ndarray:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCW":
@@ -146,7 +146,7 @@ def max_pool2d(
 ) -> np.ndarray:
     dims = 2
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCHW":
@@ -256,7 +256,7 @@ def max_pool3d(
 ) -> np.ndarray:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCDHW":
@@ -834,6 +834,7 @@ def idct(
 ) -> np.ndarray:
     inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
     return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
+
 
 def irfft(
     x: np.ndarray,

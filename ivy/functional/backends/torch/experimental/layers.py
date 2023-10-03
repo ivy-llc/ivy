@@ -59,7 +59,7 @@ def max_pool1d(
 ) -> torch.Tensor:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NWC":
@@ -133,7 +133,7 @@ def max_pool2d(
 ) -> torch.Tensor:
     dims = 2
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NHWC":
@@ -214,7 +214,7 @@ def max_pool3d(
 ) -> torch.Tensor:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NDHWC":
@@ -677,6 +677,7 @@ def idct(
 ) -> torch.tensor:
     inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
     return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
+
 
 def irfft(
     x: torch.Tensor,
