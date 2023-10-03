@@ -182,6 +182,7 @@ class ArrayMode:
 
 def get_referrers_recursive(
     item: object,
+    *,
     depth: int = 0,
     max_depth: int = None,
     seen_set: set = None,
@@ -195,20 +196,20 @@ def get_referrers_recursive(
 
     Parameters
     ----------
-    item : object
+    item
         The object for which referrers should be retrieved.
-    depth : int, optional
+    depth
         Current depth in the recursion. (default is 0)
-    max_depth : int, optional
+    max_depth
         Maximum depth of recursion. If `None`, there's no depth limit. (default is None)
-    seen_set : set, optional
+    seen_set
         Set of seen referrer IDs to prevent duplicates. (default is None)
-    local_set : set, optional
+    local_set
         Set of local referrer IDs to avoid redundancy. (default is None)
 
     Returns
     -------
-    ivy.Container
+    ret
         A container representing referrers and their sub-referrers, respecting the
         `max_depth`.
 
