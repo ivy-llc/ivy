@@ -86,7 +86,7 @@ def put_along_axis(arr, indices, values, axis):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float16", "float32", "float64", "int32", "int64", "uint16")},
+    {"2.13.0 and below": ("float16", "float32", "float64", "int32", "int64", "uint16")},
     "paddle",
 )
 def putmask(a, mask, values):
