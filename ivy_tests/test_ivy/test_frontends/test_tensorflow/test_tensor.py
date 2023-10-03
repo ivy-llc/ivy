@@ -109,13 +109,21 @@ def _helper_random_tensorarray(draw, fn=None):
     element_shape = draw(helpers.get_shape())
     element_shape = draw(st.one_of(st.just(None), st.just(element_shape)))
     shape = None
-    if infer_shape or element_shape is not None or fn in ["scatter", "stack", "gather"]:
-        if element_shape is None:
+    if (
+        infer_shape
+        or element_shape is not None
+        or fn in ["scatter", "stack", "gather", "concat"]
+    ):
+        if fn == "concat":
+            element_shape = None
+            infer_shape = False
+            shape = list(draw(helpers.get_shape(min_num_dims=1)))
+        elif element_shape is None:
             shape = draw(helpers.get_shape())
         else:
             shape = element_shape
     dtype = draw(helpers.get_dtypes(full=False, prune_function=False))[0]
-    if fn == "stack":
+    if fn in ["stack", "concat"]:
         ids_to_write = [True for i in range(size)]
     else:
         ids_to_write = [draw(st.booleans()) for i in range(size)]
@@ -129,6 +137,8 @@ def _helper_random_tensorarray(draw, fn=None):
     }
     id_write = []
     for id, flag in enumerate(ids_to_write):
+        if fn == "concat":
+            shape[0] = draw(st.integers(1, 10))
         if flag:
             write = np.array(
                 draw(
@@ -1745,6 +1755,19 @@ def test_tesorarray_close(
     ta.close()
     assert np.array(ta_frontend.size()) == 0
     assert np.array(ta.size()) == 0
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="concat"))
+def test_tesorarray_concat(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
+    helpers.value_test(
+        ret_np_from_gt_flat=ta.concat().numpy().flatten(),
+        ret_np_flat=np.array(ta_frontend.concat()).flatten(),
+        backend=backend_fw,
+    )
 
 
 @given(l_kwargs=_helper_random_tensorarray())
