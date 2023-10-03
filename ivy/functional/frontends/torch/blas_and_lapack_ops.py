@@ -131,6 +131,38 @@ def logdet(input):
 
 
 @to_ivy_arrays_and_back
+def lu_unpack(lu_data, lu_pivots, unpack_data=True, unpack_pivots=True):
+    if lu_data.ndim < 2:
+        raise ValueError(
+            "The shape of x should be (*, M, N), but received ndim is"
+            f" [{lu_data.ndim} < 2]"
+        )
+    if lu_pivots.ndim < 1:
+        raise ValueError(
+            "The shape of Pivots should be (*, K), but received ndim is"
+            f" [{lu_pivots.ndim} < 1]"
+        )
+    n = lu_pivots.shape[-1]
+    if unpack_pivots:
+        permute = ivy.arange(n)
+        for i in range(n):
+            permute[i], permute[lu_pivots[i] - 1] = (
+                permute[lu_pivots[i] - 1],
+                permute[i],
+            )
+        pmatrix = ivy.eye(n)[ivy.argsort(permute)]
+    else:
+        pmatrix = ivy.empty([0], dtype=ivy.dtype(lu_data))
+
+    if unpack_data:
+        lower, upper = ivy.tril(lu_data, k=-1) + ivy.eye(n), ivy.triu(lu_data)
+    else:
+        lower = ivy.dtype(lu_data, dtype=ivy.dtype(lu_data))
+        upper = ivy.dtype(lu_data, dtype=ivy.dtype(lu_data))
+    return pmatrix, lower, upper
+
+
+@to_ivy_arrays_and_back
 def matmul(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.matmul(input, other, out=out)

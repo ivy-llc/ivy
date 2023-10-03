@@ -663,6 +663,37 @@ def test_torch_logdet(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.lu_unpack",
+    dtype_and_matrices=_get_dtype_input_and_mat_vec(),
+    unpack_lu=st.booleans(),
+    unpack_piv=st.booleans(),
+)
+def test_torch_lu_unpack(
+    dtype_and_matrices,
+    unpack_lu,
+    unpack_piv,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, mat, vec = dtype_and_matrices
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lu_data=mat,
+        lu_pivots=vec,
+        unpack_data=unpack_lu,
+        unpack_pivots=unpack_piv,
+    )
+
+
 # matmul
 @handle_frontend_test(
     fn_tree="torch.matmul",
