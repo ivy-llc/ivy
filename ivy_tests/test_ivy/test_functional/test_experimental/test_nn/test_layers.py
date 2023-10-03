@@ -1,17 +1,12 @@
 # global
-from ctypes import Union
-from typing import Optional, Literal
 
 import numpy as np
 import torch
 from hypothesis import strategies as st, assume
-from numpy.random.mtrand import Sequence
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy.functional.backends import paddle
-from ivy.functional.backends.paddle import interpolate_linear
 from ivy_tests.test_ivy.helpers import handle_test
 
 
@@ -1091,19 +1086,37 @@ def test_interpolate(
     )
 
 
-def test_interpolate_linear(
-    x: paddle.Tensor,
-    size: Union[Sequence[int], int],
-    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
-    scale_factor: Optional[Union[Sequence[int], int]] = None,
-    align_corners: Optional[bool] = False,
-    align_mode: int = 0,
-    data_format: str = "NCHW",
-    name: Optional[str] = None,
-):
-    assert paddle.nn.functional.interpolate(
-        x, size, scale_factor, mode, align_corners, align_mode, data_format, name
-    ) == interpolate_linear(x)
+@handle_test(
+    fn_tree="functional.ivy.backends.experimental.paddle.interpolate",
+    dtype_x_mode=_interp_args(),
+    test_gradients=st.just(False),
+    number_positional_args=st.just(2),
+)
+def test_interpolate_paddle(dtype_x_mode, test_flags, backend_fw, fn_name, on_device):
+    (
+        input_dtype,
+        x,
+        mode,
+        size,
+        align_corners,
+        scale_factor,
+        recompute_scale_factor,
+    ) = dtype_x_mode
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-01,
+        atol_=1e-01,
+        x=x[0],
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+        scale_factor=scale_factor,
+        recompute_scale_factor=recompute_scale_factor,
+    )
 
 
 @handle_test(

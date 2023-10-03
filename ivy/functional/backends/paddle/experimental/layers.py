@@ -1,5 +1,4 @@
 # global
-from turtle import st
 from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 import paddle
 
@@ -438,10 +437,18 @@ def interpolate(
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
-    antialias: Optional[bool] = False,
+    data_format: str = "NCHW",
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if recompute_scale_factor is True:
+        align_mode = 1
+    elif recompute_scale_factor is False:
+        align_mode = 0
+    else:
+        align_mode = None
+    return paddle.nn.functional.interpolate(
+        x, size, scale_factor, mode, align_corners, align_mode, data_format
+    )
 
 
 def adaptive_max_pool2d(
@@ -662,21 +669,4 @@ def sliding_window(
 
     return paddle.nn.functional.unfold(
         input, kernel_size, strides=stride, paddings=padding, dilations=dilation
-    )
-
-
-@st.composite
-def interpolate_linear(
-    x: paddle.Tensor,
-    size: Union[Sequence[int], int],
-    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
-    scale_factor: Optional[Union[Sequence[int], int]] = None,
-    align_corners: Optional[bool] = False,
-    align_mode: int = 0,
-    data_format: str = "NCHW",
-    name: Optional[str] = None,
-    out: Optional[paddle.Tensor] = None,
-):
-    return paddle.nn.functional.interpolate(
-        x, size, scale_factor, mode, align_corners, align_mode, data_format, name
     )
