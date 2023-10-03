@@ -547,9 +547,21 @@ def test_function(
         )
 
     if test_flags.transpile:
-        _transpile_if_required_backend(
-            backend_to_test, fn_name, args=args_np, kwargs=kwargs_np
-        )
+        if mod_backend[backend_to_test]:
+            proc, input_queue, output_queue = mod_backend[backend_to_test]
+            input_queue.put(
+                (
+                    "transpile_if_required_backend",
+                    backend_to_test,
+                    fn_name,
+                    args_np,
+                    kwargs_np,
+                )
+            )
+        else:
+            _transpile_if_required_backend(
+                backend_to_test, fn_name, args=args_np, kwargs=kwargs_np
+            )
 
     # Gradient test
     # TODO enable back , ADD backend_to_test to the call below
@@ -638,17 +650,18 @@ def _transpile_if_required_backend(backend: str, fn_name: str, args=None, kwargs
         end = time.time()
         func_timings.append(end - start)
 
-    np.mean(func_timings).item()
-    len(backend_traced_fn._functions)
+    func_time = np.mean(func_timings).item()
+    backend_nodes = len(backend_traced_fn._functions)
 
-    # data = {
-    #     "backend": backend,
-    #     "backend_func": fn_name,
-    #     "args": str(args),
-    #     "kwargs": str(kwargs),
-    #     "frontend_time": func_time,
-    #     "backend_nodes": backend_nodes,
-    # }
+    data = {
+        "backend": backend,
+        "fn_name": fn_name,
+        "args": str(args),
+        "kwargs": str(kwargs),
+        "backend_time": func_time,
+        "backend_nodes": backend_nodes,
+    }
+    _create_transpile_report(data, backend, "report.json", True)
 
 
 def test_frontend_function(
