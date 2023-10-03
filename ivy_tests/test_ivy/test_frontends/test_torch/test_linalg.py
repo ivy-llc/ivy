@@ -678,7 +678,7 @@ def test_torch_inv_ex(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.ldl_factor",
-    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True, batch=True),
+    dtype_and_x=_get_dtype_and_matrix(batch=True),
 )
 def test_torch_ldl_factor(
     *,
