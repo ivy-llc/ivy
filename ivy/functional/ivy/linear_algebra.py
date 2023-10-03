@@ -3079,6 +3079,7 @@ def tensorsolve(
     return res
     # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)
 
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -3087,7 +3088,7 @@ def tensorsolve(
 @handle_array_function
 @handle_device
 def ldl_factor(
-    A: Union[ivy.Array, ivy.NativeArray], 
+    A: Union[ivy.Array, ivy.NativeArray],
     *,
     hermitian: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
