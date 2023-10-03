@@ -103,7 +103,7 @@ def _shape_to_native(x: Iterable) -> Tuple[int]:
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
             x[i] = _shape_to_native(item)
-            
+
     else:
         if (isinstance(x, (list, tuple)) and len(x) > 0) and (
             isinstance(x[0], ivy.Shape) and ivy.array_mode
