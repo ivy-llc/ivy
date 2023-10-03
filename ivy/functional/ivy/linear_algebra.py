@@ -1849,7 +1849,7 @@ def qr(
         [ 0.00000000e+00,  9.04534034e-01,  1.80906807e+00],
         [ 0.00000000e+00,  0.00000000e+00, -8.88178420e-16]])
 
-    # Note: if `int` values are used in `x` the output for q, r vary
+    # Note: if `int` values are used in `x` the output for q, r varry
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> q = ivy.zeros_like(x)
     >>> r = ivy.zeros_like(x)
@@ -3078,3 +3078,18 @@ def tensorsolve(
     res = ivy.reshape(res, old_shape)
     return res
     # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def ldl_factor(
+    A: Union[ivy.Array, ivy.NativeArray], 
+    *,
+    hermitian: bool = False,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    return current_backend(A).ldl_factor(A, hermitian=hermitian, out=out)

@@ -411,3 +411,10 @@ def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.vector_norm(
         input, axis=dim, keepdims=keepdim, ord=ord, out=out, dtype=dtype
     )
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float", "complex")}, "torch"
+)
+def ldl_factor(A, *, hermitian=False, out=None):
+    return ivy.ldl_factor(A, hermitian=hermitian, out=out)

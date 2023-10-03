@@ -574,3 +574,24 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
+
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, backend_version)
+def ldl_factor(
+    A: torch.Tensor, *, hermitian: bool = False, out: Optional[torch.Tensor]
+) -> Tuple[torch.Tensor, torch.Tensor]:
+
+    n, m = A.shape
+
+    if n != m:
+        raise ValueError("Input matrix must be square")
+
+    # Check if A is Hermitian and positive definite
+    is_hermitian = torch.allclose(A, A.conj().t())
+    is_positive_definite = torch.all(torch.eig(A, eigenvectors=False).eigenvalues[:, 0] > 0)
+    if not is_hermitian or not is_positive_definite:
+        raise ValueError("Input matrix must be Hermitian and positive definite")
+
+    result_tuple = NamedTuple("ldl_factor", [("L", torch.Tensor), ("D", torch.Tensor)])
+    L, D = torch.linalg.ldl_factor(A, hermitian=hermitian, out=out)
+    return result_tuple(L, D)
+
