@@ -667,8 +667,6 @@ def test_torch_inv_ex(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-02,
-        atol=1e-04,
         A=x[0],
     )
 
