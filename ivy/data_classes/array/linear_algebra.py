@@ -418,7 +418,11 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         return ivy.inner(self._data, x2, out=out)
 
     def inv(
-        self: ivy.Array, /, *, adjoint: bool = False, out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        /,
+        *,
+        adjoint: bool = False,
+        out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.inv. This method simply wraps the
