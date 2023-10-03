@@ -211,18 +211,6 @@ class Tensor:
         self.ivy_array = self.subtract(y).ivy_array
         return self
 
-
-    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
-    def gather(self, y, name=None):
-        return paddle_frontend.gather(self, y)
-
-    @with_unsupported_dtypes(
-        {"2.5.1 and below": ("float16", "uint8", "int8", "bool")}, "paddle"
-    )
-    def gather_(self, y, name=None):
-        self.ivy_array = self.gather(y).ivy_array
-        return self
-
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def log10(self, name=None):
         return paddle_frontend.Tensor(ivy.log10(self._ivy_array))
