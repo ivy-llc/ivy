@@ -12,7 +12,7 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("int", "float16", "bfloat16")}, backend_version
+    {"2.14.0 and below": ("int", "float16", "bfloat16")}, backend_version
 )
 def eigh_tridiagonal(
     alpha: Union[tf.Tensor, tf.Variable],
@@ -94,23 +94,39 @@ def matrix_exp(
     return tf.linalg.expm(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.14.0 and below": (
+            "complex",
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def eig(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor]:
-    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
-        return tf.linalg.eig(tf.cast(x, tf.float64))
     return tf.linalg.eig(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.14.0 and below": (
+            "complex",
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def eigvals(
     x: Union[tf.Tensor, tf.Variable],
     /,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
-        return tf.linalg.eigvals(tf.cast(x, tf.float64))
     return tf.linalg.eigvals(x)
 
 
@@ -126,7 +142,7 @@ def adjoint(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.14.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -205,7 +221,7 @@ def lu_factor(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.14.0 and below": (
             "bfloat16",
             "float16",
             "float32",

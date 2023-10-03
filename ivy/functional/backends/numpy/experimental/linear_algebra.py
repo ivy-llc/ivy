@@ -68,15 +68,7 @@ def diagflat(
     diagonal_to_add = np.diag(x - np.full_like(x, padding_value), k=offset)
 
     diagonal_to_add = diagonal_to_add[tuple(slice(0, n) for n in output_array.shape)]
-    output_array += np.pad(
-        diagonal_to_add.astype(output_array.dtype),
-        [
-            (0, max([output_array.shape[0] - diagonal_to_add.shape[0], 0])),
-            (0, max([output_array.shape[1] - diagonal_to_add.shape[1], 0])),
-        ],
-        mode="constant",
-    )
-    ret = output_array.astype(out_dtype)
+    ret = diagonal_to_add.astype(out_dtype)
 
     if ivy.exists(out):
         ivy.inplace_update(out, ret)
@@ -98,7 +90,7 @@ kron.support_native_out = False
 
 
 @with_supported_dtypes(
-    {"1.25.2 and below": ("float32", "float64", "complex64", "complex128")},
+    {"1.26.0 and below": ("float32", "float64", "complex64", "complex128")},
     backend_version,
 )
 def matrix_exp(
@@ -114,7 +106,7 @@ def matrix_exp(
     return exp_mat.astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("float16",)}, backend_version)
 def eig(
     x: np.ndarray,
     /,
@@ -128,7 +120,7 @@ def eig(
 eig.support_native_out = False
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("float16",)}, backend_version)
 def eigvals(x: np.ndarray, /) -> np.ndarray:
     e = np.linalg.eigvals(x)
     return e.astype(complex)
