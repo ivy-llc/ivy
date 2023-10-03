@@ -24,7 +24,6 @@ from ivy.func_wrapper import (
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
-from collections.abc import Hashable
 
 
 # Helpers #
@@ -961,7 +960,15 @@ def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     ret
         True if data type is hashable else False
     """
-    return isinstance(dtype_in, Hashable)
+    # Doing something like isinstance(dtype_in, collections.abc.Hashable)
+    # fails where the `__hash__` method is overridden to simply raise an
+    # exception.
+    # [See `tensorflow.python.trackable.data_structures.ListWrapper`]
+    try:
+        hash(dtype_in)
+        return True
+    except TypeError:
+        return False
 
 
 @handle_exceptions
