@@ -701,7 +701,13 @@ def test_concat_from_sequence(
     axis=st.integers(min_value=0, max_value=sequence[0].ndim),
 )
 def test_concat_from_sequence(
-    *, sequence, axis, test_flags, backend_fw, fn_name, on_device
+    *,
+    sequence,
+    axis,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device
 ):
     concatenated_tensor = concat_from_sequence(sequence, axis=axis)
     helpers.test_function(
@@ -713,18 +719,52 @@ def test_concat_from_sequence(
         expected=[t for t in sequence],
     )
 
-
 # dsplit
 @handle_test(
     fn_tree="functional.ivy.experimental.dsplit",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
-    ),
-    indices_or_sections=_get_splits(allow_none=False, min_num_dims=3, axis=2),
-    test_gradients=st.just(False),
-    test_with_out=st.just(False),
 )
+def test_dsplit(
+    dtype_and_x,
+    indices_or_sections,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        indices_or_sections=indices_or_sections,
+    )
+
+# vstack
+@handle_test(
+    fn_tree="functional.ivy.experimental.vstack",
+    arrays_dtypes=_st_col_row_stack_arrays(stack_dim=0),
+    test_gradients=st.just(False),
+)
+def test_vstack(
+    *,
+    arrays_dtypes,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device
+):
+    arrays, dtypes = arrays_dtypes
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        arrays=arrays,
+    )
 def test_dsplit(
     dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device
 ):
