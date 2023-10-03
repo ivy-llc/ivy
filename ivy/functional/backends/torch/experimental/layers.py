@@ -26,6 +26,24 @@ def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_
     return x, kernel, strides, depth_pooling
 
 
+def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
+    dims = {"1d": 1, "2d": 2, "3d": 3}
+    if isinstance(x, int):
+        return tuple([x for _ in range(dims[pool_dims])])
+
+    if len(x) == 1:
+        return tuple([x[0] for _ in range(dims[pool_dims])])
+
+    elif len(x) == dims[pool_dims]:
+        return tuple(x)
+
+    elif len(x) != dims[pool_dims]:
+        raise ValueError(
+            f"`{name}` must either be a single int, "
+            f"or a tuple of {dims[pool_dims]} ints. "
+        )
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def max_pool1d(
     x: torch.Tensor,
@@ -41,7 +59,7 @@ def max_pool1d(
 ) -> torch.Tensor:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NWC":
@@ -115,7 +133,7 @@ def max_pool2d(
 ) -> torch.Tensor:
     dims = 2
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NHWC":
@@ -196,7 +214,7 @@ def max_pool3d(
 ) -> torch.Tensor:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NDHWC":
@@ -563,8 +581,6 @@ def dct(
 ) -> torch.tensor:
     if norm not in (None, "ortho"):
         raise ValueError("Norm must be either None or 'ortho'")
-    if x.dtype not in [torch.float32, torch.float64]:
-        x = x.type(torch.float32)
     if axis < 0:
         axis = axis + len(x.shape)
     if n is not None:
@@ -714,6 +730,7 @@ def fft(
         "2.0.1 and below": (
             "float16",
             "bfloat16",
+            "complex",
         )
     },
     backend_version,
@@ -1136,3 +1153,104 @@ def stft(
     original_shape = (len(to_return), len(to_return[0]))
     result = result.view(original_shape + result.shape[1:])
     return result
+
+
+def sliding_window(
+    input: torch.Tensor,
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    stride: Union[int, Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = 0,
+) -> torch.Tensor:
+    if input.ndim != 4:
+        # convert input to 4D tensor as unfold only accepts 4D data
+        input_shape = input.shape
+        extend_dims = max(0, 4 - len(input_shape))
+        new_shape = (1,) * extend_dims + input_shape
+        input = input.reshape(new_shape).float()
+
+    stride = (stride,) * 2 if isinstance(stride, int) else tuple(stride) * 2
+    dilation = (dilation,) * 2 if isinstance(dilation, int) else tuple(dilation) * 2
+
+    kernel_size = (kernel_size,) * 2 if isinstance(kernel_size, int) else kernel_size
+    if len(kernel_size) < 2:
+        kernel_size = (kernel_size) * 2
+
+    # check padding and convert to right format
+    if isinstance(padding, str):
+        # convert padding from str to seq
+        if padding.upper() == "SAME":
+            pad_vals = []
+            for dim in input.shape:
+                pad_val = _handle_padding(
+                    dim,
+                    stride[0] if isinstance(stride, tuple) else stride,
+                    kernel_size[0],
+                    padding,
+                )
+                pad_vals.append(pad_val)
+            padding = pad_vals[:2]
+        else:
+            padding = 0
+    else:
+        padding = (padding,) * 2 if isinstance(padding, int) else padding
+
+    return torch.nn.functional.unfold(
+        input, kernel_size, dilation=dilation, padding=padding, stride=stride
+    )
+
+
+def max_unpool1d(
+    input: torch.Tensor,
+    indices: torch.Tensor,
+    kernel_size: Union[Tuple[int], int],
+    /,
+    *,
+    strides: Union[int, Tuple[int]] = None,
+    padding: Union[int, Tuple[int]] = 0,
+    data_format: Optional[str] = "NCW",
+) -> torch.Tensor:
+    if strides is None:
+        strides = kernel_size
+    revert = False
+    if data_format in ["NCW", "NWC"]:
+        if data_format == "NWC":
+            input = input.permute(0, 2, 1)
+            indices = indices.permute(0, 2, 1)
+            revert = True
+    else:
+        raise ValueError(
+            f"data_format attr should be NCW or NWC but found {data_format}"
+        )
+    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
+    strides = _broadcast_pooling_helper(strides, "1d", name="strides")
+    ret = torch.nn.functional.max_unpool1d(
+        input,
+        indices,
+        kernel_size,
+        strides,
+        padding,
+    )
+    if revert:
+        ret = ret.permute(0, 2, 1)
+    return ret
+
+
+def _max_unpool1d_mixed_handler(input, indices, kernel_size, **kwargs):
+    dt = kwargs.get("data_format", "NCW")
+    inds = indices.permute(0, 2, 1) if dt == "NWC" else indices
+    flat_inds = inds.reshape((-1,))
+    stride = indices.shape[-1]
+    not_dup = True
+    for i in range(0, flat_inds.numel(), stride):
+        inds = flat_inds[i : (i + stride)]
+        inds = inds.unique()
+        if inds.numel() != stride:
+            not_dup = False
+    return not_dup
+
+
+max_unpool1d.partial_mixed_handler = _max_unpool1d_mixed_handler

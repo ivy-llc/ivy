@@ -209,7 +209,7 @@ def nanprod(
         return a.type(dtype)
     if axis is None:
         return torch.prod(input=a, out=out).type(dtype) * initial
-    if isinstance(axis, tuple) or isinstance(axis, list):
+    if isinstance(axis, (tuple, list)):
         for i in axis:
             a = torch.prod(a, dim=i, keepdim=keepdims, out=out).type(dtype)
             if a.dtype == torch.float16:
@@ -567,7 +567,7 @@ cov.support_native_out = False
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("uint8", "bfloat16", "float16")},
+    {"2.0.1 and below": ("float16",)},
     backend_version,
 )
 def cummax(
@@ -580,11 +580,7 @@ def cummax(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    if x.dtype in (torch.bool, torch.float16):
-        x = x.to(dtype=torch.float64)
-    elif x.dtype in (torch.int16, torch.int8, torch.uint8):
-        x = x.to(dtype=torch.int64)
-    elif x.dtype in (torch.complex64, torch.complex128):
+    if x.dtype in (torch.complex64, torch.complex128):
         x = x.real.to(dtype=torch.float64)
 
     if exclusive or reverse:
