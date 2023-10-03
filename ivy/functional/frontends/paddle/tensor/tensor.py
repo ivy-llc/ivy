@@ -106,7 +106,9 @@ class Tensor:
     def abs(self):
         return paddle_frontend.abs(self)
 
-    @with_unsupported_dtypes({"2.5.1 and below": ("bfloat16", "float16")}, "paddle")
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("bfloat16", "float16", "uint16")}, "paddle"
+    )
     def lgamma(self):
         return paddle_frontend.lgamma(self)
 
