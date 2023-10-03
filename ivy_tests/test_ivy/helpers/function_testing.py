@@ -7,6 +7,7 @@ import types
 import importlib
 import inspect
 from collections import OrderedDict
+from pytest import skip
 
 
 from .globals import mod_backend
@@ -20,6 +21,7 @@ except ImportError:
 # local
 from .pipeline_helper import BackendHandler, BackendHandlerMode, get_frontend_config
 import ivy
+from ivy_tests.test_ivy.helpers.hypothesis_helpers import get_nearest_castable_dtype
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 import ivy_tests.test_ivy.helpers.globals as t_globals
@@ -759,6 +761,24 @@ def test_frontend_function(
             args_for_test = copy.deepcopy(args)
             kwargs_for_test = copy.deepcopy(kwargs)
 
+        backend_supported_dtypes = (
+            t_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[backend_to_test][
+                on_device
+            ]
+        )
+        if input_dtypes[0] not in backend_supported_dtypes["valid"]:
+            # cast dtype to some supported dtype
+            temp = get_nearest_castable_dtype(
+                input_dtypes[0], backend_supported_dtypes["valid"]
+            )
+            if temp is not None:
+                input_dtypes[:] = [temp] * len(temp)
+            else:
+                # type casting is not possible, test with current dtype will be skipped
+                skip(
+                    "Unable to type cast to nearest possible                     "
+                    f" dtype from {input_dtypes[0]}"
+                )
         ret = get_frontend_ret(
             backend_to_test,
             frontend_fn,

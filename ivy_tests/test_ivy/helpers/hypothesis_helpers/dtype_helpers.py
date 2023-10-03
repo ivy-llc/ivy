@@ -204,21 +204,39 @@ def get_dtypes(
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
-            valid_dtypes = set(
-                retrieval_fn(
-                    test_globals.CURRENT_BACKEND,
-                    mixed_fn_dtypes=mixed_fn_dtypes,
-                    kind=kind,
+            if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
+                valid_dtypes = set(
+                    retrieval_fn(
+                        test_globals.CURRENT_FRONTEND,
+                        mixed_fn_dtypes=mixed_fn_dtypes,
+                        kind=kind,
+                    )
                 )
-            )
+            else:
+                valid_dtypes = set(
+                    retrieval_fn(
+                        test_globals.CURRENT_BACKEND,
+                        mixed_fn_dtypes=mixed_fn_dtypes,
+                        kind=kind,
+                    )
+                )
         else:
             raise RuntimeError(
                 "No function is set to prune, calling "
                 "prune_function=True without a function is redundant."
             )
     else:
-        retrieval_fn = _get_type_dict
-        valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND, kind))
+        if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
+            valid_dtypes = _get_type_dict_helper(
+                test_globals.CURRENT_FRONTEND, kind, True
+            )
+        else:
+            valid_dtypes = _get_type_dict_helper(
+                test_globals.CURRENT_BACKEND, kind, False
+            )
+
+        # retrieval_fn = _get_type_dict
+        # valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND, kind))
 
     # The function may be called from a frontend test or an Ivy API test
     # In the case of an Ivy API test, the function should make sure it returns a valid
@@ -228,20 +246,32 @@ def get_dtypes(
     # FN_DTYPES & BACKEND_DTYPES & FRONTEND_DTYPES & GROUND_TRUTH_DTYPES
 
     # If being called from a frontend test
-    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
-        frontend_dtypes = _get_type_dict_helper(
-            test_globals.CURRENT_FRONTEND, kind, True
-        )
-        valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+    # if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
+    #     frontend_dtypes = _get_type_dict_helper(
+    #         test_globals.CURRENT_FRONTEND, kind, True
+    #     )
+    #     valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+
+    # # If being called from an Ivy API test
+    # elif test_globals.CURRENT_BACKEND is not test_globals._Notsetval:
+    #     backend_dtypes = _get_type_dict_helper(
+    #         test_globals.CURRENT_BACKEND, kind, False
+    #     )
+    #     valid_dtypes = valid_dtypes.intersection(backend_dtypes)
+    # we don't need ground truth dtypes as :
+    # 1 - in case of frontend we now have to check all the dtypes that are supported
+    # by frontend framework irrespective of gt backend or target backend.
+    # 2 - in case of Ivy API we now just want to test all the dtypes supported by target
+    # backend irrespective of gt backend.
 
     # Make sure we return dtypes that are compatible with ground truth backend
-    ground_truth_is_set = (
-        test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
-    )
-    if ground_truth_is_set:
-        valid_dtypes = valid_dtypes.intersection(
-            retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND, kind=kind)
-        )
+    # ground_truth_is_set = (
+    #     test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
+    # )
+    # if ground_truth_is_set:
+    #     valid_dtypes = valid_dtypes.intersection(
+    #         retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND, kind=kind)
+    #     )
 
     valid_dtypes = list(valid_dtypes)
     if none:
@@ -448,3 +478,154 @@ def cast_filter_helper(d, dtype, x, current_backend):
             )
             and (min_x > 0 or not ivy_backend.is_uint_dtype(dtype))
         )
+
+
+possible_castable_dtypes = {
+    "bfloat16": [
+        "float16",
+        "bfloat16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    ],
+    "bool": [
+        "bool",
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    ],
+    "complex128": ["complex128"],
+    "complex64": ["complex64", "complex128"],
+    "float16": ["float16", "float32", "float64", "complex64", "complex128"],
+    "float32": ["float32", "float64", "complex64", "complex128"],
+    "float64": ["float64", "complex128"],
+    "int16": [
+        "int16",
+        "int32",
+        "int64",
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    ],
+    "int32": [
+        "int32",
+        "int64",
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    ],
+    "int64": [
+        "int64",
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    ],
+    "int8": [
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    ],
+    "uint16": [
+        "uint16",
+        "uint32",
+        "uint64",
+        "int32",
+        "int64",
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    ],
+    "uint32": [
+        "uint32",
+        "uint64",
+        "int64",
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    ],
+    "uint64": [
+        "uint64",
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    ],
+    "uint8": [
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
+        "int16",
+        "int32",
+        "int64",
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+        "complex64",
+        "complex128",
+    ],
+}
+
+
+def get_nearest_castable_dtype(current_dtype, available_dtypes):
+    """
+    Return the nearest castable dtype for the given dtype based on the avaiable list of
+    dtypes.
+
+    Parameters
+    ----------
+    current_dtype
+        Data type from which to cast.
+    available_dtypes
+        Castable data types are drawn from this list based on lattice property.
+
+    Returns
+    -------
+    ret
+        A castable dtype.
+    """
+    nearest_dtype = None
+    possible_dtypes = possible_castable_dtypes[current_dtype]
+    for dtype in possible_dtypes:
+        if dtype in available_dtypes:
+            nearest_dtype = dtype
+            break
+
+    return nearest_dtype
