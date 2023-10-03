@@ -325,8 +325,6 @@ def triangular(left, mode, right, size=None):
     return ivy.where(condition, values1, values2)
 
 
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
 def uniform(low=0.0, high=1.0, size=None):
     return ivy.random_uniform(low=low, high=high, shape=size, dtype="float64")
 
