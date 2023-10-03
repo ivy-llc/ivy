@@ -829,23 +829,40 @@ def all_nested_indices(
     ret
         A set of indices of all elements in nest
 
-    Both the description and the type hints above assumes an array input
-    for simplicity, but this function is nestable, and therefore also
-    accepts :class:ivy.Container instances in place of the arguments.
-
     Examples
     --------
-    With :class:`Dict` input:
+    With :code:`List` input:
+
+    >>> x = [189, [863, 672], [264, 384]]
+    >>> y = ivy.all_nested_indices(x)
+    >>> print(y)
+    [[0], [1, 0], [1, 1], [2, 0], [2, 1]]
+
+    With :code:`Tuple` input:
+
+    >>> x = (189, (863, 672), (264, 384))
+    >>> y = ivy.all_nested_indices(x, include_nests=True)
+    >>> print(y)
+    [[0], [1, 0], [1, 1], [1], [2, 0], [2, 1], [2]]
+
+    With :code:`Dict` input:
 
     >>> x = {'a': 2., 'b': [6., [15., 9.]], 'c': (7., 56.)}
     >>> y = ivy.all_nested_indices(x)
     >>> print(y)
     [['a'], ['b', 0], ['b', 1, 0], ['b', 1, 1], ['c', 0], ['c', 1]]
 
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[True, False], [False, False]])
+    >>> y = ivy.all_nested_indices(x)
+    >>> print(y)
+    [[]]
+
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.all_nested_indices(x, True)
+    >>> x = ivy.Container(a=ivy.array([412, 948, 482]), b=ivy.array([168, 674, 341]))
+    >>> y = ivy.all_nested_indices(x)
     >>> print(y)
     [['a'], ['b']]
     """
