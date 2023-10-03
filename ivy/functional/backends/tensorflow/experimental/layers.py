@@ -172,7 +172,7 @@ def max_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -277,7 +277,7 @@ def _handle_manual_pad_avg_pool(x, kernel, strides, padding, ceil_mode, dims):
     return padding, pad_specific, c
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "float64")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],
@@ -348,7 +348,7 @@ def avg_pool1d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool2d(
     x: Union[tf.Tensor, tf.Variable],
@@ -440,7 +440,7 @@ def avg_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -545,7 +545,7 @@ def avg_pool3d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def pool(
     x: Union[tf.Tensor, tf.Variable],
@@ -571,7 +571,7 @@ def pool(
     )
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -646,7 +646,7 @@ def _ifft_norm(
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("complex", "float32", "float64")}, backend_version
+    {"2.14.0 and below": ("complex", "float32", "float64")}, backend_version
 )
 def fft(
     x: Union[tf.Tensor, tf.Variable],
@@ -709,7 +709,7 @@ def fft(
     return ret
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def dropout(
     x: Union[tf.Tensor, tf.Variable],
     prob: float,
@@ -851,7 +851,7 @@ def ifft(
     return ret
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def embedding(
     weights: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
@@ -1038,7 +1038,7 @@ def _fft2_helper(x, shape, axes):
     return x
 
 
-@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def fft2(
     x: Union[tf.Tensor, tf.Variable],
     *,
@@ -1428,7 +1428,7 @@ def rfftn(
 
 
 # stft
-@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def stft(
     signals: Union[tf.Tensor, tf.Variable],
     frame_length: int,
