@@ -89,7 +89,7 @@ def trace_graph(
     0.0001785755157470703
     """
 
-    from ._compiler import trace_graph as _trace_graph
+    from ._compiler import compile as _trace_graph
 
     return _trace_graph(
         *objs,
