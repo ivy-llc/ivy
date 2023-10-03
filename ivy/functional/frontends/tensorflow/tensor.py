@@ -276,7 +276,7 @@ class TensorArray:
 
     @property
     def element_shape(self):
-        return self._element_shape
+        return self._element_shape if self._element_shape is not None else ()
 
     def identity(self):
         return self._parent()

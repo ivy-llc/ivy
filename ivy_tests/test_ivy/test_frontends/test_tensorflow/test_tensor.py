@@ -109,7 +109,7 @@ def _helper_random_tensorarray(draw, fn=None):
     element_shape = draw(helpers.get_shape())
     element_shape = draw(st.one_of(st.just(None), st.just(element_shape)))
     shape = None
-    if infer_shape or element_shape is not None or fn in ["scatter", "stack"]:
+    if infer_shape or element_shape is not None or fn in ["scatter", "stack", "gather"]:
         if element_shape is None:
             shape = draw(helpers.get_shape())
         else:
@@ -139,7 +139,14 @@ def _helper_random_tensorarray(draw, fn=None):
                 )
             )
             id_write.append((id, write))
-    return id_write, kwargs
+    if fn != "gather":
+        return id_write, kwargs
+    else:
+        ids = []
+        for id, _ in id_write:
+            if draw(st.booleans()):
+                ids.append(id)
+        return id_write, kwargs, ids
 
 
 @st.composite
@@ -1747,6 +1754,21 @@ def test_tesorarray_dtype(
 ):
     ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
     assert ta.dtype == ta_frontend.dtype.ivy_dtype
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="gather"))
+def test_tesorarray_gather(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs[:2])
+    *_, indices = l_kwargs
+    if indices:
+        helpers.value_test(
+            ret_np_from_gt_flat=ta.gather(indices).numpy().flatten(),
+            ret_np_flat=np.array(ta_frontend.gather(indices)).flatten(),
+            backend=backend_fw,
+        )
 
 
 @given(l_kwargs=_helper_random_tensorarray())
