@@ -1707,6 +1707,20 @@ def test_tesorarray_read(
         )
 
 
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tesorarray_size(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
+    id_read, _ = l_kwargs
+    helpers.value_test(
+        ret_np_from_gt_flat=ta.size().numpy().flatten(),
+        ret_np_flat=np.array(ta_frontend.size()).flatten(),
+        backend=backend_fw,
+    )
+
+
 @given(l_kwargs=_helper_random_tensorarray(fn="stack"))
 def test_tesorarray_stack(
     l_kwargs,
