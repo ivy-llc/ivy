@@ -4246,6 +4246,37 @@ def log2(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([5.0, 1, -0.0, -6.0])
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    ivy.array([2.32, 0., -inf, nan])
+    >>> x = ivy.array([[float('nan'), 1, 6.0, float('+inf')],
+    ...               [+0, -2.0, -7, float('-inf')]])
+    >>> y = ivy.empty_like(x)
+    >>> ivy.log2(x, out=y)
+    >>> print(y)
+    ivy.array([[nan, 0., 2.58, inf],[inf, nan, nan, nan]])
+    >>> x = ivy.array([[float('nan'), 1, 7.0, float('+inf')],
+    ...               [+0, -3.0, -8, float('-inf')]])
+    >>> ivy.log2(x, out=x)
+    >>> print(x)
+    ivy.array([[nan, 0., 2.81, inf],[inf, nan, nan, nan]])
+
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+    ...                   b=ivy.array([-0., -4.9, float('+inf')]),
+    ...                   c=ivy.array([8.9, 2.1, 1.]))
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    {
+        a: ivy.array([-inf, nan]),
+        b: ivy.array([-inf, nan, inf]),
+        c: ivy.array([3.15, 1.07, 0.])
+    }
     """
     return ivy.current_backend(x).log2(x, out=out)
 

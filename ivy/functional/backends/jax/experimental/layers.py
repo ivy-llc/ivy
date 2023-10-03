@@ -175,7 +175,7 @@ def max_pool1d(
 ) -> JaxArray:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCW":
@@ -214,7 +214,7 @@ def max_pool2d(
     dims = 2
     odtype = x.dtype
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCHW":
@@ -257,7 +257,7 @@ def max_pool3d(
 ) -> JaxArray:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
