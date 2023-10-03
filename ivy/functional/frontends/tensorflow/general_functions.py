@@ -329,6 +329,15 @@ def ones(shape, dtype=ivy.float32, name=None):
     return ivy.ones(shape, dtype=dtype)
 
 
+@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def ones_initializer(shape, dtype=None, name=None):
+    # todo internal: fix behaviour
+    if dtype is None:
+        dtype = ivy.default_dtype()
+    return ivy.ones(shape, dtype=dtype)
+
+
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def ones_like(input, dtype=None, name=None):
