@@ -686,7 +686,7 @@ def softshrink(
     >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
     >>> y = ivy.softshrink(x)
     >>> print(y)
-    ivy.array([[-0.3,  3.3,  1.6],
-                [ 1.2,  3.7, -6.1]])
+    ivy.array([[-0.79999995,  3.29999995,  1.59999991],
+       [ 1.20000005,  3.69999981, -6.0999999 ]])
     """
     return current_backend(x).softshrink(x, lambd=lambd, out=out)

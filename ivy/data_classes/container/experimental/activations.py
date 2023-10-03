@@ -1112,7 +1112,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-        >>> y = ivy.Container.static_tanhshrink(x)
+        >>> y = ivy.Container._static_tanhshrink(x)
         >>> print(y)
         {
             a: ivy.array([0.23840582, -0.36634541]),
@@ -1220,7 +1220,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1., -2.]), b=ivy.array([0.4, -0.2]))
-        >>> y = ivy.Container.static_softshrink(x)
+        >>> y = ivy.Container._static_softshrink(x)
         >>> print(y)
         {
             a: ivy.array([0.5, -1.5]),

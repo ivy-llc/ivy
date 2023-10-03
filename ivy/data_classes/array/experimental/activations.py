@@ -389,5 +389,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> y = x.softshrink()
         >>> print(y)
         ivy.array([-0.5,  0. ,  0.5])
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.softshrink(lambd=1.0)
+        >>> print(y)
+        ivy.array([0., 0., 0.])
         """
         return ivy.softshrink(self._data, lambd=lambd, out=out)
