@@ -170,6 +170,7 @@ Min = to_ivy_arrays_and_back(
         )
     )
 )
+Mod = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.mod))
 Mul = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.multiply))
 Neg = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.negative))
 Pow = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.pow))
