@@ -442,6 +442,19 @@ def interpolate(
     raise IvyNotImplementedException()
 
 
+def irfft(
+    x: paddle.Tensor,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: str = "backward",
+    name: Optional[str] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # Ignore the `out` parameter for Paddle
+    return paddle.fft.irfft(x, n=n, axis=axis, norm=norm, name=name)
+
 def adaptive_max_pool2d(
     input: paddle.Tensor, output_size: Union[Sequence[int], int]
 ) -> paddle.Tensor:

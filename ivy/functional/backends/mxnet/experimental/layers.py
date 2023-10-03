@@ -190,6 +190,20 @@ def ifft(
     raise IvyNotImplementedException()
 
 
+
+def irfft(
+    x: mx.nd.NDArray,
+    /,
+    *,
+    axis: int = -1,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[mx.nd.NDArray] = None,
+    name: Optional[str] = None,
+) -> mx.nd.NDArray:
+    raise IvyNotImplementedException()
+
+
 @handle_partial_mixed_function(
     lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
         not align_corners

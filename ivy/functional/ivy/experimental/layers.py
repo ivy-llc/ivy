@@ -21,6 +21,7 @@ from ivy.func_wrapper import (
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.utils.exceptions import handle_exceptions
 
+
 _min = builtins.min
 _slice = builtins.slice
 _max = builtins.max
@@ -867,6 +868,78 @@ idct.mixed_backend_wrappers = {
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
+def irfft(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    n: Optional[Union[int, List[int]]] = None,
+    axis: int = -1,
+    norm: str = "backward",
+    name: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the inverse of rfft. This function calculates the inverse of the one-
+    dimensional n point discrete Fourier transform of the actual input calculated by
+    “rfft”. In other words, irfft(rfft(a),len(a)) == a is within the numerical accuracy
+    range.
+    Parameters
+    ----------
+    x : Array or NativeArray
+        The input data. It's a complex.
+    n : int ot List[int], optional
+        The length of the output transform axis.
+        For n output points, n//2 + 1 input points are necessary.
+        If the length of the input tensor is greater than n, it will be cropped.
+        If it is shorter than this, fill in zero.
+        If n is not given, it is considered to be 2 * (k-1),
+        where k is the length of the input axis specified along the axis.
+    axis : int, optional
+        Axis used to calculate FFT. If not specified, the last axis is used by default.
+    norm : str, optional
+        Indicates which direction to scale the forward or backward transform pair
+        and what normalization factor to use.
+        The parameter value must be one of “forward” or “backward” or “ortho”.
+        Default is “backward”.
+    name : str, optional
+        The default value is None.
+        Normally there is no need for user to set this property.
+    out : Array, optional
+        Optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+    Returns
+    -------
+    Array
+        Real tensor.
+        Truncated or zero fill input for the transformation
+        along the axis indicated by axis, or the last input
+        if axis is not specified.
+        The length of the conversion axis is n, or 2 * k-2, if k is None,
+        where k is the length of the input conversion axis.
+        If the output is an odd number, you need to specify the value of 'n',
+        such as 2 * k-1 in some cases.
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import ivy
+    >>> x = np.array([1, -1j, -1])
+    >>> xp = ivy.array(x)
+    >>> irfft_xp = ivy.irfft(xp)
+    >>> print(irfft_xp)
+    [0. 1. 0. 0.]
+    """
+    return ivy.current_backend(x).irfft(
+        x, n=n, axis=axis, norm=norm, name=name, out=out
+    )
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -876,7 +949,7 @@ def fft(
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""
+    """
     Compute the one dimensional discrete Fourier transform given input at least 1-D
     input x.
 
@@ -890,8 +963,8 @@ def fft(
     norm
         Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
         "backward" indicates no normalization.
-        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
-        "forward" indicates normalization by $\frac{1}{n}$.
+        "ortho" indicates normalization by 1/sqrt(n).
+        "forward" indicates normalization by 1/n.
     n
         Optional argument indicating the sequence length, if given, the input would be
         padded with zero or truncated to length n before performing FFT.
@@ -2943,7 +3016,7 @@ def stft(
     /,
     *,
     fft_length: Optional[int] = None,
-    window_fn: Optional = None,
+    window_fn: Optional[any] = None,
     pad_end: bool = False,
     name: Optional[str] = None,
     out: Optional[ivy.Array] = None,

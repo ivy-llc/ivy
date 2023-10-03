@@ -384,6 +384,42 @@ def _x_and_ifftn(draw):
 
     return dtype, x, s, axes, norm
 
+@st.composite
+def _x_and_irfft(draw):
+    min_irfft_points = 2
+    dtype = draw(helpers.get_dtypes("complex", full=False))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=4
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e5,
+            max_value=1e5,
+            allow_inf=False,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="linear",
+        )
+    )
+    n = draw(st.integers(min_irfft_points, 256))
+    num_dims = len(x_dim)
+    axis = draw(
+        helpers.get_axis(
+            shape=x_dim,
+            allow_neg=True,
+            force_int=True,
+            min_size=-num_dims,
+            max_size=num_dims - 1,
+        )
+    )
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    name = draw(st.text())
+    return dtype, x, n, axis, norm, name
+
 
 @st.composite
 def _x_and_rfftn(draw):
@@ -1082,6 +1118,34 @@ def test_interpolate(
         antialias=antialias,
         scale_factor=scale_factor,
         recompute_scale_factor=recompute_scale_factor,
+    )
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.irfft",
+    dtype_x_and_args=_x_and_irfft(),
+    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
+)
+def test_irfft(
+    *,
+    dtype_x_and_args,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, n, axis, norm, name = dtype_x_and_args
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        x=x,
+        n=n,
+        axis=axis,
+        norm=norm,
+        name=name,
     )
 
 

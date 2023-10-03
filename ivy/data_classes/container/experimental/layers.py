@@ -1495,6 +1495,132 @@ class _ContainerWithLayersExperimental(ContainerBase):
             n=n,
             out=out,
         )
+    
+    @staticmethod
+    def static_irfft(
+        x: ivy.Container,
+        axis: Union[int, ivy.Container],
+        *,
+        norm: Union[str, ivy.Container] = "backward",
+        n: Optional[Union[int, Tuple[int], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container static method variant of ivy.irfft. This method simply wraps the
+        function, and so the docstring for ivy.irfft also applies to this method with
+        minimal changes.
+        Parameters
+        ----------
+        - x(`Container`) :
+            The input data. It's a complex.
+        - n (`Optional`[`Union`[`int`, `Tuple`[`int`], `Container`]], default: `None`) :
+            The length of the output transform axis.
+            For n output points, n//2 + 1 input points are necessary.
+            If the length of the input tensor is greater than n, it will be cropped.
+            If it is shorter than this, fill in zero.
+            If n is not given, it is considered to be 2 * (k-1),
+            where k is the length of the input axis specified along the axis.
+        - axis (`Optional`[`Union`[`int`, `Container`]], default: `None`) :
+            Axis used to calculate FFT.
+            If not specified, the last axis is used by default.
+        - norm (`Union`[`str`, `Container`], default: `'backward'`) :
+            Indicates which direction to scale the forward or backward transform pair
+            and what normalization factor to use.
+            The parameter value must be one of “forward” or “backward” or “ortho”.
+            Default is “backward”.
+        - name (`Optional`[`str`], default: `None`) :
+            The default value is None.
+            Normally there is no need for user to set this property.
+        - out (`Optional`[`Container`], default: `None`) :
+            Optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+        Returns
+        -------
+            The transformed input.
+            Truncated or zero fill input for the transformation
+            along the axis indicated by axis, or the last input
+            if axis is not specified.
+            The length of the conversion axis is n, or 2 * k-2, if k is None,
+            where k is the length of the input conversion axis.
+            If the output is an odd number, you need to specify the value of 'n',
+            such as 2 * k-1 in some cases.
+        Examples
+        --------
+        >>> import numpy as np
+        >>> import ivy
+        >>> a = ivy.array(np.array([1, -1j, -1]))
+        >>> b = ivy.array(np.array([1, -1j, -1]))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> axis = ivy.Container(a=0, b=0)
+        >>> result = ivy.Container.static_irfft(x, axis)
+        >>> print(result)
+        a: ivy.array([0. 1. 0. 0.]),
+        b: ivy.array([0. 1. 0. 0.])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "irfft",
+            x,
+            axis,
+            norm=norm,
+            n=n,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def irfft(
+        self: ivy.Container,
+        axis: Union[int, ivy.Container],
+        *,
+        norm: Union[str, ivy.Container] = "backward",
+        n: Optional[Union[int, Tuple[int], ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.irfft. This method simply wraps the
+        function, and so the docstring for ivy.irfft also applies to this method with
+        minimal changes.
+        Parameters
+        ----------
+        self : ivy.Container
+            The instance of the ivy.Container on which the irfft method is called.
+        axis : Union[int, ivy.Container]
+            Specifies the axis over which to compute the inverse Fourier transform.
+        norm : Union[str, ivy.Container], optional
+            Specifies the normalization mode. Default is 'backward'.
+        n : Optional[Union[int, Tuple[int], ivy.Container]], optional
+            Specifies the length of the transformed axis of the output.
+            If not provided, it defaults to None.
+        out : Optional[Union[ivy.Array, ivy.Container]], optional
+            An output array where the result is stored.
+            If not provided, it defaults to None.
+        Returns
+        -------
+        ivy.Container
+            The inverse discrete Fourier Transform.
+        Examples
+        --------
+        >>> import ivy
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+        >>> axis = 0
+        >>> result = x.irfft(axis)
+        >>> print(result)
+        a: ivy.array([2., 1.]),
+        b: ivy.array([5., 4.])
+        """
+        return self.static_irfft(
+            self,
+            axis,
+            norm=norm,
+            n=n,
+            out=out,
+        )
 
     @staticmethod
     def static_embedding(

@@ -612,6 +612,19 @@ def idct(
     inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
     return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
 
+def irfft(
+    x: tf.Tensor,
+    /,
+    *,
+    n: Optional[List[int]] = None,
+    axis: int = -1,
+    norm: str = "backward",
+    name: Optional[str] = None,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    # Ignore the `axis`, `norm`, and `out` parameters for TensorFlow
+    return tf.signal.irfft(x, fft_length=n, name=name)
+
 
 def _fft_norm(
     x: Union[tf.Tensor, tf.Variable],
