@@ -384,6 +384,23 @@ class Tensor:
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
 
+    @with_supported_dtypes(
+        {"2.5.1 and below": (
+            "float16",
+            "float32",
+            "float64",
+            "int8",
+            "int16",
+            "int32",
+            "int64"
+            )
+        },
+        "paddle",
+    )
+    def broadcast_tensors(self, name=None):
+        return paddle_frontend.Tensor(ivy.broadcast_arrays(self._ivy_array))
+
+
     @with_supported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def any(self, axis=None, keepdim=False, name=None):
         return paddle_frontend.any(self, axis=axis, keepdim=keepdim)
