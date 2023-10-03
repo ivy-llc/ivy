@@ -460,3 +460,9 @@ def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
     x = 1 - uniform_x
     weibull = x ** (concentration - 1) * -ivy.log(x / scale)
     return weibull
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def normal(key, shape()):
+   seed = _get_seed(key)
+   return ivy.random_normal(shape=shape, seed=seed)
