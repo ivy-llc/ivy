@@ -449,6 +449,7 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
+    _switch_backend_context(test_flags.test_trace or test_flags.transpile)
     ground_truth_backend = test_flags.ground_truth_backend
     if mod_backend[backend_to_test]:
         # multiprocessing
@@ -637,7 +638,7 @@ def _transpile_if_required_backend(backend: str, fn_name: str, args=None, kwargs
     iterations = 1
     with BackendHandler.update_backend(backend) as ivy_backend:
         args, kwargs = ivy_backend.args_to_ivy(*args, **kwargs)
-    backend_fn = ivy.__dict__[fn_name]
+        backend_fn = ivy.__dict__[fn_name]
     backend_traced_fn = traced_if_required(
         backend, backend_fn, test_trace=True, args=args, kwargs=kwargs
     )
