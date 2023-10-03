@@ -3860,7 +3860,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             out=out,
         )
 
-
     def concat_from_sequence(
         self: ivy.Container,
         /,
@@ -3881,7 +3880,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.stack. This method simply wraps the
         function, and so the docstring for ivy.stack also applies to this method with
         minimal changes.
-    
+
         Parameters
         ----------
         self
@@ -3912,12 +3911,12 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out
           optional output array, for writing the result to. It must have a shape
           that the inputs broadcast to.
-    
+
         Returns
         -------
         ret
           an output container with the results.
-    
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
@@ -3933,7 +3932,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                 [1, 0]]])
         }
         """
-    
+
         new_input_sequence = (
             input_sequence.cont_copy()
             if ivy.is_ivy_container(input_sequence)
@@ -3950,4 +3949,3 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
