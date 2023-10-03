@@ -169,10 +169,37 @@ def cumprod(x, dim=None, dtype=None, name=None):
     return ivy.cumprod(x, axis=dim, dtype=dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def cumsum(x, axis=None, dtype=None, name=None):
+    return ivy.cumsum(x, axis=axis, dtype=dtype)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def deg2rad(x, name=None):
     return ivy.deg2rad(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+            "bool",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def diagonal(x, offset=0, axis1=0, axis2=1, name=None):
+    return ivy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
 @with_supported_dtypes(
