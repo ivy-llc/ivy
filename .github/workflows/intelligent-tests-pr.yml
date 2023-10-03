@@ -41,7 +41,7 @@ jobs:
                 echo EOF
               } >> "$GITHUB_OUTPUT"
           else
-              echo "MESSAGE=This PR does not introduce any new test failures! Yippee!" >> "$GITHUB_OUTPUT"
+              echo "MESSAGE=This pull request does not result in any additional test failures. Congratulations!" >> "$GITHUB_OUTPUT"
           fi
       - name: Find Comment
         uses: peter-evans/find-comment@v2
