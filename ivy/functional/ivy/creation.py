@@ -32,6 +32,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device,
     handle_backend_invalid,
+    temp_asarray_wrapper,
 )
 
 # Helpers #
@@ -375,6 +376,7 @@ def arange(
     )
 
 
+@temp_asarray_wrapper
 @handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_out_argument
