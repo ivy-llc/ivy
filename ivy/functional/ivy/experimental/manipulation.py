@@ -2740,7 +2740,6 @@ column_stack.mixed_backend_wrappers = {
 }
 
 
-
 def concat_from_sequence(sequence: Sequence[ivy.Array], axis=0) -> ivy.Array:
     """
     Concatenates a sequence of tensors along a specified axis.
