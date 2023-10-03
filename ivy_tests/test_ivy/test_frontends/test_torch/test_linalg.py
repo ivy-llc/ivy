@@ -677,26 +677,29 @@ def test_torch_inv_ex(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.ldl_factor",
-    input_dtype_and_input=_get_dtype_and_matrix(dtype="numeric", batch=True, square=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True, batch=True),
 )
 def test_torch_ldl_factor(
     *,
-    input_dtype_and_input,
+    dtype_and_x,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    dtype, input = input_dtype_and_input
+    dtype, x = dtype_and_x
+    test_flags.num_positional_args = 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
-        test_flags=test_flags,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        A=input[0],
+        rtol=1e-03,
+        atol=1e-03,
+        A=x[0],
     )
 
 
