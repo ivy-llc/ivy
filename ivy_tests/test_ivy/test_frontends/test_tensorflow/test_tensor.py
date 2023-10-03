@@ -88,6 +88,11 @@ def _helper_init_tensorarray(backend_fw, l_kwargs, fn=None):
         elif fn == "split":
             ta = ta.split(**id_write)
             ta_frontend = ta_frontend.split(**id_write)
+        elif fn == "scatter":
+            indices, value = [*zip(*id_write)]
+            ta = ta.scatter(indices, tf.convert_to_tensor(value, dtype=ta.dtype))
+            value = function_module.stack(list(map(function_module.constant, value)))
+            ta_frontend = ta_frontend.scatter(indices, value)
         else:
             for id, write in id_write:
                 ta = ta.write(id, tf.constant(write))
@@ -104,7 +109,7 @@ def _helper_random_tensorarray(draw, fn=None):
     element_shape = draw(helpers.get_shape())
     element_shape = draw(st.one_of(st.just(None), st.just(element_shape)))
     shape = None
-    if infer_shape or element_shape is not None or fn == "stack":
+    if infer_shape or element_shape is not None or fn in ["scatter", "stack"]:
         if element_shape is None:
             shape = draw(helpers.get_shape())
         else:
@@ -1751,6 +1756,22 @@ def test_tesorarray_read(
 ):
     ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
     id_read, _ = l_kwargs
+    for id, read in id_read:
+        helpers.value_test(
+            ret_np_from_gt_flat=ta.read(id).numpy().flatten(),
+            ret_np_flat=np.array(ta_frontend.read(id)).flatten(),
+            backend=backend_fw,
+        )
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="scatter"))
+def test_tesorarray_scatter(
+    l_kwargs,
+    backend_fw,
+):
+    id_read, _ = l_kwargs
+    if id_read:
+        ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs, "scatter")
     for id, read in id_read:
         helpers.value_test(
             ret_np_from_gt_flat=ta.read(id).numpy().flatten(),
