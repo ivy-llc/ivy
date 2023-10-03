@@ -5,30 +5,8 @@ from ivy.functional.ivy.experimental.manipulation import _slice_along_axis
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-def _pack_padded_sequence(padded_sequence, lengths, batch_first=False):
-    if not batch_first:
-        padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
-    data = []
-    for i, length in enumerate(lengths):
-        data += [padded_sequence[i, :length]]
-    data = ivy.concat(data)
-    return data, ivy.array(lengths)
-
-
-def _pad_packed_sequence(data, batch_sizes, batch_first=False, padding_value=0):
-    padded_sequence = ivy.full(
-        (len(batch_sizes), max(batch_sizes), data.shape[-1]),
-        padding_value,
-        dtype=data.dtype,
-        device=data.device,
-    )
-    data_pointer = 0
-    for i, batch_size in enumerate(batch_sizes):
-        padded_sequence[i, :batch_size] = data[data_pointer:data_pointer + batch_size]
-        data_pointer += batch_size
-    if not batch_first:
-        padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
-    return padded_sequence
+# --- Helpers --- #
+# --------------- #
 
 
 def _generic_lstm(
@@ -75,8 +53,7 @@ def _generic_lstm(
 
     def reform_weights(w, n, intervals):
         slices = [
-            _slice_along_axis(w, start=x * n, stop=y * n, axis=0)
-            for x, y in intervals
+            _slice_along_axis(w, start=x * n, stop=y * n, axis=0) for x, y in intervals
         ]
         return ivy.concat(*slices, axis=0)
 
@@ -85,9 +62,7 @@ def _generic_lstm(
         weight_ih, weight_hh = (
             reform_weights(w, hidden_size, reform_permutation) for w in weights
         )
-        return tuple(
-            ivy.expand_dims(x, axis=0) for x in (weight_ih, weight_hh)
-        )
+        return tuple(ivy.expand_dims(x, axis=0) for x in (weight_ih, weight_hh))
 
     def transform_weights(layer_index):
         weights = layer_weights[layer_index]
@@ -210,6 +185,36 @@ def _lstm_packed(
         bidirectional,
         batch_sizes=batch_sizes,
     )
+
+
+def _pack_padded_sequence(padded_sequence, lengths, batch_first=False):
+    if not batch_first:
+        padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
+    data = []
+    for i, length in enumerate(lengths):
+        data += [padded_sequence[i, :length]]
+    data = ivy.concat(data)
+    return data, ivy.array(lengths)
+
+
+def _pad_packed_sequence(data, batch_sizes, batch_first=False, padding_value=0):
+    padded_sequence = ivy.full(
+        (len(batch_sizes), max(batch_sizes), data.shape[-1]),
+        padding_value,
+        dtype=data.dtype,
+        device=data.device,
+    )
+    data_pointer = 0
+    for i, batch_size in enumerate(batch_sizes):
+        padded_sequence[i, :batch_size] = data[data_pointer : data_pointer + batch_size]
+        data_pointer += batch_size
+    if not batch_first:
+        padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
+    return padded_sequence
+
+
+# --- Main --- #
+# ------------ #
 
 
 @to_ivy_arrays_and_back

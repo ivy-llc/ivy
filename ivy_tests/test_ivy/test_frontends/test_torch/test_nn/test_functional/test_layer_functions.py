@@ -4,11 +4,16 @@ import numpy as np
 
 # local
 from ivy.functional.backends.torch.layers import _get_embed_dim
-from ivy.functional.frontends.torch.nn.functional.layer_functions import \
-    _pack_padded_sequence
+from ivy.functional.frontends.torch.nn.functional.layer_functions import (
+    _pack_padded_sequence,
+)
 from ivy_tests.test_ivy import helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _mha_helper
+
+
+# --- Helpers --- #
+# --------------- #
 
 
 @st.composite
@@ -107,7 +112,7 @@ def _lstm_helper(draw, dtypes):
             st.lists(
                 st.integers(min_value=1, max_value=seq_size),
                 min_size=num_batches,
-                max_size=num_batches
+                max_size=num_batches,
             ).filter(lambda x: seq_size in x)
         )
         input = _pack_padded_sequence(input, batch_sizes, batch_first=batch_first)
@@ -115,7 +120,7 @@ def _lstm_helper(draw, dtypes):
         batch_sizes = None
 
     return (
-        dtype + ['int64'],
+        dtype + ["int64"],
         input,
         (init_h, init_c),
         tuple(all_weights),
@@ -127,6 +132,10 @@ def _lstm_helper(draw, dtypes):
         batch_first,
         np.array(batch_sizes),
     )
+
+
+# --- Main --- #
+# ------------ #
 
 
 # lstm
@@ -161,28 +170,28 @@ def test_torch_lstm(
     ) = dtype_lstm
     if batch_sizes is not None:
         kwargs = {
-            'input': input,
-            'batch_sizes': batch_sizes,
-            'hidden_v': initial_states,
-            'weight_v': all_weights,
-            'has_biases': has_biases,
-            'num_layers': num_layers,
-            'dropout': dropout,
-            'train': train,
-            'bidirectional': bidirectional,
+            "input": input,
+            "batch_sizes": batch_sizes,
+            "hidden_v": initial_states,
+            "weight_v": all_weights,
+            "has_biases": has_biases,
+            "num_layers": num_layers,
+            "dropout": dropout,
+            "train": train,
+            "bidirectional": bidirectional,
         }
     else:
         dtypes = dtypes[:1]
         kwargs = {
-            'input': input,
-            'hidden_v': initial_states,
-            'weight_v': all_weights,
-            'has_biases': has_biases,
-            'num_layers': num_layers,
-            'dropout': dropout,
-            'train': train,
-            'bidirectional': bidirectional,
-            'batch_first': batch_first,
+            "input": input,
+            "hidden_v": initial_states,
+            "weight_v": all_weights,
+            "has_biases": has_biases,
+            "num_layers": num_layers,
+            "dropout": dropout,
+            "train": train,
+            "bidirectional": bidirectional,
+            "batch_first": batch_first,
         }
     helpers.test_frontend_function(
         input_dtypes=dtypes,
