@@ -468,6 +468,70 @@ def adjoint(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def solve_triangular(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the unique solution to the triangular system of linear equations AX = B.
+
+    Parameters
+    ----------
+    x1
+        Triangular coefficient array A of shape (..., N, N), with no zeros on diagonal.
+    x2
+        Right-hand side array B of shape (..., N, K).
+    upper
+        Whether the input `x1` is upper triangular.
+    adjoint
+        Whether to take the adjoint (conjugate transpose) of `x1` as the matrix A.
+    unit_diagonal
+        Whether to ignore the diagonal entries of A and assume them all equal to 1.
+    out
+        Optional output array. If provided, the output array to store the result.
+
+    Returns
+    -------
+    ret
+        The solution X, which has the same shape as B.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> a = ivy.array([[3, 0, 0, 0],
+    ...                [2, 1, 0, 0],
+    ...                [1, 0, 1, 0],
+    ...                [1, 1, 1, 1]], dtype=ivy.float32)
+    >>> b = ivy.array([[4],
+    ...                [2],
+    ...                [4],
+    ...                [2]], dtype=ivy.float32)
+    >>> x = ivy.solve_triangular(a, b, upper=False)
+    >>> ivy.matmul(a, x)
+    ivy.array([[4.],
+               [2.],
+               [4.],
+               [2.]])
+    """
+    return current_backend(x1, x2).solve_triangular(
+        x1, x2, upper=upper, adjoint=adjoint, unit_diagonal=unit_diagonal, out=out
+    )
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 def multi_dot(
