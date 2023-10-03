@@ -97,13 +97,16 @@ def _helper_random_tensorarray(draw, fn=None):
     element_shape = draw(helpers.get_shape())
     element_shape = draw(st.one_of(st.just(None), st.just(element_shape)))
     shape = None
-    if infer_shape or element_shape is not None:
+    if infer_shape or element_shape is not None or fn == "stack":
         if element_shape is None:
             shape = draw(helpers.get_shape())
         else:
             shape = element_shape
     dtype = draw(helpers.get_dtypes(full=False, prune_function=False))[0]
-    ids_to_write = [draw(st.booleans()) for i in range(size)]
+    if fn == "stack":
+        ids_to_write = [True for i in range(size)]
+    else:
+        ids_to_write = [draw(st.booleans()) for i in range(size)]
     kwargs = {
         "dtype": dtype,
         "size": size,
@@ -124,8 +127,8 @@ def _helper_random_tensorarray(draw, fn=None):
                 )
             )
             id_write.append((id, write))
-    if fn is None:
-        return id_write, kwargs
+    # if fn is None:
+    return id_write, kwargs
 
 
 # --- Main --- #
@@ -1688,3 +1691,17 @@ def test_tesorarray_read(
             ret_np_flat=np.array(ta_frontend.read(id)).flatten(),
             backend=backend_fw,
         )
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="stack"))
+def test_tesorarray_stack(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
+    helpers.value_test(
+        ret_np_from_gt_flat=ta.stack().numpy().flatten(),
+        ret_np_flat=np.array(ta_frontend.stack()).flatten(),
+        backend=backend_fw,
+    )
+    ta.stack()
