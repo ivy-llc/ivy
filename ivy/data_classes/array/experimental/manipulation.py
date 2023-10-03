@@ -1390,38 +1390,30 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.put_along_axis(self._data, indices, values, axis, mode=mode, out=out)
 
-    @handle_exceptions
-    @handle_nestable
-    @handle_container_like_without_promotion
-    @handle_out_argument
+
     def concat_from_sequence(
-        container_sequence: Sequence[ivy.Container], axis: int = 0
-    ) -> ivy.Container:
-        """
-        Concatenates a sequence of containers along a specified axis.
+    array_sequence: Sequence[ivy.Array],
+    axis: int = 0,
+) -> ivy.Array:
+  """Concatenates a sequence of arrays along a specified axis.
 
-        Args:
-          container_sequence: A sequence of containers.
-          axis: The axis along which to concatenate the containers.
+  Args:
+    array_sequence: A sequence of arrays.
+    axis: The axis along which to concatenate the arrays.
 
-        Returns:
-          A container that is the concatenation of the containers in the sequence.
-        """
+  Returns:
+    A array that is the concatenation of the arrays in the sequence.
+  """
 
-        # Check that all containers in the sequence have the same structure.
-        for container in container_sequence:
-            if not container.is_struct_of_same_shape():
-                raise ValueError(
-                    "All containers in the sequence must have the same structure. "
-                    f"Found structure: {container.structure}"
-                )
+  # Check that all arrays in the sequence have the same shape.
+  for array in array_sequence:
+    if not array.shape == array_sequence[0].shape:
+      raise ValueError(
+          f"All arrays in the sequence must have the same shape. "
+          f"Found shape: {array.shape}"
+      )
 
-        # Recursively concatenate the leaves of the container sequence.
-        concatenated_container = ivy.Container()
-        for container in container_sequence:
-            concatenated_container = concat_from_sequence(
-                container.leaves(), axis=axis, out=concatenated_container
-            )
+  # Concatenate the arrays along the specified axis.
+  concatenated_array = ivy.concat(array_sequence, axis=axis)
 
-        # Return the concatenated container.
-        return concatenated_container
+  return concatenated_array
