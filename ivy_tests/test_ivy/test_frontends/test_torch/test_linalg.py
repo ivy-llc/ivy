@@ -442,10 +442,14 @@ def test_torch_det(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
+    dims_and_offset=_dims_and_offset(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
+    ),
 )
 def test_torch_diagonal(
     *,
     dtype_and_x,
+    dims_and_offset,
     on_device,
     fn_tree,
     frontend,
@@ -453,6 +457,14 @@ def test_torch_diagonal(
     backend_fw,
 ):
     dtype, x = dtype_and_x
+    dim1, dim2, offset = dims_and_offset
+    x = x[0]
+    num_dims = len(np.shape(x))
+    assume(dim1 != dim2)
+    if dim1 < 0:
+        assume(dim1 + num_dims != dim2)
+    if dim2 < 0:
+        assume(dim1 != dim2 + num_dims)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -462,6 +474,9 @@ def test_torch_diagonal(
         fn_tree=fn_tree,
         test_values=True,
         A=x,
+        offset=offset,
+        dim1=dim1,
+        dim2=dim2,
     )
 
 
