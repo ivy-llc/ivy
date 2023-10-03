@@ -2055,13 +2055,13 @@ def solve(
                        [3.1]]),
     >>> x = solve(A,B);
     >>> print(x)
-    >>> ivy.array([[1],
-                   [0],
-                   [0]])
+    ivy.array([[1],
+               [0],
+               [0]])
     >>> print(x.shape)
     (1,3)
 
-    For shape(A) = (2,3,3) and shape(B) = (2,3,1):
+    With shape(A) = (2,3,3) and shape(B) = (2,3,1):
     >>> A = ivy.array([[[11.1, 11.2, 11.3],
                         [12.1, 12.2, 12.3],
                         [13.1, 13.2, 13.3]],
@@ -2086,7 +2086,7 @@ def solve(
     >>> print(x.shape)
     (2,1,3)
 
-    For shape(A) = (3,3) and shape(B) = (3,2):
+    With shape(A) = (3,3) and shape(B) = (3,2):
     >>> A = ivy.array([[1.1, 1.2, 1.3],
                        [2.1, 2.2, 2.3],
                        [3.1, 3.2, 3.3]]),
@@ -2113,8 +2113,8 @@ def solve(
     >>> x = solve(A,B);
     >>> print(x)
     {
-    B1:([[1],[0],[0]]),
-    B2:([[2],[0],[0]])
+        B1:([[1],[0],[0]]),
+        B2:([[2],[0],[0]])
     }
     """
     return current_backend(x1, x2).solve(x1, x2, out=out)
