@@ -109,6 +109,7 @@ def bincount(
 
 bincount.support_native_out = False
 
+
 def average(
     a: np.ndarray,
     /,

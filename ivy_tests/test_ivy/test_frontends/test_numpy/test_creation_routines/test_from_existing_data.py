@@ -99,7 +99,8 @@ def test_numpy_copy(
         a=a[0],
     )
 
-#frombuffer
+
+# frombuffer
 @handle_frontend_test(
     fn_tree="numpy.frombuffer",
     dtype_and_a=helpers.dtype_and_values(

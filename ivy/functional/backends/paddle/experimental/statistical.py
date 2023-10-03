@@ -283,6 +283,7 @@ def unravel_index(
 
     return tuple(reversed(coord))
 
+
 def average(
     a: paddle.Tensor,
     /,

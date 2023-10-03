@@ -277,6 +277,7 @@ def bincount(
         x, weights=weights, minlength=minlength, out=out
     )
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -289,7 +290,7 @@ def average(
     keepdims: bool = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
-)-> ivy.Array:
+) -> ivy.Array:
     """Computes the mean of all elements along the specified dimensions.
      Parameters
     ----------

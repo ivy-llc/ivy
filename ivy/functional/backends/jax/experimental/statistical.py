@@ -94,6 +94,7 @@ def bincount(
         ret = jnp.bincount(x, minlength=minlength).astype(x.dtype)
     return ret
 
+
 def average(
     a: JaxArray,
     /,
