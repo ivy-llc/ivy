@@ -2281,6 +2281,7 @@ class Dct(Module):
             s += ", norm={norm}"
         return s.format(**self.__dict__)
 
+
 class IDct(Module):
     def __init__(
         self,
@@ -2347,6 +2348,7 @@ class IDct(Module):
         if self.norm is not None:
             s += ", norm={norm}"
         return s.format(**self.__dict__)
+
 
 # EMBEDDING #
 # ----------#
