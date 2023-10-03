@@ -655,7 +655,6 @@ def _transpile_if_required_backend(backend: str, fn_name: str, args=None, kwargs
     backend_nodes = len(backend_traced_fn._functions)
 
     data = {
-        "backend": backend,
         "fn_name": fn_name,
         "args": str(args),
         "kwargs": str(kwargs),
