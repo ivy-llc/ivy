@@ -693,24 +693,31 @@ def test_concat_from_sequence(
 
 # concat_from_sequence
 @handle_test(
-    fn_tree="concat_from_sequence",
-    sequence=st.lists(
-        shape=st.shared(helpers.get_shape(), key="concat_from_sequence"),
-        dtypes=helpers.get_dtypes("valid"),
+    fn_tree="functional.ivy.experimental.concat_from_sequence",
+    dtype_and_sequences=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
-    axis=st.integers(min_value=0, max_value=sequence[0].ndim),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_concat_from_sequence(
-    *, sequence, axis, test_flags, backend_fw, fn_name, on_device
+    *, dtype_and_sequences, test_flags, backend_to_test, fn_name, on_device
 ):
-    concatenated_tensor = concat_from_sequence(sequence, axis=axis)
-    helpers.test_function(
-        input_dtypes=[t.dtype for t in sequence],
-        backend_to_test=backend_fw,
+    dtypes, sequences = dtype_and_sequences
+
+    kw = {kw[f"x{i}"] = np.asarray(sequence, dtype=idtype)
+    test_flags.num_positional_args = len(kw)
+}
+    for i, (sequence, idtype) in enumerate(zip(sequences, dtypes)):
+        
+    ivy.test_function(
+        input_dtypes=dtypes,
         test_flags=test_flags,
+        backend_to_test=backend_to_test,
         fn_name=fn_name,
         on_device=on_device,
-        expected=[t for t in sequence],
+        **kw,
     )
 
 
