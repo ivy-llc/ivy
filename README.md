@@ -183,11 +183,6 @@ tutorials to do so are available!
 
 </details>
 
-
-
-</details>
-</details>
-
 ------------------------------------------------------------------------
 
 ## Using Ivy
@@ -1338,10 +1333,6 @@ train(images, classes, num_epochs, model, device, num_classes = num_classes, bat
 </details>
 </details>
 
-</details>
-
-</details>
-
 ------------------------------------------------------------------------
 
 # Diving deeper
@@ -1412,7 +1403,6 @@ ret = lazy_graph(x1)
 If you want to learn more, you can find more information in the [Ivy as
 a transpiler section of the
 docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html)
-
 
 ## When should I use Ivy as a transpiler?
 
@@ -1558,12 +1548,11 @@ The model\'s output can be visualized as follows:
    <img width="50%" class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/regressor_lq.gif">
 </div>
 
-
 As always, you can find more information about [Ivy as a framework in
 the
 docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html)
 
-## When should I use Ivy as a framework?
+<h2> When should I use Ivy as a framework? </h2>
 
 As Ivy supports multiple backends, writing code in Ivy breaks you free
 from framework limitations. If you want to publish highly flexible code
