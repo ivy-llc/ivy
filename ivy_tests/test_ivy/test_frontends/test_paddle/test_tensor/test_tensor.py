@@ -151,6 +151,29 @@ def _get_dtype_and_square_matrix(draw):
     return dtype, mat
 
 
+# bmm helper function
+@st.composite
+def _get_dtype_and_values_bmm(draw):
+    # arrays x and y of sizes (b, m, k) and (b, k, n) respectively
+    b = draw(helpers.ints(min_value=1, max_value=10))
+    k = draw(helpers.ints(min_value=1, max_value=10))
+    m = draw(helpers.ints(min_value=1, max_value=10))
+    n = draw(helpers.ints(min_value=1, max_value=10))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(b, m, k), min_value=-10, max_value=10
+        )
+    )
+    y = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(b, k, n), min_value=-10, max_value=10
+        )
+    )
+    return dtype, x, y
+
+
+# lerp helper function
 @st.composite
 def _get_dtype_and_values_for_lerp(draw):
     is_tensor = draw(st.booleans())
@@ -1216,6 +1239,37 @@ def test_paddle_tensor_bitwise_xor(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"y": x[1]},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# bmm
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="bmm",
+    dtype_and_x=_get_dtype_and_values_bmm(),
+)
+def test_paddle_tensor_bmm(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, y = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"y": y},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
