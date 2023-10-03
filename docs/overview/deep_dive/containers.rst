@@ -252,8 +252,8 @@ There may be some compositional functions which are not implicitly nestable for 
 One such example is the :func:`ivy.linear` function which is not implicitly nestable despite being compositional. This is because of the use of special functions like :func:`__len__` and :func:`__list__` which, among other functions, are not nestable and can't be made nestable.
 But we should try to avoid this, in order to make the flow of computation as intuitive to the user as possible.
 
-When compiling the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
-The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be compiled in any case.
+When tracing the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
+The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be traced in any case.
 The distinction is only really relevant when stepping through and debugging with eager mode execution, and for the reasons outlined above, the preference is to keep compositional functions implicitly nestable where possible.
 
 **Shared Nested Structure**
