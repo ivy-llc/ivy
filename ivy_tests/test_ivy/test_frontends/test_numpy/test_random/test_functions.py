@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -709,6 +708,63 @@ def test_numpy_noncentral_chisquare(
         test_values=False,
         df=df[0],
         nonc=nonc[0],
+        size=size,
+    )
+
+
+# noncentral_f - numpy
+@handle_frontend_test(
+    fn_tree="numpy.random.noncentral_f",
+    input_dtypes=helpers.get_dtypes("float"),
+    dfnum=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=1,
+        max_value=1000,
+        exclude_min=True,
+    ),
+    dfden=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=1,
+        max_value=1000,
+        exclude_min=True,
+    ),
+    nonc=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=1000,
+    ),
+    size=helpers.get_shape(allow_none=False),
+)
+def test_numpy_noncentral_f(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    dfnum,
+    dfden,
+    nonc,
+):
+    test_flags.num_positional_args = 3
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        on_device=on_device,
+        dfnum=dfnum,
+        dfden=dfden,
+        nonc=nonc,
         size=size,
     )
 
