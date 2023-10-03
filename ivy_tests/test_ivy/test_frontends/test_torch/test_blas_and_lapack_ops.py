@@ -104,19 +104,25 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False, input_3d=False):
 
 
 @st.composite
-def _get_dtype_and_matrices(draw):
+def _get_dtype_and_matrices(draw, square1=False, square2=False):
     dim1 = draw(helpers.ints(min_value=2, max_value=7))
     dim2 = draw(helpers.ints(min_value=2, max_value=7))
     dtype = draw(helpers.get_dtypes("float", full=False))
 
     matr1 = draw(
         helpers.array_values(
-            dtype=dtype[0], shape=(dim1, dim2), min_value=2, max_value=10
+            dtype=dtype[0],
+            shape=(dim1, dim1 if square1 else dim2),
+            min_value=2,
+            max_value=10,
         )
     )
     matr2 = draw(
         helpers.array_values(
-            dtype=dtype[0], shape=(dim1, dim2), min_value=2, max_value=10
+            dtype=dtype[0],
+            shape=(dim2 if square2 else dim1, dim2),
+            min_value=2,
+            max_value=10,
         )
     )
 
@@ -554,6 +560,39 @@ def test_torch_cholesky(
         on_device=on_device,
         rtol=1e-02,
         input=x,
+        upper=upper,
+    )
+
+
+# cholesky_solve
+@handle_frontend_test(
+    fn_tree="torch.cholesky_solve",
+    dtype_and_matrices=_get_dtype_and_matrices(square1=True),
+    upper=st.booleans(),
+)
+def test_torch_cholesky_solve(
+    dtype_and_matrices,
+    upper,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    # `input2` M * M, `input` M * K
+    # `input2` does not need to be triangular; half of it will be ignored
+    dtype, input2, input = dtype_and_matrices
+    assume(matrix_is_stable(input2, cond_limit=30))  # nonsingular
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        input=input,
+        input2=input2,
         upper=upper,
     )
 
