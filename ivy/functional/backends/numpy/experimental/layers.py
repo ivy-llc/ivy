@@ -835,6 +835,7 @@ def idct(
     inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
     return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
 
+
 def irfft(
     x: np.ndarray,
     /,

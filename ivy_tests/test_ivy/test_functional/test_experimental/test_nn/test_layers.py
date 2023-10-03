@@ -384,6 +384,7 @@ def _x_and_ifftn(draw):
 
     return dtype, x, s, axes, norm
 
+
 @st.composite
 def _x_and_irfft(draw):
     min_irfft_points = 2
@@ -1119,6 +1120,7 @@ def test_interpolate(
         scale_factor=scale_factor,
         recompute_scale_factor=recompute_scale_factor,
     )
+
 
 @handle_test(
     fn_tree="functional.ivy.experimental.irfft",

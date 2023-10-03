@@ -515,6 +515,7 @@ def dct(
             dct_out *= math.sqrt(0.5) * jlax.rsqrt(axis_dim_float)
     return dct_out
 
+
 def irfft(
     x: JaxArray,
     /,

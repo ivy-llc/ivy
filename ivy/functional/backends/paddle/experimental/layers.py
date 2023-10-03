@@ -455,6 +455,7 @@ def irfft(
     # Ignore the `out` parameter for Paddle
     return paddle.fft.irfft(x, n=n, axis=axis, norm=norm, name=name)
 
+
 def adaptive_max_pool2d(
     input: paddle.Tensor, output_size: Union[Sequence[int], int]
 ) -> paddle.Tensor:

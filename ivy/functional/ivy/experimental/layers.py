@@ -883,6 +883,7 @@ def irfft(
     dimensional n point discrete Fourier transform of the actual input calculated by
     “rfft”. In other words, irfft(rfft(a),len(a)) == a is within the numerical accuracy
     range.
+
     Parameters
     ----------
     x : Array or NativeArray
