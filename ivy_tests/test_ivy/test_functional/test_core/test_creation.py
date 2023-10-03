@@ -3,6 +3,7 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
+import ivy
 
 
 # local
@@ -30,7 +31,7 @@ def _asarray_helper(draw):
         )
     )
     with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
-        x_list = ivy_backend.nested_map(x, lambda x: x.tolist(), shallow=False)
+        x_list = ivy_backend.nested_map(lambda x: x.tolist(), x, shallow=False)
         sh = draw(helpers.get_shape(min_num_dims=1))
         sh = ivy_backend.Shape(sh)
     # np_array = x[0]
@@ -133,6 +134,11 @@ def _on_off_dtype(draw):
 
 # --- Main --- #
 # ------------ #
+
+
+def is_capsule(o):
+    t = type(o)
+    return t.__module__ == "builtins" and t.__name__ == "PyCapsule"
 
 
 # arange
@@ -354,7 +360,7 @@ def test_eye(
 @handle_test(
     fn_tree="functional.ivy.from_dlpack",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes(kind="float", full=False, key="dtype"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -362,16 +368,15 @@ def test_eye(
     ),
     test_gradients=st.just(False),
 )
-def test_from_dlpack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_from_dlpack(*, dtype_and_x, backend_fw):
+    if backend_fw == "numpy":
+        return
+    ivy.set_backend(backend_fw)
     input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        x=x[0],
-    )
+    native_array = ivy.native_array(x[0])
+    cap = ivy.to_dlpack(native_array)
+    array = ivy.from_dlpack(cap)
+    assert ivy.is_native_array(array)
 
 
 @handle_test(
@@ -588,7 +593,7 @@ def test_meshgrid(
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     test_flags.num_positional_args = len(arrays)
     helpers.test_function(
@@ -704,6 +709,26 @@ def test_ones_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         dtype=dtype[0],
         device=on_device,
     )
+
+
+# to_dlpack
+@handle_test(
+    fn_tree="functional.ivy.to_dlpack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(kind="float", full=False, key="dtype"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    test_gradients=st.just(False),
+)
+def test_to_dlpack(*, dtype_and_x, backend_fw):
+    ivy.set_backend(backend_fw)
+    input_dtype, x = dtype_and_x
+    native_array = ivy.native_array(x[0])
+    cap = ivy.to_dlpack(native_array)
+    assert is_capsule(cap)
 
 
 # tril

@@ -181,7 +181,7 @@ def test_sklearn_test_train_split(
     dtypes, values = arrays_and_dtypes
     kw = {}
     for i, x_ in enumerate(values):
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
     test_flags.num_positional_args = len(values)
     helpers.test_frontend_function(
         input_dtypes=dtypes,
