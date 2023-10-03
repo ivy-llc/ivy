@@ -46,6 +46,24 @@ def sigmoid(
     return 1 / (1 + jnp.exp(-x))
 
 
+def segment_max(
+    data: JaxArray, segment_ids: JaxArray, /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    unique_segment_ids, segment_counts = jnp.unique(segment_ids, return_counts=True)
+    max_values = jax.vmap(lambda segment_id: jnp.max(data[segment_ids == segment_id]))(
+        unique_segment_ids
+    )
+
+    result = jax.ops.segment_sum(
+        jax.ops.index_add, jnp.zeros_like(data), max_values, segment_ids
+    )
+
+    if out is not None:
+        jnp.copyto(out, result)
+        return out
+    return result
+
+
 def softmax(
     x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
 ) -> JaxArray:

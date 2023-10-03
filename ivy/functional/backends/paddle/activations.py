@@ -210,3 +210,27 @@ def hardswish(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return F.hardswish(x)
+
+
+def segment_max(
+    data: paddle.Tensor,
+    segment_ids: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    unique_segment_ids, segment_counts = paddle.unique(segment_ids)
+
+    @paddle.jit
+    def max_per_segment(segment_id):
+        return paddle.max(paddle.boolean_mask(data, segment_ids == segment_id))
+
+    max_values = paddle.vectorized_map(max_per_segment, unique_segment_ids)
+
+    result = paddle.scatter_update(
+        paddle.zeros_like(data), paddle.unsqueeze(segment_ids, axis=-1), max_values
+    )
+
+    if out is not None:
+        return out.copy(result)
+    return result
