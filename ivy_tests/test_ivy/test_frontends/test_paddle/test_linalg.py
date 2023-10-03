@@ -706,13 +706,13 @@ def test_paddle_eigvalsh(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
-    dims_and_offset=dims_and_offset(
+    axis_and_offset=dims_and_offset(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
     ),
 )
 def test_paddle_linalg_diagonal(
     dtype_and_values,
-    axiss_and_offset,
+    axis_and_offset,
     on_device,
     fn_tree,
     frontend,
@@ -720,7 +720,7 @@ def test_paddle_linalg_diagonal(
     backend_fw,
 ):
     input_dtype, value = dtype_and_values
-    axis1, axis2, offset = axiss_and_offset
+    axis1, axis2, offset = axis_and_offset
     input = value[0]
     num_dims = len(np.shape(input))
     assume(axis1 != axis2)
