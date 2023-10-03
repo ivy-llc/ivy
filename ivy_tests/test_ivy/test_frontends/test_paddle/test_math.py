@@ -1,5 +1,4 @@
 # global
-from typing import Literal
 from hypothesis import strategies as st
 
 # local
@@ -46,7 +45,7 @@ def test_paddle_abs(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -74,7 +73,7 @@ def test_paddle_acos(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -103,7 +102,7 @@ def test_paddle_acosh(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -138,7 +137,7 @@ def test_paddle_add(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -181,7 +180,7 @@ def test_paddle_addmm(
     alpha,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -217,7 +216,7 @@ def test_paddle_amax(
     on_device,
     fn_tree,
     backend_fw,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
@@ -248,7 +247,7 @@ def test_paddle_amin(
     on_device,
     fn_tree,
     backend_fw,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
 ):
     input_dtype, x, axis = dtype_and_x
@@ -276,7 +275,7 @@ def test_paddle_angle(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -308,7 +307,7 @@ def test_paddle_any(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -336,7 +335,7 @@ def test_paddle_any(
 def test_paddle_asin(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     fn_tree,
     backend_fw,
@@ -366,7 +365,7 @@ def test_paddle_asinh(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -393,7 +392,7 @@ def test_paddle_asinh(
 def test_paddle_atan(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     fn_tree,
     backend_fw,
@@ -429,7 +428,7 @@ def test_paddle_atan2(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -458,7 +457,7 @@ def test_paddle_atanh(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -484,7 +483,7 @@ def test_paddle_atanh(
 def test_paddle_ceil(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     fn_tree,
     backend_fw,
@@ -512,7 +511,7 @@ def test_paddle_ceil(
 def test_paddle_conj(
     *,
     dtype_and_input,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
     fn_tree,
@@ -542,7 +541,7 @@ def test_paddle_cos(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -570,7 +569,7 @@ def test_paddle_cosh(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -602,7 +601,7 @@ def test_paddle_count_nonzero(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -636,7 +635,7 @@ def test_paddle_cumprod(
     dtype_x_axis,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -665,7 +664,7 @@ def test_paddle_deg2rad(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -709,7 +708,7 @@ def test_paddle_diff(
     dtype_prepend,
     dtype_append,
     test_flags,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     fn_tree,
     on_device,
@@ -745,7 +744,7 @@ def test_paddle_digamma(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -780,7 +779,7 @@ def test_paddle_divide(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -807,7 +806,7 @@ def test_paddle_divide(
 def test_paddle_erf(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
     fn_tree,
@@ -837,7 +836,7 @@ def test_paddle_exp(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -865,7 +864,7 @@ def test_paddle_expm1(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -891,7 +890,7 @@ def test_paddle_expm1(
 def test_paddle_floor(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
     fn_tree,
@@ -926,7 +925,7 @@ def test_paddle_floor_divide(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -963,7 +962,7 @@ def test_paddle_floor_mod(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -991,7 +990,7 @@ def test_paddle_fmax(
     dtypes_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1019,7 +1018,7 @@ def test_paddle_fmin(
     dtypes_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1049,7 +1048,7 @@ def test_paddle_fmin(
 def test_paddle_frac(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
     fn_tree,
@@ -1085,7 +1084,7 @@ def test_paddle_gcd(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1120,7 +1119,7 @@ def test_paddle_heaviside(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1134,40 +1133,6 @@ def test_paddle_heaviside(
         on_device=on_device,
         x=x[0],
         y=x[1],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="paddle.increment",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
-        shape=(1,),
-        allow_inf=False,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
-        shared_dtype=True,
-    ),
-)
-def test_paddle_increment(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend: Literal["paddle"],
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
-        on_device=on_device,
-        x=x[0],
     )
 
 
@@ -1187,7 +1152,7 @@ def test_paddle_inner(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1214,7 +1179,7 @@ def test_paddle_inner(
 def test_paddle_isfinite(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
     fn_tree,
@@ -1242,7 +1207,7 @@ def test_paddle_isfinite(
 def test_paddle_isinf(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
     fn_tree,
@@ -1270,7 +1235,7 @@ def test_paddle_isinf(
 def test_paddle_isnan(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
     fn_tree,
@@ -1304,7 +1269,7 @@ def test_paddle_kron(
     on_device,
     fn_tree,
     backend_fw,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
@@ -1337,7 +1302,7 @@ def test_paddle_lcm(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1372,7 +1337,7 @@ def test_paddle_lerp(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1403,7 +1368,7 @@ def test_paddle_lgamma(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1432,7 +1397,7 @@ def test_paddle_log(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -1459,7 +1424,7 @@ def test_paddle_log10(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1488,7 +1453,7 @@ def test_paddle_log1p(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1516,7 +1481,7 @@ def test_paddle_log2(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1544,7 +1509,7 @@ def test_paddle_logit(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1577,7 +1542,7 @@ def test_paddle_max(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1609,7 +1574,7 @@ def test_paddle_maximum(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1642,7 +1607,7 @@ def test_paddle_min(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1673,7 +1638,7 @@ def test_paddle_minimum(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1700,7 +1665,7 @@ def test_paddle_mm(
     dtype_xy,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -1735,7 +1700,7 @@ def test_paddle_multiply(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -1765,7 +1730,7 @@ def test_paddle_nanmean(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1799,7 +1764,7 @@ def test_paddle_nansum(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1830,7 +1795,7 @@ def test_paddle_neg(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1862,7 +1827,7 @@ def test_paddle_outer(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1894,7 +1859,7 @@ def test_paddle_pow(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -1931,7 +1896,7 @@ def test_paddle_prod(
     on_device,
     backend_fw,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
 ):
     input_dtype, x, axis = dtype_and_x
@@ -1960,7 +1925,7 @@ def test_paddle_rad2deg(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -1988,7 +1953,7 @@ def test_paddle_reciprocal(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -2022,7 +1987,7 @@ def test_paddle_remainder(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -2050,7 +2015,7 @@ def test_paddle_remainder(
 def test_paddle_round(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     fn_tree,
     backend_fw,
@@ -2078,7 +2043,7 @@ def test_paddle_round(
 def test_paddle_rsqrt(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     fn_tree,
     on_device,
@@ -2114,7 +2079,7 @@ def test_paddle_sgn(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -2142,7 +2107,7 @@ def test_paddle_sign(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -2170,7 +2135,7 @@ def test_paddle_sin(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -2199,7 +2164,7 @@ def test_paddle_sinh(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -2225,7 +2190,7 @@ def test_paddle_sinh(
 def test_paddle_sqrt(
     *,
     dtype_and_x,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     fn_tree,
     backend_fw,
@@ -2255,7 +2220,7 @@ def test_paddle_square(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -2285,7 +2250,7 @@ def test_paddle_stanh(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
     scale_a,
@@ -2323,7 +2288,7 @@ def test_paddle_subtract(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -2357,7 +2322,7 @@ def test_paddle_sum(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -2383,7 +2348,7 @@ def test_paddle_take(
     on_device,
     fn_tree,
     backend_fw,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
 ):
     dtypes, xs, indices, modes = dtype_and_values
@@ -2412,7 +2377,7 @@ def test_paddle_tan(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
@@ -2441,7 +2406,7 @@ def test_paddle_tanh(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -2481,7 +2446,7 @@ def test_paddle_trace(
     axis2,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     test_flags,
     backend_fw,
 ):
@@ -2512,7 +2477,7 @@ def test_paddle_trunc(
     dtype_and_x,
     on_device,
     fn_tree,
-    frontend: Literal["paddle"],
+    frontend,
     backend_fw,
     test_flags,
 ):
