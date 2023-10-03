@@ -122,44 +122,6 @@ def test_numpy_diagonal(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.putmask",
-    a=helpers.array_values(
-        dtype=helpers.get_dtypes("numeric"),
-        shape=helpers.get_shape(
-            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=5
-        ),
-    ),
-    input_dtypes=helpers.get_dtypes("numeric"),
-    test_with_out=st.just(False),
-    number_positional_args=st.just(2),
-)
-def test_numpy_mask_indices(
-    a,
-    input_dtypes,
-    test_flags,
-    frontend,
-    backend_fw,
-    fn_tree,
-    on_device,
-):
-    mask = np_frontend_helpers.helpers.np.random.choice([True, False], size=a.shape)
-    values_size = np_frontend_helpers.helpers.np.random.randint(1, a.size + 1)
-    values = np_frontend_helpers.helpers.np.random.randint(-100, 100, size=values_size)
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=a,
-        mask=mask,
-        values=values,
-    )
-
-
-@handle_frontend_test(
     fn_tree="numpy.put_along_axis",
     args=put_along_axis_helper(),
     test_with_out=st.just(False),
@@ -185,6 +147,51 @@ def test_numpy_put_along_axis(
         indices=indices,
         values=values,
         axis=axis,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.putmask",
+    dtypes_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(
+            kind="numeric", prune_function=True, mixed_fn_compos=False
+        ),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=10,
+        max_dim_size=100,
+    ),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(2),
+)
+def test_numpy_putmask(
+    dtypes_a,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, a = dtypes_a
+    a = a[0]
+    ip_dtype = input_dtypes[0]
+    mask = helpers.np.random.choice([True, False], size=a.shape)
+    mask = mask.astype(ip_dtype)
+    values_size = helpers.np.random.randint(1, a.size + 1)
+    values = helpers.np.random.randint(-100, 100, size=values_size)
+    print()
+    values = values.astype(ip_dtype)
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a,
+        mask=mask,
+        values=values,
     )
 
 

@@ -1,4 +1,5 @@
 import ivy
+from ivy import with_supported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     inputs_to_ivy_arrays,
@@ -84,16 +85,21 @@ def put_along_axis(arr, indices, values, axis):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.14.0 and below": ("float16", "float32", "float64", "int32", "int64", "uint16")},
+    "paddle",
+)
 def putmask(a, mask, values):
     values = ivy.asarray(values)
     if mask.shape != a.shape:
         raise ValueError("mask and a must have the same shape")
-    mask_indices = ivy.where(mask)
-    if values.shape != () and values.shape != (1,):
-        if values.shape != a.shape:
-            values = ivy.array(
-                [values[i % len(values)] for i in range(a.size)]
-            ).reshape(a.shape)
+    if values.size == 0:
+        raise ValueError("values cannot be empty")
+    mask_indices = ivy.nonzero(mask != 0)
+    if values.shape != a.shape:
+        values = ivy.array([values[i % len(values)] for i in range(a.size)]).reshape(
+            a.shape
+        )
     a[mask_indices] = values[mask_indices]
 
 
