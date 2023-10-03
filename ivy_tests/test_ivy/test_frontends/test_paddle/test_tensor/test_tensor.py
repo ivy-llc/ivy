@@ -2271,11 +2271,13 @@ def test_paddle_tensor_imag(
 
 
 @handle_frontend_method(
-    class_tree=CLASS_TREE,
+    class_tree=CLASS_TREE,  # the class tree from your provided context
     init_tree="paddle.to_tensor",
     method_name="increment",
     dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes(
+            "float"
+        ),  # as float32 and float64 are mentioned as supported
         num_arrays=1,
         shape=(1,),
     ),
@@ -2290,7 +2292,7 @@ def test_paddle_tensor_increment(
     backend_fw,
 ):
     input_dtype, x = dtypes_and_x
-    value = 5.0
+    value = 5.0  # example value to increment
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
