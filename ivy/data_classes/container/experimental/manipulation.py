@@ -3861,7 +3861,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         )
 
 
-
 def concat_from_sequence(
     container_sequence: Sequence[ivy.Container], axis: int = 0
 ) -> ivy.Container:
