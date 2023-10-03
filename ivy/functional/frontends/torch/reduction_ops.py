@@ -206,9 +206,11 @@ def nanmedian(input, dim=None, keepdim=False, *, out=None):
         result = nanmedian_tuple(input, ivy.array(0))
     else:
         sorted_indices = ivy.argsort(input, axis=dim)
-        nonnan_index = (sorted_indices.shape[dim] - ivy.isnan(input).sum(axis=1) - 1) // 2
+        nonnan_index = (
+            sorted_indices.shape[dim] - ivy.isnan(input).sum(axis=1) - 1
+        ) // 2
         nonnan_index = ivy.expand_dims(nonnan_index, axis=1)
-        nanmedian_indices = ivy.gather_nd(sorted_indices, nonnan_index,batch_dims=1)
+        nanmedian_indices = ivy.gather_nd(sorted_indices, nonnan_index, batch_dims=1)
         nanmedian_values = ivy.take_along_axis(
             input, ivy.expand_dims(nanmedian_indices, axis=dim), dim
         ).squeeze(axis=dim)
