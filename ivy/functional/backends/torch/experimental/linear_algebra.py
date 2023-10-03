@@ -155,6 +155,27 @@ def adjoint(
     return torch.adjoint(x).resolve_conj()
 
 
+def solve_triangular(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if adjoint:
+        x1 = torch.adjoint(x1)
+        upper = not upper
+    return torch.linalg.solve_triangular(
+        x1, x2, upper=upper, unitriangular=unit_diagonal, out=out
+    )
+
+
+solve_triangular.support_native_out = True
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def multi_dot(
     x: Sequence[torch.Tensor],
