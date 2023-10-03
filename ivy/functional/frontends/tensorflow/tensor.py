@@ -343,10 +343,7 @@ class TensorArray:
             self._tensor_array.extend(None for _ in range(index - size + 1))
 
         if not isinstance(value, EagerTensor):
-            value = tf_frontend.cast(
-                value, self.dtype
-            )  # if ivy.can_cast(value,self.dtype._ivy_dtype)
-            # else tf_frontend.constant(value)
+            value = tf_frontend.cast(value, self.dtype)
 
         if self._dtype != value.dtype:
             raise ValueError(
@@ -432,6 +429,16 @@ class TensorArray:
 
     def close(self, name=None):
         del self._tensor_array[:]
+
+    def split(self, value, lengths, name=None):
+        value = tf_frontend.cast(value, self.dtype)
+        lengths = (
+            tf_frontend.constant(lengths)
+            if not isinstance(lengths, EagerTensor)
+            else lengths
+        )
+        self._tensor_array = tf_frontend.split(value, lengths, name=name)
+        return self._parent()
 
 
 # Dummy Tensor class to help with compilation, don't add methods here

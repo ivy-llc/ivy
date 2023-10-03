@@ -85,6 +85,9 @@ def _helper_init_tensorarray(backend_fw, l_kwargs, fn=None):
         if fn == "unstack":
             ta = ta.unstack(tf.constant(id_write))
             ta_frontend = ta_frontend.unstack(function_module.constant(id_write))
+        elif fn == "split":
+            ta = ta.split(**id_write)
+            ta_frontend = ta_frontend.split(**id_write)
         else:
             for id, write in id_write:
                 ta = ta.write(id, tf.constant(write))
@@ -135,6 +138,30 @@ def _helper_random_tensorarray(draw, fn=None):
 
 
 @st.composite
+def _helper_tensorarray_split(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    dtype = draw(helpers.get_dtypes(full=False, prune_function=False))[0]
+    value = draw(helpers.array_values(dtype=dtype, shape=shape))
+    dynamic_size = draw(st.booleans())
+    if dynamic_size:
+        size = draw(st.integers(1, shape[0] + 5))
+    else:
+        size = shape[0]
+    total = 0
+    length = []
+    for i in range(shape[0]):
+        length.append(draw(st.integers(0, shape[0] - total)))
+        total += length[-1]
+    if total != shape[0]:
+        length[-1] += shape[0] - total
+    return {"value": value, "lengths": length}, {
+        "dtype": dtype,
+        "size": size,
+        "dynamic_size": dynamic_size,
+    }
+
+
+@st.composite
 def _helper_tensorarray_unstack(draw):
     shape = draw(helpers.get_shape(min_num_dims=1))
     size = draw(st.integers(1, 10))
@@ -147,6 +174,19 @@ def _helper_tensorarray_unstack(draw):
 
 # --- Main --- #
 # ------------ #
+
+
+@given(
+    kwargs_v_l=_helper_tensorarray_split(),
+)
+def test_tensorarray_split(kwargs_v_l, backend_fw):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, kwargs_v_l, "split")
+    for id in range(ta.size()):
+        helpers.value_test(
+            ret_np_from_gt_flat=ta.read(id).numpy().flatten(),
+            ret_np_flat=np.array(ta_frontend.read(id)).flatten(),
+            backend=backend_fw,
+        )
 
 
 # __add__
