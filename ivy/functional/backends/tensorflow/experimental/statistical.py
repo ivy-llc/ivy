@@ -34,7 +34,7 @@ def histogram(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.14.0 and below": (
             "float",
             "complex",
         )
@@ -249,7 +249,7 @@ def nanmedian(
 
 @with_supported_device_and_dtypes(
     {
-        "2.13.0 and below": {
+        "2.14.0 and below": {
             "cpu": (
                 "int64",
                 "int32",
@@ -284,7 +284,7 @@ def bincount(
 
 @with_supported_device_and_dtypes(
     {
-        "2.13.0 and below": {
+        "2.14.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -297,7 +297,7 @@ def igamma(
     return tf.math.igamma(a, x)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: tf.Tensor,
     x2: tf.Tensor = None,
@@ -400,7 +400,7 @@ def cov(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bool",)},
+    {"2.14.0 and below": ("bool",)},
     backend_version,
 )
 def cummax(
@@ -529,7 +529,7 @@ def __get_index(lst, indices=None, prefix=None):
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "complex")},
+    {"2.14.0 and below": ("bfloat16", "complex")},
     backend_version,
 )
 def cummin(
