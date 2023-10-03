@@ -833,14 +833,14 @@ def pow(
 # Implementation based on TensorFlow's scalar_round_half_to_even_op logic
 # Reference: https://github.com/tensorflow/tensorflow/blob/7f1050a6976d11bfb0bb37bdfc82350c0a238faa/tensorflow/core/kernels/cwise_ops.h#L510  # noqa: E501
 def _round_half_to_even(x):
-    round_val = paddle.floor(x + 0.5)
+    round_val = paddle_backend.floor(x + 0.5)
     fraction = round_val - x
 
     # Identify elements with a fractional part of 0.5
-    mask = paddle.equal(fraction, paddle.to_tensor(0.5, dtype=fraction.dtype))
+    mask = paddle_backend.equal(fraction, paddle.to_tensor(0.5, dtype=fraction.dtype))
 
     # Round to the nearest even number if the fraction is 0.5
-    even_round_val = 2 * paddle.floor(0.5 * x + 0.5)
+    even_round_val = 2 * paddle_backend.floor(0.5 * x + 0.5)
 
     # Combine the results
     return paddle.where(mask, even_round_val, round_val)
@@ -848,12 +848,16 @@ def _round_half_to_even(x):
 
 # This function aims to mimic the behavior of np.round similar to how tf.experimental.numpy.round does # noqa: E501
 # Reference for tf.experimental.numpy.round:https://github.com/tensorflow/tensorflow/blob/v2.13.0/tensorflow/python/ops/numpy_ops/np_array_ops.py#L724 # noqa: E501
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+)
 def round(
     x: paddle.Tensor, /, *, decimals: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x = paddle.to_tensor(x, dtype=x.dtype)
     dtype_ = x.dtype
     factor = math.pow(10, decimals)
+    factor = paddle.to_tensor(factor)
 
     # Handle floating point and complex numbers
     if paddle.is_floating_point(x) or paddle.is_complex(x):
@@ -867,7 +871,6 @@ def round(
     x = paddle.multiply(x, factor)
     x = _round_half_to_even(x)
     x = paddle.divide(x, factor)
-
     return x.astype(dtype_)
 
 
