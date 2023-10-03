@@ -1195,3 +1195,27 @@ def test_jax_zeros_like(
         dtype=dtype[0],
         shape=shape,
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.integer",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
+def test_jax_integer(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
