@@ -546,6 +546,11 @@ def test_function(
             fn_name,
         )
 
+    if test_flags.transpile:
+        _transpile_if_required_backend(
+            backend_to_test, fn_name, args=args_np, kwargs=kwargs_np
+        )
+
     # Gradient test
     # TODO enable back , ADD backend_to_test to the call below
 
@@ -614,6 +619,36 @@ def test_function(
             f"device is set to {on_device}, but ground truth produced array on"
             f" {ret_device}"
         )
+
+
+def _transpile_if_required_backend(backend: str, fn_name: str, args=None, kwargs=None):
+    iterations = 1
+    with BackendHandler.update_backend(backend) as ivy_backend:
+        args, kwargs = ivy_backend.args_to_ivy(args, kwargs)
+    backend_fn = ivy.__dict__[fn_name]
+    backend_traced_fn = traced_if_required(
+        backend, backend_fn, test_trace=True, args=args, kwargs=kwargs
+    )
+
+    func_timings = []
+    for i in range(0, iterations):
+        # timing the traced_fn
+        start = time.time()
+        backend_traced_fn(*args, **kwargs)
+        end = time.time()
+        func_timings.append(end - start)
+
+    np.mean(func_timings).item()
+    len(backend_traced_fn._functions)
+
+    # data = {
+    #     "backend": backend,
+    #     "backend_func": fn_name,
+    #     "args": str(args),
+    #     "kwargs": str(kwargs),
+    #     "frontend_time": func_time,
+    #     "backend_nodes": backend_nodes,
+    # }
 
 
 def test_frontend_function(
