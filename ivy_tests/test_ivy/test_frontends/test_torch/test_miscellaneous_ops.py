@@ -548,7 +548,7 @@ def test_torch_cdist(
         x2=x[0],
         p=p,
     )
-    
+
 
 # clone
 @handle_frontend_test(
