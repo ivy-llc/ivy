@@ -90,7 +90,7 @@ def _helper_init_tensorarray(backend_fw, l_kwargs, fn=None):
             ta_frontend = ta_frontend.split(**id_write)
         elif fn == "scatter":
             indices, value = [*zip(*id_write)]
-            ta = ta.scatter(indices, tf.convert_to_tensor(value, dtype=ta.dtype))
+            ta = ta.scatter(indices, tf.cast(tf.stack(value), dtype=ta.dtype))
             value = function_module.stack(list(map(function_module.constant, value)))
             ta_frontend = ta_frontend.scatter(indices, value)
         else:
@@ -198,6 +198,100 @@ def _helper_tensorarray_unstack(draw):
 # ------------ #
 
 
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorarray_close(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
+    ta_frontend.close()
+    ta.close()
+    assert np.array(ta_frontend.size()) == 0
+    assert np.array(ta.size()) == 0
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="concat"))
+def test_tensorarray_concat(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
+    helpers.value_test(
+        ret_np_from_gt_flat=ta.concat().numpy().flatten(),
+        ret_np_flat=np.array(ta_frontend.concat()).flatten(),
+        backend=backend_fw,
+    )
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorarray_dtype(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
+    assert ta.dtype == ta_frontend.dtype.ivy_dtype
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="gather"))
+def test_tensorarray_gather(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs[:2])
+    *_, indices = l_kwargs
+    if indices:
+        helpers.value_test(
+            ret_np_from_gt_flat=ta.gather(indices).numpy().flatten(),
+            ret_np_flat=np.array(ta_frontend.gather(indices)).flatten(),
+            backend=backend_fw,
+        )
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorarray_read(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
+    id_read, _ = l_kwargs
+    for id, read in id_read:
+        helpers.value_test(
+            ret_np_from_gt_flat=ta.read(id).numpy().flatten(),
+            ret_np_flat=np.array(ta_frontend.read(id)).flatten(),
+            backend=backend_fw,
+        )
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="scatter"))
+def test_tensorarray_scatter(
+    l_kwargs,
+    backend_fw,
+):
+    id_read, _ = l_kwargs
+    if id_read:
+        ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs, "scatter")
+    for id, read in id_read:
+        helpers.value_test(
+            ret_np_from_gt_flat=ta.read(id).numpy().flatten(),
+            ret_np_flat=np.array(ta_frontend.read(id)).flatten(),
+            backend=backend_fw,
+        )
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorarray_size(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
+    id_read, _ = l_kwargs
+    helpers.value_test(
+        ret_np_from_gt_flat=ta.size().numpy().flatten(),
+        ret_np_flat=np.array(ta_frontend.size()).flatten(),
+        backend=backend_fw,
+    )
+
+
 @given(
     kwargs_v_l=_helper_tensorarray_split(),
 )
@@ -209,6 +303,32 @@ def test_tensorarray_split(kwargs_v_l, backend_fw):
             ret_np_flat=np.array(ta_frontend.read(id)).flatten(),
             backend=backend_fw,
         )
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="stack"))
+def test_tensorarray_stack(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
+    helpers.value_test(
+        ret_np_from_gt_flat=ta.stack().numpy().flatten(),
+        ret_np_flat=np.array(ta_frontend.stack()).flatten(),
+        backend=backend_fw,
+    )
+
+
+@given(l_kwargs=_helper_tensorarray_unstack())
+def test_tensorarray_unstack(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs, "unstack")
+    helpers.value_test(
+        ret_np_from_gt_flat=ta.stack().numpy().flatten(),
+        ret_np_flat=np.array(ta_frontend.stack()).flatten(),
+        backend=backend_fw,
+    )
 
 
 # __add__
@@ -1743,123 +1863,3 @@ def test_tensorflow_tensor_shape(
         x.ivy_array.shape, ivy.Shape(shape), as_array=False
     )
     ivy.previous_backend()
-
-
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tesorarray_close(
-    l_kwargs,
-    backend_fw,
-):
-    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
-    ta_frontend.close()
-    ta.close()
-    assert np.array(ta_frontend.size()) == 0
-    assert np.array(ta.size()) == 0
-
-
-@given(l_kwargs=_helper_random_tensorarray(fn="concat"))
-def test_tesorarray_concat(
-    l_kwargs,
-    backend_fw,
-):
-    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
-    helpers.value_test(
-        ret_np_from_gt_flat=ta.concat().numpy().flatten(),
-        ret_np_flat=np.array(ta_frontend.concat()).flatten(),
-        backend=backend_fw,
-    )
-
-
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tesorarray_dtype(
-    l_kwargs,
-    backend_fw,
-):
-    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
-    assert ta.dtype == ta_frontend.dtype.ivy_dtype
-
-
-@given(l_kwargs=_helper_random_tensorarray(fn="gather"))
-def test_tesorarray_gather(
-    l_kwargs,
-    backend_fw,
-):
-    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs[:2])
-    *_, indices = l_kwargs
-    if indices:
-        helpers.value_test(
-            ret_np_from_gt_flat=ta.gather(indices).numpy().flatten(),
-            ret_np_flat=np.array(ta_frontend.gather(indices)).flatten(),
-            backend=backend_fw,
-        )
-
-
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tesorarray_read(
-    l_kwargs,
-    backend_fw,
-):
-    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
-    id_read, _ = l_kwargs
-    for id, read in id_read:
-        helpers.value_test(
-            ret_np_from_gt_flat=ta.read(id).numpy().flatten(),
-            ret_np_flat=np.array(ta_frontend.read(id)).flatten(),
-            backend=backend_fw,
-        )
-
-
-@given(l_kwargs=_helper_random_tensorarray(fn="scatter"))
-def test_tesorarray_scatter(
-    l_kwargs,
-    backend_fw,
-):
-    id_read, _ = l_kwargs
-    if id_read:
-        ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs, "scatter")
-    for id, read in id_read:
-        helpers.value_test(
-            ret_np_from_gt_flat=ta.read(id).numpy().flatten(),
-            ret_np_flat=np.array(ta_frontend.read(id)).flatten(),
-            backend=backend_fw,
-        )
-
-
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tesorarray_size(
-    l_kwargs,
-    backend_fw,
-):
-    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
-    id_read, _ = l_kwargs
-    helpers.value_test(
-        ret_np_from_gt_flat=ta.size().numpy().flatten(),
-        ret_np_flat=np.array(ta_frontend.size()).flatten(),
-        backend=backend_fw,
-    )
-
-
-@given(l_kwargs=_helper_random_tensorarray(fn="stack"))
-def test_tesorarray_stack(
-    l_kwargs,
-    backend_fw,
-):
-    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
-    helpers.value_test(
-        ret_np_from_gt_flat=ta.stack().numpy().flatten(),
-        ret_np_flat=np.array(ta_frontend.stack()).flatten(),
-        backend=backend_fw,
-    )
-
-
-@given(l_kwargs=_helper_tensorarray_unstack())
-def test_tesorarray_unstack(
-    l_kwargs,
-    backend_fw,
-):
-    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs, "unstack")
-    helpers.value_test(
-        ret_np_from_gt_flat=ta.stack().numpy().flatten(),
-        ret_np_flat=np.array(ta_frontend.stack()).flatten(),
-        backend=backend_fw,
-    )
