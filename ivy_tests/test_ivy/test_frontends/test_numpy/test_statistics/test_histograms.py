@@ -72,7 +72,7 @@ def test_numpy_histogram(
     backend_fw,
     test_flags,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, a = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -80,7 +80,7 @@ def test_numpy_histogram(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        a=a[0],
         bins=10,
         range=None,
         density=None,
