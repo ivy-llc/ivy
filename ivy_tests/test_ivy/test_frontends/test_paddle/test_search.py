@@ -149,6 +149,37 @@ def test_paddle_argsort(
     )
 
 
+@handle_frontend_test(
+    fn_tree="paddle.index_sample",
+    array_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=2,
+        max_num_dims=2,
+        disable_random_axis=True,
+    ),
+)
+def test_paddle_index_sample(
+    *,
+    array_indices_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    dtype, x, index = array_indices_axis
+    if index.ndim == 2 and index.shape[0] == x.shape[0]:
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            x=x,
+            index=index,
+        )
+
+
 # kthvalue
 @handle_frontend_test(
     fn_tree="paddle.kthvalue",
@@ -186,37 +217,6 @@ def test_paddle_kthvalue(
         axis=axis,
         keepdim=keepdim,
     )
-
-
-@handle_frontend_test(
-    fn_tree="paddle.index_sample",
-    array_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("valid"),
-        indices_dtypes=helpers.get_dtypes("integer"),
-        min_num_dims=2,
-        max_num_dims=2,
-        disable_random_axis=True,
-    ),
-)
-def test_paddle_index_sample(
-    *,
-    array_indices_axis,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-):
-    dtype, x, index = array_indices_axis
-    if index.ndim == 2 and index.shape[0] == x.shape[0]:
-        helpers.test_frontend_function(
-            input_dtypes=dtype,
-            backend_to_test=backend_fw,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            x=x,
-            index=index,
-        )
 
 
 @handle_frontend_test(
