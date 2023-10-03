@@ -1,6 +1,223 @@
 import ivy
 from ivy import with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.ivy.experimental.manipulation import _slice_along_axis
+from ivy.utils.exceptions import IvyNotImplementedException
+
+
+def _pack_padded_sequence(padded_sequence, lengths, batch_first=False):
+    if not batch_first:
+        padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
+    data = []
+    for i, length in enumerate(lengths):
+        data += [padded_sequence[i, :length]]
+    data = ivy.concat(data)
+    return data, ivy.array(lengths)
+
+
+def _pad_packed_sequence(data, batch_sizes, batch_first=False, padding_value=0):
+    padded_sequence = ivy.full(
+        (len(batch_sizes), max(batch_sizes), data.shape[-1]),
+        padding_value,
+        dtype=data.dtype,
+        device=data.device,
+    )
+    data_pointer = 0
+    for i, batch_size in enumerate(batch_sizes):
+        padded_sequence[i, :batch_size] = data[data_pointer:data_pointer + batch_size]
+        data_pointer += batch_size
+    if not batch_first:
+        padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
+    return padded_sequence
+
+
+def _generic_lstm(
+    input,
+    initial_states,
+    all_weights,
+    has_biases,
+    num_layers,
+    dropout,
+    train,
+    bidirectional,
+    batch_first=None,
+    batch_sizes=None,
+):
+    weights_per_layer = 4 if has_biases else 2
+
+    assert len(all_weights) == num_layers * weights_per_layer * (1 + bidirectional)
+    layer_weights = [
+        all_weights[i : i + weights_per_layer]
+        for i in range(0, len(all_weights), weights_per_layer)
+    ]
+
+    if batch_first:
+        input = ivy.permute_dims(input, axes=(1, 0, 2))
+
+    if dropout and train:
+        raise IvyNotImplementedException()
+
+    w_hh = all_weights[1]
+    hidden_size = w_hh.shape[1]
+
+    unidirectional = not bidirectional
+
+    prev_output = input
+
+    h_outs = []
+
+    h0, c0 = initial_states
+    c_outs = []
+
+    # pytorch is input, forget, cell, output.
+    # onnx is    input, output, forget, cell.
+    reform_permutation = [(0, 1), (3, 4), (1, 3)]
+
+    def reform_weights(w, n, intervals):
+        slices = [
+            _slice_along_axis(w, start=x * n, stop=y * n, axis=0)
+            for x, y in intervals
+        ]
+        return ivy.concat(*slices, axis=0)
+
+    def transform_weights_no_bias(layer_index):
+        weights = layer_weights[layer_index]
+        weight_ih, weight_hh = (
+            reform_weights(w, hidden_size, reform_permutation) for w in weights
+        )
+        return tuple(
+            ivy.expand_dims(x, axis=0) for x in (weight_ih, weight_hh)
+        )
+
+    def transform_weights(layer_index):
+        weights = layer_weights[layer_index]
+        weight_ih, weight_hh, bias_ih, bias_hh = (
+            reform_weights(w, hidden_size, reform_permutation) for w in weights
+        )
+        bias_concat = ivy.concat(bias_ih, bias_hh, axis=0)
+        return tuple(
+            ivy.expand_dims(x, axis=0) for x in (weight_ih, weight_hh, bias_concat)
+        )
+
+    def retrieve_state(x, start, end):
+        return (
+            x
+            if num_layers == 1
+            else _slice_along_axis(x, start=start, stop=end, axis=0)
+        )
+
+    for i in range(num_layers):
+        if unidirectional:
+            if weights_per_layer == 4:
+                weight_ih, weight_hh, bias_concat = transform_weights(i)
+            else:
+                weight_ih, weight_hh = transform_weights_no_bias(i)
+                bias_concat = None
+
+            state_indices = i, i + 1
+        else:
+            if weights_per_layer == 4:
+                weight_ih_f, weight_hh_f, bias_f = transform_weights(2 * i)
+                weight_ih_b, weight_hh_b, bias_b = transform_weights(2 * i + 1)
+                bias_concat = ivy.concat(bias_f, bias_b, axis=0)
+            else:
+                weight_ih_f, weight_hh_f = transform_weights_no_bias(2 * i)
+                weight_ih_b, weight_hh_b = transform_weights_no_bias(2 * i + 1)
+                bias_concat = None
+
+            weight_ih = ivy.concat(weight_ih_f, weight_ih_b, axis=0)
+            weight_hh = ivy.concat(weight_hh_f, weight_hh_b, axis=0)
+
+            state_indices = 2 * i, 2 * i + 2
+
+        inputs = [prev_output, weight_ih, weight_hh, bias_concat, batch_sizes]
+
+        inputs.append(retrieve_state(h0, *state_indices))
+        inputs.append(retrieve_state(c0, *state_indices))
+
+        extra_kwargs = {} if unidirectional else {"direction_s": "bidirectional"}
+
+        # ??????
+        prev_output, h_out, c_out = g.op(
+            "LSTM", *inputs, outputs=3, hidden_size_i=hidden_size, **extra_kwargs
+        )
+
+        if bidirectional:
+            # The ONNX RNN/GRU/LSTM produce an output of dimensions
+            #   seq_len, num_directions, batch, hidden_size
+            # We have to convert to match pytorch's expected
+            #   seq_len, batch, num_directions * hidden_size
+            # by first moving num_directions before hidden_size with
+            # Transpose, and then combining it with hidden_size
+            # with Reshape.
+            prev_output = ivy.permute_dims(prev_output, axes=(0, 2, 1, 3))
+            prev_output = ivy.reshape(prev_output, (*prev_output.shape[:2], -1))
+        else:
+            prev_output = ivy.squeeze(prev_output, axis=1)
+
+        h_outs.append(h_out)
+
+    if batch_first:
+        prev_output = ivy.permute_dims(prev_output, axes=(1, 0, 2))
+    h_outs = h_out if num_layers == 1 else ivy.concat(*h_outs, axis=0)
+    c_outs = c_out if num_layers == 1 else ivy.concat(*c_outs, axis=0)
+    return prev_output, h_outs, c_outs
+
+
+def _lstm_full(
+    input,
+    hidden_v,
+    weight_v,
+    has_biases,
+    num_layers,
+    dropout,
+    train,
+    bidirectional,
+    batch_first,
+):
+    return _generic_lstm(
+        input,
+        hidden_v,
+        weight_v,
+        has_biases,
+        num_layers,
+        dropout,
+        train,
+        bidirectional,
+        batch_first=batch_first,
+    )
+
+
+def _lstm_packed(
+    input,
+    batch_sizes,
+    hidden_v,
+    weight_v,
+    has_biases,
+    num_layers,
+    dropout,
+    train,
+    bidirectional,
+):
+    return _generic_lstm(
+        input,
+        hidden_v,
+        weight_v,
+        has_biases,
+        num_layers,
+        dropout,
+        train,
+        bidirectional,
+        batch_sizes=batch_sizes,
+    )
+
+
+@to_ivy_arrays_and_back
+def lstm(*args):
+    if isinstance(args[3], bool):
+        return _lstm_full(*args)
+    else:
+        return _lstm_packed(*args)
 
 
 @to_ivy_arrays_and_back
