@@ -73,7 +73,7 @@ def _check_query(query):
     )
 
 
-def _helper_init_tensorarray(backend_fw, l_kwargs):
+def _helper_init_tensorarray(backend_fw, l_kwargs, fn=None):
     id_write, kwargs = l_kwargs
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         local_importer = ivy_backend.utils.dynamic_import
@@ -82,9 +82,13 @@ def _helper_init_tensorarray(backend_fw, l_kwargs):
         )
         ta_frontend = function_module.tensor.TensorArray(**kwargs)
         ta = tf.TensorArray(**kwargs)
-        for id, write in id_write:
-            ta = ta.write(id, tf.constant(write))
-            ta_frontend = ta_frontend.write(id, function_module.constant(write))
+        if fn == "unstack":
+            ta = ta.unstack(tf.constant(id_write))
+            ta_frontend = ta_frontend.unstack(function_module.constant(id_write))
+        else:
+            for id, write in id_write:
+                ta = ta.write(id, tf.constant(write))
+                ta_frontend = ta_frontend.write(id, function_module.constant(write))
     return ta, ta_frontend
 
 
@@ -127,8 +131,18 @@ def _helper_random_tensorarray(draw, fn=None):
                 )
             )
             id_write.append((id, write))
-    # if fn is None:
     return id_write, kwargs
+
+
+@st.composite
+def _helper_tensorarray_unstack(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    size = draw(st.integers(1, 10))
+    dynamic_size = draw(st.booleans()) if size >= shape[0] else True
+    dtype = draw(helpers.get_dtypes(full=False, prune_function=False))[0]
+    tensor = draw(helpers.array_values(dtype=dtype, shape=shape))
+    kwargs = {"dtype": dtype, "size": size, "dynamic_size": dynamic_size}
+    return tensor, kwargs
 
 
 # --- Main --- #
@@ -1704,4 +1718,16 @@ def test_tesorarray_stack(
         ret_np_flat=np.array(ta_frontend.stack()).flatten(),
         backend=backend_fw,
     )
-    ta.stack()
+
+
+@given(l_kwargs=_helper_tensorarray_unstack())
+def test_tesorarray_unstack(
+    l_kwargs,
+    backend_fw,
+):
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs, "unstack")
+    helpers.value_test(
+        ret_np_from_gt_flat=ta.stack().numpy().flatten(),
+        ret_np_flat=np.array(ta_frontend.stack()).flatten(),
+        backend=backend_fw,
+    )
