@@ -3861,10 +3861,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         )
 
 
-@handle_exceptions
-@handle_nestable
-@handle_container_like_without_promotion
-@handle_out_argument
+
 def concat_from_sequence(
     container_sequence: Sequence[ivy.Container], axis: int = 0
 ) -> ivy.Container:
