@@ -172,6 +172,8 @@ def nanmin(
     where: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return jnp.nanmin(
         a, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
     )

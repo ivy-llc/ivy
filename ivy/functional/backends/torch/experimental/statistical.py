@@ -196,16 +196,12 @@ def nanmin(
     where: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     nan_mask = torch.isnan(a)
-
-    # Replace NaN values with a large positive number (or any other suitable value)
-    a[nan_mask] = float("inf")
-
-    # Use PyTorch's reduction functions to find the minimum value
+    a_copy = a.clone()
+    a_copy[nan_mask] = float("inf")
     if axis is None:
-        result, _ = a.min(), None
+        result, _ = a_copy.min(), None
     else:
-        result, _ = a.min(dim=axis, keepdim=keepdims)
-
+        result, _ = a_copy.min(dim=axis, keepdim=keepdims)
     return result
 
 
