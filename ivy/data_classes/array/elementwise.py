@@ -1438,6 +1438,27 @@ class _ArrayWithElementwise(abc.ABC):
             an array containing the evaluated base ``2`` logarithm for each element
             in ``self``. The returned array must have a real-valued floating-point
             data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([5.0, 1, -0.0, -6.0])
+        >>> y = ivy.log2(x)
+        >>> print(y)
+        ivy.array([2.32, 0., -inf, nan])
+
+        >>> x = ivy.array([float('nan'), -5.0, -0.0, 1.0, 5.0, float('+inf')])
+        >>> y = x.log2()
+        >>> print(y)
+        ivy.array([nan, nan, -inf, 0., 2.32, inf])
+
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
+                            [+0, -2.0, -5, float('-inf')]])
+        >>> y = x.log2()
+        >>> print(y)
+        ivy.array([[nan, 0., 2.32, inf],
+                   [-inf, nan, nan, nan]])
         """
         return ivy.log2(self._data, out=out)
 
@@ -2055,7 +2076,7 @@ class _ArrayWithElementwise(abc.ABC):
 
     def pow(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[int, float, ivy.Array, ivy.NativeArray],
         /,
         *,
         out: Optional[ivy.Array] = None,
