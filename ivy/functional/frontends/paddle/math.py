@@ -270,6 +270,7 @@ def gcd(x, y, name=None):
 def heaviside(x, y, name=None):
     return ivy.heaviside(x, y)
 
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def inner(x, y, name=None):
