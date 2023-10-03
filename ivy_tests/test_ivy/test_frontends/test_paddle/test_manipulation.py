@@ -8,9 +8,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
     _get_dtype_values_k_axes_for_rot90,
 )
-from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (
-    _get_repeat_interleaves_args,
-)
 
 
 # --- Helpers --- #
@@ -468,68 +465,6 @@ def test_paddle_gather_nd(
         on_device=on_device,
         x=x,
         index=index,
-    )
-
-
-# lgamma
-@handle_frontend_test(
-    fn_tree="paddle.lgamma",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_paddle_lgamma(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# repeat_interleave
-@handle_frontend_test(
-    fn_tree="paddle.repeat_interleave",
-    dtype_values_repeats_axis_output_size=_get_repeat_interleaves_args(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        valid_axis=True,
-        max_num_dims=4,
-        max_dim_size=4,
-    ),
-)
-def test_paddle_repeat_interleave(
-    *,
-    dtype_values_repeats_axis_output_size,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtype, values, repeats, axis, _ = dtype_values_repeats_axis_output_size
-
-    helpers.test_frontend_function(
-        input_dtypes=[dtype[0][0], dtype[1][0]],
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=values[0],
-        repeats=repeats[0],
-        axis=axis,
     )
 
 

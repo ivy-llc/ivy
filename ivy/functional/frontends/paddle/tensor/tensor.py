@@ -108,7 +108,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16",)}, "paddle")
     def lgamma(self):
-        return ivy.lgamma(self)
+        return paddle_frontend.lgamma(self)
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def acosh(self, name=None):
