@@ -2162,6 +2162,34 @@ def test_tensorflow_truncatemod(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.tuple",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_tuple(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=x,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.unique",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=["int64", "int32"],
@@ -2484,4 +2512,28 @@ def test_tensorflow_zeros_like(
         on_device=on_device,
         input=x[0],
         dtype=dtype[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree='tensorflow.tuple',
+    dtype_and_x=helpers.dtype_and_values,
+)
+def test_tensorflow_tuple(
+        dtype_and_x,
+        frontend,
+        backend_fw,
+        test_flags,
+        fn_tree,
+        on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=x,
     )

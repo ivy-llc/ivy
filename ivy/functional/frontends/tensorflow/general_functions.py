@@ -619,6 +619,14 @@ def truncatemod(x, y):
 
 
 @to_ivy_arrays_and_back
+def tuple(tensors, control_inputs=None, name=None):
+    tpl = []
+    for t in tensors:
+        tpl.append(t)
+    return tpl
+
+
+@to_ivy_arrays_and_back
 def unique(x, out_idx=ivy.int32, name=None):
     ret = ivy.unique_all(x, by_value=False)
     y = ret[0]
@@ -718,3 +726,10 @@ def zeros_initializer(shape, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def zeros_like(input, dtype=None, name=None):
     return ivy.zeros_like(input, dtype=dtype)
+
+@to_ivy_arrays_and_back
+def tuple(tensors, control_inputs=None, name=None):
+    tuple = []
+    for t in tensors:
+        tuple.append(t)
+    return tuple
