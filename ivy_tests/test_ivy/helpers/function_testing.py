@@ -636,7 +636,7 @@ def test_function(
 def _transpile_if_required_backend(backend: str, fn_name: str, args=None, kwargs=None):
     iterations = 1
     with BackendHandler.update_backend(backend) as ivy_backend:
-        args, kwargs = ivy_backend.args_to_ivy(args, kwargs)
+        args, kwargs = ivy_backend.args_to_ivy(*args, **kwargs)
     backend_fn = ivy.__dict__[fn_name]
     backend_traced_fn = traced_if_required(
         backend, backend_fn, test_trace=True, args=args, kwargs=kwargs
