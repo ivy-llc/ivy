@@ -94,88 +94,47 @@ def caster(dtype, intersect):
 def upcaster(dtype, intersect):
     # upcasting is enabled, we upcast to the highest
     if "uint" in str(dtype):
-        index = casting_modes_dict["uint"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["uint"]()):
-            if casting_modes_dict["uint"]()[index] not in intersect:
-                result = casting_modes_dict["uint"]()[index]
-                break
-            index += 1
-        return result
-
+        return upcast_helper("uint", dtype, intersect)
     if "int" in dtype:
-        index = casting_modes_dict["int"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["int"]()):
-            if casting_modes_dict["int"]()[index] not in intersect:
-                result = casting_modes_dict["int"]()[index]
-                break
-            index += 1
-        return result
-
+        return upcast_helper("int", dtype, intersect)
     if "float" in dtype:
-        index = casting_modes_dict["float"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["float"]()):
-            if casting_modes_dict["float"]()[index] not in intersect:
-                result = casting_modes_dict["float"]()[index]
-                break
-            index += 1
-        return result
-
+        return upcast_helper("float", dtype, intersect)
     if "complex" in dtype:
-        index = casting_modes_dict["complex"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["complex"]()):
-            if casting_modes_dict["complex"]()[index] not in intersect:
-                result = casting_modes_dict["complex"]()[index]
-                break
-            index += 1
-        return result
+        return upcast_helper("complex", dtype, intersect)
+
+
+def upcast_helper(arg0, dtype, intersect):
+    index = casting_modes_dict[arg0]().index(dtype) + 1
+    result = ""
+    while index < len(casting_modes_dict[arg0]()):
+        if casting_modes_dict[arg0]()[index] not in intersect:
+            result = casting_modes_dict[arg0]()[index]
+            break
+        index += 1
+    return result
 
 
 def downcaster(dtype, intersect):
     # downcasting is enabled, we upcast to the highest
     if "uint" in str(dtype):
-        index = casting_modes_dict["uint"]().index(dtype) - 1
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["int"]()[index] not in intersect:
-                result = casting_modes_dict["uint"]()[index]
-                break
-            index -= 1
-        return result
-
+        return downcast_helper("uint", dtype, "int", intersect)
     if "int" in dtype:
-        index = casting_modes_dict["int"]().index(dtype) - 1
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["int"]()[index] not in intersect:
-                result = casting_modes_dict["int"]()[index]
-                break
-            index -= 1
-        return result
-
+        return downcast_helper("int", dtype, "int", intersect)
     if "float" in dtype:
-        index = casting_modes_dict["float"]().index(dtype) - 1
-
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["float"]()[index] not in intersect:
-                result = casting_modes_dict["float"]()[index]
-                break
-            index -= 1
-        return result
-
+        return downcast_helper("float", dtype, "float", intersect)
     if "complex" in dtype:
-        index = casting_modes_dict["complex"]().index(dtype) - 1
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["complex"]()[index] not in intersect:
-                result = casting_modes_dict["complex"]()[index]
-                break
-            index -= 1
-        return result
+        return downcast_helper("complex", dtype, "complex", intersect)
+
+
+def downcast_helper(arg0, dtype, arg2, intersect):
+    index = casting_modes_dict[arg0]().index(dtype) - 1
+    result = ""
+    while index >= 0:
+        if casting_modes_dict[arg2]()[index] not in intersect:
+            result = casting_modes_dict[arg0]()[index]
+            break
+        index -= 1
+    return result
 
 
 def cross_caster(intersect):
