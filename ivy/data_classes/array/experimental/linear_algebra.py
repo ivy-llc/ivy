@@ -676,6 +676,58 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             verbose=verbose,
         )
 
+    def tt_matrix_to_tensor(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Ivy.Array instance method variant of ivy.tt_matrix_to_tensor. This method simply
+        wraps the function, and so the docstring for ivy.tt_matrix_to_tensor also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+                array of 4D-arrays
+                TT-Matrix factors (known as core) of shape
+                (rank_k, left_dim_k, right_dim_k, rank_{k+1})
+
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        output_tensor: array
+                    tensor whose TT-Matrix decomposition was given by 'factors'
+         --------
+         >>> a = ivy.array([[[[[0.49671414],
+         ...                      [-0.1382643]],
+         ...
+         ...                     [[0.64768857],
+         ...                      [1.5230298]]]],
+         ...                   [[[[-0.23415337],
+         ...                      [-0.23413695]],
+         ...
+         ...                     [[1.57921278],
+         ...                      [0.76743472]]]]])
+         >>> a.tt_matrix_to_tensor()
+         ivy.array([[[[-0.1163073 , -0.11629914],
+          [ 0.03237505,  0.03237278]],
+
+         [[ 0.78441733,  0.38119566],
+          [-0.21834874, -0.10610882]]],
+
+
+        [[[-0.15165846, -0.15164782],
+          [-0.35662258, -0.35659757]],
+
+         [[ 1.02283812,  0.49705869],
+          [ 2.40518808,  1.16882598]]]])
+        """
+        return ivy.tt_matrix_to_tensor(self._data, out=out)
+
     def dot(
         self: Union[ivy.Array, ivy.NativeArray],
         b: Union[ivy.Array, ivy.NativeArray],
@@ -784,3 +836,92 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             [2, 3, 4, 5]])
         """
         return ivy.general_inner_product(self, b, n_modes, out=out)
+
+    def higher_order_moment(
+        self: Union[ivy.Array, ivy.NativeArray],
+        order: int,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.higher_order_moment. This method simply
+        wraps the function, and so the docstring for ivy.higher_order_moment also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            matrix of size (n_samples, n_features)
+            or tensor of size(n_samples, D1, ..., DN)
+
+        order
+            number of the higher-order moment to compute
+
+        Returns
+        -------
+        tensor
+            if tensor is a matrix of size (n_samples, n_features),
+            tensor of size (n_features, )*order
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 2], [3, 4]])
+        >>> result = ivy.higher_order_moment(a, 3)
+        >>> print(result)
+        ivy.array([[
+            [14, 19],
+            [19, 26]],
+           [[19, 26],
+            [26, 36]
+        ]])
+        """
+        return ivy.higher_order_moment(self._data, order, out=out)
+
+    def batched_outer(
+        self: ivy.Array,
+        tensors: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Ivy Array instance method variant of ivy.batched_outer. This method simply wraps
+        the function, and so the docstring for ivy.batched_outer also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        tensors
+            list of tensors of shape (n_samples, J1, ..., JN) ,
+            (n_samples, K1, ..., KM) ...
+
+        Returns
+        -------
+        outer product of tensors
+            of shape (n_samples, J1, ..., JN, K1, ..., KM, ...)
+
+        Examples
+        --------
+        >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+        >>> b = ivy.array([[[.1, .2], [.3, .4]], [[.5, .6], [.7, .8]]])
+        >>> result = ivy.batched_outer(a, b)
+        >>> print(result)
+        ivy.array([[[[[0.1, 0.2],
+              [0.30000001, 0.40000001]],
+             [[0.2       , 0.40000001],
+              [0.60000002, 0.80000001]]],
+            [[[0.3       , 0.60000001],
+              [0.90000004, 1.20000002]],
+             [[0.40000001, 0.80000001],
+              [1.20000005, 1.60000002]]]],
+           [[[[2.5       , 3.00000012],
+              [3.49999994, 4.00000006]],
+             [[3.        , 3.60000014],
+              [4.19999993, 4.80000007]]],
+            [[[3.5       , 4.20000017],
+              [4.89999992, 5.60000008]],
+             [[4.        , 4.80000019],
+              [5.5999999 , 6.4000001 ]]]]])
+        """
+        return ivy.batched_outer((self._data, *tensors), out=out)
