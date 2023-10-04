@@ -158,7 +158,7 @@ if __name__ == "__main__":
                     fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
                 ]
                 for other_backend in other_backends:
-                    backends.append(other_backend + "/" + get_latest_package_version(backend))
+                    backends.append(other_backend + "/" + get_latest_package_version(other_backend))
 
                 print("Backends:", backends)
                 command = (
