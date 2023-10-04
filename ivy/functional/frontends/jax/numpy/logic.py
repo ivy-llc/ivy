@@ -111,8 +111,8 @@ def fromfunction(function, shape, *, dtype=float, **kwargs):
         elif isinstance(shape, tuple):
             return shape
         else:
-            msg = "{} must be an int, list, or tuple, but got {}."
-            raise TypeError(msg.format(context, type(shape)))
+            msg = f"{context} must be an int, list, or tuple, but got {type(shape)}."
+            raise TypeError(msg)
 
     arr = ivy.zeros(shape, dtype=dtype)
     shape = canonicalize_shape(shape)
