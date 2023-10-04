@@ -75,7 +75,7 @@ class TRTensor(FactorizedTensor):
             current_rank, current_shape, next_rank = ivy.shape(factor)
 
             # Check that factors are third order tensors
-            if not len(factor.shape) == 3:
+            if len(factor.shape) != 3:
                 raise ValueError(
                     "TR expresses a tensor as third order factors (tr-cores).\n"
                     f"However, ivy.ndim(factors[{index}]) = {len(factor.shape)}"
