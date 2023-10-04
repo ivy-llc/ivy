@@ -394,6 +394,21 @@ def less_equal(x, y, name="LessEqual"):
     return ivy.less_equal(x, y)
 
 
+# lgamma
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def lgamma(x, name=None):
+    return ivy.lgamma(x)
+
+
 @to_ivy_arrays_and_back
 def log(x, name=None):
     return ivy.log(x)
