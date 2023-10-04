@@ -23,7 +23,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         fn_tree,
         frontend,
         backend_handler,
-        backend,
+        backend_to_test,
         device,
         traced_fn,
         input_dtypes,
@@ -34,10 +34,10 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         self.test_flags = test_flags
         self.input_dtypes = input_dtypes
         self.on_device = device
-        self.backend = backend
+        self.backend_to_test = backend_to_test
         self.traced_fn = traced_fn
         self._backend_handler = backend_handler
-        self.__ivy = self._backend_handler.set_backend(backend)
+        self.__ivy = self._backend_handler.set_backend(backend_to_test)
         self.local_importer = self._ivy.utils.dynamic_import
 
     @staticmethod
@@ -122,43 +122,55 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             t_globals.CURRENT_PIPELINE.set_traced_fn(frontend_fn)
         return frontend_fn
 
-    def _flatten_ret_to_np(self, ret_flat):
-        return [self._ivy.to_numpy(x) for x in ret_flat]
+    def _assert_ret_is_frontend_array(self, ret):
+        assert self._ivy.nested_map(
+            lambda x: (
+                FunctionTestCaseSubRunner._is_frontend_array(x)
+                if self._ivy.is_array(x)
+                else True
+            ),
+            ret,
+            shallow=False,
+        ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
     def _test_inplace(self, frontend_fn, args, kwargs):
-        inplace_kwarg = False
         # ToDO: Move this to the decorators and pass in inplace kwarg from there
         if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
-            inplace_kwarg = True
             kwargs["inplace"] = True
-        array_fn = self._ivy.is_array
+        check_array_fn = self._ivy.is_array
         conversion_fn = self._ivy.asarray
         if self.test_flags.generate_frontend_arrays and not self.test_flags.test_trace:
-            array_fn = FunctionTestCaseSubRunner._is_frontend_array
+            check_array_fn = FunctionTestCaseSubRunner._is_frontend_array
             conversion_fn = FunctionTestCaseSubRunner._frontend_array_to_ivy
         first_array = self._ivy.func_wrapper._get_first_array(
-            *args, array_fn=array_fn, **kwargs
+            *args, array_fn=check_array_fn, **kwargs
         )
         with self._ivy.PreciseMode(self.test_flags.precision_mode):
             ret = frontend_fn(*args, **kwargs)
         if self.test_flags.test_trace:
+            # output will always be native array
             if (
                 self.test_flags.generate_frontend_arrays
                 or not self.test_flags.native_arrays[0]
             ):
+                # input is ivy array
                 assert first_array.data is ret
             else:
+                # input is native array
                 assert first_array is ret
         else:
-            if inplace_kwarg:
+            # output will always be frontend array
+            # asserting the returned arrays are frontend arrays
+            self._assert_ret_is_frontend_array(ret)
+            if self.test_flags.generate_frontend_arrays:
+                # input is frontend array
                 assert first_array is ret
+            elif self.test_flags.native_arrays[0]:
+                # input is native array
+                assert first_array is ret.ivy_array.data
             else:
-                if self.test_flags.generate_frontend_arrays:
-                    assert first_array is ret
-                elif self.test_flags.native_arrays[0]:
-                    assert first_array is ret.ivy_array.data
-                else:
-                    assert first_array is ret.ivy_array
+                # input is ivy array
+                assert first_array is ret.ivy_array
 
         ret = self._ivy.nested_map(conversion_fn, ret, include_derived={"tuple": True})
         return ret
@@ -220,7 +232,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                     result.values,
                     self.input_dtypes,
                     start_index_of_arguments,
-                    backend=self.backend,
+                    backend=self.backend_to_test,
                     on_device=self.on_device,
                 ),
             )
@@ -260,15 +272,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                 )
             else:
                 # asserting the returned arrays are frontend arrays
-                assert self._ivy.nested_map(
-                    lambda x: (
-                        FunctionTestCaseSubRunner._is_frontend_array(x)
-                        if self._ivy.is_array(x)
-                        else True
-                    ),
-                    ret,
-                    shallow=False,
-                ), "Frontend function returned non-frontend arrays: {}".format(ret)
+                self._assert_ret_is_frontend_array(ret)
 
                 ret = self._ivy.nested_map(
                     FunctionTestCaseSubRunner._frontend_array_to_ivy,
@@ -413,6 +417,307 @@ class GTFunctionTestCaseSubRunner(TestCaseSubRunner):
         return self._call_function(args, kwargs)
 
 
+class MethodTestCaseSubRunner(TestCaseSubRunner):
+    def __init__(
+        self,
+        frontend_method_data,
+        frontend,
+        backend_handler,
+        backend_to_test,
+        on_device,
+        traced_fn,
+        init_input_dtypes,
+        method_input_dtypes,
+        init_flags,
+        method_flags,
+    ):
+        self.frontend_method_data = frontend_method_data
+        self.frontend = frontend
+        self.traced_fn = traced_fn
+        self.backend_to_test = backend_to_test
+        self.on_device = on_device
+        self.init_input_dtypes = init_input_dtypes
+        self.method_input_dtypes = method_input_dtypes
+        self.init_flags = init_flags
+        self.method_flags = method_flags
+        self._backend_handler = backend_handler
+        self.__ivy = self._backend_handler.set_backend(backend_to_test)
+        self.local_importer = self._ivy.utils.dynamic_import
+
+    @property
+    def _ivy(self):
+        return self.__ivy
+
+    @property
+    def backend_handler(self):
+        return self._backend_handler
+
+    def _arrays_to_frontend(self):
+        def _new_fn(x, *args, **kwargs):
+            if FunctionTestCaseSubRunner._is_frontend_array(x):
+                return x
+            elif self._ivy.is_array(x):
+                frontend_array_fn = self._get_frontend_creation_fn()
+                if tuple(x.shape) == ():
+                    try:
+                        ret = frontend_array_fn(x, dtype=self._ivy.Dtype(str(x.dtype)))
+                    except self._ivy.utils.exceptions.IvyException:
+                        ret = frontend_array_fn(x, dtype=self._ivy.array(x).dtype)
+                else:
+                    ret = frontend_array_fn(x)
+                return ret
+            return x
+
+        return _new_fn
+
+    def _args_to_frontend(self, *args, include_derived=None, **kwargs):
+        frontend_args = self._ivy.nested_map(
+            self._arrays_to_frontend(),
+            args,
+            include_derived,
+            shallow=False,
+        )
+        frontend_kwargs = self._ivy.nested_map(
+            self._arrays_to_frontend(),
+            kwargs,
+            include_derived,
+            shallow=False,
+        )
+        return frontend_args, frontend_kwargs
+
+    def _get_frontend_creation_fn(self):
+        # ToDo: do this through config file
+        return self.local_importer.import_module(
+            f"ivy.functional.frontends.{self.frontend}"
+        )._frontend_array
+
+    def _get_frontend_function(
+        self, init_args, init_kwargs, method_args, method_kwargs
+    ):
+        if self.traced_fn is not None and self.method_flags.test_trace:
+            return self.traced_fn
+        frontend_fw_module = self.local_importer.import_module(
+            self.frontend_method_data.ivy_init_module
+        )
+        ivy_frontend_creation_fn = getattr(
+            frontend_fw_module, self.frontend_method_data.init_name
+        )
+        ins = ivy_frontend_creation_fn(*init_args, **init_kwargs)
+        frontend_fn = ins.__getattribute__(self.frontend_method_data.method_name)
+        if self.traced_fn is None:
+            frontend_fn = self.trace_if_required(
+                frontend_fn,
+                test_trace=self.method_flags.test_trace,
+                args=method_args,
+                kwargs=method_kwargs,
+            )
+            t_globals.CURRENT_PIPELINE.set_traced_fn(frontend_fn)
+        return frontend_fn, ins
+
+    def _assert_ret_is_frontend_array(self, ret):
+        assert self._ivy.nested_map(
+            lambda x: (
+                FunctionTestCaseSubRunner._is_frontend_array(x)
+                if self._ivy.is_array(x)
+                else True
+            ),
+            ret,
+            shallow=False,
+        ), "Frontend function returned non-frontend arrays: {}".format(ret)
+
+    def _test_inplace(self, frontend_fn, ins, args, kwargs):
+        self._ivy.is_array
+        conversion_fn = self._ivy.asarray
+        if (
+            self.method_flags.generate_frontend_arrays
+            and not self.method_flags.test_trace
+        ):
+            FunctionTestCaseSubRunner._is_frontend_array
+            conversion_fn = FunctionTestCaseSubRunner._frontend_array_to_ivy
+        with self._ivy.PreciseMode(self.method_flags.precision_mode):
+            ret = frontend_fn(*args, **kwargs)
+        # ins will always be a frontend array
+        if self.method_flags.test_trace:
+            # output will always be native array
+            if (
+                self.method_flags.generate_frontend_arrays
+                or not self.method_flags.native_arrays[0]
+            ):
+                assert ins.ivy_array.data is ret
+        else:
+            # output will always be frontend array
+            self._assert_ret_is_frontend_array(ret)
+            if self.method_flags.generate_frontend_arrays:
+                assert ins is ret
+
+        ret = self._ivy.nested_map(conversion_fn, ret, include_derived={"tuple": True})
+        return ret
+
+    def _search_init_args(self, init_all_as_kwargs_np):
+        arg_searcher = ArgumentsSearcher(init_all_as_kwargs_np)
+        return arg_searcher.search_args(self.init_flags.num_positional_args)
+
+    def _search_method_args(self, method_all_as_kwargs_np):
+        arg_searcher = ArgumentsSearcher(method_all_as_kwargs_np)
+        return arg_searcher.search_args(self.method_flags.num_positional_args)
+
+    def _preprocess_init_flags(self, init_total_num_arrays):
+        # Make all array-specific test flags and dtypes equal in length
+        if len(self.init_input_dtypes) < init_total_num_arrays:
+            self.init_input_dtypes = [
+                self.init_input_dtypes[0] for _ in range(init_total_num_arrays)
+            ]
+        if len(self.init_flags.as_variable) < init_total_num_arrays:
+            self.init_flags.as_variable = [
+                self.init_flags.as_variable[0] for _ in range(init_total_num_arrays)
+            ]
+        if len(self.init_flags.native_arrays) < init_total_num_arrays:
+            self.init_flags.native_arrays = [
+                self.init_flags.native_arrays[0] for _ in range(init_total_num_arrays)
+            ]
+
+        self.init_flags.as_variable = [
+            v if self._ivy.is_float_dtype(d) else False
+            for v, d in zip(self.init_flags.as_variable, self.init_input_dtypes)
+        ]
+
+    def _preprocess_method_flags(self, method_total_num_arrays):
+        # Make all array-specific test flags and dtypes equal in length
+        if len(self.method_input_dtypes) < method_total_num_arrays:
+            self.method_input_dtypes = [
+                self.method_input_dtypes[0] for _ in range(method_total_num_arrays)
+            ]
+        if len(self.method_flags.as_variable) < method_total_num_arrays:
+            self.method_flags.as_variable = [
+                self.method_flags.as_variable[0] for _ in range(method_total_num_arrays)
+            ]
+        if len(self.method_flags.native_arrays) < method_total_num_arrays:
+            self.method_flags.native_arrays = [
+                self.method_flags.native_arrays[0]
+                for _ in range(method_total_num_arrays)
+            ]
+
+        self.method_flags.as_variable = [
+            v if self._ivy.is_float_dtype(d) else False
+            for v, d in zip(self.method_flags.as_variable, self.method_input_dtypes)
+        ]
+
+    def _preprocess_init_args(self, init_args_result, init_kwargs_result):
+        ret = []
+        for result, start_index_of_arguments in zip(
+            [init_args_result, init_kwargs_result], [0, len(init_args_result.values)]
+        ):
+            temp = self._ivy.copy_nest(result.original, to_mutable=False)
+            self._ivy.set_nest_at_indices(
+                temp,
+                result.indices,
+                self.init_flags.apply_flags(
+                    result.values,
+                    self.init_input_dtypes,
+                    start_index_of_arguments,
+                    backend=self.backend_to_test,
+                    on_device=self.on_device,
+                ),
+            )
+            ret.append(temp)
+
+        return ret[0], ret[1]
+
+    def _preprocess_method_args(self, method_args_result, method_kwargs_result):
+        ret = []
+        for result, start_index_of_arguments in zip(
+            [method_args_result, method_kwargs_result],
+            [0, len(method_args_result.values)],
+        ):
+            temp = self._ivy.copy_nest(result.original, to_mutable=False)
+            self._ivy.set_nest_at_indices(
+                temp,
+                result.indices,
+                self.method_flags.apply_flags(
+                    result.values,
+                    self.method_input_dtypes,
+                    start_index_of_arguments,
+                    backend=self.backend_to_test,
+                    on_device=self.on_device,
+                ),
+            )
+            ret.append(temp)
+        if self.method_flags.generate_frontend_arrays:
+            ret[0], ret[1] = self._args_to_frontend(
+                *ret[0],
+                include_derived={"tuple": True},
+                **ret[1],
+            )
+        return ret[0], ret[1]
+
+    def _call_function(self, init_args, init_kwargs, method_args, method_kwargs):
+        # determine the target frontend_fn
+        frontend_fn, ins = self._get_frontend_function(
+            init_args, init_kwargs, method_args, method_kwargs
+        )
+
+        if self.method_flags.generate_frontend_arrays and self.method_flags.test_trace:
+            # convert the args and kwargs to ivy arrays
+            method_args, method_kwargs = self._ivy.nested_map(
+                (method_args, method_kwargs),
+                FunctionTestCaseSubRunner._frontend_array_to_ivy,
+                include_derived={"tuple": True},
+            )
+
+        # testing inplace
+        if self.method_flags.inplace:
+            ret = self._test_inplace(frontend_fn, ins, method_args, method_kwargs)
+        else:
+            with self._ivy.PreciseMode(self.method_flags.precision_mode):
+                ret = frontend_fn(*method_args, **method_kwargs)
+
+            # converting ret to ivy array
+            if self.method_flags.test_trace:
+                ret = self._ivy.nested_map(
+                    ret, self._ivy.asarray, include_derived={"tuple": True}
+                )
+            else:
+                # asserting the returned arrays are frontend arrays
+                assert self._ivy.nested_map(
+                    lambda x: (
+                        FunctionTestCaseSubRunner._is_frontend_array(x)
+                        if self._ivy.is_array(x)
+                        else True
+                    ),
+                    ret,
+                    shallow=False,
+                ), "Frontend function returned non-frontend arrays: {}".format(ret)
+
+                ret = self._ivy.nested_map(
+                    FunctionTestCaseSubRunner._frontend_array_to_ivy,
+                    ret,
+                    include_derived={"tuple": True},
+                )
+
+        return self._get_results_from_ret(ret)
+
+    def get_results(self, init_all_as_kwargs_np, method_all_as_kwargs_np):
+        # preprocess init args and kwargs
+        init_args_result, init_kwargs_result, init_total_num_arrays = (
+            self._search_init_args(init_all_as_kwargs_np)
+        )
+        self._preprocess_init_flags(init_total_num_arrays)
+        init_args, init_kwargs = self._preprocess_init_args(
+            init_args_result, init_kwargs_result
+        )
+
+        # preprocess method args and kwargs
+        method_args_result, method_kwargs_result, method_total_num_arrays = (
+            self._search_method_args(method_all_as_kwargs_np)
+        )
+        self._preprocess_method_flags(method_total_num_arrays)
+        method_args, method_kwargs = self._preprocess_method_args(
+            method_args_result, method_kwargs_result
+        )
+
+        return self._call_function(init_args, init_kwargs, method_args, method_kwargs)
+
+
 class FrontendFunctionTestCaseRunner(TestCaseRunner):
     def __init__(
         self,
@@ -492,15 +797,101 @@ class FrontendFunctionTestCaseRunner(TestCaseRunner):
         )
 
         # checking assertions
-        self._check_assertions(target_results, ground_truth_results)
+        return self._check_assertions(target_results, ground_truth_results)
 
 
 class FrontendMethodTestCaseRunner(TestCaseRunner):
-    def __init__(self):
+    def __init__(
+        self,
+        backend_handler,
+        frontend,
+        frontend_method_data,
+        backend_to_test,
+        on_device,
+        traced_fn,
+        rtol_,
+        atol_,
+        tolerance_dict,
+        test_values,
+    ):
+        self.backend_handler = (backend_handler,)
+        self.frontend = (frontend,)
+        self.frontend_method_data = (frontend_method_data,)
+        self.backend_to_test = (backend_to_test,)
+        self.on_device = (on_device,)
+        self.traced_fn = (traced_fn,)
+        self.rtol = (rtol_,)
+        self.atol = (atol_,)
+        self.tolerance_dict = (tolerance_dict,)
+        self.test_values = (test_values,)
+
+    def _run_target(
+        self,
+        init_input_dtypes,
+        method_input_dtypes,
+        init_flags,
+        method_flags,
+        init_all_as_kwargs_np,
+        method_all_as_kwargs_np,
+    ):
+        sub_runner_target = MethodTestCaseSubRunner(
+            self.frontend_method_data,
+            self.frontend,
+            self.backend_handler,
+            self.backend_to_test,
+            self.on_device,
+            self.traced_fn,
+            init_input_dtypes,
+            method_input_dtypes,
+            init_flags,
+            method_flags,
+        )
+        ret = sub_runner_target.get_results(
+            init_all_as_kwargs_np, method_all_as_kwargs_np
+        )
+        sub_runner_target.exit()
+        return ret
+
+    def _run_ground_truth(
+        self,
+        init_input_dtypes,
+        method_input_dtypes,
+        init_flags,
+        method_flags,
+        init_all_as_kwargs_np,
+        method_all_as_kwargs_np,
+    ):
         pass
 
-    def _run_target(self):
-        pass
+    def _check_assertions(self, target_results, ground_truth_results):
+        if self.test_values:
+            assertion_checker = FrontendAssertionChecker(
+                target_results,
+                ground_truth_results,
+                self.backend_to_test,
+                self.frontend,
+                self.tolerance_dict,
+                self.rtol,
+                self.atol,
+            )
+            assertion_checker.check_assertions()
 
-    def _run_ground_truth(self):
-        pass
+    def run(
+        self,
+        init_input_dtypes,
+        method_input_dtypes,
+        init_flags,
+        method_flags,
+        init_all_as_kwargs_np,
+        method_all_as_kwargs_np,
+    ):
+        # getting results from target and ground truth
+        target_results: TestCaseSubRunnerResult = self._run_target(
+            init_input_dtypes,
+            method_input_dtypes,
+            init_flags,
+            method_flags,
+            init_all_as_kwargs_np,
+            method_all_as_kwargs_np,
+        )
+        print(target_results)

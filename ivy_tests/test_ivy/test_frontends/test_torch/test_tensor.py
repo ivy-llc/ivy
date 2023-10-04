@@ -51,6 +51,8 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statist
     _quantile_helper,
 )
 
+from ivy_tests.test_ivy.pipeline.frontend.pipeline import FrontendPipeline
+
 try:
     import torch
 except ImportError:
@@ -2094,7 +2096,7 @@ def test_torch_tensor_acos(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
+    FrontendPipeline.test_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
@@ -2132,7 +2134,7 @@ def test_torch_tensor_acos_(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
+    FrontendPipeline.test_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
