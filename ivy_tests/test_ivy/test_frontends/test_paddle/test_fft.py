@@ -271,7 +271,7 @@ def test_paddle_ifftshift(
     s=st.one_of(
         st.lists(st.integers(min_value=2, max_value=10), min_size=2, max_size=2),
     ),
-    axes=st.just((-2, -1)),
+    axes=st.just([-2, -1]),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
 )
 def test_paddle_ihfft2(
