@@ -165,7 +165,7 @@ class ndarray:
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self, axis=axis, kind=kind, order=order)
 
-    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
+    def mean(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return np_frontend.mean(
             self,
             axis=axis,
@@ -621,6 +621,19 @@ class ndarray:
     def round(self, decimals=0, out=None):
         return np_frontend.round(self, decimals=decimals, out=out)
 
+    def var(
+        self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True
+    ):
+        return np_frontend.var(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=ddof,
+            keepdims=keepdims,
+            where=where,
+        )
+
 
 # --- Helpers --- #
 # --------------- #
@@ -723,3 +736,6 @@ def _to_bytes_helper(array, order="C"):
             return b"".join(bytes_reprs)
         else:
             raise ValueError("Unsupported data type for the array.")
+
+    def __ilshift__(self, value, /):
+        return ivy.bitwise_left_shift(self.ivy_array, value, out=self)

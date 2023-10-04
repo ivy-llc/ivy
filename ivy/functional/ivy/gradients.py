@@ -16,7 +16,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -49,7 +49,9 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
         return x
 
     # Convert all required arrays to float variables
-    map_fn = lambda x: ivy.nested_map(inner_fn, x, include_derived=True, shallow=False)
+    def map_fn(x):
+        return ivy.nested_map(inner_fn, x, include_derived=True, shallow=False)
+
     if xs_grad_idxs is not None:
         xs_required = ivy.multi_index_nest(xs, xs_grad_idxs)
         ivy.nested_map(map_fn, xs_required, include_derived=True)
@@ -131,7 +133,7 @@ def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=Fal
         if ivy.is_array(x_):
             x_ = ivy.to_ivy(x_) if ivy.is_native_array(x_) else x_
             if create_var:
-                x_ = _variable(x_) if not _is_variable(x_, exclusive=True) else x_
+                x_ = x_ if _is_variable(x_, exclusive=True) else _variable(x_)
             if len(x_.shape) == 0:
                 return ivy.to_native(x_)
             if reshape:
@@ -243,31 +245,30 @@ def _process_func_ret_and_grads(func_ret, grads, retain_grads):
     return func_ret, grads
 
 
-_check_if_empty = (
-    lambda idxs: not isinstance(idxs, list)
-    or np.asarray(idxs, dtype="object").size == 0
-)
+def _check_if_empty(idxs):
+    return not isinstance(idxs, list) or np.asarray(idxs, dtype="object").size == 0
 
 
-_idxs_to_str = lambda idxs: [
-    "_".join(list(map(lambda x: str(x), idxs[i]))) for i in range(len(idxs))
-]
+def _idxs_to_str(idxs):
+    return ["_".join(list(map(lambda x: str(x), idxs[i]))) for i in range(len(idxs))]
 
 
-_to_ivy = lambda xs: ivy.nested_map(
-    lambda x: ivy.to_ivy(x) if ivy.is_array(x) else x,
-    xs,
-    include_derived=True,
-    shallow=False,
-)
+def _to_ivy(xs):
+    return ivy.nested_map(
+        lambda x: ivy.to_ivy(x) if ivy.is_array(x) else x,
+        xs,
+        include_derived=True,
+        shallow=False,
+    )
 
 
-_non_finite_to_zero = lambda xs: ivy.nested_map(
-    lambda x: ivy.where(ivy.isfinite(x), x, 0.0) if ivy.is_array(x) else x,
-    xs,
-    include_derived=True,
-    shallow=False,
-)
+def _non_finite_to_zero(xs):
+    return ivy.nested_map(
+        lambda x: ivy.where(ivy.isfinite(x), x, 0.0) if ivy.is_array(x) else x,
+        xs,
+        include_derived=True,
+        shallow=False,
+    )
 
 
 # Private Variable Helpers #
@@ -323,7 +324,7 @@ def _variable_data(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -398,7 +399,7 @@ def stop_gradient(
 
 
 @handle_exceptions
-@handle_device_shifting
+@handle_device
 def execute_with_gradients(
     func,
     xs: Union[ivy.Array, ivy.NativeArray],
@@ -1000,6 +1001,55 @@ def lars_update(
     -------
     ret
         The new function weights ws_new, following the LARS updates.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> w = ivy.array([[3., 1, 5],
+    ...                [7, 2, 9]])
+    >>> dcdw = ivy.array([[0.3, 0.1, 0.2],
+    ...                   [0.1, 0.2, 0.4]])
+    >>> lr = ivy.array(0.1)
+    >>> new_weights = ivy.lars_update(w, dcdw, lr)
+    >>> print(new_weights)
+    ivy.array([[2.34077978, 0.78025991, 4.56051969],
+    ...        [6.78026009, 1.56051981, 8.12103939]])
+
+    >>> w = ivy.array([3., 1, 5])
+    >>> dcdw = ivy.array([0.3, 0.1, 0.2])
+    >>> lr = ivy.array(0.1)
+    >>> out = ivy.zeros_like(dcdw)
+    >>> ivy.lars_update(w, dcdw, lr, out=out)
+    >>> print(out)
+    ivy.array([2.52565837, 0.8418861 , 4.68377209])
+
+    With one :class:`ivy.Container` inputs:
+
+    >>> w = ivy.Container(a=ivy.array([3.2, 2.6, 1.3]),
+    ...                    b=ivy.array([1.4, 3.1, 5.1]))
+    >>> dcdw = ivy.array([0.2, 0.4, 0.1])
+    >>> lr = ivy.array(0.1)
+    >>> new_weights = ivy.lars_update(w, dcdw, lr)
+    >>> print(new_weights)
+    {
+        a: ivy.array([3.01132035, 2.22264051, 1.2056601]),
+        b: ivy.array([1.1324538, 2.56490755, 4.96622658])
+    }
+
+    With multiple :class:`ivy.Container` inputs:
+
+    >>> w = ivy.Container(a=ivy.array([3.2, 2.6, 1.3]),
+    ...                    b=ivy.array([1.4, 3.1, 5.1]))
+    >>> dcdw = ivy.Container(a=ivy.array([0.2, 0.4, 0.1]),
+    ...                       b=ivy.array([0.3,0.1,0.2]))
+    >>> lr = ivy.array(0.1)
+    >>> new_weights = ivy.lars_update(w, dcdw, lr)
+    >>> print(new_weights)
+    {
+        a: ivy.array([3.01132035, 2.22264051, 1.2056601]),
+        b: ivy.array([0.90848625, 2.93616199, 4.77232409])
+    }
     """
     w_norm = ivy.vector_norm(w)
     lr = ivy.stable_divide(w_norm * lr, ivy.vector_norm(dcdw))

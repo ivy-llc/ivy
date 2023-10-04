@@ -73,7 +73,7 @@ def _arrays_idx_n_dtypes(draw):
             size=num_arrays,
         )
     )
-    xs = list()
+    xs = []
     input_dtypes = draw(
         helpers.array_dtypes(
             available_dtypes=draw(helpers.get_dtypes("float")), shared_dtype=True
@@ -2890,6 +2890,38 @@ def test_tensorflow_Min(  # NOQA
     test_with_out=st.just(False),
 )
 def test_tensorflow_Minimum(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+# Mod
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Mod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Mod(  # NOQA
     *,
     dtype_and_x,
     frontend,
