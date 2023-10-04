@@ -251,3 +251,191 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array([0.35667497, 0.22314353, 1.60943791])
         """
         return ivy.soft_margin_loss(self._data, target, reduction=reduction, out=out)
+
+    def kl_div(
+        self: ivy.Array,
+        target: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        reduction: Optional[str] = "mean",
+        log_target=False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.kl_div. This method simply wraps the
+        function, and so the docstring for ivy.kl_div also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array containing input probability distribution.
+        target
+            Array contaiing target probability distribution.
+        reduction
+            'none': No reduction will be applied to the output.
+            'mean': The output will be averaged.
+            'batchmean': The output will be divided by batch size.
+            'sum': The output will be summed.
+            Default: 'mean'.
+        out
+            Optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The Kullback-Leibler divergence loss between the two input arrays.
+
+        Examples
+        --------
+        >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+        >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+        >>> output_array = input.kl_div(target)
+        >>> print(output_array)
+        ivy.array(0.0916)
+        """
+        return ivy.kl_div(
+            self._data, target, reduction=reduction, log_target=log_target, out=out
+        )
+
+    def poisson_nll_loss(
+        self: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        *,
+        log_input: bool = True,
+        full: bool = False,
+        eps: float = 1e-8,
+        reduction: str = "mean",
+    ) -> ivy.Array:
+        r"""
+        Compute the Poisson Negative Log Likelihood Loss.
+
+        This function calculates the negative log likelihood loss
+        between the `input` and `target`under the assumption that
+        the target follows a Poisson distribution. By default, the loss
+        is not the exact loss, but the loss minus a constant term [log(z!)].
+        This omission does not affect optimization but can be significant for
+        relative loss comparisons. The Stirling's Approximation is used to
+        approximate the log factorial term when `full` is set to True.
+
+        Parameters
+        ----------
+        input
+            Expectation of the underlying Poisson distribution.
+        target
+            Random sample from the Poisson distribution described by the input.
+        log_input
+            If `True`, the loss is computed as
+            :math:`exp(input) - target * input`. If `False`, the loss is computed as
+            :math:`input - target * log(input + eps)`. Default is `True`.
+        full
+            Whether to compute the full loss, i.e.,
+            to add the Stirling approximation term
+            :math:`target * log(target) - target + 0.5 * log(2 * pi * target)`.
+            Default is `False`.
+        eps
+            Small value to prevent evaluation of `log(0)` when `log_input` is `False`.
+            Default is 1e-8.
+        reduction
+            Specifies the reduction applied to the output.
+            Options are 'none', 'mean', or 'sum'.
+            'none': no reduction will be applied.
+            'mean': the output will be averaged.
+            'sum': the output will be summed.
+            Default is 'mean'.
+
+        Returns
+        -------
+        ret
+            An array of the same shape as `input` representing the
+            Poisson Negative Log Likelihood Loss.
+
+        Raises
+        ------
+        ValueError
+            If the `input` and `target` tensors do not have the same shape.
+
+        Examples
+        --------
+        >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
+        >>> target_tensor = ivy.array([2, 2, 2, 2], dtype=ivy.float64)
+        >>> loss = poisson_nll_loss(input_tensor, target_tensor, log_input=True)
+        >>> print(loss)
+        ivy.array(16.1978)
+        """
+        return ivy.poisson_nll_loss(
+            self._data,
+            target,
+            log_input=log_input,
+            full=full,
+            eps=eps,
+            reduction=reduction,
+        )
+
+    def binary_cross_entropy(
+        self: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        from_logits: bool = False,
+        epsilon: float = 0.0,
+        reduction: str = "none",
+        pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.binary_cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array of arbitrary shape containing probabilities.
+        target
+            input array same shape as input with values between 0 and 1.
+        from_logits
+            Whether `pred` is expected to be a logits tensor. By
+            default, we assume that `pred` encodes a probability distribution.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        pos_weight
+            a weight for positive examples. Must be an array with length equal to the
+            number of classes.
+        axis
+            Axis along which to compute crossentropy.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The Binary Cross Entropy loss between the input array and the
+            target values.
+
+        Examples
+        --------
+        >>> input = ivy.array([0.7, 0.6, 0.6])
+        >>> target = ivy.array([1.0, 0.0, 1.0])
+        >>> output= x.binary_cross_entropy(y)
+        >>> print(z)
+        ivy.array(0.5946)
+        """
+        return ivy.binary_cross_entropy(
+            self._data,
+            target,
+            from_logits=from_logits,
+            epsilon=epsilon,
+            reduction=reduction,
+            pos_weight=pos_weight,
+            axis=axis,
+            out=out,
+        )

@@ -30,6 +30,14 @@ def add(x, y, name=None):
     return ivy.add(x, y)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def add_(x, y, name=None):
+    return ivy.inplace_update(x, add(x, y))
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -53,7 +61,7 @@ def amax(x, axis=None, keepdims=False):
             axis[i] += x.ndim
     for i in axis:
         if i < 0 or i >= x.ndim:
-            raise ValueError("axis {} is out of range [-{}:{}]".format(i, 0, x.ndim))
+            raise ValueError(f"axis {i} is out of range [-0:{x.ndim}]")
     return ivy.max(x, axis=axis, keepdims=keepdims)
 
 
@@ -135,6 +143,15 @@ def cosh(x, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float16", "float32", "float64", "bool")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def count_nonzero(x, axis=None, keepdim=False, name=None):
+    return ivy.astype(ivy.count_nonzero(x, axis=axis, keepdims=keepdim), ivy.int64)
+
+
+@with_supported_dtypes(
     {
         "2.5.1 and below": (
             "int32",
@@ -152,10 +169,37 @@ def cumprod(x, dim=None, dtype=None, name=None):
     return ivy.cumprod(x, axis=dim, dtype=dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def cumsum(x, axis=None, dtype=None, name=None):
+    return ivy.cumsum(x, axis=axis, dtype=dtype)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def deg2rad(x, name=None):
     return ivy.deg2rad(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+            "bool",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def diagonal(x, offset=0, axis1=0, axis2=1, name=None):
+    return ivy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
 @with_supported_dtypes(
@@ -209,6 +253,14 @@ def floor(x, name=None):
 @to_ivy_arrays_and_back
 def floor_divide(x, y, name=None):
     return ivy.floor_divide(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def floor_mod(x, y, name=None):
+    return ivy.remainder(x, y)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": "bfloat16"}, "paddle")
@@ -315,6 +367,12 @@ def log(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def log10(x, name=None):
+    return ivy.log10(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def log1p(x, name=None):
     return ivy.log1p(x)
 
@@ -376,6 +434,12 @@ def multiply(x, y, name=None):
     return ivy.multiply(x, y)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def nanmean(x, axis=None, keepdims=False):
+    return ivy.nanmean(x, axis=axis, keepdims=keepdims)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -429,6 +493,12 @@ def reciprocal(x, name=None):
 @to_ivy_arrays_and_back
 def remainder(x, y, name=None):
     return ivy.remainder(x, y)
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def remainder_(x, y, name=None):
+    return ivy.inplace_update(x, remainder(x, y))
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
@@ -498,6 +568,25 @@ def subtract(x, y, name=None):
 
 
 @with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float64",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def sum(x, axis=None, dtype=None, keepdim=False, name=None):
+    return ivy.sum(
+        x,
+        axis=axis,
+        keepdims=keepdim,
+        dtype=dtype,
+    )
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int6")}, "paddle"
 )
 @to_ivy_arrays_and_back
@@ -509,8 +598,7 @@ def take(
 ):
     if mode not in ["raise", "wrap", "clip"]:
         raise ValueError(
-            "'mode' in 'take' should be 'raise', 'wrap', 'clip', but received {}."
-            .format(mode)
+            f"'mode' in 'take' should be 'raise', 'wrap', 'clip', but received {mode}."
         )
     x = ivy.reshape(x, (-1,))
     if mode == "clip":
@@ -531,6 +619,14 @@ def tan(x, name=None):
 @to_ivy_arrays_and_back
 def tanh(x, name=None):
     return ivy.tanh(x)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def trace(x, offset=0, axis1=0, axis2=1, name=None):
+    return ivy.trace(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
 @with_supported_dtypes(

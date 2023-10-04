@@ -4,7 +4,7 @@ PyTorch activation functions.
 Collection of PyTorch activation functions, wrapped to fit Ivy syntax
 and signature.
 """
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import numpy as np
@@ -54,7 +54,9 @@ def gelu(
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def sigmoid(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if not ivy.is_array(x):
         x = torch.tensor(x)
     return torch.sigmoid(x, out=out)
@@ -107,36 +109,40 @@ softsign.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "complex",
-            "float16",
-        )
-    },
+    {"2.0.1 and below": ("float16",)},
     backend_version,
 )
 def log_softmax(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[torch.Tensor] = None,
 ):
-    if axis is None:
-        axis = -1
+    if torch.is_complex(x):
+        x_max = torch_backend.max(x, axis=axis, keepdims=True)
+        sub_temp = torch.sub(x, x_max)
+        ret = torch.sum(sub_temp.exp(), dim=axis, keepdim=True)
+        ret = torch.log(ret)
+        return torch.sub(sub_temp, ret)
     return torch.nn.functional.log_softmax(x, axis)
 
 
 @with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "complex",
-            "float16",
-        )
-    },
+    {"2.0.1 and below": ("float16",)},
     backend_version,
 )
-def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def mish(
+    x: torch.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if torch.is_complex(x):
+        x_norm = torch.log1p(x.exp())
+        return torch.multiply(x, x_norm.tanh())
     return torch.nn.functional.mish(x)
 
 
@@ -150,6 +156,10 @@ def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     backend_version,
 )
 def hardswish(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.hardswish(x)
