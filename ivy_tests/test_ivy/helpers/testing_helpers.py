@@ -337,6 +337,7 @@ def handle_test(
     test_with_out=BuiltWithOutStrategy,
     test_gradients=BuiltGradientStrategy,
     test_trace=BuiltTraceStrategy,
+    transpile=BuiltTranspileStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
@@ -409,6 +410,7 @@ def handle_test(
             with_out=_get_runtime_flag_value(test_with_out),
             test_gradients=_get_runtime_flag_value(test_gradients),
             test_trace=_get_runtime_flag_value(test_trace),
+            transpile=_get_runtime_flag_value(transpile),
             as_variable=_get_runtime_flag_value(as_variable_flags),
             native_arrays=_get_runtime_flag_value(native_array_flags),
             container_flags=_get_runtime_flag_value(container_flags),
@@ -901,27 +903,35 @@ def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
 
 
-def _create_transpile_report(data: dict, backend: str, file_name: str):
+def _create_transpile_report(
+    data: dict, backend: str, file_name: str, is_backend: bool = False
+):
+    if not is_backend:
+        backend_specific_data = ["backend_nodes", "frontend_time", "args", "kwargs"]
+    else:
+        backend_specific_data = ["backend_nodes", "backend_time", "args", "kwargs"]
+    # json report exists already
     if os.path.isfile(file_name):
         with open(file_name, "r") as outfile:
             # Load the file's existing data
             file_data = json.load(outfile)
             if file_data["backend_nodes"].get(backend, 0) > data["backend_nodes"]:
                 return
-            file_data["backend_nodes"][backend] = data["backend_nodes"]
-            file_data["frontend_time"][backend] = data["frontend_time"]
-            file_data["args"][backend] = data["args"]
-            file_data["kwargs"][backend] = data["kwargs"]
-            file_data["ivy_nodes"] = data["ivy_nodes"]
-            file_data["frontend_fw_time"] = data["frontend_fw_time"]
+
+            # that are backend specific
+            for key in backend_specific_data:
+                file_data[key][backend] = data[key]
+            if not is_backend:
+                # not backend specific
+                for key in ["ivy_nodes", "frontend_fw_time"]:
+                    file_data[key] = data[key]
             json_object = json.dumps(file_data, indent=6)
             with open(file_name, "w") as outfile:
                 outfile.write(json_object)
             return
-    data["backend_nodes"] = {backend: data["backend_nodes"]}
-    data["frontend_time"] = {backend: data["frontend_time"]}
-    data["args"] = {backend: data["args"]}
-    data["kwargs"] = {backend: data["kwargs"]}
+    # create new json report
+    for key in backend_specific_data:
+        data[key] = {backend: data[key]}
     json_object = json.dumps(data, indent=6)
     with open(file_name, "w") as outfile:
         outfile.write(json_object)

@@ -37,6 +37,11 @@ jobs:
           submodules: "recursive"
           set-safe-directory: false
 
+      - name: Install Ivy
+        run: |
+          cd ivy
+          pip install .
+
       - name: Get Job URL
         uses: Tiryoh/gha-jobid-action@v0
         id: jobs
