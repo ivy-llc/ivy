@@ -673,22 +673,22 @@ def test_column_stack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_devi
     new_axis=st.integers(min_value=0, max_value=1),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
-    )
-    def test_concat_from_sequence(
-      *, dtypes_arrays_axis, new_axis, test_flags, backend_fw, fn_name, on_device
-    ):
-      dtypes, arrays, axis = dtypes_arrays_axis
+)
+def test_concat_from_sequence(
+    *, dtypes_arrays_axis, new_axis, test_flags, backend_fw, fn_name, on_device: str
+):
+    dtypes, arrays, axis = dtypes_arrays_axis
 
-      helpers.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        *input_sequence=arrays,
-        new_axis=new_axis,
-        axis=axis,
-      )
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        *input_sequence=arrays,
+        new_axis=new_axis,
+        axis=axis,
+    )
 
 
 # dsplit
