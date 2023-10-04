@@ -8133,7 +8133,7 @@ def test_torch_tensor_is_cuda(
     ivy.previous_backend()
 
 
-# is_complex
+# is_floating_point
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
