@@ -849,7 +849,7 @@ def _round_half_to_even(x):
 # This function aims to mimic the behavior of np.round similar to how tf.experimental.numpy.round does # noqa: E501
 # Reference for tf.experimental.numpy.round:https://github.com/tensorflow/tensorflow/blob/v2.13.0/tensorflow/python/ops/numpy_ops/np_array_ops.py#L724 # noqa: E501
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("bfloat16", "float16", "complex")}}, backend_version
 )
 def round(
     x: paddle.Tensor, /, *, decimals: int = 0, out: Optional[paddle.Tensor] = None
