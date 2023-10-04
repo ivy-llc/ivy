@@ -48,6 +48,8 @@ result_config = {
 
 
 def get_latest_package_version(package_name):
+    if package_name == "jax":
+        return "0.4.14"
     try:
         url = f"https://pypi.org/pypi/{package_name}/json"
         response = requests.get(url)
