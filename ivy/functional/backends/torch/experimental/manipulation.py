@@ -497,4 +497,3 @@ def concat_from_sequence(
                 array_sequence, new_axis=new_axis, axis=axis, out=out
             )
         )
-
