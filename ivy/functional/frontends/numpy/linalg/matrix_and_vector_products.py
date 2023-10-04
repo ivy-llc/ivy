@@ -87,7 +87,7 @@ def multi_dot(arrays, *, out=None):
 
 def my_svd_function(x):
     u, s, vh = np.linalg.svd(x)
-    return u, s, vh
+    return ivy.my_svd_function(u, s, vh)
 
 
 @handle_numpy_out
