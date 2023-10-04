@@ -55,7 +55,14 @@ def einsum(
     optimize=False,
 ):
     return ivy.einsum(subscripts, *operands, out=out)
+import jax.numpy as jnp
+import numpy as np
 
+def my_svd_function(x):
+    u, s, vh = np.linalg.svd(x)
+    return u, s, vh
+
+jax.numpy.my_svd_function = my_svd_function
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
