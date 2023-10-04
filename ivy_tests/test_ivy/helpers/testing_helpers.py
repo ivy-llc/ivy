@@ -907,15 +907,15 @@ def _create_transpile_report(
     data: dict, backend: str, file_name: str, is_backend: bool = False
 ):
     if not is_backend:
-        backend_specific_data = ["backend_nodes", "frontend_time", "args", "kwargs"]
+        backend_specific_data = ["nodes", "time", "args", "kwargs"]
     else:
-        backend_specific_data = ["backend_nodes", "backend_time", "args", "kwargs"]
+        backend_specific_data = ["nodes", "time", "args", "kwargs"]
     # json report exists already
     if os.path.isfile(file_name):
         with open(file_name, "r") as outfile:
             # Load the file's existing data
             file_data = json.load(outfile)
-            if file_data["backend_nodes"].get(backend, 0) > data["backend_nodes"]:
+            if file_data["nodes"].get(backend, 0) > data["nodes"]:
                 return
 
             # that are backend specific
