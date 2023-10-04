@@ -8,8 +8,12 @@ def cholesky(a):
     return ivy.cholesky(a)
 
 
-def qr(a):
+@to_ivy_arrays_and_back
+def qr(a, mode="reduced"):
     return ivy.qr(a, mode=mode)
+
+
+
 
 
 @to_ivy_arrays_and_back
