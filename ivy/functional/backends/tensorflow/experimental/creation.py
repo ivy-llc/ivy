@@ -13,7 +13,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.13.0 and below": {"cpu": ("bfloat16",)}},
+    {"2.14.0 and below": {"cpu": ("bfloat16",)}},
     backend_version,
 )
 def kaiser_window(
@@ -73,7 +73,7 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: str,
+    device: str = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable], ...]:
     n_cols = n_rows if n_cols is None else n_cols
 
@@ -107,14 +107,18 @@ def blackman_window(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if size < 2:
-        return tf.ones([size], dtype=tf.result_type(size, 0.0))
+        return tf.cast(
+            tf.ones([size], dtype=tf.experimental.numpy.result_type(size, 0.0)),
+            dtype=dtype,
+        )
     if periodic:
-        count = tf.arange(size) / size
+        count = tf.experimental.numpy.arange(size) / size
     else:
         count = tf.linspace(start=0, stop=size, num=size)
-
-    return (0.42 - 0.5 * tf.cos(2 * tf.pi * count)) + (
-        0.08 * tf.cos(2 * tf.pi * 2 * count)
+    return tf.cast(
+        (0.42 - 0.5 * tf.cos(2 * tf.experimental.numpy.pi * count))
+        + (0.08 * tf.cos(2 * tf.experimental.numpy.pi * 2 * count)),
+        dtype=dtype,
     )
 
 
@@ -126,7 +130,7 @@ def unsorted_segment_sum(
     return tf.math.unsorted_segment_sum(data, segment_ids, num_segments)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
 def trilu(
     x: Union[tf.Tensor, tf.Variable],
     /,

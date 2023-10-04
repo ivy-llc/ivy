@@ -106,3 +106,10 @@ def hardtanh(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+def tanhshrink(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jnp.subtract(x, jax.nn.tanh(x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret

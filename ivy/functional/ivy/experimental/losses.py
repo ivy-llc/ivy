@@ -76,11 +76,11 @@ def log_poisson_loss(
     """
     try:
         assert true.shape == pred.shape
-    except ValueError:
+    except ValueError as e:
         raise ValueError(
             "`pred` and `true` must have the same shape, received "
             f"({pred.shape} vs {true.shape})."
-        )
+        ) from e
 
     loss = ivy.exp(pred) - pred * true
     if compute_full_loss:
@@ -421,6 +421,7 @@ def kl_div(
     /,
     *,
     reduction: Optional[str] = "mean",
+    log_target=False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -430,14 +431,17 @@ def kl_div(
     Parameters
     ----------
     input : array_like
-        Input probability distribution (first tensor).
+        Tensor of arbitrary shape in log-probabilities
     target : array_like
-        Target probability distribution (second tensor).
+        Tensor of the same shape as input. See log_target for
+        the target’s interpretation
     reduction : {'mean', 'sum', 'batchmean', 'none'}, optional
         Type of reduction to apply to the output. Default is 'mean'.
-    out : array_like, optional
-        Optional output array, for writing the result to.
-        It must have a shape that the inputs broadcast to.
+    log_target : bool
+        A flag indicating whether target is passed in the log space.
+        It is recommended to pass certain distributions (like softmax)
+        in the log space to avoid numerical issues caused by explicit log.
+        Default: False
 
     Returns
     -------
@@ -446,38 +450,52 @@ def kl_div(
 
     Examples
     --------
-    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
-    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> input = ivy.array([[0.2, 0.8], [0.5, 0.5]])
+    >>> target = ivy.array([[0.6, 0.4], [0.3, 0.7]])
     >>> ivy.kl_div(input, target)
-    ivy.array(0.0916)
+    ivy.array(-0.555969)
 
-    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
-    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> input = ivy.array([[0.2, 0.8], [0.5, 0.5]])
+    >>> target = ivy.array([[0.6, 0.4], [0.3, 0.7]])
     >>> ivy.kl_div(input, target, reduction='sum')
-    ivy.array(0.1832)
+    ivy.array(-2.223876)
 
-    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
-    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> input = ivy.array([[0.2, 0.8], [0.5, 0.5]])
+    >>> target = ivy.array([[0.6, 0.4], [0.3, 0.7]])
     >>> ivy.kl_div(input, target, reduction='batchmean')
-    ivy.array(0.0916)
+    ivy.array(-1.111938)
 
     >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
     >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
     >>> ivy.kl_div(input, target, reduction='none')
-    ivy.array([0.0378], [0.1453])
+    ivy.array([[-0.42649534, -0.68651628],
+                [-0.51119184, -0.59967244]])
     """
-    size = ivy.shape(input)
+    if not log_target:  # default
+        loss_pointwise = target * (ivy.log(target) - input)
+    else:
+        loss_pointwise = ivy.exp(target) * (target - input)
 
-    loss = ivy.sum(input * ivy.log(input / target), axis=-1)
-
-    if reduction == "sum":
-        loss = ivy.sum(loss, out=out)
-    elif reduction == "mean":
-        loss = ivy.mean(loss, out=out)
-    elif reduction == "batchmean":
-        loss = ivy.sum(loss, out=out) / size[0]
-
+    if reduction == "mean":  # default
+        loss = ivy.mean(loss_pointwise)
+    elif reduction == "batchmean":  # mathematically correct
+        loss = ivy.sum(loss_pointwise) / input.shape[0]
+    elif reduction == "sum":
+        loss = ivy.sum(loss_pointwise)
+    else:  # reduction == "none"
+        loss = loss_pointwise
     return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+kl_div.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_out_argument",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_exceptions
@@ -555,4 +573,84 @@ def poisson_nll_loss(
         full=full,
         eps=eps,
         reduction=reduction,
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+def binary_cross_entropy(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    from_logits: bool = False,
+    epsilon: float = 0.0,
+    reduction: str = "none",
+    pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    axis: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the binary cross entropy loss between predicted scores and true binary
+    labels.
+
+    Parameters
+    ----------
+    input : array_like
+        array of arbitrary shape containing probabilities.
+    target : array_like
+        array same shape as input with values between 0 and 1.
+    from_logits
+        Whether `pred` is expected to be a logits tensor. By
+        default, we assume that `pred` encodes a probability distribution.
+    epsilon
+        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
+        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+    reduction
+        ``'none'``: No reduction will be applied to the output.
+        ``'mean'``: The output will be averaged.
+        ``'sum'``: The output will be summed. Default: ``'none'``.
+    pos_weight
+        a weight for positive examples. Must be an array with length equal to the number
+        of classes.
+    axis
+        Axis along which to compute crossentropy.
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
+
+    Returns
+    -------
+    ret : array
+        The binary cross entropy loss between the predicted scores
+        and true binary labels.
+
+    Examples
+    --------
+    >>> input = ivy.array([0.8, 0.2, 0.6, 0.4])
+    >>> target = ivy.array([1, 0, 1, 0])
+    >>> ivy.binary_cross_entropy(input, target)
+    ivy.array(0.3670)
+
+    >>> input = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> target = ivy.array([1, 1, 0, 0])
+    >>> ivy.binary_cross_entropy(input, target, reduction='sum')
+    ivy.array(0.9083)
+
+    >>> input = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> target = ivy.array([1, 1, 0, 0])
+    >>> ivy.binary_cross_entropy(input, target, reduction='none')
+    ivy.array([0.2231, 0.3567, 0.2231, 0.1054])
+    """
+    return ivy.current_backend(input).binary_cross_entropy(
+        input,
+        target,
+        from_logits=from_logits,
+        epsilon=epsilon,
+        reduction=reduction,
+        pos_weight=pos_weight,
+        axis=axis,
+        out=out,
     )
