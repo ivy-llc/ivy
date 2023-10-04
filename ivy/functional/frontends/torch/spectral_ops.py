@@ -30,11 +30,20 @@ def bartlett_window(
 
         return res[:-1] if periodic else res
 
+
 @to_ivy_arrays_and_back
-def stft(input, n_fft, hop_length=None, win_length=None, 
-         window=None, center=True, pad_mode='reflect', 
-         normalized=False, onesided=True, return_complex=None):
-    
+def stft(
+    input,
+    n_fft,
+    hop_length=None,
+    win_length=None,
+    window=None,
+    center=True,
+    pad_mode="reflect",
+    normalized=False,
+    onesided=True,
+    return_complex=None,
+):
     input = ivy.asarray(input)
     assert len(input.shape) == 1 or len(input.shape) == 2
 
@@ -42,7 +51,7 @@ def stft(input, n_fft, hop_length=None, win_length=None,
         assert hop_length is not None and win_length is not None
 
     if not hop_length:
-        hop_length = n_fft//4
+        hop_length = n_fft // 4
 
     if not win_length:
         if not window:
@@ -55,36 +64,45 @@ def stft(input, n_fft, hop_length=None, win_length=None,
 
     if win_length < n_fft:
         len_diff = n_fft - win_length
-        padding = ((len_diff)//2, (len_diff+1)//2)
+        padding = ((len_diff) // 2, (len_diff + 1) // 2)
         window = ivy.pad(window, padding, mode="constant", constant_values=0)
         win_length = n_fft
-
 
     window_function = lambda x: ivy.multiply(x, window)
 
     if center:
-        padding = ((n_fft//2, n_fft//2))
+        padding = (n_fft // 2, n_fft // 2)
         if len(input.shape) == 2:
-            padding = ((0,0),(n_fft//2, n_fft//2))
+            padding = ((0, 0), (n_fft // 2, n_fft // 2))
         input = ivy.pad(input, padding, mode=pad_mode)
-    
-    result = ivy.stft(input, win_length, hop_length, 
-                    fft_length=n_fft, window_fn=window_function)/n_fft
-    
+
+    result = (
+        ivy.stft(
+            input, win_length, hop_length, fft_length=n_fft, window_fn=window_function
+        )
+        / n_fft
+    )
+
     if normalized:
-        result *= (n_fft)**(-0.5)
-    
+        result *= (n_fft) ** (-0.5)
+
     transposed_results = ivy.matrix_transpose(result)
 
     if not onesided:
         if len(input.shape) == 1:
-            transposed_results = ivy.vstack([transposed_results, transposed_results[:n_fft//2 - (1 - n_fft%2)]])
+            transposed_results = ivy.vstack(
+                [transposed_results, transposed_results[: n_fft // 2 - (1 - n_fft % 2)]]
+            )
         elif len(input.shape) == 2:
-            result_T = [ivy.vstack([i, i[:(n_fft//2-1+n_fft%2)]]) for i in transposed_results]
+            result_T = [
+                ivy.vstack([i, i[: (n_fft // 2 - 1 + n_fft % 2)]])
+                for i in transposed_results
+            ]
             transposed_results = ivy.stack(result_T)
 
     if return_complex:
         return transposed_results
+
     else:
         real = ivy.real(transposed_results)
         imag = ivy.imag(transposed_results)
