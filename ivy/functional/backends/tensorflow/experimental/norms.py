@@ -4,7 +4,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"2.13.0 and below": "uint8"}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": "uint8"}, backend_version)
 def l1_normalize(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -29,7 +29,7 @@ def l2_normalize(
     return tf.math.divide(x, denorm)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
 def batch_norm(
     x: Union[tf.Tensor, tf.Variable],
     mean: Union[tf.Tensor, tf.Variable],
