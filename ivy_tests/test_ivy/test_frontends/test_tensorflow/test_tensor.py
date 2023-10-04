@@ -283,21 +283,6 @@ def test_tensorarray_handle(
     assert ta_gt.handle == ta.handle
 
 
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tensorarray_read(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
-    id_read, _ = l_kwargs
-    for id, read in id_read:
-        helpers.value_test(
-            ret_np_from_gt_flat=ta_gt.read(id).numpy().flatten(),
-            ret_np_flat=np.array(ta.read(id)).flatten(),
-            backend=backend_fw,
-        )
-
-
 @given(l_kwargs=_helper_random_tensorarray(fn="scatter"))
 def test_tensorarray_scatter(
     l_kwargs,
@@ -363,6 +348,22 @@ def test_tensorarray_unstack(
         ret_np_flat=np.array(ta.stack()).flatten(),
         backend=backend_fw,
     )
+
+
+# test for read and write methods
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorarray_write_read(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    id_read, _ = l_kwargs
+    for id, read in id_read:
+        helpers.value_test(
+            ret_np_from_gt_flat=ta_gt.read(id).numpy().flatten(),
+            ret_np_flat=np.array(ta.read(id)).flatten(),
+            backend=backend_fw,
+        )
 
 
 # __add__
