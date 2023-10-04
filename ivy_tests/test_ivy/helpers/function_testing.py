@@ -1021,17 +1021,11 @@ def test_frontend_function(
             frontend_fw_kwargs=kwargs_frontend,
         )
 
-    if frontend_config.isscalar(frontend_ret):
-        frontend_ret_np_flat = [frontend_config.to_numpy(frontend_ret)]
-    else:
-        # tuplify the frontend return
-        if not isinstance(frontend_ret, tuple):
-            frontend_ret = (frontend_ret,)
-        frontend_ret_idxs = ivy.nested_argwhere(
-            frontend_ret, frontend_config.is_native_array
-        )
-        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-        frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
+    frontend_ret_flat = flatten_frontend(
+        ret=ret, backend=backend_to_test, frontend_array_fn=frontend_config.native_array
+    )
+    frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
+
     # assuming value test will be handled manually in the test function
     if not test_values:
         return (
@@ -2200,16 +2194,10 @@ def test_frontend_method(
     )
     if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
         frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
-    elif frontend_config.isscalar(frontend_ret):
-        frontend_ret_np_flat = [np.asarray(frontend_ret)]
     else:
-        # tuplify the frontend return
-        if not isinstance(frontend_ret, tuple):
-            frontend_ret = (frontend_ret,)
-        frontend_ret_idxs = ivy.nested_argwhere(
-            frontend_ret, frontend_config.is_native_array
+        frontend_ret_flat = flatten_frontend(
+            ret=ret, backend=ivy_backend, frontend_array_fn=frontend_config.native_array
         )
-        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
         frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
 
     # assuming value test will be handled manually in the test function
@@ -2386,7 +2374,7 @@ def flatten(*, backend: str, ret):
 
 
 def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
-    """Return a flattened numpy version of the frontend arrays in ret."""
+    """Return a flattened version of the frontend arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
 
