@@ -165,7 +165,7 @@ def ifftshift(x, axes=None, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def ihfft2(x, n=None, axis=(-2, -1), norm="backward", name=None):
+def ihfft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
     # check if the input array is two-dimensional and real
     if len(ivy.array(x).shape) != 2 or ivy.is_complex_dtype(x):
         raise ValueError("input must be a two-dimensional real array")
@@ -176,12 +176,12 @@ def ihfft2(x, n=None, axis=(-2, -1), norm="backward", name=None):
     ihfft2_result = 0
     # Compute the complex conjugate of the 2-dimensional discrete Fourier Transform
     if norm == "backward":
-        ihfft2_result = ivy.conj(ivy.rfftn(x, s=n, axes=axis, norm="forward"))
+        ihfft2_result = ivy.conj(ivy.rfftn(x, s=s, axes=axes, norm="forward"))
     if norm == "forward":
-        ihfft2_result = ivy.conj(ivy.rfftn(x, s=n, axes=axis, norm="backward"))
+        ihfft2_result = ivy.conj(ivy.rfftn(x, s=s, axes=axes, norm="backward"))
     if norm == "ortho":
-        ihfft2_result = ivy.conj(ivy.rfftn(x, s=n, axes=axis, norm="ortho"))
-    return ivy.astype(ihfft2_result, ivy.default_complex_dtype())
+        ihfft2_result = ivy.conj(ivy.rfftn(x, s=s, axes=axes, norm="ortho"))
+    return ihfft2_result
 
 
 @with_supported_dtypes(

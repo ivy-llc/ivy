@@ -1,7 +1,6 @@
 # global
 from hypothesis import given, strategies as st
 
-import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -263,34 +262,40 @@ def test_paddle_ifftshift(
 @handle_frontend_test(
     fn_tree="paddle.fft.ihfft2",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["float64"],
+        min_value=-10,
+        max_value=10,
         min_num_dims=2,
-        min_dim_size=2,
+        max_num_dims=2,
     ),
+    s=st.one_of(
+        st.lists(st.integers(min_value=2, max_value=10), min_size=2, max_size=2),
+    ),
+    axes=st.just((-2, -1)),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
 )
 def test_paddle_ihfft2(
     dtype_x_axis,
+    s,
+    axes,
     norm,
     frontend,
     backend_fw,
     test_flags,
     fn_tree,
 ):
-    input_dtypes, x, axis = dtype_x_axis
-    shape = ivy.array(x).shape
-    x = ivy.reshape(x, shape)  # reshape into a 2 dimensional array.
+    input_dtypes, x, axis_ = dtype_x_axis
 
-    ivy.astype(
-        helpers.test_frontend_function(
-            input_dtypes=input_dtypes,
-            frontend=frontend,
-            backend_to_test=backend_fw,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            x=x,
-            norm=norm,
-        ),
-        ivy.default_complex_dtype(),
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        s=s,
+        axes=axes,
+        norm=norm,
     )
 
 
