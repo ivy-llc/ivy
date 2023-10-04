@@ -32,7 +32,6 @@ from collections.abc import Hashable
 # --------#
 
 
-
 def _is_valid_dtypes_attributes(fn: Callable) -> bool:
     if hasattr(fn, "supported_dtypes") and hasattr(fn, "unsupported_dtypes"):
         fn_supported_dtypes = fn.supported_dtypes
