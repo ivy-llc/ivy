@@ -264,7 +264,3 @@ def test_jax_numpy_ifftshift(
         x=arr[0],
         axes=None,
     )
-
-
-
-        
