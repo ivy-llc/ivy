@@ -29,6 +29,9 @@ def _generic_lstm(
         for i in range(0, len(all_weights), weights_per_layer)
     ]
 
+    if batch_sizes is not None:
+        input = _pad_packed_sequence(input, batch_sizes, batch_first=batch_first)
+
     if batch_first:
         input = ivy.permute_dims(input, axes=(1, 0, 2))
 
@@ -39,8 +42,6 @@ def _generic_lstm(
     hidden_size = w_hh.shape[1]
 
     unidirectional = not bidirectional
-
-    prev_output = input
 
     h_outs = []
 
@@ -81,6 +82,52 @@ def _generic_lstm(
             else _slice_along_axis(x, start=start, stop=end, axis=0)
         )
 
+    def lstm_single_layer(x, hidden, weights, bias):
+
+        if batch_first:
+            x = ivy.swapaxes(x, 0, 1)
+
+        hx_fw, cx_fw = hidden
+        if bidirectional:
+            if hx_fw is None:
+                hx_bw = None
+            else:
+                hx_bw = hx_fw[1]
+                hx_fw = hx_fw[0]
+            if cx_fw is None:
+                cx_bw = None
+            else:
+                cx_bw = cx_fw[1]
+                cx_fw = cx_fw[0]
+            hidden_bw = hx_bw, cx_bw
+        hidden_fw = hx_fw, cx_fw
+        result_fw, hidden_fw = ivy.lstm_update(x, *hidden_fw, *weights, bias)
+
+        if bidirectional:
+            x_reversed = ivy.flip(x, axis=0)
+            result_bw, hidden_bw = ivy.lstm_update(x_reversed, *hidden_bw, *weights, bias)
+            result_bw = ivy.flip(result_bw, axis=0)
+
+            result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape)-1)
+            if hidden_fw is None and hidden_bw is None:
+                h = None
+                c = None
+            elif hidden_fw is None:
+                h, c = hidden_bw
+            elif hidden_bw is None:
+                h, c = hidden_fw
+            else:
+                h = ivy.stack([hidden_fw[0], hidden_bw[0]], axis=0)
+                c = ivy.stack([hidden_fw[1], hidden_bw[1]], axis=0)
+        else:
+            result = result_fw
+            h, c = hidden_fw
+
+        if batch_first:
+            result = ivy.swapaxes(result, 0, 1)
+
+        return result, (h, c)
+
     for i in range(num_layers):
         if unidirectional:
             if weights_per_layer == 4:
@@ -105,16 +152,11 @@ def _generic_lstm(
 
             state_indices = 2 * i, 2 * i + 2
 
-        inputs = [prev_output, weight_ih, weight_hh, bias_concat, batch_sizes]
-
-        inputs.append(retrieve_state(h0, *state_indices))
-        inputs.append(retrieve_state(c0, *state_indices))
-
-        extra_kwargs = {} if unidirectional else {"direction_s": "bidirectional"}
-
-        # ??????
-        prev_output, h_out, c_out = g.op(
-            "LSTM", *inputs, outputs=3, hidden_size_i=hidden_size, **extra_kwargs
+        output, (h_out, c_out) = lstm_single_layer(
+            input,
+            (retrieve_state(h0, *state_indices), retrieve_state(c0, *state_indices)),
+            (weight_ih, weight_hh),
+            bias_concat,
         )
 
         if bidirectional:
@@ -125,18 +167,18 @@ def _generic_lstm(
             # by first moving num_directions before hidden_size with
             # Transpose, and then combining it with hidden_size
             # with Reshape.
-            prev_output = ivy.permute_dims(prev_output, axes=(0, 2, 1, 3))
-            prev_output = ivy.reshape(prev_output, (*prev_output.shape[:2], -1))
+            output = ivy.permute_dims(output, axes=(0, 2, 1, 3))
+            output = ivy.reshape(output, (*output.shape[:2], -1))
         else:
-            prev_output = ivy.squeeze(prev_output, axis=1)
+            output = ivy.squeeze(output, axis=1)
 
         h_outs.append(h_out)
 
     if batch_first:
-        prev_output = ivy.permute_dims(prev_output, axes=(1, 0, 2))
+        output = ivy.permute_dims(output, axes=(1, 0, 2))
     h_outs = h_out if num_layers == 1 else ivy.concat(*h_outs, axis=0)
     c_outs = c_out if num_layers == 1 else ivy.concat(*c_outs, axis=0)
-    return prev_output, h_outs, c_outs
+    return output, h_outs, c_outs
 
 
 def _lstm_full(
