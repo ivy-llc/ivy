@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 from tensorflow import errors as tf_errors
-import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -2382,9 +2381,9 @@ def test_tensorflow_while_loop(
     input=helpers.get_shape(
         allow_none=False,
         min_num_dims=0,
-        max_num_dims=10,
+        max_num_dims=9,
         min_dim_size=0,
-        max_dim_size=10,
+        max_dim_size=9,
     ),
     dtype=helpers.get_dtypes("valid", full=False),
 )
@@ -2398,9 +2397,6 @@ def test_tensorflow_zeros(
     fn_tree,
     on_device,
 ):
-    if ivy.current_backend_str() == "paddle":
-        # Paddle only supports ndim from 0 to 9
-        assume(input.shape[0] < 10)
     helpers.test_frontend_function(
         shape=input,
         input_dtypes=dtype,
