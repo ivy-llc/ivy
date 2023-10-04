@@ -337,7 +337,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([-1., 1., 1.])
         """
         return ivy.hardtanh(self._data, min_val=min_val, max_val=max_val, out=out)
-    
+
     def tanhshrink(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tanhshrink. This method simply wraps

@@ -585,6 +585,7 @@ def hardtanh(
     """
     return current_backend(x).hardtanh(x, max_val=max_val, min_val=min_val, out=out)
 
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -634,6 +635,7 @@ def tanhshrink(
     """
     return current_backend(x).tanhshrink(x, out=out)
 
+
 def _celu_jax_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -673,7 +675,7 @@ def _celu_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def celu(
     x: Union[ivy.Array, ivy.NativeArray],
