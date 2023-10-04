@@ -1,29 +1,27 @@
 # global
+import paddle
 
+# local
 import ivy
 from ivy.func_wrapper import inputs_to_native_arrays
-from ivy.functional.ivy.gradients import _get_required_float_variables
 
 
 def bind_custom_gradient_function(func, custom_grad_fn):
-    def custom_func(x):
-        x, _, _, _, _ = _get_required_float_variables(x, xs_grad_idxs=None)
+    class _CustomModule(paddle.autograd.PyLayer):
+        @staticmethod
+        def forward(ctx, x):
+            ret = ivy.to_native(func(x), nested=True, include_derived=True)
+            ctx.save_for_backward(x, ret)
+            return ret
 
-        # Create a variable from x to enable gradient tracking
-        x = x.detach().requires_grad_()
+        @staticmethod
+        def backward(ctx, upstream):
+            grads = custom_grad_fn(
+                *ivy.to_ivy(
+                    (ctx.saved_tensor(), upstream), nested=True, include_derived=True
+                )
+            )
+            return ivy.to_native(grads, nested=True, include_derived=True)
 
-        # Check if we are backpropagating before registering the hook
-        if ivy.is_backpropagating():
-            ret = func(x)
-
-            def hook_fn(grad):
-                custom_grads = custom_grad_fn((x, grad))
-                return custom_grads
-
-            x.register_hook(hook_fn)
-        else:
-            ret = func(x)
-
-        return ret
-
-    return inputs_to_native_arrays(custom_func)
+    custom_module = _CustomModule.apply
+    return inputs_to_native_arrays(custom_module)
