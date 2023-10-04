@@ -6,7 +6,6 @@ from hypothesis import strategies as st, assume
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
@@ -2308,7 +2307,13 @@ def test_torch_positive(
 
 @handle_frontend_test(
     fn_tree="torch.pow",
-    dtype_and_x=pow_helper(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=1,
+        max_value=7,
+        shared_dtype=True,
+    ),
 )
 def test_torch_pow(
     dtype_and_x,
