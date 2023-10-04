@@ -923,7 +923,7 @@ def _create_transpile_report(
                 file_data[key][backend] = data[key]
             if not is_backend:
                 # not backend specific
-                for key in ["ivy_nodes", "frontend_fw_time"]:
+                for key in ["ivy_nodes", "fw_time"]:
                     file_data[key] = data[key]
             json_object = json.dumps(file_data, indent=6)
             with open(file_name, "w") as outfile:
