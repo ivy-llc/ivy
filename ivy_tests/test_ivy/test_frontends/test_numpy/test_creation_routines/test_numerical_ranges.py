@@ -10,6 +10,23 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_frontend_method
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _get_dtype_and_range(draw):
+    dim = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    start = draw(
+        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=-50, max_value=0)
+    )
+    stop = draw(
+        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=1, max_value=50)
+    )
+    return dtype * 2, start, stop
+
+
 # helpers
 @st.composite
 def _get_range_for_grid(draw):
@@ -31,17 +48,8 @@ def _get_range_for_grid(draw):
     return start, stop, None
 
 
-@st.composite
-def _get_dtype_and_range(draw):
-    dim = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
-    start = draw(
-        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=-50, max_value=0)
-    )
-    stop = draw(
-        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=1, max_value=50)
-    )
-    return dtype * 2, start, stop
+# --- Main --- #
+# ------------ #
 
 
 # arange
@@ -75,6 +83,40 @@ def test_numpy_arange(
         stop=stop,
         step=step,
         dtype=dtype[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.geomspace",
+    dtype_start_stop=_get_dtype_and_range(),
+    num=helpers.ints(min_value=5, max_value=50),
+    endpoint=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_numpy_geomspace(
+    dtype_start_stop,
+    num,
+    endpoint,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtypes, start, stop = dtype_start_stop
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        start=start,
+        stop=stop,
+        num=num,
+        endpoint=endpoint,
+        dtype=input_dtypes[0],
     )
 
 
@@ -282,38 +324,4 @@ def test_numpy_ogrid(range, class_, method_name, backend_fw, frontend):
         rtol=1e-03,
         backend=backend_fw,
         ground_truth_backend=frontend,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.geomspace",
-    dtype_start_stop=_get_dtype_and_range(),
-    num=helpers.ints(min_value=5, max_value=50),
-    endpoint=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_numpy_geomspace(
-    dtype_start_stop,
-    num,
-    endpoint,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtypes, start, stop = dtype_start_stop
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-1,
-        start=start,
-        stop=stop,
-        num=num,
-        endpoint=endpoint,
-        dtype=input_dtypes[0],
     )

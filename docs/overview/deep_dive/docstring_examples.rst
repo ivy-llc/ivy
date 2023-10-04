@@ -4,13 +4,12 @@ Docstring Examples
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`docstring examples channel`: https://discord.com/channels/799879767196958751/982738352103129098
-.. _`docstring examples forum`: https://discord.com/channels/799879767196958751/1028297703089774705
 
 After writing the general docstrings, the final step is to add helpful examples to the docstrings.
 
 There are eight types of examples, which each need to be added:
 
-**Functional** examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to docstring of the function in the Ivy API :func:`ivy.func_name`.
+**Functional** examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to the docstring of the function in the Ivy API :func:`ivy.func_name`.
 
 **Array instance method** examples show the method being called like so :code:`x.func_name(...)` on an :class:`ivy.Array` instance, and these should be added to the docstring of the :class:`ivy.Array` instance method :meth:`ivy.Array.func_name`.
 
@@ -35,7 +34,7 @@ These special methods in turn call the functions in the Ivy API mentioned above.
 
 **Functional Examples**
 
-To recap, *functional* examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to docstring of the function in the Ivy API :func:`ivy.func_name`.
+To recap, *functional* examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to the docstring of the function in the Ivy API :func:`ivy.func_name`.
 
 Firstly, we should include *functional* examples with :class:`ivy.Array` instances in the input.
 
@@ -292,7 +291,7 @@ Point 12 is not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Container Operator Examples**
 
-Points 13, 14 and 15 are not relevant as :func:`ivy.tan` is not an *operator* function.
+Points 13, 14, and 15 are not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Container Reverse Operator Example**
 
@@ -441,7 +440,7 @@ Point 12 is not relevant as :func:`ivy.roll` is not an *operator* function.
 
 **Container Operator Examples**
 
-Points 13, 14 and 15 are not relevant as :func:`ivy.roll` is not an *operator* function.
+Points 13, 14, and 15 are not relevant as :func:`ivy.roll` is not an *operator* function.
 
 **Container Reverse Operator Example**
 
@@ -735,7 +734,7 @@ as shown below:
     .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/deep_dive/docstring_examples/docstring_log.png
            :width: 420
 
-It can be quite tedious to go through the output diffs and spot the exact error, so you can take help of online tools like `text compare <https://text-compare.com/>`_ to spot the minutest of differences.
+It can be quite tedious to go through the output diffs and spot the exact error, so you can take the help of online tools like `text compare <https://text-compare.com/>`_ to spot the minutest of differences.
 
 Once you make the necessary changes and the function you are working on doesn't cause the docstring tests to fail, you should be good to go.
 However, one of the reviewers might ask you to make additional changes involving examples.
@@ -748,7 +747,7 @@ Passing docstring tests is a necessary but not sufficient condition for the comp
 
 These three examples should give you a good understanding of what is required when adding docstring examples.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `docstring examples channel`_ or in the `docstring examples forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `docstring examples channel`_!
 
 
 **Video**
