@@ -832,16 +832,16 @@ class FrontendMethodTestCaseRunner(TestCaseRunner):
         tolerance_dict,
         test_values,
     ):
-        self.backend_handler = (backend_handler,)
-        self.frontend = (frontend,)
-        self.frontend_method_data = (frontend_method_data,)
-        self.backend_to_test = (backend_to_test,)
-        self.on_device = (on_device,)
-        self.traced_fn = (traced_fn,)
-        self.rtol = (rtol_,)
-        self.atol = (atol_,)
-        self.tolerance_dict = (tolerance_dict,)
-        self.test_values = (test_values,)
+        self.backend_handler = backend_handler
+        self.frontend = frontend
+        self.frontend_method_data = frontend_method_data
+        self.backend_to_test = backend_to_test
+        self.on_device = on_device
+        self.traced_fn = traced_fn
+        self.rtol = rtol_
+        self.atol = atol_
+        self.tolerance_dict = tolerance_dict
+        self.test_values = test_values
 
     def _run_target(
         self,
