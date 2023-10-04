@@ -19,26 +19,6 @@ def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
     return ivy.dct(input, type=inverse_type, n=n, axis=axis, norm=norm)
 
 
-# kaiser_bessel_derived_window
-@handle_tf_dtype
-@to_ivy_arrays_and_back
-def kaiser_bessel_derived_window(
-    window_length, beta=12.0, dtype=ivy.float32, name=None
-):
-    return ivy.kaiser_bessel_derived_window(window_length, beta=beta, dtype=dtype)
-
-
-@with_supported_dtypes(
-    {"2.13.0 and below": ("float32", "float64", "float16", "bfloat16")},
-    "tensorflow",
-)
-@handle_tf_dtype
-@to_ivy_arrays_and_back
-def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
-    return ivy.kaiser_window(window_length, periodic=False, beta=beta, dtype=dtype)
-
-
-# stft
 @to_ivy_arrays_and_back
 def stft(
     signals,
@@ -76,3 +56,19 @@ kaiser_bessel_derived_window.supported_dtypes = (
     "float16",
     "bfloat16",
 )
+
+@to_ivy_arrays_and_back
+def inverse_stft_window_fn(frame_step, forward_window_fn=ivy.hann_window, name=None):
+    def window(length, dtype=None):
+        forward_window = forward_window_fn(length, dtype=dtype)
+        epsilon = 1e-6  # Small epsilon value to avoid divide by zero
+
+        # Calculate amplitude correction with epsilon
+        amplitude_correction = 1.0 / (forward_window + epsilon)
+        
+        # Handle invalid values (e.g., NaN or inf) by replacing them with 1.0
+        amplitude_correction = ivy.where(ivy.isnan(amplitude_correction) | ivy.isinf(amplitude_correction), 1.0, amplitude_correction)
+
+        return forward_window * amplitude_correction
+
+    return window
