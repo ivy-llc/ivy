@@ -30,7 +30,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
             minimum value must be computed over the entire array. If a tuple of
             integers, minimum values must be computed over multiple axes.
             Default: ``None``.
-
         keepdims
             optional boolean, if ``True``, the reduced axes (dimensions) must be
             included in the result as singleton dimensions, and, accordingly, the

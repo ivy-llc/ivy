@@ -32,7 +32,7 @@ def amin(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return torch.amin(x, axis=axis, keepdims=keepdims)
+    return torch.amin(x, dim=axis, keepdim=keepdims)
 
 
 amin.support_native_out = True

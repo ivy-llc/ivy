@@ -38,11 +38,13 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         keepdims
             optional boolean, if ``True``, the reduced axes
             (dimensions) must be included in the result as
-            singleton dimensions, and, accordingly, the result
-            must be compatible with the input array
-            (see :ref:`broadcasting`). Otherwise, if ``False``, the
-            reduced axes (dimensions) must not be included in the
-            result. Default: ``False``.
+            singleton dimensions, and, accordingly, the
+            result must be compatible with the input array
+            (see `broadcasting<https://data-apis.org/array-api/latest/
+            API_specification/broadcasting.html#broadcasting>`_). Otherwise,
+            if ``False``, the reduced axes (dimensions)
+            must not be included in the result.
+            Default: ``False``.
         key_chains
             The key-chains to apply or not apply the method to.
             Default is ``None``.
@@ -131,11 +133,13 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         keepdims
             optional boolean, if ``True``, the reduced axes
             (dimensions) must be included in the result as
-            singleton dimensions, and, accordingly, the result
-            must be compatible with the input array
-            (see :ref:`broadcasting`). Otherwise, if ``False``, the
-            reduced axes (dimensions) must not be included in the
-            result. Default: ``False``.
+            singleton dimensions, and, accordingly, the
+            result must be compatible with the input array
+            (see `broadcasting<https://data-apis.org/array-api/latest/
+            API_specification/broadcasting.html#broadcasting>`_). Otherwise,
+            if ``False``, the reduced axes (dimensions)
+            must not be included in the result.
+            Default: ``False``.
         key_chains
             The key-chains to apply or not apply the method to.
             Default is ``None``.
