@@ -746,10 +746,7 @@ def test_torch___gt__(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="__invert__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=1,
-    ),
+    dtype_and_x=helpers.dtype_and_values(),
 )
 def test_torch___invert__(
     dtype_and_x,
