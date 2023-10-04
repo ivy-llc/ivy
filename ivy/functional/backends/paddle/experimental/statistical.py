@@ -100,7 +100,7 @@ def _validate_quantile(q):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64", "float16")},
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
     backend_version,
 )
 def nanmin(
@@ -114,16 +114,12 @@ def nanmin(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     nan_mask = paddle.isnan(a)
-
-    # Replace NaN values with a large positive number (or any other suitable value)
-    large_number = paddle.to_tensor(float("inf"))
-    a = paddle.where(nan_mask, large_number, a)
-
+    a_copy = a.clone()
+    a_copy[nan_mask] = float("inf")
     if axis is None:
-        result = paddle.min(a)
+        result = paddle.min(a_copy)
     else:
-        result = paddle.min(a, axis=axis, keepdim=keepdims)
-
+        result = paddle.min(a_copy, axis=axis, keepdim=keepdims)
     return result
 
 
