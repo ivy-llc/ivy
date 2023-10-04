@@ -406,8 +406,8 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
     Call function func with input of xs variables, and return the function result
@@ -473,6 +473,10 @@ def execute_with_gradients(
     }
     })
     """
+    if xs_grad_idxs is None:
+        xs_grad_idxs = [[0]]
+    if ret_grad_idxs is None:
+        ret_grad_idxs = [[0]]
     return current_backend(None).execute_with_gradients(
         func,
         xs,
