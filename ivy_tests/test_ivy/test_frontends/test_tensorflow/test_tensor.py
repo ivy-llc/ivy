@@ -127,6 +127,8 @@ def _helper_random_tensorarray(draw, fn=None):
         ids_to_write = [True for i in range(size)]
     else:
         ids_to_write = [draw(st.booleans()) for i in range(size)]
+        if sum(ids_to_write) == 0:
+            ids_to_write[draw(st.integers(0, size - 1))] = True
     kwargs = {
         "dtype": dtype,
         "size": size,
@@ -156,6 +158,8 @@ def _helper_random_tensorarray(draw, fn=None):
         for id, _ in id_write:
             if draw(st.booleans()):
                 ids.append(id)
+        if not ids:
+            ids.append(id)
         return id_write, kwargs, ids
 
 
@@ -239,12 +243,11 @@ def test_tensorarray_gather(
 ):
     ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs[:2])
     *_, indices = l_kwargs
-    if indices:
-        helpers.value_test(
-            ret_np_from_gt_flat=ta.gather(indices).numpy().flatten(),
-            ret_np_flat=np.array(ta_frontend.gather(indices)).flatten(),
-            backend=backend_fw,
-        )
+    helpers.value_test(
+        ret_np_from_gt_flat=ta.gather(indices).numpy().flatten(),
+        ret_np_flat=np.array(ta_frontend.gather(indices)).flatten(),
+        backend=backend_fw,
+    )
 
 
 @given(l_kwargs=_helper_random_tensorarray())
@@ -268,8 +271,7 @@ def test_tensorarray_scatter(
     backend_fw,
 ):
     id_read, _ = l_kwargs
-    if id_read:
-        ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs, "scatter")
+    ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs, "scatter")
     for id, read in id_read:
         helpers.value_test(
             ret_np_from_gt_flat=ta.read(id).numpy().flatten(),
