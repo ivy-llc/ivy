@@ -65,6 +65,7 @@ def test_numpy_bincount(
     test_with_out=st.just(False),
 )
 def test_numpy_histogram(
+    *,
     dtype_and_x,
     on_device,
     fn_tree,
