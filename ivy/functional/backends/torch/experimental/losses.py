@@ -6,7 +6,7 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 from . import backend_version
-import ivy
+
 # Assuming ivy and backend_version are imported and defined properly
 
 
@@ -188,14 +188,20 @@ def binary_cross_entropy(
         raise ValueError("epsilon should be a float in [0, 1]")
 
     if pos_weight is not None:
-        raise ValueError("The 'pos_weight' argument to torch.binary_cross_entropy is not supported.")
-    
+        raise ValueError(
+            "The 'pos_weight' argument to torch.binary_cross_entropy is not supported."
+        )
+
     if out is not None:
-        raise NotImplementedError("The 'out' argument to torch.binary_cross_entropy is not supported.")
-    
+        raise NotImplementedError(
+            "The 'out' argument to torch.binary_cross_entropy is not supported."
+        )
+
     if axis is not None:
-        raise NotImplementedError("The 'axis' argument to torch.binary_cross_entropy is not supported.")
-    
+        raise NotImplementedError(
+            "The 'axis' argument to torch.binary_cross_entropy is not supported."
+        )
+
     if from_logits:
         return torch.nn.functional.binary_cross_entropy(
             torch.sigmoid(input),
@@ -208,4 +214,3 @@ def binary_cross_entropy(
             target,
             reduction=reduction,
         )
-

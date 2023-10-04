@@ -3,7 +3,7 @@ from typing import Optional
 import paddle
 import paddle.nn.functional as F
 import math
-import ivy
+
 # local
 from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
@@ -240,6 +240,7 @@ def poisson_nll_loss(
         loss = loss + paddle.where(cond, zeroes, striling_approx_term)
     return _apply_loss_reduction(loss, reduction)
 
+
 @with_supported_device_and_dtypes(
     {
         "2.5.1 and below": {
@@ -266,17 +267,25 @@ def binary_cross_entropy(
 
     if not from_logits and pos_weight is not None:
         raise ValueError("pos_weight is only allowed when from_logits is set to True")
-    
+
     if out is not None:
-        raise NotImplementedError("The 'out' argument to paddle.binary_cross_entropy is not supported.")
+        raise NotImplementedError(
+            "The 'out' argument to paddle.binary_cross_entropy is not supported."
+        )
     if axis is not None:
-        raise NotImplementedError("The 'axis' argument to paddle.binary_cross_entropy is not supported.")
+        raise NotImplementedError(
+            "The 'axis' argument to paddle.binary_cross_entropy is not supported."
+        )
 
     if pos_weight is not None:
-        raise NotImplementedError("The 'pos_weight' argument to paddle.binary_cross_entropy is not supported.")
+        raise NotImplementedError(
+            "The 'pos_weight' argument to paddle.binary_cross_entropy is not supported."
+        )
     input_arr = paddle.to_tensor(input)
     target_arr = paddle.to_tensor(target, dtype=input.dtype)
     if from_logits:
-        return F.binary_cross_entropy(paddle.nn.Sigmoid(input_arr),target_arr, reduction=reduction)
+        return F.binary_cross_entropy(
+            paddle.nn.Sigmoid(input_arr), target_arr, reduction=reduction
+        )
     else:
-        return F.binary_cross_entropy(input_arr,target_arr, reduction=reduction)
+        return F.binary_cross_entropy(input_arr, target_arr, reduction=reduction)

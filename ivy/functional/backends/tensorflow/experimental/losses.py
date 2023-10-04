@@ -6,7 +6,7 @@ from ivy.func_wrapper import (
     with_supported_device_and_dtypes,
 )
 from . import backend_version
-import ivy
+
 
 @with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
 def huber_loss(
@@ -70,9 +70,9 @@ def soft_margin_loss(
 
 def _apply_loss_reduction(loss: tf.Tensor, reduction: str, axis) -> tf.Tensor:
     if reduction == "sum":
-        return tf.math.reduce_sum(loss,axis=axis)
+        return tf.math.reduce_sum(loss, axis=axis)
     elif reduction == "mean":
-        return tf.reduce_mean(loss,axis=axis)
+        return tf.reduce_mean(loss, axis=axis)
     else:  # reduction == "none"
         return loss
 
@@ -183,10 +183,12 @@ def binary_cross_entropy(
 
     if not from_logits and pos_weight is not None:
         raise ValueError("pos_weight is only allowed when from_logits is set to True")
-    
+
     if out is not None:
-        raise NotImplementedError("The 'out' argument to tf.binary_cross_entropy is not supported.")
-    
+        raise NotImplementedError(
+            "The 'out' argument to tf.binary_cross_entropy is not supported."
+        )
+
     input_tensor = tf.constant(input, dtype=input.dtype)
     target_tensor = tf.constant(target, dtype=input.dtype)
 
@@ -194,15 +196,28 @@ def binary_cross_entropy(
         input = tf.math.sigmoid(input_tensor)
         if pos_weight is not None:
             pos_weight = tf.constant(pos_weight, dtype=input.dtype)
-            num_classes = input_tensor.shape[0] if len(input_tensor.shape) == 1 else input_tensor.shape[1]
+            num_classes = (
+                input_tensor.shape[0]
+                if len(input_tensor.shape) == 1
+                else input_tensor.shape[1]
+            )
             if pos_weight.shape[0] != num_classes:
                 raise ValueError(
                     "pos_weight must have the same size as the number of classes in"
                     " pred at non-singleton dimension 1"
                 )
-            loss = -1.0 * ((pos_weight * target_tensor * tf.math.log(input_tensor+epsilon)) + (1.0-target_tensor)*tf.math.log(1.0-input_tensor + epsilon))
+            loss = -1.0 * (
+                (pos_weight * target_tensor * tf.math.log(input_tensor + epsilon))
+                + (1.0 - target_tensor) * tf.math.log(1.0 - input_tensor + epsilon)
+            )
         else:
-            loss = -1.0 * (target_tensor * tf.math.log(input_tensor+epsilon) + (1.0-target_tensor)*tf.math.log(1.0-input_tensor + epsilon))
+            loss = -1.0 * (
+                target_tensor * tf.math.log(input_tensor + epsilon)
+                + (1.0 - target_tensor) * tf.math.log(1.0 - input_tensor + epsilon)
+            )
     else:
-        loss = -1.0 * (target_tensor * tf.math.log(input_tensor+epsilon) + (1.0-target_tensor)*tf.math.log(1.0-input_tensor + epsilon))
-    return _apply_loss_reduction(loss, reduction ,axis)
+        loss = -1.0 * (
+            target_tensor * tf.math.log(input_tensor + epsilon)
+            + (1.0 - target_tensor) * tf.math.log(1.0 - input_tensor + epsilon)
+        )
+    return _apply_loss_reduction(loss, reduction, axis)

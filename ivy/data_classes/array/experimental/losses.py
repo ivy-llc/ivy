@@ -386,9 +386,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.binary_cross_entropy. This method simply wraps the
-        function, and so the docstring for ivy.binary_cross_entropy also applies to this method with
-        minimal changes.
+        ivy.Array instance method variant of ivy.binary_cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -400,14 +400,14 @@ class _ArrayWithLossesExperimental(abc.ABC):
             Whether `pred` is expected to be a logits tensor. By
             default, we assume that `pred` encodes a probability distribution.
         epsilon
-            a float in [0.0, 1.0] specifying the amount of smoothing when calculating 
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
             the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
         reduction
             ``'none'``: No reduction will be applied to the output.
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed. Default: ``'none'``.
         pos_weight
-            a weight for positive examples. Must be an array with length equal to the 
+            a weight for positive examples. Must be an array with length equal to the
             number of classes.
         axis
             Axis along which to compute crossentropy.
@@ -415,10 +415,10 @@ class _ArrayWithLossesExperimental(abc.ABC):
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
-        Returns 
+        Returns
         -------
         ret
-            The Binary Cross Entropy loss between the input array and the 
+            The Binary Cross Entropy loss between the input array and the
             target values.
 
         Examples
@@ -429,11 +429,13 @@ class _ArrayWithLossesExperimental(abc.ABC):
         >>> print(z)
         ivy.array(0.5946)
         """
-        return ivy.binary_cross_entropy(self._data,
-                                        target,
-                                        from_logits=from_logits,
-                                        epsilon=epsilon,
-                                        reduction=reduction,
-                                        pos_weight=pos_weight,
-                                        axis=axis,
-                                        out=out)
+        return ivy.binary_cross_entropy(
+            self._data,
+            target,
+            from_logits=from_logits,
+            epsilon=epsilon,
+            reduction=reduction,
+            pos_weight=pos_weight,
+            axis=axis,
+            out=out,
+        )

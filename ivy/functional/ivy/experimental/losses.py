@@ -575,6 +575,7 @@ def poisson_nll_loss(
         reduction=reduction,
     )
 
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -592,7 +593,8 @@ def binary_cross_entropy(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Compute the binary cross entropy loss between predicted scores and true binary labels.
+    Compute the binary cross entropy loss between predicted scores and true binary
+    labels.
 
     Parameters
     ----------
@@ -642,11 +644,13 @@ def binary_cross_entropy(
     >>> ivy.binary_cross_entropy(input, target, reduction='none')
     ivy.array([0.2231, 0.3567, 0.2231, 0.1054])
     """
-    return ivy.current_backend(input).binary_cross_entropy(input,
-                                                      target,
-                                                      from_logits=from_logits,
-                                                      epsilon=epsilon,
-                                                      reduction=reduction,
-                                                      pos_weight=pos_weight,
-                                                      axis=axis,
-                                                      out=out)
+    return ivy.current_backend(input).binary_cross_entropy(
+        input,
+        target,
+        from_logits=from_logits,
+        epsilon=epsilon,
+        reduction=reduction,
+        pos_weight=pos_weight,
+        axis=axis,
+        out=out,
+    )

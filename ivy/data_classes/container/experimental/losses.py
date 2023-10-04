@@ -1103,6 +1103,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
     @staticmethod
     def _static_binary_cross_entropy(
         input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -1121,9 +1122,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.binary_cross_entropy. This method simply wraps the
-        function, and so the docstring for ivy.binary_cross_entropy also applies to this method with
-        minimal changes.
+        ivy.Container static method variant of ivy.binary_cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1153,7 +1154,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         -------
         ret
             The Binary Cross Entropy loss between input array and target values.
-       """
+        """
         return ContainerBase.cont_multi_map_in_function(
             "binary_cross_entropy",
             input,
@@ -1167,7 +1168,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences
+            map_sequences=map_sequences,
         )
 
     def binary_cross_entropy(
@@ -1184,12 +1185,12 @@ class _ContainerWithLossesExperimental(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.binary_cross_entropy. This method simply wraps
-        the function, and so the docstring for ivy.binary_cross_entropy also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.binary_cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1208,7 +1209,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed. Default: ``'none'``.
         pos_weight
-            a weight for positive examples. Must be an array with length equal to the 
+            a weight for positive examples. Must be an array with length equal to the
             number of classes.
         axis
             Axis along which to compute crossentropy.
@@ -1231,7 +1232,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         -------
         ret
             The binary cross entropy loss between input array and target values.
-        
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0.8,0.3,0.9]), b=ivy.array([0.6, 0.7, 0.9])
@@ -1255,5 +1256,5 @@ class _ContainerWithLossesExperimental(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences
+            map_sequences=map_sequences,
         )
