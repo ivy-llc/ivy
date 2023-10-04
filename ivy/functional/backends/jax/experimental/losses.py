@@ -184,7 +184,7 @@ def binary_cross_entropy(
         raise ValueError("pos_weight is only allowed when from_logits is set to True")
     
     if out is not None:
-        raise NotImplementedError(f"The 'out' argument to jnp.binary_cross_entropy is not supported.")
+        raise NotImplementedError("The 'out' argument to jnp.binary_cross_entropy is not supported.")
     
     input_arr = jnp.asarray(input, dtype=input.dtype)
     target_arr = jnp.asarray(target, dtype=input.dtype)

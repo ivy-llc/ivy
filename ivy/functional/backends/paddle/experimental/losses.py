@@ -268,15 +268,15 @@ def binary_cross_entropy(
         raise ValueError("pos_weight is only allowed when from_logits is set to True")
     
     if out is not None:
-        raise NotImplementedError(f"The 'out' argument to paddle.binary_cross_entropy is not supported.")
+        raise NotImplementedError("The 'out' argument to paddle.binary_cross_entropy is not supported.")
     if axis is not None:
-        raise NotImplementedError(f"The 'axis' argument to paddle.binary_cross_entropy is not supported.")
-    
+        raise NotImplementedError("The 'axis' argument to paddle.binary_cross_entropy is not supported.")
+
+    if pos_weight is not None:
+        raise NotImplementedError("The 'pos_weight' argument to paddle.binary_cross_entropy is not supported.")
     input_arr = paddle.to_tensor(input)
     target_arr = paddle.to_tensor(target, dtype=input.dtype)
-    if pos_weight is not None:
-        pos_weight = paddle.to_tensor(pos_weight, dtype=input.dtype)
     if from_logits:
-        return F.binary_cross_entropy(paddle.nn.Sigmoid(input_arr),target_arr, reduction=reduction, weight=pos_weight)
+        return F.binary_cross_entropy(paddle.nn.Sigmoid(input_arr),target_arr, reduction=reduction)
     else:
-        return F.binary_cross_entropy(input_arr,target_arr, reduction=reduction, weight=pos_weight)
+        return F.binary_cross_entropy(input_arr,target_arr, reduction=reduction)

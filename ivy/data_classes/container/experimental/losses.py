@@ -1201,15 +1201,15 @@ class _ContainerWithLossesExperimental(ContainerBase):
             Whether `pred` is expected to be a logits tensor. By
             default, we assume that `pred` encodes a probability distribution.
         epsilon
-            a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
-            loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
         reduction
             ``'none'``: No reduction will be applied to the output.
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed. Default: ``'none'``.
         pos_weight
-            a weight for positive examples. Must be an array with length equal to the number
-            of classes.
+            a weight for positive examples. Must be an array with length equal to the 
+            number of classes.
         axis
             Axis along which to compute crossentropy.
         key_chains

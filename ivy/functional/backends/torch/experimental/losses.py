@@ -184,25 +184,28 @@ def binary_cross_entropy(
     axis: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    # input = ivy.to_numpy(input)
-    # target = ivy.to_numpy(target)
-    # input = torch.Tensor(input)
-    # target = torch.Tensor(target)
-    # if pos_weight != None:
-    #     pos_weight = ivy.to_numpy(pos_weight)
-    #     pos_weight = torch.Tensor(pos_weight)
+    if not (0.0 <= epsilon <= 1.0):
+        raise ValueError("epsilon should be a float in [0, 1]")
+
+    if pos_weight is not None:
+        raise ValueError("The 'pos_weight' argument to torch.binary_cross_entropy is not supported.")
+    
+    if out is not None:
+        raise NotImplementedError("The 'out' argument to torch.binary_cross_entropy is not supported.")
+    
+    if axis is not None:
+        raise NotImplementedError("The 'axis' argument to torch.binary_cross_entropy is not supported.")
+    
     if from_logits:
         return torch.nn.functional.binary_cross_entropy(
             torch.sigmoid(input),
             target,
-            weight=pos_weight,
             reduction=reduction,
         )
     else:
         return torch.nn.functional.binary_cross_entropy(
             input,
             target,
-            weight=pos_weight,
             reduction=reduction,
         )
 
