@@ -84,7 +84,7 @@ def cleanup_and_fetch_binaries(clean=True):
             if terminate:
                 break
             for path in binaries_paths:
-                module = path.split(folder_path)[1][1:].split(os.sep)[1]
+                module = path[len(folder_path) :][1:].split(os.sep)[1]
                 if os.path.exists(path) or str(tag) not in available_configs[module]:
                     continue
                 folders = path.split(os.sep)
