@@ -1,5 +1,5 @@
 from .runners import (
-    FrontendTestCaseRunner,
+    FrontendFunctionTestCaseRunner,
     GTFunctionTestCaseSubRunner,
     FunctionTestCaseSubRunner,
 )
@@ -79,7 +79,7 @@ class GTFunctionTestCaseSubRunnerMP(GTFunctionTestCaseSubRunner):
         return self._get_results_from_ret(ret, raw=True)
 
 
-class FrontendTestCaseRunnerMP(FrontendTestCaseRunner):
+class FrontendFunctionTestCaseRunnerMP(FrontendFunctionTestCaseRunner):
     def __init__(
         self,
         backend_handler,

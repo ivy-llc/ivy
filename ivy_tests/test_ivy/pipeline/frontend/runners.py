@@ -413,7 +413,7 @@ class GTFunctionTestCaseSubRunner(TestCaseSubRunner):
         return self._call_function(args, kwargs)
 
 
-class FrontendTestCaseRunner(TestCaseRunner):
+class FrontendFunctionTestCaseRunner(TestCaseRunner):
     def __init__(
         self,
         backend_handler,
@@ -493,3 +493,14 @@ class FrontendTestCaseRunner(TestCaseRunner):
 
         # checking assertions
         self._check_assertions(target_results, ground_truth_results)
+
+
+class FrontendMethodTestCaseRunner(TestCaseRunner):
+    def __init__(self):
+        pass
+
+    def _run_target(self):
+        pass
+
+    def _run_ground_truth(self):
+        pass

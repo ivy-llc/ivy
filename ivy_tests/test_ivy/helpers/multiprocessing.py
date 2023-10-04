@@ -25,7 +25,7 @@ from .function_testing import (
     test_gradient_ground_truth_computation,
     _transpile_if_required_backend,
 )
-from ..pipeline.frontend.multiprocessing import FrontendTestCaseRunnerMP
+from ..pipeline.frontend.multiprocessing import FrontendFunctionTestCaseRunnerMP
 
 
 framework_path = "/opt/fw/"
@@ -362,7 +362,7 @@ def backend_proc(input_queue, output_queue):
                 backend_to_test,
                 traced_fn,
             ) = data
-            ret = FrontendTestCaseRunnerMP._run_target_helper(
+            ret = FrontendFunctionTestCaseRunnerMP._run_target_helper(
                 fn_tree,
                 test_flags,
                 frontend,
@@ -407,7 +407,7 @@ def frontend_proc(input_queue, output_queue):
                 input_dtypes,
                 test_arguments,
             ) = data
-            ret = FrontendTestCaseRunnerMP._run_ground_truth_helper(
+            ret = FrontendFunctionTestCaseRunnerMP._run_ground_truth_helper(
                 gt_fn_tree,
                 fn_tree,
                 test_flags,

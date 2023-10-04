@@ -1,9 +1,9 @@
 from ivy_tests.test_ivy.pipeline.base.pipeline import Pipeline
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 from ivy_tests.test_ivy.pipeline.frontend.multiprocessing import (
-    FrontendTestCaseRunnerMP,
+    FrontendFunctionTestCaseRunnerMP,
 )
-from ivy_tests.test_ivy.pipeline.frontend.runners import FrontendTestCaseRunner
+from ivy_tests.test_ivy.pipeline.frontend.runners import FrontendFunctionTestCaseRunner
 
 
 class FrontendPipeline(Pipeline):
@@ -50,7 +50,7 @@ class FrontendPipeline(Pipeline):
         **all_as_kwargs_np,
     ):
         if not FrontendPipeline.multiprocessing_flag:
-            runner = FrontendTestCaseRunner(
+            runner = FrontendFunctionTestCaseRunner(
                 fn_tree=fn_tree,
                 backend_handler=FrontendPipeline.backend_handler,
                 backend_to_test=backend_to_test,
@@ -64,7 +64,7 @@ class FrontendPipeline(Pipeline):
                 atol=atol_,
             )
         else:
-            runner = FrontendTestCaseRunnerMP(
+            runner = FrontendFunctionTestCaseRunnerMP(
                 fn_tree=fn_tree,
                 backend_handler=FrontendPipeline.backend_handler,
                 backend_to_test=backend_to_test,
