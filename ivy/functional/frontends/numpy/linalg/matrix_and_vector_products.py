@@ -12,6 +12,9 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
+import numpy as np
+
+
 # --- Helpers --- #
 # --------------- #
 
@@ -55,14 +58,7 @@ def einsum(
     optimize=False,
 ):
     return ivy.einsum(subscripts, *operands, out=out)
-import jax.numpy as jnp
-import numpy as np
 
-def my_svd_function(x):
-    u, s, vh = np.linalg.svd(x)
-    return u, s, vh
-
-jax.numpy.my_svd_function = my_svd_function
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
@@ -89,6 +85,11 @@ def multi_dot(arrays, *, out=None):
     return ivy.multi_dot(arrays, out=out)
 
 
+def my_svd_function(x):
+    u, s, vh = np.linalg.svd(x)
+    return u, s, vh
+
+
 @handle_numpy_out
 @to_ivy_arrays_and_back
 def outer(a, b, out=None):
@@ -104,3 +105,6 @@ def tensordot(a, b, axes=2):
 @to_ivy_arrays_and_back
 def tensorsolve(a, b, axes=2):
     return ivy.tensorsolve(a, b, axes=axes)
+
+
+jax.numpy.my_svd_function = my_svd_function
