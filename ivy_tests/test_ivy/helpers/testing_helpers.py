@@ -906,10 +906,7 @@ def seed(draw):
 def _create_transpile_report(
     data: dict, backend: str, file_name: str, is_backend: bool = False
 ):
-    if not is_backend:
-        backend_specific_data = ["nodes", "time", "args", "kwargs"]
-    else:
-        backend_specific_data = ["nodes", "time", "args", "kwargs"]
+    backend_specific_data = ["nodes", "time", "args", "kwargs"]
     # json report exists already
     if os.path.isfile(file_name):
         with open(file_name, "r") as outfile:
