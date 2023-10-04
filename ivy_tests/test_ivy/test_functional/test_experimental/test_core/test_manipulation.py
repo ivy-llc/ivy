@@ -685,7 +685,7 @@ def test_concat_from_sequence(
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        *input_sequence=arrays,
+        *arrays,
         new_axis=new_axis,
         axis=axis,
     )
@@ -720,7 +720,7 @@ def test_dsplit(
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
+        x=x,
         indices_or_sections=indices_or_sections,
     )
 
