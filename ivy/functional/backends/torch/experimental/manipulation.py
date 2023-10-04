@@ -473,3 +473,42 @@ put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode i
     "max",
     "min",
 ]
+
+
+@handle_view
+def concat_from_sequence(
+    array_sequence: ivy.ArraySequence,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Concatenates a sequence of arrays along a specified axis.
+
+    Parameters
+    ----------
+    array_sequence: A sequence of arrays.
+    new_axis: The axis along which to concatenate the arrays.
+    axis: The axis along which to concatenate the arrays.
+    out: Optional output array, for writing the result to.
+
+    Returns
+    -------
+    An array that is the concatenation of the arrays in the sequence.
+    """
+
+    if new_axis == 0:
+        return ivy.concat_from_sequence(
+            array_sequence, new_axis=new_axis, axis=axis, out=out
+        )
+    elif new_axis == 1:
+        if not isinstance(array_sequence, (tuple, list)):
+            array_sequence = [array_sequence]
+        if isinstance(array_sequence, tuple):
+            array_sequence = (ivy_zeros_like(array_sequence[0]),) + array_sequence
+        else:
+            array_sequence = [ivy_zeros_like(array_sequence)] + array_sequence
+        return ivy.concat_from_sequence(
+            array_sequence, new_axis=new_axis, axis=axis, out=out
+        )
