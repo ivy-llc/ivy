@@ -67,16 +67,16 @@ class FunctionTestCaseSubRunnerMP(FunctionTestCaseSubRunner):
             self._test_out(ret, args, kwargs, frontend_fn)
 
         if self.test_flags.test_trace:
-            return self._get_results_from_ret_raw(ret), frontend_fn
+            return self._get_results_from_ret(ret, raw=True), frontend_fn
 
-        return self._get_results_from_ret_raw(ret), None
+        return self._get_results_from_ret(ret, raw=True), None
 
 
 class GTFunctionTestCaseSubRunnerMP(GTFunctionTestCaseSubRunner):
     def _call_function(self, args, kwargs):
         frontend_fn = self._get_frontend_fn()
         ret = frontend_fn(*args, **kwargs)
-        return self._get_results_from_ret_raw(ret)
+        return self._get_results_from_ret(ret, raw=True)
 
 
 class FrontendTestCaseRunnerMP(FrontendTestCaseRunner):
