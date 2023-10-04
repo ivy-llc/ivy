@@ -1491,20 +1491,3 @@ def test_vstack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_device):
         arrays=arrays,
     )
 
-
-# vstack
-@handle_test(
-    fn_tree="functional.ivy.experimental.vstack",
-    arrays_dtypes=_st_col_row_stack_arrays(stack_dim=0),
-    test_gradients=st.just(False),
-)
-def test_vstack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_device):
-    arrays, dtypes = arrays_dtypes
-    helpers.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        arrays=arrays,
-    )
