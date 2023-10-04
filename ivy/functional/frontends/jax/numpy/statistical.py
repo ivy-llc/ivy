@@ -9,6 +9,11 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
+import builtins
+import operator
+import math
+
+
 @to_ivy_arrays_and_back
 def argmin(a, axis=None, out=None, keepdims=None):
     return ivy.argmin(a, axis=axis, out=out, keepdims=keepdims)
@@ -173,6 +178,109 @@ def einsum(
     _dot_general=None,
 ):
     return ivy.einsum(subscripts, *operands, out=out)
+
+
+@to_ivy_arrays_and_back
+def histogramdd(sample, bins=10, range=None, weights=None, density=None):
+    sample = ivy.asarray(sample)
+    N, D = ivy.shape(sample)
+
+    if weights is not None:
+        weights = ivy.asarray(weights)
+        if ivy.shape(weights) != N:
+            raise ValueError("Must have one weight for each sample.")
+
+    if density is not None and type(density) is not bool:
+        raise TypeError("Density must be of type bool of None")
+
+    if range is not None:
+        if len(range) != D or any(r is not None and len(r) != 2 for r in range):
+            raise ValueError(
+                f"For sample.shape={(N, D)}, range must be a sequence of {D} pairs or"
+                f" Nones; got {range}"
+            )
+
+    try:
+        num_bins = len(bins)
+    except TypeError:
+        bins_per_dimension = D * ivy.array([bins])
+    else:
+        if num_bins != D:
+            raise ValueError("Must be a bin for each dimension.")
+        bins_per_dimension = ivy.array(bins)
+
+    bin_edges_by_dims = []
+    bin_idx_by_dim = []
+    dedges = []
+    nbins = []
+
+    # Get the edges
+    for i in builtins.range(D):
+        # Each bin 1 int --> need to use linspace
+        if ivy.get_num_dims(bins_per_dimension[i]) == 0:
+            if bins_per_dimension[i] < 1:
+                raise ValueError(f"bins[{i}] must be positive, when an integer")
+            if range is not None:
+                smin, smax = range[i]
+                if smin > smax:
+                    raise ValueError("Max must be larger than Min in range parameter.")
+                if not (ivy.isfinite(smin) and ivy.isfinite(smax)):
+                    raise ValueError(
+                        f"Supplied range of [{smin}, {smax}] is not finite"
+                    )
+            else:
+                smin = ivy.min(sample[:, i])
+                smax = ivy.max(sample[:, i])
+                if not (ivy.isfinite(smin) and ivy.isfinite(smax)):
+                    raise ValueError(f"Auto-detected of [{smin}, {smax}] is not finite")
+            if smin == smax:
+                smin -= 0.5
+                smax += 0.5
+            try:
+                n = operator.index(bins_per_dimension[i])
+            except TypeError as e:
+                raise TypeError(f"`bins[{i}]` must be an integer, when a scalar") from e
+            edge = ivy.linspace(smin, smax, n + 1)
+        # Each bin is a sequence --> just copy
+        elif ivy.get_num_dims(bins_per_dimension[i]) == 1:
+            edge = bins_per_dimension[i]
+            if ivy.any(edge[:-1] > edge[1:]):
+                raise ValueError(f"`bins[{i}]` must be monotonically increasing")
+        # If the bin is not in right format
+        else:
+            raise ValueError(f"`bins[{i}]` must be a scalar or 1d array")
+
+        bin_idx = ivy.searchsorted(edge, sample[:, i], side="right")
+        bin_idx = ivy.where((sample[:, i] == edge[-1]), bin_idx - 1, bin_idx)
+
+        nbins.append(len(edge) + 1)
+        dedges.append(ivy.diff(edge))
+        bin_edges_by_dims.append(edge)
+        bin_idx_by_dim.append(bin_idx)
+
+    nbins = tuple(nbins)
+    strides = ivy.cumprod((1,) + nbins[1:][::-1])[::-1]
+
+    result = ivy.zeros(ivy.shape(bin_idx_by_dim[0]), dtype=ivy.int64)
+
+    for i, s in zip(bin_idx_by_dim, strides):
+        result += i * int(s)
+
+    hist = result.bincount(weights=weights, minlength=math.prod(nbins))
+    ivy.reshape(hist, nbins)
+
+    core = D * (slice(1, -1),)
+    hist = hist[core]
+
+    if density:
+        hist = ivy.astype(hist, ivy.float32)
+        hist /= ivy.sum(hist)
+        for i in builtins.range(D):
+            shape = ivy.ones(D, dtype=ivy.int32)
+            shape[i] = nbins[i] - 2
+            hist = hist / ivy.reshape(dedges[i], shape)
+
+    return hist, bin_edges_by_dims
 
 
 @to_ivy_arrays_and_back
