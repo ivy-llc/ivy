@@ -83,7 +83,6 @@ def _generic_lstm(
         )
 
     def lstm_single_layer(x, hidden, weights, bias):
-
         if batch_first:
             x = ivy.swapaxes(x, 0, 1)
 
@@ -105,10 +104,12 @@ def _generic_lstm(
 
         if bidirectional:
             x_reversed = ivy.flip(x, axis=0)
-            result_bw, hidden_bw = ivy.lstm_update(x_reversed, *hidden_bw, *weights, bias)
+            result_bw, hidden_bw = ivy.lstm_update(
+                x_reversed, *hidden_bw, *weights, bias
+            )
             result_bw = ivy.flip(result_bw, axis=0)
 
-            result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape)-1)
+            result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
             if hidden_fw is None and hidden_bw is None:
                 h = None
                 c = None
