@@ -5,6 +5,7 @@ from ivy.functional.frontends.xgboost.objective.regression_loss import (
 from ivy.functional.frontends.xgboost.linear.updater_coordinate import (
     coordinate_updater,
 )
+from copy import deepcopy
 
 
 class GBLinear:
@@ -52,7 +53,7 @@ class GBLinear:
         )
         # used to calculate convergence(comparing max difference of weights to
         # tolerance)
-        self.prev_weight = self.weight.copy()
+        self.prev_weight = deepcopy(self.weight)
 
         # if base margin is None, use base_score instead
         self.base_margin = (
