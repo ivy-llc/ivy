@@ -2996,3 +2996,85 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             v,
             wrap=wrap,
         )
+
+    @staticmethod
+    def _static_trim_zeros(
+        a: ivy.Array,
+        /,
+        *,
+        trim: Optional[str] = "fb",
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.trim_zeros.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.trim_zeros also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self : 1-D array
+            Input array.
+        trim : str, optional
+            A string with 'f' representing trim from front and 'b' to trim from
+            back. Default is 'fb', trim zeros from both front and back of the
+            array.
+
+        Returns
+        -------
+            1-D array
+            The result of trimming the input. The input data type is preserved.
+
+        Examples
+        --------
+        >>> a = ivy.array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1, 0])
+        >>> ivy.trim_zeros(a)
+        array([8, 3, 0, 0, 7, 1])
+
+        >>> ivy.trim_zeros(a, 'b')
+        array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1])
+
+        >>> ivy.trim_zeros([0, 8, 3, 0, 0])
+        [8, 3]
+        """
+        return ContainerBase.cont_multi_map_in_function(a, trim)
+
+    def trim_zeros(
+        self: ivy.Array,
+        /,
+        *,
+        trim: Optional[str] = "fb",
+    ) -> ivy.Array:
+        """
+        ivy.Container instance method variant of ivy.trim_zeros.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.trim_zeros also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self : 1-D array
+            Input array.
+        trim : str, optional
+            A string with 'f' representing trim from front and 'b' to trim from
+            back. Default is 'fb', trim zeros from both front and back of the
+            array.
+
+        Returns
+        -------
+            1-D array
+            The result of trimming the input. The input data type is preserved.
+
+        Examples
+        --------
+        >>> a = ivy.array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1, 0])
+        >>> ivy.trim_zeros(a)
+        array([8, 3, 0, 0, 7, 1])
+
+        >>> ivy.trim_zeros(a, 'b')
+        array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1])
+
+        >>> ivy.trim_zeros([0, 8, 3, 0, 0])
+        [8, 3]
+        """
+        return self._static_trim_zeros(self, trim=trim)

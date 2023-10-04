@@ -628,3 +628,22 @@ def fill_diagonal(
     a = paddle.where(w, v, a)
     a = paddle.reshape(a, shape)
     return a
+
+
+def trim_zeros(a: paddle.Tensor, /, *, trim: Optional[str] = "bf") -> paddle.Tensor:
+    first = 0
+    trim = trim.upper()
+    if "F" in trim:
+        for i in a:
+            if i != 0.0:
+                break
+            else:
+                first = first + 1
+    last = len(a)
+    if "B" in trim:
+        for i in a[::-1]:
+            if i != 0.0:
+                break
+            else:
+                last = last - 1
+    return a[first:last]

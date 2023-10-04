@@ -1026,3 +1026,34 @@ def test_fill_diagonal(
         v=v,
         wrap=wrap,
     )
+
+
+@handle_test(
+    fn_tree="trim_zeros",
+    dt_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=-100,
+        max_value=100,
+    ),
+    test_with_out=st.just(False),
+)
+def test_trim_zeros(
+    *,
+    dt_a,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dt, a = dt_a
+    helpers.test_function(
+        input_dtypes=dt,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        a=a[0],
+    )

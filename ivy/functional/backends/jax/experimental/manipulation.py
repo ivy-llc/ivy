@@ -416,3 +416,7 @@ def fill_diagonal(
     a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
     a = jnp.reshape(a, shape)
     return a
+
+
+def trim_zeros(a: JaxArray, /, *, trim: Optional[str] = "bf") -> JaxArray:
+    return jnp.trim_zeros(a, trim=trim)

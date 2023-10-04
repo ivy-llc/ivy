@@ -2152,3 +2152,45 @@ def fill_diagonal(
         Array with the diagonal filled.
     """
     return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)
+
+
+def trim_zeros(
+    a: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    trim: Optional[str] = "fb",
+) -> ivy.Array:
+    """
+    ivy.Container instance method variant of ivy.trim_zeros.
+
+    This method simply wraps the function, and so the docstring for
+    ivy.trim_zeros also applies to this method with minimal
+    changes.
+
+    Parameters
+    ----------
+    a : 1-D array
+        Input array.
+    trim : str, optional
+        A string with 'f' representing trim from front and 'b' to trim from
+        back. Default is 'fb', trim zeros from both front and back of the
+        array.
+
+    Returns
+    -------
+        1-D array
+        The result of trimming the input. The input data type is preserved.
+
+    Examples
+    --------
+    >>> a = ivy.array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1, 0])
+    >>> ivy.trim_zeros(a)
+    array([8, 3, 0, 0, 7, 1])
+
+    >>> ivy.trim_zeros(a, 'b')
+    array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1])
+
+    >>> ivy.trim_zeros([0, 8, 3, 0, 0])
+    [8, 3]
+    """
+    return ivy.current_backend(a).trim_zeros(a, trim=trim)
