@@ -157,16 +157,15 @@ if __name__ == "__main__":
                 other_backends = [
                     fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
                 ]
-                for backend in other_backends:
-                    backends.append(backend + "/" + get_latest_package_version(backend))
+                for other_backend in other_backends:
+                    backends.append(other_backend + "/" + get_latest_package_version(backend))
 
                 print("Backends:", backends)
                 command = (
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy/ivy unifyai/multiversion:latest'
-                    ' /bin/bash -c "python'
-                    f" multiversion_framework_directory.py {' '.join(backends)};cd"
-                    f' ivy;pytest --tb=short {test} --backend={backend}"'
+                    f' /bin/bash -c "python multiversion_framework_directory.py {" ".join(backends)};cd'
+                    f' ivy;pytest --tb=short {test} --backend={backend.strip()}"'
                 )
                 print("Running", command)
                 sys.stdout.flush()
