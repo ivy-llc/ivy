@@ -5,7 +5,6 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 
-
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
