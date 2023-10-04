@@ -652,7 +652,7 @@ def _assert_frontend_ret(ret, for_fn=True):
     elif ivy.is_array(ret):
         assert _is_frontend_array(
             ret
-        ), f"Frontend {fn_or_method} returned non-frontend arrays: {ret}"
+        ), f"Frontend {fn_or_method} returned non-frontend array: {ret}"
 
 
 def _transpile_if_required_backend(backend: str, fn_name: str, args=None, kwargs=None):
