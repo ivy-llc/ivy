@@ -92,7 +92,9 @@ def _helper_init_tensorarray(backend_fw, l_kwargs, fn=None):
             indices, value = [*zip(*id_write)]
             ta = ta.scatter(indices, tf.cast(tf.stack(value), dtype=ta.dtype))
             value = function_module.stack(list(map(function_module.constant, value)))
-            ta_frontend = ta_frontend.scatter(indices, value)
+            ta_frontend = ta_frontend.scatter(
+                indices, function_module.cast(value, ta_frontend.dtype)
+            )
         else:
             for id, write in id_write:
                 ta = ta.write(id, tf.constant(write))
@@ -286,7 +288,6 @@ def test_tensorarray_size(
     backend_fw,
 ):
     ta, ta_frontend = _helper_init_tensorarray(backend_fw, l_kwargs)
-    id_read, _ = l_kwargs
     helpers.value_test(
         ret_np_from_gt_flat=ta.size().numpy().flatten(),
         ret_np_flat=np.array(ta_frontend.size()).flatten(),
