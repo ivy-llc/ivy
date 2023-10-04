@@ -57,8 +57,8 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Thank you for this PR, here is the CI results: 
-            
+            Thank you for this PR, here is the CI results:
+
             -------------
             ${{ steps.ci_output.outputs.MESSAGE}}
 
