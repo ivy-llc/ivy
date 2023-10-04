@@ -63,8 +63,8 @@ def get_latest_package_version(package_name):
 
 def make_clickable(url, name):
     return (
-            f'<a href="{url}" rel="noopener noreferrer" '
-            + f'target="_blank"><img src={name}></a>'
+        f'<a href="{url}" rel="noopener noreferrer" '
+        + f'target="_blank"><img src={name}></a>'
     )
 
 
@@ -87,15 +87,15 @@ def get_submodule(test_path):
 
 
 def update_individual_test_results(
-        collection,
-        id,
-        submod,
-        backend,
-        test,
-        result,
-        backend_version=None,
-        frontend_version=None,
-        device=None,
+    collection,
+    id,
+    submod,
+    backend,
+    test,
+    result,
+    backend_version=None,
+    frontend_version=None,
+    device=None,
 ):
     key = f"{submod}.{backend}"
     if backend_version is not None:
@@ -160,11 +160,14 @@ if __name__ == "__main__":
                 for backend in other_backends:
                     backends.append(backend + "/" + get_latest_package_version(backend))
                 print("Backends:", backends)
-                command = (f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} '
-                           f'-v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
-                           f' /bin/bash -c "cd docker;python'
-                           f" multiversion_framework_directory.py {' '.join(backends)};cd"
-                           f' ..;pytest --tb=short {test} --backend={backend}"')
+                command = (
+                    f"docker run --rm --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
+                    ' /bin/bash -c "cd docker;python'
+                    f" multiversion_framework_directory.py {' '.join(backends)};cd"
+                    f' ..;pytest --tb=short {test} --backend={backend}"'
+                )
                 print("Running", command)
                 sys.stdout.flush()
                 ret = os.system(command)
