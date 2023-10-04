@@ -1,6 +1,10 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    with_supported_device_and_dtypes,
+)
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -495,7 +499,15 @@ def remainder(x, y, name=None):
     return ivy.remainder(x, y)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("float16", "float32", "float64"),
+        }
+    },
+    "paddle",
+)
 @to_ivy_arrays_and_back
 def remainder_(x, y, name=None):
     return ivy.inplace_update(x, remainder(x, y))
@@ -504,7 +516,9 @@ def remainder_(x, y, name=None):
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def round(x, name=None):
-    return ivy.round(x)
+    sign = ivy.sign(x)
+    x = sign * ivy.floor(ivy.abs(x) + 0.5)
+    return x
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
