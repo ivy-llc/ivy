@@ -1217,6 +1217,85 @@ def truncated_svd(
         return S[:n_eigenvecs]
 
 
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def tensor_train(
+    input_tensor: Union[ivy.Array, ivy.NativeArray],
+    rank: Union[int, Sequence[int]],
+    /,
+    *,
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    verbose: Optional[bool] = False,
+) -> ivy.TTTensor:
+    """
+    TT decomposition via recursive SVD.
+
+    Decomposes the input into a sequence of order-3 tensors (factors)
+    Also known as Tensor-Train decomposition [1]_
+
+    Parameters
+    ----------
+    input_tensor
+        tensor to decompose
+    rank
+        maximum allowable TT rank of the factors
+        if int, then this is the same for all the factors
+        if int list, then rank[k] is the rank of the kth factor
+    svd
+        function to use to compute the SVD
+    verbose
+        level of verbosity
+
+    Returns
+    -------
+    factors
+        order-3 tensors of the TT decomposition
+
+    [1]: Ivan V. Oseledets. "Tensor-train decomposition",
+    SIAM J. Scientific Computing, 33(5):2295–2317, 2011.
+    """
+    rank = ivy.TTTensor.validate_tt_rank(ivy.shape(input_tensor), rank=rank)
+    tensor_size = input_tensor.shape
+    n_dim = len(tensor_size)
+
+    unfolding = input_tensor
+    factors = [None] * n_dim
+
+    for k in range(n_dim - 1):
+        n_row = int(rank[k] * tensor_size[k])
+        unfolding = ivy.reshape(unfolding, (n_row, -1))
+
+        (n_row, n_column) = unfolding.shape
+        current_rank = min(n_row, n_column, rank[k + 1])
+        U, S, V = _svd_interface(unfolding, n_eigenvecs=current_rank, method=svd)
+
+        rank[k + 1] = current_rank
+        factors[k] = ivy.reshape(U, (rank[k], tensor_size[k], rank[k + 1]))
+
+        if verbose is True:
+            print(
+                "TT factor " + str(k) + " computed with shape " + str(factors[k].shape)
+            )
+
+        unfolding = ivy.reshape(S, (-1, 1)) * V
+
+    (prev_rank, last_dim) = unfolding.shape
+    factors[-1] = ivy.reshape(unfolding, (prev_rank, last_dim, 1))
+
+    if verbose is True:
+        print(
+            "TT factor "
+            + str(n_dim - 1)
+            + " computed with shape "
+            + str(factors[n_dim - 1].shape)
+        )
+
+    return ivy.TTTensor(factors)
+
+
 # TODO uncommment the code below when these svd
 # methods have been added
 def _svd_interface(
