@@ -39,21 +39,17 @@ def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"
 
 
 def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
-    if is_frontend_test:
-        if FrontendPipeline.mod_frontend[framework]:
-            proc, input_queue, output_queue = FrontendPipeline.mod_frontend[framework]
-            input_queue.put(
-                ("_get_type_dict_helper", framework, kind, is_frontend_test)
-            )
-            ret = output_queue.get()
-            return ret
+    if FrontendPipeline.mod_frontend[framework]:
+        proc, input_queue, output_queue = FrontendPipeline.mod_frontend[framework]
+        input_queue.put(("_get_type_dict_helper", framework, kind, is_frontend_test))
+        ret = output_queue.get()
+        return ret
     elif Pipeline.mod_backend[framework]:
         proc, input_queue, output_queue = Pipeline.mod_backend[framework]
         input_queue.put(("_get_type_dict_helper", framework, kind, is_frontend_test))
         ret = output_queue.get()
         return ret
-    else:
-        return _get_type_dict_helper(framework, kind, is_frontend_test)
+    return _get_type_dict_helper(framework, kind, is_frontend_test)
 
 
 def _get_type_dict_helper(framework, kind, is_frontend_test):
