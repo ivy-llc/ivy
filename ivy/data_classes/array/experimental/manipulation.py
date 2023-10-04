@@ -161,16 +161,17 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.vstack. This method simply wraps the
-        function, and so the docstring for ivy.vstack also applies to this method with
-        minimal changes.
+        ivy.Array instance method variant of ivy.vstack.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.vstack also applies to this method with minimal changes.
         """
 
         x = ivy.array([1, 2, 3])
         y = ivy.array([2, 3, 4])
         ivy.vstack((x, y))
         ivy.vstack((x, y, x, y))
-       
+
         if not isinstance(arrays, (list, tuple)):
             arrays = [arrays]
         if isinstance(arrays, tuple):
