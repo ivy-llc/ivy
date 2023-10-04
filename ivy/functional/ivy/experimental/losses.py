@@ -642,7 +642,7 @@ def binary_cross_entropy(
     >>> ivy.binary_cross_entropy(input, target, reduction='none')
     ivy.array([0.2231, 0.3567, 0.2231, 0.1054])
     """
-    return ivy.current_backend().binary_cross_entropy(input,
+    return ivy.current_backend(input).binary_cross_entropy(input,
                                                       target,
                                                       from_logits=from_logits,
                                                       epsilon=epsilon,
