@@ -553,13 +553,16 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
         ret = self._ivy.nested_map(conversion_fn, ret, include_derived={"tuple": True})
         return ret
 
-    def _search_init_args(self, init_all_as_kwargs_np):
+    def _search_args(self, init_all_as_kwargs_np, method_all_as_kwargs_np):
+        # init args searching
         arg_searcher = ArgumentsSearcher(init_all_as_kwargs_np)
-        return arg_searcher.search_args(self.init_flags.num_positional_args)
+        init_args = arg_searcher.search_args(self.init_flags.num_positional_args)
 
-    def _search_method_args(self, method_all_as_kwargs_np):
+        # method args searching
         arg_searcher = ArgumentsSearcher(method_all_as_kwargs_np)
-        return arg_searcher.search_args(self.method_flags.num_positional_args)
+        method_args = arg_searcher.search_args(self.method_flags.num_positional_args)
+
+        return init_args, method_args
 
     def _preprocess_init_flags(self, init_total_num_arrays):
         # Make all array-specific test flags and dtypes equal in length
@@ -601,6 +604,10 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
             v if self._ivy.is_float_dtype(d) else False
             for v, d in zip(self.method_flags.as_variable, self.method_input_dtypes)
         ]
+
+    def _preprocess_flags(self, init_total_num_arrays, method_total_num_arrays):
+        self._preprocess_init_flags(init_total_num_arrays)
+        self._preprocess_method_flags(method_total_num_arrays)
 
     def _preprocess_init_args(self, init_args_result, init_kwargs_result):
         ret = []
@@ -650,6 +657,21 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
             )
         return ret[0], ret[1]
 
+    def _preprocess_args(
+        self,
+        init_args_result,
+        init_kwargs_result,
+        method_args_result,
+        method_kwargs_result,
+    ):
+        init_args, init_kwargs = self._preprocess_init_args(
+            init_args_result, init_kwargs_result
+        )
+        method_args, method_kwargs = self._preprocess_method_args(
+            method_args_result, method_kwargs_result
+        )
+        return init_args, init_kwargs, method_args, method_kwargs
+
     def _call_function(self, init_args, init_kwargs, method_args, method_kwargs):
         # determine the target frontend_fn
         frontend_fn, ins = self._get_frontend_function(
@@ -697,22 +719,18 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
         return self._get_results_from_ret(ret)
 
     def get_results(self, init_all_as_kwargs_np, method_all_as_kwargs_np):
-        # preprocess init args and kwargs
-        init_args_result, init_kwargs_result, init_total_num_arrays = (
-            self._search_init_args(init_all_as_kwargs_np)
-        )
-        self._preprocess_init_flags(init_total_num_arrays)
-        init_args, init_kwargs = self._preprocess_init_args(
-            init_args_result, init_kwargs_result
-        )
+        # preprocess init and method args and kwargs
+        (
+            (init_args_result, init_kwargs_result, init_total_num_arrays),
+            (method_args_result, method_kwargs_result, method_total_num_arrays),
+        ) = self._search_args(init_all_as_kwargs_np, method_all_as_kwargs_np)
 
-        # preprocess method args and kwargs
-        method_args_result, method_kwargs_result, method_total_num_arrays = (
-            self._search_method_args(method_all_as_kwargs_np)
-        )
-        self._preprocess_method_flags(method_total_num_arrays)
-        method_args, method_kwargs = self._preprocess_method_args(
-            method_args_result, method_kwargs_result
+        self._preprocess_flags(init_total_num_arrays, method_total_num_arrays)
+        init_args, init_kwargs, method_args, method_kwargs = self._preprocess_args(
+            init_args_result,
+            init_kwargs_result,
+            method_args_result,
+            method_kwargs_result,
         )
 
         return self._call_function(init_args, init_kwargs, method_args, method_kwargs)
