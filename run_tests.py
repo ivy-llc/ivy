@@ -5,7 +5,6 @@ from pymongo import MongoClient
 import requests
 from run_tests_CLI.get_all_tests import BACKENDS
 
-
 submodules = (
     "test_paddle",
     "test_tensorflow",
@@ -49,13 +48,15 @@ result_config = {
 
 
 def get_latest_package_version(package_name):
+    if package_name == "jax":
+        return "0.4.14"
     try:
         url = f"https://pypi.org/pypi/{package_name}/json"
         response = requests.get(url)
         response.raise_for_status()
         package_info = response.json()
         return package_info["info"]["version"]
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException:
         print(f"Error: Failed to fetch package information for {package_name}.")
         return None
 
@@ -153,18 +154,23 @@ if __name__ == "__main__":
             if version_flag == "true":
                 backends = [backend.strip()]
                 [backend_name, backend_version] = backend.split("/")
-                other_backends = [fw for fw in BACKENDS if fw != backend_name]
+                other_backends = [
+                    fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
+                ]
                 for backend in other_backends:
                     backends.append(backend + "/" + get_latest_package_version(backend))
                 print("Backends:", backends)
-                ret = os.system(
+                command = (
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
                     ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
-                    ' /bin/bash -c "python docker/multiversion_framework_directory.py'
-                    f" {' '.join(backends)};pytest --tb=short"
-                    f' {test} --backend={backend}"'
+                    ' /bin/bash -c "cd docker;python'
+                    f" multiversion_framework_directory.py {' '.join(backends)};cd"
+                    f' ..;pytest --tb=short {test} --backend={backend}"'
                 )
+                print("Running", command)
+                sys.stdout.flush()
+                ret = os.system(command)
             else:
                 if with_gpu:
                     ret = os.system(

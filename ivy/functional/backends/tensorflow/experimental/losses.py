@@ -1,10 +1,14 @@
 import tensorflow as tf
+import math
 from typing import Optional
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_device_and_dtypes,
+)
 from . import backend_version
 
 
-@with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": "bool"}, backend_version)
 def huber_loss(
     input: tf.Tensor,
     target: tf.Tensor,
@@ -26,7 +30,7 @@ def huber_loss(
         return loss
 
 
-@with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": "bool"}, backend_version)
 def smooth_l1_loss(
     input: tf.Tensor,
     target: tf.Tensor,
@@ -46,7 +50,7 @@ def smooth_l1_loss(
         return loss
 
 
-@with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": "bool"}, backend_version)
 def soft_margin_loss(
     input: tf.Tensor,
     target: tf.Tensor,
@@ -64,23 +68,156 @@ def soft_margin_loss(
         return loss
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bool", "bfloat16")}, backend_version)
-def kl_div(
+def _apply_loss_reduction(loss: tf.Tensor, reduction: str, axis) -> tf.Tensor:
+    if reduction == "sum":
+        return tf.math.reduce_sum(loss, axis=axis)
+    elif reduction == "mean":
+        return tf.reduce_mean(loss, axis=axis)
+    else:  # reduction == "none"
+        return loss
+
+
+def _validate_poisson_nll_params(
+    input,
+    label,
+    epsilon,
+    reduction,
+    allowed_dtypes=[tf.float32, tf.float64],
+):
+    # Validate dtypes
+    for parameter, name in zip([input, label], ["input", "label"]):
+        if parameter.dtype not in allowed_dtypes:
+            raise ValueError(
+                "The dtype of '%s' in poisson_nll_loss should be one of %s, but"
+                " received %s." % (name, allowed_dtypes, parameter.dtype)
+            )
+
+    # Validate epsilon
+    if epsilon <= 0:
+        raise ValueError(
+            "The value of `epsilon` in poisson_nll_loss should be positive, but"
+            " received %f, which is not allowed" % epsilon
+        )
+
+    # Validate reduction
+    if reduction not in ["sum", "mean", "none"]:
+        raise ValueError(
+            "The value of 'reduction' in poisson_nll_loss should be 'sum', 'mean' or"
+            " 'none', but received %s, which is not allowed." % reduction
+        )
+
+    # Validate shape
+    if input.shape != label.shape:
+        raise ValueError(
+            "The shape of 'input' (%s) must be the same as the shape of 'label' (%s)."
+            % (input.shape, label.shape)
+        )
+
+    return True
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.14.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def poisson_nll_loss(
+    input: tf.Tensor,
+    target: tf.Tensor,
+    *,
+    log_input: bool = True,
+    full: bool = False,
+    eps: float = 1e-8,
+    reduction: str = "mean",
+) -> tf.Tensor:
+    input_tensor = tf.constant(input, dtype=input.dtype)
+    target_tensor = tf.constant(target, dtype=input.dtype)
+
+    _validate_poisson_nll_params(input_tensor, target_tensor, eps, reduction)
+    if log_input:
+        loss = tf.math.exp(input_tensor) - target_tensor * input_tensor
+    else:
+        loss = input_tensor - target_tensor * tf.math.log(input_tensor + eps)
+    if full:
+        point_five = tf.constant(0.5, dtype=target_tensor.dtype)
+        two_pi = tf.constant(2 * math.pi, dtype=target_tensor.dtype)
+
+        stirling_approx = (
+            (target_tensor * tf.math.log(target_tensor))
+            - target_tensor
+            + (point_five * tf.math.log(two_pi * target_tensor))
+        )
+        zeros = tf.zeros_like(target_tensor, dtype=target_tensor.dtype)
+        ones = tf.ones_like(target_tensor, dtype=target_tensor.dtype)
+        cond = tf.math.logical_and(target_tensor >= zeros, target_tensor <= ones)
+        loss = loss + tf.where(cond, zeros, stirling_approx)
+    return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def binary_cross_entropy(
     input: tf.Tensor,
     target: tf.Tensor,
     /,
     *,
-    reduction: Optional[str] = "mean",
+    from_logits: bool = False,
+    epsilon: float = 1e-7,
+    reduction: str = "none",
+    pos_weight: Optional[tf.Tensor] = None,
+    axis: Optional[tf.Tensor] = None,
+    out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
-    size = tf.shape(input)
+    if not (0.0 <= epsilon <= 1.0):
+        raise ValueError("epsilon should be a float in [0, 1]")
 
-    loss = tf.reduce_sum(input * tf.math.log(input / target), axis=-1)
+    if not from_logits and pos_weight is not None:
+        raise ValueError("pos_weight is only allowed when from_logits is set to True")
 
-    if reduction == "mean":
-        loss = tf.math.reduce_mean(loss)
-    elif reduction == "sum":
-        loss = tf.math.reduce_sum(loss)
-    elif reduction == "batchmean":
-        loss = tf.math.reduce_sum(loss) / tf.cast(size[0], dtype=tf.float32)
+    if out is not None:
+        raise NotImplementedError(
+            "The 'out' argument to tf.binary_cross_entropy is not supported."
+        )
 
-    return loss
+    input_tensor = tf.constant(input, dtype=input.dtype)
+    target_tensor = tf.constant(target, dtype=input.dtype)
+
+    if from_logits:
+        input = tf.math.sigmoid(input_tensor)
+        if pos_weight is not None:
+            pos_weight = tf.constant(pos_weight, dtype=input.dtype)
+            num_classes = (
+                input_tensor.shape[0]
+                if len(input_tensor.shape) == 1
+                else input_tensor.shape[1]
+            )
+            if pos_weight.shape[0] != num_classes:
+                raise ValueError(
+                    "pos_weight must have the same size as the number of classes in"
+                    " pred at non-singleton dimension 1"
+                )
+            loss = -1.0 * (
+                (pos_weight * target_tensor * tf.math.log(input_tensor + epsilon))
+                + (1.0 - target_tensor) * tf.math.log(1.0 - input_tensor + epsilon)
+            )
+        else:
+            loss = -1.0 * (
+                target_tensor * tf.math.log(input_tensor + epsilon)
+                + (1.0 - target_tensor) * tf.math.log(1.0 - input_tensor + epsilon)
+            )
+    else:
+        loss = -1.0 * (
+            target_tensor * tf.math.log(input_tensor + epsilon)
+            + (1.0 - target_tensor) * tf.math.log(1.0 - input_tensor + epsilon)
+        )
+    return _apply_loss_reduction(loss, reduction, axis)
