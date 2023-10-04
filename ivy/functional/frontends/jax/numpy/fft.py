@@ -1,7 +1,7 @@
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -70,11 +70,11 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
     return ivy.array(ivy.ifft2(a, s=s, dim=axes, norm=norm), dtype=ivy.dtype(a))
 
 
-@with_unsupported_dtypes(
+@with_supported_dtypes(
     {
         "0.4.16 and below": (
-            "float16",
-            "bfloat16",
+            "float32",
+            "float64",
         )
     },
     "jax",
