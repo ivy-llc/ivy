@@ -1080,25 +1080,25 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ivy.fill_diag also applies to this method with minimal changes.
         """
         return ivy.fill_diagonal(self._data, v, wrap=wrap)
-    
+
 
 def tensor_ops(tensor, operation_type, *args):
-    if operation_type == 'index':
+    if operation_type == "index":
         if len(args) != 1:
             raise ValueError
         index = args[0]
         return tensor[index]
-    elif operation_type == 'slice':
+    elif operation_type == "slice":
         if len(args) != 2:
             raise ValueError
         start, end = args
         return tensor[start:end]
-    elif operation_type == 'join':
+    elif operation_type == "join":
         if len(args) != 1:
             raise ValueError
         other_tensor = args[0]
         return ivy.cat((tensor, other_tensor), dim=0)
-    elif operation_type == 'mutate':
+    elif operation_type == "mutate":
         if len(args) != 1:
             raise ValueError
         factor = args[0]
