@@ -170,6 +170,11 @@ def in1d(ar1, ar2, assume_unique=False, invert=False):
         return (ar1_flat[:, None] == ar2_flat[None, :]).any(axis=-1)
 
 
+@ivy.to_ivy_arrays_and_back
+def integer(x):
+    return ivy.cast(x, x.dtype)
+
+
 @inputs_to_ivy_arrays
 def iterable(y):
     return hasattr(y, "__iter__") and y.ndim > 0
@@ -310,9 +315,3 @@ def zeros_like(a, dtype=None, shape=None):
     if shape:
         return ivy.zeros(shape, dtype=dtype)
     return ivy.zeros_like(a, dtype=dtype)
-
-
-@ivy.to_ivy_arrays_and_back
-def integer(x):
-    return ivy.cast(x, x.dtype)
-    
