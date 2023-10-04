@@ -557,3 +557,22 @@ def view_as_real(input):
     re_part = ivy.real(input)
     im_part = ivy.imag(input)
     return ivy.stack((re_part, im_part), axis=-1)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")},
+def histc(input, bins=100, min=0, max=0, *, out= None):
+
+    input_ivy = ivy.flatten(input) # torch.histc results in a 1D tensor so I flattened it out.
+    
+    if min ==0 and max ==0:
+        min = ivy.min(input_ivy); max = ivy.max(input_ivy)
+    if min == max:
+        min = min - 5.000000e-01
+        max = max + 5.000000e-01
+
+    range = (min , max)
+    if range[0] > range[1]:
+      raise ivy.exceptions.IvyError("Max must be greater than or equal to min")
+    
+    return ivy.histogram(input_ivy, bins = bins, range=range, axis =0, out =out, dtype = input.dtype)
