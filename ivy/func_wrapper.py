@@ -1044,6 +1044,7 @@ def temp_asarray_wrapper(fn: Callable) -> Callable:
         """
 
         def _to_ivy_array(x):
+            # if x is a frontend torch Tensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
             if hasattr(x, "ivy_array"):
                 return x.ivy_array
             # else just return x
