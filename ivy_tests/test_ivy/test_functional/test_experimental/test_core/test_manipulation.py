@@ -1490,4 +1490,3 @@ def test_vstack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_device):
         fn_name=fn_name,
         arrays=arrays,
     )
-
