@@ -1135,6 +1135,10 @@ class Tensor:
     def is_complex(self):
         return torch_frontend.is_complex(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("uint16", "bfloat16")}, "torch")
+    def is_floating_point(self):
+        return torch_frontend.is_floating_point(self._ivy_array)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def isreal(self):
         return torch_frontend.isreal(self._ivy_array)
