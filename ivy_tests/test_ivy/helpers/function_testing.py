@@ -773,6 +773,28 @@ def test_frontend_function(
             )
             if temp is not None:
                 input_dtypes[:] = [temp] * len(temp)
+                # change dtype for args_for_test and kwargs_for_test
+                args_list = list(args_for_test)
+                args_for_test = [
+                    (
+                        ivy.astype(a, input_dtypes[0])
+                        if (_is_frontend_array(a) or ivy.is_array(a))
+                        else a
+                    )
+                    for a in args_list
+                ]
+                for key, value in kwargs_for_test.items():
+                    if _is_frontend_array(value) or ivy_backend.is_ivy_array(value):
+                        kwargs_for_test[key] = ivy_backend.astype(
+                            value, input_dtypes[0]
+                        )
+
+                # kwargs_for_test = {
+                #     key: ivy.astype(value, input_dtypes[0])
+                #     if (_is_frontend_array(value) or ivy_backend.is_array(value))
+                #     else value
+                #     for key, value in kwargs_for_test.items()
+                # }
             else:
                 # type casting is not possible, test with current dtype will be skipped
                 skip(
