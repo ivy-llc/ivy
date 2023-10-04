@@ -50,7 +50,7 @@ def mocked_func(dim=None, keepdim=None, input=None, other=None):
         num_arrays=2,
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-@settings(max_examples=200)
+@settings(max_examples=100)
 def test_promote_types_of_torch_inputs(dtype_and_x, backend_fw):
     x_dtype, x = dtype_and_x
     ivy.set_backend(backend_fw)

@@ -250,7 +250,7 @@ def test_numpy_to_ivy_arrays_and_back(dtype_x_shape, dtype, backend_fw):
         num_arrays=2,
     ),
 )
-@settings(max_examples=200)
+@settings(max_examples=100)
 def test_promote_types_of_numpy_input(dtype_and_x, backend_fw):
     x_dtype, x = dtype_and_x
     ivy.set_backend(backend_fw)

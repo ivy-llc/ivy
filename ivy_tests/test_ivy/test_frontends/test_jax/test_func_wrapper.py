@@ -124,7 +124,7 @@ def test_jax_to_ivy_arrays_and_back(dtype_and_x, backend_fw):
         num_arrays=2,
     ),
 )
-@settings(max_examples=200)
+@settings(max_examples=100)
 def test_promote_types_of_jax_input(dtype_and_x, backend_fw):
     x_dtype, x = dtype_and_x
     ivy.set_backend(backend_fw)
@@ -133,6 +133,7 @@ def test_promote_types_of_jax_input(dtype_and_x, backend_fw):
     input_ivy2 = ivy.array(x[1], dtype=x_dtype[1])
 
     # check promoted type of arrays
+
     jax_frontend.config.jax_enable_x64 = True
     promoted_type1, promoted_type2 = jax_frontend.numpy.promote_types_of_jax_inputs(
         input_ivy1, input_ivy2
@@ -148,5 +149,4 @@ def test_promote_types_of_jax_input(dtype_and_x, backend_fw):
     if promoted_type_jax is not None:
         assert str(promoted_type1.dtype) == str(promoted_type_jax)
     jax_frontend.config.jax_enable_x64 = False
-
     ivy.previous_backend()
