@@ -2207,7 +2207,11 @@ def svd(
 @handle_array_function
 @handle_device
 def svdvals(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, driver: Optional[str], out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    driver: Optional[str],
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Return the singular values of a matrix (or a stack of matrices) ``x``.
