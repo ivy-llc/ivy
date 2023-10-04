@@ -3860,6 +3860,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             out=out,
         )
 
+
 def concat_from_sequence(
     self: ivy.Container,
     /,
@@ -3934,7 +3935,9 @@ def concat_from_sequence(
     """
 
     new_input_sequence = (
-        input_sequence.cont_copy() if ivy.is_ivy_container(input_sequence) else input_sequence.copy()
+        input_sequence.cont_copy()
+        if ivy.is_ivy_container(input_sequence)
+        else input_sequence.copy()
     )
     new_input_sequence.insert(0, self.cont_copy())
     return self.concat_from_sequence(
