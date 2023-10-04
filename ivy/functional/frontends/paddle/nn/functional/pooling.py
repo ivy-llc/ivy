@@ -138,7 +138,7 @@ def max_pool3d(
         padding = "SAME"
     else:
         padding = "VALID"
-    
+
 
      return ivy.max_pool3d(
          x,
@@ -149,4 +149,3 @@ def max_pool3d(
          ceil_mode=ceil_mode,
          data_format=data_format
     )
-       

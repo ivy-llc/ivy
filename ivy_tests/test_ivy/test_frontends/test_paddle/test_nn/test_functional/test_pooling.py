@@ -276,38 +276,6 @@ def test_paddle_avg_pool2d(
     )
 
 
-# max_unpool1d
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.max_unpool1d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
-    indices=st.lists(st.integers(0, 1), min_size=1, max_size=4),
-)
-def test_paddle_max_unpool1d(
-    *,
-    x_k_s_p,
-    indices,
-    test_flags,
-    frontend,
-    on_device,
-    backend_fw,
-    fn_tree,
-):
-    (input_dtype, x, kernel_size, stride, padding) = x_k_s_p
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        on_device=on_device,
-        fn_tree=fn_tree,
-        x=x[0],
-        indices=indices,
-        kernel_size=kernel_size,
-        stride=stride,
-        padding=padding,
-    )
-
-
 # max_pool3d
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.max_pool3d",
@@ -340,4 +308,36 @@ def test_paddle_max_pool3d(
         stride=stride,
         padding=padding,
         data_format=data_format,
+    )
+
+
+# max_unpool1d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.max_unpool1d",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    indices=st.lists(st.integers(0, 1), min_size=1, max_size=4),
+)
+def test_paddle_max_unpool1d(
+    *,
+    x_k_s_p,
+    indices,
+    test_flags,
+    frontend,
+    on_device,
+    backend_fw,
+    fn_tree,
+):
+    (input_dtype, x, kernel_size, stride, padding) = x_k_s_p
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x[0],
+        indices=indices,
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
     )
