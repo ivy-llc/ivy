@@ -302,3 +302,7 @@ from .control_flow_ops import *
 
 from . import sub_backends
 from .sub_backends import *
+
+
+class Tensor:
+    pass
