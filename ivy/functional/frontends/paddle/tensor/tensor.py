@@ -878,5 +878,5 @@ class Tensor:
         {"2.5.1 and below": ("float16", "uint8", "int8", "bool")}, "paddle"
     )
     def gather_(self, y, name=None):
-        self.ivy_array = self.gather(y).ivy_array
-        return self
+        res = self.gather(self, y)
+        return ivy.inplace_update(self, res)
