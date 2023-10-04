@@ -306,3 +306,38 @@ def test_paddle_max_unpool1d(
         stride=stride,
         padding=padding,
     )
+
+
+# max_pool3d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.max_pool3d",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=5),
+    stride=st.tuples(st.integers(1, 2), st.integers(1, 2)),
+    test_with_out=st.just(False),
+)
+def test_paddle_max_pool3d(
+    *,
+    x_k_s_p,
+    stride,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, kernel_size, _, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        data_format=data_format,
+    )
