@@ -1577,6 +1577,36 @@ def test_tensorflow_reverse(
     )
 
 
+# reverse_sequence
+@handle_frontend_test(
+    fn_free="tensorflow.reverse_sequence",
+    dtype_and_axis=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        length_dtype=["int64"],
+        min_axis=0,
+        max_axis=10,
+    ),
+)
+def test_tensorflow_reverse_sequence(
+    *,
+    dtype_and_axis,
+    frontend,
+    backend_fw,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    input, seq_lengths, seq_axis, batch_axis = dtype_and_axis
+    helpers.test_frontend_function(
+        input_sequence=input,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )
+
+
 # roll
 @handle_frontend_test(
     fn_tree="tensorflow.roll",
@@ -2481,34 +2511,4 @@ def test_tensorflow_zeros_like(
         on_device=on_device,
         input=x[0],
         dtype=dtype[0],
-    )
-
-#reverse_sequence
-@handle_frontend_test(
-    fn_free = "tensorflow.reverse_sequence",
-    dtype_and_axis=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        length_dtype=["int64"],
-        min_axis=0,
-        max_axis=10,
-)
-)
-
-def test_tensorflow_reverse_sequence(
-        *,
-        dtype_and_axis,
-        frontend,
-        backend_fw,
-        fn_tree,
-        test_flags,
-        on_device,
-):
-    input, seq_lengths, seq_axis, batch_axis = dtype_and_axis
-    helpers.test_frontend_function(
-        input_sequence=input,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
     )

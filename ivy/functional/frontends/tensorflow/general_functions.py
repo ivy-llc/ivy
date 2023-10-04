@@ -381,6 +381,12 @@ def reverse(tensor, axis, name=None):
     return ivy.flip(tensor, axis=axis)
 
 
+def reverse_sequence(input, seq_lengths, seq_axis=None, batch_axis=None, name=None):
+    return ivy.reverse_sequence(
+        input, seq_lengths, seq_axis=seq_axis, batch_axis=batch_axis
+    )
+
+
 @to_ivy_arrays_and_back
 def roll(input, shift, axis, name=None):
     return ivy.roll(input, shift, axis=axis)
@@ -718,11 +724,3 @@ def zeros_initializer(shape, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def zeros_like(input, dtype=None, name=None):
     return ivy.zeros_like(input, dtype=dtype)
-
-
-def reverse_sequence (input, seq_lengths, seq_axis=None, batch_axis=None, name=None):
-    return ivy.reverse_sequence(
-                        input,
-                        seq_lengths,
-                        seq_axis=seq_axis,
-                        batch_axis=batch_axis)
