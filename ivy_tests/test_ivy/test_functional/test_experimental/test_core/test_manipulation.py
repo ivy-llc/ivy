@@ -710,21 +710,6 @@ def test_dsplit(
     )
 
 
-def test_dsplit(
-    dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x,
-        indices_or_sections=indices_or_sections,
-    )
-
-
 # dstack
 @handle_test(
     fn_tree="functional.ivy.experimental.dstack",
