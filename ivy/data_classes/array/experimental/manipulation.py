@@ -1406,7 +1406,6 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         -------
         An array that is the concatenation of the arrays in the sequence.
         """
-
         # Check that all arrays in the sequence have the same shape.
         for array in array_sequence:
             if not array.shape == array_sequence[0].shape:
