@@ -101,7 +101,10 @@ if __name__ == "__main__":
                 status[backend] = not os.system(command)
                 if status[backend]:
                     command = (
-                        f"pytest --tb=short {test_path} --backend"
+                        f"docker run --rm --env REDIS_URL={redis_url} --env"
+                        f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                        ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
+                        f" -m pytest --tb=short {test_path} --backend"
                         f" {backend} --num-examples 1 --with-transpile"
                     )
                     ret = os.system(command)
