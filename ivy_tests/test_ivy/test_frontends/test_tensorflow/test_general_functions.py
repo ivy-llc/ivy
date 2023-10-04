@@ -1334,35 +1334,6 @@ def test_tensorflow_ones(
     )
 
 
-# ones_like
-@handle_frontend_test(
-    fn_tree="tensorflow.ones_like",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    dtype=helpers.get_dtypes("valid", full=False),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_ones_like(
-    dtype_and_x,
-    dtype,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        dtype=dtype[0],
-    )
-
-
 # ones initializer
 @handle_frontend_test(
     fn_tree="tensorflow.ones_initializer",
@@ -1394,6 +1365,35 @@ def test_tensorflow_ones_initializer(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+    )
+
+
+# ones_like
+@handle_frontend_test(
+    fn_tree="tensorflow.ones_like",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_ones_like(
+    dtype_and_x,
+    dtype,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dtype=dtype[0],
     )
 
 
