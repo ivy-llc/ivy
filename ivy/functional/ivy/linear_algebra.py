@@ -2672,6 +2672,7 @@ def trace(
     """
     return current_backend(x).trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
