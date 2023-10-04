@@ -56,10 +56,10 @@ def test_sklearn_accuracy_score(
         shape=(helpers.ints(min_value=2, max_value=5)),
     ),
     labels=st.integers(min_value=-2, max_value=2),
-    pos_label=st.integers(min_value=-2, max_value=2), 
+    pos_label=st.integers(min_value=-2, max_value=2),
     sample_weight=st.none() | st.floats(min_value=0.1, max_value=2.0),
-    average=st.sampled_from(['binary', 'micro', 'macro']), 
-    zero_division=st.sampled_from(['warn', 0.0, 1.0, np.nan])
+    average=st.sampled_from(["binary", "micro", "macro"]),
+    zero_division=st.sampled_from(["warn", 0.0, 1.0, np.nan]),
 )
 def test_sklearn_precision_score(
     arrays_and_dtypes,
@@ -88,7 +88,5 @@ def test_sklearn_precision_score(
         pos_label=pos_label,
         sample_weight=sample_weight,
         average=average,
-        zero_division=zero_division
+        zero_division=zero_division,
     )
-
-
