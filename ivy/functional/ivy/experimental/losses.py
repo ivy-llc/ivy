@@ -578,15 +578,18 @@ def poisson_nll_loss(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@to_native_arrays_and_back
 def binary_cross_entropy(
     input: Union[ivy.Array, ivy.NativeArray],
     target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    weight: Optional[ivy.Array] = None,
-    reduction: Optional[str] = "mean",
+    from_logits: bool = False,
+    epsilon: float = 0.0,
+    reduction: str = "none",
+    pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    axis: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the binary cross entropy loss between predicted scores and true binary labels.
@@ -597,10 +600,24 @@ def binary_cross_entropy(
         array of arbitrary shape containing probabilities.
     target : array_like
         array same shape as input with values between 0 and 1.
-    weight : array_like, optional
-        array of size nbatch to rescale the loss of each batch element.
-    reduction : {'mean', 'sum', 'none'}, optional
-        Type of reduction to apply to the output. Default is 'mean'.
+    from_logits
+        Whether `pred` is expected to be a logits tensor. By
+        default, we assume that `pred` encodes a probability distribution.
+    epsilon
+        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
+        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+    reduction
+        ``'none'``: No reduction will be applied to the output.
+        ``'mean'``: The output will be averaged.
+        ``'sum'``: The output will be summed. Default: ``'none'``.
+    pos_weight
+        a weight for positive examples. Must be an array with length equal to the number
+        of classes.
+    axis
+        Axis along which to compute crossentropy.
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
 
     Returns
     -------
@@ -610,19 +627,26 @@ def binary_cross_entropy(
 
     Examples
     --------
-    >>> input = ivy.array([1, 0, 1, 0])
-    >>> target = ivy.array([0.8, 0.2, 0.6, 0.4])
+    >>> input = ivy.array([0.8, 0.2, 0.6, 0.4])
+    >>> target = ivy.array([1, 0, 1, 0])
     >>> ivy.binary_cross_entropy(input, target)
     ivy.array(0.3670)
 
-    >>> input = ivy.array([1, 1, 0, 0])
-    >>> target = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> input = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> target = ivy.array([1, 1, 0, 0])
     >>> ivy.binary_cross_entropy(input, target, reduction='sum')
     ivy.array(0.9083)
 
-    >>> input = ivy.array([1, 1, 0, 0])
-    >>> target = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> input = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> target = ivy.array([1, 1, 0, 0])
     >>> ivy.binary_cross_entropy(input, target, reduction='none')
     ivy.array([0.2231, 0.3567, 0.2231, 0.1054])
     """
-    return ivy.current_backend(input).binary_cross_entropy(input,target, weight = weight, reduction=reduction)
+    return ivy.current_backend().binary_cross_entropy(input,
+                                                      target,
+                                                      from_logits=from_logits,
+                                                      epsilon=epsilon,
+                                                      reduction=reduction,
+                                                      pos_weight=pos_weight,
+                                                      axis=axis,
+                                                      out=out)

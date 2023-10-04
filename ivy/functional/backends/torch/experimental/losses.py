@@ -6,7 +6,7 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 from . import backend_version
-
+import ivy
 # Assuming ivy and backend_version are imported and defined properly
 
 
@@ -154,8 +154,22 @@ def poisson_nll_loss(
     )
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("unit8", "int8", "int16", "int32", "int64", "bool")},
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "complex64",
+                "complex128",
+            ),
+        }
+    },
     backend_version,
 )
 def binary_cross_entropy(
@@ -163,12 +177,32 @@ def binary_cross_entropy(
     target: torch.Tensor,
     /,
     *,
-    weight: Optional[torch.Tensor] = None,
-    reduction: Optional[str] = "mean",
+    from_logits: bool = False,
+    epsilon: float = 0.0,
+    reduction: str = "none",
+    pos_weight: Optional[torch.Tensor] = None,
+    axis: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nn.functional.binary_cross_entropy(
-        input,
-        target,
-        weight=weight,
-        reduction=reduction,
-    )
+    # input = ivy.to_numpy(input)
+    # target = ivy.to_numpy(target)
+    # input = torch.Tensor(input)
+    # target = torch.Tensor(target)
+    # if pos_weight != None:
+    #     pos_weight = ivy.to_numpy(pos_weight)
+    #     pos_weight = torch.Tensor(pos_weight)
+    if from_logits:
+        return torch.nn.functional.binary_cross_entropy(
+            torch.sigmoid(input),
+            target,
+            weight=pos_weight,
+            reduction=reduction,
+        )
+    else:
+        return torch.nn.functional.binary_cross_entropy(
+            input,
+            target,
+            weight=pos_weight,
+            reduction=reduction,
+        )
+

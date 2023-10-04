@@ -1109,8 +1109,12 @@ class _ContainerWithLossesExperimental(ContainerBase):
         target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        weight: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]],
-        reduction: Optional[Union[str, ivy.Container]] = "mean",
+        from_logits: bool = False,
+        epsilon: float = 0.0,
+        reduction: str = "none",
+        pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -1154,8 +1158,12 @@ class _ContainerWithLossesExperimental(ContainerBase):
             "binary_cross_entropy",
             input,
             target,
-            weight=weight,
+            from_logits=from_logits,
+            epsilon=epsilon,
             reduction=reduction,
+            pos_weight=pos_weight,
+            axis=axis,
+            out=out,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1163,12 +1171,16 @@ class _ContainerWithLossesExperimental(ContainerBase):
         )
 
     def binary_cross_entropy(
-        self: ivy.Container,
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        weight: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]],
-        reduction: Optional[Union[str, ivy.Container]] = "mean",
+        from_logits: bool = False,
+        epsilon: float = 0.0,
+        reduction: str = "none",
+        pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -1185,12 +1197,21 @@ class _ContainerWithLossesExperimental(ContainerBase):
             input array or container containing probablities of arbitrary shape.
         target
             array or container with same shape as input with values between 0 and 1.
-        weight
-            An array or container of batch_size to rescale the loss of each batch.
+        from_logits
+            Whether `pred` is expected to be a logits tensor. By
+            default, we assume that `pred` encodes a probability distribution.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
+            loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
         reduction
+            ``'none'``: No reduction will be applied to the output.
             ``'mean'``: The output will be averaged.
-            ``'sum'``: The output will be summed.
-            ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        pos_weight
+            a weight for positive examples. Must be an array with length equal to the number
+            of classes.
+        axis
+            Axis along which to compute crossentropy.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1203,7 +1224,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional output container, for writing the result to. It must have a shape
+            optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
@@ -1225,8 +1246,12 @@ class _ContainerWithLossesExperimental(ContainerBase):
         return self._static_binary_cross_entropy(
             self,
             target,
-            weight=weight,
+            from_logits=from_logits,
+            epsilon=epsilon,
             reduction=reduction,
+            pos_weight=pos_weight,
+            axis=axis,
+            out=out,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

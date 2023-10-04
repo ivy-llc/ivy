@@ -3,7 +3,7 @@ from typing import Optional
 import paddle
 import paddle.nn.functional as F
 import math
-
+import ivy
 # local
 from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
@@ -240,21 +240,11 @@ def poisson_nll_loss(
         loss = loss + paddle.where(cond, zeroes, striling_approx_term)
     return _apply_loss_reduction(loss, reduction)
 
-@with_unsupported_device_and_dtypes(
+@with_supported_device_and_dtypes(
     {
         "2.5.1 and below": {
-            "cpu": (
-                "bfloat16",
-                "float16",
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "complex64",
-                "complex128",
-                "bool",
-            )
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
     },
     backend_version,
@@ -264,10 +254,29 @@ def binary_cross_entropy(
     target: paddle.Tensor,
     /,
     *,
-    weight: Optional[paddle.Tensor] = None,
-    reduction: Optional[str] = "mean"
+    from_logits: bool = False,
+    epsilon: float = 0.0,
+    reduction: str = "none",
+    pos_weight: Optional[paddle.Tensor] = None,
+    axis: Optional[int] = None,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    input = paddle.to_tensor(input)
-    target = paddle.to_tensor(target, dtype=input.dtype)
-    weight = paddle.to_tensor(weight,dtype=input.dtype)
-    return F.binary_cross_entropy(input,target,weight=weight, reduction=reduction)
+    if not (0.0 <= epsilon <= 1.0):
+        raise ValueError("epsilon should be a float in [0, 1]")
+
+    if not from_logits and pos_weight is not None:
+        raise ValueError("pos_weight is only allowed when from_logits is set to True")
+    
+    if out is not None:
+        raise NotImplementedError(f"The 'out' argument to paddle.binary_cross_entropy is not supported.")
+    if axis is not None:
+        raise NotImplementedError(f"The 'axis' argument to paddle.binary_cross_entropy is not supported.")
+    
+    input_arr = paddle.to_tensor(input)
+    target_arr = paddle.to_tensor(target, dtype=input.dtype)
+    if pos_weight is not None:
+        pos_weight = paddle.to_tensor(pos_weight, dtype=input.dtype)
+    if from_logits:
+        return F.binary_cross_entropy(paddle.nn.Sigmoid(input_arr),target_arr, reduction=reduction, weight=pos_weight)
+    else:
+        return F.binary_cross_entropy(input_arr,target_arr, reduction=reduction, weight=pos_weight)

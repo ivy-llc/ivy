@@ -378,8 +378,12 @@ class _ArrayWithLossesExperimental(abc.ABC):
         target: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        reduction: Optional[str] = "mean",
+        from_logits: bool = False,
+        epsilon: float = 0.0,
+        reduction: str = "none",
+        pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.binary_cross_entropy. This method simply wraps the
@@ -392,12 +396,24 @@ class _ArrayWithLossesExperimental(abc.ABC):
             input array of arbitrary shape containing probabilities.
         target
             input array same shape as input with values between 0 and 1.
-        weight
-            input array of size nbatch to rescale the loss of each batch element.
+        from_logits
+            Whether `pred` is expected to be a logits tensor. By
+            default, we assume that `pred` encodes a probability distribution.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
+            loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
         reduction
+            ``'none'``: No reduction will be applied to the output.
             ``'mean'``: The output will be averaged.
-            ``'sum'``: The output will be summed.
-            ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        pos_weight
+            a weight for positive examples. Must be an array with length equal to the number
+            of classes.
+        axis
+            Axis along which to compute crossentropy.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns 
         -------
@@ -413,4 +429,11 @@ class _ArrayWithLossesExperimental(abc.ABC):
         >>> print(z)
         ivy.array(0.5946)
         """
-        return ivy.binary_cross_entropy(self._data, target, weight = weight, reduction=reduction)
+        return ivy.binary_cross_entropy(self._data,
+                                        target,
+                                        from_logits=from_logits,
+                                        epsilon=epsilon,
+                                        reduction=reduction,
+                                        pos_weight=pos_weight,
+                                        axis=axis,
+                                        out=out)

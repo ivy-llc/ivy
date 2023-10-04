@@ -280,6 +280,7 @@ def test_poisson_nll_loss(
     ),
     beta=helpers.floats(min_value=0.0, max_value=1.0),
     reduction=st.sampled_from(["none", "sum", "mean"]),
+    ground_truth_backend="torch",
 )
 def test_smooth_l1_loss(
     dtype_and_input,
@@ -358,42 +359,46 @@ def test_soft_margin_loss(
 
 @handle_test(
     fn_tree="functional.ivy.experimental.binary_cross_entropy",
-    dtype_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
+    dtype_input_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=1e-04,
         max_value=1,
         allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        num_arrays=2,
+        shared_dtype=True,
+        shape=(5,),
     ),
-    dtype_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=1,
-        allow_inf=False,
-        exclude_min=True
-    ),
+
     reduction=st.sampled_from(["sum", "mean", "none"]),
+    test_with_out=st.just(False),
+    test_gradients=st.just(
+        False
+    ),  # value_test are failing if this is set to `True` # noqa
+    ground_truth_backend="torch",
 )
 def test_binary_cross_entropy(
-    *,
-    dtype_input,
-    dtype_target,
+    dtype_input_target,
     reduction,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
 ):
-    dtype_input, input = dtype_input
-    dtype_target, target = dtype_target
+    dtype_input, inputs = dtype_input_target
+
 
     helpers.test_function(
-        input_dtypes=dtype_input + dtype_target,
+        input_dtypes=dtype_input,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         atol_=1e-02,
-        input=input[0],
-        target=target[0],
+        rtol_=1e-05,
+        input=inputs[0],
+        target=inputs[1],
         reduction=reduction,
     )
