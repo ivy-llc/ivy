@@ -8,7 +8,7 @@ from ivy.functional.frontends.xgboost.linear.updater_coordinate import (
 
 
 class GBLinear:
-    def __init__(self, params=None):
+    def __init__(self, params=None, compile=False):
         # we start boosting from zero
         self.num_boosted_rounds = 0
 
@@ -64,6 +64,14 @@ class GBLinear:
         self.reg_lambda_denorm = self.sum_instance_weight_ * params["reg_lambda"]
         self.reg_alpha_denorm = self.sum_instance_weight_ * params["reg_alpha"]
 
+        # compilation block
+        # ToDo: add eager compilation
+        self.compile = compile
+        if self.compile:
+            self._comp_pred = ivy.trace_graph(_pred)
+            self._comp_get_gradient = ivy.trace_graph(_get_gradient)
+            self._comp_updater = ivy.trace_graph(self.updater)
+
     def boosted_rounds(self):
         return self.num_boosted_rounds
 
@@ -85,15 +93,23 @@ class GBLinear:
 
     # used to obtain raw predictions
     def pred(self, data):
-        return _pred(data, self.weight, self.base_margin)
+        args = (data, self.weight, self.base_margin)
+        if self.compile:
+            return self._comp_pred(*args)
+        else:
+            return _pred(*args)
 
     def get_gradient(self, pred, label):
-        return _get_gradient(self.obj, pred, label, self.scale_pos_weight)
+        args = (self.obj, pred, label, self.scale_pos_weight)
+        if self.compile:
+            return self._comp_get_gradient(*args)
+        else:
+            return _get_gradient(*args)
 
     def do_boost(self, data, gpair, iter):
         if not self.check_convergence():
             self.num_boosted_rounds += 1
-            self.weight = self.updater(
+            args = (
                 gpair,
                 data,
                 self.learning_rate,
@@ -103,6 +119,10 @@ class GBLinear:
                 self.reg_alpha_denorm,
                 self.reg_lambda_denorm,
             )
+            if self.compile:
+                self.weight = self._comp_updater(*args)
+            else:
+                self.weight = self.updater(*args)
 
 
 # --- Helpers --- #
