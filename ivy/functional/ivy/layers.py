@@ -187,7 +187,7 @@ def linear(
     num_outer_batch_dims = len(outer_batch_shape)
     inner_batch_shape = list(x.shape[num_outer_batch_dims:-1])
     num_inner_batch_dims = len(inner_batch_shape)
-    num_out_feats, num_in_feats = list(weight.shape[-2:])
+    num_out_feats, num_in_feats = weight.shape[-2], weight.shape[-1]
 
     # OBS x IBS x OF
     y = ivy.matmul(
