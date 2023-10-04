@@ -236,6 +236,33 @@ def test_tensorarray_dtype(
     assert ta_gt.dtype == ta.dtype.ivy_dtype
 
 
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorarray_dynamic_size(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    assert ta_gt.dynamic_size == ta.dynamic_size
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorarray_element_shape(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    assert ta_gt.element_shape == ta.element_shape
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorarray_flow(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    assert ta_gt.flow == ta.flow
+
+
 @given(l_kwargs=_helper_random_tensorarray(fn="gather"))
 def test_tensorarray_gather(
     l_kwargs,
@@ -248,6 +275,15 @@ def test_tensorarray_gather(
         ret_np_flat=np.array(ta.gather(indices)).flatten(),
         backend=backend_fw,
     )
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorarray_handle(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    assert ta_gt.handle == ta.handle
 
 
 @given(l_kwargs=_helper_random_tensorarray())
