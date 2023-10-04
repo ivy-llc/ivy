@@ -564,7 +564,7 @@ def view_as_real(input):
 def histc(input, bins=100, min=0, max=0, *, out= None):
 
     input_ivy = ivy.flatten(input) # torch.histc results in a 1D tensor so I flattened it out.
-    
+
     if min ==0 and max ==0:
         min = ivy.min(input_ivy); max = ivy.max(input_ivy)
     if min == max:
@@ -574,5 +574,5 @@ def histc(input, bins=100, min=0, max=0, *, out= None):
     range = (min , max)
     if range[0] > range[1]:
       raise ivy.exceptions.IvyError("Max must be greater than or equal to min")
-    
+
     return ivy.histogram(input_ivy, bins = bins, range=range, axis =0, out =out, dtype = input.dtype)

@@ -1857,7 +1857,7 @@ def test_torch_view_as_real(
 <<<<<<< HEAD
 =======
 
-      
+
 # histc
 @handle_frontend_test(
         fn_tree= "torch.histc",
