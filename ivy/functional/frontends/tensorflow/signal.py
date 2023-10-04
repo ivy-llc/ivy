@@ -38,8 +38,12 @@ def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
     return ivy.dct(input, type=inverse_type, n=n, axis=axis, norm=norm)
 
 @to_ivy_arrays_and_back
-def inverse_stft_window_fn(frame_step, forward_window_fn=tf.signal.hann_window,name=None):
-    return lambda frame_length: tf.signal.inverse_stft_window_fn(frame_length, forward_window_fn, frame_step)
+def inverse_stft_window_fn(frame_step, forward_window_fn=ivy.hann_window, name=None):
+    def window(length, dtype=None):
+        forward_window = forward_window_fn(length, dtype=dtype)
+        epsilon = 1e-6  
+        amplitude_correction = 1.0 / (forward_window + epsilon)
+        amplitude_correction = ivy.where(ivy.isnan(amplitude_correction) | ivy.isinf(amplitude_correction), 1.0, amplitude_correction)
+        return forward_window * amplitude_correction
 
-
-
+    return window
