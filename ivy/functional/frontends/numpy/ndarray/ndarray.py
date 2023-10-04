@@ -621,6 +621,19 @@ class ndarray:
     def round(self, decimals=0, out=None):
         return np_frontend.round(self, decimals=decimals, out=out)
 
+    def var(
+        self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True
+    ):
+        return np_frontend.var(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=ddof,
+            keepdims=keepdims,
+            where=where,
+        )
+
 
 # --- Helpers --- #
 # --------------- #
