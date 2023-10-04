@@ -1067,7 +1067,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     @staticmethod
     def _static_tanhshrink(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

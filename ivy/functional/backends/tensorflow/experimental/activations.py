@@ -112,6 +112,7 @@ def tanhshrink(
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
 
+
 @with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def celu(
     x: Tensor,
