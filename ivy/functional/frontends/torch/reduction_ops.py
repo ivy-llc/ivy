@@ -191,6 +191,42 @@ def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.nanmean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
 
 
+@numpy_to_torch_style_args
+@to_ivy_arrays_and_back
+def nanmedian(input, dim=None, keepdim=False, *, out=None):
+    if dim is None:
+        flattened_input = ivy.flatten(input)
+        sorted_input = ivy.sort(flattened_input)
+        nonnan_index = int(sorted_input.shape[0] - ivy.isnan(sorted_input).sum())
+        return sorted_input[(nonnan_index - 1) // 2]
+
+    nanmedian_tuple = namedtuple("nanmedian", ["values", "indices"])
+
+    if input.ndim == 0:
+        result = nanmedian_tuple(input, ivy.array(0))
+    else:
+        sorted_indices = ivy.argsort(input, axis=dim)
+        nonnan_index = (
+            sorted_indices.shape[dim] - ivy.isnan(input).sum(axis=1) - 1
+        ) // 2
+        nonnan_index = ivy.expand_dims(nonnan_index, axis=1)
+        nanmedian_indices = ivy.gather_nd(sorted_indices, nonnan_index, batch_dims=1)
+        nanmedian_values = ivy.take_along_axis(
+            input, ivy.expand_dims(nanmedian_indices, axis=dim), dim
+        ).squeeze(axis=dim)
+
+        if keepdim:
+            nanmedian_values = ivy.expand_dims(nanmedian_values, axis=dim)
+            nanmedian_indices = ivy.expand_dims(nanmedian_tuple, axis=dim)
+
+        result = nanmedian_tuple(nanmedian_values, nanmedian_indices)
+    if out is not None:
+        ivy.inplace_update(out[0], result.values)
+        ivy.inplace_update(out[1], result.indices)
+        return out
+    return result
+
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.0.1 and below": ("float", "int")},
