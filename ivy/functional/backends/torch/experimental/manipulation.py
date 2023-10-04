@@ -13,6 +13,8 @@ from typing import (
 from numbers import Number
 from collections import namedtuple
 import torch
+from ivy.functional.backends.torch.creation import ivy_zeros_like
+from ivy.functional.utils import handle_view
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
@@ -390,25 +392,6 @@ def expand(
 expand.support_native_out = False
 
 
-def concat_from_sequence(
-    input_sequence: Union[Tuple[torch.Tensor], List[torch.Tensor]],
-    /,
-    *,
-    new_axis: int = 0,
-    axis: int = 0,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    is_tuple = type(input_sequence) is tuple
-    if is_tuple:
-        input_sequence = list(input_sequence)
-    if new_axis == 0:
-        ret = torch.cat(input_sequence, dim=axis)
-        return ret
-    elif new_axis == 1:
-        ret = torch.stack(input_sequence, dim=axis)
-        return ret
-
-
 @with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
 def unique_consecutive(
     x: torch.Tensor,
@@ -509,6 +492,9 @@ def concat_from_sequence(
             array_sequence = (ivy_zeros_like(array_sequence[0]),) + array_sequence
         else:
             array_sequence = [ivy_zeros_like(array_sequence)] + array_sequence
-        return ivy.concat_from_sequence(
-            array_sequence, new_axis=new_axis, axis=axis, out=out
+        return handle_view(
+            ivy.concat_from_sequence(
+                array_sequence, new_axis=new_axis, axis=axis, out=out
+            )
         )
+
