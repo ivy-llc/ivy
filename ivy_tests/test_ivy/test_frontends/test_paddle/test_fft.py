@@ -267,7 +267,10 @@ def test_paddle_ifftshift(
         max_value=10,
         min_num_dims=2,
         max_num_dims=2,
-        shape=st.tuples(st.integers(min_value=2, max_value=10), st.integers(min_value=2, max_value=10))
+        shape=st.tuples(
+            st.integers(min_value=2, max_value=10),
+            st.integers(min_value=2, max_value=10),
+        ),
     ),
     s=st.one_of(
         st.lists(st.integers(min_value=2, max_value=10), min_size=2, max_size=2),
