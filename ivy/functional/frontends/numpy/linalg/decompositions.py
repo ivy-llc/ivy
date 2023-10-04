@@ -13,9 +13,6 @@ def qr(a, mode="reduced"):
     return ivy.qr(a, mode=mode)
 
 
-
-
-
 @to_ivy_arrays_and_back
 def svd(a, full_matrices=True, compute_uv=True, hermitian=False):
     # Todo: conpute_uv and hermitian handling
