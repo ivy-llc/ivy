@@ -94,8 +94,14 @@ def unique_counts(
 def unique_inverse(
     x: Union[tf.Tensor, tf.Variable],
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     Results = namedtuple("Results", ["values", "inverse_indices"])
+    if axis is None:
+        x = tf.reshape(x, shape=(-1,))
+        axis = 0
+
     flat_tensor = tf.reshape(x, -1)
     values = tf.unique(tf.sort(flat_tensor))[0]
     values = tf.cast(values, dtype=x.dtype)
