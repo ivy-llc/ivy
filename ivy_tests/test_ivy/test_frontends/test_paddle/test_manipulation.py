@@ -436,6 +436,41 @@ def test_paddle_gather(
     )
 
 
+# gather_nd
+@handle_frontend_test(
+    fn_tree="paddle.gather_nd",
+    dtype_x_index=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        min_num_dims=5,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=5,
+        indices_same_dims=False,
+    ),
+)
+def test_paddle_gather_nd(
+    *,
+    dtype_x_index,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, x, index, _, _ = dtype_x_index
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        index=index,
+    )
+
+
 # repeat_interleave
 @handle_frontend_test(
     fn_tree="paddle.repeat_interleave",
@@ -718,6 +753,43 @@ def test_paddle_tile(
         on_device=on_device,
         x=x[0],
         repeat_times=repeats,
+    )
+
+
+# unbind
+@handle_frontend_test(
+    fn_tree="paddle.unbind",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=2,
+        max_dim_size=1,
+    ),
+    number_positional_args=st.just(1),
+    axis=st.integers(-1, 0),
+    test_with_out=st.just(False),
+)
+def test_paddle_unbind(
+    *,
+    dtypes_values,
+    axis,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    x_dtype, x = dtypes_values
+    axis = axis
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
     )
 
 

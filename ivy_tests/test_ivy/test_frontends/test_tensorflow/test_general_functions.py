@@ -612,9 +612,11 @@ def test_tensorflow_cond(
     frontend,
     backend_fw,
 ):
-    _test_true_fn = lambda: var + var
+    def _test_true_fn():
+        return var + var
 
-    _test_false_fn = lambda: var * var
+    def _test_false_fn():
+        return var * var
 
     input_dtype, _ = dtype_and_x
     helpers.test_frontend_function(
@@ -716,7 +718,7 @@ def test_tensorflow_einsum(
     kw = {}
     i = 0
     for x_ in operands:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     # len(operands) + 1 because of the equation
     test_flags.num_positional_args = len(operands) + 1
@@ -794,7 +796,8 @@ def test_tensorflow_expand_dims(
 
 # eye
 @handle_frontend_test(
-    fn_tree="tensorflow.eye",
+    fn_tree="tensorflow.linalg.eye",
+    gt_fn_tree="tensorflow.eye",
     n_rows=helpers.ints(min_value=0, max_value=10),
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
     batch_shape=st.lists(
@@ -812,6 +815,7 @@ def test_tensorflow_eye(
     backend_fw,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
@@ -820,6 +824,7 @@ def test_tensorflow_eye(
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         num_rows=n_rows,
         num_columns=n_cols,

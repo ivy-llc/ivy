@@ -53,7 +53,7 @@ def relu6(
 relu6.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def logsigmoid(
     input: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
@@ -100,3 +100,33 @@ def elu(
 
 
 elu.support_native_out = True
+
+
+@with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, backend_version)
+@_scalar_output_to_0d_array
+def hardtanh(
+    x: np.ndarray,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ret = np.where(x > max_val, max_val, np.where(x < min_val, min_val, x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+hardtanh.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def tanhshrink(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    ret = np.subtract(x, np.tanh(x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+tanhshrink.support_native_out = True

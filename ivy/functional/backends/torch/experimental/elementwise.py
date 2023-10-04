@@ -95,14 +95,14 @@ def count_nonzero(
         return x
     if isinstance(axis, int):
         if axis == -1:
-            temp = x.dim() - 2
+            temp = x.dim() - 1
             if temp < -1:
                 temp = 0
             return x.unsqueeze(temp)
-        return x.unsqueeze(axis - 1)
+        return x.unsqueeze(axis)
     elif axis is not None:
         for d in sorted(axis):
-            x = x.unsqueeze(d - 1)
+            x = x.unsqueeze(d)
         return x
     return x
 
@@ -383,3 +383,13 @@ def digamma(
 
 
 digamma.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def erfc(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.erfc(x)
