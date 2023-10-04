@@ -1,7 +1,7 @@
 # global
 import importlib
 import inspect
-
+import types
 import numpy as np
 
 # local
@@ -15,6 +15,12 @@ from ivy_tests.test_ivy.pipeline.base.runners import (
     TestCaseSubRunnerResult,
 )
 import ivy
+
+try:
+    import tensorflow as tf
+except ImportError:
+    tf = types.SimpleNamespace()
+    tf.TensorShape = None
 
 
 class FunctionTestCaseSubRunner(TestCaseSubRunner):
@@ -736,6 +742,142 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
         return self._call_function(init_args, init_kwargs, method_args, method_kwargs)
 
 
+class GTMethodTestCaseSubRunner(TestCaseSubRunner):
+    def __init__(
+        self,
+        frontend_method_data,
+        frontend,
+        backend_handler,
+        backend_to_test,
+        on_device,
+        init_flags,
+        method_flags,
+    ):
+        self.frontend_method_data = frontend_method_data
+        self.backend_to_test = backend_to_test
+        self.frontend = frontend
+        self._backend_handler = backend_handler
+        self.init_flags = init_flags
+        self.method_flags = method_flags
+        self.__ivy = self._backend_handler.set_backend(frontend)
+        self.on_device = on_device
+        self.frontend_config = self._get_frontend_config()
+
+    @property
+    def backend_handler(self):
+        return self._backend_handler
+
+    @property
+    def _ivy(self):
+        return self.__ivy
+
+    def _get_frontend_config(self):
+        config_module = importlib.import_module(
+            f"ivy_tests.test_ivy.test_frontends.config.{self.frontend}"
+        )
+        return config_module.get_config()
+
+    def _get_frontend_fn(self, args_constructor, kwargs_constructor):
+        frontend_creation_fn = getattr(
+            importlib.import_module(self.frontend_method_data.framework_init_module),
+            self.frontend_method_data.init_name,
+        )
+        ins_gt = frontend_creation_fn(*args_constructor, **kwargs_constructor)
+        return ins_gt.__getattribute__(self.frontend_method_data.method_name)
+
+    def _flatten(self, *, ret):
+        if self.frontend == "tensorflow" and isinstance(ret, tf.TensorShape):
+            # ToDO: fix this
+            frontend_ret_flat = [tf.constant(ret)]
+        elif self.frontend_config.isscalar(ret):
+            frontend_ret_flat = [ret]
+        else:
+            # tuplify the frontend return
+            frontend_ret = (ret,) if not isinstance(ret, tuple) else ret
+            frontend_ret_idxs = ivy.nested_argwhere(
+                frontend_ret, self.frontend_config.is_native_array
+            )
+            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        return frontend_ret_flat
+
+    def _flatten_ret_to_np(self, ret_flat):
+        return [self.frontend_config.to_numpy(x) for x in ret_flat]
+
+    def _search_args(self, init_all_as_kwargs_np, method_all_as_kwargs_np):
+        arg_searcher = ArgumentsSearcher(init_all_as_kwargs_np)
+        init_args = arg_searcher.search_args(self.init_flags.num_positional_args)
+
+        arg_searcher = ArgumentsSearcher(method_all_as_kwargs_np)
+        method_args = arg_searcher.search_args(self.method_flags.num_positional_args)
+        return init_args, method_args
+
+    def _preprocess_args(self, init_args, init_kwargs, method_args, method_kwargs):
+        # getting values from TestArgumentsSearchResult
+        init_args, init_kwargs = init_args.original, init_kwargs.original
+        method_args, method_kwargs = method_args.original, method_kwargs.original
+
+        args_constructor = ivy.nested_map(
+            lambda x: (
+                self.frontend_config.native_array(x) if isinstance(x, np.ndarray) else x
+            ),
+            init_args,
+            shallow=False,
+        )
+        kwargs_constructor = ivy.nested_map(
+            lambda x: (
+                self.frontend_config.native_array(x) if isinstance(x, np.ndarray) else x
+            ),
+            init_kwargs,
+            shallow=False,
+        )
+
+        args_method = ivy.nested_map(
+            lambda x: (
+                self.frontend_config.native_array(x) if isinstance(x, np.ndarray) else x
+            ),
+            method_args,
+            shallow=False,
+        )
+        kwargs_method = ivy.nested_map(
+            lambda x: (
+                self.frontend_config.native_array(x) if isinstance(x, np.ndarray) else x
+            ),
+            method_kwargs,
+            shallow=False,
+        )
+        # change ivy dtypes to native dtypes
+        if "dtype" in kwargs_method:
+            kwargs_method["dtype"] = self.frontend_config.as_native_dtype(
+                kwargs_method["dtype"]
+            )
+
+        # change ivy device to native devices
+        if "device" in kwargs_method:
+            kwargs_method["device"] = self.frontend_config.as_native_device(
+                kwargs_method["device"]
+            )
+        return args_constructor, kwargs_constructor, args_method, kwargs_method
+
+    def _call_function(
+        self, args_constructor, kwargs_constructor, args_method, kwargs_method
+    ):
+        frontend_fn = self._get_frontend_fn(args_constructor, kwargs_constructor)
+        ret = frontend_fn(*args_method, **kwargs_method)
+        return self._get_results_from_ret(ret)
+
+    def get_results(self, init_all_as_kwargs_np, method_all_as_kwargs_np):
+        (
+            (init_args_result, init_kwargs_result, _),
+            (method_args_result, method_kwargs_result, _),
+        ) = self._search_args(init_all_as_kwargs_np, method_all_as_kwargs_np)
+        args_constructor, kwargs_constructor, args_method, kwargs_method = (
+            self._preprocess_args(init_args_result, init_kwargs_result)
+        )
+        return self._call_function(
+            args_constructor, kwargs_constructor, args_method, kwargs_method
+        )
+
+
 class FrontendFunctionTestCaseRunner(TestCaseRunner):
     def __init__(
         self,
@@ -879,7 +1021,20 @@ class FrontendMethodTestCaseRunner(TestCaseRunner):
         init_all_as_kwargs_np,
         method_all_as_kwargs_np,
     ):
-        pass
+        sub_runner_target = GTMethodTestCaseSubRunner(
+            self.frontend_method_data,
+            self.frontend,
+            self.backend_handler,
+            self.backend_to_test,
+            self.on_device,
+            init_flags,
+            method_flags,
+        )
+        ret = sub_runner_target.get_results(
+            init_all_as_kwargs_np, method_all_as_kwargs_np
+        )
+        sub_runner_target.exit()
+        return ret
 
     def _check_assertions(self, target_results, ground_truth_results):
         if self.test_values:
@@ -912,4 +1067,13 @@ class FrontendMethodTestCaseRunner(TestCaseRunner):
             init_all_as_kwargs_np,
             method_all_as_kwargs_np,
         )
-        print(target_results)
+        ground_truth_results: TestCaseSubRunnerResult = self._run_ground_truth(
+            init_input_dtypes,
+            method_input_dtypes,
+            init_flags,
+            method_flags,
+            init_all_as_kwargs_np,
+            method_all_as_kwargs_np,
+        )
+
+        self._check_assertions(target_results, ground_truth_results)
