@@ -152,3 +152,65 @@ def poisson_nll_loss(
     return torch.nn.functional.poisson_nll_loss(
         input, target, log_input=log_input, full=full, eps=eps, reduction=reduction
     )
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "complex64",
+                "complex128",
+            ),
+        }
+    },
+    backend_version,
+)
+def binary_cross_entropy(
+    input: torch.Tensor,
+    target: torch.Tensor,
+    /,
+    *,
+    from_logits: bool = False,
+    epsilon: float = 0.0,
+    reduction: str = "none",
+    pos_weight: Optional[torch.Tensor] = None,
+    axis: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if not (0.0 <= epsilon <= 1.0):
+        raise ValueError("epsilon should be a float in [0, 1]")
+
+    if pos_weight is not None:
+        raise ValueError(
+            "The 'pos_weight' argument to torch.binary_cross_entropy is not supported."
+        )
+
+    if out is not None:
+        raise NotImplementedError(
+            "The 'out' argument to torch.binary_cross_entropy is not supported."
+        )
+
+    if axis is not None:
+        raise NotImplementedError(
+            "The 'axis' argument to torch.binary_cross_entropy is not supported."
+        )
+
+    if from_logits:
+        return torch.nn.functional.binary_cross_entropy(
+            torch.sigmoid(input),
+            target,
+            reduction=reduction,
+        )
+    else:
+        return torch.nn.functional.binary_cross_entropy(
+            input,
+            target,
+            reduction=reduction,
+        )
