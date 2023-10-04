@@ -821,6 +821,11 @@ class Tensor:
     def real(self, name=None):
         return paddle_frontend.real(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def t(self, name=None):
+        axes = list(range(len(self.ivy_array.shape)))[::-1]
+        return ivy.permute_dims(self.ivy_array, axes=axes)
+
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
