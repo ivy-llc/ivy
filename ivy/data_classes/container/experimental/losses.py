@@ -1103,3 +1103,158 @@ class _ContainerWithLossesExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def _static_binary_cross_entropy(
+        input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        from_logits: bool = False,
+        epsilon: float = 0.0,
+        reduction: str = "none",
+        pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.binary_cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        input
+            An array or container of arbitrary shape containing probabilities.
+        target
+            An array or container same shape as input with values between 0 and 1.
+        weight
+            An array or container of batch_size to rescale the loss of each batch.
+        reduction
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed.
+            ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If input, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``input``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            The Binary Cross Entropy loss between input array and target values.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "binary_cross_entropy",
+            input,
+            target,
+            from_logits=from_logits,
+            epsilon=epsilon,
+            reduction=reduction,
+            pos_weight=pos_weight,
+            axis=axis,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def binary_cross_entropy(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        from_logits: bool = False,
+        epsilon: float = 0.0,
+        reduction: str = "none",
+        pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.binary_cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container containing probablities of arbitrary shape.
+        target
+            array or container with same shape as input with values between 0 and 1.
+        from_logits
+            Whether `pred` is expected to be a logits tensor. By
+            default, we assume that `pred` encodes a probability distribution.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        pos_weight
+            a weight for positive examples. Must be an array with length equal to the
+            number of classes.
+        axis
+            Axis along which to compute crossentropy.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If input, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``input``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The binary cross entropy loss between input array and target values.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.8,0.3,0.9]), b=ivy.array([0.6, 0.7, 0.9])
+        >>> y = ivy.Container(a=ivy.array([1, 0, 1]), b=ivy.array([1, 1, 1])))
+        >>> z = x.binary_cross_entropy(y)
+        >>> print(z)
+        {
+            a: ivy.array(0.2284),
+            b: ivy.array(0.3243)
+        }
+        """
+        return self._static_binary_cross_entropy(
+            self,
+            target,
+            from_logits=from_logits,
+            epsilon=epsilon,
+            reduction=reduction,
+            pos_weight=pos_weight,
+            axis=axis,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
