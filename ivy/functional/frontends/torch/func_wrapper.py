@@ -224,8 +224,6 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
-            # ivy.inplace_update with ensure_in_backend=True fails in jax and tf
-            # so update .data directly
             native_ret_data = ret.ivy_array.data
             if ivy.is_ivy_array(first_array):
                 first_array.data = native_ret_data
