@@ -1389,32 +1389,3 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         changes.
         """
         return ivy.put_along_axis(self._data, indices, values, axis, mode=mode, out=out)
-
-    def concat_from_sequence(
-        array_sequence: Sequence[ivy.Array],
-        axis: int = 0,
-    ) -> ivy.Array:
-        """
-        Concatenates a sequence of arrays along a specified axis.
-
-        Parameters
-        ----------
-        array_sequence: A sequence of arrays.
-        axis: The axis along which to concatenate the arrays.
-
-        Returns
-        -------
-        An array that is the concatenation of the arrays in the sequence.
-        """
-        # Check that all arrays in the sequence have the same shape.
-        for array in array_sequence:
-            if not array.shape == array_sequence[0].shape:
-                raise ValueError(
-                    "All arrays in the sequence must have the same shape. "
-                    f"Found shape: {array.shape}"
-                )
-
-        # Concatenate the arrays along the specified axis.
-        concatenated_array = ivy.concat(array_sequence, axis=axis)
-
-        return concatenated_array
