@@ -23,6 +23,7 @@ from .function_testing import (
     test_method_ground_truth_computation,
     test_gradient_backend_computation,
     test_gradient_ground_truth_computation,
+    _transpile_if_required_backend,
 )
 from ..pipeline.frontend.multiprocessing import FrontendTestCaseRunnerMP
 
@@ -349,7 +350,6 @@ def backend_proc(input_queue, output_queue):
                 ((None), ret_np_from_gt_flat, ret_from_gt_device, fw_list2)
             )
         if data[0] == "_run_target_frontend":
-            print("runnnn _run_target_frontend \n\n\n")
             (
                 _,
                 fn_tree,
@@ -374,6 +374,11 @@ def backend_proc(input_queue, output_queue):
                 traced_fn,
             )
             output_queue.put(ret)
+
+        if data[0] == "transpile_if_required_backend":
+            _, backend, fn_name, args_np, kwargs_np = data
+            _transpile_if_required_backend(backend, fn_name, args_np, kwargs_np)
+
         if not data:
             break
         # process the data
