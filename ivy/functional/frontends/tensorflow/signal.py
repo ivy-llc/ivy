@@ -4,7 +4,6 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     handle_tf_dtype,
 )
 
-import tensorflow as tf
 
 
 @handle_tf_dtype
@@ -37,13 +36,18 @@ def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
     inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
     return ivy.dct(input, type=inverse_type, n=n, axis=axis, norm=norm)
 
+
 @to_ivy_arrays_and_back
 def inverse_stft_window_fn(frame_step, forward_window_fn=ivy.hann_window, name=None):
     def window(length, dtype=None):
         forward_window = forward_window_fn(length, dtype=dtype)
-        epsilon = 1e-6  
+        epsilon = 1e-6
         amplitude_correction = 1.0 / (forward_window + epsilon)
-        amplitude_correction = ivy.where(ivy.isnan(amplitude_correction) | ivy.isinf(amplitude_correction), 1.0, amplitude_correction)
+        amplitude_correction = ivy.where(
+            ivy.isnan(amplitude_correction) | ivy.isinf(amplitude_correction),
+            1.0,
+            amplitude_correction,
+        )
         return forward_window * amplitude_correction
 
     return window

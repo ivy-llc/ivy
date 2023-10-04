@@ -177,6 +177,7 @@ def test_tensorflow_vorbis_window(
         # dtype=dtype[0],
     )
 
+
 # inverse_stft_window_fn
 @handle_frontend_test(
     fn_tree="ivy.signal.inverse_stft_window_fn",
@@ -206,6 +207,5 @@ def test_inverse_stft_window_fn(
         on_device=on_device,
         atol=1e-02,
         window_length=int(x[0]),
-        frame_step=frame_step,  
+        frame_step=frame_step,
     )
-    
