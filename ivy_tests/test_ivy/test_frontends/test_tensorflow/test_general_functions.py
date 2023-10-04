@@ -2496,6 +2496,7 @@ def test_tensorflow_zeros_like(
 
 def test_tensorflow_reverse_sequence(
         *,
+        seq_length_axis_batch
         dtype,
         frontend,
         backend_fw,
