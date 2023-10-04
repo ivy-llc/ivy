@@ -3,7 +3,6 @@ import os
 import glob
 
 
-
 def get_all_functions_from_directory(root_dir, startswith="test"):
     if not os.path.exists(root_dir):
         print("Invalid directory")
