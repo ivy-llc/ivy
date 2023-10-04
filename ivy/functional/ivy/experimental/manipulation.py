@@ -2738,4 +2738,3 @@ column_stack.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
-
