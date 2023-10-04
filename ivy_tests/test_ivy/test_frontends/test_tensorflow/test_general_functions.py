@@ -2504,7 +2504,7 @@ def test_tensorflow_reverse_sequence(
         test_flags,
         on_device,
 ):
-    input, seq_lengths, seq_axis, batch_axis = seq_length_axis_batch
+    input, dtype, seq_lengths, seq_axis, batch_axis = seq_length_axis_batch
     helpers.test_frontend_function(
         input_sequence=input,
         input_dtype=dtype,
