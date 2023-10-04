@@ -5,7 +5,6 @@ from pymongo import MongoClient
 import requests
 from run_tests_CLI.get_all_tests import BACKENDS
 
-
 submodules = (
     "test_paddle",
     "test_tensorflow",
@@ -159,7 +158,7 @@ if __name__ == "__main__":
                 for backend in other_backends:
                     backends.append(f"{backend}/{get_latest_package_version(backend)}")
                 print("Backends:", backends)
-                ret = os.system(
+                command = (
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
                     ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
@@ -167,15 +166,9 @@ if __name__ == "__main__":
                     f" multiversion_framework_directory.py {' '.join(backends)};cd"
                     f' ..;pytest --tb=short {test} --backend={backend}"'
                 )
-            elif with_gpu:
-                ret = os.system(
-                    f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis'
-                    " unifyai/multicuda:base_and_requirements python3 -m pytest"
-                    f" --tb=short {test} --device=gpu:0 -B={backend}"
-                    # noqa
-                )
+                print("Running", command)
+                sys.stdout.flush()
+                ret = os.system(command)
             else:
                 ret = os.system(
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
