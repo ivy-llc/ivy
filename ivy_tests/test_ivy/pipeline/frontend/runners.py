@@ -423,6 +423,7 @@ class FrontendTestCaseRunner(TestCaseRunner):
         frontend,
         on_device,
         traced_fn,
+        test_values,
         tolerance_dict,
         rtol,
         atol,
@@ -434,6 +435,7 @@ class FrontendTestCaseRunner(TestCaseRunner):
         self.frontend = frontend
         self.on_device = on_device
         self.traced_fn = traced_fn
+        self.test_values = test_values
         self.tolerance_dict = tolerance_dict
         self.rtol = rtol
         self.atol = atol
@@ -467,6 +469,19 @@ class FrontendTestCaseRunner(TestCaseRunner):
         sub_runner_gt.exit()
         return ret
 
+    def _check_assertions(self, target_results, ground_truth_results):
+        if self.test_values:
+            assertion_checker = FrontendAssertionChecker(
+                target_results,
+                ground_truth_results,
+                self.backend_to_test,
+                self.frontend,
+                self.tolerance_dict,
+                self.rtol,
+                self.atol,
+            )
+            assertion_checker.check_assertions()
+
     def run(self, input_dtypes, test_arguments, test_flags):
         # getting results from target and ground truth
         target_results: TestCaseSubRunnerResult = self._run_target(
@@ -477,13 +492,4 @@ class FrontendTestCaseRunner(TestCaseRunner):
         )
 
         # checking assertions
-        assertion_checker = FrontendAssertionChecker(
-            target_results,
-            ground_truth_results,
-            self.backend_to_test,
-            self.frontend,
-            self.tolerance_dict,
-            self.rtol,
-            self.atol,
-        )
-        assertion_checker.check_assertions()
+        self._check_assertions(target_results, ground_truth_results)
