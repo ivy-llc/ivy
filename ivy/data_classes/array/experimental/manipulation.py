@@ -1419,4 +1419,3 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     concatenated_array = ivy.concat(array_sequence, axis=axis)
 
     return concatenated_array
-    
