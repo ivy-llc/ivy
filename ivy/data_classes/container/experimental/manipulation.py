@@ -3933,7 +3933,6 @@ def concat_from_sequence(
                      [1, 0]]])
     }
     """
-
     new_input_sequence = (
         input_sequence.cont_copy()
         if ivy.is_ivy_container(input_sequence)
