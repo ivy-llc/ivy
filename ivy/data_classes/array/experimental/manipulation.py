@@ -1398,11 +1398,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     Concatenates a sequence of arrays along a specified axis.
 
     Parameters
-        array_sequence: A sequence of arrays.
-        axis: The axis along which to concatenate the arrays.
+    ----------
+    array_sequence: A sequence of arrays.
+    axis: The axis along which to concatenate the arrays.
 
     Returns
-        An array that is the concatenation of the arrays in the sequence.
+    -------
+    An array that is the concatenation of the arrays in the sequence.
     """
 
     # Check that all arrays in the sequence have the same shape.
@@ -1416,7 +1418,5 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     # Concatenate the arrays along the specified axis.
     concatenated_array = ivy.concat(array_sequence, axis=axis)
 
-        # Concatenate the arrays along the specified axis.
-        concatenated_array = ivy.concat(array_sequence, axis=axis)
-
-        return concatenated_array
+    return concatenated_array
+    
