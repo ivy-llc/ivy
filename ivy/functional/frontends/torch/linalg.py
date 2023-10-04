@@ -1,6 +1,5 @@
 # local
 import math
-import torch
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
@@ -317,7 +316,7 @@ def svd(A, /, *, full_matrices=True, driver=None, out=None):
 def svdvals(A, *, driver=None, out=None):
     # TODO: add handling for driver
     if driver in ["gesvd", "gesvdj", "gesvda", None]:
-        return torch.linalg.svdvals(A, driver=driver, out=out)
+        return ivy.svdvals(A, driver=driver, out=out)
     else:
         raise ValueError("Unsupported SVD driver")
 
