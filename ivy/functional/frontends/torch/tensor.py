@@ -1309,6 +1309,7 @@ class Tensor:
     def __or__(self, other):
         return torch_frontend.bitwise_or(self, other)
 
+    @with_supported_dtypes({"2.0.1 and below": ("integer", "bool")}, "torch")
     def __invert__(self):
         return torch_frontend.bitwise_not(self)
 
