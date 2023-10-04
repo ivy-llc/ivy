@@ -169,6 +169,15 @@ if __name__ == "__main__":
                 print("Running", command)
                 sys.stdout.flush()
                 ret = os.system(command)
+            elif with_gpu:
+                ret = os.system(
+                    f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis'
+                    " unifyai/multicuda:base_and_requirements python3 -m pytest"
+                    f" --tb=short {test} --device=gpu:0 -B={backend}"
+                    # noqa
+                )
             else:
                 ret = os.system(
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
