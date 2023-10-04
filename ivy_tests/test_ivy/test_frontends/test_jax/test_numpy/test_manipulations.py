@@ -498,6 +498,30 @@ def test_jax_atleast_3d(
     )
 
 
+# bartlett
+@handle_frontend_test(
+    fn_tree="jax.numpy.bartlett",
+    m=helpers.ints(min_value=0, max_value=20),
+)
+def test_jax_bartlett(
+    m,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int64"],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        M=m,
+    )
+
+
 # blackman
 @handle_frontend_test(
     fn_tree="jax.numpy.blackman",
@@ -1128,28 +1152,6 @@ def test_jax_moveaxis(
         a=a[0],
         source=source,
         destination=destination,
-    )
-
-
-# bartlett
-@handle_frontend_test(
-    fn_tree="jax.numpy.bartlett",
-    m=helpers.ints(min_value=0, max_value=20),
-)
-def test_jax_numpy_bartlett(
-    m,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    helpers.test_frontend_function(
-        input_dtypes=["int64"],
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        M=m,
     )
 
 
