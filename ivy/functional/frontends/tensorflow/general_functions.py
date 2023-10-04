@@ -718,3 +718,11 @@ def zeros_initializer(shape, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def zeros_like(input, dtype=None, name=None):
     return ivy.zeros_like(input, dtype=dtype)
+
+
+def reverse_sequence (input, seq_lengths, seq_axis=None, batch_axis=None, name=None):
+    return ivy.reverse_sequence(
+                        input,
+                        seq_lengths,
+                        seq_axis=seq_axis,
+                        batch_axis=batch_axis)

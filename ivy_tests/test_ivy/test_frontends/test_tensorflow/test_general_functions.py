@@ -2482,3 +2482,34 @@ def test_tensorflow_zeros_like(
         input=x[0],
         dtype=dtype[0],
     )
+
+#reverse_sequence
+@handle_frontend_test(
+    fn_free = "tensorflow.reverse_sequence",
+    seq_length_axis_batch=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        length_dtype=["int64"],
+        min_axis=0,
+        max_axis=10,
+)
+)
+
+def test_tensorflow_reverse_sequence(
+        *,
+        dtype,
+        frontend,
+        backend_fw,
+        fn_tree,
+        test_flags,
+        on_device,
+):
+    input, seq_lengths, seq_axis, batch_axis = seq_length_axis_batch
+    helpers.test_frontend_function(
+        input_sequence=input,
+        input_dtype=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )
