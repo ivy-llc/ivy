@@ -5,7 +5,10 @@ import paddle
 # local
 import ivy
 from ivy.func_wrapper import inputs_to_native_arrays
-from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.functional.ivy.gradients import (
+    _flatten_containers,
+    _rebuild_flattened_containers,
+)
 
 
 def bind_custom_gradient_function(func, custom_grad_fn):
@@ -30,27 +33,72 @@ def bind_custom_gradient_function(func, custom_grad_fn):
 
 
 def vjp(func: Callable, *primals):
-    def grad_fn(*x_in):
-        return ivy.to_native(
-            func(*ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
-        )
+    flattened_primals, ret_idxs = _flatten_containers(primals)
 
-    primals_out = func(*ivy.to_ivy(primals, nested=True))
+    def grad_fn(*x_in):
+        return _flatten_containers(
+            ivy.to_native(
+                func(
+                    *ivy.to_ivy(
+                        _rebuild_flattened_containers(x_in, ret_idxs), nested=True
+                    )
+                ),
+                nested=True,
+                include_derived=True,
+            )
+        )[0]
+
+    primals_out = _rebuild_flattened_containers(
+        grad_fn(*ivy.to_ivy(flattened_primals, nested=True)), ret_idxs
+    )
 
     def vjpfun(x_in):
         _, vjp_result = ivy.to_ivy(
             paddle.incubate.autograd.vjp(
                 grad_fn,
-                ivy.to_native(primals, nested=True),
-                ivy.to_native(x_in, nested=True),
+                ivy.to_native(flattened_primals, nested=True),
+                ivy.to_native(_flatten_containers(x_in)[0], nested=True),
             )
         )
-        return ivy.to_ivy(vjp_result, nested=True, include_derived=True)
+        return ivy.to_ivy(
+            _rebuild_flattened_containers(vjp_result, ret_idxs),
+            nested=True,
+            include_derived=True,
+        )
 
-    return (primals_out, vjpfun)
+    return (ivy.to_ivy(primals_out, nested=True, include_derived=True), vjpfun)
 
 
 def jvp(func: Callable, primals, tangents):
-    raise IvyNotImplementedException(
-        "forward-mode autodiff not available for paddle backend"
+    flattened_primals, ret_idxs = _flatten_containers(primals)
+    flattened_tangents, _ = _flatten_containers(tangents)
+
+    def grad_fn(*x_in):
+        return _flatten_containers(
+            ivy.to_native(
+                func(
+                    *ivy.to_ivy(
+                        _rebuild_flattened_containers(x_in, ret_idxs), nested=True
+                    )
+                ),
+                nested=True,
+                include_derived=True,
+            )
+        )[0]
+
+    flat_primals_out, vjp_result = ivy.to_ivy(
+        paddle.incubate.autograd.vjp(
+            grad_fn,
+            ivy.to_native(flattened_primals, nested=True),
+            ivy.to_native(flattened_tangents, nested=True),
+        )
+    )
+
+    return ivy.to_ivy(
+        (
+            _rebuild_flattened_containers(flat_primals_out, ret_idxs),
+            _rebuild_flattened_containers(vjp_result, ret_idxs),
+        ),
+        nested=True,
+        include_derived=True,
     )
