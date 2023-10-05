@@ -32,9 +32,9 @@ def _in_projection(
     b=None,
 ):
     """
-    Projects query, key and value effeciently, depending on whether we are doing self-
+    Projects query, key and value efficiently, depending on whether we are doing self-
     attention (query is key is value) or cross-attention (key is value) or an attention
-    where query, key and value are all diferrent.
+    where query, key and value are all different.
 
     it is only used in
     multi_head_attention layer.
@@ -460,7 +460,7 @@ def scaled_dot_product_attention(
         The mask input array. The mask to apply to the query-key values. Default is
         None. The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
     dropout_p
-        Specifies the dropout probablity, if greater than 0.0, dropout is applied
+        Specifies the dropout probability, if greater than 0.0, dropout is applied
     is_causal
         If true, assumes causal attention masking
         and errors if both `mask` and `is_causal` are set.
@@ -2682,7 +2682,7 @@ def nms(
             yy2 = ivy.minimum(y2[i], y2[order[1:]])
 
             w = ivy.maximum(0.0, xx2 - xx1)  # maximum width
-            h = ivy.maximum(0.0, yy2 - yy1)  # maxiumum height
+            h = ivy.maximum(0.0, yy2 - yy1)  # maximum height
             inter = w * h
             ovr = inter / (areas[i] + areas[order[1:]] - inter)
             inds = ivy.nonzero(ovr <= iou_threshold)[0]

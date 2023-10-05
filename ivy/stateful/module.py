@@ -624,7 +624,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         Parameters
         ----------
         v
-            If given, use this container as internal varibles temporarily.
+            If given, use this container as internal variables temporarily.
             Default is ``None``.
         track_submod_rets
             If True, will track the returns of submodules.

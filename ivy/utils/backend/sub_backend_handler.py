@@ -196,7 +196,7 @@ def set_sub_backend(sub_backend_str: str):
     ivy.current_sub_backends.append(sub_backend_str)
 
 
-# this is very similiar to _set_backend_as_ivy in handler.py, with a minor change
+# this is very similar to _set_backend_as_ivy in handler.py, with a minor change
 def _set_sub_backend_as_ivy(
     original: dict, target: ModuleType, sub_backend: ModuleType
 ):
