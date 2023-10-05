@@ -3859,7 +3859,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     @staticmethod
     def _static_trim_zeros(
         a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -3868,9 +3868,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         trim: Optional[str] = "fb",
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.trim_zeros.
-        This method simply wraps the function, and so the docstring for
-        ivy.trim_zeros also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.trim_zeros. This method simply wraps
+        the function, and so the docstring for ivy.trim_zeros also applies to this
+        method with minimal changes.
+
         Parameters
         ----------
         self : 1-D array
@@ -3902,10 +3903,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         trim: Optional[str] = "fb",
     ) -> ivy.Array:
         """
-        ivy.Container instance method variant of ivy.trim_zeros.
-        This method simply wraps the function, and so the docstring for
-        ivy.trim_zeros also applies to this method with minimal
-        changes.
+        ivy.Container instance method variant of ivy.trim_zeros. This method simply
+        wraps the function, and so the docstring for ivy.trim_zeros also applies to this
+        method with minimal changes.
+
         Parameters
         ----------
         self : 1-D array

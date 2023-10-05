@@ -392,6 +392,7 @@ def unique_consecutive(
         counts,
     )
 
+
 def fill_diagonal(
     a: JaxArray,
     v: Union[int, float],

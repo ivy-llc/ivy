@@ -482,6 +482,7 @@ def fill_diagonal(
     np.fill_diagonal(a, v, wrap=wrap)
     return a
 
+
 def trim_zeros(
     a: np.ndarray,
     /,
@@ -489,7 +490,8 @@ def trim_zeros(
     trim: Optional[str] = "fb",
 ) -> np.ndarray:
     return np.trim_zeros(a, trim=trim)
-  
+
+
 def column_stack(
     arrays: Sequence[np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:

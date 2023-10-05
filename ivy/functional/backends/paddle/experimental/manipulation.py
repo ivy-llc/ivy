@@ -694,6 +694,7 @@ def fill_diagonal(
     a = paddle.reshape(a, shape)
     return a
 
+
 def trim_zeros(a: paddle.Tensor, /, *, trim: Optional[str] = "bf") -> paddle.Tensor:
     first = 0
     trim = trim.upper()
@@ -711,6 +712,7 @@ def trim_zeros(a: paddle.Tensor, /, *, trim: Optional[str] = "bf") -> paddle.Ten
             else:
                 last = last - 1
     return a[first:last]
+
 
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
@@ -740,4 +742,3 @@ put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mo
     "sum",
     "mul",
 ]
-

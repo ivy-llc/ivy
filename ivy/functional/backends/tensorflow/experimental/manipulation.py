@@ -418,6 +418,7 @@ def unique_consecutive(
         tf.cast(counts, tf.int64),
     )
 
+
 def trim_zeros(a: tf.Tensor, /, *, trim: Optional[str] = "bf") -> tf.Tensor:
     nonzero_indices = tf.where(a != 0)
     first = tf.reduce_min(nonzero_indices)
