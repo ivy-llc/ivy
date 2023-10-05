@@ -13,8 +13,7 @@ from typing import (
 from numbers import Number
 from collections import namedtuple
 import torch
-from ivy.functional.backends.torch.creation import ivy_zeros_like
-from ivy.functional.utils import handle_view
+
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
@@ -458,42 +457,20 @@ put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode i
 ]
 
 
-@handle_view
 def concat_from_sequence(
-    array_sequence: ivy.ArraySequence,
+    input_sequence: Union[Tuple[torch.Tensor], List[torch.Tensor]],
+    /,
     *,
     new_axis: int = 0,
     axis: int = 0,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Concatenates a sequence of arrays along a specified axis.
-
-    Parameters
-    ----------
-    array_sequence: A sequence of arrays.
-    new_axis: The axis along which to concatenate the arrays.
-    axis: The axis along which to concatenate the arrays.
-    out: Optional output array, for writing the result to.
-
-    Returns
-    -------
-    An array that is the concatenation of the arrays in the sequence.
-    """
-
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    is_tuple = type(input_sequence) is tuple
+    if is_tuple:
+        input_sequence = list(input_sequence)
     if new_axis == 0:
-        return ivy.concat_from_sequence(
-            array_sequence, new_axis=new_axis, axis=axis, out=out
-        )
+        ret = torch.cat(input_sequence, dim=axis)
+        return ret
     elif new_axis == 1:
-        if not isinstance(array_sequence, (tuple, list)):
-            array_sequence = [array_sequence]
-        if isinstance(array_sequence, tuple):
-            array_sequence = (ivy_zeros_like(array_sequence[0]),) + array_sequence
-        else:
-            array_sequence = [ivy_zeros_like(array_sequence)] + array_sequence
-        return handle_view(
-            ivy.concat_from_sequence(
-                array_sequence, new_axis=new_axis, axis=axis, out=out
-            )
-        )
+        ret = torch.stack(input_sequence, dim=axis)
+        return ret
