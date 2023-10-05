@@ -640,6 +640,7 @@ class ndarray:
     def __irshift__(self, value, /):
         return ivy.bitwise_right_shift(self.ivy_array, value, out=self)
 
+
 # --- Helpers --- #
 # --------------- #
 
