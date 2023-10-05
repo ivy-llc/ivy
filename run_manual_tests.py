@@ -26,9 +26,10 @@ def get_submodule_and_function_name(test_path, is_frontend_test=False):
     if is_frontend_test:
         with open(test_path.split("::")[0]) as test_file:
             test_file_content = test_file.read()
-            test_function_idx = test_file_content.find(test_function.split(",")[0])
+            test_name = test_function.split(",")[0]
+            test_function_idx = test_file_content.find(f"def {test_name}")
             function_name = test_file_content[
-                test_file_content[:test_function_idx].find('fn_tree="') + 9 :
+                test_file_content[:test_function_idx].rfind('fn_tree="') + 9 :
             ].split('"')[0]
     return submodule, function_name
 
