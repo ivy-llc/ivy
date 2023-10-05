@@ -1426,6 +1426,43 @@ def test_jax_roll(
     )
 
 
+# rollaxis
+@handle_frontend_test(
+    fn_tree="jax.numpy.rollaxis",
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=3,
+        min_dim_size=2,
+    ),
+    axis=helpers.ints(min_value=-2, max_value=2),
+    start=helpers.ints(min_value=-2, max_value=2),
+    test_with_out=st.just(False),
+)
+def test_jax_rollaxis(
+    *,
+    dtype_and_a,
+    axis,
+    start,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
+        axis=axis,
+        start=start,
+    )
+
+
 # rot90
 @handle_frontend_test(
     fn_tree="jax.numpy.rot90",
