@@ -5,7 +5,6 @@ from pymongo import MongoClient
 import requests
 from run_tests_CLI.get_all_tests import BACKENDS
 
-
 submodules = (
     "test_paddle",
     "test_tensorflow",
@@ -49,6 +48,8 @@ result_config = {
 
 
 def get_latest_package_version(package_name):
+    if package_name == "jax":
+        return "0.4.14"
     try:
         url = f"https://pypi.org/pypi/{package_name}/json"
         response = requests.get(url)
@@ -156,17 +157,22 @@ if __name__ == "__main__":
                 other_backends = [
                     fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
                 ]
-                for backend in other_backends:
-                    backends.append(backend + "/" + get_latest_package_version(backend))
+                for other_backend in other_backends:
+                    backends.append(
+                        other_backend + "/" + get_latest_package_version(other_backend)
+                    )
+
                 print("Backends:", backends)
-                ret = os.system(
+                command = (
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
-                    ' /bin/bash -c "cd docker;python'
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy/ivy'
+                    ' unifyai/multiversion:latest /bin/bash -c "python'
                     f" multiversion_framework_directory.py {' '.join(backends)};cd"
-                    f' ..;pytest --tb=short {test} --backend={backend}"'
+                    f' ivy;pytest --tb=short {test} --backend={backend.strip()}"'
                 )
+                print("Running", command)
+                sys.stdout.flush()
+                ret = os.system(command)
             else:
                 if with_gpu:
                     ret = os.system(

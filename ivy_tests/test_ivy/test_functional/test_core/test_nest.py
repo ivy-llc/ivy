@@ -241,7 +241,7 @@ def test_map_nest_at_indices(nest, indices, fn, shallow):
 )
 def test_multi_index_nest(nest, multi_indices):
     rets = ivy.multi_index_nest(nest, multi_indices)
-    true_rets = list()
+    true_rets = []
     for indices in multi_indices:
         true_ret = nest
         for i in indices:
