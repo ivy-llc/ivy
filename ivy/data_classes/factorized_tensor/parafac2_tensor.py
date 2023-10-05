@@ -6,7 +6,7 @@ import ivy
 from copy import deepcopy
 
 
-class Parafac2Tensor(FactorizedTensor):
+class Parafac2Tensor(FactorizedTensor, name="Parafac2"):
     def __init__(self, parafac2_tensor):
         super().__init__()
 

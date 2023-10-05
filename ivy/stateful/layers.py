@@ -2,6 +2,7 @@
 # flake8: noqa
 # local
 import ivy
+from ivy.data_classes.factorized_tensor.base import TensorizedTensor
 from ivy.func_wrapper import handle_nestable
 from ivy.stateful.initializers import GlorotUniform, Zeros
 from ivy.stateful.module import Module
@@ -115,6 +116,171 @@ class Linear(Module):
             *[batch_shape, out]*
         """
         return ivy.linear(x, self.v.w, bias=self.v.b if self._with_bias else None)
+
+
+class FactorizedLinear(Module):
+    def __init__(
+        self,
+        in_tensorized_features,
+        out_tensorized_features,
+        /,
+        *,
+        bias_initializer=Zeros(),
+        with_bias=True,
+        device=None,
+        v=None,
+        dtype=None,
+        factorization="cp",
+        rank="same",
+        implementation="factorized",
+        n_layers=1,
+    ):
+        """
+        Factorized Linear layer, also referred to as dense or fully connected. The layer
+        receives tensors with input_channels last dimension and returns a new tensor
+        with output_channels last dimension, following matrix multiplication with the
+        weight matrix and addition with the bias vector.
+
+        Parameters
+        ----------
+        input_channels
+            Number of input channels for the layer.
+        output_channels
+            Number of output channels for the layer.
+        weight_initializer
+            Initializer for the weights. Default is GlorotUniform.
+        bias_initializer
+            Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        v
+            the variables for the linear layer, as a container, constructed internally
+            by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
+        """
+        if factorization == "TTM" and n_layers != 1:
+            raise ValueError(
+                "TTM factorization only support single factorized layers but got"
+                f" n_layers={n_layers}."
+            )
+        self._input_channels = ivy.prod(in_tensorized_features)
+        self._output_channels = ivy.prod(out_tensorized_features)
+        self._in_tensorized_features = in_tensorized_features
+        self._out_tensorized_features = out_tensorized_features
+        self._tensorized_shape = out_tensorized_features + in_tensorized_features
+        self._w_shape = (self._output_channels, self._input_channels)
+        self._b_shape = (
+            (self._output_channels,)
+            if n_layers == 1
+            else (n_layers, self._output_channels)
+        )
+        if n_layers > 1:
+            self._tensor_shape = (
+                n_layers,
+                self._out_tensorized_features,
+                self._in_tensorized_features,
+            )
+        else:
+            self._tensor_shape = (
+                self._out_tensorized_features,
+                self._in_tensorized_features,
+            )
+        self._b_init = bias_initializer
+        self._with_bias = with_bias
+        self._rank = rank
+        self._factorization = factorization
+        self.implementation = implementation
+        self.n_layers = n_layers
+        Module.__init__(self, device=device, v=v, dtype=dtype)
+
+    def _create_variables(self, device, dtype=None):
+        """
+        Create internal variables for the layer.
+
+        Parameters
+        ----------
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
+        """
+        v = {
+            "w": TensorizedTensor.new(
+                self._tensor_shape,
+                rank=self._rank,
+                factorization=self._factorization,
+                device=device,
+                dtype=dtype,
+            )
+        }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
+
+    def _forward(self, x, indices=0):
+        """
+        Perform forward pass of the Linear layer.
+
+        Parameters
+        ----------
+        x
+            Inputs to process *[batch_shape, in]*.
+
+        Returns
+        -------
+        ret
+            The outputs following the linear operation and bias addition
+            *[batch_shape, out]*
+        """
+        if self.n_layers == 1:
+            if indices == 0:
+                weight, bias = self.v.w, self.v.b if self._with_bias else None
+            else:
+                raise ValueError(
+                    "Only one linear was parametrized (n_layers=1) but tried to access"
+                    f" {indices}."
+                )
+
+        elif isinstance(self.n_layers, int):
+            if not isinstance(indices, int):
+                raise ValueError(
+                    f"Expected indices to be in int but got indices={indices}"
+                    f", but this linear was created with n_layers={self.n_layers}."
+                )
+            weight = self.v.w(indices)
+            bias = self.v.b[indices] if self.bias is not None else None
+        elif len(indices) != len(self.n_layers):
+            raise ValueError(
+                f"Got indices={indices}, but this conv was created with"
+                f" n_layers={self.n_layers}."
+            )
+        else:
+            weight = self.v.w(indices)
+            bias = self.v.b[indices] if self.bias is not None else None
+
+        return ivy.factorized_linear(
+            x,
+            weight,
+            bias=bias,
+            in_features=self._input_channels,
+            implementation=self.implementation,
+        )
 
 
 # Dropout #

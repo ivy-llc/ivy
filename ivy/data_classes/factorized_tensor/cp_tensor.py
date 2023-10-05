@@ -3,33 +3,120 @@ from .base import FactorizedTensor
 import ivy
 
 
-class CPTensor(FactorizedTensor):
-    def __init__(self, cp_tensor):
+class CPTensor(FactorizedTensor, name="CP"):
+    """
+    CP Factorization.
+
+    Parameters
+    ----------
+    weights
+    factors
+    shape
+    rank
+    """
+
+    def __init__(self, weights, factors, shape=None, rank=None):
         super().__init__()
-
-        shape, rank = ivy.CPTensor.validate_cp_tensor(cp_tensor)
-        weights, factors = cp_tensor
-
-        if weights is None:
-            weights = ivy.ones(rank, dtype=factors[0].dtype)
-
-        self.shape = shape
-        self.rank = rank
-        self.factors = factors
-        self.weights = weights
-
-    # Built-ins #
-    def __getitem__(self, index):
-        if index == 0:
-            return self.weights
-        elif index == 1:
-            return self.factors
+        if shape is not None and rank is not None:
+            self.shape, self.rank = shape, rank
         else:
-            raise IndexError(
-                f"You tried to access index {index} of a CP tensor.\n"
-                "You can only access index 0 and 1 of a CP tensor"
-                "(corresponding respectively to the weights and factors)"
+            self.shape, self.rank = ivy.CPTensor.validate_cp_tensor((weights, factors))
+        self.order = len(self.shape)
+
+    # Class Methods #
+    # ---------------#
+
+    @classmethod
+    def new(cls, shape, rank, device=None, dtype=None, **kwargs):
+        rank = ivy.CPTensor.validate_cp_rank(shape, rank)
+
+        # Register the parameters
+        weights = ivy.empty(rank, device=device, dtype=dtype)
+        # Avoid the issues with ParameterList
+        factors = [ivy.empty((s, rank), device=device, dtype=dtype) for s in shape]
+
+        return cls(weights, factors)
+
+    @classmethod
+    def from_tensor(cls, tensor, rank="same", **kwargs):
+        shape = tensor.shape
+        rank = ivy.CPTensor.validate_cp_rank(shape, rank)
+        dtype = tensor.dtype
+
+        weights, factors = ivy.parafac(tensor.to(ivy.float64), rank, **kwargs)
+
+        return cls(
+            weights.to(dtype).contiguous(), [f.to(dtype).contiguous() for f in factors]
+        )
+
+    @property
+    def decomposition(self):
+        return self.weights, self.factors
+
+    def to_tensor(self):
+        return CPTensor.cp_to_tensor(self.decomposition)
+
+    def to_vec(self):
+        return CPTensor.cp_to_vec(self)
+
+    def to_unfolded(self, mode):
+        return ivy.CPTensor.cp_to_unfolded(self, mode)
+
+    def cp_copy(self):
+        return CPTensor(
+            (
+                ivy.copy_array(self.weights),
+                [ivy.copy_array(self.factors[i]) for i in range(len(self.factors))],
             )
+        )
+
+    def normal_(self, mean=0, std=1):
+        super().normal_(mean, std)
+        std_factors = (std / ivy.sqrt(self.rank)) ** (1 / self.order)
+
+        self.weights.fill_(1)
+        for factor in self.factors:
+            factor.data.normal_(0, std_factors)
+        return self
+
+    def __getitem__(self, indices):
+        if isinstance(indices, int):
+            # Select one dimension of one mode
+            mixing_factor, *factors = self.factors
+            weights = self.weights * mixing_factor[indices, :]
+            return self.__class__(weights, factors)
+
+        elif isinstance(indices, slice):
+            # Index part of a factor
+            mixing_factor, *factors = self.factors
+            factors = [mixing_factor[indices, :], *factors]
+            weights = self.weights
+            return self.__class__(weights, factors)
+
+        else:
+            # Index multiple dimensions
+            factors = self.factors
+            index_factors = []
+            weights = self.weights
+            for index in indices:
+                if index is Ellipsis:
+                    raise ValueError(
+                        "Ellipsis is not yet supported, yet got"
+                        f" indices={indices} which contains one."
+                    )
+
+                mixing_factor, *factors = factors
+                if isinstance(index, (ivy.integer, int)):
+                    if factors or index_factors:
+                        weights = weights * mixing_factor[index, :]
+                    else:
+                        # No factors left
+                        return ivy.sum(weights * mixing_factor[index, :])
+                else:
+                    index_factors.append(mixing_factor[index, :])
+
+            return self.__class__(weights, index_factors + factors)
+        # return self.__class__(*tl.cp_indexing(self.weights, self.factors, indices))
 
     def __setitem__(self, index, value):
         if index == 0:
@@ -56,24 +143,34 @@ class CPTensor(FactorizedTensor):
         )
         return message
 
-    # Public Methods #
-    # ---------------#
-    def to_tensor(self):
-        return ivy.CPTensor.cp_to_tensor(self)
+    def transduct(self, new_dim, mode=0, new_factor=None):
+        """
+        Transduction adds a new dimension to the existing factorization.
 
-    def to_vec(self):
-        return ivy.CPTensor.cp_to_vec(self)
+        Parameters
+        ----------
+        new_dim : int
+            dimension of the new mode to add
+        mode : where to insert the new dimension, after the channels, default is 0
+            by default, insert the new dimensions before the existing ones
+            (e.g. add time before height and width)
 
-    def to_unfolded(self, mode):
-        return ivy.CPTensor.cp_to_unfolded(self, mode)
+        Returns
+        -------
+        self
+        """
+        factors = self.factors
+        # Important: don't increment the order before accessing factors which uses order!
+        self.order += 1
+        self.shape = self.shape[:mode] + (new_dim,) + self.shape[mode:]
 
-    def cp_copy(self):
-        return CPTensor(
-            (
-                ivy.copy_array(self.weights),
-                [ivy.copy_array(self.factors[i]) for i in range(len(self.factors))],
-            )
-        )
+        if new_factor is None:
+            new_factor = ivy.ones(new_dim, self.rank)  # /new_dim
+
+        factors.insert(mode, new_factor.to(factors[0].device).contiguous())
+        self.factors = factors
+
+        return self
 
     def mode_dot(self, matrix_or_vector, mode, keep_dim=False, copy=True):
         """
@@ -129,44 +226,6 @@ class CPTensor(FactorizedTensor):
         """
         return ivy.CPTensor.cp_norm(self)
 
-    def normalize(self, inplace=True):
-        """
-        Normalize the factors to unit length.
-
-        Turns ``factors = [|U_1, ... U_n|]`` into ``[weights; |V_1, ... V_n|]``,
-        where the columns of each `V_k` are normalized to unit Euclidean length
-        from the columns of `U_k` with the normalizing constants absorbed into
-        `weights`. In the special case of a symmetric tensor, `weights` holds the
-        eigenvalues of the tensor.
-
-        Parameters
-        ----------
-        cp_tensor
-            CPTensor = (weight, factors)
-            factors is list of matrices, all with the same number of columns
-            i.e.::
-                for u in U:
-                    u[i].shape == (s_i, R)
-
-            where `R` is fixed while `s_i` can vary with `i`
-
-        inplace
-            if False, returns a normalized Copy
-            otherwise the tensor modifies itself and returns itself
-
-        Returns
-        -------
-        CPTensor = (normalisation_weights, normalised_factors)
-            returns itself if inplace is True, a normalized copy otherwise
-        """
-        weights, factors = ivy.CPTensor.cp_normalize(self)
-        if inplace:
-            self.weights, self.factors = weights, factors
-            return self
-        return ivy.CPTensor((weights, factors))
-
-    # Properties #
-    # ---------------#
     @property
     def n_param(self):
         factors_params = self.rank * ivy.sum(self.shape)
@@ -174,68 +233,6 @@ class CPTensor(FactorizedTensor):
             return factors_params + self.rank
         else:
             return factors_params
-
-    # Class Methods #
-    # ---------------#
-    @staticmethod
-    def validate_cp_tensor(cp_tensor):
-        """
-        Validate a cp_tensor in the form (weights, factors)
-
-            Return the rank and shape of the validated tensor
-
-        Parameters
-        ----------
-        cp_tensor
-            CPTensor or (weights, factors)
-
-        Returns
-        -------
-        (shape, rank)
-            size of the full tensor and rank of the CP tensor
-        """
-        if isinstance(cp_tensor, CPTensor):
-            # it's already been validated at creation
-            return cp_tensor.shape, cp_tensor.rank
-        elif isinstance(cp_tensor, (float, int)):  # 0-order tensor
-            return 0, 0
-
-        weights, factors = cp_tensor
-
-        ndim = len(factors[0].shape)
-        if ndim == 2:
-            rank = int(ivy.shape(factors[0])[1])
-        elif ndim == 1:
-            rank = 1
-        else:
-            raise ValueError(
-                "Got a factor with 3 dimensions but CP factors should be at most 2D, of"
-                " shape (size, rank)."
-            )
-
-        shape = []
-        for i, factor in enumerate(factors):
-            s = ivy.shape(factor)
-            if len(s) == 2:
-                current_mode_size, current_rank = s
-            else:  # The shape is just (size, ) if rank 1
-                current_mode_size, current_rank = *s, 1
-
-            if current_rank != rank:
-                raise ValueError(
-                    "All the factors of a CP tensor should have the same number of"
-                    f" column.However, factors[0].shape[1]={rank} but"
-                    f" factors[{i}].shape[1]={ivy.shape(factor)[1]}."
-                )
-            shape.append(current_mode_size)
-
-        if weights is not None and len(weights) != rank:
-            raise ValueError(
-                f"Given factors for a rank-{rank} CP tensor but"
-                f" len(weights)={ivy.shape(weights)}."
-            )
-
-        return tuple(shape), rank
 
     @staticmethod
     def cp_n_param(tensor_shape, rank, weights=False):
@@ -457,7 +454,7 @@ class CPTensor(FactorizedTensor):
         ivy.CPTensor.validate_cp_tensor(cp_tensor)
         _, factors = cp_tensor
 
-        diff = tensor - ivy.CPTensor.cp_to_tensor(cp_tensor)
+        diff = tensor - CPTensor.cp_to_tensor(cp_tensor)
 
         if mask is not None:
             diff = diff * mask
@@ -595,7 +592,7 @@ class CPTensor(FactorizedTensor):
         ivy.Array
             vectorised tensor
         """
-        return ivy.reshape(ivy.CPTensor.cp_to_tensor(cp_tensor), (-1))
+        return ivy.reshape(CPTensor.cp_to_tensor(cp_tensor), (-1))
 
     @staticmethod
     def cp_mode_dot(cp_tensor, matrix_or_vector, mode, keep_dim=False, copy=False):

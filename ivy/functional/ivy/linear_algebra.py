@@ -3075,3 +3075,187 @@ def tensorsolve(
     res = ivy.reshape(res, old_shape)
     return res
     # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)
+
+
+# factorized
+
+einsum_symbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+
+def _validate_contraction_modes(shape1, shape2, modes, batched_modes=False):
+    """
+    Takes in the contraction modes (for a tensordot) and validates them.
+
+    Parameters
+    ----------
+    modes : int or tuple[int] or (modes1, modes2)
+    batched_modes : bool, default is False
+
+    Returns
+    -------
+    modes1, modes2 : a list of modes for each contraction
+    """
+    if isinstance(modes, int):
+        if batched_modes:
+            modes1 = [modes]
+            modes2 = [modes]
+        else:
+            modes1 = list(range(-modes, 0))
+            modes2 = list(range(0, modes))
+    else:
+        try:
+            modes1, modes2 = modes
+        except ValueError:
+            modes1 = modes
+            modes2 = modes
+    try:
+        modes1 = list(modes1)
+    except TypeError:
+        modes1 = [modes1]
+    try:
+        modes2 = list(modes2)
+    except TypeError:
+        modes2 = [modes2]
+
+    if len(modes1) != len(modes2):
+        if batched_modes:
+            message = f"Both tensors must have the same number of batched modes"
+        else:
+            message = (
+                "Both tensors must have the same number of modes to contract along. "
+            )
+        raise ValueError(
+            message
+            + f"However, got modes={modes},  i.e. {len(modes1)} modes for tensor 1 and"
+            f" {len(modes2)} mode for tensor 2(modes1={modes1}, and modes2={modes2})"
+        )
+    ndim1 = len(shape1)
+    ndim2 = len(shape2)
+    for i in range(len(modes1)):
+        if shape1[modes1[i]] != shape2[modes2[i]]:
+            if batched_modes:
+                message = (
+                    "Batch-dimensions must have the same dimensions in both tensors"
+                    " but got"
+                )
+            else:
+                message = (
+                    "Contraction dimensions must have the same dimensions in both"
+                    " tensors but got"
+                )
+            raise ValueError(
+                message
+                + f" mode {modes1[i]} of size {shape1[modes1[i]]} and "
+                f" mode {modes2[i]} of size {shape2[modes2[i]]}."
+            )
+        if modes1[i] < 0:
+            modes1[i] += ndim1
+        if modes2[i] < 0:
+            modes2[i] += ndim2
+
+    return modes1, modes2
+
+
+def tensor_dot_tucker(tensor, tucker, modes, batched_modes=()):
+    """
+    Batched tensor contraction between a dense tensor and a Tucker tensor on specified
+    modes.
+
+    Parameters
+    ----------
+    tensor : DenseTensor
+    tucker : TuckerTensor
+    modes : int list or int
+        modes on which to contract tensor1 and tensor2
+    batched_modes : int or tuple[int]
+
+    Returns
+    -------
+    contraction : tensor contracted with cp on the specified modes
+    """
+    modes_tensor, modes_tucker = _validate_contraction_modes(
+        ivy.shape(tensor), tucker.tensor_shape, modes
+    )
+    input_order = tensor.ndim
+    weight_order = tucker.order
+
+    batched_modes_tensor, batched_modes_tucker = _validate_contraction_modes(
+        ivy.shape(tensor), tucker.tensor_shape, batched_modes
+    )
+
+    sorted_modes_tucker = sorted(modes_tucker + batched_modes_tucker, reverse=True)
+    sorted_modes_tensor = sorted(modes_tensor + batched_modes_tensor, reverse=True)
+
+    # Symbol for dimensionality of the core
+    rank_sym = [einsum_symbols[i] for i in range(weight_order)]
+
+    # Symbols for tucker weight size
+    tucker_sym = [einsum_symbols[i + weight_order] for i in range(weight_order)]
+
+    # Symbols for input tensor
+    tensor_sym = [einsum_symbols[i + 2 * weight_order] for i in range(tensor.ndim)]
+
+    # Output: input + weights symbols after removing contraction symbols
+    output_sym = tensor_sym + tucker_sym
+    for m in sorted_modes_tucker:
+        if m in modes_tucker:  # not batched
+            output_sym.pop(m + input_order)
+    for m in sorted_modes_tensor:
+        # It's batched, always remove
+        output_sym.pop(m)
+
+    # print(tensor_sym, tucker_sym, modes_tensor, batched_modes_tensor)
+    for i, e in enumerate(modes_tensor):
+        tensor_sym[e] = tucker_sym[modes_tucker[i]]
+    for i, e in enumerate(batched_modes_tensor):
+        tensor_sym[e] = tucker_sym[batched_modes_tucker[i]]
+
+    # Form the actual equation: tensor, core, factors -> output
+    eq = "".join(tensor_sym)
+    eq += "," + "".join(rank_sym)
+    eq += "," + ",".join(f"{s}{r}" for s, r in zip(tucker_sym, rank_sym))
+    eq += "->" + "".join(output_sym)
+
+    return ivy.einsum(eq, tensor, tucker.core, *tucker.factors)
+
+
+def tensor_dot_cp(tensor, cp, modes):
+    """
+    Contracts a to CP tensors in factorized form.
+
+    Returns
+    -------
+    tensor = tensor x cp_matrix.to_matrix().T
+    """
+    try:
+        cp_shape = cp.tensor_shape
+    except AttributeError:
+        cp_shape = cp.shape
+    modes_tensor, modes_cp = _validate_contraction_modes(
+        ivy.shape(tensor), cp_shape, modes
+    )
+
+    tensor_order = ivy.ndim(tensor)
+    # CP rank = 'a', start at b
+    start = ord("b")
+    eq_in = "".join(f"{chr(start+index)}" for index in range(tensor_order))
+    eq_factors = []
+    eq_res = "".join(
+        eq_in[i] if i not in modes_tensor else "" for i in range(tensor_order)
+    )
+    counter_joint = 0  # contraction modes, shared indices between tensor and CP
+    counter_free = 0  # new uncontracted modes from the CP
+    for i in range(len(cp.factors)):
+        if i in modes_cp:
+            eq_factors.append(f"{eq_in[modes_tensor[counter_joint]]}a")
+            counter_joint += 1
+        else:
+            eq_factors.append(f"{chr(start+tensor_order+counter_free)}a")
+            eq_res += f"{chr(start+tensor_order+counter_free)}"
+            counter_free += 1
+
+    eq_factors = ",".join(f for f in eq_factors)
+    eq = eq_in + ",a," + eq_factors + "->" + eq_res
+    res = ivy.einsum(eq, tensor, cp.weights, *cp.factors)
+
+    return res

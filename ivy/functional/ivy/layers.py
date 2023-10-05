@@ -5,6 +5,13 @@ from typing import Optional, Tuple, Union, Sequence
 
 # local
 import ivy
+from ivy.data_classes.factorized_tensor.base import TensorizedTensor
+from ivy.data_classes.factorized_tensor.tensorized_matrices import (
+    BlockTT,
+    CPTensorized,
+    TuckerTensorized,
+)
+from ivy.functional.ivy.linear_algebra import tensor_dot_cp, tensor_dot_tucker
 from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
@@ -2340,3 +2347,125 @@ def _get_num_padded_values(i, p, n, k, s):
     return max(0, left_padding - current_index) + max(
         0, current_index + k - n - left_padding
     )
+
+
+# factorised layers
+
+
+def factorized_linear(
+    x, weight, bias=None, in_features=None, implementation="factorized"
+):
+    """Linear layer with a dense input x and factorized weight."""
+    assert implementation in {"factorized", "reconstructed"}, (
+        "Expect implementation from [factorized, reconstructed], but got"
+        f" {implementation}"
+    )
+
+    if in_features is None:
+        in_features = ivy.prod(x.shape[-1])
+
+    if not ivy.is_array(weight):
+        # Weights are in the form (out_features, in_features)
+        # PyTorch's linear returns dot(x, weight.T)!
+        if isinstance(weight, TensorizedTensor):
+            if implementation == "factorized":
+                x_shape = (
+                    x.shape[:-1] + (weight.tensorized_shape[1],)
+                    if isinstance(weight.tensorized_shape[1], int)
+                    else weight.tensorized_shape
+                )
+                out_shape = x.shape[:-1] + (-1,)
+                if isinstance(weight, CPTensorized):
+                    x = _linear_cp(x.reshape(x_shape), weight).reshape(out_shape)
+                    if bias is not None:
+                        x = x + bias
+                    return x
+                elif isinstance(weight, TuckerTensorized):
+                    x = _linear_tucker(x.reshape(x_shape), weight).reshape(out_shape)
+                    if bias is not None:
+                        x = x + bias
+                    return x
+                elif isinstance(weight, BlockTT):
+                    x = _linear_blocktt(x.reshape(x_shape), weight).reshape(out_shape)
+                    if bias is not None:
+                        x = x + bias
+                    return x
+            # if no efficient implementation available or force to use reconstructed mode: use reconstruction
+            weight = weight.to_matrix()
+        else:
+            weight = weight.to_tensor()
+
+    return ivy.linear(x, ivy.reshape(weight, (-1, in_features)), bias=bias)
+
+
+def _linear_cp(tensor, cp_matrix, transpose=True):
+    if transpose:
+        out_features, in_features = (
+            cp_matrix.tensorized_shape[0],
+            cp_matrix.tensorized_shape[1],
+        )
+        in_shape = cp_matrix.tensorized_shape[1]
+        modes_cp = list(range(out_features, cp_matrix.order))
+    else:
+        in_features, out_features = (
+            cp_matrix.tensorized_shape[0],
+            cp_matrix.tensorized_shape[1],
+        )
+        in_shape = cp_matrix.tensorized_shape[0]
+        modes_cp = list(range(in_features))
+    tensor = tensor.reshape((-1, in_shape))
+
+    modes_tensor = list(range(1, tensor.ndim))
+
+    return tensor_dot_cp(tensor, cp_matrix, (modes_tensor, modes_cp))
+
+
+def _linear_tucker(tensor, tucker_matrix, transpose=True, channels_first=True):
+    if transpose:
+        contraction_axis = 1
+    else:
+        contraction_axis = 0
+    n_rows = len(tucker_matrix.tensorized_shape[contraction_axis])
+    tensor = tensor.reshape(-1, *tucker_matrix.tensorized_shape[contraction_axis])
+
+    modes_tensor = list(range(tensor.ndim - n_rows, tensor.ndim))
+    if transpose:
+        modes_tucker = list(range(n_rows, tucker_matrix.order))
+    else:
+        modes_tucker = list(range(n_rows))
+
+    return tensor_dot_tucker(tensor, tucker_matrix, (modes_tensor, modes_tucker))
+
+
+def _linear_blocktt(tensor, tt_matrix, transpose=True):
+    if transpose:
+        contraction_axis = 1
+    else:
+        contraction_axis = 0
+    ndim = len(tt_matrix.tensorized_shape[contraction_axis])
+    tensor = tensor.reshape(-1, *tt_matrix.tensorized_shape[contraction_axis])
+
+    bs = "a"
+    start = ord(bs) + 1
+    in_idx = bs + "".join(chr(i) for i in [start + i for i in range(ndim)])
+    factors_idx = []
+    for i in range(ndim):
+        if transpose:
+            idx = [
+                start + ndim * 2 + i,
+                start + ndim + i,
+                start + i,
+                start + ndim * 2 + i + 1,
+            ]
+        else:
+            idx = [
+                start + ndim * 2 + i,
+                start + i,
+                start + ndim + i,
+                start + ndim * 2 + i + 1,
+            ]
+        factors_idx.append("".join(chr(j) for j in idx))
+    out_idx = bs + "".join(chr(i) for i in [start + ndim + i for i in range(ndim)])
+    eq = in_idx + "," + ",".join(i for i in factors_idx) + "->" + out_idx
+    res = ivy.einsum(eq, tensor, *tt_matrix.factors)
+    return ivy.reshape(res, (ivy.shape(res)[0], -1))

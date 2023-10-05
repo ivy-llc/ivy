@@ -1,22 +1,166 @@
 from .base import FactorizedTensor
 import ivy
-
+import numpy as np
 import warnings
 
 
-class TTTensor(FactorizedTensor):
-    def __init__(self, factors, inplace=False):
+class TTTensor(FactorizedTensor, name="TT"):
+    """
+    Tensor-Train (Matrix-Product-State) Factorization.
+
+    Parameters
+    ----------
+    factors
+    shape
+    rank
+    """
+
+    def __init__(self, factors, shape=None, rank=None):
         super().__init__()
+        if shape is None or rank is None:
+            self.shape, self.rank = TTTensor.validate_tt_tensor(factors)
+        else:
+            self.shape, self.rank = shape, rank
 
-        shape, rank = ivy.TTTensor.validate_tt_tensor(factors)
-
-        self.shape = tuple(shape)
-        self.rank = tuple(rank)
+        self.order = len(self.shape)
         self.factors = factors
 
-    # Built-ins #
-    def __getitem__(self, index):
-        return self.factors[index]
+    @classmethod
+    def new(cls, shape, rank, device=None, dtype=None, **kwargs):
+        rank = TTTensor.validate_tt_rank(shape, rank)
+
+        # Avoid the issues with ParameterList
+        factors = [
+            ivy.empty((rank[i], s, rank[i + 1]), device=device, dtype=dtype)
+            for i, s in enumerate(shape)
+        ]
+
+        return cls(factors)
+
+    @classmethod
+    def from_tensor(cls, tensor, rank="same", **kwargs):
+        shape = tensor.shape
+        rank = TTTensor.validate_tt_rank(shape, rank)
+
+        # TODO: deal properly with wrong kwargs
+        factors = ivy.tensor_train(tensor, rank)
+
+        return cls([f.contiguous() for f in factors])
+
+    def init_from_tensor(self, tensor, **kwargs):
+        # TODO: deal properly with wrong kwargs
+        factors = ivy.tensor_train(tensor, self.rank)
+
+        self.factors = [f.contiguous() for f in factors]
+        self.rank = tuple([f.shape[0] for f in factors] + [1])
+        return self
+
+    @property
+    def decomposition(self):
+        return self.factors
+
+    def to_tensor(self):
+        return TTTensor.tt_to_tensor(self.decomposition)
+
+    def normal_(self, mean=0, std=1):
+        if mean != 0:
+            raise ValueError(f"Currently only mean=0 is supported, but got mean={mean}")
+
+        r = np.prod(self.rank)
+        std_factors = (std / r) ** (1 / self.order)
+
+        for factor in self.factors:
+            factor.data.normal_(0, std_factors)
+        return self
+
+    def __getitem__(self, indices):
+        if isinstance(indices, int):
+            # Select one dimension of one mode
+            factor, next_factor, *factors = self.factors
+            next_factor = ivy.mode_dot(next_factor, factor[:, indices, :].squeeze(1), 0)
+            return self.__class__([next_factor, *factors])
+
+        elif isinstance(indices, slice):
+            mixing_factor, *factors = self.factors
+            factors = [mixing_factor[:, indices], *factors]
+            return self.__class__(factors)
+
+        else:
+            factors = []
+            all_contracted = True
+            for i, index in enumerate(indices):
+                if index is Ellipsis:
+                    raise ValueError(
+                        f"Ellipsis is not yet supported, yet got indices={indices},"
+                        f" indices[{i}]={index}."
+                    )
+                if isinstance(index, int):
+                    if i:
+                        factor = ivy.mode_dot(
+                            factor, self.factors[i][:, index, :].T, -1
+                        )
+                    else:
+                        factor = self.factors[i][:, index, :]
+                else:
+                    if i:
+                        if all_contracted:
+                            factor = ivy.mode_dot(
+                                self.factors[i][:, index, :], factor, 0
+                            )
+                        else:
+                            factors.append(factor)
+                            factor = self.factors[i][:, index, :]
+                    else:
+                        factor = self.factors[i][:, index, :]
+                    all_contracted = False
+
+            if factor.ndim == 2:  # We have contracted all cores, so have a 2D matrix
+                if self.order == (i + 1):
+                    # No factors left
+                    return factor.squeeze()
+                else:
+                    next_factor, *factors = self.factors[i + 1 :]
+                    factor = ivy.mode_dot(next_factor, factor, 0)
+                    return self.__class__([factor, *factors])
+            else:
+                return self.__class__([*factors, factor, *self.factors[i + 1 :]])
+
+    def transduct(self, new_dim, mode=0, new_factor=None):
+        """
+        Transduction adds a new dimension to the existing factorization.
+
+        Parameters
+        ----------
+        new_dim : int
+            dimension of the new mode to add
+        mode : where to insert the new dimension, after the channels, default is 0
+            by default, insert the new dimensions before the existing ones
+            (e.g. add time before height and width)
+
+        Returns
+        -------
+        self
+        """
+        factors = self.factors
+
+        # Important: don't increment the order before accessing factors which uses order!
+        self.order += 1
+        new_rank = self.rank[mode]
+        self.rank = self.rank[:mode] + (new_rank,) + self.rank[mode:]
+        self.shape = self.shape[:mode] + (new_dim,) + self.shape[mode:]
+
+        # Init so the reconstruction is equivalent to concatenating the previous self new_dim times
+        if new_factor is None:
+            new_factor = ivy.zeros(new_rank, new_dim, new_rank)
+            for i in range(new_dim):
+                new_factor[:, i, :] = ivy.eye(new_rank)  # /new_dim
+            # Below: <=> static prediciton
+            # new_factor[:, new_dim//2, :] = torch.eye(new_rank)
+
+        factors.insert(mode, new_factor.to(factors[0].device).contiguous())
+        self.factors = factors
+
+        return self
 
     def __setitem__(self, index, value):
         self.factors[index] = value
@@ -36,8 +180,6 @@ class TTTensor(FactorizedTensor):
         return message
 
     # Public Methods #
-    def to_tensor(self):
-        return ivy.TTTensor.tt_to_tensor(self)
 
     def to_unfolding(self, mode):
         return ivy.TTTensor.tt_to_unfolded(self, mode)
