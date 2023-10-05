@@ -2125,8 +2125,7 @@ def test_paddle_tensor_exp_(
     init_tree="paddle.to_tensor",
     method_name="expand",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
     ),
 )
 def test_paddle_tensor_expand(
