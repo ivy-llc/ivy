@@ -192,6 +192,121 @@ def _get_dtype_value1_value2_cov(
     return [dtype], value1, value2, rowVar, bias, ddof, fweights, aweights
 
 
+@st.composite
+def _histogram_helper(draw):
+    dtype_input = draw(st.sampled_from(draw(helpers.get_dtypes("float"))))
+    bins = draw(
+        helpers.array_values(
+            dtype=dtype_input,
+            shape=(draw(helpers.ints(min_value=1, max_value=10)),),
+            abs_smallest_val=-10,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    bins = np.asarray(sorted(set(bins)), dtype=dtype_input)
+    if len(bins) == 1:
+        bins = int(abs(bins[0]))
+        if bins == 0:
+            bins = 1
+        if dtype_input in draw(helpers.get_dtypes("unsigned")):
+            range = (
+                draw(
+                    helpers.floats(
+                        min_value=0, max_value=10, exclude_min=False, exclude_max=False
+                    )
+                ),
+                draw(
+                    helpers.floats(
+                        min_value=11, max_value=20, exclude_min=False, exclude_max=False
+                    )
+                ),
+            )
+        else:
+            range = (
+                draw(helpers.floats(min_value=-10, max_value=0)),
+                draw(helpers.floats(min_value=1, max_value=10)),
+            )
+        range = draw(st.sampled_from([range, None]))
+    else:
+        range = None
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=5
+        )
+    )
+    a = draw(
+        helpers.array_values(
+            dtype=dtype_input,
+            shape=shape,
+            min_value=-20,
+            max_value=20,
+        )
+    )
+    weights = draw(
+        helpers.array_values(
+            dtype=dtype_input,
+            shape=shape,
+            min_value=-20,
+            max_value=20,
+        )
+    )
+    # weights = draw(st.sampled_from([weights, None]))
+    axes = draw(
+        helpers.get_axis(
+            shape=shape,
+            # TODO: negative axes
+            allow_neg=False,
+            min_size=1,
+            max_size=10,
+        )
+    )
+    dtype_out = draw(
+        st.sampled_from(
+            draw(
+                helpers.get_castable_dtype(
+                    draw(helpers.get_dtypes("float")), str(dtype_input)
+                )
+            )
+        )
+    )
+    if range:
+        if np.min(a) < range[0]:
+            extend_lower_interval = True
+        else:
+            extend_lower_interval = draw(st.booleans())
+        if np.max(a) > range[1]:
+            extend_upper_interval = True
+        else:
+            extend_upper_interval = draw(st.booleans())
+    else:
+        if isinstance(bins, int):
+            extend_lower_interval = draw(st.booleans())
+            extend_upper_interval = draw(st.booleans())
+        else:
+            if np.min(a) < bins[0]:
+                extend_lower_interval = True
+            else:
+                extend_lower_interval = draw(st.booleans())
+            if np.max(a) > bins[-1]:
+                extend_upper_interval = True
+            else:
+                extend_upper_interval = draw(st.booleans())
+    density = draw(st.booleans())
+    return (
+        a,
+        bins,
+        axes,
+        extend_lower_interval,
+        extend_upper_interval,
+        dtype_out,
+        range,
+        weights,
+        density,
+        dtype_input,
+    )
+
+
 # --- Main --- #
 # ------------ #
 
@@ -541,6 +656,51 @@ def test_jax_einsum(
         optimize="optimal",
         precision=None,
         _use_xeinsum=False,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.histogram",
+    values=_histogram_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_histogram(
+    *,
+    values,
+    test_flags,
+    frontend,
+    on_device,
+    fn_tree,
+    backend_fw,
+):
+    (
+        a,
+        bins,
+        axis,
+        extend_lower_interval,
+        extend_upper_interval,
+        dtype,
+        range,
+        weights,
+        density,
+        dtype_input,
+    ) = values
+    helpers.test_frontend_function(
+        a=a,
+        bins=bins,
+        axis=axis,
+        extend_lower_interval=extend_lower_interval,
+        extend_upper_interval=extend_upper_interval,
+        frontend=frontend,
+        dtype=dtype,
+        range=range,
+        weights=weights,
+        density=density,
+        input_dtypes=[dtype_input],
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
     )
 
 

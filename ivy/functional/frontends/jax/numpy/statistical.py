@@ -176,6 +176,11 @@ def einsum(
 
 
 @to_ivy_arrays_and_back
+def histogram(a, bins=10, range=None, normed=None, weights=None, density=None):
+    return ivy.histogram(a, bins=bins, range=range, weights=weights, density=density)
+
+
+@to_ivy_arrays_and_back
 def max(a, axis=None, out=None, keepdims=False, where=None):
     ret = ivy.max(a, axis=axis, out=out, keepdims=keepdims)
     if ivy.is_array(where):
