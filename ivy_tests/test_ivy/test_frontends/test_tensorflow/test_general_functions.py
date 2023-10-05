@@ -2059,7 +2059,7 @@ def test_tensorflow_tensor_scatter_nd_add(
     input_dtype, input_matrix, dt_and_multiples = all_arguments
     dt_mul, multiples = dt_and_multiples
     helpers.test_frontend_function(
-        input_dtypes=input_dtype + dt_mul
+        input_dtypes=input_dtype + dt_mul,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
