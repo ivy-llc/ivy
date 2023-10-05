@@ -180,8 +180,8 @@ def confusion_matrix(
 
 
 @to_ivy_arrays_and_back
-def conj(input, name=None):
-    return ivy.conj(input)
+def conj(x, name=None):
+    return ivy.conj(x)
 
 
 @to_ivy_arrays_and_back

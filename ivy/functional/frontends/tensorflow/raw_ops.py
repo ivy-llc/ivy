@@ -51,7 +51,14 @@ Conj = to_ivy_arrays_and_back(
             "2.13.0 and below": ("complex64", "complex128", "variant"),
         },
         "tensorflow",
-    )(map_raw_ops_alias(tf_frontend.math.conj))
+    )(
+        map_raw_ops_alias(
+            tf_frontend.math.conj,
+            kwargs_to_update={
+                "input": "x",
+            },
+        )
+    )
 )
 Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
 Cosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cosh))
