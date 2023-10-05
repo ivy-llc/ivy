@@ -170,18 +170,22 @@ def ihfft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
     if len(ivy.array(x).shape) != 2 or ivy.is_complex_dtype(x):
         raise ValueError("input must be a two-dimensional real array")
 
-    # convert sequence into an ivy array
-    x = ivy.array(x)
-
+    # cast the input to the same float64 type so that there are no backend issues
+    x_ = ivy.astype(x, ivy.float64)
+    
     ihfft2_result = 0
     # Compute the complex conjugate of the 2-dimensional discrete Fourier Transform
     if norm == "backward":
-        ihfft2_result = ivy.conj(ivy.rfftn(x, s=s, axes=axes, norm="forward"))
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="forward"))
     if norm == "forward":
-        ihfft2_result = ivy.conj(ivy.rfftn(x, s=s, axes=axes, norm="backward"))
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="backward"))
     if norm == "ortho":
-        ihfft2_result = ivy.conj(ivy.rfftn(x, s=s, axes=axes, norm="ortho"))
-    return ihfft2_result
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="ortho"))
+        
+    if x.dtype == ivy.float32 or x.dtype == ivy.int32 or x.dtype == ivy.int64:
+        return ivy.astype(ihfft2_result, ivy.complex64)
+    if x.dtype == ivy.float64:
+        return ivy.astype(ihfft2_result, ivy.complex128)
 
 
 @with_supported_dtypes(
