@@ -42,6 +42,11 @@ if __name__ == "__main__":
     workflow_id = sys.argv[6]
     priority_flag = sys.argv[7]
 
+    if len(sys.argv) > 8 and sys.argv[8] != "null":
+        run_id = sys.argv[8]
+    else:
+        run_id = f"https://github.com/unifyai/ivy/actions/runs/{workflow_id}"
+
     device = "cpu"
     if gpu_flag == "true":
         device = "gpu"
@@ -116,7 +121,7 @@ if __name__ == "__main__":
                         f" -m pytest --tb=short {test_path} --backend"
                         f" {backend} --num-examples 1 --with-transpile"
                     )
-                    ret = os.system(command)
+                    os.system(command)
 
             report_path = os.path.join(
                 __file__[: __file__.rfind(os.sep)], "report.json"
@@ -130,8 +135,10 @@ if __name__ == "__main__":
                 "_id": function_name,
                 "test_path": test_path,
                 "submodule": submodule,
+                "workflow": run_id
             }
 
+            print("versions", versions)
             for backend in status:
                 backend_specific_info[backend] = {
                     "status": {device: status[backend]},
