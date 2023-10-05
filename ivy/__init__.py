@@ -2,6 +2,7 @@
 import copy
 import re
 import warnings
+import logging
 import builtins
 import numpy as np
 import sys
@@ -11,6 +12,7 @@ from collections.abc import Sequence
 
 
 import ivy.utils.backend.handler
+from ivy.utils import check_for_binaries
 from ivy._version import __version__ as __version__
 
 _not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
@@ -1510,3 +1512,8 @@ if (
     ].__class__ = IvyWithGlobalProps
 else:
     sys.modules[__name__].__class__ = IvyWithGlobalProps
+
+    # check if all expected binaries are present
+    # in this else block to avoid raising the same warning again
+    # on using with_backend
+    check_for_binaries()

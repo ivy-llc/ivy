@@ -62,6 +62,15 @@ def adaptive_avg_pool2d(input, output_size):
     return ivy.adaptive_avg_pool2d(input, output_size)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def adaptive_max_pool2d(
     input,

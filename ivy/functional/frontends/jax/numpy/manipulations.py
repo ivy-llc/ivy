@@ -117,6 +117,14 @@ def concatenate(arrays, axis=0, dtype=None):
 
 
 @to_ivy_arrays_and_back
+def diagflat(v, k=0):
+    ret = ivy.diagflat(v, offset=k)
+    while len(ivy.shape(ret)) < 2:
+        ret = ret.expand_dims(axis=0)
+    return ret
+
+
+@to_ivy_arrays_and_back
 def dsplit(ary, indices_or_sections):
     if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
         indices_or_sections = (
