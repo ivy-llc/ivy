@@ -1,6 +1,6 @@
 """Collection of Paddle network layers, wrapped to fit Ivy syntax and signature."""
 
-from typing import Optional, Tuple, Union, Sequence, List
+from typing import Optional, Tuple, Union, Sequence
 
 # global
 import paddle
@@ -494,18 +494,3 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.transpose(0, *range(2, dims + 2), 1)
     return res
-
-
-def interpolate(
-    x: paddle.Tensor,
-    size: List[int] = None,
-    scale_factor: List[int] = None,
-    mode: str = "nearest",
-    align_corners: bool = False,
-    align_mode: int = 0,
-    data_format: str = "NCHW",
-    name: Optional[str] = None,
-):
-    return paddle.nn.functional.interpolate(
-        x, size, scale_factor, mode, align_corners, align_mode, data_format, name
-    )
