@@ -2999,7 +2999,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     @staticmethod
     def _static_trim_zeros(
-        a: ivy.Array,
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
         trim: Optional[str] = "fb",
@@ -3039,7 +3039,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(a, trim)
 
     def trim_zeros(
-        self: ivy.Array,
+        self: ivy.Container,
         /,
         *,
         trim: Optional[str] = "fb",
