@@ -445,7 +445,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_nanmin(
+    def _static_nanmin(
         input: ivy.Container,
         /,
         *,
@@ -559,7 +559,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             y: 12.0
         }
         """
-        return self.static_nanmin(
+        return self._static_nanmin(
             self,
             axis=axis,
             keepdims=keepdims,
