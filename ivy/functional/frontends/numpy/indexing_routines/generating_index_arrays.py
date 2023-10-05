@@ -1,3 +1,5 @@
+import inspect
+
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -15,6 +17,21 @@ def diag_indices(n, ndim=2):
 @to_ivy_arrays_and_back
 def indices(dimensions, dtype=int, sparse=False):
     return ivy.indices(dimensions, dtype=dtype, sparse=sparse)
+
+
+@to_ivy_arrays_and_back
+def mask_indices(n, mask_func, k=0):
+    mask_func_obj = inspect.unwrap(mask_func)
+    mask_func_name = mask_func_obj.__name__
+    try:
+        ivy_mask_func_obj = getattr(ivy.functional.frontends.numpy, mask_func_name)
+        a = ivy.ones((n, n))
+        mask = ivy_mask_func_obj(a, k=k)
+        indices = ivy.argwhere(mask.ivy_array)
+        ret = indices[:, 0], indices[:, 1]
+        return tuple(ret)
+    except AttributeError as e:
+        print(f"Attribute error: {e}")
 
 
 @to_ivy_arrays_and_back
