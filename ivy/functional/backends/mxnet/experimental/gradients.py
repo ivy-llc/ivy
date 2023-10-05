@@ -4,6 +4,10 @@ import mxnet as mx
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import (
+    _flatten_containers,
+    _rebuild_flattened_containers,
+)
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
@@ -12,21 +16,36 @@ def bind_custom_gradient_function(func, custom_grad_fn):
 
 
 def vjp(func: Callable, *primals):
+    flattened_primals, ret_idxs = _flatten_containers(primals)
+
     def grad_fn(*x_in):
-        return ivy.to_native(
-            func(*ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
-        )
+        return _flatten_containers(
+            ivy.to_native(
+                func(
+                    *ivy.to_ivy(
+                        _rebuild_flattened_containers(x_in, ret_idxs), nested=True
+                    )
+                ),
+                nested=True,
+                include_derived=True,
+            )
+        )[0]
 
     with mx.autograd.record():
-        primals_out = grad_fn(*ivy.to_native(primals, nested=True))
+        flat_primals_out = grad_fn(*ivy.to_native(flattened_primals, nested=True))
+
+    primals_out = _rebuild_flattened_containers(flat_primals_out, ret_idxs)
 
     def vjpfun(x_in):
         grads = mx.autograd.grad(
-            primals_out,
-            ivy.to_native(primals, nested=True),
-            head_grads=ivy.to_native(x_in, nested=True),
+            flat_primals_out,
+            ivy.to_native(flattened_primals, nested=True),
+            head_grads=ivy.to_native(_flatten_containers(x_in)[0], nested=True),
         )
-        return ivy.to_ivy(grads, nested=True, include_derived=True)
+
+        return _rebuild_flattened_containers(
+            ivy.to_ivy(grads, nested=True, include_derived=True)
+        )
 
     return (ivy.to_ivy(primals_out, nested=True, include_derived=True), vjpfun)
 
