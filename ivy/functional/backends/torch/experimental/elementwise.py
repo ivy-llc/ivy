@@ -23,6 +23,30 @@ from .. import backend_version
     },
     backend_version,
 )
+def amax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return torch.amax(x, dim=axis, keepdim=keepdims)
+
+
+amax.support_native_out = True
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
 def amin(
     x: torch.Tensor,
     /,

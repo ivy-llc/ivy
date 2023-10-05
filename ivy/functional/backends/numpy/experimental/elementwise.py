@@ -9,6 +9,22 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
+def amax(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = np.amax(a=x, axis=axis, out=out, keepdims=keepdims)
+    return np.asarray(ret) if np.isscalar(ret) else ret
+
+
+amax.support_native_out = True
+
+
 def amin(
     x: np.ndarray,
     /,
