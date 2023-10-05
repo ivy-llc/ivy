@@ -262,7 +262,7 @@ def test_paddle_ifftshift(
 @handle_frontend_test(
     fn_tree="paddle.fft.ihfft2",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=["float64"],
+        available_dtypes=["float64", "float32", "int64", "int32"],
         min_value=-10,
         max_value=10,
         min_num_dims=2,
