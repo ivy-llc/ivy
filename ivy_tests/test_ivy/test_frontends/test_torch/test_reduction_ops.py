@@ -243,11 +243,9 @@ def test_torch_any(
 @handle_frontend_test(
     fn_tree="torch.argmax",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         force_int_axis=True,
-        min_num_dims=1,
-        min_axis=-1,
-        max_axis=0,
+        valid_axis=True,
     ),
     keepdims=st.booleans(),
 )
