@@ -790,7 +790,7 @@ _imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
     from .engines import XLA as xla
     from .engines import ivy2xla
-except:
+except:  # noqa: E722
     pass
 try:
     from .compiler.compiler import transpile, trace_graph, unify
