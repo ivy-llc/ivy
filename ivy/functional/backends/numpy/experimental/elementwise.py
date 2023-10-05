@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 import numpy as np
 import numpy.typing as npt
 
@@ -7,6 +7,22 @@ from ivy import promote_types_of_inputs
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+
+
+def amax(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = np.amax(a=x, axis=axis, out=out, keepdims=keepdims)
+    return np.asarray(ret) if np.isscalar(ret) else ret
+
+
+amax.support_native_out = True
 
 
 @_scalar_output_to_0d_array

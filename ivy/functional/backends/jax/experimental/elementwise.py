@@ -1,5 +1,5 @@
 import operator
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
 
 from ivy import (
@@ -17,6 +17,19 @@ import jax.lax as jlax
 from .. import backend_version
 
 jax_ArrayLike = Union[JaxArray, Number]
+
+
+def amax(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = jnp.amax(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    return jnp.asarray(ret) if jnp.isscalar(ret) else ret
 
 
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

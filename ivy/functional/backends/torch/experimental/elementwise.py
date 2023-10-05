@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
 import torch
 
@@ -12,6 +12,30 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 from .. import backend_version
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return torch.amax(x, dim=axis, keepdim=keepdims)
+
+
+amax.support_native_out = True
 
 
 @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
