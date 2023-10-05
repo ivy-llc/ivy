@@ -22,14 +22,14 @@ torch_scatter = None
 
 
 def _parse_index(indices, ndims):
-    ind = list()
+    ind = []
     for so in indices:
-        pre = list()
+        pre = []
         for s in so:
             if s == -1:
                 break
             pre.append(s.item())
-        post = list()
+        post = []
         for s in reversed(so):
             if s == -1:
                 break
@@ -178,8 +178,8 @@ def gather(
     batch_dims: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    axis = axis % len(params.shape)
-    batch_dims = batch_dims % len(params.shape)
+    axis %= len(params.shape)
+    batch_dims %= len(params.shape)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
@@ -244,7 +244,7 @@ def gather_nd(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
-    batch_dims = batch_dims % len(params.shape)
+    batch_dims %= len(params.shape)
     result = []
     if batch_dims == 0:
         result = gather_nd_helper(params, indices)
@@ -368,8 +368,8 @@ def scatter_flat(
     dtype = updates.dtype
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
         )
     if target_given:
         output = out
@@ -449,8 +449,8 @@ def scatter_nd(
     flat_result_size = _reduce(mul, shape, 1)
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
         )
     if target_given:
         flat_output = torch.reshape(out, (flat_result_size,)).detach()

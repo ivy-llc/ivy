@@ -132,8 +132,8 @@ def test_as_ivy_dtype(
             assert isinstance(res, str)
             return
 
-        assert isinstance(input_dtype, ivy_backend.Dtype) or isinstance(
-            input_dtype, str
+        assert isinstance(
+            input_dtype, (ivy_backend.Dtype, str)
         ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
         assert isinstance(res, str), f"result={res!r}, but should be str"
 
@@ -155,8 +155,8 @@ def test_as_native_dtype(
             assert isinstance(res, ivy_backend.NativeDtype)
             return
 
-        assert isinstance(input_dtype, ivy_backend.Dtype) or isinstance(
-            input_dtype, str
+        assert isinstance(
+            input_dtype, (ivy_backend.Dtype, str)
         ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
         assert isinstance(
             res, ivy_backend.NativeDtype
@@ -274,11 +274,9 @@ def test_closest_valid_dtype(
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         input_dtype = input_dtype[0]
         res = ivy_backend.closest_valid_dtype(input_dtype)
-        assert isinstance(input_dtype, ivy_backend.Dtype) or isinstance(
-            input_dtype, str
-        )
-        assert isinstance(res, ivy_backend.Dtype) or isinstance(
-            res, str
+        assert isinstance(input_dtype, (ivy_backend.Dtype, str))
+        assert isinstance(
+            res, (ivy_backend.Dtype, str)
         ), f"result={res!r}, but should be str or ivy.Dtype"
 
 
@@ -336,10 +334,8 @@ def test_default_dtype(
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         input_dtype = input_dtype[0]
         res = ivy_backend.default_dtype(dtype=input_dtype, as_native=as_native)
-        assert (
-            isinstance(input_dtype, ivy_backend.Dtype)
-            or isinstance(input_dtype, str)
-            or isinstance(input_dtype, ivy_backend.NativeDtype)
+        assert isinstance(
+            input_dtype, (ivy_backend.Dtype, str, ivy_backend.NativeDtype)
         )
         assert isinstance(res, ivy_backend.Dtype) or isinstance(
             input_dtype, str
@@ -623,7 +619,7 @@ def test_function_dtype_versioning_frontend(
                     var[backend_fw] = key2
                     fn = getattr(
                         _import_mod.import_module(
-                            "ivy.functional.frontends." + backend_fw
+                            f"ivy.functional.frontends.{backend_fw}"
                         ),
                         key1,
                     )

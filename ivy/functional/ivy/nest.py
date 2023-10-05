@@ -722,7 +722,7 @@ def nested_argwhere(
     ]
     """
     to_ignore = ivy.default(to_ignore, ())
-    _index = list() if _index is None else _index
+    _index = [] if _index is None else _index
     if isinstance(nest, (tuple, list)) and not isinstance(nest, to_ignore):
         n = 0
         _indices = []
@@ -749,21 +749,16 @@ def nested_argwhere(
                 )
             )
             if stop_after_n_found is not None and ind:
-                if n < stop_after_n_found:
-                    n += len(ind)
-                    _indices += [ind]
-                else:
+                if n >= stop_after_n_found:
                     break
-            else:
-                _indices += [ind]
+                n += len(ind)
+            _indices += [ind]
             if stop_after_n_found is not None and n >= stop_after_n_found:
                 break
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
-    elif (isinstance(nest, dict) or isinstance(nest, UserDict)) and not isinstance(
-        nest, to_ignore
-    ):
+    elif (isinstance(nest, (dict, UserDict))) and not isinstance(nest, to_ignore):
         n = 0
         _indices = []
         for k, v in nest.items():
@@ -789,13 +784,10 @@ def nested_argwhere(
                 )
             )
             if stop_after_n_found is not None and ind:
-                if n < stop_after_n_found:
-                    n += len(ind)
-                    _indices += [ind]
-                else:
+                if n >= stop_after_n_found:
                     break
-            else:
-                _indices += [ind]
+                n += len(ind)
+            _indices += [ind]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
@@ -837,27 +829,44 @@ def all_nested_indices(
     ret
         A set of indices of all elements in nest
 
-    Both the description and the type hints above assumes an array input
-    for simplicity, but this function is nestable, and therefore also
-    accepts :class:ivy.Container instances in place of the arguments.
-
     Examples
     --------
-    With :class:`Dict` input:
+    With :code:`List` input:
+
+    >>> x = [189, [863, 672], [264, 384]]
+    >>> y = ivy.all_nested_indices(x)
+    >>> print(y)
+    [[0], [1, 0], [1, 1], [2, 0], [2, 1]]
+
+    With :code:`Tuple` input:
+
+    >>> x = (189, (863, 672), (264, 384))
+    >>> y = ivy.all_nested_indices(x, include_nests=True)
+    >>> print(y)
+    [[0], [1, 0], [1, 1], [1], [2, 0], [2, 1], [2]]
+
+    With :code:`Dict` input:
 
     >>> x = {'a': 2., 'b': [6., [15., 9.]], 'c': (7., 56.)}
     >>> y = ivy.all_nested_indices(x)
     >>> print(y)
     [['a'], ['b', 0], ['b', 1, 0], ['b', 1, 1], ['c', 0], ['c', 1]]
 
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[True, False], [False, False]])
+    >>> y = ivy.all_nested_indices(x)
+    >>> print(y)
+    [[]]
+
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.all_nested_indices(x, True)
+    >>> x = ivy.Container(a=ivy.array([412, 948, 482]), b=ivy.array([168, 674, 341]))
+    >>> y = ivy.all_nested_indices(x)
     >>> print(y)
     [['a'], ['b']]
     """
-    _index = list() if _index is None else _index
+    _index = [] if _index is None else _index
     if isinstance(nest, (tuple, list)):
         _indices = [
             all_nested_indices(
@@ -1441,7 +1450,7 @@ def nested_multi_map(
                 key = (
                     str(index) if isinstance(nest, (tuple, list)) else list(nest)[index]
                 )
-            this_index_chain = key if index_chain == "" else (index_chain + "/" + key)
+            this_index_chain = key if index_chain == "" else f"{index_chain}/{key}"
             ret = ivy.nested_multi_map(
                 func,
                 values,
@@ -1565,7 +1574,7 @@ def prune_empty(nest):
     """
     valid = False
     if isinstance(nest, dict):
-        keys = [k for k in nest]
+        keys = list(nest)
         for k in keys:
             nest[k] = prune_empty(nest[k])
             if nest[k] is not None:
@@ -1582,6 +1591,6 @@ def prune_empty(nest):
         for i in range(len(nest) - 1, -1, -1):
             if nest[i] is None:
                 del nest[i]
-    if not valid and not (ivy.is_array(nest) or isinstance(nest, (int, float, str))):
+    if not valid and not ivy.is_array(nest) and not isinstance(nest, (int, float, str)):
         return None
     return nest
