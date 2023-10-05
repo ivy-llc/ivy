@@ -190,7 +190,7 @@ tutorials to do so are available!
 After installing Ivy, you can start using it straight away, for example:
 
   <details>
-   <summary><b>Transpiling your code from one framework to another</b></summary>
+   <summary><b>Transpiling any code from one framework to another</b></summary>
 
    ``` python
    import ivy
