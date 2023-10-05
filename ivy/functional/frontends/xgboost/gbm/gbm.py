@@ -68,11 +68,19 @@ class GBLinear:
         # compilation block
         self.compile = compile
         if self.compile:
-            self._comp_pred = ivy.trace_graph(_pred)
-            self._comp_get_gradient = ivy.trace_graph(_get_gradient)
-            self._comp_updater = ivy.trace_graph(self.updater)
+            # don't enable native compilation for torch, bc it's already fast enough
+            # and this only increases the compilation time
+            backend_compile = True if ivy.current_backend_str() != "torch" else False
+            self._comp_pred = ivy.trace_graph(_pred, backend_compile=backend_compile)
+            self._comp_get_gradient = ivy.trace_graph(
+                _get_gradient, backend_compile=backend_compile, static_argnums=(0,)
+            )
+            self._comp_updater = ivy.trace_graph(
+                self.updater, backend_compile=backend_compile
+            )
 
             # run each function to compile it
+            # this process doesn't affect the training
             pred = self._comp_pred(cache[0], self.weight, self.base_margin)
             gpair = self._comp_get_gradient(
                 self.obj, pred, cache[1], self.scale_pos_weight
