@@ -82,11 +82,11 @@ if __name__ == "__main__":
             versions = dict()
 
             for backend in backends:
-                versions[backend] = get_latest_package_version(backend)
+                versions[backend] = get_latest_package_version(backend).replace('.', '_')
                 if version_flag == "true":
                     # This would most probably break at the moment
                     [backend, backend_version] = backend.split("/")
-                    versions[backend] = backend_version
+                    versions[backend] = backend_version.replace('.', '_')
                     command = (
                         f"docker run --rm --env REDIS_URL={redis_url} --env"
                         f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
@@ -135,28 +135,14 @@ if __name__ == "__main__":
                 "_id": function_name,
                 "test_path": test_path,
                 "submodule": submodule,
-                "workflow": run_id,
             }
-
-            for backend in status:
-                backend_specific_info[backend] = {
-                    "status": {device: status[backend]},
-                }
-                if status[backend] and report_content:
-                    test_info[versions[backend]] = {
-                        **backend_specific_info[backend],
-                        "nodes": report_content["nodes"][backend],
-                        "time": report_content["time"][backend],
-                        "args": report_content["args"][backend],
-                        "kwargs": report_content["kwargs"][backend],
-                    }
-            test_info["results"] = backend_specific_info
-
+            
+            prefix_str = ""
             if is_frontend_test:
                 frontend = test_path[test_path.find("test_frontends") :].split(os.sep)[
                     1
                 ][5:]
-                frontend_version = get_latest_package_version(frontend)
+                frontend_version = get_latest_package_version(frontend).replace(".", "_")
                 test_info["frontend"] = frontend
                 if report_content:
                     test_info = {
@@ -164,7 +150,20 @@ if __name__ == "__main__":
                         "fw_time": report_content["fw_time"],
                         "ivy_nodes": report_content["ivy_nodes"],
                     }
-                test_info["results"] = {frontend_version: test_info["results"]}
+                prefix_str = f"{frontend_version}."
+            
+            for backend in status:
+                test_info[f"{prefix_str}{backend}.{versions[backend]}.status.{device}"] = status[backend]
+                test_info[f"{prefix_str}{backend}.{versions[backend]}.workflow.{device}"] = run_id
+                if status[backend] and report_content:
+                    updates = {
+                        "nodes": report_content["nodes"][backend],
+                        "time": report_content["time"][backend],
+                        "args": report_content["args"][backend],
+                        "kwargs": report_content["kwargs"][backend],
+                    }
+                    for key, value in updates.items():
+                        test_info[f"{prefix_str}{backend}.{versions[backend]}.{key}"] = value
 
             id = test_info.pop("_id")
             print(collection.update_one({"_id": id}, {"$set": test_info}, upsert=True))
