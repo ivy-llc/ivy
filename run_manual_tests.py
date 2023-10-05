@@ -135,7 +135,7 @@ if __name__ == "__main__":
                 "_id": function_name,
                 "test_path": test_path,
                 "submodule": submodule,
-                "workflow": run_id,
+                "workflow": run_id
             }
 
             for backend in status:
@@ -143,14 +143,12 @@ if __name__ == "__main__":
                     "status": {device: status[backend]},
                 }
                 if status[backend] and report_content:
-                    backend_specific_info[backend] = {
-                        versions[backend]: {
-                            **backend_specific_info[backend],
-                            "nodes": report_content["nodes"][backend],
-                            "time": report_content["time"][backend],
-                            "args": report_content["args"][backend],
-                            "kwargs": report_content["kwargs"][backend],
-                        }
+                    test_info[versions[backend]] = {
+                        **backend_specific_info[backend],
+                        "nodes": report_content["nodes"][backend],
+                        "time": report_content["time"][backend],
+                        "args": report_content["args"][backend],
+                        "kwargs": report_content["kwargs"][backend],
                     }
             test_info["results"] = backend_specific_info
 
