@@ -2971,12 +2971,28 @@ def test_tensorflow_truediv(
         rtol=1e-2,
         atol=1e-2,
     )
+
+
 # unsorted_segment_max
 @handle_frontend_test(
     fn_tree="tensorflow.math.unsorted_segment_max",
-    data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
-    segment_ids=helpers.array_values(
-        dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
+    data=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shape=helpers.get_shape(),
+        min_value=1,
+        max_value=9,
+    ),
+    segment_ids=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shape=helpers.get_dtypes(),
+        min_value=0,
+        max_value=4,
+    ),
+    num_segments=helpers.dtype_and_values(
+        available_dtypes=[ivy.int32, ivy.int64],
+        shape=helpers.get_dtypes(),
+        min_value=1,
+        max_value=9,
     ),
     test_with_out=st.just(False),
 )
@@ -2989,6 +3005,7 @@ def test_tensorflow_unsorted_segment_max(
     fn_tree,
     backend_fw,
     on_device,
+    num_segments,
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, ivy.int32],
@@ -2999,8 +3016,9 @@ def test_tensorflow_unsorted_segment_max(
         on_device=on_device,
         data=data,
         segment_ids=segment_ids,
-        num_segments=np.max(segment_ids) + 1,
+        num_segments=num_segments,
     )
+
 
 # unsorted_segment_mean
 @handle_frontend_test(
