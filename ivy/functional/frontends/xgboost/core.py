@@ -90,7 +90,7 @@ class DMatrix:
 
 
 class Booster:
-    def __init__(self, params=None, cache=None, model_file=None):
+    def __init__(self, params=None, cache=None, model_file=None, compile=False):
         # cache[0] refers to input data while cache[1] refers to input target
         n_feat = cache[0].shape[1]
         n_inst = cache[0].shape[0]
@@ -112,7 +112,7 @@ class Booster:
         )
 
         # create gbm(as for now only gblinear booster is available)
-        self.gbm = GBLinear(params)
+        self.gbm = GBLinear(params, compile=compile, cache=cache)
 
     def update(self, dtrain, dlabel, iteration, fobj=None):
         """
