@@ -271,6 +271,40 @@ def _non_finite_to_zero(xs):
     )
 
 
+def _flatten_containers(inputs):
+    """
+    Flatten containers into a lists of arrays.
+
+    Returns flattened arrays and the indices of the arrays in the
+    original containers.
+    """
+    values = []
+    ret_idxs = []
+    for idx, input in enumerate(inputs):
+        if isinstance(input, ivy.Container):
+            grad_arr_idxs = ivy.nested_argwhere(input, lambda x: ivy.is_array(x))
+            grad_arr_values = ivy.multi_index_nest(input, grad_arr_idxs)
+            values.append(grad_arr_values)
+            ret_idxs.append(grad_arr_idxs)
+        elif ivy.is_array(input):
+            values.append(input)
+            ret_idxs.append(None)
+    return values, ret_idxs
+
+
+def _rebuild_flattened_containers(outputs, ret_idxs):
+    """Rebuild the containers from the flattened arrays."""
+    rebuilt_outputs = []
+    for idx, ret_idx in enumerate(ret_idxs):
+        if ret_idx is None:
+            rebuilt_outputs.append(outputs[idx])
+        else:
+            cont = ivy.Container()
+            ivy.insert_into_nest_at_indices(cont, ret_idx, outputs[idx])
+            rebuilt_outputs.append(cont)
+    return rebuilt_outputs
+
+
 # Private Variable Helpers #
 # -------------------------#
 
