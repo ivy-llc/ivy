@@ -4996,7 +4996,7 @@ def not_equal(
       and ``x1_i`` does not equal ``x2_i``, the result is ``True``.
     - In the remaining cases, the result is ``False``.
 
-    For omplex floating-point operands, let ``a = real(x1_i)``, ``b = imag(x1_i)``,
+    For complex floating-point operands, let ``a = real(x1_i)``, ``b = imag(x1_i)``,
     ``c = real(x2_i)``, ``d = imag(x2_i)``, and
 
     - If ``a``, ``b``, ``c``, or ``d`` is ``NaN``, the result is ``True``.
