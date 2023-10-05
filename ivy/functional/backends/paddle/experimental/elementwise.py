@@ -41,6 +41,28 @@ def amax(
 
 
 @with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
+def amin(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.amin(x, axis=axis, keepdim=keepdims)
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64")},
     backend_version,
 )

@@ -25,6 +25,22 @@ def amax(
 amax.support_native_out = True
 
 
+def amin(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = np.amin(a=x, axis=axis, out=out, keepdims=keepdims)
+    return np.asarray(ret) if np.isscalar(ret) else ret
+
+
+amin.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.26.0 and below": ("bfloat16",)}, backend_version)
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:

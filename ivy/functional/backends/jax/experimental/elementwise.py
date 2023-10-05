@@ -32,6 +32,19 @@ def amax(
     return jnp.asarray(ret) if jnp.isscalar(ret) else ret
 
 
+def amin(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = jnp.amin(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    return jnp.asarray(ret) if jnp.isscalar(ret) else ret
+
+
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
 

@@ -32,6 +32,27 @@ def amax(
     return tf.experimental.numpy.amax(x, axis=axis, keepdims=keepdims)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amin(
+    x: tf.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return tf.experimental.numpy.amin(x, axis=axis, keepdims=keepdims)
+
+
 @with_supported_dtypes(
     {"2.14.0 and below": ("float16", "float32", "float64")},
     backend_version,
