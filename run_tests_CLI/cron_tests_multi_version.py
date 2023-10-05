@@ -1,10 +1,7 @@
 import sys
 from get_all_tests import get_all_tests
 
-torch_req = [
-    "torch/2.0.0",
-    "torch/2.0.1"
-]
+torch_req = ["torch/2.0.0", "torch/2.0.1"]
 tensorflow_req = [
     "tensorflow/2.13.0",
     "tensorflow/2.14.0",
@@ -45,6 +42,6 @@ with open("tests_to_run", "w") as f:
         i = i % num_tests
         test = test_names[i]
         if "test_frontends" in test:
-            continue # skip frontend tests (No support from testing)
+            continue  # skip frontend tests (No support from testing)
         print(test)
         f.write(test + "\n")
