@@ -7,6 +7,7 @@ import torch
 import ivy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
+    with_supported_dtypes,
     handle_numpy_arrays_in_specific_backend,
 )
 from ivy import promote_types_of_inputs
@@ -53,14 +54,13 @@ def bitwise_xor(
 bitwise_xor.support_native_out = True
 
 
+@with_supported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def imag(
     val: torch.Tensor,
     /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if val.dtype not in (torch.complex64, torch.complex128):
-        return torch.zeros_like(val, dtype=val.dtype)
     return torch.imag(val)
 
 
