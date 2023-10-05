@@ -2054,7 +2054,16 @@ def test_tensorflow_strided_slice(
     ),
 )
 def test_tensorflow_tensor_scatter_nd_add(
-    *, all_arguments, tensor, indices, updates, frontend, test_flags, fn_tree, on_device, backend_fw
+    *,
+    all_arguments,
+    tensor,
+    indices,
+    updates,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
 ):
     input_dtype, input_matrix, dt_and_multiples = all_arguments
     dt_mul, multiples = dt_and_multiples
