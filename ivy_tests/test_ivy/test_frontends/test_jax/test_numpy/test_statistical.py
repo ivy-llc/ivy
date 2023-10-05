@@ -192,6 +192,55 @@ def _get_dtype_value1_value2_cov(
     return [dtype], value1, value2, rowVar, bias, ddof, fweights, aweights
 
 
+@st.composite
+def _percentile_helper(draw):
+    large_abs_safety_factor = 2
+    small_abs_safety_factor = 2
+    dtype, values, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("float"),
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            safety_factor_scale="log",
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=2,
+            valid_axis=True,
+            allow_neg_axes=False,
+            min_axes_size=1,
+            force_int_axis=True,
+        )
+    )
+    q = draw(
+        st.one_of(
+            helpers.array_values(
+                dtype=helpers.get_dtypes("float"),
+                shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1),
+                min_value=0.0,
+                max_value=100.0,
+                exclude_max=False,
+                exclude_min=False,
+            ),
+            st.floats(min_value=0.0, max_value=100.0),
+        )
+    )
+
+    interpolation_names = [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+    ]
+    interpolation = draw(
+        helpers.list_of_size(
+            x=st.sampled_from(interpolation_names),
+            size=1,
+        )
+    )
+    return dtype, values, axis, interpolation, q
+
+
 # --- Main --- #
 # ------------ #
 
@@ -1271,4 +1320,29 @@ def test_jax_var(
         where=where,
         atol=1e-3,
         rtol=1e-3,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.nanpercentile",
+    dtype_and_x=_percentile_helper(),
+    keep_dims=st.booleans(),
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_nanpercentile(
+    *, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x, axis, interpolation, q = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x[0],
+        q=q,
+        axis=axis,
+        interpolation=interpolation[0],
+        keepdims=keep_dims,
     )
