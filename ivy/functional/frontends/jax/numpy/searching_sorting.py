@@ -149,7 +149,7 @@ def sort_complex(a):
 
 @to_ivy_arrays_and_back
 def union1d(ar1, ar2, *, size=None, fill_value=None):
-    promoted = promote_numpy_dtypes(ar1,ar2)
+    promoted = promote_numpy_dtypes(ar1, ar2)
     x = ivy.array(ar1, dtype=promoted)
     y = ivy.array(ar2, dtype=promoted)
     # concatenating arrays
