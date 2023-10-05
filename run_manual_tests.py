@@ -138,7 +138,6 @@ if __name__ == "__main__":
                 "workflow": run_id
             }
 
-            print("versions", versions)
             for backend in status:
                 backend_specific_info[backend] = {
                     "status": {device: status[backend]},
@@ -171,6 +170,7 @@ if __name__ == "__main__":
 
             id = test_info.pop("_id")
             print(collection.update_one({"_id": id}, {"$set": test_info}, upsert=True))
+            status.clear()
 
     if any(not result for _, result in status.items()):
         exit(1)
