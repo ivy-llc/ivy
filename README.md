@@ -1,4 +1,4 @@
-> 🚀 We are granting pilot access to **Ivy\'s Compiler and Transpiler**
+> 🚀 We are granting pilot access to **Ivy\'s Tracer and Transpiler**
 > to some users, [join the waitlist](https://console.unify.ai/) if you
 > want to test them out!
 
@@ -1354,8 +1354,8 @@ deploy systems. Feel free to head over to the docs for the full API
 reference, but the functions you\'d most likely want to use are:
 
 ``` python
-# Compiles a function into an efficient fully-functional graph, removing all wrapping and redundant code
-ivy.compile()
+# Traces an efficient fully-functional graph from a function, removing all wrapping and redundant code
+ivy.trace_graph()
 
 # Converts framework-specific code to a different framework
 ivy.transpile()
