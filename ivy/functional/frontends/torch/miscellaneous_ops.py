@@ -93,7 +93,7 @@ def cartesian_prod(*tensors):
 
 
 @to_ivy_arrays_and_back
-def clone(input):
+def clone(input, *, memory_format=None):
     return ivy.copy_array(input)
 
 

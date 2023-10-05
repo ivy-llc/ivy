@@ -50,6 +50,8 @@ result_config = {
 def get_latest_package_version(package_name):
     if package_name == "jax":
         return "0.4.14"
+    if package_name == "tensorflow":
+        return "2.13.0"
     try:
         url = f"https://pypi.org/pypi/{package_name}/json"
         response = requests.get(url)
@@ -158,18 +160,22 @@ if __name__ == "__main__":
                     fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
                 ]
                 for other_backend in other_backends:
-                    backends.append(other_backend + "/" + get_latest_package_version(other_backend))
+                    backends.append(
+                        other_backend + "/" + get_latest_package_version(other_backend)
+                    )
 
                 print("Backends:", backends)
                 command = (
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy/ivy unifyai/multiversion:latest'
-                    f' /bin/bash -c "python multiversion_framework_directory.py {" ".join(backends)};cd'
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy/ivy'
+                    ' unifyai/multiversion:latest /bin/bash -c "python'
+                    f" multiversion_framework_directory.py {' '.join(backends)};cd"
                     f' ivy;pytest --tb=short {test} --backend={backend.strip()}"'
                 )
                 print("Running", command)
                 sys.stdout.flush()
                 ret = os.system(command)
+                backend = backend.split("/")[0] + "\n"
             else:
                 if with_gpu:
                     ret = os.system(

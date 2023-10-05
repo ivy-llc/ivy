@@ -706,11 +706,8 @@ def test_torch___getitem__(
     init_tree="torch.tensor",
     method_name="__gt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
     ),
 )
 def test_torch___gt__(
@@ -3793,16 +3790,9 @@ def test_torch_tensor_arctanh_(
     init_tree="torch.tensor",
     method_name="argmax",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         force_int_axis=True,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
-        min_value=1,
-        max_value=5,
         valid_axis=True,
-        allow_neg_axes=True,
     ),
     keepdim=st.booleans(),
 )
