@@ -261,6 +261,7 @@ def promote_types_of_torch_inputs(
 
 from . import nn
 from .nn.functional import softmax, relu
+from . import ops
 from . import tensor
 from .tensor import *
 from . import blas_and_lapack_ops

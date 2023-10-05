@@ -2,6 +2,7 @@
 from hypothesis import strategies as st
 
 # local
+import ivy
 from ivy.functional.backends.torch.layers import _get_embed_dim
 from ivy_tests.test_ivy import helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
