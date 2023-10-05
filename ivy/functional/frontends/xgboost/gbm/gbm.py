@@ -74,8 +74,19 @@ class GBLinear:
 
             # run each function to compile it
             pred = self._comp_pred(cache[0], self.weight, self.base_margin)
-            gpair = self._comp_get_gradient(self.obj, pred, cache[1], self.scale_pos_weight)
-            self._comp_updater(gpair, cache[0], self.learning_rate, self.weight, self.num_feature, 0, self.reg_alpha_denorm, self.reg_lambda_denorm)
+            gpair = self._comp_get_gradient(
+                self.obj, pred, cache[1], self.scale_pos_weight
+            )
+            self._comp_updater(
+                gpair,
+                cache[0],
+                self.learning_rate,
+                self.weight,
+                self.num_feature,
+                0,
+                self.reg_alpha_denorm,
+                self.reg_lambda_denorm,
+            )
 
     def boosted_rounds(self):
         return self.num_boosted_rounds
