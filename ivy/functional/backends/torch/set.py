@@ -102,9 +102,19 @@ def unique_counts(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
     },
     backend_version,
 )
-def unique_inverse(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
+def unique_inverse(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[torch.Tensor, torch.Tensor]:
     Results = namedtuple("Results", ["values", "inverse_indices"])
-    values, inverse_indices = torch.unique(x, return_inverse=True)
+
+    if axis is None:
+        x = torch.flatten(x)
+        axis = 0
+
+    values, inverse_indices = torch.unique(x, return_inverse=True, axis=axis)
     nan_idx = torch.isnan(x)
     if nan_idx.any():
         inverse_indices[nan_idx] = torch.where(torch.isnan(values))[0][0]
