@@ -6,6 +6,7 @@ import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
+from ivy.functional.frontends.numpy import promote_numpy_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
@@ -148,8 +149,9 @@ def sort_complex(a):
 
 @to_ivy_arrays_and_back
 def union1d(ar1, ar2, *, size=None, fill_value=None):
-    x = ivy.array(ar1)
-    y = ivy.array(ar2)
+    promoted = promote_numpy_dtypes(ar1,ar2)
+    x = ivy.array(ar1, dtype=promoted)
+    y = ivy.array(ar2, dtype=promoted)
     # concatenating arrays
     result_concat = ivy.concat((x, y))
     result_unique_values = ivy.unique_values(result_concat)
