@@ -172,7 +172,7 @@ def ihfft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
 
     # cast the input to the same float64 type so that there are no backend issues
     x_ = ivy.astype(x, ivy.float64)
-    
+
     ihfft2_result = 0
     # Compute the complex conjugate of the 2-dimensional discrete Fourier Transform
     if norm == "backward":
@@ -181,7 +181,7 @@ def ihfft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
         ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="backward"))
     if norm == "ortho":
         ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="ortho"))
-        
+
     if x.dtype == ivy.float32 or x.dtype == ivy.int32 or x.dtype == ivy.int64:
         return ivy.astype(ihfft2_result, ivy.complex64)
     if x.dtype == ivy.float64:
