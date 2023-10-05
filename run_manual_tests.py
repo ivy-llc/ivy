@@ -82,11 +82,13 @@ if __name__ == "__main__":
             versions = dict()
 
             for backend in backends:
-                versions[backend] = get_latest_package_version(backend).replace('.', '_')
+                versions[backend] = get_latest_package_version(backend).replace(
+                    ".", "_"
+                )
                 if version_flag == "true":
                     # This would most probably break at the moment
                     [backend, backend_version] = backend.split("/")
-                    versions[backend] = backend_version.replace('.', '_')
+                    versions[backend] = backend_version.replace(".", "_")
                     command = (
                         f"docker run --rm --env REDIS_URL={redis_url} --env"
                         f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
@@ -136,13 +138,15 @@ if __name__ == "__main__":
                 "test_path": test_path,
                 "submodule": submodule,
             }
-            
+
             prefix_str = ""
             if is_frontend_test:
                 frontend = test_path[test_path.find("test_frontends") :].split(os.sep)[
                     1
                 ][5:]
-                frontend_version = get_latest_package_version(frontend).replace(".", "_")
+                frontend_version = get_latest_package_version(frontend).replace(
+                    ".", "_"
+                )
                 test_info["frontend"] = frontend
                 if report_content:
                     test_info = {
@@ -151,10 +155,14 @@ if __name__ == "__main__":
                         "ivy_nodes": report_content["ivy_nodes"],
                     }
                 prefix_str = f"{frontend_version}."
-            
+
             for backend in status:
-                test_info[f"{prefix_str}{backend}.{versions[backend]}.status.{device}"] = status[backend]
-                test_info[f"{prefix_str}{backend}.{versions[backend]}.workflow.{device}"] = run_id
+                test_info[
+                    f"{prefix_str}{backend}.{versions[backend]}.status.{device}"
+                ] = status[backend]
+                test_info[
+                    f"{prefix_str}{backend}.{versions[backend]}.workflow.{device}"
+                ] = run_id
                 if status[backend] and report_content:
                     updates = {
                         "nodes": report_content["nodes"][backend],
@@ -163,7 +171,9 @@ if __name__ == "__main__":
                         "kwargs": report_content["kwargs"][backend],
                     }
                     for key, value in updates.items():
-                        test_info[f"{prefix_str}{backend}.{versions[backend]}.{key}"] = value
+                        test_info[
+                            f"{prefix_str}{backend}.{versions[backend]}.{key}"
+                        ] = value
 
             id = test_info.pop("_id")
             print(collection.update_one({"_id": id}, {"$set": test_info}, upsert=True))
