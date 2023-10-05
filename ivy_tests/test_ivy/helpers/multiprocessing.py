@@ -25,8 +25,10 @@ from .function_testing import (
     test_gradient_ground_truth_computation,
     _transpile_if_required_backend,
 )
-from ..pipeline.frontend.multiprocessing import FrontendFunctionTestCaseRunnerMP
-
+from ..pipeline.frontend.multiprocessing import (
+    FrontendFunctionTestCaseRunnerMP,
+    FrontendMethodTestCaseRunnerMP,
+)
 
 framework_path = "/opt/fw/"
 
@@ -55,7 +57,6 @@ def backend_proc(input_queue, output_queue):
             )
 
         elif data[0] == "method supported dtypes":
-            print("runnnn method supported dtypes \n\n\n")
             # again stage 1, calculating and returning supported dtypes
             _, method_name, class_module, class_name, backend_str = data
             # since class module is name, we will import it to make it a module
@@ -349,7 +350,7 @@ def backend_proc(input_queue, output_queue):
             output_queue.put(
                 ((None), ret_np_from_gt_flat, ret_from_gt_device, fw_list2)
             )
-        if data[0] == "_run_target_frontend":
+        elif data[0] == "_run_target_frontend_function":
             (
                 _,
                 fn_tree,
@@ -374,8 +375,37 @@ def backend_proc(input_queue, output_queue):
                 traced_fn,
             )
             output_queue.put(ret)
+        elif data[0] == "_run_target_frontend_method":
+            (
+                _,
+                frontend_method_data,
+                frontend,
+                backend_handler,
+                backend_to_test,
+                on_device,
+                init_flags,
+                method_flags,
+                init_all_as_kwargs_np,
+                method_all_as_kwargs_np,
+                init_with_v,
+                method_with_v,
+            ) = data
+            ret = FrontendMethodTestCaseRunnerMP._run_target_helper(
+                frontend_method_data,
+                frontend,
+                backend_handler,
+                backend_to_test,
+                on_device,
+                init_flags,
+                method_flags,
+                init_all_as_kwargs_np,
+                method_all_as_kwargs_np,
+                init_with_v,
+                method_with_v,
+            )
+            output_queue.put(ret)
 
-        if data[0] == "transpile_if_required_backend":
+        elif data[0] == "transpile_if_required_backend":
             _, backend, fn_name, args_np, kwargs_np = data
             _transpile_if_required_backend(backend, fn_name, args_np, kwargs_np)
 
@@ -394,8 +424,7 @@ def frontend_proc(input_queue, output_queue):
         # subsequent arguments will be passed
         data = input_queue.get()
 
-        if data[0] == "_run_gt_frontend":
-            print("runnnn _run_gt_frontend \n\n\n")
+        if data[0] == "_run_gt_frontend_function":
             (
                 _,
                 gt_fn_tree,
@@ -423,6 +452,31 @@ def frontend_proc(input_queue, output_queue):
             _, framework, kind, is_frontend_test = data
             dtype_ret = _get_type_dict_helper(framework, kind, is_frontend_test)
             output_queue.put((dtype_ret))
+        elif data[0] == "_run_gt_frontend_method":
+            (
+                _,
+                frontend_method_data,
+                frontend,
+                backend_handler,
+                backend_to_test,
+                on_device,
+                init_flags,
+                method_flags,
+                init_all_as_kwargs_np,
+                method_all_as_kwargs_np,
+            ) = data
+            ret = FrontendMethodTestCaseRunnerMP._run_ground_truth_method_helper(
+                frontend_method_data,
+                frontend,
+                backend_handler,
+                backend_to_test,
+                on_device,
+                init_flags,
+                method_flags,
+                init_all_as_kwargs_np,
+                method_all_as_kwargs_np,
+            )
+            output_queue.put(ret)
 
         if not data:
             break

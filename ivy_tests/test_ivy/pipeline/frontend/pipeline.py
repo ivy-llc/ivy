@@ -5,6 +5,7 @@ from ivy_tests.test_ivy.pipeline.base.pipeline import Pipeline
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 from ivy_tests.test_ivy.pipeline.frontend.multiprocessing import (
     FrontendFunctionTestCaseRunnerMP,
+    FrontendMethodTestCaseRunnerMP,
 )
 from ivy_tests.test_ivy.pipeline.frontend.runners import (
     FrontendFunctionTestCaseRunner,
@@ -101,18 +102,34 @@ class FrontendPipeline(Pipeline):
         tolerance_dict: dict = None,
         test_values: Union[bool, str] = True,
     ):
-        runner = FrontendMethodTestCaseRunner(
-            frontend=frontend,
-            frontend_method_data=frontend_method_data,
-            backend_to_test=backend_to_test,
-            backend_handler=FrontendPipeline.backend_handler,
-            on_device=on_device,
-            traced_fn=FrontendPipeline.traced_fn,
-            rtol_=rtol_,
-            atol_=atol_,
-            tolerance_dict=tolerance_dict,
-            test_values=test_values,
-        )
+        if not FrontendPipeline.multiprocessing_flag:
+            runner = FrontendMethodTestCaseRunner(
+                frontend=frontend,
+                frontend_method_data=frontend_method_data,
+                backend_to_test=backend_to_test,
+                backend_handler=FrontendPipeline.backend_handler,
+                on_device=on_device,
+                traced_fn=FrontendPipeline.traced_fn,
+                rtol_=rtol_,
+                atol_=atol_,
+                tolerance_dict=tolerance_dict,
+                test_values=test_values,
+            )
+        else:
+            runner = FrontendMethodTestCaseRunnerMP(
+                frontend=frontend,
+                frontend_method_data=frontend_method_data,
+                backend_to_test=backend_to_test,
+                backend_handler=FrontendPipeline.backend_handler,
+                on_device=on_device,
+                traced_fn=FrontendPipeline.traced_fn,
+                rtol_=rtol_,
+                atol_=atol_,
+                tolerance_dict=tolerance_dict,
+                test_values=test_values,
+                mod_backend=FrontendPipeline.mod_backend,
+                mod_frontend=FrontendPipeline.mod_frontend,
+            )
         runner.run(
             init_input_dtypes=init_input_dtypes,
             method_input_dtypes=method_input_dtypes,
