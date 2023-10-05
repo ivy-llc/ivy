@@ -43,7 +43,7 @@ def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
 def mdct(
     signals,
     frame_length,
-    window_fn=None,
+    window_fn=ivy.vorbis_window,
     pad_end=False,
     norm=None,
     name=None,
