@@ -2529,6 +2529,8 @@ def trace(
         -   ``offset = 0``: the main diagonal.
         -   ``offset > 0``: off-diagonal above the main diagonal.
         -   ``offset < 0``: off-diagonal below the main diagonal.
+
+        Default: ``0``.
     axis1
         axis to be used as the first axis of the 2-D sub-arrays from which the
         diagonals should be taken.
