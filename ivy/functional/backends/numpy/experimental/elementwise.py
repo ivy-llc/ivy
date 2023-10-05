@@ -10,7 +10,7 @@ from . import backend_version
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("bfloat16",)}, backend_version)
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
 
@@ -568,7 +568,9 @@ def erfc(
     y = np.where(abs_x_small, z * pp / pq, z * pr / ps)
     result_no_underflow = np.where(x < 0.0, 2.0 - y, y)
 
-    is_pos_inf = lambda op: np.logical_and(np.isinf(op), op > 0)
+    def is_pos_inf(op):
+        return np.logical_and(np.isinf(op), op > 0)
+
     underflow = np.logical_or(
         z == 0,
         np.logical_or(

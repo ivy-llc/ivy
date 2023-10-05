@@ -933,3 +933,257 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def _static_hardtaanh(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        min_val: ivy.Container = -1.0,
+        max_val: ivy.Container = 1.0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hardtanh.This method simply wrap the
+        function,the docstring for ivy.hardtanh also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        min_val
+             minimum value of the linear region range. Default: -1.
+        max_val
+            maximum value of the linear region range. Default: 1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+             a container with the hardtanh unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = x = ivy.Container(a=ivy.array([0.39, -2.0]), b=ivy.array([2., -0.2]))
+        >>> y = ivy.Container.static_hardtanh(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.39, -1.]),
+            b: ivy.array([1., -0.2])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "hardtanh",
+            x,
+            min_val=min_val,
+            max_val=max_val,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hardtanh(
+        self: ivy.Container,
+        /,
+        *,
+        min_val: ivy.Container = -1.0,
+        max_val: ivy.Container = 1.0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.hardtanh.This method simply wraps
+        the function, so the docstring for ivy.elu also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        min_val
+             minimum value of the linear region range. Default: -1.
+        max_val
+            maximum value of the linear region range. Default: 1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+           a container with the hardtanh unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = x = ivy.Container(a=ivy.array([0.39, -2.0]), b=ivy.array([2., -0.2]))
+        >>> y = ivy.Container.static_hardtanh(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.39, -1.]),
+            b: ivy.array([1., -0.2])
+        }
+        """
+        return self._static_hardtaanh(
+            self,
+            max_val=max_val,
+            min_val=min_val,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def _static_tanhshrink(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.tanhshrink. This method simply wraps
+        the function, and so the docstring for ivy.tanhshrink also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the tanhshrink activation unit function
+            applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+        >>> y = ivy.Container.static_tanhshrink(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.23840582, -0.36634541]),
+            b: ivy.array([0.02005103, -0.00262468])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "tanhshrink",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def tanhshrink(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.tanhshrink. This method simply
+        wraps the function, and so the docstring for ivy.tanhshrink also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the tanhshrink activation unit function
+            applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+        >>> y = x.tanhshrink()
+        >>> print(y)
+        {
+            a: ivy.array([0.23840582, -0.36634541]),
+            b: ivy.array([0.02005103, -0.00262468])
+        }
+        """
+        return self._static_tanhshrink(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

@@ -297,3 +297,66 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([ 0.39, -0.57])
         """
         return ivy.elu(self._data, alpha=alpha, out=out)
+
+    def hardtanh(
+        self: ivy.Array,
+        /,
+        *,
+        max_val: float = 1,
+        min_val: float = -1,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.hardtanh. This method simply wraps the
+        function, and so the docstring for ivy.hardtanh also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        min_val
+            minimum value of the linear region range. Default: -1.
+        max_val
+            maximum value of the linear region range. Default: 1.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the hardtanh activation function applied element-wise
+            with custom linear region range.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., .2, 1.])
+        >>> y = x.hardtanh()
+        >>> print(y)
+        ivy.array([-1., 1., 1.])
+        """
+        return ivy.hardtanh(self._data, min_val=min_val, max_val=max_val, out=out)
+
+    def tanhshrink(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.tanhshrink. This method simply wraps
+        the function, and so the docstring for ivy.tanhshrink also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.tanhshrink()
+        >>> print(y)
+        ivy.array([-0.23840582,  0.        ,  0.23840582])
+        """
+        return ivy.tanhshrink(self._data, out=out)
