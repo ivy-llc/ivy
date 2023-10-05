@@ -198,7 +198,7 @@ class Array(
             ivy_backend = ivy.with_backend(self._backend)
             to_numpy = ivy_backend.to_numpy
 
-            if _is_variable(self.data) and not self._backend in ["jax", "numpy"]:
+            if _is_variable(self.data) and self._backend not in ["jax", "numpy"]:
                 native_data = _variable_data(self.data)
                 np_data = to_numpy(native_data)
                 new_arr = ivy.array(np_data)
@@ -446,7 +446,7 @@ class Array(
         return self._data.__contains__(key)
 
     def __getstate__(self):
-        data_dict = dict()
+        data_dict = {}
 
         # only pickle the native array
         data_dict["data"] = self.data
