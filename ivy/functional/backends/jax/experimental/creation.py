@@ -118,9 +118,10 @@ def blackman_window(
         count = jnp.arange(size) / size
     else:
         count = jnp.linspace(start=0, stop=size, num=size)
-    return (0.42 - 0.5 * jnp.cos(2 * jnp.pi * count)) + (
-        0.08 * jnp.cos(2 * jnp.pi * 2 * count)
-    )
+    return (
+        (0.42 - 0.5 * jnp.cos(2 * jnp.pi * count))
+        + (0.08 * jnp.cos(2 * jnp.pi * 2 * count))
+    ).astype(dtype)
 
 
 def trilu(
