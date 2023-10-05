@@ -588,7 +588,9 @@ def strided_slice(
 
 @to_ivy_arrays_and_back
 def tensor_scatter_nd_add(tensor, indices, updates, name=None):
-    return ivy.tensor_scatter_nd_add(tensor, indices, updates)
+    zero_tensor = ivy.zeros_like(tensor)
+    scatter_tensor = ivy.scatter_nd(indices, updates, zero_tensor.shape)
+    return ivy.add(tensor, scatter_tensor)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("uint16",)}, "tensorflow")
