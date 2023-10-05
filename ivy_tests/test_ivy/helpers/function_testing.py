@@ -679,8 +679,8 @@ def _transpile_if_required_backend(backend: str, fn_name: str, args=None, kwargs
         "fn_name": fn_name,
         "args": str(args),
         "kwargs": str(kwargs),
-        "backend_time": func_time,
-        "backend_nodes": backend_nodes,
+        "time": func_time,
+        "nodes": backend_nodes,
     }
     _create_transpile_report(data, backend, "report.json", True)
 
@@ -2475,9 +2475,9 @@ def _get_transpiled_data_if_required(
         "frontend_func": fn_name,
         "args": str(args_for_test),
         "kwargs": str(kwargs_for_test),
-        "frontend_time": frontend_time,
-        "frontend_fw_time": frontend_fw_time,
-        "backend_nodes": backend_nodes,
+        "time": frontend_time,
+        "fw_time": frontend_fw_time,
+        "nodes": backend_nodes,
         "ivy_nodes": ivy_nodes,
     }
 
