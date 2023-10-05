@@ -2,6 +2,7 @@
 import copy
 import re
 import warnings
+import logging
 import builtins
 import numpy as np
 import sys
@@ -11,6 +12,7 @@ from collections.abc import Sequence
 
 
 import ivy.utils.backend.handler
+from ivy.utils import check_for_binaries
 from ivy._version import __version__ as __version__
 
 _not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
@@ -75,6 +77,26 @@ class Array:
     pass
 
 
+class TuckerTensor:
+    pass
+
+
+class CPTensor:
+    pass
+
+
+class TRTensor:
+    pass
+
+
+class Parafac2Tensor:
+    pass
+
+
+class TTTensor:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
@@ -83,7 +105,7 @@ class Device(str):
                 # ivy.assertions.check_equal(dev_str[3], ":")
                 ivy.utils.assertions.check_true(
                     dev_str[4:].isnumeric(),
-                    message="{} must be numeric".format(dev_str[4:]),
+                    message=f"{dev_str[4:]} must be numeric",
                 )
         return str.__new__(cls, dev_str)
 
@@ -183,6 +205,10 @@ class Dtype(str):
         return as_native_dtype(self)
 
     @property
+    def name(self) -> str:
+        return str(self)
+
+    @property
     def info(self):
         if self.is_int_dtype or self.is_uint_dtype:
             return iinfo(self)
@@ -228,7 +254,7 @@ class Shape(Sequence):
         pattern = r"\d+(?:,\s*\d+)*"
         shape_repr = re.findall(pattern, self._shape.__str__())
         shape_repr = ", ".join([str(i) for i in shape_repr])
-        shape_repr = shape_repr + "," if len(shape_repr) == 1 else shape_repr
+        shape_repr = f"{shape_repr}," if len(shape_repr) == 1 else shape_repr
         return (
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
@@ -352,27 +378,6 @@ class Shape(Sequence):
     def __dir__(self):
         return self._shape.__dir__()
 
-    def __pow__(self, power, modulo=None):
-        pass
-
-    def __index__(self):
-        pass
-
-    def __rdivmod__(self, other):
-        pass
-
-    def __truediv__(self, other):
-        pass
-
-    def __rtruediv__(self, other):
-        pass
-
-    def __rfloordiv__(self, other):
-        pass
-
-    def __ne__(self, other):
-        pass
-
     @property
     def shape(self):
         return self._shape
@@ -417,17 +422,17 @@ class Shape(Sequence):
     def assert_same_rank(self, other):
         other = Shape(other)
         if self.rank != other.rank:
-            raise ValueError("Shapes %s and %s must have the same rank" % (self, other))
+            raise ValueError(f"Shapes {self} and {other} must have the same rank")
 
     def assert_has_rank(self, rank):
         if self.rank not in (None, rank):
-            raise ValueError("Shape %s must have rank %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank {rank}")
 
     def unknown_shape(rank=None, **kwargs):
         if rank is None and "ndims" in kwargs:
             rank = kwargs.pop("ndims")
         if kwargs:
-            raise TypeError("Unknown argument: %s" % kwargs)
+            raise TypeError(f"Unknown argument: {kwargs}")
         if rank is None:
             return Shape(None)
         else:
@@ -437,17 +442,17 @@ class Shape(Sequence):
         try:
             return self.merge_with(unknown_shape(rank=rank))
         except ValueError:
-            raise ValueError("Shape %s must have rank %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank {rank}")
 
     def with_rank_at_least(self, rank):
         if self.rank is not None and self.rank < rank:
-            raise ValueError("Shape %s must have rank at least %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank at least {rank}")
         else:
             return self
 
     def with_rank_at_most(self, rank):
         if self.rank is not None and self.rank > rank:
-            raise ValueError("Shape %s must have rank at most %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank at most {rank}")
         else:
             return self
 
@@ -483,14 +488,14 @@ class Shape(Sequence):
     @property
     def assert_is_fully_defined(self):
         if not self.is_fully_defined():
-            raise ValueError("Shape %s is not fully defined" % self)
+            raise ValueError(f"Shape {self} is not fully defined")
 
     def as_list(self):
         if self._shape is None:
             raise ivy.utils.exceptions.IvyException(
                 "Cannot convert a partially known Shape to a list"
             )
-        return [dim for dim in self._shape]
+        return list(self._shape)
 
 
 class IntDtype(Dtype):
@@ -578,11 +583,11 @@ class Node(str):
     pass
 
 
-array_significant_figures_stack = list()
-array_decimal_values_stack = list()
-warning_level_stack = list()
-nan_policy_stack = list()
-dynamic_backend_stack = list()
+array_significant_figures_stack = []
+array_decimal_values_stack = []
+warning_level_stack = []
+nan_policy_stack = []
+dynamic_backend_stack = []
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
@@ -746,6 +751,13 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
+from .data_classes.factorized_tensor import (
+    TuckerTensor,
+    CPTensor,
+    TRTensor,
+    TTTensor,
+    Parafac2Tensor,
+)
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
@@ -774,8 +786,14 @@ from ivy.utils.inspection import fn_array_spec, add_array_specs
 add_array_specs()
 
 _imported_frameworks_before_compiler = list(sys.modules.keys())
+
 try:
-    from .compiler.compiler import transpile, compile, unify
+    from .engines import XLA as xla
+    from .engines import ivy2xla
+except:
+    pass
+try:
+    from .compiler.compiler import transpile, trace_graph, unify
 except:  # noqa: E722
     pass  # Added for the finally statment
 finally:
@@ -922,6 +940,7 @@ globals_vars = GlobalsDict(
         "warning_level_stack": warning_level_stack,
         "queue_timeout_stack": general.queue_timeout_stack,
         "array_mode_stack": general.array_mode_stack,
+        "inplace_mode_stack": general.inplace_mode_stack,
         "soft_device_mode_stack": device.soft_device_mode_stack,
         "shape_array_mode_stack": general.shape_array_mode_stack,
         "show_func_wrapper_trace_mode_stack": (
@@ -958,8 +977,8 @@ def del_global_attr(attr_name):
     delattr(globals_vars, attr_name)
 
 
-backend = "none"
-backend_version = "none"
+backend = ""
+backend_version = {}
 
 native_inplace_support = None
 
@@ -1184,12 +1203,11 @@ from ivy.utils.backend.sub_backend_handler import (
     set_sub_backend,
     unset_sub_backend,
     clear_sub_backends,
-    available_sub_backends,
 )
 
 
-def current_sub_backends():
-    return []
+available_sub_backends = []
+current_sub_backends = []
 
 
 # casting modes
@@ -1402,6 +1420,7 @@ GLOBAL_PROPS = [
     "nan_policy",
     "array_mode",
     "nestable_mode",
+    "inplace_mode",
     "exception_trace_mode",
     "show_func_wrapper_trace_mode",
     "min_denominator",
@@ -1412,6 +1431,12 @@ GLOBAL_PROPS = [
     "dynamic_backend",
     "precise_mode",
     "soft_device_mode",
+    "logging_mode",
+    "default_dtype",
+    "default_float_dtype",
+    "default_int_dtype",
+    "default_complex_dtype",
+    "default_uint_dtype",
 ]
 
 
@@ -1431,6 +1456,39 @@ def _is_from_internal(filename):
     return builtins.any([fn in filename for fn in INTERNAL_FILENAMES])
 
 
+class LoggingMode:
+    logging_modes = ["DEBUG", "INFO", "WARNING", "ERROR"]
+    logging_mode_stack = []
+
+    def __init__(self):
+        # Set up the initial logging mode
+        logging.basicConfig(level=logging.WARNING)
+        self.logging_mode_stack.append(logging.WARNING)
+
+    def set_logging_mode(self, mode):
+        """
+        Set the current logging mode for Ivy.
+
+        Possible modes are 'DEBUG', 'INFO', 'WARNING', 'ERROR'.
+        """
+        assert (
+            mode in self.logging_modes
+        ), "Invalid logging mode. Choose from: " + ", ".join(self.logging_modes)
+
+        # Update the logging level
+        logging.getLogger().setLevel(mode)
+        self.logging_mode_stack.append(mode)
+
+    def unset_logging_mode(self):
+        """Remove the most recently set logging mode, returning to the previous one."""
+        if len(self.logging_mode_stack) > 1:
+            # Remove the current mode
+            self.logging_mode_stack.pop()
+
+            # Set the previous mode
+            logging.getLogger().setLevel(self.logging_mode_stack[-1])
+
+
 class IvyWithGlobalProps(sys.modules[__name__].__class__):
     def __setattr__(self, name, value, internal=False):
         previous_frame = inspect.currentframe().f_back
@@ -1438,8 +1496,8 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         internal = internal and _is_from_internal(filename)
         if not internal and name in GLOBAL_PROPS:
             raise ivy.utils.exceptions.IvyException(
-                "Property: {} is read only! Please use the setter: set_{}() for setting"
-                " its value!".format(name, name)
+                f"Property: {name} is read only! Please use the setter: set_{name}()"
+                " for setting its value!"
             )
         self.__dict__[name] = value
 
@@ -1454,3 +1512,8 @@ if (
     ].__class__ = IvyWithGlobalProps
 else:
     sys.modules[__name__].__class__ = IvyWithGlobalProps
+
+    # check if all expected binaries are present
+    # in this else block to avoid raising the same warning again
+    # on using with_backend
+    check_for_binaries()

@@ -27,13 +27,13 @@ All of these new words can get confusing! We've created a glossary to help nail 
         An Ivy class which inherits from :code:`dict` allows for storing nested data.
 
     Ivy Compiler
-        A wrapper function around native compiler functions, which uses lower level compilers such as XLA to compile to lower level languages such as C++, CUDA, TorchScript etc.
+        A wrapper function around native compiler functions, which uses lower level compilers such as XLA to compile to lower level languages such as C++, CUDA, TorchScript, etc.
 
     Graph Compiler
-        Graph compilers map the high-level computational graph coming from frameworks to operations that are executable on a specific device.
+        Graph Compilers map the high-level computational graph coming from frameworks to operations that are executable on a specific device.
 
-    Ivy Graph Compiler
-        Ivy's Graph Compiler, which traces the graph as a composition of functions in the functional API in Python.
+    Ivy Tracer
+        Ivy's Tracer creates a graph as a composition of functions in the functional API in Python.
 
     Ivy Functional API
         Is used for defining complex models, the Ivy functional API does not implement its own backend but wraps around other frameworks functional APIs and brings them into alignment.
@@ -43,13 +43,7 @@ All of these new words can get confusing! We've created a glossary to help nail 
         Used to control which framework Ivy is converting code to.
 
     Automatic Code Conversions
-        Allows code to be converted from framework to another whilst retaining its funtional assets.
-
-    Applied Libraries
-        Suite of various machine learning libraries that have been built using the Ivy framework.
-
-    Ivy Builder
-        Helpful classes and functions for creating training workflows.
+        Allows code to be converted from one framework to another whilst retaining its functional assets.
 
     Primary Functions
         Primary functions are the lowest level building blocks in Ivy and are generally implemented as light wrapping around an existing function in the backend framework, which serves a near-identical purpose.
@@ -61,11 +55,11 @@ All of these new words can get confusing! We've created a glossary to help nail 
         Mixed functions are functions that have some backend-specific implementations but not for all backends.
 
     Standalone Functions
-        Standalone functions are functions which do not reference any other primary, compositional or mixed functions whatsoever.
+        Standalone functions are functions that do not reference any other primary, compositional, or mixed functions whatsoever.
         These are mainly convenience functions.
 
     Nestable Functions
-        Nestable functions are functions which can accept :class:`ivy.Container` instances in place of any of the arguments.
+        Nestable functions are functions that can accept :class:`ivy.Container` instances in place of any of the arguments.
 
     Convenience Functions
         Convenience functions can be used to organize and improve the code for other functions.
@@ -78,4 +72,3 @@ All of these new words can get confusing! We've created a glossary to help nail 
 
     Submodule Helper Functions
         These are standalone/convenience functions that are specific to a submodule.
-

@@ -2,10 +2,41 @@
 import pytest
 from hypothesis import strategies as st
 import ivy
+import numpy as np
+import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _all_gamma_params(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_dim_size=1, max_dim_size=5, min_num_dims=2, max_num_dims=2
+        )
+        | st.just(None)
+    )
+    if shape is None:
+        a = draw(
+            helpers.array_values(
+                min_value=0.0,
+                max_value=100.0,
+                dtype=helpers.get_dtypes("float", full=False),
+                exclude_min=True,
+                shape=helpers.get_shape(
+                    min_dim_size=1, max_dim_size=5, min_num_dims=1, max_num_dims=2
+                ),
+            )
+        )
+        return a[0], shape
+    a = draw(st.floats(min_value=0, max_value=5, exclude_min=True))
+    return a, shape
 
 
 # ToDo: Find solution around torch and paddle not running with uints 32,
@@ -20,9 +51,73 @@ def _get_minval_maxval(draw):
     return minval, maxval
 
 
+@st.composite
+def dtype_p_shape(draw):
+    dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
+    shape = draw(helpers.get_shape(allow_none=False, min_num_dims=1, max_num_dims=3))
+
+    dtype_and_probs = draw(
+        helpers.dtype_and_values(
+            available_dtypes=dtype, min_value=0, max_value=1, shape=shape
+        )
+    )
+    return dtype_and_probs, shape
+
+
+@st.composite
+def get_mean_cov_vector(draw):
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))),
+            key="shared_dtype",
+        )
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+
+    # Generate shape for mean vector (..., n)
+    dtype_mean = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size]),
+            min_value=2,
+            max_value=5,
+        )
+    )
+
+    # Generate shape for covariance matrix (..., n, n)
+    dtype_cov = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
+    )
+
+    batch_shape = dtype_cov.shape[:-2]
+
+    return input_dtype, dtype_mean, dtype_cov, batch_shape
+
+
+@st.composite
+def get_shape_and_arrays(draw):
+    b_shapes = draw(
+        helpers.array_and_broadcastable_shape(dtype=helpers.get_dtypes("float"))
+    )
+    b, shapes = b_shapes
+    shapes = draw(st.sampled_from([None, shapes]))
+    return b, shapes
+
+
+# --- Main --- #
+# ------------ #
+
+
 @pytest.mark.xfail
 @handle_frontend_test(
-    fn_tree="jax.random.uniform",
+    fn_tree="jax.random.ball",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
         min_value=0,
@@ -32,37 +127,43 @@ def _get_minval_maxval(draw):
         min_dim_size=2,
         max_dim_size=2,
     ),
-    shape=helpers.get_shape(),
+    shape=helpers.get_shape(
+        min_num_dims=1, max_num_dims=6, min_dim_size=1, max_dim_size=6
+    ),
     dtype=helpers.get_dtypes("float", full=False),
-    dtype_minval_maxval=_get_minval_maxval(),
+    d=st.integers(min_value=1, max_value=100),
+    p=st.floats(min_value=1e-5, max_value=100, exclude_min=True),
+    test_with_out=st.just(False),
 )
-def test_jax_uniform(
+def test_jax_ball(
     *,
     dtype_key,
+    d,
+    p,
     shape,
     dtype,
-    dtype_minval_maxval,
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, key = dtype_key
-    minval, maxval = dtype_minval_maxval
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
+            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
             key=key[0],
+            d=d,
+            p=p,
             shape=shape,
             dtype=dtype[0],
-            minval=minval,
-            maxval=maxval,
         )
 
     ret = call()
@@ -71,8 +172,8 @@ def test_jax_uniform(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -80,9 +181,9 @@ def test_jax_uniform(
 
 @pytest.mark.xfail
 @handle_frontend_test(
-    fn_tree="jax.random.normal",
+    fn_tree="jax.random.bernoulli",
     dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
+        available_dtypes=helpers.get_dtypes("integer", full=False),
         min_value=0,
         max_value=2000,
         min_num_dims=1,
@@ -90,32 +191,34 @@ def test_jax_uniform(
         min_dim_size=2,
         max_dim_size=2,
     ),
-    shape=helpers.get_shape(),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype_p_shape_=dtype_p_shape(),
 )
-def test_jax_normal(
+def test_jax_bernoulli(
     *,
     dtype_key,
-    shape,
-    dtype,
+    dtype_p_shape_,
     on_device,
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
+    dtype_p, shape = dtype_p_shape_
+    dtype, p = dtype_p
 
     def call():
         return helpers.test_frontend_function(
-            input_dtypes=input_dtype,
+            input_dtypes=input_dtype + dtype,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
+            backend_to_test=backend_fw,
             on_device=on_device,
             test_values=False,
             key=key[0],
+            p=p[0],
             shape=shape,
-            dtype=dtype[0],
         )
 
     ret = call()
@@ -124,8 +227,8 @@ def test_jax_normal(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -162,6 +265,7 @@ def test_jax_beta(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -170,6 +274,7 @@ def test_jax_beta(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
+            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -186,8 +291,118 @@ def test_jax_beta(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.categorical",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(
+        min_dim_size=1, max_num_dims=6, max_dim_size=6, min_num_dims=1, allow_none=False
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_categorical(
+    *,
+    dtype_key,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+    if not ivy.exists(ret):
+        return
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.cauchy",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_cauchy(
+    *,
+    dtype_key,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -230,6 +445,7 @@ def test_jax_dirichlet(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
     _, alpha = dtype_alpha
@@ -239,6 +455,7 @@ def test_jax_dirichlet(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
+            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -254,8 +471,8 @@ def test_jax_dirichlet(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -263,10 +480,10 @@ def test_jax_dirichlet(
 
 @pytest.mark.xfail
 @handle_frontend_test(
-    fn_tree="jax.random.cauchy",
+    fn_tree="jax.random.double_sided_maxwell",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
-        min_value=0,
+        min_value=1,
         max_value=2000,
         min_num_dims=1,
         max_num_dims=1,
@@ -275,16 +492,22 @@ def test_jax_dirichlet(
     ),
     shape=helpers.get_shape(),
     dtype=helpers.get_dtypes("float", full=False),
+    loc=st.integers(min_value=10, max_value=100),
+    scale=st.floats(min_value=0, max_value=100, exclude_min=True),
+    test_with_out=st.just(False),
 )
-def test_jax_cauchy(
+def test_jax_double_sided_maxwell(
     *,
     dtype_key,
+    loc,
+    scale,
     shape,
     dtype,
     on_device,
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -296,7 +519,10 @@ def test_jax_cauchy(
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
+            backend_to_test=backend_fw,
             key=key[0],
+            loc=loc,
+            scale=scale,
             shape=shape,
             dtype=dtype[0],
         )
@@ -307,8 +533,8 @@ def test_jax_cauchy(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(backend=backend_fw, ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(backend=backend_fw, ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -316,7 +542,7 @@ def test_jax_cauchy(
 
 @pytest.mark.xfail
 @handle_frontend_test(
-    fn_tree="jax.random.poisson",
+    fn_tree="jax.random.exponential",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
         min_value=0,
@@ -326,23 +552,19 @@ def test_jax_cauchy(
         min_dim_size=2,
         max_dim_size=2,
     ),
-    lam=st.floats(min_value=0, max_value=5, exclude_min=True),
-    shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=5
-    ),
-    dtype=helpers.get_dtypes("integer", full=False),
-    test_with_out=st.just(False),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
+    dtype=helpers.get_dtypes("float", full=False),
 )
-def test_jax_poisson(
+def test_jax_exponential(
     *,
     dtype_key,
-    lam,
     shape,
     dtype,
     on_device,
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -350,12 +572,12 @@ def test_jax_poisson(
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
             key=key[0],
-            lam=lam,
             shape=shape,
             dtype=dtype[0],
         )
@@ -366,36 +588,63 @@ def test_jax_poisson(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
 
-@st.composite
-def _all_gamma_params(draw):
-    shape = draw(
-        helpers.get_shape(
-            min_dim_size=1, max_dim_size=5, min_num_dims=2, max_num_dims=2
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.fold_in",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    data=helpers.ints(),
+)
+def test_jax_fold_in(
+    *,
+    dtype_key,
+    data,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            data=data,
         )
-        | st.just(None)
-    )
-    if shape is None:
-        a = draw(
-            helpers.array_values(
-                min_value=0.0,
-                max_value=100.0,
-                dtype=helpers.get_dtypes("float", full=False),
-                exclude_min=True,
-                shape=helpers.get_shape(
-                    min_dim_size=1, max_dim_size=5, min_num_dims=1, max_num_dims=2
-                ),
-            )
-        )
-        return a[0], shape
-    a = draw(st.floats(min_value=0, max_value=5, exclude_min=True))
-    return a, shape
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
 
 
 @pytest.mark.xfail
@@ -423,6 +672,7 @@ def test_jax_gamma(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
     a, shape = a_shape
@@ -433,6 +683,7 @@ def test_jax_gamma(
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
+            backend_to_test=backend_fw,
             on_device=on_device,
             test_values=False,
             key=key[0],
@@ -447,122 +698,8 @@ def test_jax_gamma(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
-@pytest.mark.xfail
-@handle_frontend_test(
-    fn_tree="jax.random.gumbel",
-    dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
-        min_value=0,
-        max_value=2000,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
-    ),
-    shape=helpers.get_shape(
-        min_dim_size=1, max_num_dims=6, max_dim_size=6, min_num_dims=1, allow_none=False
-    ),
-    dtype=helpers.get_dtypes("float", full=False),
-)
-def test_jax_gumbel(
-    *,
-    dtype_key,
-    shape,
-    dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, key = dtype_key
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            test_values=False,
-            key=key[0],
-            shape=shape,
-            dtype=dtype[0],
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
-@pytest.mark.xfail
-@handle_frontend_test(
-    fn_tree="jax.random.t",
-    dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
-        min_value=0,
-        max_value=2000,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
-    ),
-    df=st.floats(min_value=0, max_value=5, exclude_min=True),
-    shape=helpers.get_shape(
-        min_num_dims=1, max_num_dims=6, min_dim_size=1, max_dim_size=6
-    ),
-    dtype=helpers.get_dtypes("float", full=False),
-    test_with_out=st.just(False),
-)
-def test_jax_t(
-    *,
-    dtype_key,
-    df,
-    shape,
-    dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, key = dtype_key
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            test_values=False,
-            key=key[0],
-            df=df,
-            shape=shape,
-            dtype=dtype[0],
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -597,6 +734,7 @@ def test_jax_generalized_normal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -604,6 +742,7 @@ def test_jax_generalized_normal(
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -620,8 +759,8 @@ def test_jax_generalized_normal(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -629,7 +768,7 @@ def test_jax_generalized_normal(
 
 @pytest.mark.xfail
 @handle_frontend_test(
-    fn_tree="jax.random.rademacher",
+    fn_tree="jax.random.gumbel",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
         min_value=0,
@@ -639,10 +778,12 @@ def test_jax_generalized_normal(
         min_dim_size=2,
         max_dim_size=2,
     ),
-    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
-    dtype=helpers.get_dtypes("integer", full=False),
+    shape=helpers.get_shape(
+        min_dim_size=1, max_num_dims=6, max_dim_size=6, min_num_dims=1, allow_none=False
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
 )
-def test_jax_rademacher(
+def test_jax_gumbel(
     *,
     dtype_key,
     shape,
@@ -651,6 +792,7 @@ def test_jax_rademacher(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -659,6 +801,7 @@ def test_jax_rademacher(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
+            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -673,235 +816,8 @@ def test_jax_rademacher(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
-@pytest.mark.xfail
-@handle_frontend_test(
-    fn_tree="jax.random.randint",
-    dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
-        min_value=0,
-        max_value=2000,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
-    ),
-    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
-    dtype=helpers.get_dtypes("integer", full=False),
-    min_max=helpers.general_helpers.get_bounds(dtype="int16"),
-)
-def test_jax_randint(
-    *,
-    dtype_key,
-    shape,
-    dtype,
-    min_max,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, key = dtype_key
-    minval, maxval = min_max
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            test_values=False,
-            key=key[0],
-            shape=shape,
-            minval=minval,
-            maxval=maxval,
-            dtype=dtype[0],
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
-@st.composite
-def dtype_p_shape(draw):
-    dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
-    shape = draw(helpers.get_shape(allow_none=False, min_num_dims=1, max_num_dims=3))
-
-    dtype_and_probs = draw(
-        helpers.dtype_and_values(
-            available_dtypes=dtype, min_value=0, max_value=1, shape=shape
-        )
-    )
-    return dtype_and_probs, shape
-
-
-@pytest.mark.xfail
-@handle_frontend_test(
-    fn_tree="jax.random.bernoulli",
-    dtype_key=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer", full=False),
-        min_value=0,
-        max_value=2000,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
-    ),
-    dtype_p_shape_=dtype_p_shape(),
-)
-def test_jax_bernoulli(
-    *,
-    dtype_key,
-    dtype_p_shape_,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, key = dtype_key
-    dtype_p, shape = dtype_p_shape_
-    dtype, p = dtype_p
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=input_dtype + dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            test_values=False,
-            key=key[0],
-            p=p[0],
-            shape=shape,
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
-@pytest.mark.xfail
-@handle_frontend_test(
-    fn_tree="jax.random.fold_in",
-    dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
-        min_value=0,
-        max_value=2000,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
-    ),
-    data=helpers.ints(),
-)
-def test_jax_fold_in(
-    *,
-    dtype_key,
-    data,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, key = dtype_key
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            test_values=False,
-            key=key[0],
-            data=data,
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
-@pytest.mark.xfail
-@handle_frontend_test(
-    fn_tree="jax.random.permutation",
-    dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
-        min_value=0,
-        max_value=2000,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
-    ),
-    x=st.integers(min_value=0, max_value=10),
-    axis=st.integers(min_value=0, max_value=0),
-)
-def test_jax_permutation(
-    *,
-    dtype_key,
-    x,
-    axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, key = dtype_key
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            test_values=False,
-            key=key[0],
-            x=x,
-            axis=axis,
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -933,6 +849,7 @@ def test_jax_loggamma(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
     a, shape = a_shape
@@ -941,6 +858,7 @@ def test_jax_loggamma(
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -957,8 +875,588 @@ def test_jax_loggamma(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.logistic",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
+    dtype=helpers.get_dtypes("float", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_logistic(
+    *,
+    dtype_key,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            key=key[0],
+            shape=shape,
+            dtype=dtype[0],
+            test_values=False,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.maxwell",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_maxwell(
+    *,
+    dtype_key,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.multivariate_normal",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+    mean_cov_vector=get_mean_cov_vector(),
+    method=st.sampled_from(["cholesky", "eigh", "svd"]),
+    test_with_out=st.just(False),
+)
+def test_jax_multivariate_normal(
+    *,
+    dtype_key,
+    mean_cov_vector,
+    dtype,
+    method,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, key = dtype_key
+    shared_dtype, mean, cov, shape = mean_cov_vector
+
+    spd = np.matmul(cov.T, cov) + np.identity(cov.shape[0])
+
+    def call():
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype + [shared_dtype],
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            test_values=False,
+            key=key[0],
+            mean=mean,
+            cov=spd,
+            shape=shape,
+            dtype=dtype[0],
+            method=method,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.normal",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_normal(
+    *,
+    dtype_key,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.orthogonal",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    n=helpers.get_shape(),
+    shape=helpers.get_shape(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_orthogonal(
+    *,
+    dtype_key,
+    n,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            n=n,
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+        # Check if the output matrices are orthogonal
+        assert ivy.allclose(ivy.eye(n), ivy.matmul(u.T, u))
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.pareto",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    b_shapes=get_shape_and_arrays(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_pareto(
+    *,
+    dtype_key,
+    b_shapes,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+    b, shape = b_shapes
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            b=b,
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+    ret_np, ret_from_np = ret
+    if shape is not None:
+        assert ret_np.shape == shape
+    else:
+        assert ret_np.shape == b.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.permutation",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    x=st.integers(min_value=0, max_value=10),
+    axis=st.integers(min_value=0, max_value=0),
+)
+def test_jax_permutation(
+    *,
+    dtype_key,
+    x,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            x=x,
+            axis=axis,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.poisson",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    lam=st.floats(min_value=0, max_value=5, exclude_min=True),
+    shape=helpers.get_shape(
+        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=5
+    ),
+    dtype=helpers.get_dtypes("integer", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_poisson(
+    *,
+    dtype_key,
+    lam,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            lam=lam,
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(
+        ret=ret_np,
+        backend=backend_fw,
+    )
+    ret_from_np = helpers.flatten_and_to_np(
+        ret=ret_from_np,
+        backend=backend_fw,
+    )
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.rademacher",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
+    dtype=helpers.get_dtypes("integer", full=False),
+)
+def test_jax_rademacher(
+    *,
+    dtype_key,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.randint",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
+    dtype=helpers.get_dtypes("integer", full=False),
+    min_max=helpers.general_helpers.get_bounds(dtype="int16"),
+)
+def test_jax_randint(
+    *,
+    dtype_key,
+    shape,
+    dtype,
+    min_max,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+    minval, maxval = min_max
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            shape=shape,
+            minval=minval,
+            maxval=maxval,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -991,6 +1489,7 @@ def test_jax_shuffle(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     key_dtype, key = dtype_key
     x_dtypes, x, axis = dtype_x_axis
@@ -999,6 +1498,7 @@ def test_jax_shuffle(
         return helpers.test_frontend_function(
             input_dtypes=key_dtype + x_dtypes,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -1014,8 +1514,8 @@ def test_jax_shuffle(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -1023,7 +1523,7 @@ def test_jax_shuffle(
 
 @pytest.mark.xfail
 @handle_frontend_test(
-    fn_tree="jax.random.exponential",
+    fn_tree="jax.random.t",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
         min_value=0,
@@ -1033,18 +1533,24 @@ def test_jax_shuffle(
         min_dim_size=2,
         max_dim_size=2,
     ),
-    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
+    df=st.floats(min_value=0, max_value=5, exclude_min=True),
+    shape=helpers.get_shape(
+        min_num_dims=1, max_num_dims=6, min_dim_size=1, max_dim_size=6
+    ),
     dtype=helpers.get_dtypes("float", full=False),
+    test_with_out=st.just(False),
 )
-def test_jax_exponential(
+def test_jax_t(
     *,
     dtype_key,
+    df,
     shape,
     dtype,
     on_device,
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -1053,10 +1559,12 @@ def test_jax_exponential(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
+            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
             key=key[0],
+            df=df,
             shape=shape,
             dtype=dtype[0],
         )
@@ -1067,8 +1575,68 @@ def test_jax_exponential(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.uniform",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(),
+    dtype=helpers.get_dtypes("float", full=False),
+    dtype_minval_maxval=_get_minval_maxval(),
+)
+def test_jax_uniform(
+    *,
+    dtype_key,
+    shape,
+    dtype,
+    dtype_minval_maxval,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+    minval, maxval = dtype_minval_maxval
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            shape=shape,
+            dtype=dtype[0],
+            minval=minval,
+            maxval=maxval,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -1099,6 +1667,7 @@ def test_jax_weibull_min(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, key = dtype_key
@@ -1109,6 +1678,7 @@ def test_jax_weibull_min(
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
+            backend_to_test=backend_fw,
             on_device=on_device,
             test_values=False,
             key=key[0],
@@ -1124,186 +1694,8 @@ def test_jax_weibull_min(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
-@st.composite
-def get_shape_and_arrays(draw):
-    b_shapes = draw(
-        helpers.array_and_broadcastable_shape(dtype=helpers.get_dtypes("float"))
-    )
-    b, shapes = b_shapes
-    shapes = draw(st.sampled_from([None, shapes]))
-    return b, shapes
-
-
-@pytest.mark.xfail
-@handle_frontend_test(
-    fn_tree="jax.random.pareto",
-    dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
-        min_value=0,
-        max_value=2000,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
-    ),
-    b_shapes=get_shape_and_arrays(),
-    dtype=helpers.get_dtypes("float", full=False),
-)
-def test_jax_pareto(
-    *,
-    dtype_key,
-    b_shapes,
-    dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, key = dtype_key
-    b, shape = b_shapes
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            test_values=False,
-            key=key[0],
-            b=b,
-            shape=shape,
-            dtype=dtype[0],
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-    ret_np, ret_from_np = ret
-    if shape is not None:
-        assert ret_np.shape == shape
-    else:
-        assert ret_np.shape == b.shape
-
-
-@pytest.mark.xfail
-@handle_frontend_test(
-    fn_tree="jax.random.maxwell",
-    dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
-        min_value=0,
-        max_value=2000,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
-    ),
-    shape=helpers.get_shape(),
-    dtype=helpers.get_dtypes("float", full=False),
-)
-def test_jax_maxwell(
-    *,
-    dtype_key,
-    shape,
-    dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, key = dtype_key
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            test_values=False,
-            key=key[0],
-            shape=shape,
-            dtype=dtype[0],
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
-@pytest.mark.xfail
-@handle_frontend_test(
-    fn_tree="jax.random.ball",
-    dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
-        min_value=0,
-        max_value=2000,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
-    ),
-    shape=helpers.get_shape(
-        min_num_dims=1, max_num_dims=6, min_dim_size=1, max_dim_size=6
-    ),
-    dtype=helpers.get_dtypes("float", full=False),
-    d=st.integers(min_value=1, max_value=100),
-    p=st.floats(min_value=1e-5, max_value=100, exclude_min=True),
-    test_with_out=st.just(False),
-)
-def test_jax_ball(
-    *,
-    dtype_key,
-    d,
-    p,
-    shape,
-    dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, key = dtype_key
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            test_values=False,
-            key=key[0],
-            d=d,
-            p=p,
-            shape=shape,
-            dtype=dtype[0],
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape

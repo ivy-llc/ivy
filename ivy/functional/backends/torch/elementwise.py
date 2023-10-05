@@ -7,6 +7,7 @@ import torch
 import ivy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
+    with_supported_dtypes,
     handle_numpy_arrays_in_specific_backend,
 )
 from ivy import promote_types_of_inputs
@@ -53,15 +54,13 @@ def bitwise_xor(
 bitwise_xor.support_native_out = True
 
 
+@with_supported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def imag(
     val: torch.Tensor,
     /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if val.dtype not in (torch.complex64, torch.complex128):
-        ret = torch.imag(val.to(torch.complex64))
-        return ret.to(val.dtype)
     return torch.imag(val)
 
 
@@ -507,7 +506,9 @@ not_equal.support_native_out = True
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
-def tanh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def tanh(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.tanh(x, out=out)
 
@@ -581,13 +582,36 @@ square.support_native_out = True
 
 @handle_numpy_arrays_in_specific_backend
 def pow(
-    x1: Union[float, torch.Tensor],
-    x2: Union[float, torch.Tensor],
+    x1: torch.Tensor,
+    x2: Union[int, float, torch.Tensor],
     /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if ivy.is_complex_dtype(x1) and ivy.any(ivy.isinf(x2)):
+        ret = torch.pow(x1, x2)
+        x2 = torch.as_tensor(x2).to(torch.float64)
+        return torch.where(
+            ivy.isinf(x2), torch.nan + torch.nan * 1j if x2 < 0 else -0 * 1j, ret
+        )
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if ivy.any(x1 == 0):
+        if ivy.is_complex_dtype(x2):
+            x2 = torch.broadcast_to(x2, x1.shape)
+            ret = torch.pow(x1, x2)
+            return torch.where(x1 == 0, torch.nan + torch.nan * 1j, ret)
+        elif (
+            ivy.any(x2 < 0)
+            and ivy.is_int_dtype(x2)
+            and all(dtype not in str(x1.dtype) for dtype in ["int16", "int8"])
+        ):
+            if ivy.is_int_dtype(x1):
+                fill_value = torch.iinfo(x1.dtype).min
+            else:
+                fill_value = torch.finfo(x1.dtype).min
+            x2 = torch.broadcast_to(x2, x1.shape)
+            ret = torch.pow(x1, x2)
+            return torch.where(torch.bitwise_and(x1 == 0, x2 < 0), fill_value, ret)
     return torch.pow(x1, x2, out=out)
 
 

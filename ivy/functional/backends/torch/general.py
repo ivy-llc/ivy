@@ -1,7 +1,6 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 # global
 from functools import reduce as _reduce
-import math
 from numbers import Number
 from operator import mul
 from typing import Optional, Union, Sequence, Callable, List, Tuple
@@ -23,14 +22,14 @@ torch_scatter = None
 
 
 def _parse_index(indices, ndims):
-    ind = list()
+    ind = []
     for so in indices:
-        pre = list()
+        pre = []
         for s in so:
             if s == -1:
                 break
             pre.append(s.item())
-        post = list()
+        post = []
         for s in reversed(so):
             if s == -1:
                 break
@@ -67,6 +66,59 @@ def current_backend_str() -> str:
     return "torch"
 
 
+def neg_step(query):
+    return (
+        not isinstance(query, (int, bool))
+        and not ivy.is_array(query)
+        and query is not None
+        and query is not Ellipsis
+        and (
+            (isinstance(query, slice) and query.step is not None and query.step < 0)
+            or (
+                not isinstance(query, slice)
+                and any(
+                    isinstance(q, slice) and q.step is not None and q.step < 0
+                    for q in query
+                )
+            )
+        )
+    )
+
+
+def get_item(
+    x: torch.Tensor,
+    /,
+    query: Union[torch.Tensor, Tuple],
+    *,
+    copy: bool = None,
+) -> torch.Tensor:
+    return x.__getitem__(query)
+
+
+get_item.partial_mixed_handler = lambda x, query, **kwargs: not neg_step(query)
+
+
+def set_item(
+    x: torch.Tensor,
+    query: Union[torch.Tensor, Tuple],
+    val: torch.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> torch.Tensor:
+    if hasattr(x, "dtype") and hasattr(val, "dtype") and x.dtype != val.dtype:
+        val = val.to(x.dtype)
+    if copy:
+        x = x.clone()
+    x.__setitem__(query, val)
+    return x
+
+
+set_item.partial_mixed_handler = (
+    lambda x, query, val, **kwargs: not neg_step(query) and not x.requires_grad
+)
+
+
 def to_numpy(
     x: Union[torch.Tensor, List[torch.Tensor]], /, *, copy: bool = True
 ) -> Union[np.ndarray, List[np.ndarray]]:
@@ -80,14 +132,12 @@ def to_numpy(
     elif torch.is_tensor(x):
         x = x.resolve_neg().resolve_conj()
         if copy:
-            if x.dtype is torch.bfloat16:
-                default_dtype = ivy.default_float_dtype(as_native=True)
-                if default_dtype is torch.bfloat16:
-                    x = x.to(torch.float32)
-                else:
-                    x = x.to(default_dtype)
-                return x.detach().cpu().numpy().astype("bfloat16")
-            return x.detach().cpu().numpy()
+            # we don't use inbuilt numpy() because it blocks for
+            # bfloat16, which we are supporting here by importing
+            # ml_dtypes
+            # TODO: use torch's numpy() method once this feature is accepted
+            # https://github.com/pytorch/pytorch/issues/109873
+            return np.array(x.tolist(), dtype=ivy.as_ivy_dtype(x.dtype))
         else:
             raise ivy.utils.exceptions.IvyException(
                 "Overwriting the same address is not supported for torch."
@@ -128,8 +178,8 @@ def gather(
     batch_dims: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    axis = axis % len(params.shape)
-    batch_dims = batch_dims % len(params.shape)
+    axis %= len(params.shape)
+    batch_dims %= len(params.shape)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
@@ -194,7 +244,7 @@ def gather_nd(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
-    batch_dims = batch_dims % len(params.shape)
+    batch_dims %= len(params.shape)
     result = []
     if batch_dims == 0:
         result = gather_nd_helper(params, indices)
@@ -268,6 +318,7 @@ def inplace_update(
             x_native.copy_ = val_native
         else:
             x_native[()] = val_native
+        x_native = x_native.to(val_native.device)
         if ivy.is_native_array(x):
             return x_native
         if ivy.is_ivy_array(x):
@@ -317,8 +368,8 @@ def scatter_flat(
     dtype = updates.dtype
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
         )
     if target_given:
         output = out
@@ -398,8 +449,8 @@ def scatter_nd(
     flat_result_size = _reduce(mul, shape, 1)
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
         )
     if target_given:
         flat_output = torch.reshape(out, (flat_result_size,)).detach()
@@ -464,7 +515,9 @@ def vmap(
     @ivy.output_to_native_arrays
     @ivy.inputs_to_native_arrays
     def _vmap(*args):
-        new_fun = lambda *args: ivy.to_native(func(*args))
+        def new_fun(*args):
+            return ivy.to_native(func(*args))
+
         new_func = functorch.vmap(new_fun, in_axes, out_axes)
         return new_func(*args)
 
@@ -495,9 +548,3 @@ isin.support_native_out = True
 
 def itemsize(x: torch.tensor) -> int:
     return x.element_size()
-
-
-def strides(x: torch.tensor) -> Tuple[int]:
-    return tuple(
-        [int(stride * math.ceil(ivy.dtype_bits(x.dtype) / 8)) for stride in x.stride()]
-    )

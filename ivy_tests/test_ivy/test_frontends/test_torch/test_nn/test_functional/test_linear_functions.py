@@ -6,8 +6,12 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
-def x_and_linear(draw, dtypes):
+def _x_and_linear(draw, dtypes):
     dtype = draw(dtypes)
     in_features = draw(helpers.ints(min_value=1, max_value=2))
     out_features = draw(helpers.ints(min_value=1, max_value=2))
@@ -34,10 +38,14 @@ def x_and_linear(draw, dtypes):
     return dtype, x, weight, bias
 
 
+# --- Main --- #
+# ------------ #
+
+
 # linear
 @handle_frontend_test(
     fn_tree="torch.nn.functional.linear",
-    dtype_x_weight_bias=x_and_linear(
+    dtype_x_weight_bias=_x_and_linear(
         dtypes=helpers.get_dtypes("float", full=False),
     ),
 )
@@ -48,10 +56,12 @@ def test_torch_linear(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
