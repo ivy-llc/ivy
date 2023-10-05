@@ -3931,6 +3931,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         """
         return self._static_trim_zeros(self, trim=trim)
 
+
 def concat_from_sequence(
     self: ivy.Container,
     /,
