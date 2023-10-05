@@ -135,7 +135,7 @@ if __name__ == "__main__":
                 "_id": function_name,
                 "test_path": test_path,
                 "submodule": submodule,
-                "workflow": run_id
+                "workflow": run_id,
             }
 
             for backend in status:
