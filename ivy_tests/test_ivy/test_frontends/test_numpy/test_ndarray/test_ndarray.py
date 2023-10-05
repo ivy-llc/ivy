@@ -32,7 +32,6 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_manipulation_routines.tes
     _squeeze_helper,
 )
 
-
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
 
 
