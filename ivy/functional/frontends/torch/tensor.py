@@ -1285,7 +1285,7 @@ class Tensor:
     def __eq__(self, other):
         return torch_frontend.eq(self, other)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
     def __gt__(self, other):
         return torch_frontend.greater(self, other)
 
