@@ -68,7 +68,7 @@ if __name__ == "__main__":
             if backends[0] == "all":
                 backends = ["numpy", "jax", "tensorflow", "torch", "paddle"]
 
-            test_path = test_arg[0]
+            test_path = test_arg[0].strip()
             is_frontend_test = "test_frontends" in test_path
             collection = db["frontend_tests"] if is_frontend_test else db["ivy_tests"]
             submodule, function_name = get_submodule_and_function_name(
