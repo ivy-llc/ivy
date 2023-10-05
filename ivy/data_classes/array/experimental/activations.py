@@ -360,3 +360,43 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([-0.23840582,  0.        ,  0.23840582])
         """
         return ivy.tanhshrink(self._data, out=out)
+
+    def celu(
+        self: ivy.Array,
+        /,
+        *,
+        alpha: float = 1.0,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.celu. This method simply wraps the
+        function, and so the docstring for ivy.celu also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        alpha
+            the alpha (negative slope) value for CELU formulation.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the celu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([0.39, -0.85])
+        >>> y = x.celu()
+        >>> print(y)
+        ivy.array([ 0.39, -0.57])
+        """
+        return ivy.celu(self._data, alpha=alpha, complex_mode=complex_mode, out=out)

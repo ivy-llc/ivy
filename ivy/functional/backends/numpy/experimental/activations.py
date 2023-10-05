@@ -102,6 +102,20 @@ def elu(
 elu.support_native_out = True
 
 
+@_scalar_output_to_0d_array
+def celu(
+    x: np.ndarray,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return (np.maximum(0, x) + alpha * np.expm1(np.minimum(0, x) / alpha)).astype(
+        x.dtype
+    )
+
+
 @with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, backend_version)
 @_scalar_output_to_0d_array
 def hardtanh(

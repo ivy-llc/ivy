@@ -72,6 +72,27 @@ def elu(
     return ivy.astype(ret, x.dtype)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
+def celu(
+    x: torch.Tensor,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.celu(x, alpha=alpha)
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def hardtanh(
     x: torch.Tensor,

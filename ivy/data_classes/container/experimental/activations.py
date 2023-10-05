@@ -935,7 +935,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         )
 
     @staticmethod
-    def _static_hardtaanh(
+    def _static_hardtanh(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1057,7 +1057,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             b: ivy.array([1., -0.2])
         }
         """
-        return self._static_hardtaanh(
+        return self._static_hardtanh(
             self,
             max_val=max_val,
             min_val=min_val,
@@ -1185,5 +1185,142 @@ class _ContainerWithActivationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def _static_celu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        alpha: ivy.Container = 1.0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.celu. This method simply wraps the
+        function, and so the docstring for ivy.celu also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        alpha
+            array or scalar specifying the alpha value for CELU formlation.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+             a container with the celu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = ivy.Container.static_celu(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "celu",
+            x,
+            alpha=alpha,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            complex_mode=complex_mode,
+            out=out,
+        )
+
+    def celu(
+        self: ivy.Container,
+        /,
+        *,
+        alpha: ivy.Container = 1.0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.leaky_relu. This method simply
+        wraps the function, and so the docstring for ivy.leaky_relu also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        alpha
+            array or scalar specifying alpha (negative slope) value for CELU
+            formulation.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+           a container with the celu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = x.celu()
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.57]),
+            b: ivy.array([1., -0.18])
+        }
+        """
+        return self._static_celu(
+            self,
+            alpha=alpha,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
