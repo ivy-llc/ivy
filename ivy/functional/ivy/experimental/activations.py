@@ -584,3 +584,150 @@ def hardtanh(
     }
     """
     return current_backend(x).hardtanh(x, max_val=max_val, min_val=min_val, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def tanhshrink(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Apply the tanhshrink function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the tanhshrink activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.tanhshrink(x)
+    >>> print(y)
+    ivy.array([-0.23840582,  0.23840582,  1.03597236])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.tanhshrink()
+    >>> print(y)
+    ivy.array([-0.23840582,  0.23840582,  1.03597236])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.tanhshrink(x)
+    >>> print(y)
+    ivy.array([[-0.43827677,  2.80100036,  1.12954807],
+                [ 0.76459098,  3.20044947, -5.60000372]])
+    """
+    return current_backend(x).tanhshrink(x, out=out)
+
+
+def _celu_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original: Optional[Callable] = None,
+    alpha: float = 1.0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    # implementation of max(0, x) for complex numbers
+    complex_max = ivy.where(
+        (
+            ivy.logical_or(
+                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+            )
+        ),
+        ivy.astype(0.0, x.dtype),
+        x,
+    )
+
+    # implementation of min(0, x) for complex numbers
+    complex_min = ivy.where(
+        (
+            ivy.logical_or(
+                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+            )
+        ),
+        x,
+        ivy.astype(0.0, x.dtype),
+    )
+    return complex_max + alpha * ivy.expm1(complex_min / alpha)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+@handle_complex_input
+def celu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Apply the Continously Differentiable Exponential Linear Unit (CELU) activation
+    function to each element of the input.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    alpha
+        The alpha value (negative slope) for the CELU formulation. Default is ``1.0``
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The input array with celu applied element-wise.
+
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([0.39, -0.85])
+    >>> y = ivy.celu(x)
+    >>> y
+    ivy.array([ 0.39, -0.57])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+    >>> y = ivy.celu(x)
+    >>> y
+    {
+        a: ivy.array([0.38999999, -0.57]),
+        b: ivy.array([1., -0.18])
+    }
+    """
+    return current_backend(x).celu(x, alpha=alpha, out=out)
+
+
+celu.jax_like = _celu_jax_like
