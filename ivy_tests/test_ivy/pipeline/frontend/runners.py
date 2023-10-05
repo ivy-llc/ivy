@@ -871,7 +871,12 @@ class GTMethodTestCaseSubRunner(TestCaseSubRunner):
             (method_args_result, method_kwargs_result, _),
         ) = self._search_args(init_all_as_kwargs_np, method_all_as_kwargs_np)
         args_constructor, kwargs_constructor, args_method, kwargs_method = (
-            self._preprocess_args(init_args_result, init_kwargs_result)
+            self._preprocess_args(
+                init_args_result,
+                init_kwargs_result,
+                method_args_result,
+                method_kwargs_result,
+            )
         )
         return self._call_function(
             args_constructor, kwargs_constructor, args_method, kwargs_method
