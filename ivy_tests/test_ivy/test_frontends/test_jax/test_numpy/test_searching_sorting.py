@@ -5,11 +5,11 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
-    _broadcastable_trio,
-)
 from ...test_numpy.test_sorting_searching_counting.test_searching import (
     _broadcastable_trio as _where_helper,
+)
+from ...test_numpy.test_sorting_searching_counting.test_searching import (
+    __extract_strategy,
 )
 
 
@@ -172,26 +172,29 @@ def test_jax_argwhere(
 # extract
 @handle_frontend_test(
     fn_tree="jax.numpy.extract",
-    broadcastables=_broadcastable_trio(),
+    dtype_and_x=__extract_strategy(),
+    test_with_out=st.just(False),
 )
 def test_jax_extract(
-    broadcastables,
+    dtype_and_x,
     frontend,
     backend_fw,
     test_flags,
     fn_tree,
     on_device,
 ):
-    cond, xs, dtype = broadcastables
+    dtype_cond, cond = dtype_and_x[0]
+    dtype_arr, arr = dtype_and_x[1]
+
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=dtype_cond + dtype_arr,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        condition=cond,
-        arr=xs[0],
+        condition=cond[0],
+        arr=arr[0],
     )
 
 

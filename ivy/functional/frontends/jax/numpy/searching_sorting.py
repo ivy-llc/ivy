@@ -58,8 +58,22 @@ def argwhere(a, /, *, size=None, fill_value=None):
 
 @to_ivy_arrays_and_back
 def extract(condition, arr):
-    if condition.dtype is not bool:
-        condition = condition != 0
+    # convert condition to an array of boolean data type.
+    condition = ivy.asarray(condition, dtype=bool)
+
+    # ensure if condtion is an array
+    if not isinstance(condition, ivy.np.ndarray):
+        raise ivy.utils.exceptions.IvyError(
+            "The 'condition' must be an array-like object with non-zero entries."
+        )
+
+    # ensure the condition and arr have the same size
+    if condition.shape != arr.shape:
+        raise ivy.utils.exceptions.IvyError(
+            f"The shape of 'condition' ({condition.shape}) and 'array' ({arr.shape}) do"
+            " not match. They must have same shape."
+        )
+    # perform extraction
     return arr[condition]
 
 
