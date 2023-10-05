@@ -207,9 +207,9 @@ def mel_weight_matrix(
 
 
 def unsorted_segment_mean(
-        data: np.ndarray,
-        segment_ids: np.ndarray,
-        num_segments: int,
+    data: np.ndarray,
+    segment_ids: np.ndarray,
+    num_segments: int,
 ) -> np.ndarray:
     # Check if the parameters are valid
     ivy.utils.assertions.check_unsorted_segment_min_valid_params(

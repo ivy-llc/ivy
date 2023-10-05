@@ -1138,6 +1138,7 @@ def mel_weight_matrix(
         upper_edge_hertz,
     )
 
+
 # unsorted_segment_mean
 @handle_exceptions
 @handle_nestable
@@ -1173,4 +1174,3 @@ def unsorted_segment_mean(
     """
     # Get the current backend and call its `unsorted_segment_mean` function
     return ivy.current_backend().unsorted_segment_mean(data, segment_ids, num_segments)
-

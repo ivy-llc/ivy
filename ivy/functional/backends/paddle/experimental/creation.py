@@ -224,6 +224,7 @@ def mel_weight_matrix(
     )
     return paddle.transpose(mel_mat, (1, 0))
 
+
 def unsorted_segment_mean(
     data: paddle.Tensor,
     segment_ids: paddle.Tensor,
@@ -243,7 +244,7 @@ def unsorted_segment_mean(
     res = paddle.zeros((num_segments,) + tuple(data.shape[1:]), dtype=data.dtype)
 
     count = paddle.bincount(segment_ids)
-    count = paddle.where(count > 0, count, paddle.to_tensor([1], dtype='int32'))
+    count = paddle.where(count > 0, count, paddle.to_tensor([1], dtype="int32"))
     res = unsorted_segment_sum(data, segment_ids, num_segments)
     res = res / paddle.reshape(count, (-1, 1))
 

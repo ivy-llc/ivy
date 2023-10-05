@@ -1203,14 +1203,14 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_unsorted_segment_mean(
-            data: ivy.Container,
-            segment_ids: ivy.Container,
-            num_segments: Union[int, ivy.Container],
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-            to_apply: Union[bool, ivy.Container] = True,
-            prune_unapplied: Union[bool, ivy.Container] = False,
-            map_sequences: Union[bool, ivy.Container] = False,
+        data: ivy.Container,
+        segment_ids: ivy.Container,
+        num_segments: Union[int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         Computes the mean of values in the input data based on segment identifiers.
@@ -1251,12 +1251,13 @@ class _ContainerWithCreationExperimental(ContainerBase):
         )
 
     def unsorted_segment_mean(
-            self: ivy.Container,
-            segment_ids: ivy.Container,
-            num_segments: Union[int, ivy.Container],
+        self: ivy.Container,
+        segment_ids: ivy.Container,
+        num_segments: Union[int, ivy.Container],
     ) -> ivy.Container:
         """
-        Computes the mean of values in the input array or container based on segment identifiers.
+        Computes the mean of values in the input array or container based on segment
+        identifiers.
 
         Parameters
         ----------

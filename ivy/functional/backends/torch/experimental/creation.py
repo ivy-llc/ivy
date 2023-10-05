@@ -248,9 +248,9 @@ def mel_weight_matrix(
 
 
 def unsorted_segment_mean(
-        data: torch.Tensor,
-        segment_ids: torch.Tensor,
-        num_segments: Union[int, torch.Tensor],
+    data: torch.Tensor,
+    segment_ids: torch.Tensor,
+    num_segments: Union[int, torch.Tensor],
 ) -> torch.Tensor:
     # Check if the parameters are valid
     ivy.utils.assertions.check_unsorted_segment_min_valid_params(
@@ -258,7 +258,9 @@ def unsorted_segment_mean(
     )
 
     # Initialize an array to store the sum of elements for each segment
-    segment_sum = torch.zeros((num_segments,) + data.shape[1:], dtype=data.dtype, device=data.device)
+    segment_sum = torch.zeros(
+        (num_segments,) + data.shape[1:], dtype=data.dtype, device=data.device
+    )
 
     # Initialize an array to keep track of the number of elements in each segment
     counts = torch.zeros(num_segments, dtype=torch.int64, device=data.device)

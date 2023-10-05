@@ -163,6 +163,7 @@ def mel_weight_matrix(
     mel_weights = jnp.maximum(zero, jnp.minimum(lower_slopes, upper_slopes))
     return jnp.pad(mel_weights, [[1, 0], [0, 0]])
 
+
 def unsorted_segment_mean(
     data: JaxArray,
     segment_ids: JaxArray,

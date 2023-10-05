@@ -266,9 +266,9 @@ class _ArrayWithCreationExperimental(abc.ABC):
         )
 
     def unsorted_segment_mean(
-            self: ivy.Array,
-            segment_ids: ivy.Array,
-            num_segments: Union[int, ivy.Array],
+        self: ivy.Array,
+        segment_ids: ivy.Array,
+        num_segments: Union[int, ivy.Array],
     ) -> ivy.Array:
         """
         Computes the mean of values in the array 'self' based on segment identifiers.
