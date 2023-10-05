@@ -58,10 +58,9 @@ def _shape_lam_dtype(draw):
     seed=helpers.ints(min_value=0, max_value=10),
     test_with_out=st.just(False),
 )
-
 def test_create_rng_state():
     seed = 42
-    expected_result = ivy.array([seed, 0], 'int32')
+    expected_result = ivy.array([seed, 0], "int32")
     result = ivy.create_rng_state(seed)
     assert ivy.array_equal(result, expected_result)
 

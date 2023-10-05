@@ -7,6 +7,12 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
+@handle_tf_dtype
+def create_rng_state(seed):
+    seed_array = tf.constant([seed, 0], dtype=tf.int32)
+    return ivy.array(seed_array.numpy(), "int32")
+
+
 @to_ivy_arrays_and_back
 def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
     return ivy.gamma(alpha, beta, shape=shape, dtype=dtype, seed=seed)
@@ -19,11 +25,6 @@ def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
 def normal(shape, mean=0.0, stddev=1.0, dtype=ivy.float32, seed=None, name=None):
     return ivy.random_normal(mean=mean, std=stddev, shape=shape, dtype=dtype, seed=seed)
 
-
-@handle_tf_dtype
-def create_rng_state(seed):
-    seed_array = tf.constant([seed, 0], dtype=tf.int32)
-    return ivy.array(seed_array.numpy(), 'int32')
 
 @with_unsupported_dtypes(
     {"2.14.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
