@@ -2183,8 +2183,6 @@ class Tensor:
     lt_ = less_
     le = less_equal
     le_ = less_equal_
-    ne = not_equal
-    ne_ = not_equal_
 
 
 class Size(tuple):

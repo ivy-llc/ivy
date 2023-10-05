@@ -120,9 +120,7 @@ def unique_inverse(
     axis: Optional[int] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
     if x.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
-        x, x_dtype = x.cast("float32"), x.dtype
-    else:
-        x.dtype
+        x = x.cast("float32")
 
     if axis is not None:
         unique, inverse_val = paddle.unique(x, return_inverse=True, axis=axis)

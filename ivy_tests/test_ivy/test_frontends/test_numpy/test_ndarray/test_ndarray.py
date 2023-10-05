@@ -31,9 +31,6 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.te
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_manipulation_routines.test_changing_number_of_dimensions import (  # noqa
     _squeeze_helper,
 )
-from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    _statistical_dtype_values,
-)
 
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
 
