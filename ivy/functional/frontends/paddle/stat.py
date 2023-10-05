@@ -6,6 +6,11 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 
 
+def histogram(input, bins=100, min=0, max=0, name=None):
+    range = (min, max)
+    return ivy.histogram(a=input, bins=bins, range=range)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def mean(input, axis=None, keepdim=False, out=None):

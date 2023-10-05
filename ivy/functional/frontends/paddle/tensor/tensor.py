@@ -140,6 +140,9 @@ class Tensor:
     def cosh(self, name=None):
         return paddle_frontend.cosh(self)
 
+    def histogram(self, input, bins=100, min=0, max=0, name=None):
+        return paddle_frontend.histogram(self, input=input, bins=bins, min=min, max=max)
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def log(self, name=None):
         return paddle_frontend.log(self)

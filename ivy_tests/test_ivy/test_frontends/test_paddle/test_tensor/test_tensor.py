@@ -175,6 +175,65 @@ def _get_dtype_and_values_for_lerp(draw):
         return input_dtype, x[0], x[1], weight
 
 
+# histogram
+def _histogram_helper(draw):
+    dtype_input = draw(st.sampled_from(draw(helpers.get_dtypes("float"))))
+    bins = draw(
+        helpers.array_values(
+            dtype=dtype_input,
+            shape=(draw(helpers.ints(min_value=1, max_value=10)),),
+            abs_smallest_val=-10,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    bins = np.asarray(sorted(set(bins)), dtype=dtype_input)
+    if len(bins) == 1:
+        bins = int(abs(bins[0]))
+        if bins == 0:
+            bins = 1
+        if dtype_input in draw(helpers.get_dtypes("unsigned")):
+            range = (
+                draw(
+                    helpers.floats(
+                        min_value=0, max_value=10, exclude_min=False, exclude_max=False
+                    )
+                ),
+                draw(
+                    helpers.floats(
+                        min_value=11, max_value=20, exclude_min=False, exclude_max=False
+                    )
+                ),
+            )
+        else:
+            range = (
+                draw(helpers.floats(min_value=-10, max_value=0)),
+                draw(helpers.floats(min_value=1, max_value=10)),
+            )
+        range = draw(st.sampled_from([range, None]))
+    else:
+        range = None
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=5
+        )
+    )
+    a = draw(
+        helpers.array_values(
+            dtype=dtype_input,
+            shape=shape,
+            min_value=-20,
+            max_value=20,
+        )
+    )
+    return (
+        a,
+        bins,
+        range,
+        dtype_input,
+    )
+
+
 @st.composite
 def _reshape_helper(draw):
     # generate a shape s.t len(shape) > 0
@@ -2314,6 +2373,40 @@ def test_paddle_tensor_greater_than(
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"y": x[1]},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# histogram
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="histogram",
+    values=_histogram_helper(),
+    test_gradients=st.just(False),
+)
+def test_paddle_tensor_histogram(
+    values,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input, bins, range, input_dtype = values
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "input": input,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"bins": bins, "min": range[0], "max": range[1]},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
