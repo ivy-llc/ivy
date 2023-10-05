@@ -73,7 +73,7 @@ def can_cast(from_, to, casting="safe"):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64")},
+    {"2.14.0 and below": ("float16", "float32", "float64")},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -82,7 +82,7 @@ def finfo(dtype):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("integer",)},
+    {"2.14.0 and below": ("integer",)},
     "jax",
 )
 @to_ivy_arrays_and_back
