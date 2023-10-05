@@ -1239,6 +1239,16 @@ class _ContainerWithCreationExperimental(ContainerBase):
             For each segment, it computes the mean of values in 'data' where
             'segment_ids' equals the segment ID.
         """
+        return ContainerBase.cont_multi_map_in_function(
+            "unsorted_segment_mean",
+            data,
+            segment_ids,
+            num_segments,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
 
     def unsorted_segment_mean(
             self: ivy.Container,
