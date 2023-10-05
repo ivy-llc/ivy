@@ -145,7 +145,8 @@ def pytest_configure(config):
                 # we now pack the queue and the process and store it in dict
                 # for future access
                 mod_backend[fw] = (proc, input_queue, output_queue)
-        Pipeline.set_mod_backend(mod_backend)
+        if mod_backend != {}:
+            Pipeline.set_mod_backend(mod_backend)
 
     else:
         # no multiprocessing if multiversion
@@ -175,7 +176,8 @@ def pytest_configure(config):
             # we now pack the queue and the process and store it in dict
             # for future access
             mod_frontend[fw] = (proc, input_queue, output_queue)
-        FrontendPipeline.set_mod_frontend(mod_frontend)
+        if mod_frontend != {}:
+            FrontendPipeline.set_mod_frontend(mod_frontend)
     # trace_graph
     raw_value = config.getoption("--trace_graph")
     if raw_value == "both":
@@ -338,7 +340,7 @@ def pytest_addoption(parser):
     )
 
     parser.addoption("--device", action="store", default="cpu")
-    parser.addoption("-B", "--backend", action="store", default="all")
+    parser.addoption("-B", "--backend", action="store", default="tensorflow")
     parser.addoption("--trace_graph", action="store_true")
     parser.addoption("--with_implicit", action="store_true")
     parser.addoption("--frontend", action="store", default=None)
