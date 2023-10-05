@@ -68,15 +68,31 @@ def vjp(func: Callable, *primals):
 
 
 def jvp(func: Callable, primals, tangents):
-    def grad_fn(x_in):
-        return ivy.to_native(
-            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
-        )
+    flattened_primals, ret_idxs = _flatten_containers(primals)
+    flattened_tangents, _ = _flatten_containers(tangents)
 
-    primals_out, tangents_out = ivy.outputs_to_ivy_arrays(torch.func.jvp)(
+    def grad_fn(*x_in):
+        return _flatten_containers(
+            ivy.to_native(
+                func(
+                    *ivy.to_ivy(
+                        _rebuild_flattened_containers(x_in, ret_idxs), nested=True
+                    )
+                ),
+                nested=True,
+                include_derived=True,
+            )
+        )[0]
+
+    primals_out, tangents_out = ivy.outputs_to_ivy_arrays(
+        torch.autograd.functional.jvp
+    )(
         grad_fn,
-        ivy.to_native(primals, nested=True),
-        ivy.to_native(tangents, nested=True),
+        ivy.to_native(flattened_primals, nested=True),
+        ivy.to_native(flattened_tangents, nested=True),
     )
+
+    primals_out = _rebuild_flattened_containers(primals_out, ret_idxs)
+    tangents_out = _rebuild_flattened_containers(tangents_out, ret_idxs)
 
     return (primals_out, tangents_out)

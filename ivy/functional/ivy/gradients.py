@@ -273,10 +273,10 @@ def _non_finite_to_zero(xs):
 
 def _flatten_containers(inputs):
     """
-    Flatten containers into a lists of arrays.
+    Flatten containers into a single tuple of arrays.
 
-    Returns flattened arrays and the indices of the arrays in the
-    original containers.
+    Returns a flattened tuple of arrays and the indices of the arrays in
+    the original containers.
     """
     values = []
     ret_idxs = []
@@ -284,25 +284,30 @@ def _flatten_containers(inputs):
         if isinstance(input, ivy.Container):
             grad_arr_idxs = ivy.nested_argwhere(input, lambda x: ivy.is_array(x))
             grad_arr_values = ivy.multi_index_nest(input, grad_arr_idxs)
-            values.append(grad_arr_values)
+            values.extend(grad_arr_values)
             ret_idxs.append(grad_arr_idxs)
         elif ivy.is_array(input):
             values.append(input)
             ret_idxs.append(None)
-    return values, ret_idxs
+    return tuple(values), ret_idxs
 
 
 def _rebuild_flattened_containers(outputs, ret_idxs):
-    """Rebuild the containers from the flattened arrays."""
+    """Rebuild the containers from the flattened arrays into a single tuple."""
     rebuilt_outputs = []
-    for idx, ret_idx in enumerate(ret_idxs):
+    curr_idx = 0
+    for ret_idx in ret_idxs:
         if ret_idx is None:
-            rebuilt_outputs.append(outputs[idx])
+            rebuilt_outputs.append(outputs[curr_idx])
+            curr_idx += 1
         else:
             cont = ivy.Container()
-            ivy.insert_into_nest_at_indices(cont, ret_idx, outputs[idx])
+            num_elements = len(ret_idx)
+            cont_outputs = outputs[curr_idx : curr_idx + num_elements]
+            ivy.insert_into_nest_at_indices(cont, ret_idx, cont_outputs)
             rebuilt_outputs.append(cont)
-    return rebuilt_outputs
+            curr_idx += num_elements
+    return tuple(rebuilt_outputs)
 
 
 # Private Variable Helpers #
