@@ -64,7 +64,7 @@ if __name__ == "__main__":
             backends = ["all"]
             test_arg = line.split(",")
             if len(test_arg) > 1:
-                backends = [test_arg[1]]
+                backends = [test_arg[1].strip()]
             if backends[0] == "all":
                 backends = ["numpy", "jax", "tensorflow", "torch", "paddle"]
 
@@ -162,7 +162,6 @@ if __name__ == "__main__":
                     }
                 test_info["results"] = {frontend_version: test_info["results"]}
 
-            json.dump({"$set": test_info}, open("output.json", "w"))
             id = test_info.pop("_id")
             print(collection.update_one({"_id": id}, {"$set": test_info}, upsert=True))
 
