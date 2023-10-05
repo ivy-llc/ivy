@@ -340,7 +340,7 @@ def pytest_addoption(parser):
     )
 
     parser.addoption("--device", action="store", default="cpu")
-    parser.addoption("-B", "--backend", action="store", default="tensorflow")
+    parser.addoption("-B", "--backend", action="store", default="all")
     parser.addoption("--trace_graph", action="store_true")
     parser.addoption("--with_implicit", action="store_true")
     parser.addoption("--frontend", action="store", default=None)
