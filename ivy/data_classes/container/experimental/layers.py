@@ -2406,3 +2406,272 @@ class _ContainerWithLayersExperimental(ContainerBase):
             name=name,
             out=out,
         )
+
+    @staticmethod
+    def _static_sliding_window(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        window_size: Union[int, Tuple[int, int], Tuple[int, int, int], ivy.Container],
+        /,
+        *,
+        stride: Union[int, Tuple[int, int], ivy.Container] = 1,
+        dilation: Union[int, Tuple[int, int], ivy.Container] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]], ivy.Container] = "VALID",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sliding_window. This method simply
+        wraps the function, and so the docstring for ivy.sliding_window also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        input
+            An array representing the base area on which the window is going to
+            slide over.
+        window_size
+            Size of the sliding window for each dimension of the input.
+        stride
+            The stride of the sliding window for each dimension of input
+        padding
+            Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’
+            (no padding), or a sequence of n (low, high) integer pairs that give the
+            padding to apply before and after each spatial dimension.
+        dilation
+            The stride between elements within a sliding window, must be > 0.
+
+        Returns
+        -------
+        ret
+            The result of the sliding window operation.
+
+        Examples
+        --------
+        >>> x = ivy.Container(
+        ...     a=ivy.array([[1, 2, 3, 4],
+        ...                  [5, 6, 7, 8],
+        ...                  [9, 10, 11, 12]]),
+        ...     b=ivy.array([[13, 14, 15, 16],
+        ...                  [17, 18, 19, 20],
+        ...                  [21, 22, 23, 24]])
+        ... )
+        >>> result = ivy.Container._static_sliding_window(x, (2, 2))
+        >>> print(result)
+        {
+            a: ivy.array([[[ 1,  2,  5,  6],
+                           [ 2,  3,  6,  7],
+                           [ 3,  4,  7,  8]],
+
+                           [[ 5,  6,  9, 10],
+                           [ 6,  7, 10, 11],
+                           [ 7,  8, 11, 12]]]),
+            b: ivy.array([[[13, 14, 17, 18],
+                            [14, 15, 18, 19],
+                            [15, 16, 19, 20]],
+
+                            [[17, 18, 21, 22],
+                            [18, 19, 22, 23],
+                            [19, 20, 23, 24]]])
+
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "sliding_window",
+            input,
+            window_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def sliding_window(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        window_size: Union[int, Tuple[int, int], Tuple[int, int, int], ivy.Container],
+        /,
+        *,
+        stride: Union[int, Tuple[int, int], ivy.Container] = 1,
+        dilation: Union[int, Tuple[int, int], ivy.Container] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]], ivy.Container] = "VALID",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sliding_window. This method simply
+        wraps the function, and so the docstring for ivy.sliding_window also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        input
+            An array representing the base area on which the window is going to
+            slide over.
+        window_size
+            Size of the sliding window for each dimension of the input.
+        stride
+            The stride of the sliding window for each dimension of input
+        padding
+            Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’
+            (no padding), or a sequence of n (low, high) integer pairs that give the
+            padding to apply before and after each spatial dimension.
+        dilation
+            The stride between elements within a sliding window, must be > 0.
+
+        Returns
+        -------
+        ret
+            The result of the sliding window operation.
+
+        Examples
+        --------
+        >>> x = ivy.Container(
+        ...     a=ivy.array([[1, 2, 3, 4],
+        ...                  [5, 6, 7, 8],
+        ...                  [9, 10, 11, 12]]),
+        ...     b=ivy.array([[13, 14, 15, 16],
+        ...                  [17, 18, 19, 20],
+        ...                  [21, 22, 23, 24]])
+        ... )
+        >>> x.sliding_window((2, 2))
+        {
+            a: ivy.array([[[ 1,  2,  5,  6],
+                           [ 2,  3,  6,  7],
+                           [ 3,  4,  7,  8]],
+                           [[ 5,  6,  9, 10],
+                           [ 6,  7, 10, 11],
+                           [ 7,  8, 11, 12]]]),
+            b: ivy.array([[[13, 14, 17, 18],
+                            [14, 15, 18, 19],
+                            [15, 16, 19, 20]],
+                            [[17, 18, 21, 22],
+                            [18, 19, 22, 23],
+                            [19, 20, 23, 24]]])
+        }
+        """
+        return self._static_sliding_window(
+            self,
+            window_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_max_unpool1d(
+        input: ivy.Container,
+        indices: ivy.Container,
+        kernel_size: Union[Tuple[int], int],
+        /,
+        *,
+        strides: Union[int, Tuple[int]] = None,
+        padding: Union[int, Tuple[int]] = 0,
+        data_format: Union[str, ivy.Container] = "NCW",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.max_unpool1d.
+
+        Parameters
+        ----------
+        input
+            Pooled input image *[batch_size, w, d_in]*.
+        indices
+            Indices obtained from the corresponding max pooling operation.
+        kernel_size
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
+        data_format
+            NWC" or "NCW". Defaults to "NCW".
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            The result of the unpooling operation.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "max_unpool1d",
+            input,
+            indices,
+            kernel_size,
+            strides=strides,
+            padding=padding,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def max_unpool1d(
+        self,
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        kernel_size: Union[Tuple[int], int],
+        /,
+        *,
+        strides: Union[int, Tuple[int]] = None,
+        padding: Union[int, Tuple[int]] = 0,
+        data_format: Optional[str] = "NCW",
+    ) -> ivy.Container:
+        """
+        Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+
+        Parameters
+        ----------
+        self
+            Pooled input image *[batch_size, w, d_in]*.
+        indices
+            Indices obtained from the corresponding max pooling operation.
+        kernel_size
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
+        data_format
+            NWC" or "NCW". Defaults to "NCW".
+
+        Returns
+        -------
+        ret
+            The result of the unpooling operation.
+        """
+        return self.static_max_unpool1d(
+            self,
+            indices,
+            kernel_size,
+            strides=strides,
+            padding=padding,
+            data_format=data_format,
+        )
