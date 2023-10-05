@@ -38,6 +38,30 @@ def amax(
 amax.support_native_out = True
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amin(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return torch.amin(x, dim=axis, keepdim=keepdims)
+
+
+amin.support_native_out = True
+
+
 @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
 def lgamma(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.lgamma(x, out=out)
