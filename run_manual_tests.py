@@ -26,9 +26,10 @@ def get_submodule_and_function_name(test_path, is_frontend_test=False):
     if is_frontend_test:
         with open(test_path.split("::")[0]) as test_file:
             test_file_content = test_file.read()
-            test_function_idx = test_file_content.find(test_function.split(",")[0])
+            test_name = test_function.split(",")[0]
+            test_function_idx = test_file_content.find(f"def {test_name}")
             function_name = test_file_content[
-                test_file_content[:test_function_idx].find('fn_tree="') + 9 :
+                test_file_content[:test_function_idx].rfind('fn_tree="') + 9 :
             ].split('"')[0]
     return submodule, function_name
 
@@ -41,6 +42,11 @@ if __name__ == "__main__":
     gpu_flag = sys.argv[5]
     workflow_id = sys.argv[6]
     priority_flag = sys.argv[7]
+
+    if len(sys.argv) > 8 and sys.argv[8] != "null":
+        run_id = sys.argv[8]
+    else:
+        run_id = f"https://github.com/unifyai/ivy/actions/runs/{workflow_id}"
 
     device = "cpu"
     if gpu_flag == "true":
@@ -77,11 +83,13 @@ if __name__ == "__main__":
             versions = dict()
 
             for backend in backends:
-                versions[backend] = get_latest_package_version(backend)
+                versions[backend] = get_latest_package_version(backend).replace(
+                    ".", "_"
+                )
                 if version_flag == "true":
                     # This would most probably break at the moment
                     [backend, backend_version] = backend.split("/")
-                    versions[backend] = backend_version
+                    versions[backend] = backend_version.replace(".", "_")
                     command = (
                         f"docker run --rm --env REDIS_URL={redis_url} --env"
                         f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
@@ -116,7 +124,7 @@ if __name__ == "__main__":
                         f" -m pytest --tb=short {test_path} --backend"
                         f" {backend} --num-examples 1 --with-transpile"
                     )
-                    ret = os.system(command)
+                    os.system(command)
 
             report_path = os.path.join(
                 __file__[: __file__.rfind(os.sep)], "report.json"
@@ -132,27 +140,14 @@ if __name__ == "__main__":
                 "submodule": submodule,
             }
 
-            for backend in status:
-                backend_specific_info[backend] = {
-                    "status": {device: status[backend]},
-                }
-                if status[backend] and report_content:
-                    backend_specific_info[backend] = {
-                        versions[backend]: {
-                            **backend_specific_info[backend],
-                            "nodes": report_content["nodes"][backend],
-                            "time": report_content["time"][backend],
-                            "args": report_content["args"][backend],
-                            "kwargs": report_content["kwargs"][backend],
-                        }
-                    }
-            test_info["results"] = backend_specific_info
-
+            prefix_str = ""
             if is_frontend_test:
                 frontend = test_path[test_path.find("test_frontends") :].split(os.sep)[
                     1
                 ][5:]
-                frontend_version = get_latest_package_version(frontend)
+                frontend_version = get_latest_package_version(frontend).replace(
+                    ".", "_"
+                )
                 test_info["frontend"] = frontend
                 if report_content:
                     test_info = {
@@ -160,10 +155,30 @@ if __name__ == "__main__":
                         "fw_time": report_content["fw_time"],
                         "ivy_nodes": report_content["ivy_nodes"],
                     }
-                test_info["results"] = {frontend_version: test_info["results"]}
+                prefix_str = f"{frontend_version}."
+
+            for backend in status:
+                test_info[
+                    f"{prefix_str}{backend}.{versions[backend]}.status.{device}"
+                ] = status[backend]
+                test_info[
+                    f"{prefix_str}{backend}.{versions[backend]}.workflow.{device}"
+                ] = run_id
+                if status[backend] and report_content:
+                    updates = {
+                        "nodes": report_content["nodes"][backend],
+                        "time": report_content["time"][backend],
+                        "args": report_content["args"][backend],
+                        "kwargs": report_content["kwargs"][backend],
+                    }
+                    for key, value in updates.items():
+                        test_info[
+                            f"{prefix_str}{backend}.{versions[backend]}.{key}"
+                        ] = value
 
             id = test_info.pop("_id")
             print(collection.update_one({"_id": id}, {"$set": test_info}, upsert=True))
+            status.clear()
 
     if any(not result for _, result in status.items()):
         exit(1)
