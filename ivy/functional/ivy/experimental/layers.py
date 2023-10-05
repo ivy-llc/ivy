@@ -60,7 +60,7 @@ def max_pool1d(
         indicating the per-dimension paddings. (e.g. 2, [(1, 0)])
     data_format
         "NWC" or "NCW". Defaults to "NWC".
-    dilaton
+    dilation
         The stride between elements within a sliding window, must be > 0.
     ceil_mode
         If True, ceil is used instead of floor to compute the output shape.
@@ -148,7 +148,7 @@ def max_pool2d(
         indicating the per-dimension paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
-    dilaton
+    dilation
         The stride between elements within a sliding window, must be > 0.
     ceil_mode
         If True, ceil is used instead of floor to compute the output shape.
@@ -235,7 +235,7 @@ def max_pool3d(
         indicating the per-dimension paddings. (e.g. 2, [(1, 0), (0, 1), (1, 1)])
     data_format
         "NDHWC" or "NCDHW". Defaults to "NDHWC".
-    dilaton
+    dilation
         The stride between elements within a sliding window, must be > 0.
     ceil_mode
         If True, ceil is used instead of floor to compute the output shape.
