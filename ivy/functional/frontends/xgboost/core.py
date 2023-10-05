@@ -112,7 +112,7 @@ class Booster:
         )
 
         # create gbm(as for now only gblinear booster is available)
-        self.gbm = GBLinear(params, compile=compile)
+        self.gbm = GBLinear(params, compile=compile, cache=cache)
 
     def update(self, dtrain, dlabel, iteration, fobj=None):
         """

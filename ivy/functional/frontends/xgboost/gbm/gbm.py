@@ -9,7 +9,7 @@ from copy import deepcopy
 
 
 class GBLinear:
-    def __init__(self, params=None, compile=False):
+    def __init__(self, params=None, compile=False, cache=None):
         # we start boosting from zero
         self.num_boosted_rounds = 0
 
@@ -66,12 +66,16 @@ class GBLinear:
         self.reg_alpha_denorm = self.sum_instance_weight_ * params["reg_alpha"]
 
         # compilation block
-        # ToDo: add eager compilation
         self.compile = compile
         if self.compile:
             self._comp_pred = ivy.trace_graph(_pred)
             self._comp_get_gradient = ivy.trace_graph(_get_gradient)
             self._comp_updater = ivy.trace_graph(self.updater)
+
+            # run each function to compile it
+            pred = self._comp_pred(cache[0], self.weight, self.base_margin)
+            gpair = self._comp_get_gradient(self.obj, pred, cache[1], self.scale_pos_weight)
+            self._comp_updater(gpair, cache[0], self.learning_rate, self.weight, self.num_feature, 0, self.reg_alpha_denorm, self.reg_lambda_denorm)
 
     def boosted_rounds(self):
         return self.num_boosted_rounds
