@@ -93,6 +93,11 @@ def chain_matmul(*matrices, out=None):
 def cholesky(input, upper=False, *, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
 
+@to_ivy_arrays_and_back
+def cholesky_inverse(input, upper=False, *, out=None):
+    cholesky_matrix = cholesky(input, upper=upper, out=out)
+    inv_matrix = ivy.inverse(cholesky_matrix)
+    return ivy.matmul(inv_matrix, inv_matrix.T)
 
 @to_ivy_arrays_and_back
 def det(input):

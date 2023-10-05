@@ -14,7 +14,6 @@ from collections import namedtuple
 def cholesky(input, *, upper=False, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
 
-
 @to_ivy_arrays_and_back
 def cholesky_ex(input, *, upper=False, check_errors=False, out=None):
     try:
