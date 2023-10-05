@@ -1137,3 +1137,47 @@ def mel_weight_matrix(
         lower_edge_hertz,
         upper_edge_hertz,
     )
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def polysub(poly1: ivy.Array, poly2: ivy.Array) -> ivy.Array:
+    """
+
+    Parameters
+    ----------
+    poly1: A 1D array representing the polynomial 1 co-efficients.
+    poly2: A 1D array representing the polynomial 2 co-efficients
+
+        Example 1:
+    - Equations:
+      - Polynomial 1: 2x^3 + 3x^2 - x + 5
+      - Polynomial 2: x^2 - 4x + 1
+    - Array Representations:
+      - Polynomial 1: [2, 3, -1, 5]
+      - Polynomial 2: [0, 1, -4, 1]
+    - Resulting Polynomial:
+      - 2x^3 + 2x^2 + 3x + 4
+    - Array Representation of Resulting Polynomial:
+      - [2, 2, 3, 4]
+
+
+
+    Example 2:
+    - Equations:
+      - Polynomial 1: 6x^3 + 4x^2 - 3x + 2
+      - Polynomial 2: 4x^4 + x^3 - 2x^2 + 5x
+    - Array Representations:
+      - Polynomial 1: [6, 4, -3, 2]
+      - Polynomial 2: [0, 4, 1, -2, 5]
+    - Resulting Polynomial:
+    - -4x^4 - 5x^3 + 6x^2 + 8x + 2
+    - Array Representation of Resulting Polynomial:
+    - [-4, -5, 6, 8, 2]
+
+    Returns
+    -------
+    A 1D array representing the resultant polynomial after subtraction.
+    """
+    return ivy.current_backend().polysub(poly1, poly2)

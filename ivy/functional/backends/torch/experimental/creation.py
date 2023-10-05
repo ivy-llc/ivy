@@ -245,3 +245,15 @@ def mel_weight_matrix(
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = torch.maximum(zero, torch.minimum(lower_slopes, upper_slopes))
     return torch.nn.functional.pad(mel_weights, (0, 0, 1, 0))
+
+
+def polysub(poly1: torch.Tensor, poly2: torch.Tensor) -> torch.Tensor:
+    max_length = max(poly1.shape[0], poly2.shape[0])
+    poly1 = torch.cat(
+        (poly1, torch.zeros(max_length - poly1.shape[0], dtype=poly1.dtype)), dim=0
+    )
+    poly2 = torch.cat(
+        (poly2, torch.zeros(max_length - poly2.shape[0], dtype=poly2.dtype)), dim=0
+    )
+
+    return torch.sub(poly1, poly2, alpha=0)
