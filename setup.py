@@ -66,7 +66,7 @@ for tag in all_tags:
         search_path = f"{module}/{file_name}"
         try:
             response = request.urlopen(
-                f"https://github.com/unifyai/binaries/raw/{version}/{search_path}",
+                f"https://github.com/unifyai/binaries/blob/{version}/{search_path}",
                 timeout=40,
             )
             os.makedirs(os.path.dirname(path), exist_ok=True)
