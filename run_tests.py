@@ -176,6 +176,7 @@ if __name__ == "__main__":
                 sys.stdout.flush()
                 ret = os.system(command)
                 backend = backend.split("/")[0] + "\n"
+                backend_version = backend_version.strip()
             else:
                 if with_gpu:
                     ret = os.system(
