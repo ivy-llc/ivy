@@ -825,8 +825,8 @@ def test_frontend_function(
                 **kwargs,
             )
         else:
-            args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(*args, **kwargs)
-            copy_args, copy_kwargs = ivy_backend.args_to_ivy(*copy_args, **copy_kwargs)
+            args_for_test = copy.deepcopy(args)
+            kwargs_for_test = copy.deepcopy(kwargs)
 
         ret = get_frontend_ret(
             backend_to_test,
