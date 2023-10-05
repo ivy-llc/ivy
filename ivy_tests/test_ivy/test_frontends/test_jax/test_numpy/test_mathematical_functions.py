@@ -148,30 +148,6 @@ def _get_dtype_input_and_vectors(draw):
     return dtype, vec1, vec2
 
 
-# unwrap
-@st.composite
-def _get_dtype_input_vector_axis(draw):
-    size1 = draw(helpers.ints(min_value=2, max_value=5))
-    size2 = draw(helpers.ints(min_value=2, max_value=5))
-    dtype, x, axis = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            num_arrays=1,
-            min_num_dims=2,
-            max_num_dims=5,
-            min_dim_size=2,
-            max_dim_size=10,
-            shape=(size1, size2),
-            min_value=-ivy.pi,
-            max_value=ivy.pi,
-            valid_axis=True,
-            force_int_axis=True,
-        )
-    )
-
-    return dtype, x, axis
-
-
 # --- Main --- #
 # ------------ #
 
@@ -3310,7 +3286,17 @@ def test_jax_trunc(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.unwrap",
-    dtype_x_axis=_get_dtype_input_vector_axis(),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        min_value=-ivy.pi,
+        max_value=ivy.pi,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
     discont=st.floats(min_value=0, max_value=3.0),
     period=st.floats(min_value=2 * np.pi, max_value=10.0),
     test_with_out=st.just(False),
@@ -3327,8 +3313,6 @@ def test_jax_unwrap(
     period,
 ):
     dtype, x, axis = dtype_x_axis
-    assume(not np.any(np.isclose(x[0], 0)))
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,

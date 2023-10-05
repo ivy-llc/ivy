@@ -727,16 +727,14 @@ def trunc(x):
 @to_ivy_arrays_and_back
 def unwrap(p, discont=None, axis=-1, period=2 * ivy.pi):
     p = ivy.asarray(p)
-    dtype_str = str(p.dtype)
-    if "int" in dtype_str:
-        dtype_size = 64
-        ret_type = "float{}".format(dtype_size)
-        p = p.astype(ret_type)
-        dtype = p.dtype
-    elif "float" in dtype_str:
-        ret_type = dtype_str
-        p = p.astype(ret_type)
-        dtype = p.dtype
+    _dtype_to_inexact = {
+        "int32": "float64",
+        "int64": "float64",
+        "float32": "float32",
+        "float64": "float64",
+    }
+    dtype = _dtype_to_inexact[p.dtype]
+    p = p.astype(dtype)
     if discont is None:
         discont = period / 2
     interval = period / 2
