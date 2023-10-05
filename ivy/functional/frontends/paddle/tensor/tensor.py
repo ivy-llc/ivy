@@ -864,6 +864,23 @@ class Tensor:
     )
     def unbind(self, axis=0):
         return paddle_frontend.unbind(self._ivy_array, axis=axis)
+    
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "bool", 
+                "float32", 
+                "float64", 
+                "int32", 
+                "int64", 
+                "complex64", 
+                "complex128"
+            )
+        }, 
+        "paddle"
+    )
+    def moveaxis(self, source, destination, name=None):
+        return ivy.moveaxis(self._ivy_array, source, destination)
 
     def cpu(self):
         self.ivy_array = ivy.to_device(self.ivy_array, ivy.as_ivy_dev("cpu"))
