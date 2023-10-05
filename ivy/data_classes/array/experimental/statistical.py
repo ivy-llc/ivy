@@ -185,10 +185,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        out: Optional[ivy.Array] = None,
         keepdims: Optional[bool] = False,
         initial: Optional[Union[int, float, complex]] = None,
         where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.nanmin. This method simply wraps the

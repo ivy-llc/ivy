@@ -455,9 +455,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
         initial: Optional[Union[int, float, complex, ivy.Container]] = 1,
         where: Optional[Union[ivy.Array, ivy.Container]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.nanmin. This method simply wraps the

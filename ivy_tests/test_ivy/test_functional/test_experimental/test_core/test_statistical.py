@@ -650,11 +650,13 @@ def test_nanmedian(
     fn_tree="functional.ivy.experimental.nanmin",
     dtype_x_axis_castable=_get_castable_float_dtype_nan(),
     test_gradients=st.just(False),
+    initial=st.integers(min_value=-5, max_value=5),
     keep_dims=st.booleans(),
 )
 def test_nanmin(
     *,
     dtype_x_axis_castable,
+    initial,
     keep_dims,
     test_flags,
     backend_fw,
@@ -674,6 +676,7 @@ def test_nanmin(
         a=x,
         axis=axis,
         keepdims=keep_dims,
+        initial=initial,
     )
 
 

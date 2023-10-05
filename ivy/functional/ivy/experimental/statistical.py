@@ -260,7 +260,7 @@ def nanmean(
 @to_native_arrays_and_back
 @handle_device
 def nanmin(
-    a: ivy.Array,
+    x: ivy.Array,
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
@@ -305,8 +305,8 @@ def nanmin(
     >>> ivy.nanmin(a, axis=0, keepdims=True)
     [[1. 2.]]
     """
-    return ivy.current_backend(a).nanmin(
-        a,
+    return ivy.current_backend(x).nanmin(
+        x,
         axis=axis,
         keepdims=keepdims,
         out=out,

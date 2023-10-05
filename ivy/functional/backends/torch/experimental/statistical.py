@@ -191,9 +191,9 @@ def nanmin(
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[torch.Tensor] = None,
     initial: Optional[Union[int, float, complex, ivy.Container]] = None,
     where: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     nan_mask = torch.isnan(a)
     a_copy = a.clone()
@@ -202,6 +202,9 @@ def nanmin(
         result, _ = a_copy.min(), None
     else:
         result, _ = a_copy.min(dim=axis, keepdim=keepdims)
+    if initial is not None:
+        initial = torch.tensor(initial)
+        result = torch.minimum(result, initial)
     return result
 
 

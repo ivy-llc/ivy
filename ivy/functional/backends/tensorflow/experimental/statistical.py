@@ -72,17 +72,21 @@ def nanmin(
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
     initial: Optional[Union[int, float, complex]] = None,
     where: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
     nan_mask = tf.math.is_nan(a)
+
     masked_tensor = tf.where(nan_mask, tf.constant(float("inf"), dtype=a.dtype), a)
+
     if axis is None:
         result = tf.math.reduce_min(masked_tensor, keepdims=keepdims)
     else:
         result = tf.math.reduce_min(masked_tensor, axis=axis, keepdims=keepdims)
+    if initial is not None:
+        result = tf.minimum(result, initial)
     return result
 
 

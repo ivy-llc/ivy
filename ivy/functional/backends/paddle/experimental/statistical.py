@@ -115,11 +115,14 @@ def nanmin(
 ) -> paddle.Tensor:
     nan_mask = paddle.isnan(a)
     a_copy = a.clone()
-    a_copy[nan_mask] = float("inf")
+    a_copy = paddle.where(nan_mask, paddle.full_like(a_copy, float("inf")), a_copy)
     if axis is None:
-        result = paddle.min(a_copy)
+        result = paddle.min(a_copy, keepdim=keepdims)
     else:
         result = paddle.min(a_copy, axis=axis, keepdim=keepdims)
+    if initial is not None:
+        initial = paddle.to_tensor(initial, dtype=a.dtype)
+        result = paddle.minimum(result, initial)
     return result
 
 
