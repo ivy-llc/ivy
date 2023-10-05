@@ -7,6 +7,7 @@ from ivy_tests.test_ivy.pipeline.base.runners import (
     TestCaseSubRunner,
     TestCaseSubRunnerResult,
 )
+from ivy_tests.test_ivy.pipeline.base.assertion_checker import AssertionChecker
 
 
 class FunctionTestCaseSubRunner(TestCaseSubRunner):
@@ -190,11 +191,11 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
 
             if any(args_instance_mask):
                 instance, args = self._find_instance_in_args(
-                    args, arrays_args_indices, args_instance_mask
+                    args, arrays_args_indices, args_instance_mask  # noqa: F821
                 )
             else:
                 instance, kwargs = self._find_instance_in_args(
-                    kwargs, arrays_kwargs_indices, kwargs_instance_mask
+                    kwargs, arrays_kwargs_indices, kwargs_instance_mask  # noqa: F821
                 )
 
             if self.test_flags.test_compile:
@@ -302,7 +303,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         return self._call_function(args, kwargs)
 
 
-class BackendTestCaseRunner(TestCaseRunner):
+class BackendFunctionTestCaseRunner(TestCaseRunner):
     def __init__(
         self,
         backend_handler,
@@ -310,6 +311,8 @@ class BackendTestCaseRunner(TestCaseRunner):
         backend_to_test,
         ground_truth_backend,
         on_device,
+        tolerance_dict,
+        test_values,
         rtol,
         atol,
     ):
@@ -318,33 +321,10 @@ class BackendTestCaseRunner(TestCaseRunner):
         self.backend_to_test = backend_to_test
         self.grond_truth_backend = ground_truth_backend
         self.on_device = on_device
+        self.test_values = test_values
+        self.tolerance_dict = tolerance_dict
         self.rtol = rtol
         self.atol = atol
-
-    def _assert_type(self, target_type, ground_truth_type):
-        assert target_type == ground_truth_type
-
-    def _assert_dtype(self, target_dtype, ground_truth_dtype):
-        assert target_dtype == ground_truth_dtype
-
-    def _assert_device(self, target_device, ground_truth_device):
-        assert target_device == ground_truth_device, (
-            f"ground truth backend ({self.ground_truth_backend}) returned array on"
-            f" device {ground_truth_device} but target backend ({self.backend_to_test})"
-            f" returned array on device {target_device}"
-        )
-
-    def _assert_equal_elements(self, target_elements, ground_truth_elements):
-        assert np.allclose(
-            np.nan_to_num(target_elements),
-            np.nan_to_num(ground_truth_elements),
-            rtol=self.rtol,
-            atol=self.atol,
-        ), (
-            f" the results from backend {self.backend_to_test} "
-            f"and ground truth framework {self.ground_truth_backend} "
-            f"do not match\n {target_elements}!={ground_truth_elements} \n\n"
-        )
 
     def _run_target(self, input_dtypes, test_arguments, test_flags):
         sub_runner_target = FunctionTestCaseSubRunner(
@@ -372,6 +352,19 @@ class BackendTestCaseRunner(TestCaseRunner):
         sub_runner_target.exit()
         return results
 
+    def _check_assertions(self, target_results, ground_truth_results):
+        if self.test_values:
+            assertion_checker = AssertionChecker(
+                target_results,
+                ground_truth_results,
+                self.backend_to_test,
+                self.grond_truth_backend,
+                self.tolerance_dict,
+                self.rtol,
+                self.atol,
+            )
+            assertion_checker.check_assertions()
+
     def run(self, input_dtypes, test_arguments, test_flags):
         target_results: TestCaseSubRunnerResult = self._run_target(
             input_dtypes, test_arguments, test_flags
@@ -380,9 +373,4 @@ class BackendTestCaseRunner(TestCaseRunner):
             input_dtypes, test_arguments, test_flags
         )
 
-        self._assert_dtype(target_results.dtype, ground_truth_results.dtype)
-        self._assert_type(target_results.type, ground_truth_results.type)
-        self._assert_device(target_results.device, ground_truth_results.device)
-        self._assert_equal_elements(
-            target_results.flatten_elements_np, ground_truth_results.flatten_elements_np
-        )
+        self._check_assertions(target_results, ground_truth_results)
