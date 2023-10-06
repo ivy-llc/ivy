@@ -34,9 +34,17 @@ def bind_custom_gradient_function(func, custom_grad_fn):
 
 def vjp(func: Callable, *primals):
     flattened_primals, ret_idxs = _flatten_containers(primals)
+    unique_keys = list(
+        set(
+            [
+                ivy.index_nest(ret_idxs, i)
+                for i in ivy.nested_argwhere(ret_idxs, lambda x: isinstance(x, str))
+            ]
+        )
+    )
 
     def grad_fn(*x_in):
-        return _flatten_containers(
+        ret, idxs = _flatten_containers(
             ivy.to_native(
                 func(
                     *ivy.to_ivy(
@@ -46,15 +54,34 @@ def vjp(func: Callable, *primals):
                 nested=True,
                 include_derived=True,
             )
-        )[0]
+        )
 
-    primals_out, _vjpfun = ivy.outputs_to_ivy_arrays(torch.func.vjp)(
-        grad_fn, *ivy.to_native(flattened_primals, nested=True)
+        # replave the idxs with the unique keys
+        func_ret_idxs = torch.tensor(
+            ivy.nested_map(
+                lambda x: (
+                    unique_keys.index(x)
+                    if isinstance(x, str)
+                    else -1 if x is None else x
+                ),
+                idxs,
+            )
+        )
+
+        return (ret, func_ret_idxs)
+
+    primals_out, _vjpfun, func_ret_idxs = ivy.outputs_to_ivy_arrays(torch.func.vjp)(
+        grad_fn, *ivy.to_native(flattened_primals, nested=True), has_aux=True
     )
 
-    primals_out = _rebuild_flattened_containers(primals_out, ret_idxs)
+    func_ret_idxs = ivy.nested_map(
+        lambda x: unique_keys[x] if x >= 0 and x < len(unique_keys) else None,
+        func_ret_idxs.tolist(),
+    )
+    primals_out = _rebuild_flattened_containers(primals_out, func_ret_idxs)
 
     def vjpfun(x_in):
+        ivy.assertions.check_isinstance(x_in, tuple)
         return _rebuild_flattened_containers(
             ivy.to_ivy(
                 _vjpfun(ivy.to_native(_flatten_containers(x_in)[0], nested=True)),
@@ -70,9 +97,17 @@ def vjp(func: Callable, *primals):
 def jvp(func: Callable, primals, tangents):
     flattened_primals, ret_idxs = _flatten_containers(primals)
     flattened_tangents, _ = _flatten_containers(tangents)
+    unique_keys = list(
+        set(
+            [
+                ivy.index_nest(ret_idxs, i)
+                for i in ivy.nested_argwhere(ret_idxs, lambda x: isinstance(x, str))
+            ]
+        )
+    )
 
     def grad_fn(*x_in):
-        return _flatten_containers(
+        ret, idxs = _flatten_containers(
             ivy.to_native(
                 func(
                     *ivy.to_ivy(
@@ -82,17 +117,37 @@ def jvp(func: Callable, primals, tangents):
                 nested=True,
                 include_derived=True,
             )
-        )[0]
+        )
 
-    primals_out, tangents_out = ivy.outputs_to_ivy_arrays(
-        torch.autograd.functional.jvp
+        # replave the idxs with the unique keys
+        func_ret_idxs = torch.tensor(
+            ivy.nested_map(
+                lambda x: (
+                    unique_keys.index(x)
+                    if isinstance(x, str)
+                    else -1 if x is None else x
+                ),
+                idxs,
+            )
+        )
+
+        return (ret, func_ret_idxs)
+
+    primals_out, tangents_out, func_ret_idxs = ivy.outputs_to_ivy_arrays(
+        torch.func.jvp
     )(
         grad_fn,
         ivy.to_native(flattened_primals, nested=True),
         ivy.to_native(flattened_tangents, nested=True),
+        has_aux=True,
     )
 
-    primals_out = _rebuild_flattened_containers(primals_out, ret_idxs)
-    tangents_out = _rebuild_flattened_containers(tangents_out, ret_idxs)
+    func_ret_idxs = ivy.nested_map(
+        lambda x: unique_keys[x] if x >= 0 and x < len(unique_keys) else None,
+        func_ret_idxs.tolist(),
+    )
+
+    primals_out = _rebuild_flattened_containers(primals_out, func_ret_idxs)
+    tangents_out = _rebuild_flattened_containers(tangents_out, func_ret_idxs)
 
     return (primals_out, tangents_out)

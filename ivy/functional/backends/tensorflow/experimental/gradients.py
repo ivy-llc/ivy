@@ -41,13 +41,13 @@ def vjp(func: Callable, *primals):
                 nested=True,
                 include_derived=True,
             )
-        )[0]
+        )
 
     with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
         tape.watch(native_flattened_primals)
-        flat_primals_out = grad_fn(*native_flattened_primals)
+        flat_primals_out, func_ret_idxs = grad_fn(*native_flattened_primals)
 
-    primals_out = _rebuild_flattened_containers(flat_primals_out, ret_idxs)
+    primals_out = _rebuild_flattened_containers(flat_primals_out, func_ret_idxs)
 
     def vjpfun(x_in):
         grads = tape.gradient(
@@ -77,7 +77,7 @@ def jvp(func: Callable, primals, tangents):
                 nested=True,
                 include_derived=True,
             )
-        )[0]
+        )
 
     flattened_primals = ivy.to_native(flattened_primals, nested=True)
     flattened_tangents = ivy.to_native(flattened_tangents, nested=True)
@@ -86,13 +86,13 @@ def jvp(func: Callable, primals, tangents):
         flattened_primals,
         flattened_tangents,
     ) as acc:
-        flat_primals_out = grad_fn(*flattened_primals)
+        flat_primals_out, func_ret_idxs = grad_fn(*flattened_primals)
     tangents_out = acc.jvp(flat_primals_out)
 
     return ivy.to_ivy(
         (
-            _rebuild_flattened_containers(flat_primals_out, ret_idxs),
-            _rebuild_flattened_containers(tangents_out, ret_idxs),
+            _rebuild_flattened_containers(flat_primals_out, func_ret_idxs),
+            _rebuild_flattened_containers(tangents_out, func_ret_idxs),
         ),
         nested=True,
         include_derived=True,

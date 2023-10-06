@@ -9,6 +9,7 @@ from ivy.functional.ivy.gradients import (
     _flatten_containers,
     _rebuild_flattened_containers,
 )
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def bind_custom_gradient_function(func, custom_grad_fn):
@@ -48,9 +49,10 @@ def vjp(func: Callable, *primals):
             )
         )[0]
 
-    primals_out = _rebuild_flattened_containers(
-        grad_fn(*ivy.to_ivy(flattened_primals, nested=True)), ret_idxs
-    )
+    # primals_out = _rebuild_flattened_containers(
+    #     grad_fn(*ivy.to_ivy(flattened_primals, nested=True)), ret_idxs
+    # )
+    primals_out = func(*ivy.to_ivy(primals, nested=True))
 
     def vjpfun(x_in):
         _, vjp_result = ivy.to_ivy(
@@ -70,35 +72,4 @@ def vjp(func: Callable, *primals):
 
 
 def jvp(func: Callable, primals, tangents):
-    flattened_primals, ret_idxs = _flatten_containers(primals)
-    flattened_tangents, _ = _flatten_containers(tangents)
-
-    def grad_fn(*x_in):
-        return _flatten_containers(
-            ivy.to_native(
-                func(
-                    *ivy.to_ivy(
-                        _rebuild_flattened_containers(x_in, ret_idxs), nested=True
-                    )
-                ),
-                nested=True,
-                include_derived=True,
-            )
-        )[0]
-
-    flat_primals_out, vjp_result = ivy.to_ivy(
-        paddle.incubate.autograd.vjp(
-            grad_fn,
-            ivy.to_native(flattened_primals, nested=True),
-            ivy.to_native(flattened_tangents, nested=True),
-        )
-    )
-
-    return ivy.to_ivy(
-        (
-            _rebuild_flattened_containers(flat_primals_out, ret_idxs),
-            _rebuild_flattened_containers(vjp_result, ret_idxs),
-        ),
-        nested=True,
-        include_derived=True,
-    )
+    raise IvyNotImplementedException()

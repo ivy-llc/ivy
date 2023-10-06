@@ -29,12 +29,14 @@ def vjp(func: Callable, *primals):
                 nested=True,
                 include_derived=True,
             )
-        )[0]
+        )
 
     with mx.autograd.record():
-        flat_primals_out = grad_fn(*ivy.to_native(flattened_primals, nested=True))
+        flat_primals_out, func_ret_idxs = grad_fn(
+            *ivy.to_native(flattened_primals, nested=True)
+        )
 
-    primals_out = _rebuild_flattened_containers(flat_primals_out, ret_idxs)
+    primals_out = _rebuild_flattened_containers(flat_primals_out, func_ret_idxs)
 
     def vjpfun(x_in):
         grads = mx.autograd.grad(

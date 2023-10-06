@@ -278,6 +278,8 @@ def _flatten_containers(inputs):
     Returns a flattened tuple of arrays and the indices of the arrays in
     the original containers.
     """
+    if ivy.is_array(inputs):
+        inputs = (inputs,)
     values = []
     ret_idxs = []
     for idx, input in enumerate(inputs):
