@@ -5,7 +5,6 @@ from pymongo import MongoClient
 import requests
 from run_tests_CLI.get_all_tests import BACKENDS
 
-
 submodules = (
     "test_paddle",
     "test_tensorflow",
@@ -49,6 +48,10 @@ result_config = {
 
 
 def get_latest_package_version(package_name):
+    if package_name == "jax":
+        return "0.4.14"
+    if package_name == "tensorflow":
+        return "2.13.0"
     try:
         url = f"https://pypi.org/pypi/{package_name}/json"
         response = requests.get(url)
@@ -154,37 +157,42 @@ if __name__ == "__main__":
                 backends = [backend.strip()]
                 [backend_name, backend_version] = backend.split("/")
                 other_backends = [
-                    fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
+                    fw for fw in BACKENDS if fw not in [backend_name, "paddle"]
                 ]
-                for backend in other_backends:
-                    backends.append(backend + "/" + get_latest_package_version(backend))
+                backends.extend(
+                    f"{other_backend}/{get_latest_package_version(other_backend)}"
+                    for other_backend in other_backends
+                )
                 print("Backends:", backends)
+                command = (
+                    f"docker run --rm --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy/ivy'
+                    ' unifyai/multiversion:latest /bin/bash -c "python'
+                    f" multiversion_framework_directory.py {' '.join(backends)};cd"
+                    f' ivy;pytest --tb=short {test} --backend={backend.strip()}"'
+                )
+                print("Running", command)
+                sys.stdout.flush()
+                ret = os.system(command)
+                backend = backend.split("/")[0] + "\n"
+                backend_version = backend_version.strip()
+            elif with_gpu:
+                ret = os.system(
+                    f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis'
+                    " unifyai/multicuda:base_and_requirements python3 -m pytest"
+                    f" --tb=short {test} --device=gpu:0 -B={backend}"
+                    # noqa
+                )
+            else:
                 ret = os.system(
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
-                    ' /bin/bash -c "cd docker;python'
-                    f" multiversion_framework_directory.py {' '.join(backends)};cd"
-                    f' ..;pytest --tb=short {test} --backend={backend}"'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
+                    f" -m pytest --tb=short {test} --backend {backend}"
+                    # noqa
                 )
-            else:
-                if with_gpu:
-                    ret = os.system(
-                        f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
-                        f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                        ' "$(pwd)"/.hypothesis:/.hypothesis'
-                        " unifyai/multicuda:base_and_requirements python3 -m pytest"
-                        f" --tb=short {test} --device=gpu:0 -B={backend}"
-                        # noqa
-                    )
-                else:
-                    ret = os.system(
-                        f"docker run --rm --env REDIS_URL={redis_url} --env"
-                        f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                        ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
-                        f" -m pytest --tb=short {test} --backend {backend}"
-                        # noqa
-                    )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
                 failed = True

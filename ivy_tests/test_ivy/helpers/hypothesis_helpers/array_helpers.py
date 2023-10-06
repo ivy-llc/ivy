@@ -2244,7 +2244,7 @@ def create_concatenable_arrays_dtypes(
 def get_first_solve_batch_matrix(draw, choose_adjoint=False):
     """
     Generate non-singular left hand side of equation system possibly with a single batch
-    dimension at the begining. Use get_second_solve_batch_matrix to get the right hand
+    dimension at the beginning. Use get_second_solve_batch_matrix to get the right hand
     side.
 
     Parameters

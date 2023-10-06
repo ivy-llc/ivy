@@ -1,5 +1,4 @@
 from typing import Callable, Optional, List, Union, Iterable, Tuple
-from types import NoneType
 
 
 def trace_graph(
@@ -12,15 +11,15 @@ def trace_graph(
     array_caching: bool = True,
     with_numpy: bool = True,
     backend_compile: bool = False,
-    static_argnums: Union[int, Iterable[int], NoneType] = None,
-    static_argnames: Union[str, Iterable[str], NoneType] = None,
+    static_argnums: Optional[Union[int, Iterable[int]]] = None,
+    static_argnames: Optional[Union[str, Iterable[str]]] = None,
     mode: Optional[str] = None,
     graph_caching: bool = False,
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None
 ):
     """
-    Takes `fn` and traces it into a more efficient composition of backend operations.
+    Take `fn` and traces it into a more efficient composition of backend operations.
 
     Parameters
     ----------
@@ -89,7 +88,6 @@ def trace_graph(
     >>> print(time.time() - start)
     0.0001785755157470703
     """
-
     from ._compiler import trace_graph as _trace_graph
 
     return _trace_graph(
@@ -117,8 +115,8 @@ def transpile(
     to: Optional[str] = None,
     with_numpy: bool = True,
     backend_compile: bool = False,
-    static_argnums: Union[int, Iterable[int], NoneType] = None,
-    static_argnames: Union[str, Iterable[str], NoneType] = None,
+    static_argnums: Optional[Union[int, Iterable[int]]] = None,
+    static_argnames: Optional[Union[str, Iterable[str]]] = None,
     mode: Optional[str] = None,
     graph_caching: bool = False,
     stateful: Optional[List] = None,
@@ -150,7 +148,6 @@ def transpile(
     -------
     Either a transpiled Graph or a non-initialized LazyGraph.
     """
-
     from ._compiler import transpile as _transpile
 
     return _transpile(
