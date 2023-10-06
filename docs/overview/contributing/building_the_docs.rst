@@ -5,11 +5,14 @@ This document describes how to build the Ivy docs. If you want to know more abou
 our custom building pipeline work, check our `Building the Docs Pipeline
 <../deep_dive/building_the_docs_pipeline.rst>`_ deep dive
 
-.. note::
+.. warning::
 
     Be aware that the doc-builder was developed originally for Linux, although, in theory, you can run
     it on any platform (supporting either docker or windows), it's only tested it on
     Linux. If you find any windows related issues, feel free to open an issue for that to review it.
+
+.. note::
+
     Recommendation:
     You can use the convenience script if you build the docs regularly,
     as it will not re-download the dependencies.
