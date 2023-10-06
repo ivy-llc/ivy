@@ -199,173 +199,6 @@ def _helper_tensorarray_unstack(draw):
 # ------------ #
 
 
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tensorarray_close(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
-    ta.close()
-    ta_gt.close()
-    assert np.array(ta.size()) == 0
-    assert np.array(ta_gt.size()) == 0
-
-
-@given(l_kwargs=_helper_random_tensorarray(fn="concat"))
-def test_tensorarray_concat(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
-    helpers.value_test(
-        ret_np_from_gt_flat=ta_gt.concat().numpy().flatten(),
-        ret_np_flat=np.array(ta.concat()).flatten(),
-        backend=backend_fw,
-    )
-
-
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tensorarray_dtype(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
-    assert ta_gt.dtype == ta.dtype.ivy_dtype
-
-
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tensorarray_dynamic_size(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
-    assert ta_gt.dynamic_size == ta.dynamic_size
-
-
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tensorarray_element_shape(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
-    assert ta_gt.element_shape == ta.element_shape
-
-
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tensorarray_flow(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
-    assert ta_gt.flow == ta.flow
-
-
-@given(l_kwargs=_helper_random_tensorarray(fn="gather"))
-def test_tensorarray_gather(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs[:2])
-    *_, indices = l_kwargs
-    helpers.value_test(
-        ret_np_from_gt_flat=ta_gt.gather(indices).numpy().flatten(),
-        ret_np_flat=np.array(ta.gather(indices)).flatten(),
-        backend=backend_fw,
-    )
-
-
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tensorarray_handle(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
-    assert ta_gt.handle == ta.handle
-
-
-@given(l_kwargs=_helper_random_tensorarray(fn="scatter"))
-def test_tensorarray_scatter(
-    l_kwargs,
-    backend_fw,
-):
-    id_read, _ = l_kwargs
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs, "scatter")
-    for id, read in id_read:
-        helpers.value_test(
-            ret_np_from_gt_flat=ta_gt.read(id).numpy().flatten(),
-            ret_np_flat=np.array(ta.read(id)).flatten(),
-            backend=backend_fw,
-        )
-
-
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tensorarray_size(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
-    helpers.value_test(
-        ret_np_from_gt_flat=ta_gt.size().numpy().flatten(),
-        ret_np_flat=np.array(ta.size()).flatten(),
-        backend=backend_fw,
-    )
-
-
-@given(
-    kwargs_v_l=_helper_tensorarray_split(),
-)
-def test_tensorarray_split(kwargs_v_l, backend_fw):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, kwargs_v_l, "split")
-    for id in range(ta_gt.size()):
-        helpers.value_test(
-            ret_np_from_gt_flat=ta_gt.read(id).numpy().flatten(),
-            ret_np_flat=np.array(ta.read(id)).flatten(),
-            backend=backend_fw,
-        )
-
-
-@given(l_kwargs=_helper_random_tensorarray(fn="stack"))
-def test_tensorarray_stack(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
-    helpers.value_test(
-        ret_np_from_gt_flat=ta_gt.stack().numpy().flatten(),
-        ret_np_flat=np.array(ta.stack()).flatten(),
-        backend=backend_fw,
-    )
-
-
-@given(l_kwargs=_helper_tensorarray_unstack())
-def test_tensorarray_unstack(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs, "unstack")
-    helpers.value_test(
-        ret_np_from_gt_flat=ta_gt.stack().numpy().flatten(),
-        ret_np_flat=np.array(ta.stack()).flatten(),
-        backend=backend_fw,
-    )
-
-
-# test for read and write methods
-@given(l_kwargs=_helper_random_tensorarray())
-def test_tensorarray_write_read(
-    l_kwargs,
-    backend_fw,
-):
-    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
-    id_read, _ = l_kwargs
-    for id, read in id_read:
-        helpers.value_test(
-            ret_np_from_gt_flat=ta_gt.read(id).numpy().flatten(),
-            ret_np_flat=np.array(ta.read(id)).flatten(),
-            backend=backend_fw,
-        )
-
-
 # __add__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1898,3 +1731,170 @@ def test_tensorflow_tensor_shape(
         x.ivy_array.shape, ivy.Shape(shape), as_array=False
     )
     ivy.previous_backend()
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorflow_tensorarray_close(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    ta.close()
+    ta_gt.close()
+    assert np.array(ta.size()) == 0
+    assert np.array(ta_gt.size()) == 0
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="concat"))
+def test_tensorflow_tensorarray_concat(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    helpers.value_test(
+        ret_np_from_gt_flat=ta_gt.concat().numpy().flatten(),
+        ret_np_flat=np.array(ta.concat()).flatten(),
+        backend=backend_fw,
+    )
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorflow_tensorarray_dtype(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    assert ta_gt.dtype == ta.dtype.ivy_dtype
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorflow_tensorarray_dynamic_size(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    assert ta_gt.dynamic_size == ta.dynamic_size
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorflow_tensorarray_element_shape(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    assert ta_gt.element_shape == ta.element_shape
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorflow_tensorarray_flow(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    assert ta_gt.flow == ta.flow
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="gather"))
+def test_tensorflow_tensorarray_gather(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs[:2])
+    *_, indices = l_kwargs
+    helpers.value_test(
+        ret_np_from_gt_flat=ta_gt.gather(indices).numpy().flatten(),
+        ret_np_flat=np.array(ta.gather(indices)).flatten(),
+        backend=backend_fw,
+    )
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorflow_tensorarray_handle(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    assert ta_gt.handle == ta.handle
+
+
+# test for read and write methods
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorflow_tensorarray_read(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    id_read, _ = l_kwargs
+    for id, read in id_read:
+        helpers.value_test(
+            ret_np_from_gt_flat=ta_gt.read(id).numpy().flatten(),
+            ret_np_flat=np.array(ta.read(id)).flatten(),
+            backend=backend_fw,
+        )
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="scatter"))
+def test_tensorflow_tensorarray_scatter(
+    l_kwargs,
+    backend_fw,
+):
+    id_read, _ = l_kwargs
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs, "scatter")
+    for id, read in id_read:
+        helpers.value_test(
+            ret_np_from_gt_flat=ta_gt.read(id).numpy().flatten(),
+            ret_np_flat=np.array(ta.read(id)).flatten(),
+            backend=backend_fw,
+        )
+
+
+@given(l_kwargs=_helper_random_tensorarray())
+def test_tensorflow_tensorarray_size(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    helpers.value_test(
+        ret_np_from_gt_flat=ta_gt.size().numpy().flatten(),
+        ret_np_flat=np.array(ta.size()).flatten(),
+        backend=backend_fw,
+    )
+
+
+@given(
+    kwargs_v_l=_helper_tensorarray_split(),
+)
+def test_tensorflow_tensorarray_split(kwargs_v_l, backend_fw):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, kwargs_v_l, "split")
+    for id in range(ta_gt.size()):
+        helpers.value_test(
+            ret_np_from_gt_flat=ta_gt.read(id).numpy().flatten(),
+            ret_np_flat=np.array(ta.read(id)).flatten(),
+            backend=backend_fw,
+        )
+
+
+@given(l_kwargs=_helper_random_tensorarray(fn="stack"))
+def test_tensorflow_tensorarray_stack(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs)
+    helpers.value_test(
+        ret_np_from_gt_flat=ta_gt.stack().numpy().flatten(),
+        ret_np_flat=np.array(ta.stack()).flatten(),
+        backend=backend_fw,
+    )
+
+
+@given(l_kwargs=_helper_tensorarray_unstack())
+def test_tensorflow_tensorarray_unstack(
+    l_kwargs,
+    backend_fw,
+):
+    ta_gt, ta = _helper_init_tensorarray(backend_fw, l_kwargs, "unstack")
+    helpers.value_test(
+        ret_np_from_gt_flat=ta_gt.stack().numpy().flatten(),
+        ret_np_flat=np.array(ta.stack()).flatten(),
+        backend=backend_fw,
+    )
