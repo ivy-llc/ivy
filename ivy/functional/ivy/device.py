@@ -640,7 +640,10 @@ def percent_used_mem_on_dev(
 
 
 @handle_exceptions
-def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
+def dev_util(
+    device: Union[ivy.Device, ivy.NativeDevice],
+    /,
+) -> float:
     """
     Get the current utilization (%) for a given device.
 
@@ -1196,7 +1199,7 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
             supported = set(all_devices).difference(supported)
         return supported
 
-    # Their values are formated like either
+    # Their values are formatted like either
     # 1. fn.supported_devices = ("cpu",)
     # Could also have the "all" value for the framework
     basic = [

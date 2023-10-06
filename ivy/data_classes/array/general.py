@@ -905,7 +905,7 @@ class _ArrayWithGeneral(abc.ABC):
             Default is ``False``.
         concat
             Whether to concatenate the position, sin and cos values, or return
-            seperately. Default is ``True``.
+            separately. Default is ``True``.
         flatten
             Whether to flatten the position dimension into the batch dimension.
             Default is ``False``.
