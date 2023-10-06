@@ -204,7 +204,7 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
     for overloaded_arg in overloaded_args:
         # Note that we're only calling __ivy_array_function__ on the *first*
-        # occurence of each argument type. This is necessary for reasonable
+        # occurrence of each argument type. This is necessary for reasonable
         # performance with a possibly long list of overloaded arguments, for
         # which each __ivy_array_function__ implementation might reasonably need to
         # check all argument types.
@@ -818,7 +818,7 @@ def handle_device(fn: Callable) -> Callable:
         elif len(unique_devices) > 1:
             raise ivy.utils.exceptions.IvyException(
                 "Expected all input arrays to be on the same device, "
-                f"but found atleast two devices - {devices}, "
+                f"but found at least two devices - {devices}, "
                 "set `ivy.set_soft_device_mode(True)` to handle this problem."
             )
         return fn(*args, **kwargs)
@@ -1288,7 +1288,7 @@ def _versioned_attribute_factory(attribute_function, base):
             self.attribute_function = attribute_function
 
         def __get__(self, instance=None, owner=None):
-            # version dtypes recalculated everytime it's accessed
+            # version dtypes recalculated every time it's accessed
             return self.attribute_function()
 
         def __iter__(self):
@@ -1330,7 +1330,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                 return func
             if not exclusive:
                 # exclusive attribute comes into existence
-                # only when exlusive is passed as true
+                # only when exclusive is passed as true
                 setattr(func, "exclusive", True)
             # set the attribute on the function and return the function as is
 

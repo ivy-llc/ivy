@@ -790,12 +790,12 @@ _imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
     from .engines import XLA as xla
     from .engines import ivy2xla
-except:
+except:  # noqa: E722
     pass
 try:
     from .compiler.compiler import transpile, trace_graph, unify
 except:  # noqa: E722
-    pass  # Added for the finally statment
+    pass  # Added for the finally statement
 finally:
     # Skip framework imports done by Ivy compiler for now
     for backend_framework in _not_imported_backends.copy():
@@ -993,7 +993,7 @@ def _assert_array_significant_figures_formatting(sig_figs):
     ivy.utils.assertions.check_greater(sig_figs, 0, as_array=False)
 
 
-# ToDo: SF formating for complex number
+# ToDo: SF formatting for complex number
 def vec_sig_fig(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x

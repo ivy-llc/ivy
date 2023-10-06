@@ -26,14 +26,14 @@ class _ContainerWithActivationExperimental(ContainerBase):
         x
             Input container.
         eps
-            When eps is None the function outpus NaN where x < 0 or x > 1.
+            When eps is None the function outputs NaN where x < 0 or x > 1.
             and inf or -inf where x = 1 or x = 0, respectively.
             Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
         complex_mode
             optional specifier for how to handle complex data types. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
-            Optional output Contaner.
+            Optional output Container.
 
         Returns
         -------
@@ -88,14 +88,14 @@ class _ContainerWithActivationExperimental(ContainerBase):
         self
             Input container.
         eps
-            When eps is None the function outpus NaN where x < 0 or x > 1.
+            When eps is None the function outputs NaN where x < 0 or x > 1.
             and inf or -inf where x = 1 or x = 0, respectively.
             Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
         complex_mode
             optional specifier for how to handle complex data types. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
-            Optional output Contaner.
+            Optional output Container.
 
         Returns
         -------

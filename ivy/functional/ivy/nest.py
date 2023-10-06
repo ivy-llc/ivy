@@ -132,7 +132,7 @@ def set_nest_at_index(
         Whether to inplace update the input nest or not
         Only works if nest is a mutable type. Default is ``True``.
     _result
-        Placeholder for the result of the update. do not set this paramter.
+        Placeholder for the result of the update. do not set this parameter.
 
     Returns
     -------
@@ -279,7 +279,7 @@ def map_nest_at_index(
         Whether to inplace update the input nest or not
         Only works if nest is a mutable type. Default is ``True``.
     _result
-        Placeholder for the result of the update. do not set this paramter.
+        Placeholder for the result of the update. do not set this parameter.
 
     Returns
     -------
@@ -664,7 +664,7 @@ def nested_argwhere(
     nest
         The nest to check the leaves of.
     fn
-        The conditon function, returning True or False.
+        The condition function, returning True or False.
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
         Default is ``False``.
@@ -1238,7 +1238,7 @@ def nested_any(
     nest
         The nest to check the leaves of.
     fn
-        The conditon function, returning True or False.
+        The condition function, returning True or False.
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
         Default is ``False``.

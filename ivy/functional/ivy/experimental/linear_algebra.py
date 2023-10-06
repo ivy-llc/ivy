@@ -685,7 +685,7 @@ def kronecker(
     return res
 
 
-# The code has been adapated from tensorly.khatri_rao
+# The code has been adapted from tensorly.khatri_rao
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/_khatri_rao.py#L9
 @handle_nestable
 @handle_exceptions
@@ -881,7 +881,7 @@ def mode_dot(
         return ivy.fold(res, fold_mode, new_shape, out=out)
 
 
-# The following code has been adapated from TensorLy
+# The following code has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/n_mode_product.py#L81
 @handle_nestable
 @handle_exceptions
@@ -1006,7 +1006,7 @@ def _svd_checks(x, n_eigenvecs=None):
     return n_eigenvecs, min_dim, max_dim
 
 
-# This function has been adapated from TensorLy
+# This function has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L12
 @handle_nestable
 @handle_exceptions
@@ -1296,7 +1296,7 @@ def tensor_train(
     return ivy.TTTensor(factors)
 
 
-# TODO uncommment the code below when these svd
+# TODO uncomment the code below when these svd
 # methods have been added
 def _svd_interface(
     matrix,
@@ -1404,7 +1404,7 @@ def initialize_tucker(
         assert len(x.shape) >= 2
     except ValueError:
         raise ValueError(
-            "expected x to have atleast 2 dimensions but it has only"
+            "expected x to have at least 2 dimensions but it has only"
             f" {len(x.shape)} dimension(s)"
         )
 
@@ -1453,7 +1453,7 @@ def initialize_tucker(
     return (core, factors)
 
 
-# This function has been adpated from TensorLy
+# This function has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/_tucker.py#L98
 @handle_nestable
 @handle_exceptions

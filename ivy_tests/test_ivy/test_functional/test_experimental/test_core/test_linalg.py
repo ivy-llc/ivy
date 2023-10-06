@@ -458,7 +458,7 @@ def _higher_order_moment_data(draw):
     return dtype, x[0], order
 
 
-# intialize tucker
+# initialize tucker
 @st.composite
 def _initialize_tucker_data(draw):
     x_dtype, x, shape = draw(

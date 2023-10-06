@@ -1195,7 +1195,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input array or container containing probablities of arbitrary shape.
+            input array or container containing probabilities of arbitrary shape.
         target
             array or container with same shape as input with values between 0 and 1.
         from_logits

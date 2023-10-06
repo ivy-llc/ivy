@@ -905,7 +905,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, on_dev
             input_channels, output_channels, device=on_device, v=v, with_partial_v=True
         )
         raise Exception(
-            "TrainableModule did not raise exception desipite being passed "
+            "TrainableModule did not raise exception despite being passed "
             "with wrongly shaped variables."
         )
     except ivy.utils.exceptions.IvyException:
@@ -922,7 +922,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, on_dev
     try:
         TrainableModule(input_channels, output_channels, device=on_device, v=v)
         raise Exception(
-            "TrainableModule did not raise exception desipite being passed "
+            "TrainableModule did not raise exception despite being passed "
             "with wrongly shaped variables."
         )
     except ivy.utils.exceptions.IvyException:

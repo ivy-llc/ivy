@@ -25,7 +25,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         self
             Input array.
         eps
-            When eps is None the function outpus NaN where x < 0 or x > 1.
+            When eps is None the function outputs NaN where x < 0 or x > 1.
             and inf or -inf where x = 1 or x = 0, respectively.
             Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
         complex_mode

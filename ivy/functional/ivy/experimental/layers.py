@@ -642,7 +642,7 @@ def dct(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Compute the 1D Discrete Cosine Tranformation of a given signal.
+    Compute the 1D Discrete Cosine Transformation of a given signal.
 
     Parameters
     ----------
@@ -651,7 +651,7 @@ def dct(
     type
         The type of the dct. Must be 1, 2, 3 or 4.
     n
-        The lenght of the transform. If n is less than the input signal lenght,
+        The length of the transform. If n is less than the input signal length,
         then x is truncated, if n is larger then x is zero-padded.
     axis
         The axis to compute the DCT along.
@@ -753,7 +753,7 @@ def idct(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Compute the 1D Inverse Discrete Cosine Tranformation of a given signal.
+    Compute the 1D Inverse Discrete Cosine Transformation of a given signal.
 
     Parameters
     ----------

@@ -829,7 +829,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
             Note: jax supports edge_order=1 case only
         axis
             dimension(s) to approximate the gradient over
-            by default partial gradient is computed in every dimention
+            by default partial gradient is computed in every dimension
 
 
         Returns

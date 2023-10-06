@@ -102,14 +102,14 @@ def _update_native_config_value(key):
     ret = input(
         "\nPress ENTER to skip, use full namespace\n"
         f"Enter a value for {Style.BRIGHT + key + Style.NORMAL} "
-        "(case sensistive) "
+        "(case sensitive) "
         f"default: '{Style.BRIGHT}{config_natives[key]['name']}{Style.NORMAL}': "
     )
     if ret != "" and _imported_backend is not None:
         parsed = ret.strip().rpartition(".")
         try:
             if parsed[1] == "":
-                # Primitve type
+                # primitive type
                 try:
                     obj = __builtins__.__dict__[parsed[-1]]
                 except KeyError:
@@ -264,7 +264,7 @@ def _update_valid_config_value(key):
     print(f"Select items to remove from list {Style.BRIGHT}{key}:\n")
     for i, item in enumerate(config_valids[key]):
         print(f"{i}. {item}")
-    ret = input("\nPress ENTER to skip. Enter numbers (space seperated): ")
+    ret = input("\nPress ENTER to skip. Enter numbers (space separated): ")
     ret = ret.strip("")
     if ret == "":
         return True

@@ -4,7 +4,7 @@ import numpy as np
 from numbers import Number
 from typing import Union, List, Optional, Sequence, Tuple
 
-# lcoal
+# local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.creation import (

@@ -294,7 +294,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self
             The array to compute top_k for.
         k
-            Number of top elements to retun must not exceed the array size.
+            Number of top elements to return must not exceed the array size.
         axis
             The axis along which we must return the top elements default value is 1.
         largest
@@ -1392,7 +1392,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         Parameters
         ----------
         self
-            Array that will be stacked at the begining of the provided array iterable.
+            Array that will be stacked at the beginning of the provided array iterable.
         arrays
             Arrays to be stacked.
         out

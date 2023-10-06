@@ -602,7 +602,7 @@ def finfo(
     Returns
     -------
     ret
-        an object having the followng attributes:
+        an object having the following attributes:
 
         - **bits**: *int*
 
