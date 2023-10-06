@@ -54,7 +54,6 @@ if __name__ == "__main__":
     if gpu_flag == "true":
         device = "gpu"
 
-    status = True
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
@@ -137,10 +136,10 @@ if __name__ == "__main__":
 
             # run the test
             sys.stdout.flush()
-            status = not os.system(command)
+            failed = bool(os.system(command))
 
             # old (populate the old database with results)
-            if status:
+            if not failed:
                 res = old_helpers.make_clickable(
                     run_id, old_helpers.result_config["success"]
                 )
@@ -180,7 +179,7 @@ if __name__ == "__main__":
                 )
 
             # run transpilation tests if the test passed
-            if status:
+            if not failed:
                 print(f"\n{'*' * 100}")
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
@@ -223,12 +222,12 @@ if __name__ == "__main__":
                 "_id": function_name,
                 "test_path": test_path,
                 "submodule": submodule,
-                f"{prefix_str}{backend}.{version}.status.{device}": status,
+                f"{prefix_str}{backend}.{version}.status.{device}": not failed,
                 f"{prefix_str}{backend}.{version}.workflow.{device}": run_id,
             }
 
             # add transpilation metrics if report generated
-            if status and report_content:
+            if not failed and report_content:
                 transpilation_metrics = {
                     "nodes": report_content["nodes"][backend],
                     "time": report_content["time"][backend],
