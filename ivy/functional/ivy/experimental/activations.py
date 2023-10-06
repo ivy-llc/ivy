@@ -658,7 +658,7 @@ def softshrink(
     x
         input array.
     lambd
-        the value of the lower bound of the linear region range. Default: 0.5
+        the value of the lower bound of the linear region range.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.

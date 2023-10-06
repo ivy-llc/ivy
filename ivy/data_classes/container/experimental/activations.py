@@ -1210,7 +1210,16 @@ class _ContainerWithActivationExperimental(ContainerBase):
         x
             input container.
         lambd
-            Lambda value for soft shrinkage calculation. Default is ``0.5``.
+            Lambda value for soft shrinkage calculation.
+        key_chains
+            The key-chains to apply or not apply the method to.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
 
         Returns
         -------
@@ -1254,22 +1263,20 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Parameters
         ----------
-        x : array
+        x :
             Input container.
-        lambd : float, optional
-            Lambda value for soft shrinkage calculation. Default is ``0.5``.
-        key_chains : sequence of ints, optional
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply : bool or sequence of bools, optional
+        lambd :
+            Lambda value for soft shrinkage calculation.
+        key_chains :
+            The key-chains to apply or not apply the method to.
+        to_apply :
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``False``.
-        prune_unapplied : bool or sequence of bools, optional
+            will be skipped.
+        prune_unapplied :
             Whether to prune key_chains for which the function was not applied.
-            Default is ``True``.
-        map_sequences : bool or sequence of bools, optional
+        map_sequences :
             Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out : array, optional
+        out :
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
