@@ -1216,13 +1216,13 @@ def casting_modes_ops(fn, ret_dtype_target=None):
                     if arg not in kwargs:
                         args[arg_names.index(arg)] = (
                             arg_mod
-                            if not ivy.isarray(args[arg_names.index(arg)])
+                            if not ivy.is_array(args[arg_names.index(arg)])
                             else args[arg_names.index(arg)]
                         )
                     else:
                         kwargs[arg] = (
                             arg_mod
-                            if not ivy.isarray(args[arg_names.index(arg)])
+                            if not ivy.is_array(args[arg_names.index(arg)])
                             else kwargs[arg]
                         )
 
@@ -1372,7 +1372,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                 # it's a frontend func, no casting modes for this
                 return func
 
-            return casting_modes_ops(func, ret_dtype_target)
+            return casting_modes_ops(func, ret_dtype_target=ret_dtype_target)
 
         return _wrapped
 
