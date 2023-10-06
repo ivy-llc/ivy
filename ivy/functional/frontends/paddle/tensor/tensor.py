@@ -885,9 +885,21 @@ class Tensor:
     def gather_(self, y, name=None):
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
-
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "bool",
+                "int32",
+                "int64",
+                "float16",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
     def uniform_(self, min=-1.0, max=1.0, seed=0, name=None):
         return ivy.inplace_update(
             self,
-            paddle_frontend.uniform(self.shape, min=-1.0, max=1.0, seed=0, name=None),
+            paddle_frontend.uniform(self.shape, min, max, seed, name),
         )
