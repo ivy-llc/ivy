@@ -184,7 +184,7 @@ if __name__ == "__main__":
                 print(f"\n{'*' * 100}")
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
-                os.system(f"{command} --max-examples 1 --with-transpile")
+                os.system(f"{command} --num-examples 1 --with-transpile")
 
             # load data from report if generated
             report_path = os.path.join(
