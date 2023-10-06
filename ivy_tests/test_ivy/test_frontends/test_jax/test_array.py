@@ -2725,8 +2725,8 @@ def test_jax_sum(
         on_device=on_device,
         atol_=1e-04,
     )
-    
-    
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
