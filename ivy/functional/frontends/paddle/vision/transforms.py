@@ -151,6 +151,13 @@ def adjust_hue(img, hue_factor):
 @to_ivy_arrays_and_back
 def crop(img, top, left, height, width):
     img = ivy.array(img)
+    _, img_height, img_width = img.shape
+    if top > img_height:
+        top = 0
+        height = img_height
+    if left > img_width:
+        left = 0
+        width = img_width
     return img[..., top : top + height, left : left + width]
 
 
