@@ -38,7 +38,7 @@ mod_backend = {
     "mxnet": None,
 }  # multiversion
 
-# This is used to make sure the variable is not being overriden
+# This is used to make sure the variable is not being overridden
 _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval

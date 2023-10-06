@@ -72,6 +72,27 @@ def elu(
     return ivy.astype(ret, x.dtype)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
+def celu(
+    x: torch.Tensor,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.celu(x, alpha=alpha)
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def hardtanh(
     x: torch.Tensor,
@@ -82,6 +103,16 @@ def hardtanh(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ret = torch.nn.functional.hardtanh(x, max_val=max_val, min_val=min_val)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def tanhshrink(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    ret = torch.nn.functional.tanhshrink(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
