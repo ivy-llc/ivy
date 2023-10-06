@@ -372,7 +372,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.softshrink. This method simply wraps
         the function, and so the docstring for ivy.softshrink also applies to this
         method with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -382,12 +382,12 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-            
+
         Returns
         -------
         ret
             an array with the softshrink activation function applied element-wise.
-        
+
         Examples
         --------
         >>> x = ivy.array([-1., 0., 1.])
@@ -400,7 +400,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([0., 0., 0.])
         """
         return ivy.softshrink(self._data, lambd=lambd, out=out)
-        
+
     def celu(
         self: ivy.Array,
         /,

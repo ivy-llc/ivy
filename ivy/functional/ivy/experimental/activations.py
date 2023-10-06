@@ -652,7 +652,7 @@ def softshrink(
 ) -> ivy.Array:
     """
     Apply the softshrink function element-wise.
-    
+
     Parameters
     ----------
     x
@@ -667,7 +667,7 @@ def softshrink(
     -------
     ret
          an array containing the softshrink activation of each element in ``x``.
-    
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -689,6 +689,8 @@ def softshrink(
        [ 1.20000005,  3.69999981, -6.0999999 ]])
     """
     return current_backend(x).softshrink(x, lambd=lambd, out=out)
+
+
 def _celu_jax_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

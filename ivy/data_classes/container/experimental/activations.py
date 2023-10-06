@@ -1204,7 +1204,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         ivy.Container static method variant of ivy.softshrink. This method simply wraps
         the function, and so the docstring for ivy.softshrink also applies to this
         method with minimal changes.
-        
+
         Parameters
         ----------
         x
@@ -1220,7 +1220,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             Whether to prune key_chains for which the function was not applied.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-        
+
         Returns
         -------
         ret
