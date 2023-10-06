@@ -886,5 +886,5 @@ class Tensor:
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
 
-    def uniform_(self):
-        return paddle_frontend.uniform(self.shape)
+    def uniform_(self,min=- 1.0, max=1.0, seed=0, name=None):
+        return ivy.inplace_update(self, paddle_frontend.uniform(self.shape,min=- 1.0, max=1.0, seed=0, name=None))
