@@ -418,8 +418,6 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ----------
         self
             input array.
-        lambd
-            the value of the lower bound of the linear region range.
         alpha
             the alpha (negative slope) value for CELU formulation.
         complex_mode

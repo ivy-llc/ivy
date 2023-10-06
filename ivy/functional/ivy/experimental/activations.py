@@ -762,9 +762,11 @@ def celu(
     ret
         The input array with celu applied element-wise.
 
+
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.celu(x)
     >>> y
