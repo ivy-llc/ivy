@@ -116,7 +116,7 @@ def unsorted_segment_min(
         init_val = 9223372036854775807
     else:
         raise ValueError("Unsupported data type")
-    # Using paddle.full is causing interger overflow for int64
+    # Using paddle.full is causing integer overflow for int64
     res = paddle.empty((num_segments,) + tuple(data.shape[1:]), dtype=data.dtype)
     res[:] = init_val
     for i in range(num_segments):
