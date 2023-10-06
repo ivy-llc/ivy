@@ -7,10 +7,9 @@ our custom building pipeline work, check our `Building the Docs Pipeline
 
 .. note::
 
-    The doc-builder was developed originally for linux, although in theory you can run
-    it on any platform (supporting either docker or windows), we only tested it on
-    linux.
-
+    Be aware that the doc-builder was developed originally for Linux, although, in theory, you can run
+    it on any platform (supporting either docker or windows), it's only tested it on
+    Linux. If you find any windows related issues, feel free to open an issue for that to review it. 
     We recommended the use of convenience script if you are planning to regularly build
     the docs, as it won't redownload the dependencies every time. Also, the use of
     GitHub codespaces will help you with faster network if your internet is slow.
