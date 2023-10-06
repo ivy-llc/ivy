@@ -808,7 +808,7 @@ class Tensor:
         return torch_frontend.argwhere(self)
 
     @numpy_to_torch_style_args
-    @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex", "bool")}, "torch")
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self, dim=dim, keepdim=keepdim)
 
@@ -1135,6 +1135,10 @@ class Tensor:
     def is_complex(self):
         return torch_frontend.is_complex(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("uint16", "bfloat16")}, "torch")
+    def is_floating_point(self):
+        return torch_frontend.is_floating_point(self._ivy_array)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def isreal(self):
         return torch_frontend.isreal(self._ivy_array)
@@ -1281,7 +1285,7 @@ class Tensor:
     def __eq__(self, other):
         return torch_frontend.eq(self, other)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
     def __gt__(self, other):
         return torch_frontend.greater(self, other)
 
@@ -1309,6 +1313,7 @@ class Tensor:
     def __or__(self, other):
         return torch_frontend.bitwise_or(self, other)
 
+    @with_supported_dtypes({"2.0.1 and below": ("integer", "bool")}, "torch")
     def __invert__(self):
         return torch_frontend.bitwise_not(self)
 
@@ -2178,8 +2183,6 @@ class Tensor:
     lt_ = less_
     le = less_equal
     le_ = less_equal_
-    ne = not_equal
-    ne_ = not_equal_
 
 
 class Size(tuple):
