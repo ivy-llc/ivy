@@ -1888,147 +1888,6 @@ def initialize_cp(
     return kt
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device
-def initialize_cp(
-        x: Union[ivy.Array, ivy.NativeArray],
-        rank: int,
-        /,
-        *,
-        init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
-        seed: Optional[int] = None,
-        normalize_factors: Optional[bool] = False,
-        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
-        non_negative: Optional[bool] = False,
-        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        svd_mask_repeats: Optional[int] = 5,
-) -> ivy.CPTensor:
-    r"""
-    Initialize factors used in `parafac`.
-
-    The type of initialization is set using `init`. If `init == 'random'` then
-    initialize factor matrices with uniform distribution with the given seed.
-    If `init == 'svd'` then initialize the `m`th factor matrix using the
-    `rank` left singular vectors of the `m`th unfolding of the input
-    tensor. If init is a previously initialized `cp tensor`, all
-    the weights are pulled in the last factor and then the weights
-    are set to "1" for the output tensor.
-
-    Parameters
-    ----------
-    x
-        input tensor
-    rank
-        number of components
-    init
-        initialization scheme for CP decomposition.
-    seed
-        Used to create a random seed distribution
-        when init == 'random'
-    normalize_factors
-        if True, the factors are normalized.
-    svd
-        function to use to compute the SVD
-    non_negative
-        if True, non-negative factors are returned
-    mask
-        array of booleans with the same shape as ``x`` should be 0 where
-        the values are missing and 1 everywhere else. Note:  if tensor is
-        sparse, then mask should also be sparse with a fill value of 1 (or
-        True).
-    svd_mask_repeats
-        number of iterations for imputing the values in the SVD matrix when
-        mask is not None
-    Returns
-    -------
-    factors : CPTensor
-        An initial cp tensor.
-    """
-    if init == "random":
-        kt = ivy.random_cp(
-            x.shape,
-            rank,
-            normalise_factors=False,
-            seed=seed,
-            dtype=x.dtype,
-        )
-
-    elif init == "svd":
-        factors = []
-        for mode in range(len(x.shape)):
-            mask_unfold = None if mask is None else ivy.unfold(mask, mode)
-            U, S, _ = _svd_interface(
-                ivy.unfold(x, mode),
-                n_eigenvecs=rank,
-                method=svd,
-                non_negative=non_negative,
-                mask=mask_unfold,
-                n_iter_mask_imputation=svd_mask_repeats,
-            )
-
-            # Put SVD initialization on the same scaling
-            # as the tensor in case normalize_factors=False
-            if mode == 0:
-                idx = min(rank, ivy.shape(S)[0])
-                U[:, :idx] = U[:, :idx] * S[:idx]
-
-            if x.shape[mode] < rank:
-                # TODO: this is a hack but it
-                # seems to do the job for now
-                random_part = ivy.random_uniform(
-                    shape=(U.shape[0], rank - ivy.shape(x)[mode]),
-                    dtype=x.dtype,
-                    seed=seed,
-                )
-                U = ivy.concat([U, random_part], axis=1)
-
-            factors.append(U[:, :rank])
-
-        kt = ivy.CPTensor((None, factors))
-
-    elif isinstance(init, (tuple, list, ivy.CPTensor)):
-        try:
-            if normalize_factors:
-                logging.warn(
-                    "It is not recommended to initialize a tensor with normalizing."
-                    " Consider normalizing the tensor before using this function"
-                )
-
-            kt = ivy.CPTensor(init)
-            weights, factors = kt
-
-            if ivy.all(weights == 1):
-                kt = ivy.CPTensor((None, factors))
-            else:
-                weights_avg = ivy.prod(weights) ** (1.0 / ivy.shape(weights)[0])
-                for i in range(len(factors)):
-                    factors[i] = factors[i] * weights_avg
-                kt = ivy.CPTensor((None, factors))
-
-            return kt
-        except ValueError:
-            raise ValueError(
-                "If initialization method is a mapping, then it must "
-                "be possible to convert it to a CPTensor instance"
-            )
-    else:
-        raise ValueError(f'Initialization method "{init}" not recognized')
-
-    if non_negative:
-        # Make decomposition feasible by taking
-        # the absolute value of all factor matrices
-        kt.factors = [ivy.abs(f) for f in kt[1]]
-
-    if normalize_factors:
-        kt = ivy.CPTensor.cp_normalize(kt)
-
-    return kt
-
-
 def _error_calc(tensor, norm_tensor, weights, factors, sparsity, mask, mttkrp=None):
     r"""
     Perform the error calculation. Different forms are used here depending upon the
@@ -2168,7 +2027,7 @@ def _sample_khatri_rao(
             )
         else:
             indices_list = [
-                ivy.randint(0, ivy.shape(m)[0], size=n_samples, dtype=int, seed=seed)
+                ivy.randint(0, ivy.shape(m)[0], shape=n_samples, dtype=int, seed=seed)
                 for m in x
             ]
 
@@ -2185,7 +2044,6 @@ def _sample_khatri_rao(
     sampled_kr = ivy.ones((n_samples, rank), dtype=x[0].dtype)
     for indices, matrix in zip(indices_list, x):
         sampled_kr = sampled_kr * matrix[indices, :]
-
     if return_sampled_rows:
         return sampled_kr, indices_list, indices_kr
     else:
@@ -2306,6 +2164,7 @@ def parafac(
            Applications", PhD., University of Amsterdam, 1998
     """
     rank = ivy.CPTensor.validate_cp_rank(x.shape, rank=rank)
+
     if orthogonalise and not isinstance(orthogonalise, int):
         orthogonalise = n_iter_max
 
@@ -2528,6 +2387,12 @@ def parafac(
         return cp_tensor
 
 
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device
 def randomised_parafac(
         x: Union[ivy.Array, ivy.NativeArray],
         rank: int,
@@ -2535,7 +2400,7 @@ def randomised_parafac(
         /,
         *,
         n_iter_max: Optional[int] = 100,
-        init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
+        init: Optional[Literal["svd", "random"]] = "random",
         svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
         max_stagnation: Optional[int] = 0,
         tol: Optional[float] = 10e-9,
@@ -2558,7 +2423,7 @@ def randomised_parafac(
     n_iter_max
         maximum number of iteration
     init
-
+        {'svd', 'random'}, optional
     svd
         function to use to compute the SVD, acceptable values in tensorly.SVD_FUNS
     tol
@@ -2592,14 +2457,14 @@ def randomised_parafac(
             "return_errors argument will be removed in the next version of TensorLy."
             " Please use a callback function instead."
         )
-
     weights, factors = ivy.initialize_cp(x, rank, init=init, svd=svd, seed=seed)
+
     rec_errors = []
     n_dims = len(x.shape)
     norm_tensor = ivy.sqrt(ivy.sum(ivy.square(x)))
     min_error = 0
 
-    weights = ivy.ones(rank, dtype=x.dtype)
+    weights = ivy.ones(rank, dtype=ivy.dtype(x))
 
     if callback is not None:
         rec_error = ivy.sqrt(
@@ -2611,10 +2476,10 @@ def randomised_parafac(
 
     for iteration in range(n_iter_max):
         for mode in range(n_dims):
-            kr_prod, indices_list = ivy._sample_khatri_rao(
+            kr_prod, indices_list = _sample_khatri_rao(
                 factors, n_samples, skip_matrix=mode, seed=seed
             )
-            indices_list = [i.tolist() for i in indices_list]
+            indices_list = [ivy.to_list(i) for i in indices_list]
             # Keep all the elements of the currently considered mode
             indices_list.insert(mode, slice(None, None, None))
             # MXNet will not be happy if this is a list instead of a tuple
@@ -2622,8 +2487,7 @@ def randomised_parafac(
             if mode:
                 sampled_unfolding = x[indices_list]
             else:
-                sampled_unfolding = ivy.transpose(x[indices_list])
-
+                sampled_unfolding = ivy.permute_dims(x[indices_list], (1, 0))
             pseudo_inverse = ivy.dot(ivy.permute_dims(kr_prod, (1, 0)), kr_prod)
             factor = ivy.dot(ivy.permute_dims(kr_prod, (1, 0)), sampled_unfolding)
             factor = ivy.permute_dims(ivy.solve(pseudo_inverse, factor), (1, 0))
@@ -2667,7 +2531,6 @@ def randomised_parafac(
                     if verbose:
                         print(f"converged in {iteration} iterations.")
                     break
-
     if return_errors:
         return ivy.CPTensor((weights, factors)), rec_errors
     else:

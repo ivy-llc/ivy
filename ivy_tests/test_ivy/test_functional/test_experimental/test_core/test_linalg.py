@@ -685,6 +685,51 @@ def _multi_mode_dot_data(draw):
     return t1_dtype + t2_dtype, t1[0], t2, modes, skip
 
 
+@st.composite
+def _parafac_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=4,
+            min_dim_size=2,
+            max_dim_size=3,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    mask_dtype, mask = draw(
+        helpers.dtype_and_values(
+            dtype=["int32"],
+            shape=shape,
+            min_value=0,
+            max_value=1,
+        )
+    )
+    rank = draw(helpers.ints(min_value=1, max_value=len(shape)))
+    svd_mask_repeats = draw(helpers.ints(min_value=0, max_value=1))
+    n_iter_max = draw(helpers.ints(min_value=0, max_value=2))
+    tol = draw(helpers.floats(min_value=1e-5, max_value=1e-1))
+    init = draw(st.sampled_from(["svd", "random"]))
+    orthogonalise = draw(st.booleans())
+    linesearch = draw(st.booleans())
+    normalize_factors = draw(st.booleans())
+    return (
+        x_dtype + mask_dtype,
+        x[0],
+        rank,
+        n_iter_max,
+        init,
+        orthogonalise,
+        linesearch,
+        normalize_factors,
+        tol,
+        mask[0],
+        svd_mask_repeats,
+    )
+
+
 # partial tucker
 @st.composite
 def _partial_tucker_data(draw):
@@ -839,6 +884,41 @@ def _tucker_data(draw):
         mask[0],
         svd_mask_repeats,
         tol,
+    )
+
+
+@st.composite
+def _randomised_parafac_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=3,
+            max_num_dims=3,
+            min_dim_size=4,
+            max_dim_size=4,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+
+    rank = 1
+    n_samples = draw(helpers.ints(min_value=3, max_value=3))
+    n_iter_max = draw(helpers.ints(min_value=1, max_value=5))
+    max_stagnation = draw(helpers.ints(min_value=1, max_value=2))
+    tol = draw(helpers.floats(min_value=1e-5, max_value=1e-1))
+    seed = draw(helpers.ints(min_value=1, max_value=1234))
+    init = draw(st.sampled_from(["svd", "random"]))
+    return (
+        x_dtype,
+        x[0],
+        rank,
+        n_samples,
+        n_iter_max,
+        init,
+        max_stagnation,
+        tol,
+        seed,
     )
 
 
@@ -1627,7 +1707,7 @@ def test_multi_mode_dot_tensorly_2(shape):
 @pytest.mark.parametrize("normalize_factors", [True, False])
 @pytest.mark.parametrize("seed", [1, 1234])
 @pytest.mark.parametrize("complex", [True, False])
-def test_parafac(
+def test_parafac_tensorly(
         linesearch,
         orthogonalise,
         true_rank,
@@ -1784,6 +1864,63 @@ def test_parafac(
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.parafac",
+    data=_parafac_data(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False)
+)
+def test_parafac(*, data, test_flags, backend_fw, fn_name, on_device):
+    (
+        input_dtypes,
+        x,
+        rank,
+        n_iter_max,
+        init,
+        orthogonalise,
+        linesearch,
+        normalize_factors,
+        tol,
+        mask,
+        svd_mask_repeats,
+    ) = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        x=x,
+        rank=rank,
+        n_iter_max=n_iter_max,
+        init=init,
+        normalize_factors=normalize_factors,
+        orthogonalise=orthogonalise,
+        tol=tol,
+        mask=mask,
+        svd_mask_repeats=svd_mask_repeats,
+        linesearch=linesearch,
+        test_values=False,
+    )
+    ret_np, ret_from_gt_np = results
+
+    weights = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+    factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+    weights_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+    )
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+    )
+    if init == "random":
+        for w, w_gt in zip(weights, weights_gt):
+            assert np.prod(w.shape) == rank
+            assert np.prod(w_gt.shape) == rank
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.partial_tucker",
     data=_partial_tucker_data(),
     test_with_out=st.just(False),
@@ -1893,6 +2030,59 @@ def test_partial_tucker_tensorly(tol_norm_2, tol_max_abs, modes, shape):
     np.allclose(core1, core2)
     for factor1, factor2 in zip(factors1, factors2):
         np.allclose(factor1, factor2)
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.randomised_parafac",
+    data=_randomised_parafac_data(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_randomised_parafac(*, data, test_flags, backend_fw, fn_name, on_device):
+    (
+        input_dtypes,
+        x,
+        rank,
+        n_samples,
+        n_iter_max,
+        init,
+        max_stagnation,
+        tol,
+        seed,
+    ) = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        x=x,
+        rank=rank,
+        n_samples=n_samples,
+        n_iter_max=n_iter_max,
+        init=init,
+        max_stagnation=max_stagnation,
+        tol=tol,
+        seed=seed,
+        test_values=False,
+    )
+    ret_np, ret_from_gt_np = results
+
+    weights = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+    factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+    weights_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+    )
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+    )
+    if init == "random":
+        for w, w_gt in zip(weights, weights_gt):
+            assert np.prod(w.shape) == rank
+            assert np.prod(w_gt.shape) == rank
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
 
 
 @handle_test(
