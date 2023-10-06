@@ -2981,7 +2981,7 @@ def test_tensorflow_truediv(
         shape=helpers.get_shape(),
     ),
     segment_ids=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=["int32", "int64"],
         shape=helpers.get_shape(),
     ),
     # num_segments=helpers.dtype_and_values(
