@@ -18,7 +18,7 @@ __version__ = None
 import setuptools
 from setuptools import setup
 from pathlib import Path
-from packaging import tags
+from pip._vendor.packaging import tags
 from urllib import request
 import os
 import json
