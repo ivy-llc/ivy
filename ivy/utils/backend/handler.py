@@ -283,7 +283,7 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
     ]
     array_list.extend(cont_array_vals)
 
-    # filter uninitialized arrays and arrays with other bakcends, and ensure the order
+    # filter uninitialized arrays and arrays with other backends, and ensure the order
     array_list = [
         arr
         for arr in array_list

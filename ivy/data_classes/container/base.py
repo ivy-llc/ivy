@@ -847,7 +847,7 @@ class ContainerBase(dict, abc.ABC):
             Chain of keys for this dict entry (Default value = '')
         assert_and_assign
             if true, then the container being compared with is updated with the value
-            in the container being compared to given that the strucutres are congruent
+            in the container being compared to given that the structures are congruent
         Returns
         -------
         Boolean
@@ -1008,7 +1008,7 @@ class ContainerBase(dict, abc.ABC):
             Chain of keys for this dict entry (Default value = '')
         assert_and_assign
             if true, then the container being compared with is updated with the value in
-            the container being compared to given that the strucutres are congruent
+            the container being compared to given that the structures are congruent
         Returns
         -------
             Boolean
@@ -1060,7 +1060,7 @@ class ContainerBase(dict, abc.ABC):
             Default is ``False``.
         assert_and_assign
             if true, then the container being compared with is updated with the value in
-            the container being compared to given that the strucutres are congruent
+            the container being compared to given that the structures are congruent
         """
         ivy.utils.assertions.check_true(
             ivy.Container.cont_identical_structure(
@@ -2334,7 +2334,7 @@ class ContainerBase(dict, abc.ABC):
 
     def cont_find_sub_container(self, sub_cont_to_find, partial=False):
         """
-        Find the sub-container in the current container if it exsits.
+        Find the sub-container in the current container if it exists.
 
         Parameters
         ----------
@@ -2416,7 +2416,7 @@ class ContainerBase(dict, abc.ABC):
         self, sub_struc_to_find, check_shapes=True, partial=False
     ):
         """
-        Find the sub-container structure in the current container if it exsits.
+        Find the sub-container structure in the current container if it exists.
 
         Parameters
         ----------
@@ -3300,7 +3300,7 @@ class ContainerBase(dict, abc.ABC):
         key_chain
             Chain of keys for this dict entry (Default value = '')
         include_self
-            Whether to also apply the (possiby in-place) function to this container.
+            Whether to also apply the (possibly in-place) function to this container.
             Default is ``True``.
 
         Returns

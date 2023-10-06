@@ -59,7 +59,7 @@ def _find_instance_in_args(backend: str, args, array_indices, mask):
     array_indices
         Indices of arrays that exists in the args
     mask
-        Boolean mask for whether the corrseponding element in (args) has a
+        Boolean mask for whether the corresponding element in (args) has a
         generated test_flags.native_array as False or test_flags.container as
         true
 
