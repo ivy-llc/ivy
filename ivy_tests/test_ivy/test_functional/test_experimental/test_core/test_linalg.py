@@ -515,7 +515,7 @@ def _initialize_cp_data(draw):
         svd_mask_repeats,
         init,
     )
-    
+
 
 # initialize tucker
 @st.composite
