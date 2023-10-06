@@ -2984,10 +2984,10 @@ def test_tensorflow_truediv(
         available_dtypes=helpers.get_dtypes("numeric"),
         shape=helpers.get_shape(),
     ),
-    num_segments=helpers.dtype_and_values(
-        available_dtypes=[ivy.int32, ivy.int64],
-        shape=helpers.get_shape(),
-    ),
+    # num_segments=helpers.dtype_and_values(
+    #    available_dtypes=[ivy.int32, ivy.int64],
+    #    shape=helpers.get_shape(),
+    # ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_unsorted_segment_max(
@@ -2999,10 +2999,10 @@ def test_tensorflow_unsorted_segment_max(
     fn_tree,
     backend_fw,
     on_device,
-    num_segments,
+    # num_segments,
 ):
     helpers.test_frontend_function(
-        input_dtypes=[ivy.float32, ivy.int32],
+        input_dtypes=["int32", "int64"],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
@@ -3010,7 +3010,7 @@ def test_tensorflow_unsorted_segment_max(
         on_device=on_device,
         data=data,
         segment_ids=segment_ids,
-        num_segments=num_segments,
+        num_segments=np.max(segment_ids) + 1,
     )
 
 
