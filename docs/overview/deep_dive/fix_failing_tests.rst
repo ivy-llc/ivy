@@ -68,11 +68,11 @@ Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy
 
 How to run tests
 ****************
-To find tests which are currently failing, you can go to our github repo and go to `issues`_, then filter by label :code:`Failing Test`. 
+To find tests which are currently failing, you can go to our github repo and go to `issues`_, then filter by label :code:`Failing Test`.
 There you will find all the failing tests
 which you can work on. For instance :code:`test_jax_transpose` is failing in this `issue`_, this function is in the Jax frontends in the manipulaiton submodule.
-To run tests locally, you can run the command "pytest test_file_path::test_fn_name". So in the case of :code:`test_jax_transpose`, the command will be 
-:code:`pytest ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_manipulations.py::test_jax_transpose`. You can also run tests via the green button but for that, you will first have to 
+To run tests locally, you can run the command "pytest test_file_path::test_fn_name". So in the case of :code:`test_jax_transpose`, the command will be
+:code:`pytest ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_manipulations.py::test_jax_transpose`. You can also run tests via the green button but for that, you will first have to
 setup testing on vs code.
 
 **Setting Up Testing**
@@ -121,7 +121,7 @@ This section aims to assist you in navigating through some common errors you mig
 
     E       ivy.utils.exceptions.IvyBackendException: paddle: to_numpy: paddle: default_device: paddle: dev: (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
     E         [Hint: holder_ should not be null.] (at /paddle/paddle/phi/core/dense_tensor_impl.cc:61)
-    E       
+    E
     E       Falsifying example: test_jax_transpose(
     E           on_device='cpu',
     E           frontend='jax',
@@ -142,7 +142,7 @@ This section aims to assist you in navigating through some common errors you mig
     E           ),
     E           fn_tree='ivy.functional.frontends.jax.numpy.transpose',
     E       )
-    E       
+    E
     E       You can reproduce this example by temporarily adding @reproduce_failure('6.87.3', b'AAEGBAEGAQAAAAAAAAAAAAAB') as a decorator on your test case
 
    **Solution:**
