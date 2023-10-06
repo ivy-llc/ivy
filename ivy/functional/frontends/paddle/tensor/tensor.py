@@ -885,5 +885,6 @@ class Tensor:
     def gather_(self, y, name=None):
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
+
     def uniform_(self):
         return paddle_frontend.uniform(self.shape)
