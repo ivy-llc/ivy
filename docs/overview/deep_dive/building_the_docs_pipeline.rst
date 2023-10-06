@@ -6,6 +6,16 @@ Building the Docs Pipeline
 .. _autosummary: https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html
 .. _doc-builder repository: https://github.com/unifyai/doc-builder
 
+.. note::
+
+    The doc-builder was developed originally for linux, although in theory you can run
+    it on any platform (supporting either docker or windows), we only tested it on
+    linux.
+
+    We recommended the use of convenience script if you are planning to regularly build
+    the docs, as it won't redownload the dependencies every time. Also, the use of
+    GitHub codespaces will help you with faster network if your internet is slow.
+
 To build our docs, we use `Sphinx`_. Sphinx is an extendable documentation generator
 for Python. As our building pipeline is complex, we heavily customize Sphinx using
 custom and third party extensions. As well as having a convenience script to build
