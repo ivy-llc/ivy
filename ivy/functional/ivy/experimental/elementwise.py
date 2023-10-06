@@ -1,5 +1,5 @@
 # local
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
 import ivy
 from ivy.func_wrapper import (
@@ -15,6 +15,241 @@ from ivy.func_wrapper import (
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def amax(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Calculate the maximum value of the input array ``x``.
+
+    .. note::
+       ``amax`` is an alias of ``max`` and both function
+       behaves similarly in every backend except PyTorch and PaddlePaddle
+       (see `PyTorch's amax function
+       documentation<https://pytorch.org/docs/stable/generated/torch.amax.html>`_`)
+       (see `PaddlePaddle's amax function documentation<https://www.paddlepaddle.org.cn/
+       documentation/docs/zh/api/paddle/amax_cn.html>`_`)
+
+    .. note::
+       When the number of elements over which to compute the maximum value is zero, the
+       maximum value is implementation-defined. Specification-compliant libraries may
+       choose to raise an error, return a sentinel value (e.g., if ``x`` is a
+       floating-point input array, return ``NaN``), or return the minimum possible
+       value for the input array ``x`` data type (e.g., if ``x`` is a floating-point
+       array, return ``-infinity``).
+
+    **Special Cases**
+
+    For floating-point operands,
+
+    -   If ``x_i`` is ``NaN``, the maximum value is ``NaN``
+        (i.e., ``NaN`` values propagate).
+
+    Parameters
+    ----------
+    x
+        input array. Should have a real-valued data type.
+    axis
+        axis or axes along which maximum values must be computed. By default, the
+        maximum value must be computed over the entire array. If a tuple of integers,
+        maximum values must be computed over multiple axes. Default: ``None``.
+    keepdims
+        optional boolean, if ``True``, the reduced axes (dimensions) must be included
+        in the result as singleton dimensions, and, accordingly, the result must be
+        compatible with the input array (see `broadcasting<https://data-apis.org/
+        array-api/latest/API_specification/broadcasting.html#broadcasting>`_).
+        Otherwise, if ``False``, the reduced axes (dimensions)
+        must not be included in the result.
+        Default: ``False``.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        if the maximum value was computed over the entire array, a zero-dimensional
+        array containing the maximum value; otherwise, a non-zero-dimensional array
+        containing the maximum values. The returned array must have the same data type
+        as ``x``.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.max.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.amax(x)
+    >>> print(y)
+    ivy.array(3)
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> z = ivy.array([0, 0, 0])
+    >>> y = ivy.amax(x, out=z)
+    >>> print(z)
+    ivy.array(2)
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.amax(x, axis=0, keepdims=True)
+    >>> print(y)
+    ivy.array([[4, 6, 10]])
+
+    >>> x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.amax(x)
+    >>> print(y)
+    ivy.array(10)
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
+    >>> y = ivy.amax(x)
+    >>> print(y)
+    {
+        a: ivy.array(3),
+        b: ivy.array(4)
+    }
+    """
+    return ivy.current_backend(x).amax(x, axis=axis, keepdims=keepdims, out=out)
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def amin(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Calculate the minimum value of the input array ``x``.
+
+    .. note::
+       ``amin`` is an alias of ``min`` and both function
+       behaves similarly in every backend except PyTorch and PaddlePaddle
+       (see `PyTorch's amin function
+       documentation<https://pytorch.org/docs/stable/generated/torch.amin.html>`_`)
+       (see `PaddlePaddle's amin function documentation<https://www.paddlepaddle.org.cn/
+       documentation/docs/zh/api/paddle/amin_cn.html>`_`)
+
+    .. note::
+       When the number of elements over which to compute the minimum value is zero, the
+       minimum value is implementation-defined. Specification-compliant libraries may
+       choose to raise an error, return a sentinel value (e.g., if ``x`` is a
+       floating-point input array, return ``NaN``), or return the maximum possible value
+       for the input array ``x`` data type (e.g., if ``x`` is a floating-point array,
+       return ``+infinity``).
+
+    **Special Cases**
+
+    For floating-point operands,
+
+    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN``
+        (i.e., ``NaN`` values propagate).
+
+    Parameters
+    ----------
+    x
+        input array. Should have a real-valued data type.
+    axis
+        axis or axes along which minimum values must be computed. By default, the
+        minimum value must be computed over the entire array. If a tuple of integers,
+        minimum values must be computed over multiple axes. Default: ``None``.
+
+    keepdims
+        optional boolean, if ``True``, the reduced axes (dimensions) must be included
+        in the result as singleton dimensions, and, accordingly, the result must be
+        compatible with the input array (see `broadcasting<https://data-apis.org/
+        array-api/latest/API_specification/broadcasting.html#broadcasting>`_).
+        Otherwise, if ``False``, the reduced axes (dimensions)
+        must not be included in the result.
+        Default: ``False``.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        if the minimum value was computed over the entire array, a zero-dimensional
+        array containing the minimum value; otherwise, a non-zero-dimensional array
+        containing the minimum values. The returned array must have the same data type
+        as ``x``.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.min.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.amin(x)
+    >>> print(y)
+    ivy.array(1)
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> z = ivy.array([0, 0, 0])
+    >>> y = ivy.amin(x, out=z)
+    >>> print(z)
+    ivy.array(0)
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.amin(x, axis=0, keepdims=True)
+    >>> print(y)
+    ivy.array([[0, 1, 2]])
+
+    >>> x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.amin(x)
+    >>> print(y)
+    ivy.array(0)
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
+    >>> y = ivy.amin(x)
+    >>> print(y)
+    {
+        a: ivy.array(1),
+        b: ivy.array(2)
+    }
+    """
+    return ivy.current_backend(x).amin(x, axis=axis, keepdims=keepdims, out=out)
 
 
 @handle_exceptions
@@ -831,7 +1066,7 @@ def gradient(
         Note: jax supports edge_order=1 case only
     axis
         dimension(s) to approximate the gradient over
-        by default partial gradient is computed in every dimention
+        by default partial gradient is computed in every dimension
 
     Returns
     -------
@@ -1018,7 +1253,7 @@ def conj(
     Returns
     -------
     ret
-        an arrray of the same dtype as the input array with
+        an array of the same dtype as the input array with
         the complex conjugates of the complex values present
         in the input array. If x is a scalar then a scalar
         will be returned.
@@ -1204,9 +1439,8 @@ def lerp(
     if ivy.is_array(weight):
         if ivy.dtype(weight) not in weight_allowed_types:
             weight = ivy.astype(weight, "float64")
-    else:
-        if not isinstance(weight, float):
-            weight = ivy.astype(ivy.array([weight]), "float64")
+    elif not isinstance(weight, float):
+        weight = ivy.astype(ivy.array([weight]), "float64")
 
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 

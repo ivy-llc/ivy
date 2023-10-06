@@ -128,7 +128,7 @@ def _train_task(
 ):
     # init
     total_cost = 0
-    all_grads = list()
+    all_grads = []
 
     # inner and outer
     unique_inner = inner_v is not None
@@ -324,8 +324,8 @@ def _train_tasks_with_for_loop(
     stop_gradients,
 ):
     total_cost = 0
-    updated_ivs_to_return = list()
-    all_grads = list()
+    updated_ivs_to_return = []
+    all_grads = []
     if isinstance(inner_v, (list, tuple)) and isinstance(
         inner_v[0], (list, tuple, dict, type(None))
     ):
@@ -755,7 +755,7 @@ def maml_step(
         callable for the inner loop cost function, receiving sub-batch, inner vars and
         outer vars
     outer_cost_fn
-        callable for the outer loop cost function, receving task-specific sub-batch,
+        callable for the outer loop cost function, receiving task-specific sub-batch,
         inner vars and outer vars. If None, the cost from the inner loop will also be
         optimized in the outer loop.
     variables

@@ -93,7 +93,7 @@ def cartesian_prod(*tensors):
 
 
 @to_ivy_arrays_and_back
-def clone(input):
+def clone(input, *, memory_format=None):
     return ivy.copy_array(input)
 
 
@@ -102,7 +102,7 @@ def corrcoef(input):
     if len(ivy.shape(input)) > 2:
         raise ivy.exceptions.IvyError(
             "corrcoef(): expected input to have two or fewer dimensions but got an"
-            f" input with {ivy.shape(input)} dimansions"
+            f" input with {ivy.shape(input)} dimensions"
         )
     return ivy.corrcoef(input, y=None, rowvar=True)
 
