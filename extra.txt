@@ -1,0 +1,2 @@
+apoligies if this is the wrong method but the issue i chose 'Default_device__init_' was already completed
+https://github.com/unifyai/ivy/issues/26534
