@@ -2056,8 +2056,8 @@ def test_frontend_method(
                 frontend_method_data.method_name
             )(*copy_args_method, **copy_kwargs_method)
             assert frontend_ret_ins is copy_ins, (
-                "Inplace method did not return the same instance of the frontend array,"
-                " expected {}, got {}".format(copy_ins, frontend_ret_ins)
+                "Inplace method did not return the same instance of the"
+                f" frontend array, expected {copy_ins}, got {frontend_ret_ins}"
             )
         ret = get_frontend_ret(
             backend_to_test,
@@ -2171,13 +2171,13 @@ DEFAULT_ATOL = 1e-06
 
 
 def _get_framework_rtol(rtols: dict, current_fw: str):
-    if current_fw in rtols.keys():
+    if current_fw in rtols:
         return rtols[current_fw]
     return DEFAULT_RTOL
 
 
 def _get_framework_atol(atols: dict, current_fw: str):
-    if current_fw in atols.keys():
+    if current_fw in atols:
         return atols[current_fw]
     return DEFAULT_ATOL
 
