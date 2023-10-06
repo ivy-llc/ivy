@@ -2762,10 +2762,12 @@ def trim_zeros(
         A string with 'f' representing trim from front and 'b' to trim from
         back. Default is 'fb', trim zeros from both front and back of the
         array.
+
     Returns
     -------
         1-D array
         The result of trimming the input. The input data type is preserved.
+
     Examples
     --------
     >>> a = ivy.array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1, 0])
