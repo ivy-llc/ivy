@@ -180,6 +180,11 @@ def tile(x, repeat_times, name=None):
     return ivy.tile(x, repeats=repeat_times)
 
 
+@to_ivy_arrays_and_back
+def tolist(x):
+    return ivy.to_list(x)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
     "paddle",
