@@ -386,3 +386,40 @@ def test_paddle_where(
         x=xs[0],
         y=xs[1],
     )
+# bucketize
+@handle_frontend_test(
+    fn_tree="paddle.bucketize",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shared_dtype=True,
+        min_num_dims=1,
+        num_arrays=2,
+    ),
+    out_int32=st.booleans(),
+    right=st.booleans(),
+)
+def test_paddle_bucketize(
+    *,
+    dtype_and_values,
+    out_int32,
+    right,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    dtype, input = dtype_and_values
+    input[0] = np.sort(input[0])
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=input[0],
+        sorted_sequence=input[1],
+        out_int32=out_int32,
+        right=right,
+    )
