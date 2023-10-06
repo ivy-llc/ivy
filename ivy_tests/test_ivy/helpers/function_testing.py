@@ -680,22 +680,73 @@ def test_frontend_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
     )
-
-    # extract all arrays from the arguments and keyword arguments
-    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
-    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
-    # make all lists equal in length
-    num_arrays = c_arg_vals + c_kwarg_vals
-    if len(input_dtypes) < num_arrays:
-        input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
-    if len(test_flags.as_variable) < num_arrays:
-        test_flags.as_variable = [test_flags.as_variable[0] for _ in range(num_arrays)]
-    if len(test_flags.native_arrays) < num_arrays:
-        test_flags.native_arrays = [
-            test_flags.native_arrays[0] for _ in range(num_arrays)
-        ]
+    # list and dict
+    # have to do type cast stuff here
 
     with BackendHandler.update_backend(backend_to_test) as ivy_backend:
+        target_args_np = copy.deepcopy(args_np)
+        target_kwargs_np = copy.deepcopy(kwargs_np)
+        backend_supported_dtypes = (
+            t_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[backend_to_test][
+                on_device
+            ]
+        )
+        if input_dtypes[0] not in backend_supported_dtypes["valid"]:
+            # cast dtype to some supported dtype
+            temp = get_nearest_castable_dtype(
+                input_dtypes[0], backend_supported_dtypes["valid"]
+            )
+            if temp is not None:
+                input_dtypes[:] = [temp] * len(temp)
+                # change dtype for args_for_test and kwargs_for_test
+                target_args_np = [
+                    (
+                        ivy_backend.astype(a, input_dtypes[0])
+                        if ivy_backend.is_array(a)
+                        else a
+                    )
+                    for a in args_np
+                ]
+                for key, value in target_kwargs_np.items():
+                    if ivy_backend.is_array(value):
+                        target_kwargs_np[key] = ivy_backend.astype(
+                            value, input_dtypes[0]
+                        )
+
+                arg_np_vals, args_idxs, c_arg_vals = _get_nested_ivy_arrays(
+                    target_args_np
+                )
+                kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_ivy_arrays(
+                    target_kwargs_np
+                )
+                # kwargs_for_test = {
+                #     key: ivy.astype(value, input_dtypes[0])
+                #     if (_is_frontend_array(value) or ivy_backend.is_array(value))
+                #     else value
+                #     for key, value in kwargs_for_test.items()
+                # }
+            else:
+                # type casting is not possible, test with current dtype will be skipped
+                skip(
+                    "Unable to type cast to nearest possible                     "
+                    f" dtype from {input_dtypes[0]}"
+                )
+        else:
+            # extract all arrays from the arguments and keyword arguments
+            arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
+            kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+        # make all lists equal in length
+        num_arrays = c_arg_vals + c_kwarg_vals
+        if len(input_dtypes) < num_arrays:
+            input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
+        if len(test_flags.as_variable) < num_arrays:
+            test_flags.as_variable = [
+                test_flags.as_variable[0] for _ in range(num_arrays)
+            ]
+        if len(test_flags.native_arrays) < num_arrays:
+            test_flags.native_arrays = [
+                test_flags.native_arrays[0] for _ in range(num_arrays)
+            ]
         # update var flags to be compatible with float dtype and with_out args
         test_flags.as_variable = [
             v if ivy_backend.is_float_dtype(d) and not test_flags.with_out else False
@@ -761,46 +812,6 @@ def test_frontend_function(
             args_for_test = copy.deepcopy(args)
             kwargs_for_test = copy.deepcopy(kwargs)
 
-        backend_supported_dtypes = (
-            t_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[backend_to_test][
-                on_device
-            ]
-        )
-        if input_dtypes[0] not in backend_supported_dtypes["valid"]:
-            # cast dtype to some supported dtype
-            temp = get_nearest_castable_dtype(
-                input_dtypes[0], backend_supported_dtypes["valid"]
-            )
-            if temp is not None:
-                input_dtypes[:] = [temp] * len(temp)
-                # change dtype for args_for_test and kwargs_for_test
-                args_list = list(args_for_test)
-                args_for_test = [
-                    (
-                        ivy.astype(a, input_dtypes[0])
-                        if (_is_frontend_array(a) or ivy.is_array(a))
-                        else a
-                    )
-                    for a in args_list
-                ]
-                for key, value in kwargs_for_test.items():
-                    if _is_frontend_array(value) or ivy_backend.is_ivy_array(value):
-                        kwargs_for_test[key] = ivy_backend.astype(
-                            value, input_dtypes[0]
-                        )
-
-                # kwargs_for_test = {
-                #     key: ivy.astype(value, input_dtypes[0])
-                #     if (_is_frontend_array(value) or ivy_backend.is_array(value))
-                #     else value
-                #     for key, value in kwargs_for_test.items()
-                # }
-            else:
-                # type casting is not possible, test with current dtype will be skipped
-                skip(
-                    "Unable to type cast to nearest possible                     "
-                    f" dtype from {input_dtypes[0]}"
-                )
         ret = get_frontend_ret(
             backend_to_test,
             frontend_fn,
@@ -2257,6 +2268,25 @@ def _get_nested_np_arrays(nest):
          Items found, indices, and total number of arrays found
     """
     indices = ivy.nested_argwhere(nest, lambda x: isinstance(x, np.ndarray))
+
+    ret = ivy.multi_index_nest(nest, indices)
+    return ret, indices, len(ret)
+
+
+def _get_nested_ivy_arrays(nest):
+    """
+    Search for an Ivy arrays in a nest.
+
+    Parameters
+    ----------
+    nest
+        nest to search in.
+
+    Returns
+    -------
+         Items found, indices, and total number of arrays found
+    """
+    indices = ivy.nested_argwhere(nest, lambda x: ivy.is_ivy_array(x))
 
     ret = ivy.multi_index_nest(nest, indices)
     return ret, indices, len(ret)
