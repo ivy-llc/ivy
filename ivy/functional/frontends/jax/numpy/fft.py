@@ -73,7 +73,7 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "2.5.0 and below": (
+        "1.26.0 and below": (
             "int32",
             "int64",
             "float32",
