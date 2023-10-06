@@ -54,6 +54,7 @@ max_chunk_sizes = {}
 class DefaultDevice:
     """Ivy Device Class."""
 
+    #
     def __init__(
         self,
         device: Union[ivy.Device, ivy.NativeDevice],
