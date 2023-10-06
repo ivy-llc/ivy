@@ -226,16 +226,6 @@ def mel_weight_matrix(
 
 
 def polysub(poly1_coeffs: paddle.Tensor, poly2_coeffs: paddle.Tensor) -> paddle.Tensor:
-    """Calculate the difference of two polynomials.
-
-    Parameters:
-        poly1_coeffs (paddle.Tensor): Coefficients of the first polynomial.
-        poly2_coeffs (paddle.Tensor): Coefficients of the second polynomial.
-
-    Returns:
-        paddle.Tensor: Coefficients representing the difference of the two polynomials.
-    """
-    # Pad the coefficients to have the same length (necessary for subtraction)
     max_length = max(poly1_coeffs.shape[0], poly1_coeffs.shape[0])
     padded_poly1_coeffs = paddle.concat(
         [
