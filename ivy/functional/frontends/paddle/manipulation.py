@@ -77,15 +77,14 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
+def put_along_axis_(arr, indices, values, axis, reduce="assign"):
+    return ivy.inplace_update(arr, (ivy.put_along_axis(arr, indices, values, axis)))
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
     "paddle",
 )
-@to_ivy_arrays_and_back
-def repeat_interleave(x, repeats, axis=None, name=None):
-    return ivy.repeat(x, repeats, axis=axis)
-
-
 @to_ivy_arrays_and_back
 def repeat_interleave(x, repeats, axis=None, name=None):
     return ivy.repeat(x, repeats, axis=axis)
