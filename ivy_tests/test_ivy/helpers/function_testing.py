@@ -59,7 +59,7 @@ def _find_instance_in_args(backend: str, args, array_indices, mask):
     array_indices
         Indices of arrays that exists in the args
     mask
-        Boolean mask for whether the corrseponding element in (args) has a
+        Boolean mask for whether the corresponding element in (args) has a
         generated test_flags.native_array as False or test_flags.container as
         true
 
@@ -976,7 +976,7 @@ def test_frontend_function(
     frontend_ret_flat = flatten_frontend(
         ret=ret, backend=backend_to_test, frontend_array_fn=frontend_config.native_array
     )
-    frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
+    frontend_ret_np_flat = [x.ivy_array.to_numpy() for x in frontend_ret_flat]
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -2056,8 +2056,8 @@ def test_frontend_method(
                 frontend_method_data.method_name
             )(*copy_args_method, **copy_kwargs_method)
             assert frontend_ret_ins is copy_ins, (
-                "Inplace method did not return the same instance of the frontend array,"
-                " expected {}, got {}".format(copy_ins, frontend_ret_ins)
+                "Inplace method did not return the same instance of the"
+                f" frontend array, expected {copy_ins}, got {frontend_ret_ins}"
             )
         ret = get_frontend_ret(
             backend_to_test,
@@ -2142,7 +2142,7 @@ def test_frontend_method(
         frontend_ret_flat = flatten_frontend(
             ret=ret, backend=ivy_backend, frontend_array_fn=frontend_config.native_array
         )
-        frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
+        frontend_ret_np_flat = [x.ivy_array.to_numpy() for x in frontend_ret_flat]
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -2171,13 +2171,13 @@ DEFAULT_ATOL = 1e-06
 
 
 def _get_framework_rtol(rtols: dict, current_fw: str):
-    if current_fw in rtols.keys():
+    if current_fw in rtols:
         return rtols[current_fw]
     return DEFAULT_RTOL
 
 
 def _get_framework_atol(atols: dict, current_fw: str):
-    if current_fw in atols.keys():
+    if current_fw in atols:
         return atols[current_fw]
     return DEFAULT_ATOL
 
