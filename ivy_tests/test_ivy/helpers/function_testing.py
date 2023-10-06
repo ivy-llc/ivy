@@ -973,10 +973,12 @@ def test_frontend_function(
             frontend_fw_kwargs=kwargs_frontend,
         )
 
-    frontend_ret_flat = flatten_frontend(
-        ret=ret, backend=backend_to_test, frontend_array_fn=frontend_config.native_array
+    frontend_ret_np_flat = flatten_frontend_fw_to_np(
+        frontend_ret,
+        frontend_config.isscalar,
+        frontend_config.is_native_array,
+        frontend_config.to_numpy,
     )
-    frontend_ret_np_flat = [x.ivy_array.to_numpy() for x in frontend_ret_flat]
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -2139,10 +2141,12 @@ def test_frontend_method(
     if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
         frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
     else:
-        frontend_ret_flat = flatten_frontend(
-            ret=ret, backend=ivy_backend, frontend_array_fn=frontend_config.native_array
+        frontend_ret_np_flat = flatten_frontend_fw_to_np(
+            frontend_ret,
+            frontend_config.isscalar,
+            frontend_config.is_native_array,
+            frontend_config.to_numpy,
         )
-        frontend_ret_np_flat = [x.ivy_array.to_numpy() for x in frontend_ret_flat]
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -2337,6 +2341,21 @@ def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
         else:
             ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
     return ret_flat
+
+
+def flatten_frontend_fw_to_np(
+    frontend_ret, isscalar_func, is_native_array_func, to_numpy_func
+):
+    if isscalar_func(frontend_ret):
+        frontend_ret_np_flat = [np.asarray(frontend_ret)]
+    else:
+        # tuplify the frontend return
+        if not isinstance(frontend_ret, tuple):
+            frontend_ret = (frontend_ret,)
+        frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, is_native_array_func)
+        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        frontend_ret_np_flat = [to_numpy_func(x) for x in frontend_ret_flat]
+    return frontend_ret_np_flat
 
 
 def flatten_and_to_np(*, backend: str, ret):
