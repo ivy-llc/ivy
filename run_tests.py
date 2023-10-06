@@ -243,5 +243,5 @@ if __name__ == "__main__":
             print(collection.update_one({"_id": id}, {"$set": test_info}, upsert=True))
 
     # if any tests fail, the workflow fails
-    if not status:
+    if failed:
         exit(1)
