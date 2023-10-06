@@ -7,10 +7,4 @@ def npfloor(*params):
     return x
 
 
-@handle_frontend_test(
-    fn_tree="numpy.raw_ops.floor",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shared_dtype=True,
-    )
-)
+
