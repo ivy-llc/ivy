@@ -15,6 +15,7 @@ Fix Failing Tests
 .. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
 .. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
 .. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
+.. _`ivy frontend tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
 
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
@@ -112,7 +113,43 @@ The steps are as following to setup testing on VS Code.
 Common Errors
 *************
 
-This section, aims to assist you in navigating through some common errors you might encounter while working with the Ivy's Functional API. We'll go through some common errors which you might encounter while working as a contributor or a developer.
+This section aims to assist you in navigating through some common errors you might encounter while working with the Ivy's Functional API. We'll go through :code:`test_jax_transpose` and then some common errors which you might encounter while working as a contributor or a developer.
+
+#. Starting off with :code:`test_jax_transpose`, it throws an Assertion error because the shape returned by ground truth is different from the shape returned by the target backend.
+
+   .. code-block:: python
+
+    E       ivy.utils.exceptions.IvyBackendException: paddle: to_numpy: paddle: default_device: paddle: dev: (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+    E         [Hint: holder_ should not be null.] (at /paddle/paddle/phi/core/dense_tensor_impl.cc:61)
+    E       
+    E       Falsifying example: test_jax_transpose(
+    E           on_device='cpu',
+    E           frontend='jax',
+    E           backend_fw='paddle',
+    E           array_and_axes=(array([], shape=(1, 0), dtype=complex64),
+    E            ['complex64'],
+    E            None),
+    E           test_flags=FrontendFunctionTestFlags(
+    E               num_positional_args=0,
+    E               with_out=False,
+    E               inplace=False,
+    E               as_variable=[False],
+    E               native_arrays=[False],
+    E               test_trace=False,
+    E               generate_frontend_arrays=False,
+    E               transpile=False,
+    E               precision_mode=True,
+    E           ),
+    E           fn_tree='ivy.functional.frontends.jax.numpy.transpose',
+    E       )
+    E       
+    E       You can reproduce this example by temporarily adding @reproduce_failure('6.87.3', b'AAEGBAEGAQAAAAAAAAAAAAAB') as a decorator on your test case
+
+   **Solution:**
+
+   As it is failing for torch backend and its producing a different shape than the ground truth, it is most likely a bug in the :code:`permute_dims` in torch backend which is being used in this frontend function.
+
+   Now lets explore some other common errors you might face.
 
 #. This is the case where we pass in a dtype to `torch` which is not actually supported by the torch's native framework itself.
 
@@ -246,6 +283,8 @@ This section, aims to assist you in navigating through some common errors you mi
 
    If this is passing for all other backends and just failing for torch, and the result matrices are also different which states there is not a numerical instability, the issue is with the       torch backend. The best approach in this case is to see the torch backend, there should be an issue in the implementation. You have to correct the backend implementation for torch.
 
-**Note**
 
-This section is specifically targeted towards dealing with the Ivy Functional API and the Ivy Experimental API.
+Where to ask for Help
+*********************
+
+The best place to ask for help is our `discord`_ server in the relevant channels. For instance, lets say you're facing an issue with :code:`test_jax_transpose` function, in this case you should post your query in the `ivy frontend tests channel`_.
