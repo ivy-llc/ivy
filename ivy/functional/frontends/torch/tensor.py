@@ -1312,6 +1312,12 @@ class Tensor:
     def count_nonzero(self, dim):
         return torch_frontend.count_nonzero(self, dim=dim)
 
+    #  @with_unsupported_dtypes({"2.0.1 and below": ("float64")}, "torch")
+    def cov(self, /, *, correction=1, fweights=None, aweights=None):
+        return torch_frontend.cov(
+            self, correction=correction, fweights=fweights, aweights=aweights
+        )
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
     def exp(self):
         return torch_frontend.exp(self)
