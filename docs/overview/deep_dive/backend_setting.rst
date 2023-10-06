@@ -30,23 +30,23 @@ It's helpful to look at an example:
 .. code-block:: python
 
    x = ivy.array([[2., 3.]])
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.numpy' from '/opt/project/ivy/functional/backends/numpy/__init__.py'>
 
 .. code-block:: python
 
    y = ivy.multiply(torch.Tensor([3.]), torch.Tensor([4.]))
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
 
 .. code-block:: python
 
    ivy.set_backend('jax')
    z = ivy.matmul(jax.numpy.array([[2.,3.]]), jax.numpy.array([[5.],[6.]]))
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.jax' from '/opt/project/ivy/functional/backends/jax/__init__.py'>
    ivy.previous_backend()
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
 
 In the last example above, the moment any backend is set, it will be used over the `implicit_backend`_.
@@ -74,7 +74,7 @@ Essentially, when the user calls :code:`ivy.set_backend(<backend>, dynamic=True)
 #. Next, the global :code:`ivy.__dict__` is updated to the new backend as mentioned in the Backend Setting section above.
 #. Finally, the objects are `converted from numpy`_ to the target backend using the newly set backend.
 
-By default, the dynamic backend attribute is set to True when you create an ivy array (e.g., :code:`x = ivy.array([1,2,3])`), but the attribute is mutable and can be changed after the ivy array is created (e.g., :code:`x.dynamic_backend= True`). 
+By default, the dynamic backend attribute is set to True when you create an ivy array (e.g., :code:`x = ivy.array([1,2,3])`), but the attribute is mutable and can be changed after the ivy array is created (e.g., :code:`x.dynamic_backend= True`).
 Here's an example to illustrate how this works in practice:
 
 .. code-block:: python

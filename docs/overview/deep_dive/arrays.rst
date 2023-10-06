@@ -113,7 +113,7 @@ Ivy's functional API and its functions can easily be integrated with non-Ivy cla
 To make use of that feature, the class must contain an implementation for these functions and it must contain an implementation for the function :code:`__ivy_array_function__`. If a non-Ivy class is passed to an Ivy function, a call to this class's :code:`__ivy_array_function__` is made which directs Ivy's function to handle that input type correctly. This allows users to define custom implementations for any of the functions that can be found in Ivy's functional API which would further make it easy to integrate those classes with other Ivy projects.
 
 **Note**
-This functionality is inspired by `NumPy's`_ :code:`__ivy_array_function__` and `PyTorch's`_ :code:`__torch_function__`. 
+This functionality is inspired by `NumPy's`_ :code:`__ivy_array_function__` and `PyTorch's`_ :code:`__torch_function__`.
 
 As an example, consider the following class :code:`MyArray` with the following definition:
 
@@ -138,12 +138,12 @@ There are different ways to do so. One way is to use a global dict :code:`HANDLE
     			return NotImplemented
     		if not all(issubclass(t, (MyArray, ivy.Array, ivy.NativeArray)) for t in types):
     			return NotImplemented
-    		return HANDLED_FUNCTIONS[func](*args, **kwargs)		
+    		return HANDLED_FUNCTIONS[func](*args, **kwargs)
 
-:code:`__ivy_array_function__` accepts four parameters: :code:`func` representing a reference to the array API function being 
+:code:`__ivy_array_function__` accepts four parameters: :code:`func` representing a reference to the array API function being
 overridden, :code:`types` a list of the types of objects implementing :code:`__ivy_array_function__`, :code:`args` a tuple of arguments supplied to the function, and :code:`kwargs` being a dictionary of keyword arguments passed to the function.
 While this class contains an implementation for :code:`__ivy_array_function__`, it is still not enough as it is necessary to implement any needed Ivy functions with the new :code:`MyArray` class as input(s) for the code to run successfully.
-We will define a decorator function :code:`implements` that can be used to add functions to :code:`HANDLED_FUNCTIONS`: 
+We will define a decorator function :code:`implements` that can be used to add functions to :code:`HANDLED_FUNCTIONS`:
 
 .. code-block:: python
 
@@ -151,7 +151,7 @@ We will define a decorator function :code:`implements` that can be used to add f
         def decorator(func):
             HANDLED_FUNCTIONS[ivy_function] = func
             return func
-        return decorator		
+        return decorator
 
 Lastly, we need to apply that decorator to the override function. Let’s consider for example a function that overrides :code:`ivy.abs`:
 
@@ -168,7 +168,7 @@ Now that we have added the function to :code:`HANDLED_FUNCTIONS`, we can now use
     X = MyArray(-3)
     X = ivy.abs(X)
 
-Of course :code:`ivy.abs` is an example of a function that is easy to override since it only requires one operand. The same approach can be used to override functions with multiple operands, including arrays or array-like objects that define :code:`__ivy_array_function__`. 
+Of course :code:`ivy.abs` is an example of a function that is easy to override since it only requires one operand. The same approach can be used to override functions with multiple operands, including arrays or array-like objects that define :code:`__ivy_array_function__`.
 
 It is relevant to mention again that any function not stored inside the dict :code:`HANDLED_FUNCTIONS` will not work and it is also important to notice that the operands passed to the function must match that of the function stored in the dict. For instance :code:`my_abs` takes only one parameter which is a :code:`MyArray` object. So, passing any other operands to the function will result in an exception :code:`IvyBackendException` being thrown. Lastly, for a custom class to be covered completely with Ivy's functional API, it is necessary to create an implementation for all the relevant functions within the API that will be used by this custom class. That can be all the functions in the API or only a subset of them.
 

@@ -10,6 +10,8 @@ Setting Up
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
 .. _`ivy/run_tests_CLI`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI
+.. _`platform compatibility tags`: https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
+.. _`logging level`: https://docs.python.org/3/library/logging.html#logging.Logger.setLevel
 
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
@@ -107,7 +109,7 @@ Using miniconda
 #. Create the environment by running the command (:code:`ivy_dev` is the name of the environment)
 
    .. code-block:: none
-      
+
       conda create --name ivy_dev python=3.10.0
 
 #. Activate the environment by:
@@ -120,7 +122,7 @@ Using miniconda
 
    .. code-block:: none
 
-      pip install e .
+      pip install -e .
 
 #. Setup the interpreter by:
 
@@ -129,29 +131,39 @@ Using miniconda
       a. Going to settings -> project -> Python Interpreter
 
       b. Clicking add interpreter (currently by clicking the ⚙ icon on the right side) which should open a new window.
-      
+
       c. Choosing "conda environment" from the left panel. Choose the existing environment and select the drop down and you should find the path python in the environment.
 
    #. VSCode
 
       a. Go to the command palette (Ctrl+Shift+P) or (⌘+shift+p) for Mac and type "Python: Select Interpreter" and select the environment you created.
-      
+
    If you don't find a path to your created python environment, you can run :code:`where python` in the conda command line while the environment is activate and it should give the path which can be added manually.
 
 #. Installing the development dependencies.
 
    a. On Linux, Windows, or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
-   
+
       .. code-block:: none
-   
+
          pip install -r requirements/optional.txt
-   
+
    b. On M1 Mac, you will need to use the optional_apple_silicon_1 and optional_apple_silicon_2 requirements files. To install dependencies.
-   
+
       .. code-block:: none
-   
+
          pip install -r requirements/optional_apple_silicon_1.txt
          pip install -r requirements/optional_apple_silicon_2.txt
+
+#. Installing array API testing dependencies.
+
+   To make sure you have all the packages for running tests available change the directory to :code:`ivy/ivy_tests/array_api_testing/test_array_api` in your cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
+
+   .. code-block:: none
+
+      pip install -r requirements.txt
+
+   This will install packages required for running the tests in Array API suite.
 
 Using venv
 **********
@@ -208,26 +220,26 @@ This is a builtin package and doesn't require explicit installation.
       a. Go to the command palette (Ctrl+Shift+P) or (⌘+shift+p) for Mac and type `Python: Select Interpreter` and select the environment you created.
 
 #. Installing the development dependencies.
-   
+
    a. On Linux, Windows, or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
-   
+
       .. code-block:: none
-   
+
          pip install -r requirements/optional.txt
 
-      Note: In case you are using Ubuntu 22.04, PaddlePaddle won't install properly. You have to download it from the source. 
-   
+      Note: In case you are using Ubuntu 22.04, PaddlePaddle won't install properly. You have to download it from the source.
+
       .. code-block:: none
-        
+
          wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
          sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
-        
+
       PS: If the link gets expired at some point in the future, check http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/?C=M;O=D for a valid one.
 
    b. On M1 Mac, you will need to use the optional_apple_silicon_1 and optional_apple_silicon_2 requirements files. To install dependencies.
-   
+
       .. code-block:: none
-   
+
          pip install -r requirements/optional_apple_silicon_1.txt
          pip install -r requirements/optional_apple_silicon_2.txt
 
@@ -423,14 +435,14 @@ Ubuntu
 **Docker Connection not Successfull**
 
 This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
-    
+
 .. code-block:: none
-        
+
    sudo chmod a+rwx /var/run/docker.sock
-        
+
 .. code-block:: none
-    
-   sudo chmod a+rwx /var/run/docker.pid  
+
+   sudo chmod a+rwx /var/run/docker.pid
 
 
 For questions, please reach out on `discord`_ in the `docker channel`_!
@@ -601,14 +613,14 @@ For windows users, the file path should be entered with "/" (forward-slashes), f
 
 WSL
 ***
- 
+
 It is understandable that working with computationally heavy tools like Docker and PyCharm is not always comfortable for developers.
-By utilizing WSL, you can run a Linux distribution on your Windows machine, and in addition, venv is leveraged to create 
-isolated Python environments eliminating the need for a full-fledged containerization solution like Docker, and with VSCode being an appropriate alternative to PyCharm, 
+By utilizing WSL, you can run a Linux distribution on your Windows machine, and in addition, venv is leveraged to create
+isolated Python environments eliminating the need for a full-fledged containerization solution like Docker, and with VSCode being an appropriate alternative to PyCharm,
 the steps explained below will help you in setting up a less resource-intensive Ivy environment.
 
 #. Install `WSL <https://learn.microsoft.com/en-us/windows/wsl/install>`_.
-#. Install `Visual Studio Code <https://code.visualstudio.com/>`_. 
+#. Install `Visual Studio Code <https://code.visualstudio.com/>`_.
    You can follow `this guide <https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode>`_ to integrate WSL into VSCode.
 #. Open the WSL terminal by typing in the name of your Linux distribution in the windows start menu (e.g. :code:`Ubuntu`).
 #. Create a virtual environment by following the steps below:
@@ -650,12 +662,12 @@ the steps explained below will help you in setting up a less resource-intensive 
       pip install -r requirements/requirements.txt
 
 #. Once done, you can now open VSCode right from your terminal and get started with your development by just running:
-   
+
    .. code-block:: none
 
       code .
 
-#. To set up the Python Interpreter in VSCode, go to the command palette (Ctrl+Shift+P) and type **Python: Select Interpreter** and select the environment you created. 
+#. To set up the Python Interpreter in VSCode, go to the command palette (Ctrl+Shift+P) and type **Python: Select Interpreter** and select the environment you created.
    For a more detailed explanation, you can follow `this guide <https://code.visualstudio.com/docs/python/environments#_working-with-python-interpreters>`_.
 #. Now that your development environment is set up, you can now run tests locally by running :code:`pytest test_fle_path::test_fn_name` in the terminal or
    if you want to set up testing in VSCode, you may follow the guide **Setting Up Testing** for VSCode as explained below, next to this subsection.
@@ -700,14 +712,14 @@ Just follow the steps outlined below:
    :width: 420
 
 3. Then you will head to the dropdown of "Dev container configuration", then select an image to set up with. As there are six options available as of now
-   
+
       - :code:`Default project configuration` - This is the default option, it will set up with the default codespaces environment.
       - :code:`Ivy Development Environment (build)` - This will set up the development environment of ivy for CPU and build image from :code:`ivy/docker/Dockerfile`.
       - :code:`Ivy GPU Development Environment (build)` - This will set up the development environment of ivy for GPU and build image from :code:`ivy/docker/DockerfileGPU`.
       - :code:`Ivv Development Environment for Multiver...` - This will set up the development environment of multiversion support with ivy and build image from :code:`ivy/docker/DockerfileMultiversion`.
       - :code:`Ivy Development Environment (image)` - This will set up the development environment of ivy for CPU and build image from the latest image from dockerhub.
       - :code:`Ivy GPU Development Environment (image)` - This will set up the development environment of ivy for GPU and build image from the latest image from dockerhub.
-   
+
    For now, we will select :code:`Ivy Development Environment (image)`.
    Select your region and preferred machine type, then click on "Create Codespace".
 
@@ -745,7 +757,7 @@ The configuration files install all the required packages, and extensions for yo
 
 If you want to setup a GPU instance on codespaces and also have access to it, kindly follow the guidelines below:
 
-1. Points 1 and 2 are the same from ref:`Setting up Codespaces` section above. You will be on a screen shown below. Just select the Machine Type to be "6-Core (1 GPU)". 
+1. Points 1 and 2 are the same from ref:`Setting up Codespaces` section above. You will be on a screen shown below. Just select the Machine Type to be "6-Core (1 GPU)".
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/Selecting_the_GPU.png?raw=true
    :width: 420
@@ -824,6 +836,49 @@ The steps are as following to setup testing on VS Code when using a new Codespac
       }
 
 Note: Currently you do not need to comment out the :code:`conftest.py` file in the :code:`array_api_tests` directory.
+
+
+The Binaries
+------------
+
+Some features in :code:`ivy` are served as compiled binaries, such as the transpiler.
+These binaries aren't maintained in the :code:`ivy` repository directly, but on a separate :code:`binaries` repository.
+All the binaries that are required to make use of the full potential of :code:`ivy` are recorded in the :code:`binaries.json`.
+The supported configurations (Python version - OS - Architecture) are recorded in the :code:`available_configs.json`.
+
+The format of representing a configuration is based on PyPI's `platform compatibility tags`_,
+meaning :code:`cp310-none-manylinux_2_17_x86_64` represents a configuration that can be used in a Python 3.10 environment on a linux system with x86-64.
+We continue to add support to many more supported configurations to our binaries to work with various python versions, OS and architecture.
+
+On installing :code:`ivy` with :code:`pip install -e .` all the required binaries with a supported configuration to your system get downloaded.
+Just to have another check on whether all binaries are present, there's a warning that gets thrown when you :code:`import ivy` if any binaries are missing of the form,
+
+.. code-block:: none
+
+   WARNING:root:   Some binaries seem to be missing in your system. This could be either because we don't have compatible binaries for your system or that newer binaries were available.
+                   In the latter case, calling ivy.utils.cleanup_and_fetch_binaries() should fetch the binaries binaries. Feel free to create an issue on https://github.com/unifyai/ivy.git in case of the former
+
+   WARNING:root:
+   Following are the supported configurations :
+   compiler : cp38-none-manylinux_2_17_x86_64, cp310-none-manylinux_2_17_x86_64
+   engines : cp310-none-manylinux_2_17_x86_64
+
+   WARNING:root:   /workspaces/ivy/ivy/compiler/_compiler.so not found.
+
+In case there are no supported binaries for your configuration, then feel free to create an issue on the :code:`ivy` repo asking for adding support to the same.
+Feel free to ignore the warning in the meantime, set a `logging level`_ to avoid receiving the warning.
+In case the you are using a supported configuration and still receiving this warning, it indicates that you are yet to do a :code:`pip install -e .` as mentioned in the previous sections.
+Running a :code:`pip install -e .` is sufficient to download the binaries if they're supported but the :func:`ivy.utils.cleanup_and_fetch_binaries` function is provided just in case you want to download the binaries without a local installation.
+
+.. code-block:: python
+
+   import ivy
+
+   ivy.utils.cleanup_and_fetch_binaries()
+
+
+.. note:: Bear in mind that the binaries are **not** required for working on the open tasks for the most part, so it's totally fine to not have the binaries downloaded on your system for working on any of the open tasks.
+
 
 **Video**
 

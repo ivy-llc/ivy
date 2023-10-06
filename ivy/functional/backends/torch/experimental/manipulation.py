@@ -14,6 +14,7 @@ from numbers import Number
 from collections import namedtuple
 import torch
 
+
 # local
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
@@ -390,25 +391,6 @@ def expand(
 expand.support_native_out = False
 
 
-def concat_from_sequence(
-    input_sequence: Union[Tuple[torch.Tensor], List[torch.Tensor]],
-    /,
-    *,
-    new_axis: int = 0,
-    axis: int = 0,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    is_tuple = type(input_sequence) is tuple
-    if is_tuple:
-        input_sequence = list(input_sequence)
-    if new_axis == 0:
-        ret = torch.cat(input_sequence, dim=axis)
-        return ret
-    elif new_axis == 1:
-        ret = torch.stack(input_sequence, dim=axis)
-        return ret
-
-
 @with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
 def unique_consecutive(
     x: torch.Tensor,
@@ -433,32 +415,81 @@ def unique_consecutive(
     )
 
 
-def fill_diagonal(
-    a: torch.Tensor,
-    v: Union[int, float],
+def column_stack(
+    arrays: Sequence[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.column_stack(arrays)
+
+
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
+def put_along_axis(
+    arr: torch.Tensor,
+    indices: torch.Tensor,
+    values: Union[int, torch.Tensor],
+    axis: int,
     /,
     *,
-    wrap: bool = False,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    shape = a.shape
-    max_end = torch.prod(torch.tensor(shape))
-    end = max_end
-    if len(shape) == 2:
-        step = shape[1] + 1
-        if not wrap:
-            end = shape[1] * shape[1]
+    mode_mappings = {
+        "sum": "sum",
+        "min": "amin",
+        "max": "amax",
+        "mul": "prod",
+        "replace": "replace",
+    }
+    mode = mode_mappings.get(mode, mode)
+    indices = indices.to(torch.int64)
+    if mode == "replace":
+        return torch.scatter(arr, axis, indices, values, out=out)
     else:
-        step = 1 + (torch.cumprod(torch.tensor(shape[:-1]), 0)).sum()
+        return torch.scatter_reduce(arr, axis, indices, values, reduce=mode, out=out)
 
-    end = max_end if end > max_end else end
-    a = torch.reshape(a, (-1,))
-    w = torch.zeros(a.shape, dtype=bool).to(a.device)
-    ins = torch.arange(0, max_end).to(a.device)
-    steps = torch.arange(0, end, step).to(a.device)
 
-    for i in steps:
-        i = ins == i
-        w = torch.logical_or(w, i)
-    a = torch.where(w, v, a)
-    a = torch.reshape(a, shape)
-    return a
+put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
+    "replace",
+    "sum",
+    "mul",
+    "mean",
+    "max",
+    "min",
+]
+
+
+def concat_from_sequence(
+    input_sequence: Union[Tuple[torch.Tensor], List[torch.Tensor]],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    is_tuple = type(input_sequence) is tuple
+    if is_tuple:
+        input_sequence = list(input_sequence)
+    if new_axis == 0:
+        ret = torch.cat(input_sequence, dim=axis)
+        return ret
+    elif new_axis == 1:
+        ret = torch.stack(input_sequence, dim=axis)
+        return ret
+
+
+def trim_zeros(a: torch.Tensor, /, *, trim: Optional[str] = "bf") -> torch.Tensor:
+    first = 0
+    trim = trim.upper()
+    if "F" in trim:
+        for i in a:
+            if i != 0.0:
+                break
+            else:
+                first = first + 1
+    last = len(a)
+    if "B" in trim:
+        for i in torch.flip(a, [0]):
+            if i != 0.0:
+                break
+            else:
+                last = last - 1
+    return a[first:last]

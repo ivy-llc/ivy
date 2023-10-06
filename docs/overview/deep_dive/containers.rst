@@ -186,7 +186,7 @@ As for the special methods which are `implemented`_ in the main :class:`ivy.Cont
 As a result, the operator functions will make use of the special methods of the lefthand passed input objects if available, otherwise it will make use of the reverse special method of the righthand operand.
 For instance, if the lefthand operand at any given leaf of the container in an :class:`ivy.Array`, then the operator function will make calls to the special methods of this array object.
 As explained in the `Arrays <arrays.rst>`_ section of the Deep Dive, these special methods will in turn call the corresponding functions from the ivy functional API.
- 
+
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which will make calls to :func:`ivy.add`, :func:`ivy.subtract`, :func:`ivy.multiply` and :func:`ivy.divide` respectively if the lefthand operand is an :class:`ivy.Array` object.
 Otherwise, these special methods will be called on whatever objects are at the leaves of the container, such as int, float, :class:`ivy.NativeArray` etc.
 
@@ -252,8 +252,8 @@ There may be some compositional functions which are not implicitly nestable for 
 One such example is the :func:`ivy.linear` function which is not implicitly nestable despite being compositional. This is because of the use of special functions like :func:`__len__` and :func:`__list__` which, among other functions, are not nestable and can't be made nestable.
 But we should try to avoid this, in order to make the flow of computation as intuitive to the user as possible.
 
-When compiling the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
-The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be compiled in any case.
+When tracing the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
+The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be traced in any case.
 The distinction is only really relevant when stepping through and debugging with eager mode execution, and for the reasons outlined above, the preference is to keep compositional functions implicitly nestable where possible.
 
 **Shared Nested Structure**

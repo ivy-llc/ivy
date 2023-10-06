@@ -81,7 +81,8 @@ class FrontendConfigWithBackend(FrontendConfig):
     backend_str = None
 
     def __init__(self):
-        self.backend = ivy.with_backend(self.backend_str)
+        # Todo: add feature to set backend handler
+        self.backend = ivy.set_backend(self.backend_str)
 
     @property
     def Dtype(self):
@@ -128,7 +129,7 @@ class FrontendConfigWithBackend(FrontendConfig):
         return self.backend.as_native_dtype(dtype)
 
     def as_native_device(self, device: str):
-        return self.backend_as_native_dev(device)
+        return self.backend.as_native_dev(device)
 
     def isscalar(self, x):
         return self.backend.isscalar(x)

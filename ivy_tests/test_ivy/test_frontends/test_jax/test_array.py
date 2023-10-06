@@ -153,6 +153,14 @@ def _searchsorted(draw):
     return input_dtypes, xs, side, sorter
 
 
+# squeeze
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="shape"))
+    valid_axes = [idx for idx in range(len(shape)) if shape[idx] == 1] + [None]
+    return draw(st.sampled_from(valid_axes))
+
+
 @st.composite
 def _transpose_helper(draw):
     dtype_x = draw(
@@ -2455,38 +2463,39 @@ def test_jax_array_sort(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
-    method_name="std",
-    dtype_x_axis=_statistical_dtype_values(function="std"),
-    keepdims=st.booleans(),
+    method_name="squeeze",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    axis=_squeeze_helper(),
 )
-def test_jax_array_std(
-    dtype_x_axis,
-    backend_fw,
+def test_jax_array_squeeze(
+    dtype_and_x,
+    axis,
+    on_device,
     frontend,
-    keepdims,
     frontend_method_data,
     init_flags,
     method_flags,
-    on_device,
+    backend_fw,
 ):
-    input_dtype, x, axis, ddof = dtype_x_axis
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
-        frontend=frontend,
+        on_device=on_device,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "axis": axis,
-            "ddof": ddof,
-            "keepdims": keepdims,
         },
+        frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
-        on_device=on_device,
     )
 
 
@@ -2715,4 +2724,36 @@ def test_jax_sum(
         method_flags=method_flags,
         on_device=on_device,
         atol_=1e-04,
+    )
+    
+    
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="std",
+    dtype_x_axis=_statistical_dtype_values(function="std"),
+    keepdims=st.booleans(),
+)
+def test_jax_array_std(
+    dtype_x_axis,
+    backend_fw,
+    frontend,
+    keepdims,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, axis, ddof = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+                  "ddof": ddof,
+            "keepdims": keepdims,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
     )
