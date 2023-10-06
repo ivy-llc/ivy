@@ -24,19 +24,18 @@ def keys_to_delete_from_db(all_tests, module, data, current_key=""):
     keys_for_deletion = []
 
     for key, value in data.items():
-        new_key = current_key + "." + key if current_key else key
+        new_key = f"{current_key}.{key}" if current_key else key
 
         # If this is a dictionary, recurse deeper
         if isinstance(value, dict):
             keys_for_deletion.extend(
                 keys_to_delete_from_db(all_tests, module, value, new_key)
             )
-        # If the new_key is not in keys_to_keep, mark it for deletion
         elif key != "_id":
             components = new_key.split(".")
             submodule = components[0]
             function = components[-2]
-            test = module + "/" + submodule + "::" + function
+            test = f"{module}/{submodule}::{function}"
             if test not in all_tests:
                 keys_for_deletion.append(".".join(components[:-1]))
 
@@ -87,9 +86,9 @@ def get_submodule(test_path):
         if name in test_path:
             if name == "test_functional":
                 if test_path[3] == "test_experimental":
-                    coll = db_dict["test_experimental/" + test_path[4]]
+                    coll = db_dict[f"test_experimental/{test_path[4]}"]
                 else:
-                    coll = db_dict["test_functional/" + test_path[-2]]
+                    coll = db_dict[f"test_functional/{test_path[-2]}"]
             else:
                 coll = db_dict[name]
             break
@@ -101,7 +100,7 @@ def get_submodule(test_path):
 
 def process_test(test):
     coll, submod, test_fn = get_submodule(test)
-    return coll[0] + "/" + submod + "::" + test_fn
+    return f"{coll[0]}/{submod}::{test_fn}"
 
 
 def remove_empty_objects(document, key_prefix=""):
@@ -114,7 +113,7 @@ def remove_empty_objects(document, key_prefix=""):
 
     for key, value in document.items():
         # Generate the full key path
-        full_key = key_prefix + "." + key if key_prefix else key
+        full_key = f"{key_prefix}.{key}" if key_prefix else key
 
         # If the value is a dictionary, recursively check for empty objects
         if isinstance(value, dict):

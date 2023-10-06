@@ -2045,7 +2045,7 @@ class AdaptiveAvgPool2d(Module):
         )
 
     def extra_repr(self):
-        return "output_size={}".format(self._output_size)
+        return f"output_size={self._output_size}"
 
 
 class AdaptiveAvgPool1d(Module):
@@ -2091,7 +2091,7 @@ class AdaptiveAvgPool1d(Module):
         )
 
     def extra_repr(self):
-        return "output_size={}".format(self._output_size)
+        return f"output_size={self._output_size}"
 
 
 class FFT(Module):

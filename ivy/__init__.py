@@ -1503,7 +1503,7 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
 
 
 if (
-    "ivy" in sys.modules.keys()
+    "ivy" in sys.modules
     and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND
 ):
     # Required for ivy.with_backend internal compilation

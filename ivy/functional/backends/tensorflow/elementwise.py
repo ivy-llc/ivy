@@ -775,8 +775,8 @@ def trunc(
     ret = x
     if not ivy.is_array(x):
         raise ivy.utils.exceptions.IvyException("Input must be array")
-    elif not ("int" in str(x.dtype)):
-        if not ret.get_shape().ndims == 0:
+    elif "int" not in str(x.dtype):
+        if ret.get_shape().ndims != 0:
             ret = tf.tensor_scatter_nd_update(
                 x, tf.where(tf.greater_equal(x, 0)), tf.math.floor(x[x >= 0])
             )

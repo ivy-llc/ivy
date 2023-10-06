@@ -29,7 +29,7 @@ def check_for_binaries():
         available_configs = json.load(open(available_configs_path))
         binaries_paths = _get_paths_from_binaries(binaries_dict, folder_path)
         # verify if all binaries are available
-        for _, path in enumerate(binaries_paths):
+        for path in binaries_paths:
             if not os.path.exists(path):
                 if initial:
                     config_str = "\n".join(

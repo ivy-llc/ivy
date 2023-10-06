@@ -52,7 +52,7 @@ if __name__ == "__main__":
     if gpu_flag == "true":
         device = "gpu"
 
-    status = dict()
+    status = {}
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
@@ -80,7 +80,7 @@ if __name__ == "__main__":
             submodule, function_name = get_submodule_and_function_name(
                 test_path, is_frontend_test
             )
-            versions = dict()
+            versions = {}
 
             for backend in backends:
                 versions[backend] = get_latest_package_version(backend).replace(
@@ -133,7 +133,7 @@ if __name__ == "__main__":
             if os.path.exists(report_path):
                 report_content = json.load(open(report_path))
 
-            backend_specific_info = dict()
+            backend_specific_info = {}
             test_info = {
                 "_id": function_name,
                 "test_path": test_path,

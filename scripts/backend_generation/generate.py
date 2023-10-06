@@ -344,11 +344,10 @@ if __name__ == "__main__":
     pprint.pprint(config_natives, sort_dicts=False)
 
     # Print valids
-    for key in config_valids.keys():
-        if key.startswith("in"):
-            continue
-        valid_items = config_valids[key]
-        invalid_items = config_valids[f"in{key}"]
+    for key, valid_itesm in config_valids.items():
+        if not key.startswith("in"):
+            valid_items = config_valids[key]
+            invalid_items = config_valids[f"in{key}"]
         print("\n:: " + key.partition("_")[-1])
         print(f"{Fore.GREEN}valid > {valid_items.__str__()}")
         print(f"{Fore.RED}invalid > {invalid_items.__str__()}")
