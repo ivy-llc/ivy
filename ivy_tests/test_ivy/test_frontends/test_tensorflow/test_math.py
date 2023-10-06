@@ -2979,20 +2979,14 @@ def test_tensorflow_truediv(
     data=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         shape=helpers.get_shape(),
-        min_value=1,
-        max_value=9,
     ),
     segment_ids=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        shape=helpers.get_dtypes(),
-        min_value=0,
-        max_value=4,
+        shape=helpers.get_shape(),
     ),
     num_segments=helpers.dtype_and_values(
         available_dtypes=[ivy.int32, ivy.int64],
-        shape=helpers.get_dtypes(),
-        min_value=1,
-        max_value=9,
+        shape=helpers.get_shape(),
     ),
     test_with_out=st.just(False),
 )
