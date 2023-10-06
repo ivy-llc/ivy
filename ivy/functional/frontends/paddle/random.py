@@ -5,6 +5,8 @@ from ivy.func_wrapper import with_supported_device_and_dtypes, with_unsupported_
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
+from ivy.functional.frontends.paddle.random import normal
+from ivy.functional.frontends.paddle.random import randint
 
 
 @with_supported_dtypes(
@@ -104,3 +106,13 @@ def standard_normal(shape, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def uniform(shape, dtype=None, min=-1.0, max=1.0, seed=0, name=None):
     return ivy.random_uniform(low=min, high=max, shape=shape, dtype=dtype, seed=seed)
+
+
+def normal(x, mean=0.0, std=1.0, seed=0, name=None):
+    x = ivy.array(x)
+    return ivy.random_normal(mean=mean, stddev=std, shape=x.shape, dtype=x.dtype, seed=seed)
+
+
+def randint(x, low=0, high=10, seed=0, name=None):
+    x = ivy.array(x)
+    return ivy.random.randint(low=low, high=high, shape=x.shape, dtype=x.dtype, seed=seed)
