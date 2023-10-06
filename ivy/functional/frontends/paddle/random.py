@@ -18,6 +18,13 @@ def normal(mean=0.0, std=1.0, shape=None, name=None):
     return ivy.random_normal(mean=mean, std=std, shape=shape)
 
 
+def normal(x, mean=0.0, std=1.0, seed=0, name=None):
+    x = ivy.array(x)
+    return ivy.random_normal(
+        mean=mean, stddev=std, shape=x.shape, dtype=x.dtype, seed=seed
+    )
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64")},
     "paddle",
@@ -66,6 +73,13 @@ def randint(low=0, high=None, shape=[1], dtype=None, name=None):
     return ivy.randint(low, high, shape=shape, dtype=dtype)
 
 
+def randint(x, low=0, high=10, seed=0, name=None):
+    x = ivy.array(x)
+    return ivy.random.randint(
+        low=low, high=high, shape=x.shape, dtype=x.dtype, seed=seed
+    )
+
+
 @with_unsupported_dtypes(
     {"2.5.1 and below": ("int16", "float16", "bfloat16", "uint8")},
     "paddle",
@@ -106,13 +120,3 @@ def standard_normal(shape, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def uniform(shape, dtype=None, min=-1.0, max=1.0, seed=0, name=None):
     return ivy.random_uniform(low=min, high=max, shape=shape, dtype=dtype, seed=seed)
-
-
-def normal(x, mean=0.0, std=1.0, seed=0, name=None):
-    x = ivy.array(x)
-    return ivy.random_normal(mean=mean, stddev=std, shape=x.shape, dtype=x.dtype, seed=seed)
-
-
-def randint(x, low=0, high=10, seed=0, name=None):
-    x = ivy.array(x)
-    return ivy.random.randint(low=low, high=high, shape=x.shape, dtype=x.dtype, seed=seed)
