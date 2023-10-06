@@ -976,7 +976,7 @@ def test_frontend_function(
     frontend_ret_flat = flatten_frontend(
         ret=ret, backend=backend_to_test, frontend_array_fn=frontend_config.native_array
     )
-    frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
+    frontend_ret_np_flat = [x.ivy_array.to_numpy() for x in frontend_ret_flat]
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -2142,7 +2142,7 @@ def test_frontend_method(
         frontend_ret_flat = flatten_frontend(
             ret=ret, backend=ivy_backend, frontend_array_fn=frontend_config.native_array
         )
-        frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
+        frontend_ret_np_flat = [x.ivy_array.to_numpy() for x in frontend_ret_flat]
 
     # assuming value test will be handled manually in the test function
     if not test_values:
