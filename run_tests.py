@@ -223,6 +223,7 @@ if __name__ == "__main__":
                 "_id": function_name,
                 "test_path": test_path,
                 "submodule": submodule,
+                "demos": [],
                 f"{prefix_str}{backend}.{version}.status.{device}": status,
                 f"{prefix_str}{backend}.{version}.workflow.{device}": run_id,
             }
