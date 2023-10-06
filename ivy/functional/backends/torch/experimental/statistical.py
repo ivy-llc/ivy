@@ -567,7 +567,7 @@ cov.support_native_out = False
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16",)},
+    {"2.0.1 and below": ("float16", "complex")},
     backend_version,
 )
 def cummax(
@@ -580,9 +580,6 @@ def cummax(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    if x.dtype in (torch.complex64, torch.complex128):
-        x = x.real.to(dtype=torch.float64)
-
     if exclusive or reverse:
         if exclusive and reverse:
             x1, x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)

@@ -1483,16 +1483,7 @@ def test_tensorflow_less_equal(
     fn_tree="tensorflow.math.lgamma",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=1,
-        shared_dtype=True,
-        abs_smallest_val=1e-5,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=3,
-        max_dim_size=3,
-        min_value=2,
-        max_value=100,
-        allow_nan=False,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )

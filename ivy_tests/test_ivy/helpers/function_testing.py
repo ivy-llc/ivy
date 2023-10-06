@@ -643,11 +643,12 @@ def _assert_frontend_ret(ret, for_fn=True):
     if is_ret_tuple:
         non_frontend_idxs = ivy.nested_argwhere(
             ret,
-            lambda _x: _is_frontend_array(_x) if ivy.is_array(_x) else True,
+            lambda _x: not _is_frontend_array(_x),
         )
         assert not non_frontend_idxs, (
-            f"Frontend {fn_or_method} return contains non-frontend arrays at positions "
-            f"{non_frontend_idxs} (zero-based): {ret[non_frontend_idxs]}"
+            f"Frontend {fn_or_method} return contains non-frontend arrays at positions"
+            f" {non_frontend_idxs} (zero-based):"
+            f" {ivy.multi_index_nest(ret, non_frontend_idxs)}"
         )
     elif ivy.is_array(ret):
         assert _is_frontend_array(

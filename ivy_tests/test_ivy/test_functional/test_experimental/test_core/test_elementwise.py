@@ -232,6 +232,72 @@ def test_allclose(
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.amax",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        valid_axis=True,
+        allow_neg_axes=True,
+        min_axes_size=1,
+        min_value=None,
+        max_value=None,
+        allow_nan=False,
+    ),
+    keep_dims=st.booleans(),
+)
+def test_amax(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.amin",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        valid_axis=True,
+        allow_neg_axes=True,
+        min_axes_size=1,
+        min_value=None,
+        max_value=None,
+        allow_nan=False,
+    ),
+    keep_dims=st.booleans(),
+)
+def test_amin(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.binarizer",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
