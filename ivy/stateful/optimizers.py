@@ -462,7 +462,14 @@ class AdamW(Adam):
         """
         self._weight_decay = weight_decay
         super().__init__(
-            lr, beta1, beta2, epsilon, inplace, stop_gradients, trace_on_next_step, device
+            lr,
+            beta1,
+            beta2,
+            epsilon,
+            inplace,
+            stop_gradients,
+            trace_on_next_step,
+            device,
         )
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
