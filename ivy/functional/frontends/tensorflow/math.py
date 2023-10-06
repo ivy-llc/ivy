@@ -736,7 +736,7 @@ def unsorted_segment_max(data, segment_ids, num_segments, name="unsorted_segment
     ivy.utils.assertions.check_equal(
         list(segment_ids.shape), [list(data.shape)[0]], as_array=False
     )
-    max_array = ivy.zeros(tuple([num_segments.items()] + (list(data.shape))[1:]))
+    max_array = ivy.zeros(tuple([num_segments.item()] + (list(data.shape))[1:]))
     for i in range((segment_ids).shape[0]):
         max_array[segment_ids[i]] = max(max_array[segment_ids[i]], data[i])
     return max_array
