@@ -126,12 +126,12 @@ def downcaster(dtype, intersect):
         return downcast_helper("complex", dtype, "complex", intersect)
 
 
-def downcast_helper(arg0, dtype, arg2, intersect):
-    index = casting_modes_dict[arg0]().index(dtype) - 1
+def downcast_helper(arg1, dtype, arg2, intersect):
+    index = casting_modes_dict[arg1]().index(dtype) - 1
     result = ""
     while index >= 0:
         if casting_modes_dict[arg2]()[index] not in intersect:
-            result = casting_modes_dict[arg0]()[index]
+            result = casting_modes_dict[arg1]()[index]
             break
         index -= 1
     return result
