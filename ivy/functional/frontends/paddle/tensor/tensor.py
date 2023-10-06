@@ -152,6 +152,14 @@ class Tensor:
     def sinh(self, name=None):
         return paddle_frontend.sinh(self)
 
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def kthvalue(self, x, k, axis=None, keepdim=False, name=None):
+        return paddle_frontend.kthvalue(
+            self, x - x, k=k, axis=axis, keepdim=keepdim, name=None
+        )
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def lerp(self, y, weight, name=None):
         return paddle_frontend.lerp(self, y, weight)

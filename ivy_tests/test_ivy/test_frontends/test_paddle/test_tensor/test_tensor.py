@@ -363,6 +363,47 @@ def test_paddle_is_floating_point(
     )
 
 
+# kthvalue
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="kthvalue",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        valid_axis=True,
+        force_int_axis=True,
+    ).filter(lambda v: len(np.unique(v[1][0])) == len(np.ravel(v[1][0]))),
+    k=st.integers(min_value=1),
+    keepdim=st.booleans(),
+)
+def test_paddle_kthvalue(
+    *,
+    dtype_input_axis,
+    k,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_input_axis
+    assume(k <= x[0].shape[axis])
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        k=k,
+        axis=axis,
+        keepdim=keepdim,
+    )
+
+
 # __add__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
