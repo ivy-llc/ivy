@@ -403,7 +403,7 @@ def expand(
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
-            shape[i] = int(np.prod(x.shape) / np.prod([s for s in shape if s > 0]))
+            shape[i] = x.shape[i]
     return np.broadcast_to(x, tuple(shape))
 
 
@@ -481,6 +481,15 @@ def fill_diagonal(
 ) -> np.ndarray:
     np.fill_diagonal(a, v, wrap=wrap)
     return a
+
+
+def trim_zeros(
+    a: np.ndarray,
+    /,
+    *,
+    trim: Optional[str] = "fb",
+) -> np.ndarray:
+    return np.trim_zeros(a, trim=trim)
 
 
 def column_stack(

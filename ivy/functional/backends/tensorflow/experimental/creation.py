@@ -107,14 +107,18 @@ def blackman_window(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if size < 2:
-        return tf.ones([size], dtype=tf.result_type(size, 0.0))
+        return tf.cast(
+            tf.ones([size], dtype=tf.experimental.numpy.result_type(size, 0.0)),
+            dtype=dtype,
+        )
     if periodic:
-        count = tf.arange(size) / size
+        count = tf.experimental.numpy.arange(size) / size
     else:
         count = tf.linspace(start=0, stop=size, num=size)
-
-    return (0.42 - 0.5 * tf.cos(2 * tf.pi * count)) + (
-        0.08 * tf.cos(2 * tf.pi * 2 * count)
+    return tf.cast(
+        (0.42 - 0.5 * tf.cos(2 * tf.experimental.numpy.pi * count))
+        + (0.08 * tf.cos(2 * tf.experimental.numpy.pi * 2 * count)),
+        dtype=dtype,
     )
 
 
