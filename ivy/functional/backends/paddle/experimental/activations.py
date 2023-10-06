@@ -180,3 +180,16 @@ def softshrink(
         )
         return ret
     return F.softshrink(x.cast("float32"), threshold=lambd).cast(x.dtype)
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+)
+def celu(
+    x: paddle.Tensor,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return F.celu(x, alpha=alpha)
