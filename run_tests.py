@@ -50,6 +50,8 @@ result_config = {
 def get_latest_package_version(package_name):
     if package_name == "jax":
         return "0.4.14"
+    if package_name == "tensorflow":
+        return "2.13.0"
     try:
         url = f"https://pypi.org/pypi/{package_name}/json"
         response = requests.get(url)
@@ -172,6 +174,8 @@ if __name__ == "__main__":
                 print("Running", command)
                 sys.stdout.flush()
                 ret = os.system(command)
+                backend = backend.split("/")[0] + "\n"
+                backend_version = backend_version.strip()
             elif with_gpu:
                 ret = os.system(
                     f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
