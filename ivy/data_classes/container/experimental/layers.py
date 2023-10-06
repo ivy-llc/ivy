@@ -971,7 +971,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The lenght of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal length,
             then x is truncated, if n is larger than x is zero-padded.
         norm
             The type of normalization to be applied. Must be either None or "ortho".
@@ -1047,7 +1047,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The lenght of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal length,
             then x is truncated, if n is larger then x is zero-padded.
         norm
             The type of normalization to be applied. Must be either None or "ortho".

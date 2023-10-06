@@ -474,3 +474,22 @@ def concat_from_sequence(
     elif new_axis == 1:
         ret = torch.stack(input_sequence, dim=axis)
         return ret
+
+
+def trim_zeros(a: torch.Tensor, /, *, trim: Optional[str] = "bf") -> torch.Tensor:
+    first = 0
+    trim = trim.upper()
+    if "F" in trim:
+        for i in a:
+            if i != 0.0:
+                break
+            else:
+                first = first + 1
+    last = len(a)
+    if "B" in trim:
+        for i in torch.flip(a, [0]):
+            if i != 0.0:
+                break
+            else:
+                last = last - 1
+    return a[first:last]
