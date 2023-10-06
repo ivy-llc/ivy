@@ -815,6 +815,11 @@ class Tensor:
     def real(self, name=None):
         return paddle_frontend.real(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def t(self, name=None):
+        axes = list(range(len(self.ivy_array.shape)))[::-1]
+        return ivy.permute_dims(self.ivy_array, axes=axes)
+
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
@@ -831,6 +836,10 @@ class Tensor:
     )
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def bmm(self, y, transpose_x=False, transpose_y=False, name=None):
+        return paddle_frontend.bmm(self, y, transpose_x, transpose_y)
 
     @with_supported_dtypes(
         {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
@@ -866,3 +875,20 @@ class Tensor:
     )
     def split(self, num_or_sections, axis=0, name=None):
         return paddle_frontend.split(self._ivy_array, num_or_sections, axis, name)
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def frac(self, name=None):
+        return paddle_frontend.frac(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def gather(self, y, name=None):
+        return paddle_frontend.gather(self, y)
+
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("float16", "uint8", "int8", "bool")}, "paddle"
+    )
+    def gather_(self, y, name=None):
+        res = self.gather(self, y)
+        return ivy.inplace_update(self, res)
