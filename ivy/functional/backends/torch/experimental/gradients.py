@@ -80,7 +80,7 @@ def vjp(func: Callable, *primals):
     )
     primals_out = _rebuild_flattened_containers(primals_out, func_ret_idxs)
 
-    def vjpfun(x_in):
+    def vjpfun(*x_in):
         ivy.assertions.check_isinstance(x_in, tuple)
         return _rebuild_flattened_containers(
             ivy.to_ivy(
