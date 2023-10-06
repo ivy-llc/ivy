@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 
@@ -28,7 +28,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -145,7 +145,7 @@ def argmax(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -255,7 +255,7 @@ def argmin(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -315,9 +315,8 @@ def nonzero(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 10, 15, 20, -50, 0])
@@ -363,8 +362,7 @@ def nonzero(
     }]
 
     Instance Method Examples
-    ------------------------
-
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     With :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0,0,0,1,1,1])
@@ -394,7 +392,7 @@ def nonzero(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -480,7 +478,7 @@ def where(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

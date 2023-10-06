@@ -665,6 +665,52 @@ def test_mindspore_log_softmax(
 #     )
 
 
+# max_pool3d
+@pytest.mark.skip("Testing pipeline not yet implemented")
+@handle_frontend_test(
+    fn_tree="mindspore.ops.function.nn_func.max_pool3d",
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=5,
+        max_dims=5,
+        min_side=1,
+        max_side=4,
+        only_explicit_padding=True,
+        return_dilation=True,
+        data_format="channel_first",
+    ),
+    test_with_out=st.just(False),
+    ceil_mode=st.sampled_from([True, False]),
+)
+def test_mindspore_max_pool3d(
+    x_k_s_p,
+    ceil_mode,
+    *,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x, kernel_size, stride, padding, dilation = x_k_s_p
+
+    padding = (padding[0][0], padding[1][0], padding[2][0])
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
+
+
 # pad
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(

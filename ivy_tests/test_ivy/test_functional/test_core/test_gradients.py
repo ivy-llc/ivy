@@ -1,7 +1,7 @@
 """Collection of tests for unified gradient functions."""
 
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 import pytest
 import numpy as np
 
@@ -194,10 +194,13 @@ def test_adam_update(
 def test_execute_with_gradients(
     *, dtype_and_xs, retain_grads, test_flags, backend_fw, fn_name, on_device
 ):
-    assume(not backend_fw == "numpy")
+    if backend_fw == "numpy":
+        return
 
     def func(xs):
-        with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        with BackendHandler.update_backend(
+            ivy.current_backend(xs.to_native()).backend
+        ) as ivy_backend:
             if isinstance(xs, ivy_backend.Container):
                 array_idxs = ivy_backend.nested_argwhere(xs, ivy_backend.is_array)
                 array_vals = ivy_backend.multi_index_nest(xs, array_idxs)
@@ -310,7 +313,10 @@ def test_jac(x, dtype, func_str, backend_fw):
 
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         f = ivy_backend.__dict__[func_str]
-        func = lambda x: ivy_backend.mean(f(x))
+
+        def func(x):
+            return ivy_backend.mean(f(x))
+
         _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
         var = _variable_fn(ivy_backend.array(x, dtype=dtype))
         fn = ivy_backend.jac(func)
@@ -320,7 +326,10 @@ def test_jac(x, dtype, func_str, backend_fw):
 
     with BackendHandler.update_backend("tensorflow") as gt_backend:
         f = gt_backend.__dict__[func_str]
-        func = lambda x: gt_backend.mean(f(x))
+
+        def func(x):
+            return gt_backend.mean(f(x))
+
         _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
         var = _variable_fn(gt_backend.array(x, dtype=dtype))
         fn = gt_backend.jac(func)
@@ -333,7 +342,8 @@ def test_jac(x, dtype, func_str, backend_fw):
             assert np.allclose(jacobian, jacobian_from_gt)
 
     # Test nested input
-    func = lambda xs: (2 * xs[1]["x2"], xs[0])
+    def func(xs):
+        return 2 * xs[1]["x2"], xs[0]
 
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable

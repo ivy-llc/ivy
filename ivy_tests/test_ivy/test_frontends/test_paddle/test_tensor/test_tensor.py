@@ -8,12 +8,16 @@ import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
-from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.helpers import assert_all_close
+from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa E501
     _get_dtype_values_k_axes_for_rot90,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
+)
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_and_3dbatch_matrices,
 )
 
 CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
@@ -33,6 +37,80 @@ def _filter_query(query):
             else True
         )
     )
+
+
+# as_complex
+@st.composite
+def _get_as_complex_inputs_(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=(*shape, 2),
+            min_value=0,
+            max_value=50,
+        )
+    )
+    return x_dtype, x
+
+
+# clip
+@st.composite
+def _get_clip_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=1, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            min_value=0,
+            max_value=50,
+        )
+    )
+    min = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=(1,), min_value=0, max_value=25)
+    )
+    max = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=(1,), min_value=26, max_value=50)
+    )
+    if draw(st.booleans()):
+        min = None
+    elif draw(st.booleans()):
+        max = None
+    return x_dtype, x, min, max
+
+
+# clip_
+@st.composite
+def _get_clip_inputs_(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=1, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            min_value=0,
+            max_value=50,
+        )
+    )
+    min = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=(1,), min_value=0, max_value=25)
+    )
+    max = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=(1,), min_value=26, max_value=50)
+    )
+    return x_dtype, x, min, max
 
 
 # cond
@@ -71,6 +149,53 @@ def _get_dtype_and_square_matrix(draw):
         )
     )
     return dtype, mat
+
+
+# bmm helper function
+@st.composite
+def _get_dtype_and_values_bmm(draw):
+    # arrays x and y of sizes (b, m, k) and (b, k, n) respectively
+    b = draw(helpers.ints(min_value=1, max_value=10))
+    k = draw(helpers.ints(min_value=1, max_value=10))
+    m = draw(helpers.ints(min_value=1, max_value=10))
+    n = draw(helpers.ints(min_value=1, max_value=10))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(b, m, k), min_value=-10, max_value=10
+        )
+    )
+    y = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(b, k, n), min_value=-10, max_value=10
+        )
+    )
+    return dtype, x, y
+
+
+# lerp helper function
+@st.composite
+def _get_dtype_and_values_for_lerp(draw):
+    is_tensor = draw(st.booleans())
+    if is_tensor:
+        input_dtype, x = draw(
+            helpers.dtype_and_values(
+                num_arrays=3,
+                available_dtypes=helpers.get_dtypes("valid"),
+                shared_dtype=True,
+            )
+        )
+        return input_dtype, x[0], x[1], x[2]
+    else:
+        input_dtype, x = draw(
+            helpers.dtype_and_values(
+                num_arrays=2,
+                available_dtypes=helpers.get_dtypes("valid"),
+                shared_dtype=True,
+            )
+        )
+        weight = draw(st.floats())
+        return input_dtype, x[0], x[1], weight
 
 
 @st.composite
@@ -205,16 +330,49 @@ def test_paddle__reshape(
     )
 
 
-# atan
+# is_floating_point
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
-    method_name="atan",
+    method_name="is_floating_point",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["int16", "int32", "int64", "float32", "float64"],
     ),
 )
-def test_paddle_instance_atan(
+def test_paddle_is_floating_point(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# __add__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="__add__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
+)
+def test_paddle_tensor___add__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -226,53 +384,18 @@ def test_paddle_instance_atan(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        backend_to_test=backend_fw,
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# var
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="var",
-    dtype_and_x=_statistical_dtype_values(function="var"),
-    keepdim=st.booleans(),
-)
-def test_paddle_instance_var(
-    dtype_and_x,
-    keepdim,
-    frontend,
-    backend_fw,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
-):
-    input_dtype, x, axis, correction = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "axis": axis,
-            "unbiased": bool(correction),
-            "keepdim": keepdim,
+            "y": x[1],
         },
-        frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
-        backend_to_test=backend_fw,
         method_flags=method_flags,
+        frontend=frontend,
         on_device=on_device,
     )
 
@@ -347,9 +470,7 @@ def test_paddle_tensor_acosh(
     )
 
 
-# __(add_)__
-
-
+# add_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -357,6 +478,7 @@ def test_paddle_tensor_acosh(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
+    test_inplace=st.just(True),
 )
 def test_paddle_tensor_add_(
     dtype_and_x,
@@ -376,6 +498,90 @@ def test_paddle_tensor_add_(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"y": x[1]},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="add_n",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+        shared_dtype=True,
+    ),
+)
+def test_paddle_tensor_add_n(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"inputs": x},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# addmm
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="addmm",
+    dtype_input_xy=_get_dtype_and_3dbatch_matrices(with_input=True, input_3d=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+)
+def test_paddle_tensor_addmm(
+    *,
+    dtype_input_xy,
+    beta,
+    alpha,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, input, x, y = dtype_input_xy
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": input[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0], "y": y[0], "beta": beta, "alpha": alpha},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -686,6 +892,73 @@ def test_paddle_tensor_argsort(
     )
 
 
+# as_complex
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="as_complex",
+    dtypes_and_x=_get_as_complex_inputs_(),
+)
+def test_paddle_tensor_as_complex(
+    dtypes_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtypes_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# as_real
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="as_real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
+    ),
+)
+def test_paddle_tensor_as_real(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # asin
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -789,6 +1062,41 @@ def test_paddle_tensor_astype(
         method_all_as_kwargs_np={
             "dtype": dtype,
         },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# atan
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="atan",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_tensor_atan(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        backend_to_test=backend_fw,
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -930,6 +1238,78 @@ def test_paddle_tensor_bitwise_xor(
     )
 
 
+# bmm
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="bmm",
+    dtype_and_x=_get_dtype_and_values_bmm(),
+)
+def test_paddle_tensor_bmm(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, y = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"y": y},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# cast
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="cast",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_paddle_tensor_cast(
+    dtype_and_x,
+    dtype,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    if dtype is None:
+        dtype = input_dtype
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "dtype": dtype[0],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # ceil
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -940,6 +1320,42 @@ def test_paddle_tensor_bitwise_xor(
     ),
 )
 def test_paddle_tensor_ceil(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# ceil_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="ceil_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    test_inplace=st.just(True),
+)
+def test_paddle_tensor_ceil_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -998,6 +1414,79 @@ def test_paddle_tensor_cholesky(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="clip",
+    input_and_ranges=_get_clip_inputs(),
+)
+def test_paddle_tensor_clip(
+    input_and_ranges,
+    frontend,
+    frontend_method_data,
+    backend_fw,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, min, max = input_and_ranges
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"min": min, "max": max},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+    )
+
+
+# clip_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="clip_",
+    input_and_ranges=_get_clip_inputs_(),
+    test_inplace=st.just(True),
+)
+def test_paddle_tensor_clip_(
+    input_and_ranges,
+    frontend,
+    frontend_method_data,
+    backend_fw,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, min_val, max_val = input_and_ranges
+    if min_val > max_val:
+        max_value = min_val
+        min_value = max_val
+    else:
+        max_value = max_val
+        min_value = min_val
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"min": min_value, "max": max_value},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1274,6 +1763,43 @@ def test_paddle_tensor_device(
     )
 
 
+# digamma
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="digamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+        max_value=1e5,
+    ),
+)
+def test_paddle_tensor_digamma(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # dim
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1358,6 +1884,59 @@ def test_paddle_tensor_dtype(
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.dtype, dtype[0], as_array=False)
+
+
+# eigvals
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="eigvals",
+    dtype_and_x=_get_dtype_and_square_matrix(),
+)
+def test_paddle_tensor_eigvals(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+
+    ret, frontend_ret = helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        test_values=False,
+    )
+
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        # check if Tensor or ivy array
+        try:
+            ret = ret.ivy_array.to_numpy()
+        except AttributeError:
+            ret = ivy_backend.to_numpy(ret)
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
+        # Calculate the magnitude of the complex numbers then sort them for testing
+        ret = np.sort(np.abs(ret)).astype(np.float64)
+        frontend_ret = np.sort(np.abs(frontend_ret)).astype(np.float64)
+
+        assert_all_close(
+            ret_np=ret,
+            ret_from_gt_np=frontend_ret,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+            atol=1e-2,
+            rtol=1e-2,
+        )
 
 
 # equal
@@ -1512,6 +2091,7 @@ def test_paddle_tensor_exp(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_paddle_tensor_exp_(
     dtype_and_x,
@@ -1531,6 +2111,50 @@ def test_paddle_tensor_exp_(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# fill_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="fill_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        allow_inf=False,
+    ),
+    dtype_v=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=(1,),
+        min_value=0,
+        max_value=10,
+    ),
+)
+def test_paddle_tensor_fill_(
+    dtype_and_x,
+    dtype_v,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    value_dtype, v = dtype_v
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=value_dtype,
+        method_all_as_kwargs_np={"value": v[0].item()},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1582,6 +2206,7 @@ def test_paddle_tensor_floor(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_paddle_tensor_floor_(
     dtype_and_x,
@@ -1714,6 +2339,77 @@ def test_paddle_tensor_fmin(
     )
 
 
+# frac
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="frac",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(kind="valid"),
+        num_arrays=1,
+        max_value=1e6,
+        min_value=-1e6,
+    ),
+)
+def test_paddle_tensor_frac(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# gather
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="gather",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+    ),
+)
+def test_paddle_tensor_gather(
+    dtypes_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtypes_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"y": x[1]},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # greater_than
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1778,6 +2474,45 @@ def test_paddle_tensor_imag(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# inner
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="inner",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_tensor_inner(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"y": x[1]},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1952,6 +2687,116 @@ def test_paddle_tensor_isnan(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# lerp
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="lerp",
+    dtypes_and_x=_get_dtype_and_values_for_lerp(),
+)
+def test_paddle_tensor_lerp(
+    dtypes_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, y, weight = dtypes_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "y": y,
+            "weight": weight,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# lerp_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="lerp_",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=3, shared_dtype=True
+    ),
+    test_inplace=st.just(True),
+)
+def test_paddle_tensor_lerp_(
+    dtypes_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtypes_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "y": x[1],
+            "weight": x[2],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# less_equal
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="less_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shared_dtype=True,
+    ),
+)
+def test_paddle_tensor_less_equal(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"y": x[1]},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -2241,6 +3086,42 @@ def test_paddle_tensor_max(
     )
 
 
+# mean
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="mean",
+    dtype_and_x=_statistical_dtype_values(function="mean"),
+    keepdim=st.booleans(),
+)
+def test_paddle_tensor_mean(
+    dtype_and_x,
+    keepdim,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdim": keepdim,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        backend_to_test=backend_fw,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -2252,6 +3133,42 @@ def test_paddle_tensor_max(
     ),
 )
 def test_paddle_tensor_minimum(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"y": x[1]},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="mod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=0,
+        exclude_min=True,
+    ),
+)
+def test_paddle_tensor_mod(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2364,6 +3281,84 @@ def test_paddle_tensor_neg(
     )
 
 
+# nonzero
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="nonzero",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(kind="float"),
+        min_num_dims=1,
+        allow_inf=True,
+    ),
+)
+def test_paddle_tensor_nonzero(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# not_equal
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="not_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(kind="valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_tensor_not_equal(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "x": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "y": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -2391,6 +3386,124 @@ def test_paddle_tensor_numel(
         method_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# numpy
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="numpy",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        min_dim_size=2,
+    ),
+)
+def test_paddle_tensor_numpy(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# pow
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="pow",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_tensor_pow(
+    dtypes_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtypes_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"y": x[1]},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# prod
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="prod",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_inf=False,
+    ),
+    keep_dims=st.booleans(),
+)
+def test_paddle_tensor_prod(
+    dtype_x_axis,
+    keep_dims,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdim": keep_dims,
+            "dtype": x[0].dtype,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -2434,6 +3547,43 @@ def test_paddle_tensor_rad2deg(
     )
 
 
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(kind="valid"),
+        num_arrays=2,
+        min_num_dims=1,
+        allow_inf=True,
+    ),
+)
+def test_paddle_tensor_real(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # reciprocal
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2444,6 +3594,41 @@ def test_paddle_tensor_rad2deg(
     ),
 )
 def test_paddle_tensor_reciprocal(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# reciprocal_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="reciprocal_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_tensor_reciprocal_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2518,6 +3703,7 @@ def test_paddle_tensor_remainder(
         num_arrays=2,
         shared_dtype=True,
     ),
+    test_inplace=st.just(True),
 )
 def test_paddle_tensor_remainder_(
     dtype_and_x,
@@ -2590,6 +3776,41 @@ def test_paddle_tensor_rot90(
     )
 
 
+# round_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="round_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_tensor_round_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # rsqrt
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2600,6 +3821,42 @@ def test_paddle_tensor_rot90(
     ),
 )
 def test_paddle_tensor_rsqrt(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# rsqrt_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="rsqrt_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    test_inplace=st.just(True),
+)
+def test_paddle_tensor_rsqrt_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2822,6 +4079,40 @@ def test_paddle_tensor_sqrt(
     )
 
 
+# sqrt_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="sqrt_",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    test_inplace=st.just(True),
+)
+def test_paddle_tensor_sqrt_(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # square
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2871,6 +4162,7 @@ def test_paddle_tensor_square(
         allow_neg=True,
         force_int=True,
     ),
+    test_inplace=st.just(True),
 )
 def test_paddle_tensor_squeeze_(
     dtype_value,
@@ -2897,6 +4189,85 @@ def test_paddle_tensor_squeeze_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# stanh
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="stanh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    scale_a=st.floats(1e-5, 1e5),
+    scale_b=st.floats(1e-5, 1e5),
+)
+def test_paddle_tensor_stanh(
+    dtype_and_x,
+    frontend_method_data,
+    scale_a,
+    scale_b,
+    init_flags,
+    method_flags,
+    frontend,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        method_all_as_kwargs_np={
+            "scale_a": scale_a,
+            "scale_b": scale_b,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# std
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="std",
+    dtype_and_x=_statistical_dtype_values(function="std"),
+    keepdim=st.booleans(),
+)
+def test_paddle_tensor_std(
+    dtype_and_x,
+    keepdim,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, axis, correction = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "unbiased": bool(correction),
+            "keepdim": keepdim,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        backend_to_test=backend_fw,
+        method_flags=method_flags,
         on_device=on_device,
     )
 
@@ -2942,6 +4313,7 @@ def test_paddle_tensor_subtract(
     dtypes_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
+    test_inplace=st.just(True),
 )
 def test_paddle_tensor_subtract_(
     dtypes_and_x,
@@ -2959,6 +4331,42 @@ def test_paddle_tensor_subtract_(
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"y": x[1]},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# t
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="t",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_num_dims=2,
+    ),
+)
+def test_paddle_tensor_t(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        backend_to_test=backend_fw,
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -3002,6 +4410,142 @@ def test_paddle_tensor_tanh(
     )
 
 
+# tanh_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="tanh_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_tensor_tanh_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# topk
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="topk",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    k=st.data(),
+    sorted=st.booleans(),
+    largest=st.booleans(),
+)
+def test_paddle_tensor_topk(
+    dtype_x_and_axis,
+    k,
+    sorted,
+    largest,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    k = k.draw(st.integers(min_value=1, max_value=x[0].shape[axis]))
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "k": k,
+            "axis": axis,
+            "largest": largest,
+            "sorted": sorted,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        test_values=False,
+    )
+
+
+# trace
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="trace",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_num_dims=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+    offset=st.integers(min_value=-1e04, max_value=1e04),
+    axis1=st.integers(min_value=0, max_value=0),
+    axis2=st.integers(min_value=1, max_value=1),
+)
+def test_paddle_tensor_trace(
+    dtype_and_x,
+    offset,
+    axis1,
+    axis2,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "value": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "offset": offset,
+            "axis1": axis1,
+            "axis2": axis2,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -3032,6 +4576,49 @@ def test_paddle_tensor_trunc(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# unbind
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="unbind",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=2,
+        max_dim_size=1,
+        force_int_axis=True,
+        min_axis=-1,
+        max_axis=0,
+    ),
+)
+def test_paddle_tensor_unbind(
+    dtype_x_axis,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         on_device=on_device,
     )
 
@@ -3080,6 +4667,88 @@ def test_paddle_tensor_unsqueeze(
     )
 
 
+# unsqueeze_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="unsqueeze_",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
+    ),
+    test_inplace=st.just(True),
+)
+def test_paddle_tensor_unsqueeze_(
+    dtype_value,
+    axis,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# var
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="var",
+    dtype_and_x=_statistical_dtype_values(function="var"),
+    keepdim=st.booleans(),
+)
+def test_paddle_tensor_var(
+    dtype_and_x,
+    keepdim,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, axis, correction = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "unbiased": bool(correction),
+            "keepdim": keepdim,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        backend_to_test=backend_fw,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 # zero_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -3089,6 +4758,7 @@ def test_paddle_tensor_unsqueeze(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_paddle_tensor_zero_(
     dtype_and_x,
@@ -3106,39 +4776,6 @@ def test_paddle_tensor_zero_(
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# sqrt_
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="sqrt_",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_torch_tensor_sqrt_(
-    dtype_x,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
-    backend_fw,
-):
-    input_dtype, x = dtype_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
