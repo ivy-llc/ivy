@@ -33,6 +33,15 @@ def argsort(x, /, *, axis=-1, descending=False, name=None):
     return ivy.argsort(x, axis=axis, descending=descending)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def index_sample(x, index):
+    return x[ivy.arange(x.shape[0])[:, None], index]
+
+
 # kthvalue
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
