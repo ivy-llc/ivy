@@ -61,7 +61,7 @@ Frontend Test Examples
 -----------------------
 
 Before you begin writing a frontend test, make sure you are placing it in the correct location.
-See the 'Where to place a frontend function' sub-section of the frontend APIs `open task`_ for more details.
+See the :ref:`/overview/contributing/open_tasks:Where to place a frontend function` sub-section of the frontend APIs `open task`_ for more details.
 
 ivy.tan()
 ^^^^^^^^^
