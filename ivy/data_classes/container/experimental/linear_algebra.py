@@ -1892,23 +1892,23 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
     @staticmethod
     def static_initialize_cp(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            rank: Union[Sequence[int], ivy.Container],
-            /,
-            *,
-            init: Optional[
-                Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
-            ] = "svd",
-            seed: Optional[Union[int, ivy.Container]] = None,
-            normalize_factors: Optional[Union[bool, ivy.Container]] = False,
-            svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
-            non_negative: Optional[Union[bool, ivy.Container]] = False,
-            mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-            svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
-            key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-            to_apply: Union[bool, ivy.Container] = True,
-            prune_unapplied: Union[bool, ivy.Container] = False,
-            map_sequences: Union[bool, ivy.Container] = False,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        seed: Optional[Union[int, ivy.Container]] = None,
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        non_negative: Optional[Union[bool, ivy.Container]] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
         """
         ivy.Container static method variant of ivy.cp_initialize. This method simply
@@ -1966,23 +1966,23 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         )
 
     def initialize_cp(
-            self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            rank: Union[Sequence[int], ivy.Container],
-            /,
-            *,
-            init: Optional[
-                Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
-            ] = "svd",
-            seed: Optional[Union[int, ivy.Container]] = None,
-            normalize_factors: Optional[Union[bool, ivy.Container]] = False,
-            svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
-            non_negative: Optional[Union[bool, ivy.Container]] = False,
-            mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-            svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
-            key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-            to_apply: Union[bool, ivy.Container] = True,
-            prune_unapplied: Union[bool, ivy.Container] = False,
-            map_sequences: Union[bool, ivy.Container] = False,
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        seed: Optional[Union[int, ivy.Container]] = None,
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        non_negative: Optional[Union[bool, ivy.Container]] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
         """
         ivy.Container instance method variant of ivy.cp_initialize. This method simply
@@ -2040,35 +2040,35 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
     @staticmethod
     def static_parafac(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            rank: Union[int, ivy.Container],
-            /,
-            *,
-            n_iter_max: Optional[Union[int, ivy.Container]] = 100,
-            init: Optional[
-                Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
-            ] = "svd",
-            svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
-            normalize_factors: Optional[Union[bool, ivy.Container]] = False,
-            orthogonalise: Optional[Union[bool, ivy.Container]] = False,
-            tol: Optional[Union[float, ivy.Container]] = 1e-8,
-            seed: Optional[Union[int, ivy.Container]] = None,
-            verbose: Optional[Union[bool, ivy.Container]] = False,
-            return_errors: Optional[Union[bool, ivy.Container]] = False,
-            sparsity: Optional[Union[float, int, ivy.Container]] = None,
-            l2_reg=0,
-            mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-            cvg_criterion: Optional[
-                Union[Literal["abs_rec_error", "rec_error"], ivy.Container]
-            ] = "abs_rec_error",
-            fixed_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
-            svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
-            linesearch: Optional[Union[bool, ivy.Container]] = False,
-            callback: Optional[Union[Callable, ivy.Container]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-            to_apply: Union[bool, ivy.Container] = True,
-            prune_unapplied: Union[bool, ivy.Container] = False,
-            map_sequences: Union[bool, ivy.Container] = False,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        orthogonalise: Optional[Union[bool, ivy.Container]] = False,
+        tol: Optional[Union[float, ivy.Container]] = 1e-8,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        sparsity: Optional[Union[float, int, ivy.Container]] = None,
+        l2_reg=0,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        cvg_criterion: Optional[
+            Union[Literal["abs_rec_error", "rec_error"], ivy.Container]
+        ] = "abs_rec_error",
+        fixed_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        linesearch: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> Union[ivy.CPTensor, Tuple[ivy.CPTensor, List], ivy.Container]:
         """
         CANDECOMP/PARAFAC decomposition via alternating least squares (ALS) Computes a
@@ -2182,35 +2182,35 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         )
 
     def parafac(
-            self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            rank: Union[int, ivy.Container],
-            /,
-            *,
-            n_iter_max: Optional[Union[int, ivy.Container]] = 100,
-            init: Optional[
-                Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
-            ] = "svd",
-            svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
-            normalize_factors: Optional[Union[bool, ivy.Container]] = False,
-            orthogonalise: Optional[Union[bool, ivy.Container]] = False,
-            tol: Optional[Union[float, ivy.Container]] = 1e-8,
-            seed: Optional[Union[int, ivy.Container]] = None,
-            verbose: Optional[Union[bool, ivy.Container]] = False,
-            return_errors: Optional[Union[bool, ivy.Container]] = False,
-            sparsity: Optional[Union[float, int, ivy.Container]] = None,
-            l2_reg=0,
-            mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-            cvg_criterion: Optional[
-                Union[Literal["abs_rec_error", "rec_error"], ivy.Container]
-            ] = "abs_rec_error",
-            fixed_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
-            svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
-            linesearch: Optional[Union[bool, ivy.Container]] = False,
-            callback: Optional[Union[Callable, ivy.Container]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-            to_apply: Union[bool, ivy.Container] = True,
-            prune_unapplied: Union[bool, ivy.Container] = False,
-            map_sequences: Union[bool, ivy.Container] = False,
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        orthogonalise: Optional[Union[bool, ivy.Container]] = False,
+        tol: Optional[Union[float, ivy.Container]] = 1e-8,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        sparsity: Optional[Union[float, int, ivy.Container]] = None,
+        l2_reg=0,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        cvg_criterion: Optional[
+            Union[Literal["abs_rec_error", "rec_error"], ivy.Container]
+        ] = "abs_rec_error",
+        fixed_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        linesearch: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> Union[ivy.CPTensor, Tuple[ivy.CPTensor, List], ivy.Container]:
         """
         CANDECOMP/PARAFAC decomposition via alternating least squares (ALS) Computes a
@@ -2324,26 +2324,26 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
     @staticmethod
     def static_randomised_parafac(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            rank: Union[int, ivy.Container],
-            n_samples: Union[int, ivy.Container],
-            /,
-            *,
-            n_iter_max: Optional[Union[int, ivy.Container]] = 100,
-            init: Optional[
-                Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
-            ] = "svd",
-            svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
-            max_stagnation: Optional[Union[int, ivy.Container]] = 0,
-            tol: Optional[Union[float, ivy.Container]] = 10e-9,
-            seed: Optional[Union[int, ivy.Container]] = None,
-            verbose: Optional[Union[bool, ivy.Container]] = False,
-            return_errors: Optional[Union[bool, ivy.Container]] = False,
-            callback: Optional[Union[Callable, ivy.Container]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-            to_apply: Union[bool, ivy.Container] = True,
-            prune_unapplied: Union[bool, ivy.Container] = False,
-            map_sequences: Union[bool, ivy.Container] = False,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        n_samples: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        max_stagnation: Optional[Union[int, ivy.Container]] = 0,
+        tol: Optional[Union[float, ivy.Container]] = 10e-9,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ):
         """
         Randomised CP decomposition via sampled ALS [3]_
@@ -2402,26 +2402,26 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         )
 
     def randomised_parafac(
-            self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            rank: Union[int, ivy.Container],
-            n_samples: Union[int, ivy.Container],
-            /,
-            *,
-            n_iter_max: Optional[Union[int, ivy.Container]] = 100,
-            init: Optional[
-                Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
-            ] = "svd",
-            svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
-            max_stagnation: Optional[Union[int, ivy.Container]] = 0,
-            tol: Optional[Union[float, ivy.Container]] = 10e-9,
-            seed: Optional[Union[int, ivy.Container]] = None,
-            verbose: Optional[Union[bool, ivy.Container]] = False,
-            return_errors: Optional[Union[bool, ivy.Container]] = False,
-            callback: Optional[Union[Callable, ivy.Container]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-            to_apply: Union[bool, ivy.Container] = True,
-            prune_unapplied: Union[bool, ivy.Container] = False,
-            map_sequences: Union[bool, ivy.Container] = False,
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        n_samples: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        max_stagnation: Optional[Union[int, ivy.Container]] = 0,
+        tol: Optional[Union[float, ivy.Container]] = 10e-9,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ):
         """
         Randomised CP decomposition via sampled ALS [3]_

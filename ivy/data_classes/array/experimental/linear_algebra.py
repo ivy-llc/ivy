@@ -729,17 +729,17 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.tt_matrix_to_tensor(self._data, out=out)
 
     def initialize_cp(
-            self: Union[ivy.Array, ivy.NativeArray],
-            rank: int,
-            /,
-            *,
-            init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
-            seed: Optional[int] = None,
-            normalize_factors: Optional[bool] = False,
-            svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
-            non_negative: Optional[bool] = False,
-            mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-            svd_mask_repeats: Optional[int] = 5,
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: int,
+        /,
+        *,
+        init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
+        seed: Optional[int] = None,
+        normalize_factors: Optional[bool] = False,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        non_negative: Optional[bool] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
     ) -> ivy.CPTensor:
         r"""
         ivy.Array instance method variant of ivy.initialize_cp. This method simply wraps
@@ -789,29 +789,29 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
 
     def parafac(
-            self: Union[ivy.Array, ivy.NativeArray],
-            rank: int,
-            /,
-            *,
-            n_iter_max: Optional[int] = 100,
-            init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
-            svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
-            normalize_factors: Optional[bool] = False,
-            orthogonalise: Optional[bool] = False,
-            tol: Optional[float] = 1e-8,
-            seed: Optional[int] = None,
-            verbose: Optional[bool] = False,
-            return_errors: Optional[bool] = False,
-            sparsity: Optional[Union[float, int]] = None,
-            l2_reg=0,
-            mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-            cvg_criterion: Optional[
-                Literal["abs_rec_error", "rec_error"]
-            ] = "abs_rec_error",
-            fixed_modes: Optional[Sequence[int]] = None,
-            svd_mask_repeats: Optional[int] = 5,
-            linesearch: Optional[bool] = False,
-            callback: Optional[Callable] = None,
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: int,
+        /,
+        *,
+        n_iter_max: Optional[int] = 100,
+        init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        normalize_factors: Optional[bool] = False,
+        orthogonalise: Optional[bool] = False,
+        tol: Optional[float] = 1e-8,
+        seed: Optional[int] = None,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
+        sparsity: Optional[Union[float, int]] = None,
+        l2_reg=0,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        cvg_criterion: Optional[
+            Literal["abs_rec_error", "rec_error"]
+        ] = "abs_rec_error",
+        fixed_modes: Optional[Sequence[int]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+        linesearch: Optional[bool] = False,
+        callback: Optional[Callable] = None,
     ) -> Union[ivy.CPTensor, Tuple[ivy.CPTensor, List]]:
         """
         CANDECOMP/PARAFAC decomposition via alternating least squares (ALS) Computes a
@@ -920,20 +920,20 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
 
     def randomised_parafac(
-            self: Union[ivy.Array, ivy.NativeArray],
-            rank: int,
-            n_samples: int,
-            /,
-            *,
-            n_iter_max: Optional[int] = 100,
-            init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
-            svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
-            max_stagnation: Optional[int] = 0,
-            tol: Optional[float] = 10e-9,
-            seed: Optional[int] = None,
-            verbose: Optional[bool] = False,
-            return_errors: Optional[bool] = False,
-            callback: Optional[Callable] = None,
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: int,
+        n_samples: int,
+        /,
+        *,
+        n_iter_max: Optional[int] = 100,
+        init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        max_stagnation: Optional[int] = 0,
+        tol: Optional[float] = 10e-9,
+        seed: Optional[int] = None,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
+        callback: Optional[Callable] = None,
     ):
         """
         Randomised CP decomposition via sampled ALS [3]_
