@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
+    to_native_arrays_and_back,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -88,8 +89,7 @@ def cross_entropy(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@to_native_arrays_and_back
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],

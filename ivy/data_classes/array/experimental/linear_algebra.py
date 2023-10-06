@@ -411,6 +411,37 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         """
         return ivy.make_svd_non_negative(self._data, U, S, V, nntype=nntype)
 
+    def tensor_train(
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Union[int, Sequence[int]],
+        /,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        verbose: Optional[bool] = False,
+    ) -> ivy.TTTensor:
+        """
+        ivy.Array instance method variant of ivy.tensor_train. This method simply wraps
+        the function, and so the docstring for ivy.tensor_train also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input tensor
+        rank
+            maximum allowable TT rank of the factors
+            if int, then this is the same for all the factors
+            if int list, then rank[k] is the rank of the kth factor
+        svd
+            function to use to compute the SVD
+        verbose
+            level of verbosity
+
+        Returns
+        -------
+        ivy.TTTensor
+        """
+        return ivy.tensor_train(self._data, rank, svd=svd, verbose=verbose)
+
     def truncated_svd(
         self: Union[ivy.Array, ivy.NativeArray],
         /,
