@@ -71,6 +71,34 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "2.5.0 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "numpy",
+)
+def ifftshift(x, axes=None, name=None):
+    shape = x.shape
+
+    if axes is None:
+        axes = tuple(range(x.ndim))
+        shifts = [-(dim // 2) for dim in shape]
+    elif isinstance(axes, int):
+        shifts = -(shape[axes] // 2)
+    else:
+        shifts = ivy.concat([-shape[ax] // 2 for ax in axes])
+
+    roll = ivy.roll(x, shifts, axis=axes)
+
+    return roll
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, "numpy")
 def rfft(a, n=None, axis=-1, norm=None):
     if n is None:
