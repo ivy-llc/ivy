@@ -1248,7 +1248,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         )
 
     def softshrink(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
         lambd: ivy.Container = 0.5,
@@ -1263,7 +1263,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Parameters
         ----------
-        x
+        self
             Input container.
         lambd
             Lambda value for soft shrinkage calculation.
@@ -1296,9 +1296,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
             b: ivy.array([0., 0.])
         }
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return self._static_softshrink(
             "softshrink",
-            x,
+            self,
             lambd=lambd,
             key_chains=key_chains,
             to_apply=to_apply,
