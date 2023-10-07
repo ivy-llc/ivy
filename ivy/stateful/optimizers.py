@@ -489,7 +489,6 @@ class AdamW(Adam):
         ret
             The updated variables, following AdamW update step.
         """
-
         # Apply L2 regularization directly to the parameters
         if self._weight_decay != 0:
             grads += self._weight_decay * v
