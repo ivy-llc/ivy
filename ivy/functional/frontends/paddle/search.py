@@ -33,6 +33,21 @@ def argsort(x, /, *, axis=-1, descending=False, name=None):
     return ivy.argsort(x, axis=axis, descending=descending)
 
 
+# bucketize
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def bucketize(x, sorted_sequence, out_int32=False, right=False, name=None):
+    if ivy.get_num_dims(sorted_sequence) != 1:
+        raise ValueError(
+            "sorted_sequence tensor must be 1 dimension, but got dim"
+            f" {ivy.get_num_dims(sorted_sequence)}"
+        )
+    return searchsorted(sorted_sequence, x, out_int32=out_int32, right=right, name=name)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
     "paddle",
@@ -127,17 +142,3 @@ def topk(x, k, axis=None, largest=True, sorted=True, name=None):
 @to_ivy_arrays_and_back
 def where(condition, x, y, name=None):
     return ivy.where(condition, x, y)
-
-
-#bucketize
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def bucketize(x, sorted_sequence, out_int32=False, right=False, name=None):
-    if ivy.get_num_dims(sorted_sequence) != 1:
-        raise ValueError(
-            f"sorted_sequence tensor must be 1 dimension, but got dim {ivy.get_num_dims(sorted_sequence)}"
-        )
-    return searchsorted(sorted_sequence, x, out_int32=out_int32, right=right, name=name)
