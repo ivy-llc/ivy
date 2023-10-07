@@ -1365,7 +1365,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         Returns
         -------
         ret
-            a container with the celu unit function applied element-wise.
+             a container with the celu unit function applied element-wise.
 
         Examples
         --------
