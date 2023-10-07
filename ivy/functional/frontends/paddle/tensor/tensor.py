@@ -777,6 +777,10 @@ class Tensor:
     def nonzero(self):
         return paddle_frontend.nonzero(self)
 
+    @with_unsupported_dtypes({"2.5.1 and below": ("int32", "int64", "bfloat16", "float16", "float32", "float64")}, "paddle")
+    def index_sample(self, index):
+        return paddle_frontend.index_sample(self, index)
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def inner(self, y, name=None):
         return paddle_frontend.inner(self, y, name)
