@@ -97,16 +97,15 @@ def cholesky(input, upper=False, *, out=None):
 @to_ivy_arrays_and_back
 def cholesky_inverse(input, upper=False, *, out=None):
     """
-        Compute the inverse of a positive definite matrix using Cholesky decomposition.
+    Compute the inverse of a positive definite matrix using Cholesky decomposition.
 
-        Args:
-            matrix(array-like): The positive definite matrix to invert.
-            upper (bool, optional): Whether to perform upper Cholesky decomposition. Default is False.
-            out (array-like, optional): Output array where the result will be stored.
-            If not provided, a new array is created.
+    Args:
+        matrix (array-like): The positive definite matrix to invert.
+        upper (bool, optional): Whether to perform upper Cholesky decomposition. Default is False.
+        out (array-like, optional): Output array where the result will be stored. If not provided, a new array is created.
 
-        Returns:
-            array-like: The inverse of the input matrix.
+    Returns:
+        array-like: The inverse of the input matrix.
     """
     cholesky_matrix = cholesky(input, upper=upper, out=out)
     inv_matrix = ivy.inverse(cholesky_matrix)
