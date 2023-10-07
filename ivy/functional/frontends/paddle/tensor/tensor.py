@@ -815,6 +815,11 @@ class Tensor:
     def real(self, name=None):
         return paddle_frontend.real(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def t(self, name=None):
+        axes = list(range(len(self.ivy_array.shape)))[::-1]
+        return ivy.permute_dims(self.ivy_array, axes=axes)
+
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
@@ -869,3 +874,14 @@ class Tensor:
     )
     def frac(self, name=None):
         return paddle_frontend.frac(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def gather(self, y, name=None):
+        return paddle_frontend.gather(self, y)
+
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("float16", "uint8", "int8", "bool")}, "paddle"
+    )
+    def gather_(self, y, name=None):
+        res = self.gather(self, y)
+        return ivy.inplace_update(self, res)

@@ -24,7 +24,6 @@ from ivy.func_wrapper import (
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
-from collections.abc import Hashable
 
 
 # Helpers #
@@ -604,7 +603,7 @@ def finfo(
     Returns
     -------
     ret
-        an object having the followng attributes:
+        an object having the following attributes:
 
         - **bits**: *int*
 
@@ -962,7 +961,15 @@ def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     ret
         True if data type is hashable else False
     """
-    return isinstance(dtype_in, Hashable)
+    # Doing something like isinstance(dtype_in, collections.abc.Hashable)
+    # fails where the `__hash__` method is overridden to simply raise an
+    # exception.
+    # [See `tensorflow.python.trackable.data_structures.ListWrapper`]
+    try:
+        hash(dtype_in)
+        return True
+    except TypeError:
+        return False
 
 
 @handle_exceptions
@@ -2103,6 +2110,9 @@ def promote_types(
     ret
         The type that both input types promote to
     """
+    # in case either is of none type
+    if not (type1 and type2):
+        return type1 if type1 else type2
     query = [ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)]
     query = tuple(query)
     if query not in ivy.promotion_table:

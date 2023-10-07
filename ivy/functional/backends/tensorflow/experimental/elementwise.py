@@ -1,5 +1,5 @@
 import operator
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Tuple, List, Sequence
 from numbers import Number
 import tensorflow as tf
 from tensorflow.python.ops.numpy_ops import np_math_ops
@@ -9,6 +9,48 @@ import ivy
 from ivy import promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
+
+
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amax(
+    x: tf.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return tf.experimental.numpy.amax(x, axis=axis, keepdims=keepdims)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amin(
+    x: tf.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return tf.experimental.numpy.amin(x, axis=axis, keepdims=keepdims)
 
 
 @with_supported_dtypes(

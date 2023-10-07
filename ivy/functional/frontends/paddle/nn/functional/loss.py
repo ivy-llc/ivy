@@ -415,7 +415,7 @@ def softmax_with_cross_entropy(
 ):
     input_dims = len(list(logits.shape))
     if input_dims == 0:
-        raise ValueError("The dimention of input should be larger than zero!")
+        raise ValueError("The dimension of input should be larger than zero!")
     label_dims = len(list(label.shape))
     if input_dims - 1 != label_dims and input_dims != label_dims:
         raise ValueError(
