@@ -30,7 +30,7 @@ Instead, the change must be made to the array-api repository directly and then o
 
 .. code-block:: none
 
-        # to initialise local config file and fetch + checkout submodule (not needed everytime)
+        # to initialise local config file and fetch + checkout submodule (not needed every time)
         git submodule update --init --recursive
 
         # pulls changes from the upstream remote repo and merges them
