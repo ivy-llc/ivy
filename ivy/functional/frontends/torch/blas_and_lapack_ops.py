@@ -100,7 +100,7 @@ def cholesky_inverse(input, upper=False, *, out=None):
         Compute the inverse of a positive definite matrix using Cholesky decomposition.
 
         Args:
-            matrix (array-like): The positive definite matrix to invert.
+            matrix(array-like): The positive definite matrix to invert.
             upper (bool, optional): Whether to perform upper Cholesky decomposition. Default is False.
             out (array-like, optional): Output array where the result will be stored.
             If not provided, a new array is created.
