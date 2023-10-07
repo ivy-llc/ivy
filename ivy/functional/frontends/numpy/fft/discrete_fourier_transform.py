@@ -142,6 +142,15 @@ def rfftn(a, s=None, axes=None, norm=None):
     return ivy.rfftn(a, s=s, axes=axes, norm=norm)
 
 
+@with_unsupported_dtypes({"1.24.1 and below": ("float16",)}, "numpy")
+@to_ivy_arrays_and_back
+def rfft2(a, s=None, axes=(-2, -1), norm=None):
+    if norm is None:
+        norm = "backward"
+    a = ivy.asarray(a, dtype=ivy.complex128)
+    return ivy.rfftn(a, s=s, axes=axes, norm=norm)
+
+
 _SWAP_DIRECTION_MAP = {
     None: "forward",
     "backward": "forward",
