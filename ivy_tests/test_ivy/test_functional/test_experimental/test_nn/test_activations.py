@@ -44,7 +44,6 @@ def test_celu(
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
-        max_value=100000,
     ),
     alpha=st.one_of(
         st.floats(min_value=0.10, max_value=1.0),

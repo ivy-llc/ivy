@@ -955,16 +955,14 @@ class _ContainerWithActivationExperimental(ContainerBase):
         x
             input container.
          key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
+            The key-chains to apply or not apply the method to.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
+            will be skipped.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -977,7 +975,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         Examples
         --------
         >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
-        >>> y = ivy.Container.static_sigmoid(x)
+        >>> y = ivy.Container._static_sigmoid(x)
         >>> print(y)
         {
             a: ivy.array([0.59628272, 0.29943284]),
@@ -1014,16 +1012,14 @@ class _ContainerWithActivationExperimental(ContainerBase):
         self
             input container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
+            The key-chains to apply or not apply the method to.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
+            will be skipped.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1052,6 +1048,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             out=out,
         )
 
+    @staticmethod
     def _static_hardtanh(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,

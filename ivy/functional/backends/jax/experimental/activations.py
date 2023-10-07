@@ -92,7 +92,6 @@ def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
-@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
 def celu(
     x: JaxArray,
     /,
