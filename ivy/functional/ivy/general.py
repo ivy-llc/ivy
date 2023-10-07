@@ -2169,17 +2169,21 @@ def set_min_base(val: float) -> None:
     val
         The new value to set the minimum base to.
 
-    Examples
+      Examples
     --------
+    Check the current minimum base.
     >>> x = ivy.min_base
     >>> print(x)
     1e-05
 
+    To set a new value as the minimum base.
     >>> ivy.set_min_base(1e-04)
     >>> y = ivy.min_base
     >>> print(y)
     1e-04
+
     """
+    
     global min_base_stack
     ivy.utils.assertions.check_isinstance(val, (int, float))
     min_base_stack.append(val)
