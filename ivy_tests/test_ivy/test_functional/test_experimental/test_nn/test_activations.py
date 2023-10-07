@@ -266,7 +266,7 @@ def test_silu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         safety_factor_scale="log",
     ),
     threshold=st.one_of(
-        st.floats(min_value=0.0, max_value=100.0),
+        st.floats(min_value=0.0, max_value=1e30),
     ),
 )
 def test_softshrink(
