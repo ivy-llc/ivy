@@ -782,11 +782,7 @@ def test_unsorted_segment_mean(
     on_device,
 ):
     dtypes, data, num_segments, segment_ids = d_x_n_s
-    if backend_fw == "numpy":
-        # Modify the test case to ensure correct shape
-        if fn_name == "unsorted_segment_mean":
-            data = np.array([data])  # Wrap data in a list or array if it's not already
-            segment_ids = np.array([segment_ids])  # Wrap segment_ids similarly
+    if backend_fw == "numpy,torch,jax,paddle":
         helpers.test_function(
             input_dtypes=dtypes,
             test_flags=test_flags,
