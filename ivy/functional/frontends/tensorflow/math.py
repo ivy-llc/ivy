@@ -254,6 +254,17 @@ def equal(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": ("bfloat16", "half", "float32", "float64"),
+    },
+    "tensorflow",
+)
+def erf(x, name=None):
+    return ivy.erf(x)
+
+
+@to_ivy_arrays_and_back
 def erfcinv(x, name="erfcinv"):
     return 1 / (1 - ivy.erf(x))
 
