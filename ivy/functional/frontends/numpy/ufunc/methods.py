@@ -2,8 +2,9 @@
 import inspect
 from math import inf
 
-# local
 import ivy.functional.frontends.numpy as np_frontend
+
+# local
 
 identities = {
     "abs": None,

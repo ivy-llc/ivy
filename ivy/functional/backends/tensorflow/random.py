@@ -4,22 +4,23 @@ TensorFlow random functions.
 Collection of TensorFlow random functions, wrapped to fit Ivy syntax and
 signature.
 """
+from typing import Optional
+from typing import Sequence
+from typing import Union
 
-from typing import Optional, Union, Sequence
-
-# global
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
 
-# local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from ivy.functional.ivy.random import (
-    _check_bounds_and_get_shape,
-    _randint_check_dtype_and_bound,
-    _check_valid_scale,
-)
 from . import backend_version
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import _check_valid_scale
+from ivy.functional.ivy.random import _randint_check_dtype_and_bound
+
+# global
+# local
 
 
 # Extra #

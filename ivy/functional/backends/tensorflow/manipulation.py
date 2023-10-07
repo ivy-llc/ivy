@@ -1,18 +1,23 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
 import numpy as np
 import tensorflow as tf
 
-# local
 import ivy
-
-# noinspection PyProtectedMember
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
-from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.manipulation import _calculate_out_shape
+
+# local
+# noinspection PyProtectedMember
 
 
 def _reshape_fortran_tf(x, shape):

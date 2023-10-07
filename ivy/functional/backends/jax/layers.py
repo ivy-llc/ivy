@@ -1,19 +1,20 @@
 """Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
-
-
 # global
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
+
 import jax.lax as jlax
 import jax.numpy as jnp
 
-# local
 import ivy
 from ivy.functional.backends.jax import JaxArray
-from typing import Union, Tuple, Optional, Sequence
-from ivy.functional.ivy.layers import (
-    _handle_padding,
-    _deconv_length,
-    _get_x_data_format,
-)
+from ivy.functional.ivy.layers import _deconv_length
+from ivy.functional.ivy.layers import _get_x_data_format
+from ivy.functional.ivy.layers import _handle_padding
+
+# local
 
 
 def _transpose_padding_helper(k, s, padding, dilation, diff=0):

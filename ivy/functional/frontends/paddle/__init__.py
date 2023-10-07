@@ -1,12 +1,14 @@
 import sys
-import ivy
-from ivy.utils.exceptions import handle_exceptions
-from ivy.functional.frontends import set_frontend_to_specific_version
+from numbers import Number
+from typing import Iterable
+from typing import Tuple
+from typing import Union
 
+import ivy
+from ivy.functional.frontends import set_frontend_to_specific_version
+from ivy.utils.exceptions import handle_exceptions
 
 # global
-from numbers import Number
-from typing import Union, Tuple, Iterable
 
 
 # Constructing dtypes are required as ivy.<dtype>

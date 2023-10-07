@@ -1,9 +1,11 @@
 import ivy
+from ivy.functional.frontends.xgboost.linear.coordinate_common import coordinate_delta
 from ivy.functional.frontends.xgboost.linear.coordinate_common import (
-    get_bias_gradient,
     coordinate_delta_bias,
+)
+from ivy.functional.frontends.xgboost.linear.coordinate_common import get_bias_gradient
+from ivy.functional.frontends.xgboost.linear.coordinate_common import (
     update_bias_residual,
-    coordinate_delta,
 )
 
 

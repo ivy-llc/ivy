@@ -1,9 +1,13 @@
 # global
+from typing import Optional
+from typing import Sequence
+from typing import Union
+
 import numpy as np
-from typing import Union, Optional, Sequence
+
+import ivy
 
 # local
-import ivy
 
 
 def all(

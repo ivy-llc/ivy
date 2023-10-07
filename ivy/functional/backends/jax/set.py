@@ -1,11 +1,14 @@
 # global
-import jax.numpy as jnp
-from typing import Tuple, Optional
 from collections import namedtuple
+from typing import Optional
+from typing import Tuple
+
+import jax.numpy as jnp
+
+import ivy
+from ivy.functional.backends.jax import JaxArray
 
 # local
-from ivy.functional.backends.jax import JaxArray
-import ivy
 
 
 def unique_all(

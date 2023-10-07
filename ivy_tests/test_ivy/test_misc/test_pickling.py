@@ -1,12 +1,14 @@
-import pickle
-import numpy as np
 import os
+import pickle
 
-from hypothesis import given, assume
+import numpy as np
+from hypothesis import assume
+from hypothesis import given
 
-# local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+
+# local
 
 
 # pickling array test to disk

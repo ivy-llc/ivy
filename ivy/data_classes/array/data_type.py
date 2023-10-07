@@ -1,9 +1,13 @@
 # global
 import abc
-from typing import Tuple, Optional, List, Union
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
+
+import ivy
 
 # local
-import ivy
 
 Finfo = None
 Iinfo = None

@@ -1,12 +1,15 @@
 # global
-import paddle
-from typing import Tuple, Optional
 from collections import namedtuple
+from typing import Optional
+from typing import Tuple
+
+import paddle
+
 import ivy.functional.backends.paddle as paddle_backend
+from . import backend_version
 from ivy.func_wrapper import with_supported_dtypes
 
 # local
-from . import backend_version
 
 
 @with_supported_dtypes(

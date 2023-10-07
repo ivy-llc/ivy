@@ -4,13 +4,19 @@ Ivy wrapping functions for conversions.
 Collection of Ivy functions for wrapping functions to accept and return
 ivy.Array instances.
 """
-
 # global
+from typing import Any
+from typing import Dict
+from typing import Iterable
+from typing import Optional
+from typing import Tuple
+from typing import Union
+
 import numpy as np
-from typing import Any, Union, Tuple, Dict, Iterable, Optional
+
+import ivy
 
 # local
-import ivy
 
 
 # Helpers #

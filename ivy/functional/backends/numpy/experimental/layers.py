@@ -1,24 +1,29 @@
 # global
-
 import math
-import numpy as np
-from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
+from typing import Callable
+from typing import List
+from typing import Literal
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
-# local
+import numpy as np
+
 import ivy
-from ivy.functional.ivy.layers import (
-    _handle_padding,
-    _get_num_padded_values,
-    _validate_max_pool_params,
-    _depth_max_pooling_helper,
-)
+from . import backend_version
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import (
     _padding_ceil_mode,
 )
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
+from ivy.functional.ivy.layers import _depth_max_pooling_helper
+from ivy.functional.ivy.layers import _get_num_padded_values
+from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.layers import _validate_max_pool_params
+
+# local
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_last"):

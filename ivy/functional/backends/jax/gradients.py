@@ -1,21 +1,24 @@
 """Collection of Jax gradient functions, wrapped to fit Ivy syntax and signature."""
-
 # global
+from typing import Callable
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
+
 import jax
 import jax.lax as jlax
-from ivy.functional.backends.jax import JaxArray, NativeArray
-from typing import Optional, Callable, Sequence, Union, Tuple
 
+import ivy
+from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax import NativeArray
+from ivy.functional.ivy.gradients import _get_native_variables_and_indices
+from ivy.functional.ivy.gradients import _get_required_float_variables
+from ivy.functional.ivy.gradients import _get_y_and_ret_idxs
+from ivy.functional.ivy.gradients import _process_func_ret_and_grads
+from ivy.functional.ivy.gradients import _set_duplicates
 
 # local
-import ivy
-from ivy.functional.ivy.gradients import (
-    _get_required_float_variables,
-    _get_y_and_ret_idxs,
-    _get_native_variables_and_indices,
-    _set_duplicates,
-    _process_func_ret_and_grads,
-)
 
 
 # ToDo: modify these functions to track whether variable() has been called

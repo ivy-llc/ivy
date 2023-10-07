@@ -1,12 +1,15 @@
 """Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature."""
-
 # global
-from typing import Optional, Union, Literal
+from typing import Literal
+from typing import Optional
+from typing import Union
+
 import numpy as np
 
-# local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+
+# local
 
 
 @_scalar_output_to_0d_array

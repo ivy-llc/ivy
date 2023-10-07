@@ -1,9 +1,15 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple, Sequence
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
-# local
 import ivy
 from ivy.data_classes.container.base import ContainerBase
+
+# local
 
 
 class _ContainerWithStatisticalExperimental(ContainerBase):

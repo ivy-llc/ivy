@@ -1,15 +1,12 @@
 import ivy
+import ivy.functional.frontends.jax.numpy as jnp_frontend
+from ivy.func_wrapper import handle_out_argument
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.array import Array
-import ivy.functional.frontends.jax.numpy as jnp_frontend
-from ivy.functional.frontends.jax.func_wrapper import (
-    to_ivy_arrays_and_back,
-    outputs_to_frontend_arrays,
-    handle_jax_dtype,
-    inputs_to_ivy_arrays,
-)
-
-from ivy.func_wrapper import handle_out_argument
+from ivy.functional.frontends.jax.func_wrapper import handle_jax_dtype
+from ivy.functional.frontends.jax.func_wrapper import inputs_to_ivy_arrays
+from ivy.functional.frontends.jax.func_wrapper import outputs_to_frontend_arrays
+from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 
 
 ndarray = Array

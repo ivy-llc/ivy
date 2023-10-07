@@ -1,5 +1,5 @@
-from .generic import NDFrame
 import ivy
+from .generic import NDFrame
 from .series import Series
 from ivy.functional.frontends.pandas.index import Index
 

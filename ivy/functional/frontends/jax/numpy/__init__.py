@@ -1,12 +1,14 @@
 # global
 from numbers import Number
-from typing import Union, Tuple, Iterable
+from typing import Iterable
+from typing import Tuple
+from typing import Union
 
+import ivy
+import ivy.functional.frontends.jax as jax_frontend
+from ivy.utils.exceptions import handle_exceptions
 
 # local
-import ivy
-from ivy.utils.exceptions import handle_exceptions
-import ivy.functional.frontends.jax as jax_frontend
 
 
 # Constructing dtypes are required as ivy.<dtype>

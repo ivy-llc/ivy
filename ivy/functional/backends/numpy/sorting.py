@@ -1,11 +1,16 @@
 # global
+from typing import List
+from typing import Literal
+from typing import Optional
+from typing import Union
+
 import numpy as np
-from typing import Optional, Literal, Union, List
+
+import ivy
+from . import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
 
 # local
-import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
 
 
 def argsort(

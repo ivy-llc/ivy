@@ -1,8 +1,10 @@
-import torch
-from typing import Optional, List
+from typing import List
+from typing import Optional
 
-from ivy.func_wrapper import with_unsupported_dtypes
+import torch
+
 from . import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)

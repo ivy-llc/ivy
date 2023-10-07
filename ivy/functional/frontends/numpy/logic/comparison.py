@@ -1,19 +1,18 @@
 # global
 import ivy
-
-# local
-from ivy.functional.frontends.numpy.func_wrapper import (
-    to_ivy_arrays_and_back,
-    inputs_to_ivy_arrays,
-    handle_numpy_casting,
-    handle_numpy_dtype,
-    from_zero_dim_arrays_to_scalar,
-    handle_numpy_out,
-)
+from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
+from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
+from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_dtype
+from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_out
+from ivy.functional.frontends.numpy.func_wrapper import inputs_to_ivy_arrays
+from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
 # --- Helpers --- #
 # --------------- #
+
+
+# local
 
 
 @handle_numpy_out

@@ -1,11 +1,14 @@
+from typing import Optional
+from typing import Tuple
+
 import paddle
 import paddle.nn.functional as F
+
 import ivy
-from ivy.utils.exceptions import IvyNotImplementedException
-from typing import Optional, Tuple
+from . import backend_version
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
-from . import backend_version
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 # TODO: add support for the rest of the dtypes

@@ -1,24 +1,25 @@
 """Collection of Ivy neural network layers in functional form."""
-
 # global
-from typing import Optional, Tuple, Union, Sequence
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
+
+import ivy
+from ivy.func_wrapper import handle_array_function
+from ivy.func_wrapper import handle_array_like_without_promotion
+from ivy.func_wrapper import handle_backend_invalid
+from ivy.func_wrapper import handle_device
+from ivy.func_wrapper import handle_nestable
+from ivy.func_wrapper import handle_out_argument
+from ivy.func_wrapper import handle_partial_mixed_function
+from ivy.func_wrapper import inputs_to_ivy_arrays
+from ivy.func_wrapper import inputs_to_native_shapes
+from ivy.func_wrapper import to_native_arrays_and_back
+from ivy.utils.backend import current_backend
+from ivy.utils.exceptions import handle_exceptions
 
 # local
-import ivy
-from ivy.utils.backend import current_backend
-from ivy.func_wrapper import (
-    handle_array_function,
-    handle_partial_mixed_function,
-    inputs_to_ivy_arrays,
-    to_native_arrays_and_back,
-    inputs_to_native_shapes,
-    handle_out_argument,
-    handle_nestable,
-    handle_array_like_without_promotion,
-    handle_device,
-    handle_backend_invalid,
-)
-from ivy.utils.exceptions import handle_exceptions
 
 # Extra #
 # ------#

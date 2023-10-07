@@ -1,13 +1,16 @@
 # global
-from typing import Optional, Tuple
 import math
+from typing import Optional
+from typing import Tuple
+
 import jax
 import jax.numpy as jnp
 import jaxlib.xla_extension
 
-# local
-from ivy.functional.backends.jax import JaxArray
 import ivy
+from ivy.functional.backends.jax import JaxArray
+
+# local
 
 # Array API Standard #
 # ------------------ #

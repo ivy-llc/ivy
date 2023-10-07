@@ -1,15 +1,13 @@
 from ivy.functional.frontends.jax.numpy import asarray
-from ivy.functional.frontends.numpy import (
-    dtype,
-    generic,
-    number,
-    inexact,
-    complexfloating,
-    floating,
-    integer,
-    signedinteger,
-    unsignedinteger,
-)
+from ivy.functional.frontends.numpy import complexfloating
+from ivy.functional.frontends.numpy import dtype
+from ivy.functional.frontends.numpy import floating
+from ivy.functional.frontends.numpy import generic
+from ivy.functional.frontends.numpy import inexact
+from ivy.functional.frontends.numpy import integer
+from ivy.functional.frontends.numpy import number
+from ivy.functional.frontends.numpy import signedinteger
+from ivy.functional.frontends.numpy import unsignedinteger
 
 
 class _ScalarMeta(type):

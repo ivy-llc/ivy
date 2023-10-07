@@ -1,21 +1,22 @@
 # global
 from numbers import Number
-from typing import Optional, Union, Literal
+from typing import Literal
+from typing import Optional
+from typing import Union
+
+import ivy
+from ivy.func_wrapper import handle_array_function
+from ivy.func_wrapper import handle_array_like_without_promotion
+from ivy.func_wrapper import handle_backend_invalid
+from ivy.func_wrapper import handle_complex_input
+from ivy.func_wrapper import handle_device
+from ivy.func_wrapper import handle_nestable
+from ivy.func_wrapper import handle_out_argument
+from ivy.func_wrapper import inputs_to_ivy_arrays
+from ivy.func_wrapper import to_native_arrays_and_back
+from ivy.utils.exceptions import handle_exceptions
 
 # local
-import ivy
-from ivy.func_wrapper import (
-    handle_array_function,
-    handle_out_argument,
-    to_native_arrays_and_back,
-    handle_nestable,
-    handle_array_like_without_promotion,
-    inputs_to_ivy_arrays,
-    handle_device,
-    handle_complex_input,
-    handle_backend_invalid,
-)
-from ivy.utils.exceptions import handle_exceptions
 
 
 # Array API Standard #

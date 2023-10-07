@@ -1,20 +1,20 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
+import importlib
 import inspect
+import os
+from typing import Optional
+from typing import Union
+
+import torch
+from torch.profiler import profile
+from torch.profiler import ProfilerActivity
+
+import ivy
+from ivy.functional.ivy.device import _shift_native_arrays_on_default_device
+from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 # global
-import os
-import importlib
-import torch
-from typing import Optional, Union
-from torch.profiler import ProfilerActivity
-from torch.profiler import profile
-
 # local
-import ivy
-from ivy.functional.ivy.device import (
-    _shift_native_arrays_on_default_device,
-    Profiler as BaseProfiler,
-)
 
 torch_scatter = None
 

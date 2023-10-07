@@ -1,17 +1,19 @@
 """Collection of tests for unified general functions."""
-
 # global
 import copy
 import warnings
-import pytest
-import numpy as np
 
-# local
+import numpy as np
+import pytest
+
 import ivy
 
 
 # --- Helpers --- #
 # --------------- #
+
+
+# local
 
 
 def _mnai(n, idx, fn):

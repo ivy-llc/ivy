@@ -1,9 +1,16 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
+from typing import Callable
+from typing import List
+from typing import Literal
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
+
+import ivy
 
 # local
-import ivy
 
 
 class _ArrayWithLayersExperimental(abc.ABC):

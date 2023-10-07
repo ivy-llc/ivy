@@ -1,9 +1,12 @@
 # global
+from typing import Optional
+from typing import Union
+
 import paddle
-from typing import Optional, Union
+
+import ivy
 
 # local
-import ivy
 
 
 # invert_permutation

@@ -1,4 +1,6 @@
-from .base import FrontendConfig, SupportedDeviecs, SupportedDtypes
+from .base import FrontendConfig
+from .base import SupportedDeviecs
+from .base import SupportedDtypes
 
 # import onnx
 # import onnxruntime as ort

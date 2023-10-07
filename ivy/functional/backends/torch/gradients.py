@@ -1,22 +1,22 @@
 """Collection of PyTorch gradient functions, wrapped to fit Ivy syntax and signature."""
-
 # global
+from typing import Callable
+from typing import Optional
+from typing import Sequence
+from typing import Union
+
 import torch
-from typing import Optional, Callable, Sequence, Union
+
+import ivy
+from ivy.func_wrapper import inputs_to_native_arrays
+from ivy.func_wrapper import outputs_to_ivy_arrays
+from ivy.functional.ivy.gradients import _get_native_y
+from ivy.functional.ivy.gradients import _get_required_float_variables
+from ivy.functional.ivy.gradients import _get_y_and_ret_idxs
+from ivy.functional.ivy.gradients import _process_func_ret_and_grads
+from ivy.functional.ivy.gradients import _set_duplicates
 
 # local
-import ivy
-from ivy.func_wrapper import (
-    outputs_to_ivy_arrays,
-    inputs_to_native_arrays,
-)
-from ivy.functional.ivy.gradients import (
-    _get_required_float_variables,
-    _get_y_and_ret_idxs,
-    _get_native_y,
-    _set_duplicates,
-    _process_func_ret_and_grads,
-)
 
 
 def variable(x, /):

@@ -1,9 +1,12 @@
 # global
 import abc
-from typing import Optional, Union, Tuple
+from typing import Optional
+from typing import Tuple
+from typing import Union
+
+import ivy
 
 # local
-import ivy
 
 
 class _ArrayWithNormsExperimental(abc.ABC):

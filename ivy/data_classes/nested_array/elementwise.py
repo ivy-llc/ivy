@@ -1,9 +1,11 @@
 # global
-from typing import Optional, Union
+from typing import Optional
+from typing import Union
 
-# local
 import ivy
 from .base import NestedArrayBase
+
+# local
 
 
 class NestedArrayElementwise(NestedArrayBase):

@@ -1,13 +1,17 @@
 # global
-import numpy as np
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Union
 
 import jax.numpy as jnp
-from typing import Optional, Union, Sequence, List
+import numpy as np
 
-# local
 import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+
+# local
 
 ivy_dtype_dict = {
     jnp.dtype("int8"): "int8",

@@ -1,23 +1,25 @@
 """Collection of tests for unified general functions."""
-
 # global
-import time
 import math
+import threading
+import time
+from collections.abc import Sequence
 from types import SimpleNamespace
 
-import pytest
-from hypothesis import given, assume, strategies as st
 import numpy as np
-from collections.abc import Sequence
+import pytest
+from hypothesis import assume
+from hypothesis import given
+from hypothesis import strategies as st
 
-# local
-import threading
 import ivy
-
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
+from ivy_tests.test_ivy.helpers import BackendHandler
+from ivy_tests.test_ivy.helpers import handle_test
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
+
+# local
 
 try:
     import tensorflow as tf

@@ -1,4 +1,4 @@
 from . import multiclass
-from .multiclass import *
 from . import validation
+from .multiclass import *
 from .validation import *

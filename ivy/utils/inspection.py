@@ -1,9 +1,9 @@
 # global
 from typing import get_type_hints
 
+import ivy
 
 # local
-import ivy
 
 
 def _is_optional(typ):

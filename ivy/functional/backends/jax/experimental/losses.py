@@ -1,14 +1,16 @@
-import jax.numpy as jnp
-import jax
 from typing import Optional
-from ivy.functional.backends.jax import JaxArray
-import ivy
 
-# local
+import jax
+import jax.numpy as jnp
+
+import ivy
+from . import backend_version
 from ivy.func_wrapper import (
     with_supported_device_and_dtypes,
 )
-from . import backend_version
+from ivy.functional.backends.jax import JaxArray
+
+# local
 
 
 def huber_loss(

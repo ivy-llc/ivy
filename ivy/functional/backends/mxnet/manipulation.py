@@ -1,6 +1,11 @@
-import mxnet as mx
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
+
+import mxnet as mx
 
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException

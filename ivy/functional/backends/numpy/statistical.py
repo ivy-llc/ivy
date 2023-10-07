@@ -1,13 +1,17 @@
 # global
-import numpy as np
-from typing import Union, Optional, Sequence
+from typing import Optional
+from typing import Sequence
+from typing import Union
 
-# local
+import numpy as np
+
 import ivy
+from . import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-from . import backend_version
 from ivy.utils.einsum_parser import legalise_einsum_expr
+
+# local
 
 
 # Array API Standard #

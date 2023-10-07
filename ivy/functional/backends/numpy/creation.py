@@ -1,22 +1,25 @@
 # global
 from numbers import Number
-from typing import Union, Optional, List, Sequence, Tuple
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
 import numpy as np
 
-# local
 import ivy
-from ivy.functional.backends.numpy.device import _to_device
-from ivy.functional.ivy.creation import (
-    _asarray_to_native_arrays_and_back,
-    _asarray_infer_device,
-    _asarray_infer_dtype,
-    _asarray_handle_nestable,
-    NestedSequence,
-    SupportsBufferProtocol,
-    _asarray_inputs_to_native_shapes,
-)
 from .data_type import as_native_dtype
+from ivy.functional.backends.numpy.device import _to_device
+from ivy.functional.ivy.creation import _asarray_handle_nestable
+from ivy.functional.ivy.creation import _asarray_infer_device
+from ivy.functional.ivy.creation import _asarray_infer_dtype
+from ivy.functional.ivy.creation import _asarray_inputs_to_native_shapes
+from ivy.functional.ivy.creation import _asarray_to_native_arrays_and_back
+from ivy.functional.ivy.creation import NestedSequence
+from ivy.functional.ivy.creation import SupportsBufferProtocol
+
+# local
 
 
 # Array API Standard #

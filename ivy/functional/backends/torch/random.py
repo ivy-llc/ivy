@@ -1,18 +1,19 @@
 """Collection of PyTorch random functions, wrapped to fit Ivy syntax and signature."""
-
 # global
+from typing import Optional
+from typing import Sequence
+from typing import Union
+
 import torch
-from typing import Optional, Union, Sequence
+
+import ivy
+from . import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import _check_valid_scale
+from ivy.functional.ivy.random import _randint_check_dtype_and_bound
 
 # local
-import ivy
-from ivy.functional.ivy.random import (
-    _check_bounds_and_get_shape,
-    _randint_check_dtype_and_bound,
-    _check_valid_scale,
-)
-from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
 
 # Extra #
 # ------#

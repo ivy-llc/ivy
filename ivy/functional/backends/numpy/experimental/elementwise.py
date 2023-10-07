@@ -1,12 +1,17 @@
-from typing import Optional, Union, Tuple, List, Sequence
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
+
 import numpy as np
 import numpy.typing as npt
 
 import ivy
-from ivy import promote_types_of_inputs
-from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ivy import promote_types_of_inputs
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
 def amax(

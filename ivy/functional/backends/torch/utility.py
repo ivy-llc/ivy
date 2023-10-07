@@ -1,6 +1,9 @@
 # global
+from typing import Optional
+from typing import Sequence
+from typing import Union
+
 import torch
-from typing import Union, Optional, Sequence
 
 
 def all(

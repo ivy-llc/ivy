@@ -1,21 +1,22 @@
 # global
-import os
 import copy
-import types
-import ivy
-import importlib
 import functools
-import numpy as np
 import gc
-from ivy.utils import _importlib, verbosity
+import importlib
+import os
+import types
+
+import numpy as np
+
+import ivy
+from ivy.func_wrapper import _wrap_function
+from ivy.utils import _importlib
+from ivy.utils import verbosity
+from ivy.utils.backend.sub_backend_handler import _clear_current_sub_backends
+from ivy.utils.backend.sub_backend_handler import fn_name_from_version_specific_fn_name
+from ivy.utils.exceptions import _handle_inplace_mode
 
 # local
-from ivy.func_wrapper import _wrap_function
-from ivy.utils.backend.sub_backend_handler import (
-    _clear_current_sub_backends,
-    fn_name_from_version_specific_fn_name,
-)
-from ivy.utils.exceptions import _handle_inplace_mode
 
 backend_stack = []
 compiled_backends = {}

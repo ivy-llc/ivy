@@ -1,18 +1,20 @@
 # global
 import sys
-from packaging import version
-import jaxlib
-import jax
-import jax.numpy as jnp
 from typing import Union
 
-# make ivy.Container compatible with jax pytree traversal
+import jax
+import jax.numpy as jnp
+import jaxlib
 from jax.tree_util import register_pytree_node
-from jax.tree_util import tree_flatten, tree_unflatten
+from jax.tree_util import tree_flatten
+from jax.tree_util import tree_unflatten
+from packaging import version
 
-# local
 import ivy
 from ivy.func_wrapper import _dtype_from_version
+
+# make ivy.Container compatible with jax pytree traversal
+# local
 
 backend_version = {"version": jax.__version__}
 

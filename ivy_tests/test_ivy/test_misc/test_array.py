@@ -1,19 +1,25 @@
 # global
-from hypothesis import assume, strategies as st
 import numpy as np
+from hypothesis import assume
+from hypothesis import strategies as st
 
-# local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_method, handle_test, BackendHandler
+from ivy_tests.test_ivy.helpers import BackendHandler
+from ivy_tests.test_ivy.helpers import handle_method
+from ivy_tests.test_ivy.helpers import handle_test
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
     not_too_close_to_zero,
-    pow_helper,
 )
+from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
+)
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_second_matrix_and_dtype,
 )
+
+# local
 
 CLASS_TREE = "ivy.array"
 

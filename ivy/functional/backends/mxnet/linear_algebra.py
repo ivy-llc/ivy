@@ -1,13 +1,18 @@
 # global
+from collections import namedtuple
+from typing import List
+from typing import Literal
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
 import mxnet as mx
-from typing import Union, Optional, Tuple, Literal, List, Sequence
-from collections import namedtuple
 
-
-# local
 from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
+
+# local
 
 
 def cholesky(

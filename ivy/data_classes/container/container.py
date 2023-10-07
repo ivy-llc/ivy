@@ -1,7 +1,6 @@
 # global
 import operator
 
-# local
 import ivy
 from .activations import _ContainerWithActivations
 from .base import ContainerBase
@@ -24,28 +23,36 @@ from .set import _ContainerWithSet
 from .sorting import _ContainerWithSorting
 from .statistical import _ContainerWithStatistical
 from .utility import _ContainerWithUtility
+from ivy.data_classes.container.experimental import _ContainerWithActivationExperimental
+from ivy.data_classes.container.experimental import _ContainerWithConversionExperimental
+from ivy.data_classes.container.experimental import _ContainerWithCreationExperimental
+from ivy.data_classes.container.experimental import _ContainerWithData_typeExperimental
+from ivy.data_classes.container.experimental import _ContainerWithDeviceExperimental
 from ivy.data_classes.container.experimental import (
-    _ContainerWithActivationExperimental,
-    _ContainerWithConversionExperimental,
-    _ContainerWithCreationExperimental,
-    _ContainerWithData_typeExperimental,
-    _ContainerWithDeviceExperimental,
     _ContainerWithElementWiseExperimental,
-    _ContainerWithGeneralExperimental,
-    _ContainerWithGradientsExperimental,
-    _ContainerWithImageExperimental,
-    _ContainerWithLayersExperimental,
-    _ContainerWithLinearAlgebraExperimental,
-    _ContainerWithManipulationExperimental,
-    _ContainerWithNormsExperimental,
-    _ContainerWithRandomExperimental,
-    _ContainerWithSearchingExperimental,
-    _ContainerWithSetExperimental,
-    _ContainerWithSortingExperimental,
-    _ContainerWithStatisticalExperimental,
-    _ContainerWithUtilityExperimental,
-    _ContainerWithLossesExperimental,
 )
+from ivy.data_classes.container.experimental import _ContainerWithGeneralExperimental
+from ivy.data_classes.container.experimental import _ContainerWithGradientsExperimental
+from ivy.data_classes.container.experimental import _ContainerWithImageExperimental
+from ivy.data_classes.container.experimental import _ContainerWithLayersExperimental
+from ivy.data_classes.container.experimental import (
+    _ContainerWithLinearAlgebraExperimental,
+)
+from ivy.data_classes.container.experimental import _ContainerWithLossesExperimental
+from ivy.data_classes.container.experimental import (
+    _ContainerWithManipulationExperimental,
+)
+from ivy.data_classes.container.experimental import _ContainerWithNormsExperimental
+from ivy.data_classes.container.experimental import _ContainerWithRandomExperimental
+from ivy.data_classes.container.experimental import _ContainerWithSearchingExperimental
+from ivy.data_classes.container.experimental import _ContainerWithSetExperimental
+from ivy.data_classes.container.experimental import _ContainerWithSortingExperimental
+from ivy.data_classes.container.experimental import (
+    _ContainerWithStatisticalExperimental,
+)
+from ivy.data_classes.container.experimental import _ContainerWithUtilityExperimental
+
+# local
 
 
 class Container(

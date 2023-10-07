@@ -1,14 +1,17 @@
-import sys
-import subprocess
-import pprint
 import inspect
 import json
-from colorama import Fore, Style, init
+import pprint
+import subprocess
+import sys
+from dataclasses import asdict
 from importlib import import_module
 from importlib.util import find_spec
-from tree_generation import generate as generate_backend
+
+from colorama import Fore
+from colorama import init
+from colorama import Style
 from shared import BackendNativeObject
-from dataclasses import asdict
+from tree_generation import generate as generate_backend
 
 
 all_devices = ("cpu", "gpu", "tpu")

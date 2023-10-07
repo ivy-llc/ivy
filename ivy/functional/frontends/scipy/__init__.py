@@ -1,9 +1,8 @@
 # global
 import sys
-import ivy
 
-# local
-from ivy.functional.frontends import set_frontend_to_specific_version
+import ivy
+import ivy.functional.frontends.numpy as np
 from . import cluster
 from . import constants
 from . import fft
@@ -19,8 +18,9 @@ from . import sparse
 from . import spatial
 from . import special
 from . import stats
+from ivy.functional.frontends import set_frontend_to_specific_version
 
-import ivy.functional.frontends.numpy as np
+# local
 
 
 array = _frontend_array = np.array

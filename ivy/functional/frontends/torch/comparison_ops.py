@@ -1,15 +1,17 @@
 # global
+from collections import namedtuple
+
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
-# local
-from collections import namedtuple
-
 
 # --- Helpers --- #
 # --------------- #
+
+
+# local
 
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
@@ -292,7 +294,7 @@ def topk(input, k, dim=None, largest=True, sorted=True, *, out=None):
 
 
 gt = greater
+ne = not_equal
 ge = greater_equal
 le = less_equal
 lt = less
-ne = not_equal

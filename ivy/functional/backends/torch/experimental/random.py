@@ -1,15 +1,17 @@
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional
+from typing import Sequence
+from typing import Union
+
 import torch
 
-# local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
-from ivy.functional.ivy.random import (
-    _check_bounds_and_get_shape,
-    _check_shapes_broadcastable,
-)
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import _check_shapes_broadcastable
+
+# local
 
 
 # dirichlet

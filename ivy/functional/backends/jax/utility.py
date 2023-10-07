@@ -1,10 +1,14 @@
 # global
+from typing import Optional
+from typing import Sequence
+from typing import Union
+
 import jax.numpy as jnp
-from typing import Union, Optional, Sequence
+
+import ivy
+from ivy.functional.backends.jax import JaxArray
 
 # local
-from ivy.functional.backends.jax import JaxArray
-import ivy
 
 
 def all(

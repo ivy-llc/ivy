@@ -1,17 +1,21 @@
 # global
-from numpy import mgrid as np_mgrid, ogrid as np_ogrid
 from hypothesis import strategies as st
+from numpy import mgrid as np_mgrid
+from numpy import ogrid as np_ogrid
 
 import ivy
-
-# local
-from ivy.functional.frontends.numpy import mgrid, ogrid
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_frontend_method
+from ivy.functional.frontends.numpy import mgrid
+from ivy.functional.frontends.numpy import ogrid
+from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # --- Helpers --- #
 # --------------- #
+
+
+# local
 
 
 @st.composite

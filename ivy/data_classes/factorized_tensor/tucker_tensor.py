@@ -1,10 +1,11 @@
 # local
-from .base import FactorizedTensor
+import warnings
+from copy import deepcopy
+
 import ivy
+from .base import FactorizedTensor
 
 # global
-from copy import deepcopy
-import warnings
 
 
 def _bisection_root_finder(fun, a, b, tol=1e-6, max_iter=100):

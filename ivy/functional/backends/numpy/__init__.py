@@ -1,10 +1,12 @@
 # global
 import sys
+
 import numpy as np
 
-# local
 import ivy
 from ivy.func_wrapper import _dtype_from_version
+
+# local
 
 backend_version = {"version": np.__version__}
 

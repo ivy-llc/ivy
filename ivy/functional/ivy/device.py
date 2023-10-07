@@ -1,15 +1,16 @@
 """Collection of device Ivy functions."""
-
-
 # global
-import os
-import gc
 import abc
+import gc
 import math
-import psutil
-import warnings
+import os
 import types
-from typing import Type, Optional, Tuple
+import warnings
+from typing import Optional
+from typing import Tuple
+from typing import Type
+
+import psutil
 
 # noinspection PyUnresolvedReferences
 try:

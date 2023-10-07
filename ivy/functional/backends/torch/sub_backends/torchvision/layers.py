@@ -1,5 +1,7 @@
 import torch
-from torchvision.ops import roi_align as torch_roi_align, nms as torch_nms
+from torchvision.ops import nms as torch_nms
+from torchvision.ops import roi_align as torch_roi_align
+
 from ivy.func_wrapper import to_native_arrays_and_back
 
 

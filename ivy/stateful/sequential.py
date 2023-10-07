@@ -1,11 +1,12 @@
 """Base class for deriving trainable modules."""
-
 # global
-from typing import Union, Optional
+from typing import Optional
+from typing import Union
 
-# local
 import ivy
 from ivy.stateful.module import Module
+
+# local
 
 
 class Sequential(Module):

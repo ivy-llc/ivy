@@ -1,9 +1,11 @@
 # global
 import abc
-from typing import List, Tuple
+from typing import List
+from typing import Tuple
+
+import ivy
 
 # local
-import ivy
 
 
 class NestedArrayBase(abc.ABC):

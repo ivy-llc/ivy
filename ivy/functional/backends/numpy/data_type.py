@@ -1,13 +1,17 @@
 # global
-from typing import Optional, Union, Sequence, List
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Union
 
 import numpy as np
 
-# local
 import ivy
+from . import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
-from . import backend_version
+
+# local
 
 ivy_dtype_dict = {
     np.dtype("int8"): "int8",

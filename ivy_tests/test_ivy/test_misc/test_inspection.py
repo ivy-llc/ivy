@@ -1,13 +1,20 @@
 # global
-import pytest
-from typing import List, Tuple, Dict, Optional, Union
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
 
-# local
+import pytest
+
 import ivy
 
 
 # --- Helpers --- #
 # --------------- #
+
+
+# local
 
 
 def _fn0(xs: Optional[List[ivy.Array]] = None):

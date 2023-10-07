@@ -1,10 +1,17 @@
 # global
 from numbers import Number
-from typing import Any, Union, List, Dict, Iterable, Optional, Callable
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Union
+
+import ivy
+from ivy.data_classes.container.base import ContainerBase
 
 # local
-from ivy.data_classes.container.base import ContainerBase
-import ivy
 
 # ToDo: implement all methods here as public instance methods
 

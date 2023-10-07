@@ -1,7 +1,10 @@
+from numbers import Number
+from typing import Iterable
+from typing import Tuple
+from typing import Union
+
 import ivy
 from ivy.utils.exceptions import handle_exceptions
-from numbers import Number
-from typing import Union, Tuple, Iterable
 
 
 # Constructing dtypes are required as ivy.<dtype>

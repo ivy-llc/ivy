@@ -1,10 +1,12 @@
 # global
 from typing import Optional
 
-# local
 import ivy
-from ivy import handle_out_argument, handle_nestable
+from ivy import handle_nestable
+from ivy import handle_out_argument
 from ivy.utils.exceptions import handle_exceptions
+
+# local
 
 
 @handle_out_argument

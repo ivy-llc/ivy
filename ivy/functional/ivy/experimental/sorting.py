@@ -1,16 +1,16 @@
 # global
-from typing import Union, Optional
+from typing import Optional
+from typing import Union
+
+import ivy
+from ivy.func_wrapper import handle_backend_invalid
+from ivy.func_wrapper import handle_device
+from ivy.func_wrapper import handle_nestable
+from ivy.func_wrapper import handle_out_argument
+from ivy.func_wrapper import to_native_arrays_and_back
+from ivy.utils.exceptions import handle_exceptions
 
 # local
-import ivy
-from ivy.func_wrapper import (
-    to_native_arrays_and_back,
-    handle_out_argument,
-    handle_nestable,
-    handle_device,
-    handle_backend_invalid,
-)
-from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions

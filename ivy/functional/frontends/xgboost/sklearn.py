@@ -1,8 +1,8 @@
 import ivy
+from .core import Booster
+from .training import train
 from ivy.functional.frontends.sklearn.base import BaseEstimator as XGBModelBase
 from ivy.functional.frontends.sklearn.base import ClassifierMixin as XGBClassifierBase
-from .training import train
-from .core import Booster
 
 
 class XGBModel(XGBModelBase):

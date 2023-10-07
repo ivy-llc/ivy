@@ -1,16 +1,19 @@
 # global
-from hypothesis import strategies as st
 import numpy as np
+from hypothesis import strategies as st
 
-# local
+import ivy.functional.frontends.numpy as np_frontend
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
-import ivy.functional.frontends.numpy as np_frontend
+from ivy_tests.test_ivy.helpers import BackendHandler
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # --- Helpers --- #
 # --------------- #
+
+
+# local
 
 
 @st.composite

@@ -1,10 +1,12 @@
 # global
 import sys
+
 import paddle as paddle
 
-# local
 import ivy
 from ivy.func_wrapper import _dtype_from_version
+
+# local
 
 backend_version = {"version": paddle.version.full_version}
 

@@ -1,10 +1,15 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
+
+import ivy
 
 # local
-import ivy
 
 
 class _ArrayWithElementWiseExperimental(abc.ABC):

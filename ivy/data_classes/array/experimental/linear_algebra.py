@@ -1,9 +1,15 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, List, Sequence, Literal
+from typing import List
+from typing import Literal
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
+
+import ivy
 
 # local
-import ivy
 
 
 class _ArrayWithLinearAlgebraExperimental(abc.ABC):

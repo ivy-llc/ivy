@@ -1,11 +1,9 @@
 # global
 import ivy
 import ivy.functional.frontends.paddle as paddle
-from ivy.func_wrapper import (
-    with_unsupported_dtypes,
-    handle_out_argument,
-    with_supported_dtypes,
-)
+from ivy.func_wrapper import handle_out_argument
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )

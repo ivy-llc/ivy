@@ -1,9 +1,12 @@
 # global
 import abc
-from typing import Optional, Union, Literal
+from typing import Literal
+from typing import Optional
+from typing import Union
+
+import ivy
 
 # local
-import ivy
 
 
 class _ArrayWithActivationsExperimental(abc.ABC):

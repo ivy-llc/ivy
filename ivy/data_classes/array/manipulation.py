@@ -1,12 +1,18 @@
 # For Review
 # global
 import abc
-from typing import Optional, Union, Tuple, List, Iterable, Sequence
 from numbers import Number
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
-# local
 import ivy
 from ivy import handle_view
+
+# local
 
 # ToDo: implement all methods here as public instance methods
 

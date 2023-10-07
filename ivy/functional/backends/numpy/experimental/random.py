@@ -1,13 +1,15 @@
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional
+from typing import Sequence
+from typing import Union
+
 import numpy as np
 
-# local
 import ivy
-from ivy.functional.ivy.random import (
-    _check_bounds_and_get_shape,
-    _check_shapes_broadcastable,
-)
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import _check_shapes_broadcastable
+
+# local
 
 
 # dirichlet

@@ -1,12 +1,10 @@
 # global
 import ivy
+from ivy.functional.frontends.numpy import any
+from ivy.functional.frontends.numpy import argmax
+from ivy.functional.frontends.numpy import ndarray
 
 # local
-from ivy.functional.frontends.numpy import (
-    argmax,
-    any,
-    ndarray,
-)
 
 
 class matrix:

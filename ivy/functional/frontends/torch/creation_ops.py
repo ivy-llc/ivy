@@ -1,14 +1,10 @@
 # local
 import ivy
-from ivy.functional.frontends.torch.func_wrapper import (
-    to_ivy_arrays_and_back,
-    to_ivy_shape,
-)
-from ivy.func_wrapper import (
-    with_unsupported_dtypes,
-    with_supported_dtypes,
-)
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_shape
 
 
 @to_ivy_arrays_and_back

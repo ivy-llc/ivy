@@ -1,11 +1,11 @@
-import numpy as np
 from typing import Optional
-from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-from ivy.func_wrapper import (
-    with_unsupported_dtypes,
-    with_supported_device_and_dtypes,
-)
+
+import numpy as np
+
 from . import backend_version
+from ivy.func_wrapper import with_supported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
 @with_unsupported_dtypes({"1.26.0 and below": ("bool",)}, backend_version)

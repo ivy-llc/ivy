@@ -1,9 +1,13 @@
 # global
-from typing import Optional, Union, Dict, List
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Union
 
-# local
 import ivy
 from ivy.data_classes.container.base import ContainerBase
+
+# local
 
 
 class _ContainerWithUtilityExperimental(ContainerBase):

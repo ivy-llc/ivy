@@ -1,5 +1,6 @@
-import ivy
 import numbers
+
+import ivy
 from ivy.functional.frontends.numpy.func_wrapper import outputs_to_frontend_arrays
 
 

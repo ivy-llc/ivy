@@ -1,9 +1,13 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
+
+import ivy
 
 # local
-import ivy
 
 
 class _ArrayWithStatisticalExperimental(abc.ABC):

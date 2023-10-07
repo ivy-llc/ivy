@@ -1,8 +1,10 @@
 """Collection of NumPy gradient functions, wrapped to fit Ivy syntax and signature."""
-
 # global
 import logging
-from typing import Optional, Sequence, Union
+from typing import Optional
+from typing import Sequence
+from typing import Union
+
 import ivy
 
 

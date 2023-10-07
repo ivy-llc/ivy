@@ -1,16 +1,17 @@
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.ivy.random import (
-    _check_bounds_and_get_shape,
-    _check_shapes_broadcastable,
-)
-import tensorflow_probability as tfp
-from tensorflow_probability import distributions as tfd
-import tensorflow as tf
-from tensorflow.python.framework.dtypes import DType
+from typing import Optional
+from typing import Sequence
+from typing import Union
 
-from typing import Optional, Sequence, Union
-from .... import backend_version
+import tensorflow as tf
+import tensorflow_probability as tfp
+from tensorflow.python.framework.dtypes import DType
+from tensorflow_probability import distributions as tfd
+
 import ivy
+from .... import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import _check_shapes_broadcastable
 
 
 def beta(

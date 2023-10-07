@@ -1,5 +1,4 @@
 """Collection of Ivy's losses as stateful classes."""
-
 # local
 import ivy
 from ivy.stateful.module import Module

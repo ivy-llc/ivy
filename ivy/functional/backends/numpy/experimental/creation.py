@@ -1,11 +1,15 @@
 # global
-from typing import Optional, Tuple, Sequence, Union
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
 import numpy as np
 
-# local
-from ivy.functional.backends.numpy.device import _to_device
 import ivy
+from ivy.functional.backends.numpy.device import _to_device
+
+# local
 
 # Array API Standard #
 # -------------------#

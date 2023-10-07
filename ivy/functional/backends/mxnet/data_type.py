@@ -1,6 +1,11 @@
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Union
+
 import mxnet as mx
-from typing import Optional, Union, Sequence, List
 import numpy as np
+
 import ivy
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 from ivy.utils.exceptions import IvyNotImplementedException

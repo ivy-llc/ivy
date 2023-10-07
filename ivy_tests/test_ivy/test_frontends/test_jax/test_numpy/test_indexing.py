@@ -1,22 +1,30 @@
 # global
-from hypothesis import strategies as st, assume
 import numpy as np
+from hypothesis import assume
+from hypothesis import strategies as st
+from jax.numpy import c_
+from jax.numpy import r_
+from jax.numpy import tril
+from jax.numpy import triu
+
 import ivy
-from jax.numpy import tril, triu, r_, c_
-
-
-# local
+import ivy.functional.frontends.jax.numpy as jnp_frontend
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 from ...test_numpy.test_indexing_routines.test_inserting_data_into_arrays import (
-    _helper_r_,
     _helper_c_,
 )
-import ivy.functional.frontends.jax.numpy as jnp_frontend
+from ...test_numpy.test_indexing_routines.test_inserting_data_into_arrays import (
+    _helper_r_,
+)
+from ivy_tests.test_ivy.helpers import BackendHandler
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # --- Helpers --- #
 # --------------- #
+
+
+# local
 
 
 # diag

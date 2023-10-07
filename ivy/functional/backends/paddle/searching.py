@@ -1,15 +1,16 @@
 from numbers import Number
-from typing import Optional, Tuple, Union
+from typing import Optional
+from typing import Tuple
+from typing import Union
 
 import paddle
-import ivy.functional.backends.paddle as paddle_backend
+
 import ivy
-from ivy.func_wrapper import (
-    with_supported_dtypes,
-    with_unsupported_dtypes,
-)
+import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
 from .elementwise import _elementwise_helper
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 
 # Array API Standard #
 # ------------------ #

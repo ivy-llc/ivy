@@ -4,11 +4,13 @@ MXNet activation functions.
 Collection of MXNet activation functions, wrapped to fit Ivy syntax and
 signature.
 """
+from typing import Optional
+from typing import Union
+
 import mxnet as mx
 import numpy as np
 
 from ivy.utils.exceptions import IvyNotImplementedException
-from typing import Optional, Union
 
 
 def gelu(

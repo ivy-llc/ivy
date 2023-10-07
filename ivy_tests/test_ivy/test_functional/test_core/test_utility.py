@@ -1,11 +1,11 @@
 """Collection of tests for utility functions."""
-
 # global
 from hypothesis import strategies as st
 
-# local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+
+# local
 
 
 # all

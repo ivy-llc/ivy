@@ -1,9 +1,13 @@
 # global
-from typing import Optional, Union, Dict, Sequence
+from typing import Dict
+from typing import Optional
+from typing import Sequence
+from typing import Union
 
-# local
 import ivy
 from ivy.data_classes.container.base import ContainerBase
+
+# local
 
 
 # noinspection PyMissingConstructor

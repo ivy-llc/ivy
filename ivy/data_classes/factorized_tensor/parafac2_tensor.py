@@ -1,9 +1,10 @@
 # local
-from .base import FactorizedTensor
+from copy import deepcopy
+
 import ivy
+from .base import FactorizedTensor
 
 # global
-from copy import deepcopy
 
 
 class Parafac2Tensor(FactorizedTensor):

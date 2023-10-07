@@ -1,13 +1,15 @@
-from typing import Optional, Union, Literal
+from typing import Literal
+from typing import Optional
+from typing import Union
 
-# global
-import torch
 import torch.nn
 
-# local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
+
+# global
+# local
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)

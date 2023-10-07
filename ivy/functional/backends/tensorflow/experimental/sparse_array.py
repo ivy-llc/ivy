@@ -1,17 +1,19 @@
 # global
-import tensorflow as tf
 import logging
 
-# local
+import tensorflow as tf
+
 import ivy
 from ivy.functional.ivy.experimental.sparse_array import (
     _is_data_not_indices_values_and_shape,
-    _verify_bsc_components,
-    _verify_bsr_components,
-    _verify_coo_components,
-    _verify_csc_components,
-    _verify_csr_components,
 )
+from ivy.functional.ivy.experimental.sparse_array import _verify_bsc_components
+from ivy.functional.ivy.experimental.sparse_array import _verify_bsr_components
+from ivy.functional.ivy.experimental.sparse_array import _verify_coo_components
+from ivy.functional.ivy.experimental.sparse_array import _verify_csc_components
+from ivy.functional.ivy.experimental.sparse_array import _verify_csr_components
+
+# local
 
 
 def is_native_sparse_array(x):

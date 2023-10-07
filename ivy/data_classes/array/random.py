@@ -1,9 +1,11 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional
+from typing import Union
+
+import ivy
 
 # local
-import ivy
 
 
 class _ArrayWithRandom(abc.ABC):

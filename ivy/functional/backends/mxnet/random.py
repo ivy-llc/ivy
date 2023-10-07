@@ -4,10 +4,13 @@ MXNet random functions.
 Collection of MXNet random functions, wrapped to fit Ivy syntax and
 signature.
 """
-import mxnet as mx
-from typing import Optional, Union, Sequence
-import ivy
+from typing import Optional
+from typing import Sequence
+from typing import Union
 
+import mxnet as mx
+
+import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 
 

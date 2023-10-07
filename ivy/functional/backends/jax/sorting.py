@@ -1,12 +1,17 @@
 # global
-import jax.numpy as jnp
-from typing import Optional, Literal, Union, List
+from typing import List
+from typing import Literal
+from typing import Optional
+from typing import Union
 
-# local
+import jax.numpy as jnp
+
 import ivy
+from . import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
-from . import backend_version
+
+# local
 
 
 def argsort(

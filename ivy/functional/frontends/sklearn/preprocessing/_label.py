@@ -1,5 +1,6 @@
-from ivy.functional.frontends.sklearn.base import BaseEstimator, TransformerMixin
 import ivy
+from ivy.functional.frontends.sklearn.base import BaseEstimator
+from ivy.functional.frontends.sklearn.base import TransformerMixin
 
 
 class LabelEncoder(TransformerMixin, BaseEstimator):

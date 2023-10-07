@@ -1,14 +1,16 @@
 """Collection of tests for unified dtype functions."""
-
 # global
-import numpy as np
-from hypothesis import strategies as st
 import typing
 
-# local
+import numpy as np
+from hypothesis import strategies as st
+
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
+from ivy_tests.test_ivy.helpers import BackendHandler
+from ivy_tests.test_ivy.helpers import handle_test
+
+# local
 
 
 # for data generation in multiple tests

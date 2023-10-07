@@ -1,17 +1,22 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence, Iterable
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
 import torch
 
-# local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
-
-# noinspection PyProtectedMember
-from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.manipulation import _calculate_out_shape
+
+# local
+# noinspection PyProtectedMember
 
 
 def _reshape_fortran_torch(x, shape):

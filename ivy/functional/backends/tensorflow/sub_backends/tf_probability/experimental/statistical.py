@@ -1,14 +1,17 @@
-from typing import Optional, Sequence, Tuple, Union
-import ivy
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.functional.backends.numpy.experimental.statistical import (
-    _handle_axis,
-    _quantile,
-    _validate_quantile,
-)
-import tensorflow_probability as tfp
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
+
 import tensorflow as tf
+import tensorflow_probability as tfp
+
+import ivy
 from .... import backend_version
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.functional.backends.numpy.experimental.statistical import _handle_axis
+from ivy.functional.backends.numpy.experimental.statistical import _quantile
+from ivy.functional.backends.numpy.experimental.statistical import _validate_quantile
 
 
 def histogram(

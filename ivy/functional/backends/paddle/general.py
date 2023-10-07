@@ -1,18 +1,25 @@
 """Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
 # global
-from numbers import Number
-from typing import Optional, Union, Sequence, Callable, List, Tuple
-import paddle
-import numpy as np
 import multiprocessing as _multiprocessing
+from numbers import Number
+from typing import Callable
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
-# local
+import numpy as np
+import paddle
+
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
+from . import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.general import _broadcast_to
 from ivy.utils.exceptions import _check_inplace_update_support
-from . import backend_version
+
+# local
 
 
 def is_native_array(x, /, *, exclusive=False):

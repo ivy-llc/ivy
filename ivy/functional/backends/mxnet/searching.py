@@ -1,6 +1,9 @@
-import mxnet as mx
 from numbers import Number
-from typing import Optional, Union, Tuple
+from typing import Optional
+from typing import Tuple
+from typing import Union
+
+import mxnet as mx
 import numpy as np
 
 import ivy

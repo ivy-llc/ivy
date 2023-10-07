@@ -1,13 +1,13 @@
 """Collection of tests for Ivy sequential."""
-
 # global
 import itertools
 
 from hypothesis import strategies as st
 
-# local
 import ivy
 from ivy_tests.test_ivy.helpers.testing_helpers import handle_method
+
+# local
 
 
 class TrainableModule(ivy.Module):

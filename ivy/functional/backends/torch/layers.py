@@ -1,14 +1,20 @@
 """Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
-from typing import Optional, Tuple, Union, Sequence
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
-# global
 import torch
 
-# local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
-from ivy.functional.ivy.layers import _handle_padding, _deconv_length
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.layers import _deconv_length
+from ivy.functional.ivy.layers import _handle_padding
+
+# global
+# local
 
 
 @with_supported_dtypes(

@@ -4,13 +4,16 @@ Ivy wrapping functions for conversions.
 Collection of Ivy functions for wrapping functions to accept and return
 ivy.Array instances.
 """
-
 # global
-from typing import Union, Dict, Optional, List
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Union
 
-# local
 import ivy
 from ivy.data_classes.container.base import ContainerBase
+
+# local
 
 
 class _ContainerWithConversions(ContainerBase):

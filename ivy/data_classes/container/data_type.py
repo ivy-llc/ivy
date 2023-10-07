@@ -1,9 +1,15 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple, Callable
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
 
-# local
 import ivy
 from ivy.data_classes.container.base import ContainerBase
+
+# local
 
 # ToDo: implement all methods here as public instance methods
 

@@ -1,18 +1,18 @@
 """Collection of Jax device functions, wrapped to fit Ivy syntax and signature."""
-
 # global
 import os
+from typing import Optional
+from typing import Union
+
 import jax
-from typing import Union, Optional
 import jaxlib.xla_extension
 
-# local
 import ivy
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.ivy.device import (
-    _shift_native_arrays_on_default_device,
-    Profiler as BaseProfiler,
-)
+from ivy.functional.ivy.device import _shift_native_arrays_on_default_device
+from ivy.functional.ivy.device import Profiler as BaseProfiler
+
+# local
 
 
 # Helpers #

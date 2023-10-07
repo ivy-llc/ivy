@@ -1,20 +1,19 @@
 # global
-from typing import Iterable
 import math
+from typing import Iterable
 
-# local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 import ivy.functional.frontends.torch.nn.functional as torch_frontend_nn
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import (
     array as np_frontend_array,
 )
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.functional.frontends.torch.func_wrapper import (
-    _to_ivy_array,
-    numpy_to_torch_style_args,
-)
+from ivy.functional.frontends.torch.func_wrapper import _to_ivy_array
+from ivy.functional.frontends.torch.func_wrapper import numpy_to_torch_style_args
+
+# local
 
 
 class Tensor:

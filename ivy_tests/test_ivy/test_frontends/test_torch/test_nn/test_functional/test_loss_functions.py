@@ -2,13 +2,14 @@
 import numpy as np
 from hypothesis import strategies as st
 
-# local
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy
+import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.torch.nn.functional.loss_functions import (
     cosine_similarity,
 )
+from ivy_tests.test_ivy.helpers import handle_frontend_test
+
+# local
 
 
 # binary_cross_entropy

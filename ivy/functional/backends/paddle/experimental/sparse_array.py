@@ -1,17 +1,18 @@
+import paddle
+
 import ivy
-from ivy.functional.ivy.experimental.sparse_array import (
-    _verify_coo_components,
-    _verify_csr_components,
-    _is_data_not_indices_values_and_shape,
-)
+from .. import backend_version
 from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
 )
+from ivy.functional.ivy.experimental.sparse_array import (
+    _is_data_not_indices_values_and_shape,
+)
+from ivy.functional.ivy.experimental.sparse_array import _verify_coo_components
+from ivy.functional.ivy.experimental.sparse_array import _verify_csr_components
 from ivy.utils.exceptions import IvyNotImplementedException
-import paddle
 
 # local
-from .. import backend_version
 
 
 def is_native_sparse_array(x: paddle.Tensor) -> bool:

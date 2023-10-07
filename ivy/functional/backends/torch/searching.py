@@ -1,13 +1,14 @@
 from numbers import Number
-from typing import Optional, Tuple, Union
+from typing import Optional
+from typing import Tuple
+from typing import Union
 
 import torch
 import torch.nn.functional as tnf
 
 import ivy
-
-from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
 
 # Array API Standard #
 # ------------------ #

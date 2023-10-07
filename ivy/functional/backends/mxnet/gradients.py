@@ -1,11 +1,14 @@
 """Collection of MXNet gradient functions, wrapped to fit Ivy syntax and signature."""
-
 # global
-from typing import Optional, Sequence, Union
+from typing import Optional
+from typing import Sequence
+from typing import Union
+
 import mxnet as mx
 
-# local
 from ivy.utils.exceptions import IvyNotImplementedException
+
+# local
 
 
 def variable(x, /):

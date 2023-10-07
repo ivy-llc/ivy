@@ -4,18 +4,21 @@ TensorFlow activation functions.
 Collection of TensorFlow activation functions, wrapped to fit Ivy syntax
 and signature.
 """
+from typing import Literal
+from typing import Optional
+from typing import Union
 
-from typing import Optional, Union, Literal
-
-# global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
-# local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from . import backend_version
 import ivy.functional.backends.tensorflow as tf_backend
+from . import backend_version
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
+
+# global
+# local
 
 
 def gelu(

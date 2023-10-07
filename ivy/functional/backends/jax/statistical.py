@@ -1,13 +1,16 @@
 # global
+from typing import Optional
+from typing import Sequence
+from typing import Union
+
 import jax.numpy as jnp
-from typing import Union, Optional, Sequence
 
-
-# local
 import ivy
+from . import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
-from . import backend_version
+
+# local
 
 # Array API Standard #
 # -------------------#

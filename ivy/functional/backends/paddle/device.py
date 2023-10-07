@@ -1,16 +1,16 @@
 """Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
-
 # global
 import os
-import paddle
-from typing import Optional, Union
 import time
-import ivy
-from ivy.functional.ivy.device import (
-    _shift_native_arrays_on_default_device,
-    Profiler as BaseProfiler,
-)
+from typing import Optional
+from typing import Union
+
+import paddle
 from paddle.device import core
+
+import ivy
+from ivy.functional.ivy.device import _shift_native_arrays_on_default_device
+from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
 # API #

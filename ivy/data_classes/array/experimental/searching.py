@@ -1,9 +1,11 @@
 # global
 import abc
-from typing import Optional, Tuple
+from typing import Optional
+from typing import Tuple
+
+import ivy
 
 # local
-import ivy
 
 
 class _ArrayWithSearchingExperimental(abc.ABC):

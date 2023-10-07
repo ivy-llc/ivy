@@ -1,10 +1,11 @@
 # global
-import pytest
 import numpy as np
+import pytest
 
-# local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.pipeline_helper import BackendHandler
+
+# local
 
 
 # bind_custom_gradient_function

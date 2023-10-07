@@ -1,21 +1,20 @@
 # global
-from typing import (
-    Optional,
-    Union,
-    List,
-    Dict,
-    Sequence,
-    Tuple,
-    Literal,
-    Any,
-    Callable,
-    Iterable,
-)
 from numbers import Number
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Literal
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
-# local
 import ivy
 from ivy.data_classes.container.base import ContainerBase
+
+# local
 
 
 class _ContainerWithManipulationExperimental(ContainerBase):

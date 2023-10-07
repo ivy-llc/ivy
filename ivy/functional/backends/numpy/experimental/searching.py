@@ -1,10 +1,13 @@
 # global
-from typing import Optional, Tuple
+from typing import Optional
+from typing import Tuple
+
 import numpy as np
 
-# local
-from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
+from ivy.func_wrapper import with_supported_dtypes
+
+# local
 
 
 @with_supported_dtypes({"1.26.0 and below": ("int32", "int64")}, backend_version)

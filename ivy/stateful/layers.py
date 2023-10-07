@@ -3,7 +3,8 @@
 # local
 import ivy
 from ivy.func_wrapper import handle_nestable
-from ivy.stateful.initializers import GlorotUniform, Zeros
+from ivy.stateful.initializers import GlorotUniform
+from ivy.stateful.initializers import Zeros
 from ivy.stateful.module import Module
 
 # ToDo: update docstrings and typehints according to ivy\layers

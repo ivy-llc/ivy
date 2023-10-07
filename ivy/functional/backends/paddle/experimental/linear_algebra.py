@@ -1,15 +1,18 @@
 # global
+from typing import Any
+from typing import Optional
+from typing import Tuple
+from typing import Union
+
 import paddle
-from typing import Optional, Tuple, Union, Any
+
+from .. import backend_version
+from ivy.func_wrapper import with_supported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
-from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
-from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
-    with_supported_device_and_dtypes,
-)
-from ivy.utils.exceptions import IvyNotImplementedException
-from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(

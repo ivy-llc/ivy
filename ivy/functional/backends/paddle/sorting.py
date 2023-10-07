@@ -1,11 +1,15 @@
 # global
+from typing import Optional
+from typing import Union
+
 import paddle
-from typing import Optional, Union
+
+import ivy
+from . import backend_version
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # local
-import ivy
-from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
-from . import backend_version
 
 
 @with_supported_dtypes(

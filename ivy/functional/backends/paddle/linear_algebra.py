@@ -1,21 +1,26 @@
 # global
+from collections import namedtuple
+from typing import List
+from typing import Literal
+from typing import NamedTuple
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
 import paddle
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
-from collections import namedtuple
 
-# local
 import ivy
-from ivy import inf
-from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
-from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
-    with_unsupported_dtypes,
-    with_supported_dtypes,
-)
 from .elementwise import _elementwise_helper
+from ivy import inf
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
+
+# local
 
 
 # Array API Standard #
