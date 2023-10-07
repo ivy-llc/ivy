@@ -2181,9 +2181,8 @@ def set_min_base(val: float) -> None:
     >>> y = ivy.min_base
     >>> print(y)
     1e-04
-
     """
-    
+
     global min_base_stack
     ivy.utils.assertions.check_isinstance(val, (int, float))
     min_base_stack.append(val)
