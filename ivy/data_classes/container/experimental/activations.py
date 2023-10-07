@@ -1205,45 +1205,45 @@ class _ContainerWithActivationExperimental(ContainerBase):
         ivy.Container static method variant of ivy.threshold. This method simply wraps
         the function, and so the docstring for ivy.threshold also applies to this method
         with minimal changes.
-        
-        Parameters
-        ----------
-        x
-            input container.
-        threshold
-            threshold value for thresholding operation.
-        value
-            value to replace with if thresholding condition is not met.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-       out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
 
-        Returns
-        -------
-        ret
-            a container with the threshold activation unit function
-            applied element-wise.
+         Parameters
+         ----------
+         x
+             input container.
+         threshold
+             threshold value for thresholding operation.
+         value
+             value to replace with if thresholding condition is not met.
+         key_chains
+             The key-chains to apply or not apply the method to. Default is ``None``.
+         to_apply
+             If True, the method will be applied to key_chains, otherwise key_chains
+             will be skipped. Default is ``True``.
+         prune_unapplied
+             Whether to prune key_chains for which the function was not applied.
+             Default is ``False``.
+         map_sequences
+             Whether to also map method to sequences (lists, tuples).
+             Default is ``False``.
+        out
+             optional output container, for writing the result to. It must have a shape
+             that the inputs broadcast to.
 
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-        >>> y = x._static_threshold(threshold=0.5, value=0.0)
-        >>> print(y)
-        {
-            a: ivy.array([1., 0.]),
-            b: ivy.array([0., 0.])
-        }
+         Returns
+         -------
+         ret
+             a container with the threshold activation unit function
+             applied element-wise.
+
+         Examples
+         --------
+         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+         >>> y = x._static_threshold(threshold=0.5, value=0.0)
+         >>> print(y)
+         {
+             a: ivy.array([1., 0.]),
+             b: ivy.array([0., 0.])
+         }
         """
         return ContainerBase.cont_multi_map_in_function(
             "threshold",
@@ -1273,7 +1273,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.threshold. This method simply wraps
         the function, and so the docstring for ivy.threshold also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -1296,7 +1296,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
-        
+
         Returns
         -------
         ret
@@ -1323,7 +1323,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     @staticmethod
     def _static_celu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

@@ -685,7 +685,7 @@ def threshold(
 ) -> ivy.Array:
     """
     Apply the threshold function element-wise.
-    
+
     Parameters
     ----------
     x
@@ -702,7 +702,7 @@ def threshold(
     -------
     ret
         an array containing the threshold activation of each element in ``x``.
-    
+
     Examples
     --------
     With :class:`ivy.Array` input:

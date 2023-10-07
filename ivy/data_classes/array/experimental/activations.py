@@ -373,7 +373,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.threshold. This method simply wraps the
         function, and so the docstring for ivy.threshold also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         self
