@@ -493,7 +493,7 @@ def test_cummin(
 #       - Error description: typo that throws unintended exceptions when using both
 #       weights and multiple axis.
 #       - fixed in TFP 0.20 release.
-#       - Test helper needs to be modified to handle this case in older verions.
+#       - Test helper needs to be modified to handle this case in older versions.
 @handle_test(
     fn_tree="functional.ivy.experimental.histogram",
     values=_histogram_helper(),
