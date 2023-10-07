@@ -122,6 +122,13 @@ def frombuffer(buffer, dtype="float", count=-1, offset=0):
     return ivy.frombuffer(buffer, dtype, count, offset)
 
 
+@handle_jax_dtype
+@outputs_to_frontend_arrays
+def fromstring(string, dtype=float, count=-1, sep=" "):
+    ivy_array = ivy.frombuffer(string, dtype=dtype, count=count)
+    return ivy.astype(ivy_array, dtype)
+
+
 @to_ivy_arrays_and_back
 def full(shape, fill_value, dtype=None):
     return ivy.full(shape, fill_value, dtype=dtype)
