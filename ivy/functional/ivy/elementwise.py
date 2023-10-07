@@ -421,7 +421,7 @@ def add(
 
     For complex floating-point operands, the real valued floating-point
     special cases must independently apply to the real and
-    imaginary component operation invloving real numbers as
+    imaginary component operation involving real numbers as
     described in the above table. For example, let ``a = real(x1_i)``,
     ``c = real(x2_i)``, ``d = imag(x2_i)``,
     and
@@ -4212,7 +4212,7 @@ def log2(
     - If ``x_i`` is ``1``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
 
-    For complex floating-point operands, special cases must be hanled as if
+    For complex floating-point operands, special cases must be handled as if
     the operation is implemented using the standard change of base formula
 
     .. math::

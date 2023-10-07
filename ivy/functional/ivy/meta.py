@@ -755,7 +755,7 @@ def maml_step(
         callable for the inner loop cost function, receiving sub-batch, inner vars and
         outer vars
     outer_cost_fn
-        callable for the outer loop cost function, receving task-specific sub-batch,
+        callable for the outer loop cost function, receiving task-specific sub-batch,
         inner vars and outer vars. If None, the cost from the inner loop will also be
         optimized in the outer loop.
     variables
