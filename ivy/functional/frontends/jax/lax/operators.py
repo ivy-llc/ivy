@@ -453,6 +453,10 @@ def ge(x, y):
 def gt(x, y):
     return ivy.greater(x, y)
 
+@to_ivy_arrays_and_back
+def igamma(a, x):
+    return ivy.igamma(a, x=x)
+
 
 @to_ivy_arrays_and_back
 def imag(x):
