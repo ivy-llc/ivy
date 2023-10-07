@@ -15,7 +15,9 @@ from ivy_tests.test_ivy.helpers import (
     assert_all_close,
     BackendHandler,
 )
-
+from ivy_tests.test_ivy.test_functional.test_core.test_general import (
+    _values_and_ndindices,
+)
 
 # for data generation
 dtype_shared = st.shared(st.sampled_from(helpers.get_dtypes("numeric")), key="dtype")
@@ -3519,6 +3521,35 @@ def test_tensorflow_Rsqrt(
     )
 
 
+# ScatterNd
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.ScatterNd",
+    x=_values_and_ndindices(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        x_min_value=0,
+        x_max_value=0,
+        min_num_dims=2,
+        allow_inf=False,
+    ),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_tensorflow_SactterNd(x, test_flags, backend_fw, fn_tree, on_device):
+    (val_dtype, ind_dtype, update_dtype), vals, ind, updates = x
+    shape = vals.shape
+    helpers.test_function(
+        input_dtypes=[ind_dtype, update_dtype],
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        indices=np.asarray(ind, dtype=ind_dtype),
+        updates=updates,
+        shape=shape,
+    )
+
+
 # Shape
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Shape",
@@ -4410,6 +4441,69 @@ def test_tensorflow_Zeta(
         x=x[0],
         q=x[1],
     )
+
+
+# ifft
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.ifft",
+    dtype_and_x=helpers.dtype_and_values(
+        min_num_dims=1,
+        min_dim_size=2,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
+        available_dtypes=helpers.get_dtypes("complex"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_ifft(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
+    )
+
+    # ScatterNd
+    @handle_frontend_test(
+        fn_tree="tensorflow.raw_ops.ScatterNd",
+        x=_values_and_ndindices(
+            array_dtypes=helpers.get_dtypes("numeric"),
+            indices_dtypes=["int32", "int64"],
+            x_min_value=0,
+            x_max_value=0,
+            min_num_dims=2,
+            allow_inf=False,
+        ),
+        test_with_out=st.just(False),
+        test_gradients=st.just(False),
+    )
+    def test_tensorflow_ScatterNd(x, test_flags, backend_fw, fn_name, on_device):
+        (val_dtype, ind_dtype, update_dtype), vals, ind, updates = x
+        shape = vals.shape
+        helpers.test_function(
+            input_dtypes=[ind_dtype, update_dtype],
+            test_flags=test_flags,
+            on_device=on_device,
+            backend_to_test=backend_fw,
+            fn_name=fn_tree,
+            indices=np.asarray(ind, dtype=ind_dtype),
+            updates=updates,
+            shape=shape,
+        )
 
 
 @handle_frontend_test(

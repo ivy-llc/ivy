@@ -733,6 +733,11 @@ def Rsqrt(*, x, name="Rsqrt"):
 
 
 @to_ivy_arrays_and_back
+def ScatterNd(indices, updates, shape, name="ScatterNd"):
+    return ivy.astype(ivy.scatter_nd(indices, updates, shape), updates.dtype)
+
+
+@to_ivy_arrays_and_back
 def Shape(*, input, output_type=ivy.int32, name="Shape"):
     output_type = to_ivy_dtype(output_type)
     return ivy.astype(ivy.shape(input, as_array=True), output_type, copy=False)
