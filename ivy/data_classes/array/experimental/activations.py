@@ -25,7 +25,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         self
             Input array.
         eps
-            When eps is None the function outpus NaN where x < 0 or x > 1.
+            When eps is None the function outputs NaN where x < 0 or x > 1.
             and inf or -inf where x = 1 or x = 0, respectively.
             Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
         complex_mode
@@ -373,12 +373,12 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.threshold. This method simply wraps the
         function, and so the docstring for ivy.threshold also applies to this method
         with minimal changes.
-
+        
         Parameters
         ----------
         self
             input array.
-        threshold
+         threshold
             threshold value for thresholding operation.
         value
             value to replace with if thresholding condition is not met.
@@ -399,3 +399,43 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([0.5, 0.5 , 1. ])
         """
         return ivy.threshold(self._data, threshold=threshold, value=value, out=out)
+
+    def celu(
+        self: ivy.Array,
+        /,
+        *,
+        alpha: float = 1.0,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.celu. This method simply wraps the
+        function, and so the docstring for ivy.celu also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        alpha
+            the alpha (negative slope) value for CELU formulation.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the celu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([0.39, -0.85])
+        >>> y = x.celu()
+        >>> print(y)
+        ivy.array([ 0.39, -0.57])
+        """
+        return ivy.celu(self._data, alpha=alpha, complex_mode=complex_mode, out=out)

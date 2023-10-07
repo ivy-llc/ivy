@@ -92,6 +92,7 @@ class FunctionTestFlags(TestFlags):
         container,
         test_gradients,
         test_trace,
+        transpile,
         precision_mode,
     ):
         self.ground_truth_backend = ground_truth_backend
@@ -103,6 +104,7 @@ class FunctionTestFlags(TestFlags):
         self.as_variable = as_variable
         self.test_gradients = test_gradients
         self.test_trace = test_trace
+        self.transpile = transpile
         self.precision_mode = precision_mode
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
@@ -130,6 +132,7 @@ class FunctionTestFlags(TestFlags):
             f"as_variable={self.as_variable}. "
             f"test_gradients={self.test_gradients}. "
             f"test_trace={self.test_trace}. "
+            f"transpile={self.transpile}. "
             f"precision_mode={self.precision_mode}. "
         )
 
@@ -147,6 +150,7 @@ def function_flags(
     with_out,
     test_gradients,
     test_trace,
+    transpile,
     as_variable,
     native_arrays,
     container_flags,
@@ -161,6 +165,7 @@ def function_flags(
             instance_method=instance_method,
             test_gradients=test_gradients,
             test_trace=test_trace,
+            transpile=transpile,
             as_variable=as_variable,
             native_arrays=native_arrays,
             container=container_flags,
