@@ -51,6 +51,7 @@ def any(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex", "bool")}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def argmax(input, dim=None, keepdim=False):

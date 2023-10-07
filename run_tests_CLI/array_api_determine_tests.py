@@ -42,7 +42,7 @@ if __name__ == "__main__":
         for file in modified_files:
             try:
                 file_name = f"{file.new_path},cover"
-            except:  # noqa
+            except Exception:
                 continue
             if file_name not in tests.keys():
                 continue
