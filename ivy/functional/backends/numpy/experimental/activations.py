@@ -112,6 +112,7 @@ def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
 
 sigmoid.support_native_out = True
 
+
 def celu(
     x: np.ndarray,
     /,

@@ -1052,7 +1052,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             out=out,
         )
 
-    
     def _static_hardtanh(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
