@@ -1921,7 +1921,7 @@ def test_jax_gt(
     )
 
 
-#igamma
+# igamma
 @handle_frontend_test(
     fn_tree="jax.lax.igamma",
     dtypes_and_xs=helpers.dtype_and_values(
@@ -1933,17 +1933,17 @@ def test_jax_gt(
 )
 def test_jax_igamma(
     *,
-    dtypes_and_xs,  
+    dtypes_and_xs,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    input_dtypes, (x, y) = dtypes_and_xs  
-    
+    input_dtypes, (x, y) = dtypes_and_xs
+
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,  
+        input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
@@ -1951,10 +1951,8 @@ def test_jax_igamma(
         on_device=on_device,
         test_values=True,
         x=x,
-        y=y
+        y=y,
     )
-
-
 
 
 # imag
