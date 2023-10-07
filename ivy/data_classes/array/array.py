@@ -144,6 +144,10 @@ class Array(
             self._data = data
         elif isinstance(data, np.ndarray):
             self._data = ivy.asarray(data)._data
+        elif ivy.is_ivy_sparse_array(data):
+            self._data = data._data
+        elif ivy.is_native_sparse_array(data):
+            self._data = data._data
         else:
             raise ivy.utils.exceptions.IvyException(
                 "data must be ivy array, native array or ndarray"
@@ -194,7 +198,7 @@ class Array(
             ivy_backend = ivy.with_backend(self._backend)
             to_numpy = ivy_backend.to_numpy
 
-            if _is_variable(self.data) and not self._backend in ["jax", "numpy"]:
+            if _is_variable(self.data) and self._backend not in ["jax", "numpy"]:
                 native_data = _variable_data(self.data)
                 np_data = to_numpy(native_data)
                 new_arr = ivy.array(np_data)
@@ -392,7 +396,7 @@ class Array(
             self._dev_str = ivy.as_ivy_dev(self.device)
             self._pre_repr = "ivy.array"
             if "gpu" in self._dev_str:
-                self._post_repr = ", dev={})".format(self._dev_str)
+                self._post_repr = f", dev={self._dev_str})"
             else:
                 self._post_repr = ")"
         sig_fig = ivy.array_significant_figures
@@ -442,7 +446,7 @@ class Array(
         return self._data.__contains__(key)
 
     def __getstate__(self):
-        data_dict = dict()
+        data_dict = {}
 
         # only pickle the native array
         data_dict["data"] = self.data
@@ -792,7 +796,12 @@ class Array(
         return self._data.__bool__()
 
     def __dlpack__(self, stream=None):
-        return self._data.__dlpack__()
+        # Not completely supported yet as paddle and tf
+        # doesn't support __dlpack__ and __dlpack_device__ dunders right now
+        # created issues
+        # paddle https://github.com/PaddlePaddle/Paddle/issues/56891
+        # tf https://github.com/tensorflow/tensorflow/issues/61769
+        return ivy.to_dlpack(self)
 
     def __dlpack_device__(self):
         return self._data.__dlpack_device__()

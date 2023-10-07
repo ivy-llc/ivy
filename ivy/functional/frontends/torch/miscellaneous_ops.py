@@ -93,7 +93,7 @@ def cartesian_prod(*tensors):
 
 
 @to_ivy_arrays_and_back
-def clone(input):
+def clone(input, *, memory_format=None):
     return ivy.copy_array(input)
 
 
@@ -102,7 +102,7 @@ def corrcoef(input):
     if len(ivy.shape(input)) > 2:
         raise ivy.exceptions.IvyError(
             "corrcoef(): expected input to have two or fewer dimensions but got an"
-            f" input with {ivy.shape(input)} dimansions"
+            f" input with {ivy.shape(input)} dimensions"
         )
     return ivy.corrcoef(input, y=None, rowvar=True)
 
@@ -122,8 +122,25 @@ def cross(input, other, dim=None, *, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+        )
+    },
+    "torch",
+)
 def cummax(input, dim, *, out=None):
-    return ivy.cummax(input, axis=dim, out=out)
+    input_dtype = input.dtype
+    result_values, result_indices = ivy.cummax(input, axis=dim, out=out)
+    result_values = result_values.astype(input_dtype)
+    return result_values, result_indices
 
 
 @to_ivy_arrays_and_back
@@ -147,6 +164,15 @@ def cumsum(input, dim, *, dtype=None, out=None):
 @to_ivy_arrays_and_back
 def diag(input, diagonal=0, *, out=None):
     return ivy.diag(input, k=diagonal)
+
+
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+)
+@to_ivy_arrays_and_back
+def diagflat(x, offset=0, name=None):
+    arr = ivy.diagflat(x, offset=offset)
+    return arr
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")

@@ -17,7 +17,7 @@ class ndarray:
         if isinstance(dtype, np_frontend.dtype):
             dtype = dtype.ivy_dtype
 
-        # in thise case shape is actually the desired array
+        # in this case shape is actually the desired array
         if _init_overload:
             self._ivy_array = (
                 ivy.array(shape) if not isinstance(shape, ivy.Array) else shape
@@ -53,7 +53,7 @@ class ndarray:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return tuple(self.ivy_array.shape.shape)
 
     @property
     def size(self):
@@ -165,7 +165,7 @@ class ndarray:
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self, axis=axis, kind=kind, order=order)
 
-    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
+    def mean(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return np_frontend.mean(
             self,
             axis=axis,
@@ -243,7 +243,7 @@ class ndarray:
             out=out,
         )
 
-    def conj(
+    def conjugate(
         self,
         /,
         out=None,
@@ -254,7 +254,7 @@ class ndarray:
         dtype=None,
         subok=True,
     ):
-        return np_frontend.conj(
+        return np_frontend.conjugate(
             self.ivy_array,
             out=out,
             where=where,
@@ -571,22 +571,19 @@ class ndarray:
 
     def __array__(self, dtype=None, /):
         if not dtype:
-            return self
-        return np_frontend.array(self, dtype=dtype)
+            return ivy.to_numpy(self.ivy_array)
+        return ivy.to_numpy(self.ivy_array).astype(dtype)
 
     def __array_wrap__(self, array, context=None, /):
-        if context is None:
-            return np_frontend.array(array)
-        else:
-            return np_frontend.asarray(self)
+        return np_frontend.array(array)
 
     def __getitem__(self, key, /):
-        ivy_args = ivy.nested_map([self, key], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, key])
         ret = ivy.get_item(*ivy_args)
         return np_frontend.ndarray(ret, _init_overload=True)
 
     def __setitem__(self, key, value, /):
-        key, value = ivy.nested_map([key, value], _to_ivy_array)
+        key, value = ivy.nested_map(_to_ivy_array, [key, value])
         self.ivy_array[key] = value
 
     def __iter__(self):
@@ -606,7 +603,7 @@ class ndarray:
     def item(self, *args):
         if len(args) == 0:
             return self[0].ivy_array.to_scalar()
-        elif len(args) == 1 and type(args[0]) == int:
+        elif len(args) == 1 and isinstance(args[0], int):
             index = args[0]
             return self.ivy_array.flatten()[index].to_scalar()
         else:
@@ -621,8 +618,24 @@ class ndarray:
     def __lshift__(self, value, /):
         return ivy.bitwise_left_shift(self.ivy_array, value)
 
+    def __ilshift__(self, value, /):
+        return ivy.bitwise_left_shift(self.ivy_array, value, out=self)
+
     def round(self, decimals=0, out=None):
         return np_frontend.round(self, decimals=decimals, out=out)
+
+    def var(
+        self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True
+    ):
+        return np_frontend.var(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=ddof,
+            keepdims=keepdims,
+            where=where,
+        )
 
 
 # --- Helpers --- #

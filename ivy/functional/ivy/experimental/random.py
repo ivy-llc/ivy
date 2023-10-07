@@ -7,8 +7,7 @@ from ivy.func_wrapper import (
     inputs_to_native_shapes,
     handle_nestable,
     infer_dtype,
-    infer_device,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -20,7 +19,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dirichlet(
     alpha: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
     /,
@@ -57,9 +56,8 @@ def dirichlet(
     ret
         The drawn samples, of shape (size, k).
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> alpha = [1.0, 2.0, 3.0]
     >>> ivy.dirichlet(alpha)
     ivy.array([0.10598304, 0.21537054, 0.67864642])
@@ -89,7 +87,7 @@ def dirichlet(
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def beta(
     a: Union[float, ivy.NativeArray, ivy.Array],
     b: Union[float, ivy.NativeArray, ivy.Array],
@@ -144,7 +142,7 @@ def beta(
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def gamma(
     alpha: Union[float, ivy.NativeArray, ivy.Array],
     beta: Union[float, ivy.NativeArray, ivy.Array],
@@ -196,8 +194,7 @@ def gamma(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
-@infer_device
+@handle_device
 def poisson(
     lam: Union[float, ivy.Array, ivy.NativeArray],
     *,
@@ -239,9 +236,8 @@ def poisson(
      ret
         Drawn samples from the poisson distribution
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> lam = [1.0, 2.0, 3.0]
     >>> ivy.poisson(lam)
     ivy.array([1., 4., 4.])
@@ -269,8 +265,7 @@ def poisson(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
-@infer_device
+@handle_device
 def bernoulli(
     probs: Union[float, ivy.Array, ivy.NativeArray],
     *,
@@ -282,7 +277,7 @@ def bernoulli(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Draws samples from Bernoulli distrubution paramterized by probs or logits (but not
+    Draws samples from Bernoulli distribution parameterized by probs or logits (but not
     both)
 
     Parameters

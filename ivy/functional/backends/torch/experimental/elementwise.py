@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
 import torch
 
@@ -12,6 +12,54 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 from .. import backend_version
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return torch.amax(x, dim=axis, keepdim=keepdims)
+
+
+amax.support_native_out = True
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amin(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return torch.amin(x, dim=axis, keepdim=keepdims)
+
+
+amin.support_native_out = True
 
 
 @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
@@ -95,14 +143,14 @@ def count_nonzero(
         return x
     if isinstance(axis, int):
         if axis == -1:
-            temp = x.dim() - 2
+            temp = x.dim() - 1
             if temp < -1:
                 temp = 0
             return x.unsqueeze(temp)
-        return x.unsqueeze(axis - 1)
+        return x.unsqueeze(axis)
     elif axis is not None:
         for d in sorted(axis):
-            x = x.unsqueeze(d - 1)
+            x = x.unsqueeze(d)
         return x
     return x
 
@@ -153,15 +201,15 @@ def diff(
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = x if type(x) == torch.Tensor else torch.tensor(x)
+    x = x if isinstance(x, torch.Tensor) else torch.tensor(x)
     prepend = (
         prepend
-        if type(prepend) == torch.Tensor or prepend is None
+        if isinstance(prepend, torch.Tensor) or prepend is None
         else torch.tensor(prepend)
     )
     append = (
         append
-        if type(append) == torch.Tensor or append is None
+        if isinstance(append, torch.Tensor) or append is None
         else torch.tensor(append)
     )
     return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
@@ -259,9 +307,9 @@ def gradient(
 ) -> Union[torch.Tensor, List[torch.Tensor]]:
     if axis is None:
         axis = tuple(range(len(x.shape)))
-    if type(axis) == int:
+    if isinstance(axis, int):
         axis = (axis,)
-    if type(spacing) == int:
+    if isinstance(spacing, int):
         spacing = [spacing] * len(axis)
 
     grad = torch.gradient(x, spacing=spacing, dim=axis, edge_order=edge_order)
@@ -383,3 +431,13 @@ def digamma(
 
 
 digamma.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def erfc(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.erfc(x)
