@@ -213,4 +213,13 @@ def unstack(x, axis=0, name=None):
     return ivy.unstack(x, axis=axis)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def unique_consecutive(x, axis=0):
+    return ivy.unique_consecutive(x, axis=axis)
+
+
 absolute = abs
