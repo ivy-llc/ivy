@@ -59,6 +59,12 @@ class FrontendTestCaseSubRunner(TestCaseSubRunner):
     def backend_handler(self):
         return self._backend_handler
 
+    def _get_dev_str(self, x):
+        config_module = importlib.import_module(
+            f"ivy_tests.test_ivy.test_frontends.config.{self.frontend}"
+        )
+        return config_module.get_config().as_native_device(self._ivy.dev(x))
+
     def _arrays_to_frontend(self):
         def _new_fn(x):
             if FunctionTestCaseSubRunner._is_frontend_array(x):
@@ -114,28 +120,23 @@ class GTFrontendTestCaseSubRunner(TestCaseSubRunner):
     def __init__(
         self,
         frontend,
-        backend_handler,
         on_device,
     ):
         self.frontend = frontend
-        self._backend_handler = backend_handler
-        self.__ivy = self._backend_handler.set_backend(frontend)
         self.on_device = on_device
         self.frontend_config = self._get_frontend_config()
-
-    @property
-    def backend_handler(self):
-        return self._backend_handler
-
-    @property
-    def _ivy(self):
-        return self.__ivy
 
     def _get_frontend_config(self):
         config_module = importlib.import_module(
             f"ivy_tests.test_ivy.test_frontends.config.{self.frontend}"
         )
         return config_module.get_config()
+
+    def _get_dev_str(self, x):
+        return self.frontend_config.get_native_device(x)
+
+    def _is_array(self, x):
+        return self.frontend_config.is_native_array(x)
 
     def _flatten(self, *, ret):
         if self.frontend_config.isscalar(ret):
@@ -202,11 +203,9 @@ class FrontendFunctionTestCaseRunner(TestCaseRunner):
             self.fn_tree,
             test_flags,
             self.frontend,
-            self.backend_handler,
             self.on_device,
         )
         ret = sub_runner_gt.get_results(test_arguments)
-        sub_runner_gt.exit()
         return ret
 
     def _check_assertions(self, target_results, ground_truth_results):
@@ -230,7 +229,6 @@ class FrontendFunctionTestCaseRunner(TestCaseRunner):
         ground_truth_results: TestCaseSubRunnerResult = self._run_ground_truth(
             input_dtypes, test_arguments, test_flags
         )
-
         # checking assertions
         return self._check_assertions(target_results, ground_truth_results)
 
@@ -296,10 +294,10 @@ class FrontendMethodTestCaseRunner(TestCaseRunner):
         init_all_as_kwargs_np,
         method_all_as_kwargs_np,
     ):
+        # no need to exit since we're not setting any backend for this
         sub_runner_target = GTMethodTestCaseSubRunner(
             self.frontend_method_data,
             self.frontend,
-            self.backend_handler,
             self.on_device,
             init_flags,
             method_flags,
@@ -307,7 +305,6 @@ class FrontendMethodTestCaseRunner(TestCaseRunner):
         ret = sub_runner_target.get_results(
             init_all_as_kwargs_np, method_all_as_kwargs_np
         )
-        sub_runner_target.exit()
         return ret
 
     def _check_assertions(self, target_results, ground_truth_results):
@@ -349,7 +346,6 @@ class FrontendMethodTestCaseRunner(TestCaseRunner):
             init_all_as_kwargs_np,
             method_all_as_kwargs_np,
         )
-
         self._check_assertions(target_results, ground_truth_results)
 
 
@@ -830,16 +826,14 @@ class GTFunctionTestCaseSubRunner(GTFrontendTestCaseSubRunner):
         fn_tree,
         test_flags,
         frontend,
-        backend_handler,
-        device,
+        on_device,
     ):
         self.gt_fn_tree = gt_fn_tree
         self.fn_tree = fn_tree
         self.test_flags = test_flags
         super().__init__(
             frontend=frontend,
-            backend_handler=backend_handler,
-            on_device=device,
+            on_device=on_device,
         )
 
     def _get_frontend_submodule(self):
@@ -874,7 +868,7 @@ class GTFunctionTestCaseSubRunner(GTFrontendTestCaseSubRunner):
             lambda x: (
                 self.frontend_config.native_array(x)
                 if isinstance(x, np.ndarray)
-                else (
+                else (  # Todo: Fix this
                     self.frontend_config.as_native_dtype(x)
                     if isinstance(x, self.frontend_config.Dtype)
                     else x
@@ -920,7 +914,6 @@ class GTMethodTestCaseSubRunner(GTFrontendTestCaseSubRunner):
         self,
         frontend_method_data,
         frontend,
-        backend_handler,
         on_device,
         init_flags,
         method_flags,
@@ -930,7 +923,6 @@ class GTMethodTestCaseSubRunner(GTFrontendTestCaseSubRunner):
         self.method_flags = method_flags
         super().__init__(
             frontend=frontend,
-            backend_handler=backend_handler,
             on_device=on_device,
         )
 

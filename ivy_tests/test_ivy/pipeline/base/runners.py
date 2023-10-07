@@ -1,5 +1,5 @@
 # global
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import List, Tuple
 import numpy as np  # for type hint only
@@ -63,11 +63,16 @@ class TestCaseSubRunner(ABC):
         ret = [self._ivy.to_numpy(x) for x in ret_flat]
         return ret
 
+    def _get_dev_str(self, x):
+        return str(self._ivy.dev(x))
+
+    def _is_array(self, x):
+        return self._ivy.is_array(x)
+
     def _get_results_from_ret(self, ret, raw=False):
         ret_flat = self._flatten(ret=ret)
         ret_devices = [
-            str(self._ivy.dev(ret)) if self._ivy.is_array(ret) else None
-            for ret in ret_flat
+            self._get_dev_str(ret) if self._is_array(ret) else None for ret in ret_flat
         ]
         ret_np_flat = self._flatten_ret_to_np(ret_flat)
         ret_shapes = [
@@ -89,14 +94,6 @@ class TestCaseSubRunner(ABC):
 
     def _flatten_ret_to_np(self, ret_flat):
         return [self._ivy.to_numpy(x) for x in ret_flat]
-
-    @abstractproperty
-    def backend_handler(self):
-        pass
-
-    @abstractproperty
-    def _ivy(self):
-        pass
 
     @abstractmethod
     def _search_args():
