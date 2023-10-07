@@ -167,7 +167,7 @@ if __name__ == "__main__":
             else:
                 print(backend_version)
                 old_helpers.update_individual_test_results(
-                    db[coll[0]],
+                    old_db[coll[0]],
                     coll[1],
                     submod,
                     backend,
