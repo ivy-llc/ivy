@@ -93,6 +93,22 @@ def cartesian_prod(*tensors):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+def cdist(x1, x2, p=2.0, compute_mode="use_mm_for_euclid_dist_if_necessary"):
+    pairwise_diff = x1[:, :, None] - x2[:, None, :]
+    if p == 2.0:
+        if compute_mode == "use_mm_for_euclid_dist_if_necessary" and (
+            pairwise_diff.shape[1] > 25 or pairwise_diff.shape[2] > 25
+        ):
+            distances = ivy.vector_norm(pairwise_diff, axis=-1)
+        else:
+            distances = ivy.vector_norm(pairwise_diff, axis=-1)
+    else:
+        distances = ivy.vector_norm(pairwise_diff, ord=p, axis=-1)
+    return distances
+
+
+@to_ivy_arrays_and_back
 def clone(input, *, memory_format=None):
     return ivy.copy_array(input)
 
@@ -541,16 +557,3 @@ def view_as_real(input):
     re_part = ivy.real(input)
     im_part = ivy.imag(input)
     return ivy.stack((re_part, im_part), axis=-1)
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
-def cdist(x1, x2, p=2.0, compute_mode='use_mm_for_euclid_dist_if_necessary'):
-    pairwise_diff = x1[:, :, None] - x2[:, None, :]
-    if p == 2.0:
-        if compute_mode == 'use_mm_for_euclid_dist_if_necessary' and (pairwise_diff.shape[1] > 25 or pairwise_diff.shape[2] > 25):
-            distances = ivy.vector_norm(pairwise_diff, axis=-1)
-        else:
-            distances = ivy.vector_norm(pairwise_diff, axis=-1)
-    else:
-        distances = ivy.vector_norm(pairwise_diff, ord=p, axis=-1)
-    return distances

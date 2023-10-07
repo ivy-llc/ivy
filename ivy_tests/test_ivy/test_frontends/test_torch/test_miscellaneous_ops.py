@@ -510,6 +510,46 @@ def test_torch_cartesian_prod(
     )
 
 
+# cdist
+@handle_frontend_test(
+    fn_tree="torch.cdist",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "float32",
+            "float64",
+        ],  # Specify data types supported by PyTorch
+        num_arrays=1,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=2,
+        min_value=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_cdist(
+    dtypes_and_x,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, x = dtypes_and_x
+    p = 2.0
+    helpers.test_frontend_function(
+        input_dtypes=["float64"],
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        x1=x[0],
+        x2=x[0],
+        p=p,
+    )
+
+
 # clone
 @handle_frontend_test(
     fn_tree="torch.clone",
@@ -1826,43 +1866,3 @@ def test_torch_view_as_real(
         on_device=on_device,
         input=np.asarray(x[0], dtype=input_dtype[0]),
     )
-
-# cdist
-@handle_frontend_test(
-    fn_tree="torch.cdist",
-    dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=[
-            "float32",
-            "float64",
-        ],  # Specify data types supported by PyTorch
-        num_arrays=1,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        max_dim_size=2,
-        min_value=1,
-    ),
-    test_with_out=st.just(False),
-)
-def test_torch_cdist(
-    dtypes_and_x,
-    frontend,
-    fn_tree,
-    on_device,
-    test_flags,
-    backend_fw,
-):
-    input_dtypes, x = dtypes_and_x
-    p = 2.0
-    helpers.test_frontend_function(
-        input_dtypes=["float64"],
-        frontend=frontend,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        x1=x[0],
-        x2=x[0],
-        p=p,
-    )
-
