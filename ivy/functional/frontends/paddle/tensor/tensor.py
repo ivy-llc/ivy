@@ -896,4 +896,3 @@ class Tensor:
     def gather_(self, y, name=None):
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
->>>>>>> bcb64696746b4956d849aa46c9e6e1a8caf917a8
