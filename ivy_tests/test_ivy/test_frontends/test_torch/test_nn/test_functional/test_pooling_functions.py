@@ -44,10 +44,6 @@ def is_same_padding(padding, stride, kernel_size, input_shape):
     )
 
 
-def ivy_arrays_equal(arr1, arr2):
-    return ivy.reduce_sum(ivy.abs(arr1 - arr2)) == 0
-
-
 def padding_strategy(input_shape):
     num_dims = len(input_shape)
     return st.one_of(
@@ -78,8 +74,10 @@ def test_handle_padding_shape(padding, input_shape):
     value=st.integers(min_value=0, max_value=10),
 )
 def test_pad_property(input_shape, pad, mode, value):
-    # Generate input tensor based on input_shape
-    input_tensor = ivy.arange(ivy.reduce_prod(input_shape)).reshape(input_shape)
+    input_size = 1
+    for dim in input_shape:
+        input_size *= dim
+    input_tensor = ivy.arange(input_size).reshape(input_shape)
 
     try:
         pad(input_tensor, pad=pad, mode=mode, value=value)
