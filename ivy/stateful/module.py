@@ -1079,7 +1079,7 @@ class _HaikuIvyModule(Module):
         params_hk = self._dict_to_hk_flat_map(self.v.cont_to_dict())
         ret = self._native_module.apply(params_hk, 0, *a, **kw)
         if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
+            return ivy.args_to_native(*ret)[0]
         return ivy.to_native(ret)
 
     def _hk_flat_map_to_dict(self, hk_flat_map):
@@ -1143,7 +1143,7 @@ class _FlaxIvyModule(Module):
         params_fx = flax.core.freeze(self.v.cont_to_dict())
         ret = self._native_module.apply(params_fx, *a, **kw)
         if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
+            return ivy.args_to_native(*ret)[0]
         return ivy.to_native(ret)
 
 
@@ -1170,7 +1170,7 @@ class _KerasIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
         if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
+            return ivy.args_to_native(*ret)[0]
         return ivy.to_native(ret)
 
 
@@ -1202,7 +1202,7 @@ class _PaddleIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
         if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
+            return ivy.args_to_native(*ret)[0]
         return ivy.to_native(ret)
 
 
@@ -1270,5 +1270,5 @@ class _TorchIvyModule(Module):
         self._update_v(self.v)
         ret = self._native_module(*a, **kw)
         if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
+            return ivy.args_to_native(*ret)[0]
         return ivy.to_native(ret)
