@@ -97,6 +97,9 @@ def clone(input):
     return ivy.copy_array(input)
 
 
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+)
 @to_ivy_arrays_and_back
 def combinations(input, r=2):
     input_dtype = input.dtype
