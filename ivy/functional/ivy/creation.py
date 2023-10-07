@@ -32,6 +32,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device,
     handle_backend_invalid,
+    temp_asarray_wrapper,
 )
 
 # Helpers #
@@ -375,6 +376,7 @@ def arange(
     )
 
 
+@temp_asarray_wrapper
 @handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1165,7 +1167,7 @@ def empty_like(
         input array from which to derive the output array shape.
     dtype
         output array data type. If dtype is None, the output array data type must be
-        inferred from x. Deafult: ``None``.
+        inferred from x. Default: ``None``.
     device
         device on which to place the created array. If device is None, the output array
         device must be inferred from x. Default: ``None``.

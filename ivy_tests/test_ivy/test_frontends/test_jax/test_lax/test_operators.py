@@ -2675,7 +2675,7 @@ def test_jax_shift_left(
 ):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
-    # shifts >= dtype witdth produce backend-defined behavior
+    # shifts >= dtype width produce backend-defined behavior
     x[1] = np.asarray(
         np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
     )
@@ -2713,7 +2713,7 @@ def test_jax_shift_right_logical(
 ):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
-    # shifts >= dtype witdth produce backend-defined behavior
+    # shifts >= dtype width produce backend-defined behavior
     x[1] = np.asarray(
         np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
     )

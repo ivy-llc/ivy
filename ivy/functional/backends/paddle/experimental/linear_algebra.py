@@ -90,6 +90,26 @@ def adjoint(
     return paddle.moveaxis(x, -2, -1).conj()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16", "float16")}}, backend_version
+)
+def solve_triangular(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # Paddle does not support complex tensors for this operation (cpu and gpu),
+    # so adjoint always equals transpose.
+    return paddle.linalg.triangular_solve(
+        x1, x2, upper=upper, transpose=adjoint, unitriangular=unit_diagonal
+    )
+
+
 def cond(
     x: paddle.Tensor,
     /,
