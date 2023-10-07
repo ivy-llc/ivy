@@ -226,7 +226,7 @@ def _get_method_supported_devices_dtypes(
 
     Returns
     -------
-    Returns a dictonary containing supported device types and its supported data types
+    Returns a dictionary containing supported device types and its supported data types
     for the method
     """
     supported_device_dtypes = {}
@@ -292,7 +292,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
     Returns
     -------
-    Returns a dictonary containing supported device types and its supported data types
+    Returns a dictionary containing supported device types and its supported data types
     for the function
     """
     supported_device_dtypes = {}
@@ -766,7 +766,7 @@ def handle_frontend_method(
         Name of the method
 
     init_num_positional_args
-        A search startegy that generates a number of positional arguments
+        A search strategy that generates a number of positional arguments
         to be passed during instantiation of the class
 
     init_native_arrays
@@ -786,7 +786,7 @@ def handle_frontend_method(
         precision modes supported by numpy and (torch, jax) and test the function
 
     method_num_positional_args
-        A search startegy that generates a number of positional arguments
+        A search strategy that generates a number of positional arguments
         to be passed during call of the class method
 
     method_native_arrays
