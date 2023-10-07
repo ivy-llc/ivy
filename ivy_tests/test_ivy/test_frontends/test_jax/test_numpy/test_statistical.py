@@ -544,6 +544,25 @@ def test_jax_einsum(
     )
 
 
+@handle_frontend_test(
+    fn_tree="jax.numpy.histogramdd",
+    dtypes_and_sample=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=(15, 3),
+    ),
+)
+def test_jax_histogramdd(dtype_and_sample, fn_tree, frontend, test_flags, backend_fw):
+    input_dtypes, sample = dtype_and_sample
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        sample=sample,
+    )
+
+
 # max
 @handle_frontend_test(
     fn_tree="jax.numpy.max",
