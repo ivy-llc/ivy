@@ -1206,44 +1206,42 @@ class _ContainerWithActivationExperimental(ContainerBase):
         the function, and so the docstring for ivy.threshold also applies to this method
         with minimal changes.
 
-         Parameters
-         ----------
-         x
-             input container.
-         threshold
-             threshold value for thresholding operation.
-         value
-             value to replace with if thresholding condition is not met.
-         key_chains
-             The key-chains to apply or not apply the method to. Default is ``None``.
-         to_apply
-             If True, the method will be applied to key_chains, otherwise key_chains
-             will be skipped. Default is ``True``.
-         prune_unapplied
-             Whether to prune key_chains for which the function was not applied.
-             Default is ``False``.
-         map_sequences
-             Whether to also map method to sequences (lists, tuples).
-             Default is ``False``.
+        Parameters
+        ----------
+        x
+            input container.
+        threshold
+            threshold value for thresholding operation.
+        value
+            value to replace with if thresholding condition is not met.
+        key_chains
+            The key-chains to apply or not apply the method to.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
         out
-             optional output container, for writing the result to. It must have a shape
-             that the inputs broadcast to.
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
-         Returns
-         -------
-         ret
-             a container with the threshold activation unit function
-             applied element-wise.
+        Returns
+        -------
+        ret
+            a container with the threshold activation unit function
+            applied element-wise.
 
-         Examples
-         --------
-         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-         >>> y = x._static_threshold(threshold=0.5, value=0.0)
-         >>> print(y)
-         {
-             a: ivy.array([1., 0.]),
-             b: ivy.array([0., 0.])
-         }
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+        >>> y = x._static_threshold(threshold=0.5, value=0.0)
+        >>> print(y)
+        {
+            a: ivy.array([1., 0.]),
+            b: ivy.array([0., 0.])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "threshold",
@@ -1283,16 +1281,14 @@ class _ContainerWithActivationExperimental(ContainerBase):
         value
             value to replace with if thresholding condition is not met.
         key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
+            The key-chains to apply or not apply the method to.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
+            will be skipped.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
