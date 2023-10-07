@@ -111,19 +111,19 @@ class ModuleConverters:
         """
         try:
             import haiku as hk
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as exc:
             raise ModuleNotFoundError(
                 "`haiku` was not found installed on your system. Please proceed "
                 "to install it and restart your interpreter to see the changes."
-            )
+            ) from exc
 
         try:
             from haiku._src.data_structures import FlatMapping  # noqa
-        except (ImportError, AttributeError):
+        except (ImportError, AttributeError) as exc:
             raise ImportError(
                 "Unable to import `FlatMapping` from `haiku`. Please check if the "
                 "requested attribute exists."
-            )
+            ) from exc
 
         c_args = ivy.default(constructor_args, [])
         c_kwargs = ivy.default(constructor_kwargs, {})
@@ -205,19 +205,19 @@ class ModuleConverters:
         """
         try:
             import flax  # noqa
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as exc:
             raise ModuleNotFoundError(
                 "`flax` was not found installed on your system. Please proceed "
                 "to install it and restart your interpreter to see the changes."
-            )
+            ) from exc
 
         try:
             import jax
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as exc:
             raise ModuleNotFoundError(
                 "`jax` was not found installed on your system. Please proceed "
                 "to install it and restart your interpreter to see the changes."
-            )
+            ) from exc
 
         c_args = ivy.default(constructor_args, [])
         c_kwargs = ivy.default(constructor_kwargs, {})
@@ -412,11 +412,11 @@ class ModuleConverters:
         """
         try:
             import torch  # noqa
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as exc:
             raise ModuleNotFoundError(
                 "`torch` was not found installed on your system. Please proceed "
                 "to install it and restart your interpreter to see the changes."
-            )
+            ) from exc
 
         c_args = ivy.default(constructor_args, [])
         c_kwargs = ivy.default(constructor_kwargs, {})

@@ -99,6 +99,37 @@ def eigvalsh(x, UPLO="L", name=None):
     return ivy.eigvalsh(x, UPLO=UPLO)
 
 
+@to_ivy_arrays_and_back
+def lu_unpack(lu_data, lu_pivots, unpack_datas=True, unpack_pivots=True, *, out=None):
+    A = lu_data
+    n = A.shape
+    m = len(lu_pivots)
+    pivot_matrix = ivy.eye(m)
+    L = ivy.tril(A)
+    L.fill_diagonal(1.000)
+    U = ivy.triu(A)
+    for i in range(m):
+        if i != lu_pivots[i] - 1:
+            pivot_matrix[[i, lu_pivots[i] - 1]] = pivot_matrix[[lu_pivots[i] - 1, i]]
+        P = pivot_matrix
+    if not unpack_datas:
+        L = ivy.zeros(n)
+        U = ivy.zeros(n)
+        if not unpack_pivots:
+            P = ivy.zeros(n)
+        else:
+            P = pivot_matrix
+        result = f"P={P}\n" + f"L={L}\n" + f"U={U}"
+        return result
+    elif not unpack_pivots:
+        P = ivy.zeros(n)
+        result = f"P={P}\n" + f"L={L}\n" + f"U={U}"
+        return result
+    else:
+        result = f"P={P}\n" + f"L={L}\n" + f"U={U}"
+        return result
+
+
 # matmul
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back

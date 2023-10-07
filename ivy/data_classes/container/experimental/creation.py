@@ -127,7 +127,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         window_length
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a periodic window suitable for use in spectral analysis.
             If False, returns a symmetric window suitable for use in filter design.
@@ -185,7 +185,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a periodic window suitable for use in spectral analysis.
             If False, returns a symmetric window suitable for use in filter design.
@@ -244,7 +244,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         x
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a periodic window suitable for use in spectral analysis.
             If False, returns a symmetric window suitable for use in filter design.
@@ -303,7 +303,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a periodic window suitable for use in spectral analysis.
             If False, returns a symmetric window suitable for use in filter design.
@@ -363,7 +363,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         x
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a window to be used as periodic function.
             If False, return a symmetric window.
@@ -425,7 +425,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a window to be used as periodic function.
             If False, return a symmetric window.
@@ -476,7 +476,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         x
-            input container including window lenghts.
+            input container including window lengths.
 
         dtype
             data type of the returned arrays.
@@ -528,7 +528,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input container including window lenghts.
+            input container including window lengths.
         dtype
             data type of the returned arrays.
         out

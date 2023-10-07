@@ -2,7 +2,7 @@ import os
 import random
 import ast
 
-BACKENDS = ["numpy", "jax", "tensorflow", "torch", "paddle"]
+BACKENDS = ["jax", "numpy", "tensorflow", "torch", "paddle"]
 
 
 def is_test_function(node):
