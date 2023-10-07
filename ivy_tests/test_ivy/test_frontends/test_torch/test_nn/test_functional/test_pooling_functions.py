@@ -1,10 +1,16 @@
 # global
 from hypothesis import strategies as st
+from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy.functional.frontends.torch.nn.functional.vision_functions import (
+    _handle_padding_shape,
+)
+
 import math
+import ivy
 
 
 def calculate_same_padding(kernel_size, stride, shape):
@@ -36,6 +42,49 @@ def is_same_padding(padding, stride, kernel_size, input_shape):
             for i in range(len(padding))
         ]
     )
+
+
+def ivy_arrays_equal(arr1, arr2):
+    return ivy.reduce_sum(ivy.abs(arr1 - arr2)) == 0
+
+
+def padding_strategy(input_shape):
+    num_dims = len(input_shape)
+    return st.one_of(
+        st.integers(min_value=0, max_value=5),
+        st.tuples(*[st.integers(min_value=0, max_value=5) for _ in range(num_dims)]),
+    )
+
+
+@given(
+    padding=padding_strategy(input_shape=(2, 3, 4)),  # Example input shape
+    input_shape=st.tuples(
+        st.integers(min_value=1, max_value=10), st.integers(min_value=1, max_value=10)
+    ),
+)
+def test_handle_padding_shape(padding, input_shape):
+    try:
+        _handle_padding_shape(padding, input_shape, mode="constant")
+    except ValueError as e:
+        assert "Unsupported type for 'pad' argument" not in str(e)
+
+
+@given(
+    input_shape=st.tuples(
+        st.integers(min_value=1, max_value=10), st.integers(min_value=1, max_value=10)
+    ),
+    pad=padding_strategy(input_shape=(2, 3, 4)),  # Example input shape
+    mode=st.sampled_from(["constant", "reflect", "replicate", "circular"]),
+    value=st.integers(min_value=0, max_value=10),
+)
+def test_pad_property(input_shape, pad, mode, value):
+    # Generate input tensor based on input_shape
+    input_tensor = ivy.arange(ivy.reduce_prod(input_shape)).reshape(input_shape)
+
+    try:
+        pad(input_tensor, pad=pad, mode=mode, value=value)
+    except ValueError as e:
+        assert "Unsupported padding mode" not in str(e)
 
 
 # adaptive_avg_pool1d

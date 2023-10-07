@@ -16,20 +16,31 @@ cubic_conv2 = lambda A, x: (((A * x) - (5 * A)) * x + (8 * A)) * x - (4 * A)
 # --------------- #
 
 
-def _handle_padding_shape(padding, n, mode):
-    padding = tuple(
-        [
-            (padding[i * 2], padding[i * 2 + 1])
-            for i in range(int(len(padding) / 2) - 1, -1, -1)
-        ]
-    )
-    while len(padding) < n:
-        if mode == "circular":
-            padding = padding + ((0, 0),)
+def _handle_padding_shape(padding, input_shape, mode):
+    num_dims = len(input_shape)
+
+    if isinstance(padding, int):
+        padding = [(padding, padding) for _ in range(num_dims)]
+    elif isinstance(padding, tuple):
+        if len(padding) == 1:
+            padding = [(padding[0], padding[0]) for _ in range(num_dims)]
+        elif len(padding) != num_dims:
+            raise ValueError(
+                "The length of the 'pad' tuple should match the number of dimensions in"
+                " the input."
+            )
         else:
-            padding = ((0, 0),) + padding
+            padding = [
+                p if isinstance(p, tuple) and len(p) == 2 else (p, p) for p in padding
+            ]
+    else:
+        raise ValueError(
+            "Unsupported type for 'pad' argument. Should be an integer or a tuple of"
+            " integers."
+        )
+
     if mode == "circular":
-        padding = tuple(list(padding)[::-1])
+        padding = padding[::-1]
     return padding
 
 
@@ -504,7 +515,10 @@ def pad(input, pad, mode="constant", value=0):
     }
     if mode not in mode_dict:
         raise ValueError(f"Unsupported padding mode: {mode}")
-    pad = _handle_padding_shape(pad, len(input.shape), mode)
+
+    input_shape = input.shape
+    pad = _handle_padding_shape(pad, input_shape, mode)
+
     return ivy.pad(input, pad, mode=mode_dict[mode], constant_values=value)
 
 
