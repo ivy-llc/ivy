@@ -566,33 +566,46 @@ def test_torch_cholesky(
 @handle_frontend_test(
     fn_tree="torch.cholesky_inverse",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
-        min_num_dims=2,
-        max_num_dims=4,
-        min_dim_size=2,
-        max_dim_size=4,
+        available_dtypes=helpers.get_dtypes("float", index=1),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
+                  and np.linalg.det(np.asarray(x[1])) != 0
     ),
     upper=st.booleans(),
 )
-def test_torch_cholesky_inverse(
-    dtype_and_x,
-    upper,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+def test_cholesky_inverse(
+        dtype_and_x,
+        upper,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        input_values=x,
-        frontend=frontend,
-        reference_fn=fn_tree,
-        on_device=on_device,
-        test_flags=test_flags,
-    )
+    dtype, x = dtype_and_x
+    x = x[0]
+    x = (
+            np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    )  # make symmetric positive-definite
 
+    # Calculate the expected result using numpy
+    expected_result = np.linalg.inv(np.linalg.cholesky(x).T)
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-02,
+        input=x,
+        upper=upper,
+        expected_output=expected_result,
+    )
 
 # dot
 @handle_frontend_test(
