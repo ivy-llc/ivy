@@ -29,6 +29,7 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
+          cd ivy
           python run_tests_CLI/array_api_run_tests_pr.py
         continue-on-error: true
 
