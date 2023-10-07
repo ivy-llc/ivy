@@ -384,7 +384,7 @@ class FunctionTestCaseSubRunner(FrontendTestCaseSubRunner):
         )
         return frontend_submods, fn_name
 
-    def _get_frontend_function(self, args, kwargs):
+    def _get_frontend_function(self, *args, **kwargs):
         if self.traced_fn is not None and self.test_flags.test_trace:
             return self.traced_fn
         f_submod, fn_name = self._get_frontend_submodule()
@@ -515,16 +515,15 @@ class FunctionTestCaseSubRunner(FrontendTestCaseSubRunner):
 
     def _call_function(self, args, kwargs):
         # determine the target frontend_fn
-        frontend_fn = self._get_frontend_function(args, kwargs)
+        frontend_fn = self._get_frontend_function(*args, **kwargs)
 
         if self.test_flags.generate_frontend_arrays and self.test_flags.test_trace:
             # convert the args and kwargs to ivy arrays
             args, kwargs = self._ivy.nested_map(
-                (args, kwargs),
                 FunctionTestCaseSubRunner._frontend_array_to_ivy,
+                (args, kwargs),
                 include_derived={"tuple": True},
             )
-
         # testing inplace
         if self.test_flags.inplace:
             ret = self._test_inplace(frontend_fn, args, kwargs)
@@ -535,7 +534,7 @@ class FunctionTestCaseSubRunner(FrontendTestCaseSubRunner):
             # converting ret to ivy array
             if self.test_flags.test_trace:
                 ret = self._ivy.nested_map(
-                    ret, self._ivy.asarray, include_derived={"tuple": True}
+                    self._ivy.asarray, ret, include_derived={"tuple": True}
                 )
             else:
                 # asserting the returned arrays are frontend arrays

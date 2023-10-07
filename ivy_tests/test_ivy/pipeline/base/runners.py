@@ -1,8 +1,11 @@
+# global
 from abc import ABC, abstractmethod, abstractproperty
 from dataclasses import dataclass
 from typing import List, Tuple
-
 import numpy as np  # for type hint only
+
+# local
+import ivy
 
 
 @dataclass
@@ -34,11 +37,12 @@ class TestCaseSubRunner(ABC):
 
     def trace_if_required(self, fn, test_trace=False, args=None, kwargs=None):
         if test_trace:
-            fn = self._ivy.trace_graph(fn, args=args, kwargs=kwargs)
+            with ivy.utils.backend.ContextManager(self.backend_to_test) as ivy_backend:
+                fn = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
         return fn
 
     def _flatten(self, *, ret):
-        """Return a flattened numpy version of the arrays in ret."""
+        """Return a flattened arrays in ret."""
         if not isinstance(ret, tuple):
             ret = (ret,)
         ret_idxs = self._ivy.nested_argwhere(ret, self._ivy.is_ivy_array)
