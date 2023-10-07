@@ -1038,6 +1038,32 @@ def test_dot(*, data, test_flags, backend_fw, fn_name, on_device):
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.dot",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=10,
+        num_arrays=2,
+    ),
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_dot(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        a=x[0],
+        b=x[1],
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.eig",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
@@ -2047,30 +2073,4 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
     np.testing.assert_(
         ivy.max(ivy.abs(rec_svd - rec_random)) < tol_max_abs,
         "abs norm of difference between svd and random init too high",
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.dot",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=2,
-        min_dim_size=1,
-        max_dim_size=10,
-        num_arrays=2,
-    ),
-    test_gradients=st.just(False),
-    test_with_out=st.just(False),
-)
-def test_dot(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
-    dtype, x = dtype_x
-    helpers.test_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        a=x[0],
-        b=x[1],
     )
