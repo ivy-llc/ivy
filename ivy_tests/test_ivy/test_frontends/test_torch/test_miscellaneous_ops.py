@@ -557,9 +557,9 @@ def test_torch_combinations(
     on_device,
     test_flags,
     backend_fw,
-):    
+):
     (input_dtype, x) = dtype_and_x
-    
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -570,7 +570,7 @@ def test_torch_combinations(
         input=x[0],
         r=r,
     )
-    
+
 
 # corrcoef
 @handle_frontend_test(

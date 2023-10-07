@@ -111,14 +111,14 @@ def combinations(input, r=2):
     indices = ivy.arange(r)
     combinations = [input[indices]]
     while True:
-        for i in range(r-1, -1, -1):
+        for i in range(r - 1, -1, -1):
             if indices[i] != i + n - r:
                 break
         else:
             break
         indices[i] += 1
-        for j in range(i+1, r):
-            indices[j] = indices[j-1] + 1
+        for j in range(i + 1, r):
+            indices[j] = indices[j - 1] + 1
         combinations.append(input[indices])
     return ivy.array(combinations, dtype=input_dtype)
 
