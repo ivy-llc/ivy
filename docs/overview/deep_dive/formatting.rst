@@ -185,7 +185,7 @@ be applied by the ``ivy-gardener`` properly.
 On the other hand, ``ivy-gardener`` itself can fail if the bot handling it (ivy-branch) can not apply the changes
 suggested by the linters, for example, when it does not have access to edit the target branch. In this case, you
 should try to give the maintainer bot the access to your branch (which is an option shown in GitHub UI) and give it
-another try, or manually resolve the formatting errors by commiting the changes yourself.
+another try, or manually resolve the formatting errors by committing the changes yourself.
 
 **Round Up**
 
