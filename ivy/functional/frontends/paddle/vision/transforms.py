@@ -120,6 +120,7 @@ def adjust_brightness(img, brightness_factor):
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
+@to_ivy_arrays_and_back
 def adjust_contrast(img, contrast_factor):
     assert contrast_factor >= 0, "contrast_factor should be non-negative"
 
