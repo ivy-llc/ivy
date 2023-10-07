@@ -122,6 +122,15 @@ def rfft(a, n=None, axis=-1, norm=None):
     return ivy.dft(a, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
 
 
+@with_unsupported_dtypes({"1.24.1 and below": ("float16",)}, "numpy")
+@to_ivy_arrays_and_back
+def rfft2(a, s=None, axes=(-2, -1), norm=None):
+    if norm is None:
+        norm = "backward"
+    a = ivy.asarray(a, dtype=ivy.complex128)
+    return ivy.rfftn(a, s=s, axes=axes, norm=norm)
+
+
 @to_ivy_arrays_and_back
 def rfftfreq(n, d=1.0):
     if not isinstance(
@@ -138,15 +147,6 @@ def rfftfreq(n, d=1.0):
 @with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def rfftn(a, s=None, axes=None, norm=None):
-    a = ivy.asarray(a, dtype=ivy.complex128)
-    return ivy.rfftn(a, s=s, axes=axes, norm=norm)
-
-
-@with_unsupported_dtypes({"1.24.1 and below": ("float16",)}, "numpy")
-@to_ivy_arrays_and_back
-def rfft2(a, s=None, axes=(-2, -1), norm=None):
-    if norm is None:
-        norm = "backward"
     a = ivy.asarray(a, dtype=ivy.complex128)
     return ivy.rfftn(a, s=s, axes=axes, norm=norm)
 
