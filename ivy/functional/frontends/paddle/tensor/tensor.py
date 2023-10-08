@@ -744,6 +744,9 @@ class Tensor:
     def is_floating_point(self):
         return paddle_frontend.is_floating_point(self)
 
+    def is_complex(self):
+        return paddle_frontend.is_complex(self)
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def tanh_(self, name=None):
         y = self.tanh(self)
