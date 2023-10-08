@@ -374,7 +374,7 @@ def handle_exceptions(fn: Callable) -> Callable:
 # Inplace Update
 
 # to avoid raising warnings on setting the same backend multiple times
-_inplace_warning_cache = dict()
+_inplace_warning_cache = {}
 
 
 def _handle_inplace_mode(ivy_pack=None):
@@ -383,7 +383,7 @@ def _handle_inplace_mode(ivy_pack=None):
     current_backend = ivy_pack.current_backend_str()
     if (
         current_backend != ""
-        and not _inplace_warning_cache.get(current_backend, None)
+        and not _inplace_warning_cache.get(current_backend)
         and not ivy_pack.native_inplace_support
         and ivy_pack.inplace_mode == "lenient"
     ):

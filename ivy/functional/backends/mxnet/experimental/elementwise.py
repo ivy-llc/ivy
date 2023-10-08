@@ -18,6 +18,17 @@ def amax(
     raise IvyNotImplementedException()
 
 
+def amin(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 @with_supported_dtypes(
     {"1.9.1 and below": ("float16", "float32", "float64")},
     backend_version,
