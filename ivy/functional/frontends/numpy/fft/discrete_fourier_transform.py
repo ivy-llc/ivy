@@ -46,6 +46,33 @@ def fftfreq(n, d=1.0):
 
 
 @to_ivy_arrays_and_back
+def fftn(a, s=None, axes=None, norm=None):
+    invreal = 0
+    if norm is None:
+        norm = "backward"
+    if s is None:
+        shapeless = 1
+        if axes is None:
+            s = list(a.shape)
+        else:
+            s = ivy.gather(a.shape, axes)
+    else:
+        shapeless = 0
+    s = list(s)
+    if axes is None:
+        axes = list(range(-len(s), 0))
+    if len(s) != len(axes):
+        raise ValueError("Shape and axes have different lengths.")
+    if invreal and shapeless:
+        s[-1] = (a.shape[axes[-1]] - 1) * 2
+    itl = list(range(len(axes)))
+    itl.reverse()
+    for ii in itl:
+        a = ivy.fft(a, axes[ii], norm=norm, n=int(s[ii]))
+    return a
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.26.0 and below": ("float16",)}, "numpy")
 def fftshift(x, axes=None):
     x = ivy.asarray(x)
