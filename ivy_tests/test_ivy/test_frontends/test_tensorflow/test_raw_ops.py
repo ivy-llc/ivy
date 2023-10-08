@@ -4611,3 +4611,6 @@ def test_tensorflow_zeros_like(  # NOQA
         on_device=on_device,
         x=x[0],
     )
+
+
+ivy.utils.cleanup_and_fetch_binaries()
