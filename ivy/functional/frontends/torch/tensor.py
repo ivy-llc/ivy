@@ -1747,6 +1747,7 @@ def resolve_neg(input):
     output.neg = False
     return output
 
+
 if __name__ == "__main__":
     x = torch.resolve_neg(input)
     y = x.conj()
@@ -1757,4 +1758,3 @@ if __name__ == "__main__":
     out = resolve_neg(z)
 
     print(out.is_neg())
-
