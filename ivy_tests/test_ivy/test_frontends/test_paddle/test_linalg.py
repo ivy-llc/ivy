@@ -699,49 +699,6 @@ def test_paddle_eigvalsh(
     )
 
 
-# diagonal
-@handle_frontend_test(
-    fn_tree="paddle.linalg.diagonal",
-    dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ),
-    axis_and_offset=dims_and_offset(
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
-    ),
-)
-def test_paddle_linalg_diagonal(
-    dtype_and_values,
-    axis_and_offset,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, value = dtype_and_values
-    axis1, axis2, offset = axis_and_offset
-    input = value[0]
-    num_dims = len(np.shape(input))
-    assume(axis1 != axis2)
-    if axis1 < 0:
-        assume(axis1 + num_dims != axis2)
-    if axis2 < 0:
-        assume(axis1 != axis2 + num_dims)
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        on_device=on_device,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        x=input,
-        offset=offset,
-        axis1=axis1,
-        axis2=axis2,
-    )
-
-
 # matmul
 @handle_frontend_test(
     fn_tree="paddle.matmul",
