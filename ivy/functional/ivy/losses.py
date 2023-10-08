@@ -380,6 +380,7 @@ def sparse_cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
 
+
 def nll_loss(true, pred, epsilon=1e-7):
     """
     Calculate the Negative Log Likelihood (NLL) loss.
