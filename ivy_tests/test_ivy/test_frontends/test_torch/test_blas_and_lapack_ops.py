@@ -107,7 +107,10 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False, input_3d=False):
 def _get_dtype_and_matrices(draw, square1=False, square2=False):
     dim1 = draw(helpers.ints(min_value=2, max_value=7))
     dim2 = draw(helpers.ints(min_value=2, max_value=7))
-    dtype = draw(helpers.get_dtypes("float", full=False))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
 
     matr1 = draw(
         helpers.array_values(
