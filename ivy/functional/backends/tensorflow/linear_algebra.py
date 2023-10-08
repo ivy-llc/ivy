@@ -76,9 +76,9 @@ def det(
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.linalg.det(x)
 
+
 @with_unsupported_dtypes(
-    {"2.14.0 and below": ("complex", "float16", "bfloat16")},
-    backend_version
+    {"2.14.0 and below": ("complex", "float16", "bfloat16")}, backend_version
 )
 def lstsq(
     matrix: Union[tf.Tensor, tf.Variable],

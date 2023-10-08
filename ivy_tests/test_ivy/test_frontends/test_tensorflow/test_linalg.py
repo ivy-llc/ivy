@@ -724,11 +724,12 @@ def test_tensorflow_logdet(
         matrix=x,
     )
 
+
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.lstsq",
     dtype_and_matrix_pair=st.tuples(
         _get_dtype_and_matrix(),
-        _get_second_matrix().filter(lambda x: x[1].shape[0] == x[0].shape[0])
+        _get_second_matrix().filter(lambda x: x[1].shape[0] == x[0].shape[0]),
     ),
     rcond=st.floats(1e-10, 1.0),
     test_with_out=st.just(False),
@@ -755,7 +756,7 @@ def test_tensorflow_lstsq(
         atol=1e-3,
         a=matrix1[0],
         b=matrix2[0],
-        rcond=rcond
+        rcond=rcond,
     )
 
 
