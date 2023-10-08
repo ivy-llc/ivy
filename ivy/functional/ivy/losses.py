@@ -380,6 +380,7 @@ def sparse_cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
 
+
 @handle_array_function
 def nll_loss(true, pred, epsilon=1e-7):
     """
@@ -406,11 +407,11 @@ def nll_loss(true, pred, epsilon=1e-7):
     """
     # Ensure predictions are not zero to avoid log(0) issues
     predictions = ivy.clip(pred, epsilon, 1 - epsilon)
-    
+
     # Calculate NLL loss
     nll = -ivy.log(predictions[ivy.arange(len(predictions)), true])
-    
+
     # Compute the average loss over all data points
     loss = ivy.mean(nll)
-    
+
     return loss
