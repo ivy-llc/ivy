@@ -212,6 +212,30 @@ def random_uniform(
 @handle_array_function
 @infer_dtype
 @handle_device
+def random_cauchy(
+    *,
+    mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
+    std: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.current_backend().random_cauchy(
+        mean=mean, std=std, shape=shape, dtype=dtype, seed=seed, device=device, out=out
+    )
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@inputs_to_native_shapes
+@to_native_arrays_and_back
+@handle_array_function
+@infer_dtype
+@handle_device
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,

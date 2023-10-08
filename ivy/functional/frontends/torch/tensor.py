@@ -1500,6 +1500,16 @@ class Tensor:
         )
         return self
 
+    def cauchy_(self, mean=0, std=1, *, generator=None):
+        self.ivy_array = ivy.random_cauchy(
+            mean=mean,
+            std=std,
+            shape=self.ivy_array.shape,
+            dtype=self.dtype,
+            device=self.device,
+        )
+        return self
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def addcdiv(self, tensor1, tensor2, *, value=1):
         return torch_frontend.addcdiv(self, tensor1, tensor2, value=value)
