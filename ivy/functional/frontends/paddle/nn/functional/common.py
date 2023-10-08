@@ -195,3 +195,23 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
     else:
         raise ValueError(f"Unknown data_format: {data_format}")
     return ivy.pad(x, padding, mode="constant", constant_values=0.0)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def alpha_dropout(x, p=0.5, training=True, name=None):
+    if training:
+        alpha = 1.67326
+        scale = 1.0507
+        keep_prob = 1 - p
+        random_values = ivy.random_normal(shape=x.shape, dtype=x.dtype)
+        mask = ivy.where(random_values < keep_prob, ivy.array(1.0, dtype=x.dtype), ivy.array(0.0, dtype=x.dtype))
+        masked_x = x * mask
+        alpha_scaled = alpha * (1 - mask)
+        scaled_x = x + alpha_scaled
+        result = scaled_x * scale
+    else:
+        result = x
+    if name is not None:
+        result = ivy.identity(result, name=name)
+    return result
