@@ -15,7 +15,7 @@ def _is_optional(typ):
         ):
             return True
     except BaseException as error:
-        print(f"Exception occured: {error}")
+        print(f"Exception occurred: {error}")
     return False
 
 
@@ -26,7 +26,7 @@ def _is_union(typ):
         if rep.startswith("Union"):
             return True
     except BaseException as error:
-        print(f"Exception occured: {error}")
+        print(f"Exception occurred: {error}")
     return False
 
 
@@ -37,7 +37,7 @@ def _is_dict(typ):
         if rep.startswith("Dict"):
             return True
     except BaseException as error:
-        print(f"Exception occured: {error}")
+        print(f"Exception occurred: {error}")
     return False
 
 
@@ -48,7 +48,7 @@ def _is_iterable(typ):
         if rep.startswith("List") or rep.startswith("Tuple"):
             return True
     except BaseException as error:
-        print(f"Exception occured: {error}")
+        print(f"Exception occurred: {error}")
     return False
 
 
