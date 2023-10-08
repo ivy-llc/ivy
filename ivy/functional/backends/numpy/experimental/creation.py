@@ -211,7 +211,6 @@ def unsorted_segment_mean(
     segment_ids: np.ndarray,
     num_segments: int,
 ) -> np.ndarray:
-    # Check if the parameters are valid
     ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
@@ -226,16 +225,11 @@ def unsorted_segment_mean(
     # Initialize an array to keep track of the number of elements in each segment
     counts = np.zeros(num_segments, dtype=np.int64)
 
-    # Loop through each element in segment_ids
-    # Loop through each element in segment_ids
     for i in range(len(segment_ids)):
         seg_id = segment_ids[i]
         print(f"seg_id: {seg_id}, num_segments: {num_segments}")
         if seg_id < num_segments:
-            # Accumulate the sum for the corresponding segment
             res[seg_id] += data[i]
-            # Increment the count for the corresponding segment
             counts[seg_id] += 1
 
-    # Compute the mean for each segment by dividing the sum by the count
     return res / counts[:, np.newaxis]

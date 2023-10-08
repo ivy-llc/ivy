@@ -252,7 +252,6 @@ def unsorted_segment_mean(
     segment_ids: torch.Tensor,
     num_segments: Union[int, torch.Tensor],
 ) -> torch.Tensor:
-    # Check if the parameters are valid
     ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
@@ -265,13 +264,9 @@ def unsorted_segment_mean(
     # Initialize an array to keep track of the number of elements in each segment
     counts = torch.zeros(num_segments, dtype=torch.int64, device=data.device)
 
-    # Loop through each element in segment_ids
     for i in range(len(segment_ids)):
         seg_id = segment_ids[i]
-        # Accumulate the sum for the corresponding segment
         segment_sum[seg_id] += data[i]
-        # Increment the count for the corresponding segment
         counts[seg_id] += 1
 
-    # Compute the mean for each segment by dividing the sum by the count
     return segment_sum / counts[:, None]

@@ -1172,5 +1172,4 @@ def unsorted_segment_mean(
         For each segment, it computes the mean value in `data` where `segment_ids`
         equals to segment ID.
     """
-    # Get the current backend and call its `unsorted_segment_mean` function
     return ivy.current_backend().unsorted_segment_mean(data, segment_ids, num_segments)
