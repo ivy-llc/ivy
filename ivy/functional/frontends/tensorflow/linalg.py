@@ -176,6 +176,15 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
 def logdet(matrix, name=None):
     return ivy.det(matrix).log()
 
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+     {"2.14.0 and below": ("complex", "float16", "bfloat16")},
+     "tensorflow"
+ )
+def lstsq(matrix, rhs, l2_regularizer=0.0, fast=True, name=None):
+    """TODO: Verify the RaiseError instruction into tensorflow lstsq documentation"""
+    matrix, rhs = check_tensorflow_casting(matrix, rhs)
+    return ivy.lstsq(matrix, rhs, l2_regularizer=l2_regularizer, fast=fast)
 
 @to_ivy_arrays_and_back
 def lu_matrix_inverse(lower_upper, perm, validate_args=False, name=None):
