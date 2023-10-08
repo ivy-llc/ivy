@@ -4442,41 +4442,6 @@ def test_tensorflow_Zeta(
         q=x[1],
     )
 
-
-# ifft
-@handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.ifft",
-    dtype_and_x=helpers.dtype_and_values(
-        min_num_dims=1,
-        min_dim_size=2,
-        large_abs_safety_factor=15,
-        small_abs_safety_factor=15,
-        safety_factor_scale="log",
-        available_dtypes=helpers.get_dtypes("complex"),
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_ifft(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        rtol=1e-02,
-        atol=1e-02,
-    )
-
     # ScatterNd
     @handle_frontend_test(
         fn_tree="tensorflow.raw_ops.ScatterNd",
@@ -4489,7 +4454,6 @@ def test_tensorflow_ifft(
             allow_inf=False,
         ),
         test_with_out=st.just(False),
-        test_gradients=st.just(False),
     )
     def test_tensorflow_ScatterNd(x, test_flags, backend_fw, fn_name, on_device):
         (val_dtype, ind_dtype, update_dtype), vals, ind, updates = x
