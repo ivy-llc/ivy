@@ -306,6 +306,5 @@ class _ArrayWithCreationExperimental(abc.ABC):
         >>> result = ivy.unsorted_segment_mean(data, segment_ids, num_segments)
         >>> result
         ivy.array([1.5, 3.5, 5.5])
-
         """
         return ivy.unsorted_segment_mean(self._data, segment_ids, num_segments)
