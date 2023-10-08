@@ -379,3 +379,33 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
+
+def nll_loss(true, pred):
+    """
+    Calculate the Negative Log Likelihood (NLL) loss.
+
+    Args:
+    --------
+    - pred: A 2D ivy array (or similar) containing predicted probabilities.
+                Each row should correspond to a data point, and each column should
+                correspond to a class.
+    - true: A 1D ivy array (or similar) containing the true class labels for each
+            data point. The length of this array should be equal to the number of
+            rows in 'predictions'.
+
+    Returns:
+    --------
+    - loss: The NLL loss value as a scalar.
+    """
+
+    # Ensure predictions are not zero to avoid log(0) issues
+    epsilon = 1e-15
+    predictions = ivy.clip(pred, epsilon, 1 - epsilon)
+    
+    # Calculate NLL loss
+    nll = -ivy.log(predictions[ivy.arange(len(predictions)), true])
+    
+    # Compute the average loss over all data points
+    loss = ivy.mean(nll)
+    
+    return loss
