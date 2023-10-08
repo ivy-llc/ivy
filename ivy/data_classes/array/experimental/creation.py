@@ -290,5 +290,22 @@ class _ArrayWithCreationExperimental(abc.ABC):
             The output array, representing the result of a segmented mean operation.
             For each segment, it computes the mean of values in `self` where
             `segment_ids` equals to segment ID.
+
+        Examples
+        --------
+        >>> data = ivy.array([1.0, 2.0, 3.0, 4.0])
+        >>> segment_ids = ivy.array([0, 0, 0, 0])
+        >>> num_segments = 1
+        >>> result = ivy.unsorted_segment_mean(data, segment_ids, num_segments)
+        >>> result
+        ivy.array([2.5])
+
+        >>> data = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+        >>> segment_ids = ivy.array([0, 0, 1, 1, 2, 2])
+        >>> num_segments = 3
+        >>> result = ivy.unsorted_segment_mean(data, segment_ids, num_segments)
+        >>> result
+        ivy.array([1.5, 3.5, 5.5])
+
         """
         return ivy.unsorted_segment_mean(self._data, segment_ids, num_segments)

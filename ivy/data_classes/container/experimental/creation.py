@@ -1274,6 +1274,24 @@ class _ContainerWithCreationExperimental(ContainerBase):
             A container representing the result of a segmented mean operation.
             For each segment, it computes the mean of values in 'self' where
             'segment_ids' equals the segment ID.
+
+        Examples
+        --------
+        >>> import ivy
+        >>> x = ivy.array([1.0, 2.0, 3.0, 4.0])
+        >>> segment_ids = ivy.array([0, 0, 0, 0])
+        >>> num_segments = 1
+        >>> result = x.unsorted_segment_mean(segment_ids, num_segments)
+        >>> result
+        ivy.array([2.5])
+
+        >>> y = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+        >>> segment_ids = ivy.array([0, 0, 1, 1, 2, 2])
+        >>> num_segments = 3                          
+        >>> result = y.unsorted_segment_mean(segment_ids, num_segments)
+        >>> result
+        ivy.array([1.5, 3.5, 5.5])
+
         """
         return self.static_unsorted_segment_mean(
             self,
