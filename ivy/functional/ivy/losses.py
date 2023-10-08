@@ -380,7 +380,8 @@ def sparse_cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
 
-
+@inputs_to_ivy_arrays
+@handle_array_function
 def nll_loss(true, pred):
     """
     Calculate the Negative Log Likelihood (NLL) loss.
