@@ -724,6 +724,40 @@ def test_tensorflow_logdet(
         matrix=x,
     )
 
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.lstsq",
+    dtype_and_matrix_pair=st.tuples(
+        _get_dtype_and_matrix(),
+        _get_second_matrix().filter(lambda x: x[1].shape[0] == x[0].shape[0])
+    ),
+    rcond=st.floats(1e-10, 1.0),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_lstsq(
+    *,
+    dtype_and_matrix_pair,
+    rcond,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    (input_dtype1, matrix1), (input_dtype2, matrix2) = dtype_and_matrix_pair
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype1, input_dtype2],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
+        a=matrix1[0],
+        b=matrix2[0],
+        rcond=rcond
+    )
+
 
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.matmul",
