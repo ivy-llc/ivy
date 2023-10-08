@@ -454,3 +454,29 @@ def corrcoef(input):
             f" input with {ivy.shape(input)} dimansions"
         )
     return ivy.corrcoef(input, y=None, rowvar=True)
+
+
+import torch
+
+
+@to_ivy_arrays_and_back
+def resolve_neg(tensor):
+    new_tensor = torch.zeros_like(tensor)
+    for i, num in enumerate(tensor):
+        if num < 0:
+            new_tensor[i] = -num
+
+    return new_tensor
+
+
+def main():
+    tensor = torch.tensor(
+        [int(num) for num in input("Enter a tensor of numbers: ").split()]
+    )
+    print(resolve_neg(tensor))
+
+
+tensor = torch.tensor(
+    [int(num) for num in input("Enter a tensor of numbers: ").split()]
+)
+print(resolve_neg(tensor))

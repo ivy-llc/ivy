@@ -1655,3 +1655,38 @@ def test_torch_corrcoef(
         backend_to_test=backend_fw,
         input=x[0],
     )
+
+
+# resolve_neg
+@handle_frontend_test(
+    fn_tree="torch.resolve_neg",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("int64"),
+        shape=st.shared(complex_strategy()),
+    ),
+)
+@handle_frontend_test(
+    fn_tree="torch.resolve_neg",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(),
+    ),
+)
+def test_torch_resolve_neg(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+    )
