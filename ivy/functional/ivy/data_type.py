@@ -2538,38 +2538,37 @@ def dtype_from_str(dtype_str: str) -> ivy.Dtype:
         Reformatted data type.
     """
     dtype_str = dtype_str.lower()
-    if dtype_str == 'float16':
+    if dtype_str == "float16":
         return ivy.float16
-    elif dtype_str == 'float32':
+    elif dtype_str == "float32":
         return ivy.float32
-    elif dtype_str == 'float64':
+    elif dtype_str == "float64":
         return ivy.float64
-    elif dtype_str == 'float128':
+    elif dtype_str == "float128":
         return ivy.float128
-    elif dtype_str == 'int8':
+    elif dtype_str == "int8":
         return ivy.int8
-    elif dtype_str == 'int16':
+    elif dtype_str == "int16":
         return ivy.int16
-    elif dtype_str == 'int32':
+    elif dtype_str == "int32":
         return ivy.int32
-    elif dtype_str == 'int64':
+    elif dtype_str == "int64":
         return ivy.int64
-    elif dtype_str == 'uint8':
+    elif dtype_str == "uint8":
         return ivy.uint8
-    elif dtype_str == 'uint16':
+    elif dtype_str == "uint16":
         return ivy.uint16
-    elif dtype_str == 'uint32':
+    elif dtype_str == "uint32":
         return ivy.uint32
-    elif dtype_str == 'uint64':
+    elif dtype_str == "uint64":
         return ivy.uint64
-    elif dtype_str == 'bool':
+    elif dtype_str == "bool":
         return ivy.bool
-    elif dtype_str == 'complex64':
+    elif dtype_str == "complex64":
         return ivy.complex64
-    elif dtype_str == 'complex128':
+    elif dtype_str == "complex128":
         return ivy.complex128
-    elif dtype_str == 'complex256':
+    elif dtype_str == "complex256":
         return ivy.complex256
     else:
         raise ValueError(f"Invalid data type string: {dtype_str}")
-
