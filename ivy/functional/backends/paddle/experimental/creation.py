@@ -230,7 +230,7 @@ def unsorted_segment_mean(
     segment_ids: paddle.Tensor,
     num_segments: Union[int, paddle.Tensor],
 ) -> paddle.Tensor:
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
 

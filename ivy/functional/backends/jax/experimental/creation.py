@@ -171,7 +171,7 @@ def unsorted_segment_mean(
     num_segments: int,
 ) -> JaxArray:
     # added this check to keep the same behaviour as tensorflow
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
     # Calculate the sum along segments

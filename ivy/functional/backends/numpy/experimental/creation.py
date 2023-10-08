@@ -212,7 +212,7 @@ def unsorted_segment_mean(
     num_segments: int,
 ) -> np.ndarray:
     # Check if the parameters are valid
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
 
