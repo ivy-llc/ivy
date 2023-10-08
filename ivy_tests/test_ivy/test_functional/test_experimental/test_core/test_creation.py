@@ -782,18 +782,16 @@ def test_unsorted_segment_mean(
     on_device,
 ):
     dtypes, data, num_segments, segment_ids = d_x_n_s
-    if backend_fw == "numpy,torch,jax,paddle":
-        helpers.test_function(
-            input_dtypes=dtypes,
-            test_flags=test_flags,
-            on_device=on_device,
-            backend_to_test=backend_fw,
-            fn_name=fn_name,
-            data=data,
-            segment_ids=segment_ids,
-            num_segments=num_segments,
-        )
-
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=num_segments,
+    )
 
 # unsorted_segment_min
 @handle_test(
