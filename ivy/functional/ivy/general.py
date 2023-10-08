@@ -2186,7 +2186,7 @@ def set_min_base(val: float) -> None:
     1e-04
     """
     global min_base_stack
-    
+
     # Ensure val is an instance of 'float' or 'int'
     ivy.utils.assertions.check_isinstance(val, (int, float))
 
