@@ -44,3 +44,17 @@ def blackman_window(
     requires_grad=False
 ):
     return ivy.blackman_window(window_length, periodic=periodic, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.51.0 and below": ("float32", "float64")}, "torch")
+def kaiser_window(
+    window_length,
+    periodic=True,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    return ivy.kaiser_window(window_length, periodic=periodic, dtype=dtype)
