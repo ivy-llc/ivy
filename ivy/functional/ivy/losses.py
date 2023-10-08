@@ -380,7 +380,6 @@ def sparse_cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
 
-@iivyuts_to_ivy_arrays
 @handle_array_function
 def nll_loss(true, pred, epsilon=1e-7):
     """
