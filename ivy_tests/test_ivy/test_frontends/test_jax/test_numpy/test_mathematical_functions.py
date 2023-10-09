@@ -2823,11 +2823,10 @@ def test_jax_remainder(
 @handle_frontend_test(
     fn_tree="jax.numpy.rint",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-100,
         max_value=100,
         min_num_dims=1,
-        max_num_dims=3,
         min_dim_size=1,
         max_dim_size=3,
     ),
