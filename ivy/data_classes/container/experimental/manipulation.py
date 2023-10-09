@@ -682,7 +682,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         x
             The container to compute top_k for.
         k
-            Number of top elements to retun must not exceed the array size.
+            Number of top elements to return must not exceed the array size.
         axis
             The axis along which we must return the top elements default value is 1.
         largest
@@ -765,7 +765,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self
             The container to compute top_k for.
         k
-            Number of top elements to retun must not exceed the array size.
+            Number of top elements to return must not exceed the array size.
         axis
             The axis along which we must return the top elements default value is 1.
         largest
@@ -1652,7 +1652,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         -------
         ret
             container or list of container where each elements within container is
-            atleast 1d. Copies are made only if necessary.
+            at least 1d. Copies are made only if necessary.
 
         Examples
         --------
@@ -1718,7 +1718,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         -------
         ret
             container or list of container where each elements within container is
-            atleast 1d. Copies are made only if necessary.
+            at least 1d. Copies are made only if necessary.
 
         Examples
         --------
@@ -1874,7 +1874,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         -------
         ret
             container or list of container where each elements within container is
-            atleast 2D. Copies are made only if necessary.
+            at least 2D. Copies are made only if necessary.
 
         Examples
         --------
@@ -1940,7 +1940,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         -------
         ret
             container or list of container where each elements within container is
-            atleast 2D. Copies are made only if necessary.
+            at least 2D. Copies are made only if necessary.
 
         Examples
         --------
@@ -2010,7 +2010,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         -------
         ret
             container or list of container where each elements within container is
-            atleast 3D. Copies are made only if necessary. For example, a 1-D array
+            at least 3D. Copies are made only if necessary. For example, a 1-D array
             of shape (N,) becomes a view of shape (1, N, 1), and a 2-D array of shape
             (M, N) becomes a view of shape (M, N, 1).
 
@@ -2074,7 +2074,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         -------
         ret
             container or list of container where each elements within container is
-            atleast 3D. Copies are made only if necessary. For example, a 1-D array
+            at least 3D. Copies are made only if necessary. For example, a 1-D array
             of shape (N,) becomes a view of shape (1, N, 1), and a 2-D array of shape
             (M, N) becomes a view of shape (M, N, 1).
 
@@ -3859,6 +3859,81 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def _static_trim_zeros(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        trim: Optional[str] = "fb",
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.trim_zeros. This method simply wraps
+        the function, and so the docstring for ivy.trim_zeros also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self : 1-D array
+            Input array.
+        trim : str, optional
+            A string with 'f' representing trim from front and 'b' to trim from
+            back. Default is 'fb', trim zeros from both front and back of the
+            array.
+
+        Returns
+        -------
+            1-D array
+            The result of trimming the input. The input data type is preserved.
+
+        Examples
+        --------
+        >>> a = ivy.array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1, 0])
+        >>> ivy.trim_zeros(a)
+        array([8, 3, 0, 0, 7, 1])
+        >>> ivy.trim_zeros(a, 'b')
+        array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1])
+        >>> ivy.trim_zeros([0, 8, 3, 0, 0])
+        [8, 3]
+        """
+        return ContainerBase.cont_multi_map_in_function(a, trim)
+
+    def trim_zeros(
+        self: ivy.Container,
+        /,
+        *,
+        trim: Optional[str] = "fb",
+    ) -> ivy.Array:
+        """
+        ivy.Container instance method variant of ivy.trim_zeros. This method simply
+        wraps the function, and so the docstring for ivy.trim_zeros also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self : 1-D array
+            Input array.
+        trim : str, optional
+            A string with 'f' representing trim from front and 'b' to trim from
+            back. Default is 'fb', trim zeros from both front and back of the
+            array.
+
+        Returns
+        -------
+            1-D array
+            The result of trimming the input. The input data type is preserved.
+
+        Examples
+        --------
+        >>> a = ivy.array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1, 0])
+        >>> ivy.trim_zeros(a)
+        array([8, 3, 0, 0, 7, 1])
+        >>> ivy.trim_zeros(a, 'b')
+        array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1])
+        >>> ivy.trim_zeros([0, 8, 3, 0, 0])
+        [8, 3]
+        """
+        return self._static_trim_zeros(self, trim=trim)
 
 
 def concat_from_sequence(

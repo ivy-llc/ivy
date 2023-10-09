@@ -735,7 +735,7 @@ class CPTensor(FactorizedTensor):
     #    -------
     #    permuted_tensors : permuted cp tensor or list of cp tensors
     #    permutation : list
-    #        list of permuted indices. Lenght is equal to rank of cp_tensors.
+    #        list of permuted indices. Length is equal to rank of cp_tensors.
     #    """
     #    if not isinstance(tensors_to_permute, list):
     #        permuted_tensors = [tensors_to_permute.cp_copy()]
