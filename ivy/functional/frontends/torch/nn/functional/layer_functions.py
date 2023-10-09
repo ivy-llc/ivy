@@ -230,6 +230,7 @@ def _lstm_packed(
     )
 
 
+# used in testing
 def _pack_padded_sequence(padded_sequence, lengths, batch_first=False):
     if not batch_first:
         padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
