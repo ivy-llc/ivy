@@ -56,7 +56,7 @@ def _generic_lstm(
         slices = [
             _slice_along_axis(w, start=x * n, stop=y * n, axis=0) for x, y in intervals
         ]
-        return ivy.concat(*slices, axis=0)
+        return ivy.concat(slices, axis=0)
 
     def transform_weights_no_bias(layer_index):
         weights = layer_weights[layer_index]
@@ -70,7 +70,7 @@ def _generic_lstm(
         weight_ih, weight_hh, bias_ih, bias_hh = (
             reform_weights(w, hidden_size, reform_permutation) for w in weights
         )
-        bias_concat = ivy.concat(bias_ih, bias_hh, axis=0)
+        bias_concat = ivy.concat([bias_ih, bias_hh], axis=0)
         return tuple(
             ivy.expand_dims(x, axis=0) for x in (weight_ih, weight_hh, bias_concat)
         )
@@ -142,14 +142,14 @@ def _generic_lstm(
             if weights_per_layer == 4:
                 weight_ih_f, weight_hh_f, bias_f = transform_weights(2 * i)
                 weight_ih_b, weight_hh_b, bias_b = transform_weights(2 * i + 1)
-                bias_concat = ivy.concat(bias_f, bias_b, axis=0)
+                bias_concat = ivy.concat([bias_f, bias_b], axis=0)
             else:
                 weight_ih_f, weight_hh_f = transform_weights_no_bias(2 * i)
                 weight_ih_b, weight_hh_b = transform_weights_no_bias(2 * i + 1)
                 bias_concat = None
 
-            weight_ih = ivy.concat(weight_ih_f, weight_ih_b, axis=0)
-            weight_hh = ivy.concat(weight_hh_f, weight_hh_b, axis=0)
+            weight_ih = ivy.concat([weight_ih_f, weight_ih_b], axis=0)
+            weight_hh = ivy.concat([weight_hh_f, weight_hh_b], axis=0)
 
             state_indices = 2 * i, 2 * i + 2
 
@@ -177,8 +177,8 @@ def _generic_lstm(
 
     if batch_first:
         output = ivy.permute_dims(output, axes=(1, 0, 2))
-    h_outs = h_out if num_layers == 1 else ivy.concat(*h_outs, axis=0)
-    c_outs = c_out if num_layers == 1 else ivy.concat(*c_outs, axis=0)
+    h_outs = h_out if num_layers == 1 else ivy.concat(h_outs, axis=0)
+    c_outs = c_out if num_layers == 1 else ivy.concat(c_outs, axis=0)
     return output, h_outs, c_outs
 
 
