@@ -331,6 +331,16 @@ def hardsilu(
     >>> ivy.hardsilu(x, out=y)
     >>> print(y)
     ivy.array([-0.3101, 1.1147, 4.4090])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-0.5, -1, 0]), b=ivy.array([0.5, 1., 2]))
+    >>> y = ivy.hardsilu(x)
+    >>> print(y)
+    {
+        a: ivy.array([-0.20833333, 0.33333333, 0.]),
+        b: ivy.array([0.29166667, 0.66666667, 1.66666667])
+    }
     """
     return current_backend(x).hardsilu(x, out=out)
 
