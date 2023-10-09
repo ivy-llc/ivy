@@ -1283,14 +1283,14 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> num_segments = 1
         >>> result = x.unsorted_segment_mean(segment_ids, num_segments)
         >>> result
-        ivy.array([2.5])
+        ivy.Container([2.5])
 
         >>> y = ivy.Container([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
         >>> segment_ids = ivy.Container([0, 0, 1, 1, 2, 2])
         >>> num_segments = 3
         >>> result = y.unsorted_segment_mean(segment_ids, num_segments)
         >>> result
-        ivy.array([1.5, 3.5, 5.5])
+        ivy.Container([1.5, 3.5, 5.5])
         """
         return self.static_unsorted_segment_mean(
             self,
