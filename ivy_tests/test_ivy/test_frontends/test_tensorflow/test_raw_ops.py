@@ -1193,6 +1193,35 @@ def test_tensorflow_ConcatV2(
     )
 
 
+# Conj
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Conj",
+    dtype_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Conj(  # NOQA
+    *,
+    dtype_and_xs,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, xs = dtype_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=xs[0],
+    )
+
+
 # Conv2D
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Conv2D",

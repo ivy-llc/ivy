@@ -194,7 +194,7 @@ def unique_inverse(
     Parameters
     ----------
     x
-        the arrray that will be inputted into the "unique_inverse" function
+        the array that will be inputted into the "unique_inverse" function
 
     axis
         the axis to apply unique on. If None, the unique elements of the flattened ``x``

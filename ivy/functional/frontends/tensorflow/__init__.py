@@ -88,7 +88,7 @@ from .dtypes import DType, as_dtype, cast
 from . import ragged
 from .ragged import *
 from . import tensor
-from .tensor import EagerTensor, Tensor
+from .tensor import EagerTensor, Tensor, TensorArray
 from . import variable
 from .variable import Variable, IndexedSlices
 from . import keras

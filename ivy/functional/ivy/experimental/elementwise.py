@@ -1066,7 +1066,7 @@ def gradient(
         Note: jax supports edge_order=1 case only
     axis
         dimension(s) to approximate the gradient over
-        by default partial gradient is computed in every dimention
+        by default partial gradient is computed in every dimension
 
     Returns
     -------
@@ -1253,7 +1253,7 @@ def conj(
     Returns
     -------
     ret
-        an arrray of the same dtype as the input array with
+        an array of the same dtype as the input array with
         the complex conjugates of the complex values present
         in the input array. If x is a scalar then a scalar
         will be returned.

@@ -34,10 +34,8 @@ def wrap__array_ufunc__(func):
             "bitwise_and": "bitwise_and",
             "matmul": "matmul",
             "power": "pow",
-            "divide": "divide",
             "subtract": "subtract",
             "add": "add",
-            "not_equal": "not_equal",
         }
         if ufunc.__name__ in methods.keys():
             return eval("ivy." + methods[ufunc.__name__] + "(*inputs, **kwargs)")
