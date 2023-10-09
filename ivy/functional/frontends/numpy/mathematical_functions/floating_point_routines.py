@@ -40,6 +40,25 @@ def _nextafter(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
+def _signbit(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    return ivy.logical_or(ivy.less(x, 0), ivy.atan2(0.0, x) == ivy.pi)
+
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def _spacing(
     x,
     /,
