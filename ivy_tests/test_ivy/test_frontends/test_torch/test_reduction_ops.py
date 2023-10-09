@@ -243,11 +243,9 @@ def test_torch_any(
 @handle_frontend_test(
     fn_tree="torch.argmax",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         force_int_axis=True,
-        min_num_dims=1,
-        min_axis=-1,
-        max_axis=0,
+        valid_axis=True,
     ),
     keepdims=st.booleans(),
 )
@@ -669,6 +667,40 @@ def test_torch_nanmean(
         input=x[0],
         dim=axis,
         keepdim=keepdims,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nanmedian",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdim=st.booleans(),
+)
+def test_torch_nanmedian(
+    *,
+    dtype_input_axis,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, input, dim = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        dim=dim,
+        keepdim=keepdim,
     )
 
 

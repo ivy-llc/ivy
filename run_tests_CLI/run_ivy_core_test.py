@@ -25,7 +25,7 @@ N = len(backends)
 M = len(submodules)
 
 num_tests = N * M
-run = run % num_tests
+run %= num_tests
 
 i = run // M
 j = run % M

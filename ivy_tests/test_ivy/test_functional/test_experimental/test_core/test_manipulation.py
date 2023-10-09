@@ -675,7 +675,7 @@ def test_column_stack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_devi
     test_instance_method=st.just(False),
 )
 def test_concat_from_sequence(
-    *, dtypes_arrays_axis, new_axis, test_flags, backend_fw, fn_name, on_device
+    *, dtypes_arrays_axis, new_axis, test_flags, backend_fw, fn_name, on_device: str
 ):
     dtypes, arrays, axis = dtypes_arrays_axis
 
@@ -685,7 +685,7 @@ def test_concat_from_sequence(
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        input_sequence=arrays,
+        *arrays,
         new_axis=new_axis,
         axis=axis,
     )
@@ -694,13 +694,6 @@ def test_concat_from_sequence(
 # dsplit
 @handle_test(
     fn_tree="functional.ivy.experimental.dsplit",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
-    ),
-    indices_or_sections=_get_splits(allow_none=False, min_num_dims=3, axis=2),
-    test_gradients=st.just(False),
-    test_with_out=st.just(False),
 )
 def test_dsplit(
     dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device
@@ -708,10 +701,10 @@ def test_dsplit(
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        on_device=on_device,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        on_device=on_device,
         x=x[0],
         indices_or_sections=indices_or_sections,
     )
@@ -1393,6 +1386,37 @@ def test_top_k(
         axis=axis,
         largest=largest,
         sorted=sorted,
+    )
+
+
+@handle_test(
+    fn_tree="trim_zeros",
+    dt_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=-100,
+        max_value=100,
+    ),
+    test_with_out=st.just(False),
+)
+def test_trim_zeros(
+    *,
+    dt_a,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dt, a = dt_a
+    helpers.test_function(
+        input_dtypes=dt,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        a=a[0],
     )
 
 

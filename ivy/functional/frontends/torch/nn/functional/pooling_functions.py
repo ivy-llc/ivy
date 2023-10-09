@@ -36,7 +36,7 @@ def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "bfloat16",
             "float16",
         )
@@ -50,7 +50,7 @@ def adaptive_avg_pool1d(input, output_size):
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -64,7 +64,7 @@ def adaptive_avg_pool2d(input, output_size):
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "bfloat16",
             "float16",
         )
@@ -185,7 +185,7 @@ def avg_pool3d(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -261,7 +261,7 @@ def max_pool1d(
     )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def max_pool2d(
     input,
@@ -285,7 +285,7 @@ def max_pool2d(
     )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def max_pool3d(
     input,

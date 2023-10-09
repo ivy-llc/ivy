@@ -705,6 +705,41 @@ def test_jax_concat(
     )
 
 
+@handle_frontend_test(
+    fn_tree="jax.numpy.diagflat",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=2, min_dim_size=1, max_dim_size=10
+        ),
+        small_abs_safety_factor=2.5,
+        large_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    k=st.integers(min_value=-5, max_value=5),
+)
+def test_jax_diagflat(
+    dtype_x,
+    k,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        v=x[0],
+        k=k,
+    )
+
+
 # dsplit
 @handle_frontend_test(
     fn_tree="jax.numpy.dsplit",
