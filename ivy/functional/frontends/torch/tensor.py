@@ -2147,6 +2147,18 @@ class Tensor:
     def xlogy(self, *, other, out=None):
         return torch_frontend.xlogy(self, other, out=out)
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def corrcoef(self):
+        return torch_frontend.corrcoef(self)
+
     @with_unsupported_dtypes({"2.1.0 and below": "complex"}, "torch")
     def minimum(self, other, *, out=None):
         return torch_frontend.minimum(self, other=other, out=out)
