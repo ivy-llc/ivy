@@ -62,6 +62,14 @@ def silu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.nn.functional.silu(x)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
+def hardsilu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    ret = torch.nn.functional.hardswish(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def elu(
     x: torch.Tensor, /, *, alpha: float = 1.0, out: Optional[torch.Tensor] = None

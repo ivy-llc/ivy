@@ -105,6 +105,13 @@ def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return F.silu(x)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
+def hardsilu(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return F.hardswish(x)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("complex", "float32", "float64")}, backend_version
 )

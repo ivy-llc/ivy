@@ -73,6 +73,13 @@ def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
+def hardsilu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jax.nn.hard_silu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
 def elu(
     x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
 ) -> JaxArray:
