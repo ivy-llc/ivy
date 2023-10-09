@@ -693,15 +693,15 @@ def test_frontend_function(
         )
         if input_dtypes[0] not in backend_supported_dtypes["valid"]:
             # cast dtype to some supported dtype
-            temp = get_nearest_castable_dtype(
+            castable_dtype = get_nearest_castable_dtype(
                 input_dtypes[0], backend_supported_dtypes["valid"]
             )
-            if temp is not None:
-                input_dtypes[:] = [temp] * len(temp)
+            if castable_dtype is not None:
+                # input_dtypes[:] = [castable_dtype] * len(castable_dtype)
                 # change dtype for args_for_test and kwargs_for_test
                 target_args_np = [
                     (
-                        ivy_backend.to_numpy(ivy_backend.astype(a, input_dtypes[0]))
+                        ivy_backend.to_numpy(ivy_backend.astype(a, castable_dtype))
                         if (ivy_backend.is_array(a) or isinstance(a, np.ndarray))
                         else a
                     )
@@ -710,14 +710,14 @@ def test_frontend_function(
                 for key, value in target_kwargs_np.items():
                     if ivy_backend.is_array(value) or isinstance(value, np.ndarray):
                         target_kwargs_np[key] = ivy_backend.to_numpy(
-                            ivy_backend.astype(value, input_dtypes[0])
+                            ivy_backend.astype(value, castable_dtype)
                         )
 
             else:
                 # type casting is not possible, test with current dtype will be skipped
                 skip(
                     "Unable to type cast to nearest possible                     "
-                    f" dtype from {input_dtypes[0]}"
+                    f" dtype from {castable_dtype}"
                 )
         # extract all arrays from the arguments and keyword arguments
         arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(target_args_np)
@@ -1038,6 +1038,7 @@ def test_frontend_function(
     if isinstance(atol, dict):
         atol = _get_framework_atol(atol, t_globals.CURRENT_BACKEND)
 
+    # reverse type casting before comparison
     value_test(
         ret_np_flat=ret_np_flat,
         ret_np_from_gt_flat=frontend_ret_np_flat,
