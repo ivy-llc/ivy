@@ -18,8 +18,8 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _mha_helper
 
 
 @st.composite
-def _lstm_helper(draw, dtypes):
-    dtype = draw(dtypes)
+def _lstm_helper(draw):
+    dtype = draw(helpers.get_dtypes("float", full=False))
 
     has_biases = draw(st.booleans())
     bidirectional = draw(st.booleans())
@@ -142,9 +142,7 @@ def _lstm_helper(draw, dtypes):
 # lstm
 @handle_frontend_test(
     fn_tree="torch.lstm",
-    dtype_lstm=_lstm_helper(
-        dtypes=helpers.get_dtypes("numeric"),
-    ),
+    dtype_lstm=_lstm_helper(),
     test_with_out=st.just(False),
 )
 def test_torch_lstm(
