@@ -73,7 +73,7 @@ def conj(input):
 # diagonal_scatter
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "bfloat16",
             "float16",
         )
@@ -214,7 +214,7 @@ def index_copy(input, dim, index, source, *, out=None):
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "uint16",
             "uint32",
             "uint64",

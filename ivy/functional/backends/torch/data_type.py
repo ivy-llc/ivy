@@ -186,7 +186,7 @@ def as_ivy_dtype(
         )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("uint16",)}, backend_version)
 def as_native_dtype(
     dtype_in: Union[torch.dtype, str, bool, int, float, np.dtype]
 ) -> torch.dtype:
