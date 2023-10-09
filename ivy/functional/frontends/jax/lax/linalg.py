@@ -41,5 +41,20 @@ def svd(x, /, *, full_matrices=True, compute_uv=True):
 
 
 @to_ivy_arrays_and_back
-def triangular_solve(a, b, /, *, left_side=False, lower=False, transpose_a=False, conjugate_a=False, unit_diagonal=False):
-    return ivy.triangular_solve(a, b, left_side=left_side, lower=lower, transpose_a=transpose_a, conjugate_a=conjugate_a, unit_diagonal=unit_diagonal)
+def triangular_solve(
+        a,
+        b,
+        *,
+        left_side=False,
+        lower=False,
+        transpose_a=False,
+        conjugate_a=False,
+        unit_diagonal=False,
+):
+    return ivy.solve(a,
+                     b,
+                     left_side=left_side,
+                     lower=lower,
+                     transpose_a=transpose_a,
+                     conjugate_a=conjugate_a,
+                     unit_diagonal=unit_diagonal)
