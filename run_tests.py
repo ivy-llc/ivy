@@ -241,7 +241,8 @@ if __name__ == "__main__":
                 for metric, value in transpilation_metrics.items():
                     test_info[f"{prefix_str}{backend}.{version}.{metric}"] = value
 
-                # populate the ci_dashboard db
+            # populate the ci_dashboard db, skip instance methods
+            if function_name:
                 id = test_info.pop("_id")
                 print(
                     collection.update_one({"_id": id}, {"$set": test_info}, upsert=True)
