@@ -337,7 +337,7 @@ def invert_permutation(x, name=None):
 
 @with_supported_dtypes(
     {
-        "2.11.0 and below": ("bfloat16", "half", "float32", "float64"),
+        "2.14.0 and below": ("bfloat16", "half", "float32", "float64"),
     },
     "tensorflow",
 )
@@ -395,16 +395,8 @@ def less_equal(x, y, name="LessEqual"):
 
 
 # lgamma
-@with_supported_device_and_dtypes(
-    {
-        "2.13.0 and below": {
-            "cpu": ("float32", "float64"),
-            "gpu": ("bfloat16", "float16", "float32", "float64"),
-        }
-    },
-    "tensorflow",
-)
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.14.0 and below": ("float32", "float64")}, "tensorflow")
 def lgamma(x, name=None):
     return ivy.lgamma(x)
 
@@ -847,7 +839,7 @@ def zero_fraction(value, name="zero_fraction"):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.11.0 and below": ("float32", "float64"),
+        "2.14.0 and below": ("float32", "float64"),
     },
     "tensorflow",
 )

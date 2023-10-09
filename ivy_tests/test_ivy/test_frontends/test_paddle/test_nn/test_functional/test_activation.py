@@ -35,9 +35,9 @@ def _generate_prelu_arrays(draw):
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.celu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
-    alpha=helpers.ints(min_value=1, max_value=10),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0),
 )
 def test_paddle_celu(
     *,
