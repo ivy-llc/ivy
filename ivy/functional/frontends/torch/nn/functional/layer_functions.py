@@ -100,12 +100,12 @@ def _generic_lstm(
                 cx_fw = cx_fw[0]
             hidden_bw = hx_bw, cx_bw
         hidden_fw = hx_fw, cx_fw
-        result_fw, hidden_fw = ivy.lstm_update(x, *hidden_fw, *weights, bias)
+        result_fw, hidden_fw = ivy.lstm_update(x, *hidden_fw, *weights, bias=bias)
 
         if bidirectional:
             x_reversed = ivy.flip(x, axis=0)
             result_bw, hidden_bw = ivy.lstm_update(
-                x_reversed, *hidden_bw, *weights, bias
+                x_reversed, *hidden_bw, *weights, bias=bias
             )
             result_bw = ivy.flip(result_bw, axis=0)
 
