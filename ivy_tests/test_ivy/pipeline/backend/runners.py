@@ -10,6 +10,113 @@ from ivy_tests.test_ivy.pipeline.base.runners import (
 from ivy_tests.test_ivy.pipeline.base.assertion_checker import AssertionChecker
 
 
+# class BackendMethodTestCaseRunner(TestCaseRunner):
+#     def __init__(
+#         self,
+#         backend_handler,
+#         fn_name,
+#         backend_to_test,
+#         ground_truth_backend,
+#         on_device,
+#         tolerance_dict,
+#         test_values,
+#         rtol,
+#         atol,
+#     ):
+#         self.backend_handler = backend_handler
+#         self.backend_to_test = backend_to_test
+#         self.on_device = on_device
+#         self.rtol = rtol
+#         self.atol = atol
+#         self.tolerance_dict = tolerance_dict
+#         self.test_values = test_values
+#
+#     def _run_target(
+#         self,
+#         init_input_dtypes,
+#         method_input_dtypes,
+#         init_flags,
+#         method_flags,
+#         init_all_as_kwargs_np,
+#         method_all_as_kwargs_np,
+#     ):
+#         sub_runner_target = MethodTestCaseSubRunner(
+#             self.backend_handler,
+#             self.backend_to_test,
+#             self.on_device,
+#             self.traced_fn,
+#             init_input_dtypes,
+#             method_input_dtypes,
+#             init_flags,
+#             method_flags,
+#         )
+#         ret = sub_runner_target.get_results(
+#             init_all_as_kwargs_np, method_all_as_kwargs_np
+#         )
+#         sub_runner_target.exit()
+#         return ret
+#
+#     def _run_ground_truth(
+#         self,
+#         init_input_dtypes,
+#         method_input_dtypes,
+#         init_flags,
+#         method_flags,
+#         init_all_as_kwargs_np,
+#         method_all_as_kwargs_np,
+#     ):
+#         # no need to exit since we're not setting any backend for this
+#         sub_runner_target = GTMethodTestCaseSubRunner(
+#             self.on_device,
+#             init_flags,
+#             method_flags,
+#         )
+#         ret = sub_runner_target.get_results(
+#             init_all_as_kwargs_np, method_all_as_kwargs_np
+#         )
+#         return ret
+#
+#     def _check_assertions(self, target_results, ground_truth_results):
+#         if self.test_values:
+#             assertion_checker = AssertionChecker(
+#                 target_results,
+#                 ground_truth_results,
+#                 self.backend_to_test,
+#                 self.tolerance_dict,
+#                 self.rtol,
+#                 self.atol,
+#             )
+#             assertion_checker.check_assertions()
+#
+#     def run(
+#         self,
+#         init_input_dtypes,
+#         method_input_dtypes,
+#         init_flags,
+#         method_flags,
+#         init_all_as_kwargs_np,
+#         method_all_as_kwargs_np,
+#     ):
+#         # getting results from target and ground truth
+#         target_results: TestCaseSubRunnerResult = self._run_target(
+#             init_input_dtypes,
+#             method_input_dtypes,
+#             init_flags,
+#             method_flags,
+#             init_all_as_kwargs_np,
+#             method_all_as_kwargs_np,
+#         )
+#         ground_truth_results: TestCaseSubRunnerResult = self._run_ground_truth(
+#             init_input_dtypes,
+#             method_input_dtypes,
+#             init_flags,
+#             method_flags,
+#             init_all_as_kwargs_np,
+#             method_all_as_kwargs_np,
+#         )
+#         self._check_assertions(target_results, ground_truth_results)
+
+
 class FunctionTestCaseSubRunner(TestCaseSubRunner):
     def __init__(
         self, fn_name, backend_handler, backend, device, input_dtypes, test_flags
