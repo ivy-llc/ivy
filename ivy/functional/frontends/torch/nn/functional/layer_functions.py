@@ -98,13 +98,11 @@ def _generic_lstm(
                 cx_fw = cx_fw[0]
             hidden_bw = hx_bw, cx_bw
         hidden_fw = hx_fw, cx_fw
-        result_fw, hidden_fw = ivy.lstm_update(x, *hidden_fw, *weights, bias=bias)
+        result_fw, hidden_fw = _lstm_cell(x, *hidden_fw, *weights, bias)
 
         if bidirectional:
             x_reversed = ivy.flip(x, axis=0)
-            result_bw, hidden_bw = ivy.lstm_update(
-                x_reversed, *hidden_bw, *weights, bias=bias
-            )
+            result_bw, hidden_bw = _lstm_cell(x_reversed, *hidden_bw, *weights, bias)
             result_bw = ivy.flip(result_bw, axis=0)
 
             result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
@@ -178,6 +176,41 @@ def _generic_lstm(
     h_outs = h_out if num_layers == 1 else ivy.concat(h_outs, axis=0)
     c_outs = c_out if num_layers == 1 else ivy.concat(c_outs, axis=0)
     return output, h_outs, c_outs
+
+
+def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias):
+    x_shape = list(x.shape)
+    batch_shape = x_shape[:-2]
+    timesteps = x_shape[-2]
+    input_channels = x_shape[-1]
+    Wi = kernel
+    Wi_x = ivy.reshape(
+        ivy.matmul(ivy.reshape(x, (-1, input_channels)), Wi) + bias,
+        batch_shape + [timesteps, -1],
+    )
+    Wii_x, Wif_x, Wig_x, Wio_x = ivy.split(Wi_x, num_or_size_splits=4, axis=-1)
+    Wh = recurrent_kernel
+    ht = init_h
+    ct = init_c
+    for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
+        ivy.unstack(Wii_x, axis=-2),
+        ivy.unstack(Wif_x, axis=-2),
+        ivy.unstack(Wig_x, axis=-2),
+        ivy.unstack(Wio_x, axis=-2),
+    ):
+        htm1 = ht
+        ctm1 = ct
+        Wh_htm1 = ivy.matmul(htm1, Wh)
+        Whi_htm1, Whf_htm1, Whg_htm1, Who_htm1 = ivy.split(
+            Wh_htm1, num_or_size_splits=4, axis=-1
+        )
+        it = ivy.sigmoid(Wii_xt + Whi_htm1)
+        ft = ivy.sigmoid(Wif_xt + Whf_htm1)
+        gt = ivy.tanh(Wig_xt + Whg_htm1)
+        ot = ivy.sigmoid(Wio_xt + Who_htm1)
+        ct = ft * ctm1 + it * gt
+        ht = ot * ivy.tanh(ct)
+    return ot, (ht, ct)
 
 
 def _lstm_full(
