@@ -1,5 +1,5 @@
-Fix Failing Tests
-==========
+Fix Failing Tests:
+==============================
 
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`issues`: https://github.com/unifyai/ivy/issues
@@ -21,39 +21,50 @@ We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
 This page explains the main steps to get started with fixing failing tests!
 
+Prerequirement:
+**************************
+
+Before you start with this you should have:
+
+#. `Git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_
+#. `Visual Studio Code here <https://code.visualstudio.com/>`_
+#. `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
+
+
 Setting Up
 ***********
 
 **Forking and cloning the repo**
 
 
-#. You will first need to fork the Ivy repository from the repository page here `repo`_ by using the fork button on the top right. This creates a copy of the Ivy repository in your GitHub account.
-#. Clone your forked repo to your local machine.
+#. Fork the repo
+#. Clone the fork with it's submoodules locally or on codespaces
 
-Depending on your preferred mode of cloning, any of the below should work:
+.. collapse:: If you are beginner:
 
-.. code-block:: none
+   Depending on your preferred mode of cloning, any of the below should work:
 
-    git clone --recurse-submodules git@github.com:YOUR_USERNAME/ivy.git
+   .. code-block:: bash
 
-.. code-block:: none
+      git clone --recurse-submodules git@github.com:YOUR_USERNAME/ivy.git
 
-    git clone --recurse-submodules https://github.com/YOUR_USERNAME/ivy.git
+   .. code-block:: bash
 
-.. code-block:: none
+      git clone --recurse-submodules https://github.com/YOUR_USERNAME/ivy.git
 
-    gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
+   .. code-block:: bash
 
-Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy original repository as upstream, to easily sync with the latest changes.
+      gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
 
-.. code-block:: none
+   Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy original repository as upstream, to easily sync with the latest changes.
 
-    git remote add upstream https://github.com/unifyai/ivy.git
+   .. code-block:: bash
+
+      git remote add upstream https://github.com/unifyai/ivy.git
+
 
 **Windows**
 
-#. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
-#. Install `Visual Studio Code here <https://code.visualstudio.com/>`_
 #. Open the Docker desktop, make sure it's running while following the process below.
    You can close the Docker desktop window afterwards, Docker will continue to run in the background.
 #. Open Visual Studio Code, open the Ivy repo folder, and follow the steps listed below:
