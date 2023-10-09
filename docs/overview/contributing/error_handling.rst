@@ -41,7 +41,6 @@ This section, "Error Handling" aims to assist you in navigating through some com
 
    As we are explicitly passing in a `dtype` which is not supported in the torch framework itself so torch backend fails here, a possible fix is adding the dtype in the unsupported dtype         decoartor which would look something like this.
 
->>>>>>> upstream/main
    .. code-block:: python
 
         @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
