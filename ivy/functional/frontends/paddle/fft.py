@@ -308,3 +308,20 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
     pos_max = n // 2 + 1
     indices = ivy.arange(0, pos_max, dtype=dtype)
     return indices * val
+
+
+@to_ivy_arrays_and_back
+def ifft2( x , s = None , axes = (- 2, - 1) , norm = 'backward' , name = None ):
+    # check if the input tensor x is a hermitian complex
+    if not ivy.allclose(ivy.conj(ivy.matrix_transpose(x)), x):
+        raise ValueError("Input tensor x must be Hermitian complex.")
+
+    fft_result = ivy.fft2(x, s=s, dim=axes, norm=norm)
+
+    # Depending on the norm, apply scaling and normalization
+    if norm == "forward":
+        fft_result /= ivy.sqrt(ivy.prod(ivy.shape(fft_result)))
+    elif norm == "ortho":
+        fft_result /= ivy.sqrt(ivy.prod(ivy.shape(x)))
+
+    return ivy.real(fft_result)
