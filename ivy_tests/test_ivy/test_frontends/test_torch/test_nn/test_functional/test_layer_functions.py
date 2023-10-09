@@ -116,7 +116,9 @@ def _lstm_helper(draw):
                 max_size=num_batches,
             ).filter(lambda x: seq_size in x)
         )
-        input = _pack_padded_sequence(input, batch_sizes, batch_first=batch_first)
+        input = np.array(
+            _pack_padded_sequence(input, batch_sizes, batch_first=batch_first)
+        )
     else:
         batch_sizes = None
 
@@ -131,7 +133,7 @@ def _lstm_helper(draw):
         train,
         bidirectional,
         batch_first,
-        np.array(batch_sizes),
+        batch_sizes,
     )
 
 
