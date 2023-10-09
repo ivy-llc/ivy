@@ -770,6 +770,36 @@ def test_tensorflow_bias_add(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.nn.compute_average_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_compute_average_loss(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        per_example_loss=x,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.nn.conv1d",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
