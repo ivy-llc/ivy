@@ -174,7 +174,7 @@ def nanmin(
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: Optional[bool] = False,
     initial: Optional[Union[int, float, complex]] = None,
-    where: Optional[np.ndarray] = None,
+    where: Optional[np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -185,6 +185,7 @@ def nanmin(
             keepdims=keepdims,
             out=out,
             initial=initial,
+            where=where,
         )
     )
 

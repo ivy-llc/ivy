@@ -446,7 +446,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
     @staticmethod
     def _static_nanmin(
-        input: ivy.Container,
+        x: ivy.Container,
         /,
         *,
         axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
@@ -499,7 +499,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "nanmin",
-            input,
+            x,
             axis=axis,
             keepdims=keepdims,
             key_chains=key_chains,
