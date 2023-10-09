@@ -24,7 +24,9 @@ def _lstm_helper(draw):
     has_biases = draw(st.booleans())
     bidirectional = draw(st.booleans())
     dropout = draw(st.floats(min_value=0, max_value=0.99))
-    train = draw(st.booleans())
+    train = (
+        draw(st.booleans()) and not dropout
+    )  # not yet supported by original function
     packed = draw(st.booleans())
 
     batch_first = draw(st.booleans())
