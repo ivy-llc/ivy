@@ -76,19 +76,34 @@ def _to_device(x, device=None):
     return x
 
 
+def get_all_native_devices():
+    return jax.local_devices()
+
+
+def is_valid_device(device_platform, device_id, /):
+    return device_platform in ["cpu", "gpu", "tpu"] and device_id in range(
+        0, jax.device_count(device_platform)
+    )
+
+
 def as_ivy_dev(device, /):
-    if isinstance(device, str):
-        return ivy.Device(device)
     if device is None:
         return None
-    p, dev_id = (device.platform, device.id)
+    if isinstance(device, str):
+        device = ivy.Device(device)
+        p, dev_id = (device[0:3], int(device[4:]))
+    else:
+        p, dev_id = (device.platform, device.id)
     if p == "cpu":
         return ivy.Device(p)
-    return ivy.Device(p + ":" + str(dev_id))
+    if is_valid_device(p, dev_id):
+        return ivy.Device(p + ":" + str(dev_id))
+    else:
+        return ivy.Device(p + ":" + str(0))
 
 
 def as_native_dev(device, /):
-    if not isinstance(device, str):
+    if not isinstance(device, str) and is_valid_device(device.platform, device.id):
         return device
     dev_split = ivy.Device(device).split(":")
     device = dev_split[0]
@@ -96,6 +111,10 @@ def as_native_dev(device, /):
         idx = int(dev_split[1])
     else:
         idx = 0
+    if is_valid_device(device, idx):
+        jax.device
+        return jax.devices(device)[idx]
+
     return jax.devices(device)[idx]
 
 
