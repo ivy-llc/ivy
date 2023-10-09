@@ -221,6 +221,14 @@ def _get_dtypes(fn, complement=True):
             if isinstance(dtypes, dict):
                 dtypes = dtypes.get(ivy.current_backend_str(), base)
             ivy.utils.assertions.check_isinstance(dtypes, tuple)
+            if dtypes == ():
+                dtypes = base
+                logging.warning(
+                    "All valid dtypes will be used because no supported dtypes"
+                    " detected,                        perhaps the unsupported dtypes"
+                    " decorators need to updated                         with the"
+                    " latest version"
+                )
             dtypes = list(dtypes)
             typeset_list = []
             for i, dtype in reversed(list(enumerate(dtypes))):
