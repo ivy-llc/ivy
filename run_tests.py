@@ -30,9 +30,10 @@ def get_submodule_and_function_name(test_path, is_frontend_test=False):
             test_file_content = test_file.read()
             test_name = test_function.split(",")[0]
             test_function_idx = test_file_content.find(f"def {test_name}")
-            function_name = test_file_content[
-                test_file_content[:test_function_idx].rfind('fn_tree="') + 9 :
-            ].split('"')[0]
+            fn_tree_idx = test_file_content[:test_function_idx].rfind('fn_tree="')
+            if fn_tree_idx == -1:
+                return submodule, None
+            function_name = test_file_content[fn_tree_idx + 9 :].split('"')[0]
     return submodule, function_name
 
 
@@ -178,8 +179,9 @@ if __name__ == "__main__":
                     device,
                 )
 
+            # skip updating db for instance methods as of now
             # run transpilation tests if the test passed
-            if not failed:
+            if not failed and function_name:
                 print(f"\n{'*' * 100}")
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
@@ -205,12 +207,6 @@ if __name__ == "__main__":
                     ".", "_"
                 )
                 test_info["frontend"] = frontend
-                if report_content:
-                    test_info = {
-                        **test_info,
-                        "fw_time": report_content["fw_time"],
-                        "ivy_nodes": report_content["ivy_nodes"],
-                    }
                 prefix_str = f"{frontend_version}."
 
             # initialize test information for ci_dashboard db
@@ -228,6 +224,12 @@ if __name__ == "__main__":
 
             # add transpilation metrics if report generated
             if not failed and report_content:
+                if is_frontend_test:
+                    test_info = {
+                        **test_info,
+                        "fw_time": report_content["fw_time"],
+                        "ivy_nodes": report_content["ivy_nodes"],
+                    }
                 transpilation_metrics = {
                     "nodes": report_content["nodes"][backend],
                     "time": report_content["time"][backend],
@@ -237,9 +239,12 @@ if __name__ == "__main__":
                 for metric, value in transpilation_metrics.items():
                     test_info[f"{prefix_str}{backend}.{version}.{metric}"] = value
 
-            # populate the ci_dashboard db
-            id = test_info.pop("_id")
-            print(collection.update_one({"_id": id}, {"$set": test_info}, upsert=True))
+            # populate the ci_dashboard db, skip instance methods
+            if function_name:
+                id = test_info.pop("_id")
+                print(
+                    collection.update_one({"_id": id}, {"$set": test_info}, upsert=True)
+                )
 
     # if any tests fail, the workflow fails
     if failed:
