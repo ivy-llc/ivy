@@ -227,7 +227,6 @@ def unsorted_segment_mean(
 
     for i in range(len(segment_ids)):
         seg_id = segment_ids[i]
-        print(f"seg_id: {seg_id}, num_segments: {num_segments}")
         if seg_id < num_segments:
             res[seg_id] += data[i]
             counts[seg_id] += 1
