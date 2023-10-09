@@ -874,7 +874,6 @@ class Tensor:
                 "int32",
                 "int64",
                 "complex",
-                
             )
         },
         "paddle",
