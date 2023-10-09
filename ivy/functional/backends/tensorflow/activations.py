@@ -47,9 +47,14 @@ def relu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> T
 
 
 def segment_max(
-    x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
+    x: Tensor,
+    segment_ids: Tensor,
+    /,
+    *,
+    complex_mode="jax",
+    out: Optional[Tensor] = None,
 ) -> Tensor:
-    return tf.math.segment_max(x)
+    return tf.math.segment_max(x, segment_ids)
 
 
 def sigmoid(

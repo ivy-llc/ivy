@@ -550,25 +550,3 @@ class LogSigmoid(Module):
             The outputs following the LogSigmoid activation *[batch_shape, d]*
         """
         return ivy.logsigmoid(x, complex_mode=self._complex_mode)
-
-
-class SegmentMax(Module):
-    def __init__(self):
-        """Apply the segment max operation."""
-        Module.__init__(self)
-
-    def _forward(self, data, segment_ids):
-        """
-        Parameters
-        ----------
-        data
-            Inputs to process *[batch_shape, d]*.
-        segment_ids
-            1D tensor containing the segment ids for each element in data.
-
-        Returns
-        -------
-        ret
-            The outputs following the segment max operation *[batch_shape, d]*
-        """
-        return ivy.segment_max(data, segment_ids)

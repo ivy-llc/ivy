@@ -54,13 +54,10 @@ def segment_max(
         unique_segment_ids
     )
 
-    result = jax.ops.segment_sum(
+    result = jax.ops.segment_max(
         jax.ops.index_add, jnp.zeros_like(data), max_values, segment_ids
     )
 
-    if out is not None:
-        jnp.copyto(out, result)
-        return out
     return result
 
 

@@ -614,24 +614,7 @@ def scalar_mul(scalar, x, name="scalar_mul"):
 
 @to_ivy_arrays_and_back
 def segment_max(data, segment_ids, name="segment_max"):
-    data = ivy.array(data)
-    segment_ids = ivy.array(segment_ids)
-    ivy.utils.assertions.check_equal(
-        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
-    )
-
-    num_segments = ivy.reduce_max(segment_ids) + 1  # Compute num_segments dynamically
-
-    max_array = ivy.full(
-        tuple([num_segments.item()] + (list(data.shape))[1:]),
-        ivy.finfo(data.dtype).min,
-        dtype=data.dtype,
-    )
-
-    for i in range((segment_ids).shape[0]):
-        max_array[segment_ids[i]] = ivy.maximum(max_array[segment_ids[i]], data[i])
-
-    return max_array
+    return ivy.segment_max(data, segment_ids)
 
 
 @to_ivy_arrays_and_back
