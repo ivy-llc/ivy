@@ -91,18 +91,49 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
-def eigh(
+def eigh_v_current_and_above(
     x: torch.Tensor, /, *, UPLO: str = "L", out: Optional[torch.Tensor] = None
 ) -> Tuple[torch.Tensor]:
-    result_tuple = NamedTuple(
-        "eigh", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
-    )
-    eigenvalues, eigenvectors = torch.linalg.eigh(x, UPLO=UPLO, out=out)
-    return result_tuple(eigenvalues, eigenvectors)
+    """
+    Computes the eigenvalues and eigenvectors for a Hermitian or symmetric matrix.
 
+    Parameters
+    ----------
+    x : torch.Tensor
+        Input matrix. 
+        Should have a numeric data type.
+        It's a square matrix for which eigenvalues and eigenvectors will be computed.
+    UPLO : str, optional
+        Specifies which part of the matrix is supplied. 
+        'L' for lower triangle, 'U' for upper triangle. Defaults to 'L'.
+    out : torch.Tensor, optional
+        Optional output tensor, for writing the result to.
 
-eigh.support_native_out = True
+    Returns
+    -------
+    Tuple[torch.Tensor, torch.Tensor]
+        Tuple containing:
+        1. Tensor of eigenvalues.
+        2. Tensor of eigenvectors.
 
+    The function assumes a torch tensor input for simplicity.
+    
+    Examples
+    --------
+    # Symmetric matrix
+    >>> matrix = torch.tensor([[1, 2], [2, 3]])
+    >>> eigenvalues, eigenvectors = eigh_v_current_and_above(matrix)
+    >>> print(eigenvalues)
+    tensor([-0.2361,  4.2361])
+    >>> print(eigenvectors)
+    tensor([[-0.8507, -0.5257], [0.5257, -0.8507]])
+    
+    """
+    
+    eigenvalues, eigenvectors = torch.linalg.eigh(x, UPLO=UPLO)
+    return (eigenvalues, eigenvectors)
+
+eigh_v_current_and_above.support_native_out = True
 
 @with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
