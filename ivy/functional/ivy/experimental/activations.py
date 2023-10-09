@@ -731,3 +731,68 @@ def celu(
 
 
 celu.jax_like = _celu_jax_like
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def scaled_tanh(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the scaled hyperbolic tangent (tanh) activation.
+
+    The scaled tanh activation function is defined as:
+    out = alpha * tanh(beta * x)
+
+
+    Parameters
+    ----------
+    x
+        input array.
+    alpha
+        The scaling parameter for the output.
+        Determines the amplitude of the tanh function.
+        Default: 1.7159
+    beta
+        The scaling parameter for the input.
+        Determines the slope of the tanh function.
+        Default: 0.67
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+         The input array after applying the scaled tanh activation.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([22.])
+    >>> y = ivy.elu(x)
+    >>> y
+    ivy.array([1.71589994]))
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.2, -1.2]), b=ivy.array([4.4, -2.2]))
+    >>> y = ivy.scaled_tanh(x)
+    >>> y
+    {
+        a: ivy.array([1.14324772, -1.14324772]),
+        b: ivy.array([1.70648694, -1.54488957])
+    }
+    """
+    return current_backend(x).scaled_tanh(x, alpha=alpha, beta=beta, out=out)

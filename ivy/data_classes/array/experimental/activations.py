@@ -400,3 +400,45 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([ 0.39, -0.57])
         """
         return ivy.celu(self._data, alpha=alpha, complex_mode=complex_mode, out=out)
+
+    def scaled_tanh(
+        self: ivy.Array,
+        /,
+        *,
+        alpha: float = 1.7159,
+        beta: float = 0.67,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.scaled_tanh. This method simply wraps
+        the function, and so the docstring for ivy.scaled_tanh also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        alpha
+            The scaling parameter for the output.
+            Determines the amplitude of the tanh function.
+            Default: 1.7159
+        beta
+            The scaling parameter for the input.
+            Determines the slope of the tanh function.
+            Default: 0.67
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array after applying the scaled_tanh activation.
+
+        Examples
+        --------
+        >>> x = ivy.array([-3., 2., 3.])
+        >>> x.scaled_tanh()
+        ivy.array([-1.65537548,  1.49570239,  1.65537548])
+        """
+        return ivy.scaled_tanh(self._data, alpha=alpha, beta=beta, out=out)

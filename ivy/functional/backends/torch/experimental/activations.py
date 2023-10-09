@@ -116,3 +116,14 @@ def tanhshrink(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+def scaled_tanh(
+    x: torch.Tensor,
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return alpha * torch.nn.functional.tanh(beta * x)
