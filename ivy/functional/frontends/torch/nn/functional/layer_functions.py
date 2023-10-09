@@ -261,11 +261,11 @@ def _pad_packed_sequence(data, batch_sizes, batch_first=False, padding_value=0):
 
 
 @to_ivy_arrays_and_back
-def lstm(*args):
-    if isinstance(args[3], bool):
-        return _lstm_full(*args)
+def lstm(*args, **kwargs):
+    if "batch_sizes" in kwargs or (len(args) >= 4 and not isinstance(args[3], bool)):
+        return _lstm_packed(*args, **kwargs)
     else:
-        return _lstm_packed(*args)
+        return _lstm_full(*args, **kwargs)
 
 
 @to_ivy_arrays_and_back
