@@ -33,9 +33,7 @@ def get_submodule_and_function_name(test_path, is_frontend_test=False):
             fn_tree_idx = test_file_content[:test_function_idx].rfind('fn_tree="')
             if fn_tree_idx == -1:
                 return submodule, None
-            function_name = test_file_content[
-                test_file_content[:test_function_idx].rfind('fn_tree="') + 9 :
-            ].split('"')[0]
+            function_name = test_file_content[fn_tree_idx + 9 :].split('"')[0]
     return submodule, function_name
 
 
