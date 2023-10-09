@@ -17,7 +17,6 @@ Ivy Frontends
 .. _`YouTube tutorial series`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
-.. _`open task`: https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis
 .. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
 .. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
 
@@ -62,7 +61,7 @@ Therefore, in order to avoid this potential conflict:
 * You should ensure that the tests are passing before merging any frontend PRs.
   The only exception to this rule is if the test is failing due to a bug in the Ivy functional API, which does not need to be solved as part of the frontend task.
 
-There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open task`_.
+There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs :ref:`open task <overview/contributing/open_tasks:Frontend APIs>`.
 
 
 **NOTE:** Type hints, docstrings, and examples are not required when working on frontend functions.
@@ -73,7 +72,7 @@ There will be some implicit discussion of the locations of frontend functions in
 The native arrays of each framework have their own attributes and instance methods which differ from the attributes and instance methods of :class:`ivy.Array`.
 As such we have implemented framework-specific array classes: :class:`tf_frontend.Tensor`, :class:`torch_frontend.Tensor`, :class:`numpy_frontend.ndarray`, and :class:`jax_frontend.DeviceArray`.
 These classes simply wrap an :class:`ivy.Array`, which is stored in the :code:`ivy_array` attribute, and behave as closely as possible to the native framework array classes.
-This is explained further in the `Classes and Instance Methods <https://unify.ai/docs/ivy/overview/deep_dive/ivy_frontends.html#id6>`_ section.
+This is explained further in the :ref:`overview/deep_dive/ivy_frontends:Classes and Instance Methods` section.
 
 As we aim to replicate the frontend frameworks as closely as possible, all functions accept their frontend array class (as well as :class:`ivy.Array` and :class:`ivy.NativeArray`) and return a frontend array.
 However, since most logic in each function is handled by Ivy, the :class:`ivy.Array` must be extracted from any frontend array inputs.
@@ -93,12 +92,12 @@ The former set of functions map very closely to the API for the Accelerated Line
 The latter set of functions map very closely to NumPy's well known API.
 In general, all functions in the :mod:`jax.numpy` namespace are themselves implemented as a composition of the lower-level functions in the :mod:`jax.lax` namespace.
 
-When transpiling between frameworks, the first step is to compile the computation graph into low level python functions for the source framework using Ivy's graph compiler, before then replacing these nodes with the associated functions in Ivy's frontend API.
+When transpiling between frameworks, the first step is to trace a computation graph of low level python functions for the source framework using Ivy's tracer, before then replacing these nodes with the associated functions in Ivy's frontend API.
 Given that all jax code can be decomposed into :mod:`jax.lax` function calls, when transpiling JAX code it should always be possible to express the computation graph as a composition of only :mod:`jax.lax` functions.
 Therefore, arguably these are the *only* functions we should need to implement in the JAX frontend.
-However, in general we wish to be able to compile a graph in the backend framework with varying levels of dynamicism.
+However, in general we wish to be able to trace a graph in the backend framework with varying levels of dynamicism.
 A graph of only :mod:`jax.lax` functions chained together in general is more *static* and less *dynamic* than a graph which chains :mod:`jax.numpy` functions together.
-We wish to enable varying extents of dynamicism when compiling a graph with our graph compiler, and therefore we also implement the functions in the :mod:`jax.numpy` namespace in our frontend API for JAX.
+We wish to enable varying extents of dynamicism when creating a graph with our tracer, and therefore we also implement the functions in the :mod:`jax.numpy` namespace in our frontend API for JAX.
 
 Thus, both :mod:`lax` and :mod:`numpy` modules are created in the JAX frontend API.
 We start with the function :func:`lax.add` as an example.
@@ -262,7 +261,7 @@ However, these functions are specified to have key-word only arguments and in so
 In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` decorator was designed to wrap the functions that exist in the TensorFlow namespace, thus reducing unnecessary re-implementations.
 
 .. code-block:: python
-    
+
     # in ivy/functional/frontends/tensorflow/math.py
     @to_ivy_arrays_and_back
     def argmax(input, axis, output_type=None, name=None):
@@ -318,7 +317,7 @@ Short Frontend Implementations
 
 Ideally, all frontend functions should call the equivalent Ivy function and only be one line long. This is mainly because compositional implementations are bound to be slower than direct backend implementation calls.
 
-In case a frontend function is complex and there is no equivalent Ivy function to use, it is strongly advised to add that function to our Experimental API. To do so, you are invited to open a *Missing Function Suggestion* issue as described in the `Open Tasks <https://unify.ai/docs/ivy/overview/contributing/the_basics.html#id4>`_ section. A member of our team will then review your issue, and if the proposed addition is deemed to be timely and sensible, we will add the function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
+In case a frontend function is complex and there is no equivalent Ivy function to use, it is strongly advised to add that function to our Experimental API. To do so, you are invited to open a *Missing Function Suggestion* issue as described in the `Open Tasks <../contributing/open_tasks.rst>`_ section. A member of our team will then review your issue, and if the proposed addition is deemed to be timely and sensible, we will add the function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
 
 If you would rather not wait around for a member of our team to review your suggestion, you can instead go straight ahead and add the frontend function as a heavy composition of the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this frontend implementation will be simplified when :func:`ivy.func_name` is added.
 
@@ -348,7 +347,7 @@ The native TensorFlow function :func:`tf.reduce_logsumexp` does not have an equi
 
 Through compositions, we can easily meet the required input-output behaviour for the TensorFlow frontend function.
 
-The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the `Open Tasks <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis>`_ section.
+The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the :ref:`Open Tasks <overview/contributing/open_tasks:Frontend APIs>` section.
 
 Unused Arguments
 ----------------
@@ -409,7 +408,7 @@ Classes and Instance Methods
 ----------------------------
 
 Most frameworks include instance methods and special methods on their array class for common array processing functions, such as :func:`reshape`, :func:`expand_dims` and :func:`add`.
-This simple design choice comes with many advantages, some of which are explained in our :ref:`Ivy Array` section.
+This simple design choice comes with many advantages, some of which are explained in our `Ivy Array <../design/ivy_as_a_framework/ivy_array.rst>`_ section.
 
 **Important Note**
 Before implementing the instance method or special method, make sure that the regular function in the specific frontend is already implemented.
@@ -516,7 +515,7 @@ For example, :class:`numpy.matrix` has an instance method of :meth:`any`:
         return any(self.A, axis=axis, out=out)
 
 We need to create these frontend array classes and all of their instance methods and also their special methods such that we are able to transpile code which makes use of these methods.
-As explained in :ref:`Ivy as a Transpiler`, when transpiling code we first extract the computation graph in the source framework.
+As explained in `Ivy as a Transpiler <../design/ivy_as_a_transpiler.rst>`_, when transpiling code we first extract the computation graph in the source framework.
 In the case of instance methods, we then replace each of the original instance methods in the extracted computation graph with these new instance methods defined in the Ivy frontend class.
 
 Frontend Data Type Promotion Rules

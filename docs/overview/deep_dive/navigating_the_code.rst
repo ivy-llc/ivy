@@ -7,7 +7,6 @@ Navigating the Code
 .. _`navigating the code channel`: https://discord.com/channels/799879767196958751/982737793476345888
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
-.. _`pre-commit guide`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#pre-commit
 
 Categorization
 --------------
@@ -193,9 +192,7 @@ To have a better idea on this, let's look at an example!
             )
         ):
             raise ivy.utils.exceptions.IvyException(
-                "the fill_value: {} and data type: {} are not compatible".format(
-                    fill_value, dtype
-                )
+                f"the fill_value: {fill_value} and data type: {dtype} are not compatible"
             )
 
 

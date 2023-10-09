@@ -20,7 +20,25 @@ available_frameworks = [
     "scipy",
 ]
 
-# This is used to make sure the variable is not being overriden
+mod_frontend = {
+    "tensorflow": None,
+    "numpy": None,
+    "jax": None,
+    "torch": None,
+    "mindspore": None,
+    "scipy": None,
+    "paddle": None,
+}  # multiversion
+mod_backend = {
+    "numpy": None,
+    "jax": None,
+    "tensorflow": None,
+    "torch": None,
+    "paddle": None,
+    "mxnet": None,
+}  # multiversion
+
+# This is used to make sure the variable is not being overridden
 _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
@@ -45,7 +63,7 @@ class InterruptedTest(BaseException):
     """Indicate that a test tried to write global attributes while a test is running."""
 
     def __init__(self, test_interruped):
-        super.__init__(f"{test_interruped} was interruped during execution.")
+        super.__init__(f"{test_interruped} was interrupted during execution.")
 
 
 # Setup

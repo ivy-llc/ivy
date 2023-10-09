@@ -3,7 +3,6 @@ Formatting
 
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
 .. _`black`: https://black.readthedocs.io/en/stable/index.html
-.. _`pre-commit guide`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#pre-commit
 .. _`formatting channel`: https://discord.com/channels/799879767196958751/1028266706436624456
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
@@ -19,7 +18,7 @@ Lint Checks
 
 In addition to `black`_ and `flake8`_, Ivy uses other linters to help automate the formatting process, especially for
 issues `flake8`_ detects but doesn't fix automatically. In addition to that, we validate docstring as part of our
-linting process. You can learn more about our docstring formatting in the :ref:`Docstrings` section.
+linting process. You can learn more about our docstring formatting in the `Docstrings <docstrings.rst>`_ section.
 
 We use the following linters:
 
@@ -28,7 +27,7 @@ We use the following linters:
 * `autoflake <https://github.com/PyCQA/autoflake>`_
 * `docformatter <https://github.com/PyCQA/docformatter>`_
 * `pydocstyle <https://github.com/pycqa/pydocstyle>`_
-* `ivy-lint <https://github.com/unifyai/lint-hook>`_ (WIP 🚧)
+* `ivy-lint <https://github.com/unifyai/lint-hook>`_
 
 You can also take a look at our configuration for linting in `setup.cfg <https://github.com/unifyai/ivy/blob/main/setup.cfg>`_
 file.
@@ -77,6 +76,7 @@ You should expect to see something similar to the following output when you run 
     flake8...................................................................Passed
     docformatter.............................................................Passed
     pydocstyle...............................................................Passed
+    ivy-lint.................................................................Passed
     [INFO] Restored changes from ~/.cache/pre-commit/patch1687898304-8072.
     [formatting-docs 3516aed563] Test commit
     1 file changed, 1 insertion(+)
@@ -99,6 +99,7 @@ If something goes wrong, you will see the following output:
     flake8...................................................................Passed
     docformatter.............................................................Passed
     pydocstyle...............................................................Passed
+    ivy-lint.................................................................Passed
     [INFO] Restored changes from ~/.cache/pre-commit/patch1687898304-8072.
 
 You will notice that some files have changed if you checked ``git status``, you'll need to add them and commit again.
@@ -168,23 +169,23 @@ We have a GitHub action that runs:
 1. Every day at 08:00 UTC
 2. Manually invoked by making a comment with ``ivy-gardener`` on a PR
 
-The first action is to ensure that the code in the whole codebase is always formatted correctly. The second action 
-is to reformat the files you changed in your PR directly on GitHub. This is useful in case if you didn't setup 
+The first action is to ensure that the code in the whole codebase is always formatted correctly. The second action
+is to reformat the files you changed in your PR directly on GitHub. This is useful in case if you didn't setup
 pre-commit correctly or if you or one of our maintainers want to reformat your code remotely.
 
-Under the hood, when ``ivy-gardener`` is found in a comment, an ivy bot will trigger the same set of lint checks 
+Under the hood, when ``ivy-gardener`` is found in a comment, an ivy bot will trigger the same set of lint checks
 as in the pre-commit process. Then the suggested changes produced in the checks will be applied automatically as
-a new commit if there is any. 
+a new commit if there is any.
 
-However, it is possible for the linters run in the ``ivy-gardener`` and the GitHub action every day to face 
-formatting errors that need human intervention like typos and uninitialized arguments. In this case, errors will 
-be thrown by the linters and by the lint checks that runs later, while fixes to other simpler errors will still 
+However, it is possible for the linters run in the ``ivy-gardener`` and the GitHub action every day to face
+formatting errors that need human intervention like typos and uninitialized arguments. In this case, errors will
+be thrown by the linters and by the lint checks that runs later, while fixes to other simpler errors will still
 be applied by the ``ivy-gardener`` properly.
 
-On the other hand, ``ivy-gardener`` itself can fail if the bot handling it (ivy-branch) can not apply the changes 
-suggested by the linters, for example, when it does not have access to edit the target branch. In this case, you 
-should try to give the maintainer bot the access to your branch (which is an option shown in GitHub UI) and give it 
-another try, or manually resolve the formatting errors by commiting the changes yourself.
+On the other hand, ``ivy-gardener`` itself can fail if the bot handling it (ivy-branch) can not apply the changes
+suggested by the linters, for example, when it does not have access to edit the target branch. In this case, you
+should try to give the maintainer bot the access to your branch (which is an option shown in GitHub UI) and give it
+another try, or manually resolve the formatting errors by committing the changes yourself.
 
 **Round Up**
 

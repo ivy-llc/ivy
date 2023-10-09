@@ -1,11 +1,13 @@
 name: intelligent-tests-pr
 on:
   workflow_dispatch:
-  pull_request:
+  pull_request_target:
     types: [labeled, opened, synchronize, reopened, review_requested]
 
 permissions:
   actions: read
+  pull-requests: write
+
 jobs:
   display_test_results:
     if: ${{ always() }}
@@ -24,15 +26,44 @@ jobs:
           cat combined_test_results.txt
 
       - name: New Failures Introduced
+        id: ci_output
         run: |
           find . -name "new_failures_*.txt" -exec cat {} + > combined_failures.txt
           if [ -s combined_failures.txt ]
           then
               echo "This PR introduces the following new failing tests:"
               cat combined_failures.txt
+              {
+                echo 'MESSAGE<<EOF'
+                echo "# Failed tests:"
+                echo "This PR introduces the following new failing tests:"
+                cat combined_failures.txt
+                echo EOF
+              } >> "$GITHUB_OUTPUT"
           else
-              echo "This PR does not introduce any new test failures! Yippee!"
+              echo "MESSAGE=This pull request does not result in any additional test failures. Congratulations!" >> "$GITHUB_OUTPUT"
           fi
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: <!--- CI Output -->
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Thank you for this PR, here is the CI results:
+
+            -------------
+            ${{ steps.ci_output.outputs.MESSAGE}}
+
+            <!--- CI Output -->
+          edit-mode: replace
 
   run_tests:
     runs-on: ubuntu-latest

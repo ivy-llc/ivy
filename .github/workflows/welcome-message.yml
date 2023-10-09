@@ -1,0 +1,56 @@
+name: Check Semantic and welcome new contributors
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+  workflow_call:
+
+permissions:
+  pull-requests: write
+
+jobs:
+  pr-compliance-checks:
+    name: PR Compliance Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: mtfoley/pr-compliance-action@v0.5.0
+        with:
+          body-auto-close: false
+          protected-branch-auto-close: false
+          body-comment: >
+            ## Issue Reference
+
+            In order to be considered for merging, the pull request description must refer to a
+            specific issue number. This is described in our
+            [contributing guide](https://unify.ai/docs/ivy/overview/contributing/the_basics.html#todo-list-issues) and our PR template.
+
+            This check is looking for a phrase similar to: "Fixes #XYZ" or "Resolves #XYZ" where XYZ is the issue
+            number that this PR is meant to address.
+
+  welcome:
+    name: Welcome
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event.action == 'opened'
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-message: |-
+            Congrats on making your first Pull Request and thanks for supporting Ivy! 🎉
+            Join the conversation in our [Discord](https://discord.com/invite/sXyFF8tDtm).
+
+            For every PR opened, we run unit tests and comment the results in the PR to ensure the functionality remains intact.
+            Please make sure they are passing. 💪
+
+            If you want to check them from the action runners, you can open the `display_test_results` job. 👀
+            It contains the following two sections:
+              - **Combined Test Results:** This shows the results of all the ivy tests that ran on the PR. ✔️
+              - **New Failures Introduced:** This lists the tests that fail on this PR.
+
+            Keep in mind that we will assign an engineer for this task and they will look at it based on the workload that they have, **kindly be patient 😄**.
