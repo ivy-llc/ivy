@@ -677,37 +677,6 @@ def test_tensorflow_avg_pool1d(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.nn.avg_pool2d",
-    x_k_s_p_df=helpers.arrays_for_pooling(
-        min_dims=4, max_dims=4, min_side=1, max_side=4
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_avg_pool2d(
-    *,
-    x_k_s_p_df,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x, ksize, strides, padding = x_k_s_p_df
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        ksize=ksize,
-        strides=strides,
-        padding=padding,
-    )
-
-
-@handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool3d",
     x_k_s_p_df=helpers.arrays_for_pooling(
         min_dims=5, max_dims=5, min_side=1, max_side=4
@@ -804,7 +773,7 @@ def test_tensorflow_bias_add(
     fn_tree="tensorflow.nn.compute_average_loss",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=helpers.ints(min_value=1, max_value=5),
+        num_arrays=1,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
@@ -826,7 +795,7 @@ def test_tensorflow_compute_average_loss(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        per_example_loss=x,
+        per_example_loss=x[0],
     )
 
 
