@@ -372,3 +372,60 @@ class _ArrayWithLossesExperimental(abc.ABC):
             eps=eps,
             reduction=reduction,
         )
+
+    def cosine_embedding_loss(
+        self: Union[ivy.Array, ivy.NativeArray],
+        input: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        reduction: str = "none",
+        margin=0.0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cosine_embedding_loss. This method
+        simply wraps the function, and so the docstring for ivy.cosine_embedding_loss
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array of shape `(N,D)` or `(D)`,where `N` is `batch_size`
+            and `D` is `embedding_dimension`.
+        input
+            second input array of shape `(N,D)` or `(D)`,where `N` is
+            `batch_size` and `D` is `embedding_dimension`.
+        target
+            input array of dimension `(N)` or `()` containing 1 or -1 .
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        margin
+            optional, should be number between `-1` to `1`. `0` to
+            `0.5` is suggested.if `margin` is missing then
+            default value is 0.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The cosine embedding loss between the given inputs
+            and their corresponding target.
+
+        Examples
+        --------
+        >>> import ivy
+        >>> input1=ivy.array([1.0,2.0,5.0,6.0])
+        >>> input2=ivy.array([3.0,4.0,7.0,9.0])
+        >>> target=ivy.array([-1])
+        >>> print(loss=input1.cosine_embedding_loss(input2,target,
+        ....reduction="mean"))
+        ivy.array(0.47334343)
+        """
+        return ivy.cosine_embedding_loss(
+            self._data, input, target, reduction=reduction, margin=margin, out=out
+        )

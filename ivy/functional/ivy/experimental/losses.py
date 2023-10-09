@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     handle_array_function,
     to_native_arrays_and_back,
 )
+
 from ivy.utils.exceptions import handle_exceptions
 
 
@@ -574,3 +575,100 @@ def poisson_nll_loss(
         eps=eps,
         reduction=reduction,
     )
+
+
+@handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
+def cosine_embedding_loss(
+    input1: Union[ivy.Array, ivy.NativeArray],
+    input2: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    reduction: str = "none",
+    margin=0.0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute cosine embedding loss.
+
+    This function calculates the cosine embedding loss between
+    two vector `input1` and `input2` given that `target=1` or
+    `target=-1 using cosine similarity. This is used to measure
+    weather two inputs are similar or dissimilar, and typically
+    used in learning non linear embeddings or semi-supervised-learning .
+
+    Parameters
+    ----------
+    input1
+        input array of shape `(N,D)` or `(D)`,where `N` is `batch_size`
+        and `D` is `embedding_dimension`.
+    input2
+        second input array of shape `(N,D)` or `(D)`,where `N`
+        is `batch_size` and `D` is `embedding_dimension`.
+    target
+        input array of dimension `(N)` or `()` containing 1 or -1 .
+    reduction
+        ``'none'``: No reduction will be applied to the output.
+        ``'mean'``: The output will be averaged.
+        ``'sum'``: The output will be summed. Default: ``'none'``.
+    margin
+        optional, should be number between `-1` to `1`.
+        `0` to `0.5` is suggested. if `margin` is missing
+        then default value is 0.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The cosine embedding loss between the given inputs
+        and their corresponding target.
+
+
+    Examples
+    --------
+    >>> import ivy
+    >>> input1=ivy.array([1.0,2.0,5.0,6.0])
+    >>> input2=ivy.array([3.0,4.0,7.0,9.0])
+    >>> target=ivy.array([-1])
+    >>> print(ivy.cosine_embedding_loss(input1,input2,target))
+    ivy.array([0.98869467])
+
+    >>> input1=ivy.array([[1.2,3.4,5.3,6.7],[2.3,4.5,6.3,7.8]])
+    >>> input2=ivy.array([[4.2,6.6,8.9,4.7],[1.3,7.5,4.3,9.8]])
+    >>> target=ivy.array([-1,1])
+    >>> print(ivy.cosine_embedding_loss(input1,input2,target,
+    ....reduction='mean'))
+    ivy.array(0.47334343)
+    """
+    try:
+        assert input1.shape == input2.shape
+    except ValueError:
+        raise ValueError(
+            "`input1` and `input2` must have the same shape, received "
+            f"({input1.shape} vs {input2.shape})."
+        )
+    if len(input1.shape) == 1:
+        dot_product = ivy.sum(input1 * input2)
+        norm1 = ivy.vector_norm(input1)
+        norm2 = ivy.vector_norm(input2)
+    else:
+        dot_product = ivy.sum(input1 * input2, axis=1)
+        norm1 = ivy.vector_norm(input1, axis=1)
+        norm2 = ivy.vector_norm(input2, axis=1)
+    cosine_similarity = dot_product / (norm1 * norm2)
+
+    loss = ivy.where(
+        target == 1, 1 - cosine_similarity, ivy.maximum(0, cosine_similarity - margin)
+    )
+
+    if reduction == "mean":
+        return ivy.mean(loss, out=out)
+    if reduction == "sum":
+        return ivy.sum(loss, out=out)
+    else:
+        return ivy.inplace_update(out, loss) if out is not None else loss
