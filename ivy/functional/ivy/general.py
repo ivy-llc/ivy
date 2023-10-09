@@ -2167,7 +2167,7 @@ def set_min_base(val: float) -> None:
     Parameters
     ----------
     val
-        The new value to set the minimum base to.
+        The value to set the global minimum base to.
 
     Examples
     --------
