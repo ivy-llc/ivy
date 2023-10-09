@@ -4,7 +4,7 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
+from ivy_tests.test_ivy.helpers.pipeline_helper import BackendHandler
 
 
 # bind_custom_gradient_function
@@ -22,24 +22,36 @@ def test_bind_custom_gradient_function(
 ):
     if backend_fw == "numpy":
         return
-    with update_backend(backend_fw) as ivy_backend:
-        inter_func_ = lambda x: ivy_backend.__dict__[inter_func_str](x)
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+
+        def inter_func_(x):
+            return ivy_backend.__dict__[inter_func_str](x)
+
         x = ivy_backend.array(x_, dtype=dtype)
         inter_func = ivy_backend.bind_custom_gradient_function(
             inter_func_, custom_grad_fn
         )
-        func = lambda x: ivy_backend.mean(ivy_backend.exp(inter_func(x)))
+
+        def func(x):
+            return ivy_backend.mean(ivy_backend.exp(inter_func(x)))
+
         ret, grad = ivy_backend.execute_with_gradients(func, x)
         ret_np = helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
         grad_np = helpers.flatten_and_to_np(backend=backend_fw, ret=grad)
 
-    with update_backend("tensorflow") as gt_backend:
+    with BackendHandler.update_backend("tensorflow") as gt_backend:
         x = gt_backend.array(x_, dtype=dtype)
-        inter_func_ = lambda x: gt_backend.__dict__[inter_func_str](x)
+
+        def inter_func_(x):
+            return gt_backend.__dict__[inter_func_str](x)
+
         inter_func = gt_backend.bind_custom_gradient_function(
             inter_func_, custom_grad_fn
         )
-        func = lambda x: gt_backend.mean(gt_backend.exp(inter_func(x)))
+
+        def func(x):
+            return gt_backend.mean(gt_backend.exp(inter_func(x)))
+
         ret_gt, grad_gt = gt_backend.execute_with_gradients(func, x)
         ret_np_from_gt = helpers.flatten_and_to_np(backend="tensorflow", ret=ret_gt)
         grad_np_from_gt = helpers.flatten_and_to_np(backend="tensorflow", ret=grad_gt)

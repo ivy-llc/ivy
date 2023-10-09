@@ -1,6 +1,16 @@
 # global
 from collections import namedtuple
-from typing import Union, Optional, Sequence, Tuple, NamedTuple, List
+from typing import (
+    Union,
+    Optional,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    List,
+    Literal,
+    Callable,
+    Any,
+)
 from numbers import Number
 import tensorflow as tf
 
@@ -8,6 +18,7 @@ import tensorflow as tf
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
+from ivy.functional.ivy.experimental.manipulation import _to_tf_padding
 
 
 def moveaxis(
@@ -22,7 +33,7 @@ def moveaxis(
     return tf.experimental.numpy.moveaxis(a, source, destination)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, backend_version)
 def heaviside(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -73,7 +84,7 @@ def rot90(
     return tf.experimental.numpy.rot90(m, k, axes)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("unsigned", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("unsigned", "complex")}, backend_version)
 def top_k(
     x: tf.Tensor,
     k: int,
@@ -115,7 +126,7 @@ def fliplr(
     return tf.experimental.numpy.fliplr(m)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, backend_version)
 def i0(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -253,6 +264,70 @@ def broadcast_shapes(
     return tuple(desired_shape.numpy().tolist())
 
 
+def pad(
+    input: Union[tf.Tensor, tf.Variable],
+    pad_width: Union[Sequence[Sequence[int]], Union[tf.Tensor, tf.Variable], int],
+    /,
+    *,
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "reflect",
+            "wrap",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Union[Sequence[Union[tf.Tensor, tf.Variable]], int] = 1,
+    constant_values: Number = 0,
+    end_values: Number = 0,
+    reflect_type: Literal["even", "odd"] = "even",
+    **kwargs: Optional[Any],
+) -> Union[tf.Tensor, tf.Variable]:
+    pad_width = _to_tf_padding(pad_width, len(input.shape))
+    if not isinstance(pad_width, (tf.Variable, tf.Tensor)):
+        pad_width = tf.constant(pad_width)
+    return tf.pad(
+        input,
+        pad_width,
+        mode=mode,
+        constant_values=constant_values,
+    )
+
+
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_tf_pad(args[0].shape, args[1], mode, constant_values, reflect_type)
+    )
+)
+
+
+def _check_tf_pad(input_shape, pad_width, mode, constant_values, reflect_type):
+    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    return isinstance(constant_values, Number) and (
+        mode == "constant"
+        or (
+            reflect_type == "even"
+            and (
+                (
+                    mode == "reflect"
+                    and all(
+                        pad_width[i][0] < s and pad_width[i][1] < s
+                        for i, s in enumerate(input_shape)
+                    )
+                )
+                or (
+                    mode == "symmetric"
+                    and all(
+                        pad_width[i][0] <= s and pad_width[i][1] <= s
+                        for i, s in enumerate(input_shape)
+                    )
+                )
+            )
+        )
+    )
+
+
 def expand(
     x: Union[tf.Tensor, tf.Variable],
     shape: Union[List[int], List[Tuple]],
@@ -344,26 +419,15 @@ def unique_consecutive(
     )
 
 
-def fill_diagonal(
-    a: tf.Tensor,
-    v: Union[int, float],
-    /,
-    *,
-    wrap: bool = False,
-):
-    shape = tf.shape(a)
-    max_end = tf.math.reduce_prod(shape)
-    end = max_end
-    if len(shape) == 2:
-        step = shape[1] + 1
-        if not wrap:
-            end = shape[1] * shape[1]
-    else:
-        step = 1 + tf.reduce_sum(tf.math.cumprod(shape[:-1]))
-    a = tf.reshape(a, (-1,))
-    end = min(end, max_end)
-    indices = [[i] for i in range(0, end, step)]
-    ups = tf.convert_to_tensor([v] * len(indices), dtype=a.dtype)
-    a = tf.tensor_scatter_nd_update(a, indices, ups)
-    a = tf.reshape(a, shape)
-    return a
+def trim_zeros(a: tf.Tensor, /, *, trim: Optional[str] = "bf") -> tf.Tensor:
+    nonzero_indices = tf.where(a != 0)
+    first = tf.reduce_min(nonzero_indices)
+    last = tf.reduce_max(nonzero_indices) + 1
+
+    trim = trim.upper()
+    if "F" in trim:
+        first = tf.maximum(first, 0)
+    if "B" in trim:
+        last = tf.minimum(last, tf.cast(tf.shape(a)[0], tf.int64))
+
+    return a[first:last]

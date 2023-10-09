@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_array_function,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -22,7 +22,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def l1_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -65,7 +65,7 @@ def l1_normalize(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def l2_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -196,7 +196,7 @@ def batch_norm(
     if scale is not None:
         inv = inv * scale
     xnormalized = x * inv.astype(x.dtype, copy=False) + ivy.astype(
-        offset - mean * inv if offset is not None else -mean * inv, x.dtype
+        offset - mean * inv if offset is not None else -mean * inv, x.dtype, copy=False
     )
 
     if data_format == "NCS":
@@ -218,7 +218,7 @@ batch_norm.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
@@ -308,8 +308,10 @@ def instance_norm(
     x = x.reshape((1, *S, N * C))
     mean = ivy.tile(mean, N)
     variance = ivy.tile(variance, N)
-    scale = ivy.tile(scale, N)
-    offset = ivy.tile(offset, N)
+    if scale is not None:
+        scale = ivy.tile(scale, N)
+    if offset is not None:
+        offset = ivy.tile(offset, N)
     xnormalized, runningmean, runningvariance = batch_norm(
         x,
         mean,
@@ -348,7 +350,7 @@ instance_norm.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
@@ -446,7 +448,7 @@ group_norm.mixed_backend_wrappers = {
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def lp_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
