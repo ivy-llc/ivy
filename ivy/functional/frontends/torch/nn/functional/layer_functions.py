@@ -162,8 +162,8 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias):
 
 def _lstm_full(
     input,
-    hidden_v,
-    weight_v,
+    hx,
+    params,
     has_biases,
     num_layers,
     dropout,
@@ -173,8 +173,8 @@ def _lstm_full(
 ):
     return _generic_lstm(
         input,
-        hidden_v,
-        weight_v,
+        hx,
+        params,
         has_biases,
         num_layers,
         dropout,
@@ -231,10 +231,10 @@ def _lstm_layer(x, hidden, weights, bias, batch_first, bidirectional):
 
 
 def _lstm_packed(
-    input,
+    data,
     batch_sizes,
-    hidden_v,
-    weight_v,
+    hx,
+    params,
     has_biases,
     num_layers,
     dropout,
@@ -242,9 +242,9 @@ def _lstm_packed(
     bidirectional,
 ):
     return _generic_lstm(
-        input,
-        hidden_v,
-        weight_v,
+        data,
+        hx,
+        params,
         has_biases,
         num_layers,
         dropout,

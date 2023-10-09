@@ -173,10 +173,10 @@ def test_torch_lstm(
     ) = dtype_lstm
     if batch_sizes is not None:
         kwargs = {
-            "input": input,
+            "data": input,
             "batch_sizes": batch_sizes,
-            "hidden_v": initial_states,
-            "weight_v": all_weights,
+            "hx": initial_states,
+            "params": all_weights,
             "has_biases": has_biases,
             "num_layers": num_layers,
             "dropout": dropout,
@@ -187,8 +187,8 @@ def test_torch_lstm(
         dtypes = dtypes[:1]
         kwargs = {
             "input": input,
-            "hidden_v": initial_states,
-            "weight_v": all_weights,
+            "hx": initial_states,
+            "params": all_weights,
             "has_biases": has_biases,
             "num_layers": num_layers,
             "dropout": dropout,
