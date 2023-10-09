@@ -60,7 +60,7 @@ def max_pool1d(
         indicating the per-dimension paddings. (e.g. 2, [(1, 0)])
     data_format
         "NWC" or "NCW". Defaults to "NWC".
-    dilaton
+    dilation
         The stride between elements within a sliding window, must be > 0.
     ceil_mode
         If True, ceil is used instead of floor to compute the output shape.
@@ -148,7 +148,7 @@ def max_pool2d(
         indicating the per-dimension paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
-    dilaton
+    dilation
         The stride between elements within a sliding window, must be > 0.
     ceil_mode
         If True, ceil is used instead of floor to compute the output shape.
@@ -235,7 +235,7 @@ def max_pool3d(
         indicating the per-dimension paddings. (e.g. 2, [(1, 0), (0, 1), (1, 1)])
     data_format
         "NDHWC" or "NCDHW". Defaults to "NDHWC".
-    dilaton
+    dilation
         The stride between elements within a sliding window, must be > 0.
     ceil_mode
         If True, ceil is used instead of floor to compute the output shape.
@@ -642,7 +642,7 @@ def dct(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Compute the 1D Discrete Cosine Tranformation of a given signal.
+    Compute the 1D Discrete Cosine Transformation of a given signal.
 
     Parameters
     ----------
@@ -651,7 +651,7 @@ def dct(
     type
         The type of the dct. Must be 1, 2, 3 or 4.
     n
-        The lenght of the transform. If n is less than the input signal lenght,
+        The length of the transform. If n is less than the input signal length,
         then x is truncated, if n is larger then x is zero-padded.
     axis
         The axis to compute the DCT along.
@@ -753,7 +753,7 @@ def idct(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Compute the 1D Inverse Discrete Cosine Tranformation of a given signal.
+    Compute the 1D Inverse Discrete Cosine Transformation of a given signal.
 
     Parameters
     ----------
