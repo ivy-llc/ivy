@@ -52,96 +52,35 @@ def _generic_lstm(
     # onnx is    input, output, forget, cell.
     reform_permutation = [(0, 1), (3, 4), (1, 3)]
 
-    def reform_weights(w, n, intervals):
-        slices = [
-            _slice_along_axis(w, start=x * n, stop=y * n, axis=0) for x, y in intervals
-        ]
-        return ivy.concat(slices, axis=0)
-
-    def transform_weights_no_bias(layer_index):
-        weights = layer_weights[layer_index]
-        weight_ih, weight_hh = (
-            reform_weights(w, hidden_size, reform_permutation) for w in weights
-        )
-        return ivy.swapaxes(weight_ih, 0, 1), ivy.swapaxes(weight_hh, 0, 1)
-
-    def transform_weights(layer_index):
-        weights = layer_weights[layer_index]
-        weight_ih, weight_hh, bias_ih, bias_hh = (
-            reform_weights(w, hidden_size, reform_permutation) for w in weights
-        )
-        bias_concat = ivy.concat([bias_ih, bias_hh], axis=0)
-        return ivy.swapaxes(weight_ih, 0, 1), ivy.swapaxes(weight_hh, 0, 1), bias_concat
-
-    def retrieve_state(x, start, end):
-        return (
-            x
-            if num_layers == 1
-            else _slice_along_axis(x, start=start, stop=end, axis=0)
-        )
-
-    def lstm_single_layer(x, hidden, weights, bias):
-        if batch_first:
-            x = ivy.swapaxes(x, 0, 1)
-
-        hx_fw, cx_fw = hidden
-        if bidirectional:
-            if hx_fw is None:
-                hx_bw = None
-            else:
-                hx_bw = hx_fw[1]
-                hx_fw = hx_fw[0]
-            if cx_fw is None:
-                cx_bw = None
-            else:
-                cx_bw = cx_fw[1]
-                cx_fw = cx_fw[0]
-            hidden_bw = hx_bw, cx_bw
-        hidden_fw = hx_fw, cx_fw
-        result_fw, hidden_fw = _lstm_cell(x, *hidden_fw, *weights, bias)
-
-        if bidirectional:
-            x_reversed = ivy.flip(x, axis=0)
-            result_bw, hidden_bw = _lstm_cell(x_reversed, *hidden_bw, *weights, bias)
-            result_bw = ivy.flip(result_bw, axis=0)
-
-            result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
-            if hidden_fw is None and hidden_bw is None:
-                h = None
-                c = None
-            elif hidden_fw is None:
-                h, c = hidden_bw
-            elif hidden_bw is None:
-                h, c = hidden_fw
-            else:
-                h = ivy.stack([hidden_fw[0], hidden_bw[0]], axis=0)
-                c = ivy.stack([hidden_fw[1], hidden_bw[1]], axis=0)
-        else:
-            result = result_fw
-            h, c = hidden_fw
-
-        if batch_first:
-            result = ivy.swapaxes(result, 0, 1)
-
-        return result, (h, c)
-
     for i in range(num_layers):
         if unidirectional:
             if weights_per_layer == 4:
-                weight_ih, weight_hh, bias_concat = transform_weights(i)
+                weight_ih, weight_hh, bias_concat = _transform_weights(
+                    layer_weights, i, hidden_size, reform_permutation
+                )
             else:
-                weight_ih, weight_hh = transform_weights_no_bias(i)
+                weight_ih, weight_hh = _transform_weights_no_bias(
+                    layer_weights, i, hidden_size, reform_permutation
+                )
                 bias_concat = None
 
             state_indices = i, i + 1
         else:
             if weights_per_layer == 4:
-                weight_ih_f, weight_hh_f, bias_f = transform_weights(2 * i)
-                weight_ih_b, weight_hh_b, bias_b = transform_weights(2 * i + 1)
+                weight_ih_f, weight_hh_f, bias_f = _transform_weights(
+                    layer_weights, 2 * i, hidden_size, reform_permutation
+                )
+                weight_ih_b, weight_hh_b, bias_b = _transform_weights(
+                    layer_weights, 2 * i + 1, hidden_size, reform_permutation
+                )
                 bias_concat = ivy.concat([bias_f, bias_b], axis=0)
             else:
-                weight_ih_f, weight_hh_f = transform_weights_no_bias(2 * i)
-                weight_ih_b, weight_hh_b = transform_weights_no_bias(2 * i + 1)
+                weight_ih_f, weight_hh_f = _transform_weights_no_bias(
+                    layer_weights, 2 * i, hidden_size, reform_permutation
+                )
+                weight_ih_b, weight_hh_b = _transform_weights_no_bias(
+                    layer_weights, 2 * i + 1, hidden_size, reform_permutation
+                )
                 bias_concat = None
 
             weight_ih = ivy.concat([weight_ih_f, weight_ih_b], axis=0)
@@ -149,11 +88,16 @@ def _generic_lstm(
 
             state_indices = 2 * i, 2 * i + 2
 
-        output, (h_out, c_out) = lstm_single_layer(
+        output, (h_out, c_out) = _lstm_layer(
             input,
-            (retrieve_state(h0, *state_indices), retrieve_state(c0, *state_indices)),
+            (
+                _retrieve_state(h0, *state_indices, num_layers),
+                _retrieve_state(c0, *state_indices, num_layers),
+            ),
             (weight_ih, weight_hh),
             bias_concat,
+            batch_first,
+            bidirectional,
         )
 
         if bidirectional:
@@ -237,6 +181,52 @@ def _lstm_full(
     )
 
 
+def _lstm_layer(x, hidden, weights, bias, batch_first, bidirectional):
+    if batch_first:
+        x = ivy.swapaxes(x, 0, 1)
+
+    hx_fw, cx_fw = hidden
+    if bidirectional:
+        if hx_fw is None:
+            hx_bw = None
+        else:
+            hx_bw = hx_fw[1]
+            hx_fw = hx_fw[0]
+        if cx_fw is None:
+            cx_bw = None
+        else:
+            cx_bw = cx_fw[1]
+            cx_fw = cx_fw[0]
+        hidden_bw = hx_bw, cx_bw
+    hidden_fw = hx_fw, cx_fw
+    result_fw, hidden_fw = _lstm_cell(x, *hidden_fw, *weights, bias)
+
+    if bidirectional:
+        x_reversed = ivy.flip(x, axis=0)
+        result_bw, hidden_bw = _lstm_cell(x_reversed, *hidden_bw, *weights, bias)
+        result_bw = ivy.flip(result_bw, axis=0)
+
+        result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
+        if hidden_fw is None and hidden_bw is None:
+            h = None
+            c = None
+        elif hidden_fw is None:
+            h, c = hidden_bw
+        elif hidden_bw is None:
+            h, c = hidden_fw
+        else:
+            h = ivy.stack([hidden_fw[0], hidden_bw[0]], axis=0)
+            c = ivy.stack([hidden_fw[1], hidden_bw[1]], axis=0)
+    else:
+        result = result_fw
+        h, c = hidden_fw
+
+    if batch_first:
+        result = ivy.swapaxes(result, 0, 1)
+
+    return result, (h, c)
+
+
 def _lstm_packed(
     input,
     batch_sizes,
@@ -286,6 +276,36 @@ def _pad_packed_sequence(data, batch_sizes, batch_first=False, padding_value=0):
     if not batch_first:
         padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
     return padded_sequence
+
+
+def _reform_weights(w, n, intervals):
+    slices = [
+        _slice_along_axis(w, start=x * n, stop=y * n, axis=0) for x, y in intervals
+    ]
+    return ivy.concat(slices, axis=0)
+
+
+def _retrieve_state(x, start, end, num_layers):
+    return x if num_layers == 1 else _slice_along_axis(x, start=start, stop=end, axis=0)
+
+
+def _transform_weights(layer_weights, layer_index, hidden_size, reform_permutation):
+    weights = layer_weights[layer_index]
+    weight_ih, weight_hh, bias_ih, bias_hh = (
+        _reform_weights(w, hidden_size, reform_permutation) for w in weights
+    )
+    bias_concat = ivy.concat([bias_ih, bias_hh], axis=0)
+    return ivy.swapaxes(weight_ih, 0, 1), ivy.swapaxes(weight_hh, 0, 1), bias_concat
+
+
+def _transform_weights_no_bias(
+    layer_weights, layer_index, hidden_size, reform_permutation
+):
+    weights = layer_weights[layer_index]
+    weight_ih, weight_hh = (
+        _reform_weights(w, hidden_size, reform_permutation) for w in weights
+    )
+    return ivy.swapaxes(weight_ih, 0, 1), ivy.swapaxes(weight_hh, 0, 1)
 
 
 # --- Main --- #
