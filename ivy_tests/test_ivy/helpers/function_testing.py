@@ -701,40 +701,29 @@ def test_frontend_function(
                 # change dtype for args_for_test and kwargs_for_test
                 target_args_np = [
                     (
-                        ivy_backend.astype(a, input_dtypes[0])
-                        if ivy_backend.is_array(a)
+                        ivy_backend.to_numpy(ivy_backend.astype(a, input_dtypes[0]))
+                        if (ivy_backend.is_array(a) or isinstance(a, np.ndarray))
                         else a
                     )
                     for a in args_np
                 ]
                 for key, value in target_kwargs_np.items():
-                    if ivy_backend.is_array(value):
-                        target_kwargs_np[key] = ivy_backend.astype(
-                            value, input_dtypes[0]
+                    if ivy_backend.is_array(value) or isinstance(value, np.ndarray):
+                        target_kwargs_np[key] = ivy_backend.to_numpy(
+                            ivy_backend.astype(value, input_dtypes[0])
                         )
 
-                arg_np_vals, args_idxs, c_arg_vals = _get_nested_ivy_arrays(
-                    target_args_np
-                )
-                kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_ivy_arrays(
-                    target_kwargs_np
-                )
-                # kwargs_for_test = {
-                #     key: ivy.astype(value, input_dtypes[0])
-                #     if (_is_frontend_array(value) or ivy_backend.is_array(value))
-                #     else value
-                #     for key, value in kwargs_for_test.items()
-                # }
             else:
                 # type casting is not possible, test with current dtype will be skipped
                 skip(
                     "Unable to type cast to nearest possible                     "
                     f" dtype from {input_dtypes[0]}"
                 )
-        else:
-            # extract all arrays from the arguments and keyword arguments
-            arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
-            kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+        # extract all arrays from the arguments and keyword arguments
+        arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(target_args_np)
+        kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(
+            target_kwargs_np
+        )
         # make all lists equal in length
         num_arrays = c_arg_vals + c_kwarg_vals
         if len(input_dtypes) < num_arrays:
@@ -2286,7 +2275,9 @@ def _get_nested_ivy_arrays(nest):
     -------
          Items found, indices, and total number of arrays found
     """
-    indices = ivy.nested_argwhere(nest, lambda x: ivy.is_ivy_array(x))
+    indices = ivy.nested_argwhere(
+        nest, lambda x: isinstance(x, ivy.data_classes.array.array.Array)
+    )
 
     ret = ivy.multi_index_nest(nest, indices)
     return ret, indices, len(ret)
