@@ -209,12 +209,6 @@ if __name__ == "__main__":
                     ".", "_"
                 )
                 test_info["frontend"] = frontend
-                if report_content:
-                    test_info = {
-                        **test_info,
-                        "fw_time": report_content["fw_time"],
-                        "ivy_nodes": report_content["ivy_nodes"],
-                    }
                 prefix_str = f"{frontend_version}."
 
             # initialize test information for ci_dashboard db
@@ -232,6 +226,12 @@ if __name__ == "__main__":
 
             # add transpilation metrics if report generated
             if not failed and report_content:
+                if is_frontend_test:
+                    test_info = {
+                        **test_info,
+                        "fw_time": report_content["fw_time"],
+                        "ivy_nodes": report_content["ivy_nodes"],
+                    }
                 transpilation_metrics = {
                     "nodes": report_content["nodes"][backend],
                     "time": report_content["time"][backend],
