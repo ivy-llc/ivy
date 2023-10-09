@@ -2145,7 +2145,8 @@ def unique(
     *,
     axis: Optional[int] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """Finds the unique elements of an array.
+    """
+    Finds the unique elements of an array.
 
     Parameters
     ----------
@@ -2172,6 +2173,7 @@ def unique(
     Results(output=ivy.array([1, 2, 3]), inverse_indices=ivy.array([0, 0, 1, 1, 2, 0, 0, 1]))
     """
     return ivy.current_backend(x).unique(x, axis=axis)
+
 
 @handle_exceptions
 @handle_backend_invalid

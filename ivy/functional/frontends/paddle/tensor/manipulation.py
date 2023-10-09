@@ -11,10 +11,6 @@ from ivy.func_wrapper import (
     with_supported_device_and_dtypes,
 )
 
-@to_ivy_arrays_and_back
-def reshape(x, shape):
-    return ivy.reshape(x, shape)
-
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
@@ -22,56 +18,13 @@ def abs(x, name=None):
     return ivy.abs(x)
 
 
-absolute = abs
-
-# NOTE:
-# Only inplace functions are to be added in this file.
-# Please add non-inplace counterparts to `/frontends/paddle/manipulation.py`.
-
-
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("int8", "uint8", "int16", "float16")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def tile(x, repeat_times, name=None):
-    return ivy.tile(x, repeats=repeat_times)
-
-
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("int8", "uint8", "int16", "float16")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def flip(x, axis, name=None):
-    return ivy.flip(x, axis=axis)
-
-
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("int16", "complex64", "complex128")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def split(x, num_or_sections, axis=0, name=None):
-    return ivy.split(x, num_or_size_splits=num_or_sections, axis=axis)
-
-
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("float16", "bfloat16", "int8", "int16")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def squeeze(x, axis=None, name=None):
-    return ivy.squeeze(x, axis=axis)
-
-
 @with_supported_dtypes(
     {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
-def expand(x, shape, name=None):
-    return ivy.expand(x, shape)
+def broadcast_to(x, shape, name=None):
+    return ivy.broadcast_to(x, shape)
 
 
 @with_supported_dtypes(
@@ -98,8 +51,17 @@ def cast(x, dtype):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def broadcast_to(x, shape, name=None):
-    return ivy.broadcast_to(x, shape)
+def expand(x, shape, name=None):
+    return ivy.expand(x, shape)
+
+
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("int8", "uint8", "int16", "float16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def flip(x, axis, name=None):
+    return ivy.flip(x, axis=axis)
 
 
 @with_supported_dtypes(
@@ -109,6 +71,32 @@ def broadcast_to(x, shape, name=None):
 @to_ivy_arrays_and_back
 def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
+
+
+@to_ivy_arrays_and_back
+def reshape(x, shape):
+    return ivy.reshape(x, shape)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and above": {
+            "cpu": (
+                "bool",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            ),
+            "gpu": ("float16",),
+        },
+    },
+)
+@to_ivy_arrays_and_back
+def reshape_(x, shape):
+    ret = ivy.reshape(x, shape)
+    ivy.inplace_update(x, ret)
+    return x
 
 
 @with_supported_dtypes(
@@ -129,8 +117,43 @@ def roll(x, shifts, axis=None, name=None):
     return ivy.roll(x, shifts, axis=axis)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("int16", "complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def split(x, num_or_sections, axis=0, name=None):
+    return ivy.split(x, num_or_size_splits=num_or_sections, axis=axis)
+
+
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("float16", "bfloat16", "int8", "int16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def squeeze(x, axis=None, name=None):
+    return ivy.squeeze(x, axis=axis)
+
+
+def take_along_axis(arr, indices, axis):
+    return ivy.take_along_axis(arr, indices, axis)
+
+# NOTE:
+# Only inplace functions are to be added in this file.
+# Please add non-inplace counterparts to `/frontends/paddle/manipulation.py`.
+
+
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("int8", "uint8", "int16", "float16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def tile(x, repeat_times, name=None):
+    return ivy.tile(x, repeats=repeat_times)
+
+
 @with_supported_dtypes(
-{"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
+    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -162,26 +185,4 @@ def unstack(x, axis=0, name=None):
     return ivy.unstack(x, axis=axis)
 
 
-def take_along_axis(arr, indices, axis):
-    return ivy.take_along_axis(arr, indices, axis)
-
-
-@with_supported_device_and_dtypes(
-    {
-        "2.5.1 and above": {
-            "cpu": (
-                "bool",
-                "int32",
-                "int64",
-                "float32",
-                "float64",
-            ),
-            "gpu": ("float16",),
-        },
-    },
-)
-@to_ivy_arrays_and_back
-def reshape_(x, shape):
-    ret = ivy.reshape(x, shape)
-    ivy.inplace_update(x, ret)
-    return x
+absolute = abs
