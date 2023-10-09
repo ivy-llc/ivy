@@ -14,6 +14,18 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipul
 
 
 @st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
+    valid_axes = []
+    for index, axis in enumerate(shape):
+        if axis == 1:
+            valid_axes.append(index)
+    valid_axes.insert(0, None)
+
+    return draw(st.sampled_from(valid_axes))
+
+
+@st.composite
 def dtypes_x_reshape_(draw):
     shape = draw(helpers.get_shape(min_num_dims=1))
     dtypes, x = draw(
@@ -24,16 +36,9 @@ def dtypes_x_reshape_(draw):
     )
     return dtypes, x, shape
 
-@st.composite
-def _squeeze_helper(draw):
-    shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
-    valid_axes = []
-    for index, axis in enumerate(shape):
-        if axis == 1:
-            valid_axes.append(index)
-    valid_axes.insert(0, None)
 
-    return draw(st.sampled_from(valid_axes))
+# --- Main --- #
+# ------------ #
 
 
 # reshape_
@@ -61,7 +66,9 @@ def test_paddle_reshape_(
         x=x[0],
         shape=shape,
     )
-#squeeze_
+
+
+# squeeze_
 @handle_frontend_test(
     fn_tree="paddle.tensor.manipulation.squeeze_",
     dtype_and_x=helpers.dtype_and_values(
