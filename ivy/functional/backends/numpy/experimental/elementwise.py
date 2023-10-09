@@ -575,7 +575,7 @@ def _EvaluatePolynomial(x, coefficients):
     return poly
 
 
-# TODO: Remove this once native function is avilable.
+# TODO: Remove this once native function is available.
 # Compute an approximation of the error function complement (1 - erf(x)).
 def erfc(
     x: np.ndarray,
