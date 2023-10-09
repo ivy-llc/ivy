@@ -2837,6 +2837,7 @@ def test_jax_rint(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
