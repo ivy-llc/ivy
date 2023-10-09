@@ -225,6 +225,49 @@ def test_paddle_ifft(
     )
 
 
+# ifft2
+@handle_frontend_test(
+    fn_tree="paddle.fft.ifft2",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=4,
+        shape=helpers.get_shape(
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=2,
+            max_dim_size=4,
+        ),
+        large_abs_safety_factor=12,
+        small_abs_safety_factor=12,
+        safety_factor_scale="log",
+        force_int_axis=True,
+        valid_axis=True,
+        allow_neg_axes=True,
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
+    n=st.integers(min_value=2, max_value=10) | st.none(),
+)
+def test_paddle_ifft2(
+    dtype_input_axis, norm, n, frontend, backend_fw, test_flags, fn_tree, on_device
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        n=n,
+        axis=axis,
+        norm=norm,
+    )
+
+
 @handle_frontend_test(
     fn_tree="paddle.fft.ifftshift",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -494,45 +537,3 @@ def test_paddle_rfftfreq(
 # Use the custom strategy for s and axes
 axes_strategy = sequence_of_two_integers()
 s_strategy = sequence_of_two_integers()
-
-# ifft2
-@handle_frontend_test(
-    fn_tree="paddle.fft.ifft2",
-    dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        max_dim_size=4,
-        shape=helpers.get_shape(
-            min_num_dims=2,
-            max_num_dims=2,
-            min_dim_size=2,
-            max_dim_size=4,
-        ),
-        large_abs_safety_factor=12,
-        small_abs_safety_factor=12,
-        safety_factor_scale="log",
-        force_int_axis=True,
-        valid_axis=True,
-        allow_neg_axes=True,
-    ),
-    norm=st.sampled_from(["backward", "ortho", "forward"]),
-    n=st.integers(min_value=2, max_value=10) | st.none(),
-)
-def test_paddle_ifft2(
-    dtype_input_axis, norm, n, frontend, backend_fw, test_flags, fn_tree, on_device
-):
-    input_dtype, x, axis = dtype_input_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        n=n,
-        axis=axis,
-        norm=norm,
-    )

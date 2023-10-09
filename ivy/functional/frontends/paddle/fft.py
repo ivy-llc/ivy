@@ -125,6 +125,16 @@ def ifft(x, n=None, axis=-1.0, norm="backward", name=None):
     return ivy.astype(ret, x.dtype)
 
 
+@to_ivy_arrays_and_back
+def ifft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
+    fft_result = ivy.fft2(x, s=s, dim=axes, norm=norm)
+    if norm == "forward":
+        fft_result /= ivy.sqrt(ivy.prod(ivy.shape(fft_result)))
+    elif norm == "ortho":
+        fft_result /= ivy.sqrt(ivy.prod(ivy.shape(x)))
+    return ivy.real(fft_result)
+
+
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
@@ -308,13 +318,3 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
     pos_max = n // 2 + 1
     indices = ivy.arange(0, pos_max, dtype=dtype)
     return indices * val
-
-
-@to_ivy_arrays_and_back
-def ifft2( x , s = None , axes = (- 2, - 1) , norm = 'backward' , name = None ):
-    fft_result = ivy.fft2(x, s=s, dim=axes, norm=norm)
-    if norm == "forward":
-        fft_result /= ivy.sqrt(ivy.prod(ivy.shape(fft_result)))
-    elif norm == "ortho":
-        fft_result /= ivy.sqrt(ivy.prod(ivy.shape(x)))
-    return ivy.real(fft_result)
