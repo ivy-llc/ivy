@@ -421,7 +421,6 @@ def svdvals(
     return torch.linalg.svdvals(x, driver=driver, out=out)
 
 
-
 svdvals.support_native_out = True
 
 
