@@ -598,11 +598,11 @@ def eigh(
     Parameters
     ----------
     x
-        Input matrix. 
+        Input matrix.
         Should have a numeric data type.
         It's a square array_like matrix for which eigenvalues and eigenvectors will be computed.
     UPLO
-        Specifies which part of the matrix is supplied. 
+        Specifies which part of the matrix is supplied.
         'L' for lower triangle, 'U' for upper triangle. Defaults to 'L'.
         String. Either 'L' or 'U'.
     out
@@ -630,9 +630,9 @@ def eigh(
     ivy.array([-0.23606798,  4.23606798])
     >>> print(eigenvectors)
     ivy.array([[-0.85065081, -0.52573111], [0.52573111, -0.85065081]])
-    
     """
     return current_backend(x).eigh(x, UPLO=UPLO, out=out)
+
 
 @handle_exceptions
 @handle_backend_invalid
