@@ -131,7 +131,7 @@ def unsorted_segment_min(
     segment_ids: torch.Tensor,
     num_segments: Union[int, torch.Tensor],
 ) -> torch.Tensor:
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
     if data.dtype in [torch.float32, torch.float64, torch.float16, torch.bfloat16]:
@@ -180,7 +180,7 @@ def unsorted_segment_sum(
     # check should be same
     # Might require to change the assertion function name to
     # check_unsorted_segment_valid_params
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
 
@@ -270,3 +270,5 @@ def unsorted_segment_mean(
         counts[seg_id] += 1
 
     return segment_sum / counts[:, None]
+
+

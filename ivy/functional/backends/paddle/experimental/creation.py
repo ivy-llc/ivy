@@ -103,7 +103,7 @@ def unsorted_segment_min(
     segment_ids: paddle.Tensor,
     num_segments: Union[int, paddle.Tensor],
 ) -> paddle.Tensor:
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
     if data.dtype == paddle.float32:
@@ -156,7 +156,7 @@ def unsorted_segment_sum(
     # check should be same
     # Might require to change the assertion function name to
     # check_unsorted_segment_valid_params
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
 
