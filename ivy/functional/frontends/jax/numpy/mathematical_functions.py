@@ -323,6 +323,11 @@ def inner(a, b):
 
 
 @to_ivy_arrays_and_back
+def interp(x, xp, fp, left=None, right=None, period=None):
+    return ivy.interp(x, xp, fp, left=left, right=right, period=period)
+
+
+@to_ivy_arrays_and_back
 def kron(a, b):
     a, b = promote_types_of_jax_inputs(a, b)
     return ivy.kron(a, b)
