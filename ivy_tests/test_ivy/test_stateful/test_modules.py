@@ -986,19 +986,19 @@ def test_top_module(batch_shape, input_channels, output_channels, on_device):
     module = WithNestedModules(input_channels, output_channels, device=on_device)
 
     # full depth
-    assert module._dl0.top_mod() is module
-    assert module._dl1.top_mod() is module
+    assert module._dl0._top_mod_fn() is module
+    assert module._dl1._top_mod_fn() is module
 
-    assert module._dl0._l0.top_mod() is module
-    assert module._dl0._l1.top_mod() is module
-    assert module._dl1._l0.top_mod() is module
-    assert module._dl1._l1.top_mod() is module
+    assert module._dl0._l0._top_mod_fn() is module
+    assert module._dl0._l1._top_mod_fn() is module
+    assert module._dl1._l0._top_mod_fn() is module
+    assert module._dl1._l1._top_mod_fn() is module
 
     # depth 1
-    assert module._dl0._l0.top_mod(1) is module._dl0
-    assert module._dl0._l1.top_mod(1) is module._dl0
-    assert module._dl1._l0.top_mod(1) is module._dl1
-    assert module._dl1._l1.top_mod(1) is module._dl1
+    assert module._dl0._l0._top_mod_fn(1) is module._dl0
+    assert module._dl0._l1._top_mod_fn(1) is module._dl0
+    assert module._dl1._l0._top_mod_fn(1) is module._dl1
+    assert module._dl1._l1._top_mod_fn(1) is module._dl1
 
 
 # top variables
@@ -1032,14 +1032,14 @@ def test_top_variables(batch_shape, input_channels, output_channels, on_device):
         "dl1/l1/w",
     ]:
         # depth 1
-        assert key_chain in module._dl0.top_v()
-        assert key_chain in module._dl1.top_v()
+        assert key_chain in module._dl0._top_v_fn()
+        assert key_chain in module._dl1._top_v_fn()
 
         # depth 2
-        assert key_chain in module._dl0._l0.top_v()
-        assert key_chain in module._dl0._l1.top_v()
-        assert key_chain in module._dl1._l0.top_v()
-        assert key_chain in module._dl1._l1.top_v()
+        assert key_chain in module._dl0._l0._top_v_fn()
+        assert key_chain in module._dl0._l1._top_v_fn()
+        assert key_chain in module._dl1._l0._top_v_fn()
+        assert key_chain in module._dl1._l1._top_v_fn()
 
 
 @given(mode=st.booleans())
