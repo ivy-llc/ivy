@@ -138,6 +138,7 @@ def squeeze(x, axis=None, name=None):
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
+
 # NOTE:
 # Only inplace functions are to be added in this file.
 # Please add non-inplace counterparts to `/frontends/paddle/manipulation.py`.
