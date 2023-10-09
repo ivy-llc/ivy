@@ -170,7 +170,6 @@ def unsorted_segment_mean(
     segment_ids: JaxArray,
     num_segments: int,
 ) -> JaxArray:
-
     ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )

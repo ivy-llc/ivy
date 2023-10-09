@@ -270,5 +270,3 @@ def unsorted_segment_mean(
         counts[seg_id] += 1
 
     return segment_sum / counts[:, None]
-
-

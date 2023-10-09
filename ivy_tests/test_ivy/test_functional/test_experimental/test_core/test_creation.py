@@ -793,6 +793,7 @@ def test_unsorted_segment_mean(
         num_segments=num_segments,
     )
 
+
 # unsorted_segment_min
 @handle_test(
     fn_tree="functional.ivy.experimental.unsorted_segment_min",
