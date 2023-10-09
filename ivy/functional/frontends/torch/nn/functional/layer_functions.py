@@ -127,6 +127,7 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias):
     batch_shape = x_shape[:-2]
     timesteps = x_shape[-2]
     input_channels = x_shape[-1]
+
     Wi = kernel
     Wi_x = ivy.reshape(
         ivy.matmul(ivy.reshape(x, (-1, input_channels)), Wi) + bias,
@@ -136,6 +137,7 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias):
     Wh = recurrent_kernel
     ht = init_h
     ct = init_c
+
     for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
         ivy.unstack(Wii_x, axis=-2),
         ivy.unstack(Wif_x, axis=-2),
@@ -154,6 +156,7 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias):
         ot = ivy.sigmoid(Wio_xt + Who_htm1)
         ct = ft * ctm1 + it * gt
         ht = ot * ivy.tanh(ct)
+
     return ot, (ht, ct)
 
 
