@@ -20,3 +20,10 @@ def reshape_(x, shape):
     ret = ivy.reshape(x, shape)
     ivy.inplace_update(x, ret)
     return x
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("float16", "bfloat16", "int8", "int16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def squeeze_(x, axis=None, name=None):
+    return ivy.inplace_update(x,squeeze(x, axis=axis,name=None))
