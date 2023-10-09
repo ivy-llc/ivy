@@ -206,9 +206,9 @@ def test_jax_svd(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
-                  and "bfloat16" not in x[0]
-                  and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-                  and np.linalg.det(np.asarray(x[1][0])) != 0
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     lower=st.booleans(),
     transpose_a=st.booleans(),
@@ -217,17 +217,17 @@ def test_jax_svd(
     test_with_out=st.just(False),
 )
 def test_jax_triangular_solve(
-        *,
-        dtype_and_x,
-        lower,
-        transpose_a,
-        conjugate_a,
-        unit_diagonal,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        backend_fw,
+    *,
+    dtype_and_x,
+    lower,
+    transpose_a,
+    conjugate_a,
+    unit_diagonal,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     a = np.array(x[0], dtype=dtype[0])
@@ -246,7 +246,7 @@ def test_jax_triangular_solve(
         lower=lower,
         transpose_a=transpose_a,
         conjugate_a=conjugate_a,
-        unit_diagonal=unit_diagonal
+        unit_diagonal=unit_diagonal,
     )
 
     with BackendHandler.update_backend(backend_fw) as ivy_backend:

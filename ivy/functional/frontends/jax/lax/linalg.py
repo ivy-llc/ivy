@@ -41,8 +41,7 @@ def svd(x, /, *, full_matrices=True, compute_uv=True):
 
 
 @to_ivy_arrays_and_back
-def triangular_solve(a, b, left_side=False, lower=False, transpose_a=False,
-                     conjugate_a=False, unit_diagonal=False):
+def triangular_solve(a, b, left_side=False, lower=False, transpose_a=False, conjugate_a=False, unit_diagonal=False):
     """
     Solves the equation ax = b for x, where a is a triangular matrix.
     :param a: A batch of matrices with shape [..., m, m].
@@ -54,12 +53,6 @@ def triangular_solve(a, b, left_side=False, lower=False, transpose_a=False,
     :param unit_diagonal: If True, the diagonal of a is assumed to be unit (all 1s) and not accessed.
     :return: A batch of matrices the same shape and dtype as b.
     """
-    return ivy.triangular_solve(
-        a,
-        b,
-        left_side=left_side,
-        lower=lower,
-        transpose_a=transpose_a,
-        conjugate_a=conjugate_a,
-        unit_diagonal=unit_diagonal
-    )
+    return ivy.triangular_solve(a, b, left_side=left_side, lower=lower,
+                                       transpose_a=transpose_a, conjugate_a=conjugate_a,
+                                       unit_diagonal=unit_diagonal)
