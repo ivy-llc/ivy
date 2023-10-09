@@ -91,19 +91,28 @@ def _ivy_to_native(x):
     return x
 
 
-def _shape_to_native(x):
+def _shape_to_native(x: Iterable) -> Tuple[int]:
     # checks the first element of the leaf list and
     # converts it to a native array if it is an ivy array
+
+    # This function is to be used with the nested_map function
+    # it was a lambda function before but was replaced with the defined function below
+    def nested_map_shape_fn(x: Iterable) -> List:
+        return x.shape if isinstance(x, ivy.Shape) else x
+
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
             x[i] = _shape_to_native(item)
-    elif (isinstance(x, (list, tuple)) and len(x) > 0) and (
-        isinstance(x[0], ivy.Shape) and ivy.array_mode
-    ):
-        x = ivy.nested_map(lambda x: x.shape if isinstance(x, ivy.Shape) else x, x)
-    elif isinstance(x, ivy.Shape) and ivy.array_mode:
-        x = x.shape
+
+    else:
+        if (isinstance(x, (list, tuple)) and len(x) > 0) and (
+            isinstance(x[0], ivy.Shape) and ivy.array_mode
+        ):
+            x = ivy.nested_map(x, nested_map_shape_fn)
+        elif isinstance(x, ivy.Shape) and ivy.array_mode:
+            x = x.shape
+
     return x
 
 
