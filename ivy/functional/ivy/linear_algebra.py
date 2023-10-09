@@ -581,7 +581,6 @@ def eig(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
-@handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
@@ -592,104 +591,48 @@ def eigh(
     *,
     UPLO: str = "L",
     out: Optional[ivy.Array] = None,
-) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    r"""
-    Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of symmetric
-    matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of matrices) and
-    ``L`` is a vector (or a stack of vectors).
-
-    .. note::
-       The function ``eig`` will be added in a future version of the specification, as
-       it requires complex number support, once complex numbers are supported,
-       each square matrix must be Hermitian.
-
-    .. note::
-       Whether an array library explicitly checks whether an input array is a symmetric
-       matrix (or a stack of symmetric matrices) is implementation-defined.
+) -> Tuple[ivy.Array, ivy.Array]:
+    """
+    Computes the eigenvalues and eigenvectors for a Hermitian or symmetric matrix.
 
     Parameters
     ----------
     x
-        input array having shape ``(..., M, M)`` and whose innermost two dimensions form
-        square matrices. Must have a floating-point data type.
+        Input matrix. 
+        Should have a numeric data type.
+        It's a square array_like matrix for which eigenvalues and eigenvectors will be computed.
+    UPLO
+        Specifies which part of the matrix is supplied. 
+        'L' for lower triangle, 'U' for upper triangle. Defaults to 'L'.
+        String. Either 'L' or 'U'.
+    out
+        Optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
 
     Returns
     -------
     ret
-        a namedtuple (``eigenvalues``, ``eigenvectors``) whose
+        Tuple containing:
+        1. Array of eigenvalues.
+        2. Array of eigenvectors.
+        The returned array must have a data type determined by Type Promotion Rules.
 
-        -   first element must have the field name ``eigenvalues`` (corresponding to
-            :math:`\operatorname{diag}\Lambda` above) and must be an array consisting
-            of computed eigenvalues. The array containing the eigenvalues must
-            have shape ``(..., M)`` and must have a real-valued floating-point
-            data type whose precision matches the precision of ``x`` (e.g., if ``x``
-            is ``complex128``, then the ``eigenvalues`` must be ``float64``).
-        -   second element have have the field name ``eigenvectors`` (corresponding to
-            ``Q`` above) and must be an array where the columns of the inner most
-            matrices contain the computed eigenvectors. These matrices must be
-            orthogonal. The array containing the eigenvectors must have shape
-            ``(..., M, M)``.
-
-        -   Each returned array must have the same floating-point data type as ``x``.
-
-    .. note::
-       Eigenvalue sort order is left unspecified and is thus implementation-dependent.
-
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    extensions/generated/array_api.linalg.eigh.html>`_
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    The description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
 
     Examples
     --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([[1., 2.],[2., 5.]])
-    >>> eigenvalues, eigenvectors = ivy.eigh(x)
+    # Symmetric matrix
+    >>> matrix = ivy.array([[1, 2], [2, 3]])
+    >>> eigenvalues, eigenvectors = eigh(matrix)
     >>> print(eigenvalues)
-    ivy.array([0.17157288, 5.82842731])
+    ivy.array([-0.23606798,  4.23606798])
     >>> print(eigenvectors)
-    ivy.array([[-0.9238795 ,  0.38268343],
-        [ 0.38268343,  0.9238795 ]])
-
-    >>> x = ivy.array([[1., 2.], [2., 5.]])
-    >>> eigenvalues, eigenvectors = ivy.zeros(len(x)), ivy.zeros(x.shape)
-    >>> ivy.eigh(x, out=(eigenvalues, eigenvectors))
-    >>> print(eigenvalues)
-    ivy.array([0.17157288, 5.82842731])
-    >>> print(eigenvectors)
-    ivy.array([[-0.9238795 ,  0.38268343],
-           [ 0.38268343,  0.9238795 ]])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(
-    ...             a = ivy.native_array([[1., 2., 0.], [3., 4., 5.], [1., 5., 9]]),
-    ...             b = ivy.array([[2., 4., 6.], [3., 5., 7.], [0., 0.8, 2.9]]))
-    >>> eigenvalues, eigenvectors = ivy.eigh(x, UPLO = 'U')
-    >>> print(eigenvalues)
-    {
-        a: ivy.array([-0.78930789, 2.59803128, 12.19127655]),
-        b: ivy.array([-4.31213903, -0.63418275, 14.84632206])
-    }
-    >>> print(eigenvectors)
-    {
-        a: ivy.array([[0.70548367, -0.70223427, 0.09570674],
-                    [-0.63116378, -0.56109613, 0.53554028],
-                    [0.32237405, 0.43822157, 0.83906901]]),
-        b: ivy.array([[0.50766778, 0.71475857, 0.48103389],
-                    [0.3676433, -0.68466955, 0.62933773],
-                    [-0.77917379, 0.14264561, 0.61036086]])
-    }
+    ivy.array([[-0.85065081, -0.52573111], [0.52573111, -0.85065081]])
+    
     """
     return current_backend(x).eigh(x, UPLO=UPLO, out=out)
-
 
 @handle_exceptions
 @handle_backend_invalid
