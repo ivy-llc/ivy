@@ -238,7 +238,7 @@ def _pack_padded_sequence(padded_sequence, lengths, batch_first=False):
     for i, length in enumerate(lengths):
         data += [padded_sequence[i, :length]]
     data = ivy.concat(data)
-    return data, ivy.array(lengths)
+    return data
 
 
 def _pad_packed_sequence(data, batch_sizes, batch_first=False, padding_value=0):
