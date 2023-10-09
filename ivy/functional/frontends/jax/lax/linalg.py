@@ -41,22 +41,18 @@ def svd(x, /, *, full_matrices=True, compute_uv=True):
 
 
 @to_ivy_arrays_and_back
-def triangular_solve(
-    a,
-    b,
-    *,
-    left_side=False,
-    lower=False,
-    transpose_a=False,
-    conjugate_a=False,
-    unit_diagonal=False,
-):
-    return ivy.solve(
-        a,
-        b,
-        left_side=left_side,
-        lower=lower,
-        transpose_a=transpose_a,
-        conjugate_a=conjugate_a,
-        unit_diagonal=unit_diagonal,
-    )
+def triangular_solve(a, b, left_side=False, lower=False, transpose_a=False, conjugate_a=False, unit_diagonal=False):
+    """
+    Solves the equation ax = b for x, where a is a triangular matrix.
+    :param a: A batch of matrices with shape [..., m, m].
+    :param b: A batch of matrices with shape [..., m, n] if left_side is True or shape [..., n, m] otherwise.
+    :param left_side: Describes which of the two matrix equations to solve.
+    :param lower: Describes which triangle of a should be used. The other triangle is ignored.
+    :param transpose_a: If True, the value of a is transposed.
+    :param conjugate_a: If True, the complex conjugate of a is used in the solve. Has no effect if a is real.
+    :param unit_diagonal: If True, the diagonal of a is assumed to be unit (all 1s) and not accessed.
+    :return: A batch of matrices the same shape and dtype as b.
+    """
+    return ivy.triangular_solve(a, b, left_side=left_side, lower=lower,
+                                       transpose_a=transpose_a, conjugate_a=conjugate_a,
+                                       unit_diagonal=unit_diagonal)
