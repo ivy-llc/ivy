@@ -63,7 +63,7 @@ def _generic_lstm(
         weight_ih, weight_hh = (
             reform_weights(w, hidden_size, reform_permutation) for w in weights
         )
-        return tuple(ivy.expand_dims(x, axis=0) for x in (weight_ih, weight_hh))
+        return ivy.swapaxes(weight_ih, 0, 1), ivy.swapaxes(weight_hh, 0, 1)
 
     def transform_weights(layer_index):
         weights = layer_weights[layer_index]
@@ -71,9 +71,7 @@ def _generic_lstm(
             reform_weights(w, hidden_size, reform_permutation) for w in weights
         )
         bias_concat = ivy.concat([bias_ih, bias_hh], axis=0)
-        return tuple(
-            ivy.expand_dims(x, axis=0) for x in (weight_ih, weight_hh, bias_concat)
-        )
+        return ivy.swapaxes(weight_ih, 0, 1), ivy.swapaxes(weight_hh, 0, 1), bias_concat
 
     def retrieve_state(x, start, end):
         return (
