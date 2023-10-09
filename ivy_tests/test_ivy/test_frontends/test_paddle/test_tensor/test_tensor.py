@@ -3042,6 +3042,44 @@ def test_paddle_tensor_logical_xor(
     )
 
 
+# matrix_power
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="matrix_power",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=50,
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+    ),
+    n=helpers.ints(min_value=1, max_value=8),
+)
+def test_paddle_tensor_matrix_power(
+    dtype_and_x,
+    n,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"n": n},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # max
 @handle_frontend_method(
     class_tree=CLASS_TREE,

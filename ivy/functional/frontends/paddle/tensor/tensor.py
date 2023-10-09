@@ -908,3 +908,7 @@ class Tensor:
     def gather_(self, y, name=None):
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def matrix_power(self, n, name=None):
+        return paddle_frontend.matrix_power(self, n)
