@@ -2,6 +2,7 @@
 import numpy as np
 from hypothesis import strategies as st
 
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -83,11 +84,11 @@ def _roi_align_helper(draw):
 
 # nms
 @handle_frontend_test(
-    fn_tree="torch.ops.torchvision.nms",
+    fn_tree="torchvision.ops.nms",
     dts_boxes_scores_iou=_nms_helper(),
     test_with_out=st.just(False),
 )
-def test_torch_nms(
+def test_torchvision_nms(
     *,
     dts_boxes_scores_iou,
     on_device,
@@ -112,11 +113,11 @@ def test_torch_nms(
 
 # roi_align
 @handle_frontend_test(
-    fn_tree="torch.ops.torchvision.roi_align",
+    fn_tree="torchvision.ops.roi_align",
     inputs=_roi_align_helper(),
     test_with_out=st.just(False),
 )
-def test_torch_roi_align(
+def test_torchvision_roi_align(
     *,
     inputs,
     on_device,

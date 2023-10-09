@@ -10,6 +10,7 @@ versions = {
     "paddle": "2.5.1",
     "sklearn": "1.3.0",
     "xgboost": "1.7.6",
+    "torchvision": "0.15.2.",
 }
 
 
