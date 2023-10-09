@@ -2203,4 +2203,3 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
-
