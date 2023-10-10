@@ -908,7 +908,7 @@ class Tensor:
     def gather_(self, y, name=None):
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
-
+    
     
 def fill_diagonal_tensor_(x, y, offset=0, dim1=0, dim2=1, name=None):
     return paddle_frontend.tensor.manipulation.fill_diagonal_tensor_(x, y, offset=0, dim1=0, dim2=1, name=None)
