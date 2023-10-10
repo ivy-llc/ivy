@@ -107,12 +107,8 @@ def _grad_func(y, xs, retain_grads):
     {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
+    func, xs, /, *, retain_grads=False, xs_grad_idxs=((0)), ret_grad_idxs=((0))
 ):
-    if xs_grad_idxs is None:
-        xs_grad_idxs = [[0]]
-    if ret_grad_idxs is None:
-        ret_grad_idxs = [[0]]
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
         _get_required_float_variables(xs, xs_grad_idxs)

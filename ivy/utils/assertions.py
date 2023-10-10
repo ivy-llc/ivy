@@ -136,12 +136,10 @@ def check_all_or_any_fn(
     *args,
     fn,
     type="all",
-    limit=None,
+    limit=(0),
     message="args must exist according to type and limit given",
     as_array=True,
 ):
-    if limit is None:
-        limit = [0]
     if type == "all":
         check_all([fn(arg) for arg in args], message, as_array=as_array)
     elif type == "any":
