@@ -411,6 +411,37 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         """
         return ivy.make_svd_non_negative(self._data, U, S, V, nntype=nntype)
 
+    def tensor_train(
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Union[int, Sequence[int]],
+        /,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        verbose: Optional[bool] = False,
+    ) -> ivy.TTTensor:
+        """
+        ivy.Array instance method variant of ivy.tensor_train. This method simply wraps
+        the function, and so the docstring for ivy.tensor_train also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input tensor
+        rank
+            maximum allowable TT rank of the factors
+            if int, then this is the same for all the factors
+            if int list, then rank[k] is the rank of the kth factor
+        svd
+            function to use to compute the SVD
+        verbose
+            level of verbosity
+
+        Returns
+        -------
+        ivy.TTTensor
+        """
+        return ivy.tensor_train(self._data, rank, svd=svd, verbose=verbose)
+
     def truncated_svd(
         self: Union[ivy.Array, ivy.NativeArray],
         /,
@@ -675,6 +706,58 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             tol=tol,
             verbose=verbose,
         )
+
+    def tt_matrix_to_tensor(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Ivy.Array instance method variant of ivy.tt_matrix_to_tensor. This method simply
+        wraps the function, and so the docstring for ivy.tt_matrix_to_tensor also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+                array of 4D-arrays
+                TT-Matrix factors (known as core) of shape
+                (rank_k, left_dim_k, right_dim_k, rank_{k+1})
+
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        output_tensor: array
+                    tensor whose TT-Matrix decomposition was given by 'factors'
+         --------
+         >>> a = ivy.array([[[[[0.49671414],
+         ...                      [-0.1382643]],
+         ...
+         ...                     [[0.64768857],
+         ...                      [1.5230298]]]],
+         ...                   [[[[-0.23415337],
+         ...                      [-0.23413695]],
+         ...
+         ...                     [[1.57921278],
+         ...                      [0.76743472]]]]])
+         >>> a.tt_matrix_to_tensor()
+         ivy.array([[[[-0.1163073 , -0.11629914],
+          [ 0.03237505,  0.03237278]],
+
+         [[ 0.78441733,  0.38119566],
+          [-0.21834874, -0.10610882]]],
+
+
+        [[[-0.15165846, -0.15164782],
+          [-0.35662258, -0.35659757]],
+
+         [[ 1.02283812,  0.49705869],
+          [ 2.40518808,  1.16882598]]]])
+        """
+        return ivy.tt_matrix_to_tensor(self._data, out=out)
 
     def dot(
         self: Union[ivy.Array, ivy.NativeArray],

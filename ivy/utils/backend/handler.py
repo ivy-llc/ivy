@@ -10,7 +10,7 @@ import gc
 from ivy.utils import _importlib, verbosity
 
 # local
-from ivy.func_wrapper import _wrap_function, _handle_efficient_implementation_available
+from ivy.func_wrapper import _wrap_function
 from ivy.utils.backend.sub_backend_handler import (
     _clear_current_sub_backends,
     fn_name_from_version_specific_fn_name,
@@ -69,9 +69,8 @@ def prevent_access_locally(fn):
 
 @functools.lru_cache
 def _get_backend_for_arg(arg_module_name):
-    for backend in _backend_dict:
+    for backend, module_name in _backend_dict.items():
         if backend in arg_module_name:
-            module_name = _backend_dict[backend]
             return importlib.import_module(module_name)
 
 
@@ -207,7 +206,6 @@ def _set_module_backend(
     )
     backend_str = backend.current_backend_str() if backend_str is None else backend_str
     for k, v in original_dict.items():
-        v = _wrap_if_got_efficient_implementations(v) if v else v
         compositional = k not in backend.__dict__
         if compositional:
             if k in invalid_dtypes and k in target.__dict__:
@@ -229,13 +227,6 @@ def _set_module_backend(
                 invalid_dtypes=invalid_dtypes,
                 backend_str=backend_str,
             )
-
-
-def _wrap_if_got_efficient_implementations(v):
-    if callable(v):
-        if ivy.available_sub_backend_implementations(v.__name__):
-            return _handle_efficient_implementation_available(v)
-    return v
 
 
 def _handle_backend_specific_vars(target, backend):
@@ -292,7 +283,7 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
     ]
     array_list.extend(cont_array_vals)
 
-    # filter uninitialized arrays and arrays with other bakcends, and ensure the order
+    # filter uninitialized arrays and arrays with other backends, and ensure the order
     array_list = [
         arr
         for arr in array_list
@@ -426,7 +417,8 @@ def set_backend(backend: str, dynamic: bool = False):
 
         if dynamic:
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
-
+        for sub_backend in ivy.available_sub_backends:
+            ivy.set_sub_backend(sub_backend)
         if verbosity.level > 0:
             verbosity.cprint(f"backend stack: {backend_stack}")
     _handle_inplace_mode()
@@ -588,7 +580,7 @@ def choose_random_backend(excluded=None):
 @prevent_access_locally
 def with_backend(backend: str, cached: bool = True):
     # Use already compiled object
-    if cached and backend in compiled_backends.keys():
+    if cached and backend in compiled_backends:
         cached_backend = compiled_backends[backend][-1]
         return cached_backend
     with _importlib.LocalIvyImporter():
