@@ -901,7 +901,3 @@ class Tensor:
     def gather_(self, y, name=None):
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
-
-    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-    def expand(self, shape, name=None):
-        return paddle_frontend.expand(self._ivy_array, shape)
