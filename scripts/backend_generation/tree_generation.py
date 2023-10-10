@@ -269,11 +269,11 @@ def generate(config_file):
             "valid_uint_dtypes",
         ]
         for key in valids:
-            params[key + "_dict"] = {
-                "None": tuple(["ivy." + x for x in _config[key]])
+            params[f"{key}_dict"] = {
+                "None": tuple(f"ivy.{x}" for x in _config[key])
             }.__str__()
-            params["in" + key + "_dict"] = {
-                "None": tuple(["ivy." + x for x in _config["in" + key]])
+            params[f"in{key}_dict"] = {
+                "None": tuple(f"ivy.{x}" for x in _config[f"in{key}"])
             }.__str__()
         InitFileTransformer(params).visit(tree_to_write)
     except Exception as e:

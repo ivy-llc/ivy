@@ -32,6 +32,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device,
     handle_backend_invalid,
+    temp_asarray_wrapper,
 )
 
 # Helpers #
@@ -62,7 +63,7 @@ def _asarray_handle_nestable(fn: Callable) -> Callable:
         """
         # This decorator should only be applied to ivy.asarray, so we know where
         # the container must be if there is one.
-        cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        cont_fn = getattr(ivy.Container, f"static_{fn_name}")
         if isinstance(args[0], ivy.Container):
             return cont_fn(*args, **kwargs)
 
@@ -83,28 +84,35 @@ def _ivy_to_native(x):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
             x[i] = _ivy_to_native(item)
-    else:
-        if (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
-            x = ivy.to_native(x, nested=True)
-        elif ivy.is_ivy_array(x):
-            x = ivy.to_native(x)
+    elif (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
+        x = ivy.to_native(x, nested=True)
+    elif ivy.is_ivy_array(x):
+        x = ivy.to_native(x)
     return x
 
 
-def _shape_to_native(x):
+def _shape_to_native(x: Iterable) -> Tuple[int]:
     # checks the first element of the leaf list and
     # converts it to a native array if it is an ivy array
+
+    # This function is to be used with the nested_map function
+    # it was a lambda function before but was replaced with the defined function below
+    def nested_map_shape_fn(x: Iterable) -> List:
+        return x.shape if isinstance(x, ivy.Shape) else x
+
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
             x[i] = _shape_to_native(item)
+
     else:
         if (isinstance(x, (list, tuple)) and len(x) > 0) and (
             isinstance(x[0], ivy.Shape) and ivy.array_mode
         ):
-            x = ivy.nested_map(lambda x: x.shape if isinstance(x, ivy.Shape) else x, x)
+            x = ivy.nested_map(x, nested_map_shape_fn)
         elif isinstance(x, ivy.Shape) and ivy.array_mode:
             x = x.shape
+
     return x
 
 
@@ -377,6 +385,7 @@ def arange(
     )
 
 
+@temp_asarray_wrapper
 @handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1167,7 +1176,7 @@ def empty_like(
         input array from which to derive the output array shape.
     dtype
         output array data type. If dtype is None, the output array data type must be
-        inferred from x. Deafult: ``None``.
+        inferred from x. Default: ``None``.
     device
         device on which to place the created array. If device is None, the output array
         device must be inferred from x. Default: ``None``.

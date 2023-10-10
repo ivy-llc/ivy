@@ -12,7 +12,7 @@ from ivy.functional.ivy.layers import _handle_padding, _deconv_length
 
 
 @with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "complex")},
+    {"2.1.0 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def multi_head_attention(
@@ -93,7 +93,7 @@ def multi_head_attention(
 
 
 multi_head_attention.partial_mixed_handler = (
-    lambda *args, scale=None, out_proj_weights=None, is_causal=False, attention_mask=None, return_attention_weights=False, in_proj_weights=None, q_proj_weights=None, k_proj_weights=None, v_proj_weights=None, **kwargs: not ivy.exists(
+    lambda *args, scale=None, out_proj_weights=None, is_causal=False, attention_mask=None, return_attention_weights=False, in_proj_weights=None, q_proj_weights=None, k_proj_weights=None, v_proj_weights=None, **kwargs: not ivy.exists(  # noqa: E501
         scale
     )
     and ivy.exists(out_proj_weights)
@@ -130,7 +130,7 @@ def _get_embed_dim(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def linear(
@@ -245,7 +245,7 @@ def _pad_before_conv_tranpose(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -277,7 +277,7 @@ def conv1d(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -324,7 +324,7 @@ def conv1d_transpose(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -356,7 +356,7 @@ def conv2d(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -408,7 +408,7 @@ def conv2d_transpose(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -449,7 +449,7 @@ def depthwise_conv2d(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")}, backend_version
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")}, backend_version
 )
 # noinspection PyUnresolvedReferences
 def conv3d(
@@ -479,7 +479,7 @@ def conv3d(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -525,7 +525,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_dilated(
@@ -588,7 +588,7 @@ def conv_general_dilated(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_transpose(
