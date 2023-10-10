@@ -609,13 +609,11 @@ class MethodTestCaseSubRunner(FrontendTestCaseSubRunner):
         return frontend_fn, ins
 
     def _test_inplace(self, frontend_fn, ins, args, kwargs):
-        self._ivy.is_array
         conversion_fn = self._ivy.asarray
         if (
             self.method_flags.generate_frontend_arrays
             and not self.method_flags.test_trace
         ):
-            FunctionTestCaseSubRunner._is_frontend_array
             conversion_fn = FunctionTestCaseSubRunner._frontend_array_to_ivy
         with self._ivy.PreciseMode(self.method_flags.precision_mode):
             ret = frontend_fn(*args, **kwargs)
