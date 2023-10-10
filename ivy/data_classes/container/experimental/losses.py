@@ -1120,68 +1120,57 @@ class _ContainerWithLossesExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         r"""
-        ivy.Container instance method variant of ivy.poisson_nll_loss. This method
-        simply wraps the function, and so the docstring for ivy. poisson_nll_loss also
-        applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.cosine_embedding_loss. This method
+        simply wraps the function, and so the docstring for ivy. cosine_embedding_loss
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
-        self
-            input array or container containing input labels.
+        input1
+            input array or container containing first vector.
+        input2
+            input array or container containing second vector.
         target
-            input array or container containing the target labels.
-        log_input
-            If `True`, the loss is computed as
-            :math:`exp(input) - target * input`. If `False`, the loss is computed as
-            :math:`input - target * log(input + eps)`. Default is `True`.
-        full
-            Whether to compute the full loss, i.e.,
-            to add the Stirling approximation term
-            :math:`target * log(target) - target + 0.5 * log(2 * pi * target)`.
-            Default is `False`.
-        eps
-            Small value to prevent evaluation of `log(0)` when `log_input` is `False`.
-            Default is 1e-8.
+            input array or container conatining value 1 or -1.
         reduction
-            Specifies the reduction applied to the output.
-            Options are 'none', 'mean', or 'sum'.
-            'none': no reduction will be applied. 'mean': the output will be averaged.
-            'sum': the output will be summed.
-            Default is 'mean'.
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        margin
+            optional, should be number between `-1` to `1`.
+            `0` to `0.5` is suggested. if `margin` is missing
+            then default value is 0.
         key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
+            The key-chains to apply or not apply the method to. Default
+            is ``None``.
         to_apply
-            If input, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``input``.
+            If input, the method will be applied to key_chains, otherwise
+            key_chains will be skipped. Default is ``input``.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
+            Whether to prune key_chains for which the function was not
+            applied.Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-            An array of the same shape as `input` representing
-            the Poisson Negative Log Likelihood Loss.
-
-        Raises
-        ------
-        ValueError
-            If the `input` and `target` tensors do not have the same shape.
+          a container containing cosine_embedding_loss of
+          provided vectors .
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1, 0, 2]], dtype=ivy.float32),
-        ...              b=ivy.array([[3, 2, 1]], dtype=ivy.float32))
-        >>> y = ivy.Container(a=ivy.array([[0.6, 0.2, 0.3]], dtype=ivy.float32),
-        ...              b=ivy.array([[0.8, 0.2, 0.2]], dtype=ivy.float32))
-        >>> z = x.poisson_nll_loss(y)
-        >>> print(z)
+        >>> input1=ivy.Container(a=ivy.array([1,2,3,4]),b=ivy.array([2,3,4,5]))
+        >>> input2=ivy.Container(a=ivy.array([1,2,3,4]),b=ivy.array([2,3,4,5]))
+        >>> target=ivy.Container(a=ivy.array([1]),b=ivy.array([-1]))
+        >>> ivy.Container._static_cosine_embedding_loss(input1,input2,target)
         {
-            a: ivy.array(3.30244565),
-            b: ivy.array(9.06429195)
+            a: ivy.array(-0.20000005),
+            b: ivy.array(1.10204077)
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1213,68 +1202,58 @@ class _ContainerWithLossesExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ):
         r"""
-        ivy.Container instance method variant of ivy.poisson_nll_loss. This method
-        simply wraps the function, and so the docstring for ivy. poisson_nll_loss also
-        applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.cosine_embedding_loss. This method
+        simply wraps the function, and so the docstring for ivy. cosine_embedding_loss
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            input array or container containing input labels.
+            input array or container containing first vector.
+        input
+            input array or container containing second vector.
         target
-            input array or container containing the target labels.
-        log_input
-            If `True`, the loss is computed as
-            :math:`exp(input) - target * input`. If `False`, the loss is computed as
-            :math:`input - target * log(input + eps)`. Default is `True`.
-        full
-            Whether to compute the full loss, i.e.,
-            to add the Stirling approximation term
-            :math:`target * log(target) - target + 0.5 * log(2 * pi * target)`.
-            Default is `False`.
-        eps
-            Small value to prevent evaluation of `log(0)` when `log_input` is `False`.
-            Default is 1e-8.
+            input array or container conatining value 1 or -1.
         reduction
-            Specifies the reduction applied to the output.
-            Options are 'none', 'mean', or 'sum'.
-            'none': no reduction will be applied. 'mean': the output will be averaged.
-            'sum': the output will be summed.
-            Default is 'mean'.
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        margin
+            optional, should be number between `-1` to `1`.
+            `0` to `0.5` is suggested. if `margin` is missing
+            then default value is 0.
         key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
+            The key-chains to apply or not apply the method to.
+            Default is ``None``.
         to_apply
-            If input, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``input``.
+            If input, the method will be applied to key_chains,
+            otherwise key_chains will be skipped.
+            Default is ``input``.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
+            Whether to prune key_chains for which the function was
+            not applied.Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-            An array of the same shape as `input` representing
-            the Poisson Negative Log Likelihood Loss.
-
-        Raises
-        ------
-        ValueError
-            If the `input` and `target` tensors do not have the same shape.
+          a container containing cosine_embedding_loss of
+          provided vectors .
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1, 0, 2]], dtype=ivy.float32),
-        ...              b=ivy.array([[3, 2, 1]], dtype=ivy.float32))
-        >>> y = ivy.Container(a=ivy.array([[0.6, 0.2, 0.3]], dtype=ivy.float32),
-        ...              b=ivy.array([[0.8, 0.2, 0.2]], dtype=ivy.float32))
-        >>> z = x.poisson_nll_loss(y)
-        >>> print(z)
+        >>> input1=ivy.Container(a=ivy.array([1,2,3,4]),b=ivy.array([2,3,4,5]))
+        >>> input2=ivy.Container(a=ivy.array([1,2,3,4]),b=ivy.array([2,3,4,5]))
+        >>> target=ivy.Container(a=ivy.array([1]),b=ivy.array([-1]))
+        >>> input1.cosine_embedding_loss(input2,target)
         {
-            a: ivy.array(3.30244565),
-            b: ivy.array(9.06429195)
+            a: ivy.array([-0.20000005]),
+            b: ivy.array([1.10204077])
         }
         """
         return self._static_cosine_embedding_loss(
