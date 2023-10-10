@@ -131,7 +131,8 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias):
 
     Wi = kernel
     Wi_x = ivy.reshape(
-        ivy.matmul(ivy.reshape(x, (-1, input_channels)), Wi) + bias,
+        ivy.matmul(ivy.reshape(x, (-1, input_channels)), Wi)
+        + (bias if bias is not None else 0),
         batch_shape + [timesteps, -1],
     )
     Wii_x, Wif_x, Wig_x, Wio_x = ivy.split(Wi_x, num_or_size_splits=4, axis=-1)
