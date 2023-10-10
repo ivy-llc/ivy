@@ -18,8 +18,16 @@ ndarray = Array
 @with_unsupported_device_and_dtypes(
     {
         "0.4.18 and below": {
-            "cpu": ("float16", "bflooat16", "complex64", "complex128",),
-            "gpu": ("complex64", "complex128",),
+            "cpu": (
+                "float16",
+                "bflooat16",
+                "complex64",
+                "complex128",
+            ),
+            "gpu": (
+                "complex64",
+                "complex128",
+            ),
         }
     },
     "jax",
