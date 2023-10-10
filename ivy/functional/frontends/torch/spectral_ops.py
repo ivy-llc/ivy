@@ -51,6 +51,7 @@ def blackman_window(
 def kaiser_window(
     window_length,
     periodic=True,
+    beta=12.0,
     *,
     dtype=None,
     layout=None,
