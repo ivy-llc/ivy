@@ -15,3 +15,4 @@ astunparse
 ml-dtypes # mod_name=ml_dtypes
 cloudpickle
 gast
+tqdm
