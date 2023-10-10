@@ -84,3 +84,9 @@ def rfft(a, n=None, axis=-1, norm=None):
     slices[axis] = slice(0, int(ivy.shape(result, as_array=True)[axis] // 2 + 1))
     result = result[tuple(slices)]
     return result
+
+@to_ivy_arrays_and_back
+def irfft(a, n=None, axis=-1, norm=None):
+    if norm is None:
+        norm = "backward"
+    return ivy.irfft(a, axis, norm=norm, n=n)
