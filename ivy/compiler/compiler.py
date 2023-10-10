@@ -1,4 +1,4 @@
-from typing import Callable, Optional, List, Union, Iterable, Tuple, Mapping
+from typing import Callable, Optional, List, Union, Iterable, Tuple
 
 
 def trace_graph(
@@ -18,7 +18,8 @@ def trace_graph(
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None
 ):
-    """Takes `fn` and traces it into a more efficient composition of backend operations.
+    """
+    Takes `fn` and traces it into a more efficient composition of backend operations.
 
     Parameters
     ----------
@@ -85,7 +86,8 @@ def trace_graph(
     >>> start = time.time()
     >>> graph(x)
     >>> print(time.time() - start)
-    0.0001785755157470703"""
+    0.0001785755157470703
+    """
 
     from ._compiler import trace_graph as _trace_graph
 
@@ -126,9 +128,9 @@ def transpile(
     params_v=None,
     v=None
 ):
-    """Transpiles Callable objects passed as arguments. If args and kwargs are
-    specified, transpilation is performed eagerly, otherwise, transpilation
-    will happen lazily.
+    """
+    Transpiles Callable objects passed as arguments. If args and kwargs are specified,
+    transpilation is performed eagerly, otherwise, transpilation will happen lazily.
 
     Parameters
     ----------
@@ -145,7 +147,8 @@ def transpile(
 
     Returns
     -------
-    Either a transpiled Graph or a non-initialized LazyGraph."""
+    Either a transpiled Graph or a non-initialized LazyGraph.
+    """
 
     from ._compiler import transpile as _transpile
 
