@@ -243,10 +243,10 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                         ret_idx,
                         lambda x: np_frontend.numpy_dtype_to_scalar[ivy.dtype(x)](x),
                     )
-                except KeyError:
+                except KeyError as e:
                     raise ivy.utils.exceptions.IvyException(
                         "Casting to specified type is unsupported"
-                    )
+                    ) from e
                 return tuple(data)
             else:
                 # converting the scalar to float
@@ -254,10 +254,10 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                 if data.shape == ():
                     try:
                         return np_frontend.numpy_dtype_to_scalar[ivy.dtype(data)](data)
-                    except KeyError:
+                    except KeyError as e:
                         raise ivy.utils.exceptions.IvyException(
                             f"Casting to {ivy.dtype(data)} is unsupported"
-                        )
+                        ) from e
         return ret
 
     _from_zero_dim_arrays_to_scalar.from_zero_dim_arrays_to_scalar = True
