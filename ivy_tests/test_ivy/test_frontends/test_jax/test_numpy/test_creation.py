@@ -21,10 +21,26 @@ def _get_dtype_and_range(draw):
     dim = draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     start = draw(
-        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=-50, max_value=0)
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(dim,),
+            min_value=-50,
+            max_value=0,
+            large_abs_safety_factor=4,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
+        )
     )
     stop = draw(
-        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=1, max_value=50)
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(dim,),
+            min_value=1,
+            max_value=50,
+            large_abs_safety_factor=4,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
+        )
     )
     return dtype * 2, start, stop
 

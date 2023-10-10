@@ -221,6 +221,8 @@ def _get_dtypes(fn, complement=True):
             if isinstance(dtypes, dict):
                 dtypes = dtypes.get(ivy.current_backend_str(), base)
             ivy.utils.assertions.check_isinstance(dtypes, tuple)
+            if dtypes == ():
+                dtypes = base
             dtypes = list(dtypes)
             typeset_list = []
             for i, dtype in reversed(list(enumerate(dtypes))):
@@ -602,7 +604,7 @@ def finfo(
     Returns
     -------
     ret
-        an object having the followng attributes:
+        an object having the following attributes:
 
         - **bits**: *int*
 
@@ -2109,6 +2111,9 @@ def promote_types(
     ret
         The type that both input types promote to
     """
+    # in case either is of none type
+    if not (type1 and type2):
+        return type1 if type1 else type2
     query = [ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)]
     query = tuple(query)
     if query not in ivy.promotion_table:
