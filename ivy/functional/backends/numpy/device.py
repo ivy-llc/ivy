@@ -14,11 +14,11 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 def dev(x: np.ndarray, /, *, as_native: bool = False) -> Union[ivy.Device, str]:
     if as_native:
         return "cpu"
-    return as_ivy_dev("cpu")
+    return ivy.as_ivy_dev("cpu")
 
 
-def as_ivy_dev(device: str, /):
-    return ivy.Device("cpu")
+# def as_ivy_dev(device: str, /):
+#     return ivy.Device("cpu")
 
 
 def as_native_dev(device: str, /):

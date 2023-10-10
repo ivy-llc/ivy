@@ -13,6 +13,7 @@ from torch.profiler import profile
 import ivy
 from ivy.functional.ivy.device import (
     _shift_native_arrays_on_default_device,
+    _get_device_platform_and_id,
     Profiler as BaseProfiler,
 )
 
@@ -51,32 +52,51 @@ def to_device(
     return ret
 
 
+def _is_valid_device(device_platform, device_id):
+    return device_platform in ["cuda", "mps"] and device_id in range(0, num_gpus())
+
+
 def as_ivy_dev(device: torch.device, /):
     if isinstance(device, str):
-        return ivy.Device(device)
-    dev_type, dev_idx = (device.type, device.index)
-    if dev_type == "cpu":
-        return ivy.Device(dev_type)
-    elif dev_type == "mps":
-        return ivy.Device(
-            dev_type.replace("mps", "gpu")
-            + (":" + (str(dev_idx) if dev_idx is not None else "0"))
+        device_platform, device_id = _get_device_platform_and_id(device)
+    elif isinstance(device, ivy.NativeDevice):
+        device_platform, device_id = (device.type, device.index)
+    else:
+        raise ivy.exceptions.IvyDeviceError(
+            "Device is not supported or the format is wrong!"
         )
-    return ivy.Device(
-        dev_type.replace("cuda", "gpu")
-        + (":" + (str(dev_idx) if dev_idx is not None else "0"))
-    )
+    if device_platform in [None, "cpu"]:
+        return ivy.Device("cpu")
+
+    if _is_valid_device(device_platform, device_id):
+        return ivy.Device(
+            device_platform.replace("mps", "gpu").replace("cuda", "gpu")
+            + (":" + str(device_id))
+        )
+    else:
+        return ivy.Device(
+            device_platform.replace("mps", "gpu").replace("cuda", "gpu") + ":0"
+        )
 
 
 def as_native_dev(
     device: Optional[Union[ivy.Device, torch.device]] = None,
     /,
 ) -> Optional[torch.device]:
-    if not isinstance(device, str):
+    if isinstance(device, ivy.NativeDevice):
         return device
-    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-        return torch.device(ivy.Device(device).replace("gpu", "mps"))
-    return torch.device(ivy.Device(device).replace("gpu", "cuda"))
+    if isinstance(device, ivy.Device):
+        device_platform, device_id = _get_device_platform_and_id(device)
+    else:
+        raise ivy.exceptions.IvyDeviceError(
+            "Device is not supported or the format is wrong!"
+        )
+    if device_platform in [None, "cpu"]:
+        return torch.device("cpu")
+    if _is_valid_device(device_platform, device_id):
+        return torch.device(device_platform + ":" + str(device_id))
+    else:
+        return torch.device(device_platform + ":0")
 
 
 def clear_cached_mem_on_dev(device: Union[ivy.Device, torch.device], /) -> None:

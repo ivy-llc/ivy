@@ -7,7 +7,10 @@ signature.
 import mxnet as mx
 from typing import Union, Optional
 import ivy
-from ivy.functional.ivy.device import Profiler as BaseProfiler
+from ivy.functional.ivy.device import (
+    _get_device_platform_and_id,
+    Profiler as BaseProfiler,
+)
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
@@ -16,7 +19,7 @@ def dev(
 ) -> Union[(ivy.Device, str)]:
     if as_native:
         return x.context
-    return as_ivy_dev(x.context)
+    return ivy.as_ivy_dev(x.context)
 
 
 def to_device(
@@ -30,32 +33,42 @@ def to_device(
     return x.as_in_context(as_native_dev(device))
 
 
-def as_ivy_dev(device):
-    if isinstance(device, str):
-        return ivy.Device(device)
-    if device is None:
-        return None
-    # if mx device context is passed
-    p, dev_id = (device.device_type, device.device_id)
-    if p == "cpu":
-        return ivy.Device(p)
-    return ivy.Device(p + ":" + str(dev_id))
+def _is_valid_device(device_plateform, device_id, /):
+    return device_plateform in ["gpu"] and device_id in range(0, mx.context.num_gpus())
+
+
+# def as_ivy_dev(device):
+#     if isinstance(device, str):
+#         device_platform, device_id = _get_device_platform_and_id(device)
+#     elif isinstance(device, ivy.NativeDevice):
+#         device_platform, device_id = (device.device_type, device.device_id)
+#     else:
+#         raise ivy.exceptions.IvyDeviceError(
+#             "Device is not supported or the format is wrong!"
+#         )
+#     if device_platform in [None, "cpu"]:
+#         return ivy.Device("cpu")
+#     if _is_valid_device(device_platform, device_id):
+#         return ivy.Device(f"{device_platform}:{device_id}")
+#     else:
+#         return ivy.Device(f"{device_platform}:{0}")
 
 
 def as_native_dev(device: str, /):
     if isinstance(device, mx.Context):
         return device
-    if device is None or "cpu" in device:
-        mx_dev = "cpu"
-    elif "gpu" in device:
-        mx_dev = "gpu"
+    elif isinstance(device, str):
+        device_platform, device_id = _get_device_platform_and_id(device)
     else:
-        raise Exception(f"dev input {device} not supported.")
-    if device.find(":") != -1:
-        mx_dev_id = int(device[device.find(":") + 1 :])
+        raise ivy.exceptions.IvyDeviceError(
+            "Device is not supported or the format is wrong!"
+        )
+    if device_platform in [None, "cpu"]:
+        return mx.Context("cpu", device_id)
+    if _is_valid_device(device_platform, device_id):
+        return mx.Context(device_platform, device_id)
     else:
-        mx_dev_id = 0
-    return mx.Context(mx_dev, mx_dev_id)
+        return mx.Context(device_platform, 0)
 
 
 def clear_cached_mem_on_dev(device: str, /):

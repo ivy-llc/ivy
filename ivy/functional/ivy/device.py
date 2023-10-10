@@ -387,20 +387,36 @@ def dev(
 # Conversions
 
 
+def _get_device_platform_and_id(device, /):
+    device = ivy.Device(device)
+    device_platform, device_id = (device[0:3], 0)
+    if device_platform != "cpu":
+        device_id = int(device[4:])
+
+    return device_platform, device_id
+
+
+def _is_valid_device(device_platform, device_id, /):
+    return device_platform in ["gpu"] and device_id in range(
+        0, ivy.current_backend().num_gpus()
+    )
+
+
 @handle_exceptions
-def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
+def as_ivy_dev(device: Union[ivy.NativeDevice, str], /) -> ivy.Device:
     """
     Convert device to string representation.
 
     Parameters
     ----------
     device
-        The device handle to convert to string.
+        The device handle to convert to string. It'll either be the native
+        device or str based on ivy device format e.g gpu:0
 
     Returns
     -------
     ret
-        Device string e.g. 'cuda:0'.
+        Device string e.g. 'gpu:0'.
 
     Examples
     --------
@@ -408,7 +424,24 @@ def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
     >>> print(y)
     cpu
     """
-    return ivy.current_backend().as_ivy_dev(device)
+    if ivy.current_backend_str() == "numpy" or device is None:
+        return ivy.Device("cpu")
+
+    if isinstance(device, str):
+        device_platform, device_id = _get_device_platform_and_id(device)
+    elif isinstance(device, ivy.NativeDevice):
+        # have to handle this dynamically
+        device_platform, device_id = (device.platform, device.id)
+    else:
+        raise ivy.exceptions.IvyDeviceError(
+            "Device is not supported or the format is wrong!"
+        )
+    if device_platform in [None, "cpu"]:
+        return ivy.Device("cpu")
+    if _is_valid_device(device_platform, device_id):
+        return ivy.Device(f"{device_platform}:{device_id}")
+    else:
+        return ivy.Device(f"{device_platform}:{0}")
 
 
 @handle_exceptions

@@ -8,6 +8,7 @@ import time
 import ivy
 from ivy.functional.ivy.device import (
     _shift_native_arrays_on_default_device,
+    _get_device_platform_and_id,
     Profiler as BaseProfiler,
 )
 from paddle.device import core
@@ -20,7 +21,7 @@ from paddle.device import core
 def dev(
     x: paddle.Tensor, /, *, as_native: bool = False
 ) -> Union[ivy.Device, core.Place]:
-    return x.place if as_native else as_ivy_dev(x.place)
+    return x.place if as_native else ivy.as_ivy_dev(x.place)
 
 
 def to_device(
@@ -38,17 +39,26 @@ def to_device(
         return x.cuda(device.gpu_device_id())
 
 
-def as_ivy_dev(device: core.Place, /):
-    # TODO: add handling to string inputs without indices for gpu
-    if isinstance(device, str):
-        return ivy.Device(device)
+def _is_valid_device(device_platform, device_id, /):
+    return device_platform in ["gpu"] and device_id in range(0, num_gpus())
 
-    # TODO: remove this once ivy.Device accepts native device inputs
-    if device.is_cpu_place():
-        return ivy.Device("cpu")
-    elif device.is_gpu_place():
-        dev_idx = device.gpu_device_id()
-        return ivy.Device(f"gpu:{str(dev_idx)}")
+
+# def as_ivy_dev(device: core.Place, /):
+#     if isinstance(device, str):
+#         device_platform, device_id = _get_device_platform_and_id(device)
+#     elif device is None or device.is_cpu_place():
+#         return ivy.Device("cpu")
+#     elif isinstance(device, ivy.NativeDevice):
+#         device_platform, device_id = ("gpu", device.gpu_device_id())
+#     else:
+#         raise ivy.exceptions.IvyDeviceError(
+#             "Device is not supported or the format is wrong!"
+#         )
+
+#     if _is_valid_device(device_platform, device_id):
+#         return ivy.Device(f"{device_platform}:{device_id}")
+#     else:
+#         return ivy.Device(f"{device_platform}:{0}")
 
 
 def as_native_dev(
@@ -57,20 +67,22 @@ def as_native_dev(
 ) -> core.Place:
     if isinstance(device, core.Place):
         return device
+    elif isinstance(device, str):
+        device_platform, device_id = _get_device_platform_and_id(device)
+    else:
+        raise ivy.exceptions.IvyDeviceError(
+            "Device is not supported or the format is wrong!"
+        )
     native_dev = core.Place()
-    if "cpu" in device:
+    if device_platform in [None, "cpu"]:
         native_dev.set_place(paddle.device.core.CPUPlace())
 
-    elif "gpu" in device:
-        if ":" in device:
-            gpu_idx = int(device.split(":")[-1])
-            assert (
-                gpu_idx < num_gpus()
-            ), "The requested device is higher than the number of available devices"
-        else:
-            gpu_idx = 0
-        native_dev.set_place(paddle.device.core.CUDAPlace(gpu_idx))
-    return native_dev
+    if _is_valid_device(device_platform, device_id):
+        native_dev.set_place(paddle.device.core.CUDAPlace(device_id))
+        return native_dev
+    else:
+        native_dev.set_place(paddle.device.core.CUDAPlace(0))
+        return native_dev
 
 
 def clear_mem_on_dev(device: core.Place, /):

@@ -11,6 +11,7 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.ivy.device import (
     _shift_native_arrays_on_default_device,
+    _get_device_platform_and_id,
     Profiler as BaseProfiler,
 )
 
@@ -48,7 +49,7 @@ def dev(
         dv = jax.devices()[0]
     if as_native:
         return dv
-    return as_ivy_dev(dv)
+    return ivy.as_ivy_dev(dv)
 
 
 def to_device(
@@ -77,31 +78,37 @@ def _to_device(x, device=None):
 
 
 def _is_valid_device(device_platform, device_id, /):
-    return device_platform in ["gpu", "tpu"] and device_id in range(
-        0, jax.device_count(device_platform)
+    return device_platform in ["gpu"] and device_id in range(
+        0,
     )
 
 
-def as_ivy_dev(device, /):
-    if isinstance(device, str):
-        device = ivy.Device(device)
-        device_platform, device_id = (device[0:3], int(device[4:]))
-    elif isinstance(device, ivy.NativeDevice):
-        device_platform, device_id = (device.platform, device.id)
-    if device_platform in [None, "cpu"]:
-        return ivy.Device("cpu")
-    if _is_valid_device(device_platform, device_id):
-        return ivy.Device(f"{device_platform}:{device_id}")
-    else:
-        return ivy.Device(f"{device_platform}:{0}")
+# def as_ivy_dev(device, /):
+#     if isinstance(device, str):
+#         device_platform, device_id = _get_device_platform_and_id(device)
+#     elif isinstance(device, ivy.NativeDevice):
+#         device_platform, device_id = (device.platform, device.id)
+#     else:
+#         raise ivy.exceptions.IvyDeviceError(
+#             "Device is not supported or the format is wrong!"
+#         )
+#     if device_platform in [None, "cpu"]:
+#         return ivy.Device("cpu")
+#     if _is_valid_device(device_platform, device_id):
+#         return ivy.Device(f"{device_platform}:{device_id}")
+#     else:
+#         return ivy.Device(f"{device_platform}:{0}")
 
 
 def as_native_dev(device, /):
     if isinstance(device, jaxlib.xla_extension.Device):
         return device
-    if isinstance(device, str):
-        device = ivy.Device(device)
-        device_platform, device_id = (device[0:3], int(device[4:]))
+    elif isinstance(device, str):
+        device_platform, device_id = _get_device_platform_and_id(device)
+    else:
+        raise ivy.exceptions.IvyDeviceError(
+            "Device is not supported or the format is wrong!"
+        )
     if device_platform in [None, "cpu"]:
         return jax.devices("cpu")[0]
     if _is_valid_device(device_platform, device_id):
@@ -136,7 +143,7 @@ def gpu_is_available() -> bool:
 
 def num_gpus() -> int:
     try:
-        return len(jax.devices("gpu"))
+        return jax.device_count("gpu")
     except RuntimeError:
         return 0
 

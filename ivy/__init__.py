@@ -103,6 +103,8 @@ class Device(str):
             ivy.utils.assertions.check_elem_in_list(dev_str[0:3], ["gpu", "tpu", "cpu"])
             if dev_str != "cpu":
                 # ivy.assertions.check_equal(dev_str[3], ":")
+                if len(dev_str) == 3:
+                    raise ivy.exceptions.IvyDeviceError("Device Id is missing!")
                 ivy.utils.assertions.check_true(
                     dev_str[4:].isnumeric(),
                     message=f"{dev_str[4:]} must be numeric",

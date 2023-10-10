@@ -12,7 +12,10 @@ from typing import Union, Optional
 
 # local
 import ivy
-from ivy.functional.ivy.device import Profiler as BaseProfiler
+from ivy.functional.ivy.device import (
+    _get_device_platform_and_id,
+    Profiler as BaseProfiler,
+)
 
 
 def _same_device(dev_a, dev_b):
@@ -53,26 +56,45 @@ def to_device(
     return x
 
 
+def _is_valid_device(device_platform, device_id, /):
+    return device_platform in ["gpu"] and device_id in range(0, num_gpus())
+
+
 def as_ivy_dev(device: str, /):
     if isinstance(device, str) and "/" not in device:
-        return ivy.Device(device)
-    dev_in_split = device[1:].split(":")[-2:]
-    if len(dev_in_split) == 1:
-        return ivy.Device(dev_in_split[0])
-    dev_type, dev_idx = dev_in_split
-    dev_type = dev_type.lower()
-    if dev_type == "cpu":
-        return ivy.Device(dev_type)
-    return ivy.Device(":".join([dev_type, dev_idx]))
+        device_platform, device_id = _get_device_platform_and_id(device)
+    elif isinstance(device, str) and "/" in device:
+        dev_in_split = device[1:].split(":")[-2:]
+        device_platform, device_id = dev_in_split[0], dev_in_split[1]
+    else:
+        raise ivy.exceptions.IvyDeviceError(
+            "Device is not supported or the format is wrong!"
+        )
+
+    device_platform = device_platform.lower()
+    if device_platform in [None, "cpu"]:
+        return ivy.Device("cpu")
+    if _is_valid_device(device_platform, device_id):
+        return ivy.Device(f"{device_platform}:{device_id}")
+    else:
+        return ivy.Device(f"{device_platform}:{0}")
 
 
 def as_native_dev(device: str, /):
     if isinstance(device, str) and "/" in device:
         return device
-    ret = "/" + ivy.Device(device).upper()
-    if not ret[-1].isnumeric():
-        ret += ":0"
-    return ret
+    elif isinstance(device, str):
+        device_platform, device_id = _get_device_platform_and_id(device)
+    else:
+        raise ivy.exceptions.IvyDeviceError(
+            "Device is not supported or the format is wrong!"
+        )
+    if device_platform in [None, "cpu"]:
+        return "/CPU:0"
+    if _is_valid_device(device_platform, device_id):
+        return f"/{device_platform.upper()}:{device_id}"
+    else:
+        return f"/{device_platform.upper()}:{0}"
 
 
 def clear_cached_mem_on_dev(device: str, /):
