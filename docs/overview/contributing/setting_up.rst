@@ -877,7 +877,9 @@ Running a :code:`pip install -e .` is sufficient to download the binaries if the
    ivy.utils.cleanup_and_fetch_binaries()
 
 
-.. note:: Bear in mind that the binaries are **not** required for working on the open tasks for the most part, so it's totally fine to not have the binaries downloaded on your system for working on any of the open tasks.
+.. note::
+   Bear in mind that the binaries are **not** required for working on the open tasks for the most part, so it's totally fine to not have the binaries downloaded on your system for working on any of the open tasks.
+   You should pass the :code:`--skip-trace-testing` command line argument to :code:`pytest` to skip the tracer tests while running ivy or frontend tests
 
 
 **Video**
