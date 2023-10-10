@@ -200,6 +200,24 @@ def pad(img, padding, fill=0, padding_mode="constant"):
         raise "Unsupported padding_mode"
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("int8", "uint8", "int16", "float16", "bfloat16", "bool")
+        }
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def to_grayscale(img, num_output_channels=1):
+    if num_output_channels == 1:
+        return ivy.mean(img, axis=-3, keepdims=True)
+    elif num_output_channels == 3:
+        return ivy.repeat(ivy.mean(img, axis=-3, keepdims=True), 3, axis=-3)
+    else:
+        raise ValueError("num_output_channels should be either 1 or 3")
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )

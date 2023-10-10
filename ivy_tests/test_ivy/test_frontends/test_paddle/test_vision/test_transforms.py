@@ -180,6 +180,41 @@ def test_paddle_pad(
     )
 
 
+# to_grayscale
+@handle_frontend_test(
+    fn_tree="paddle.vision.transforms.to_grayscale",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=3,
+        max_dim_size=3,
+    ),
+    num_output_channels=st.sampled_from([1, 3]),
+)
+def test_paddle_to_grayscale(
+    *,
+    dtype_and_x,
+    num_output_channels,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        img=x[0],
+        num_output_channels=num_output_channels,
+    )
+
+
 # to_tensor
 @handle_frontend_test(
     fn_tree="paddle.to_tensor",
