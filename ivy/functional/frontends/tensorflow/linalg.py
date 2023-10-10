@@ -184,6 +184,20 @@ def lu_matrix_inverse(lower_upper, perm, validate_args=False, name=None):
     )
 
 
+def lu_reconstruct(lower, upper):
+    L, U = ivy.array(lower), ivy.array(upper)
+
+    if L.shape[0] != L.shape[1] or U.shape[0] != U.shape[1] or L.shape[0] != U.shape[0]:
+        raise ValueError(
+            "Invalid dimensions for LU reconstruction. `l` and `u` must be square"
+            " matrices of the same size."
+        )
+
+    A = ivy.matmul(L, U)
+
+    return A
+
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
@@ -460,14 +474,3 @@ def tensorsolve(a, b, axes):
 @to_ivy_arrays_and_back
 def trace(x, name=None):
     return ivy.trace(x, axis1=-2, axis2=-1)
-
-
-def lu_reconstruct(l, u):
-    L, U = ivy.array(l), ivy.array(u)
-
-    if L.shape[0] != L.shape[1] or U.shape[0] != U.shape[1] or L.shape[0] != U.shape[0]:
-        raise ValueError("Invalid dimensions for LU reconstruction. `l` and `u` must be square matrices of the same size.")
-
-    A = ivy.matmul(L, U)
-
-    return A
