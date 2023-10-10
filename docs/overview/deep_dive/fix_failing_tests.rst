@@ -36,90 +36,100 @@ Setting Up
 
 **Forking and cloning the repo**
 
+#. `Fork Ivy Repo <https://github.com/unifyai/ivy/fork>`_ 
+#. `Clone <https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository>`_ the fork with it's submoodules locally or on codespaces
+   
+   .. dropdown:: If you are new to Git:
 
-#. Fork the repo
-#. Clone the fork with it's submoodules locally or on codespaces
+      Depending on your preferred mode of cloning, any of the below should work:
 
-.. collapse:: If you are beginner:
+      .. code-block:: bash
 
-   Depending on your preferred mode of cloning, any of the below should work:
+         git clone --recurse-submodules git@github.com:YOUR_USERNAME/ivy.git
 
-   .. code-block:: bash
+      .. code-block:: bash
 
-      git clone --recurse-submodules git@github.com:YOUR_USERNAME/ivy.git
+         git clone --recurse-submodules https://github.com/YOUR_USERNAME/ivy.git
 
-   .. code-block:: bash
+      .. code-block:: bash
 
-      git clone --recurse-submodules https://github.com/YOUR_USERNAME/ivy.git
+         gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
 
-   .. code-block:: bash
+      Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy original repository as upstream, to easily sync with the latest changes.
 
-      gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
+      .. code-block:: bash
 
-   Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy original repository as upstream, to easily sync with the latest changes.
+         git remote add upstream https://github.com/unifyai/ivy.git
 
-   .. code-block:: bash
-
-      git remote add upstream https://github.com/unifyai/ivy.git
-
-
-**Windows**
-
-#. Open the Docker desktop, make sure it's running while following the process below.
-   You can close the Docker desktop window afterwards, Docker will continue to run in the background.
-#. Open Visual Studio Code, open the Ivy repo folder, and follow the steps listed below:
-
-   a. At the bottom right a window will pop up asking for "Dev Containers" extension, install that.
-      In case the window doesn't pop up, search for the "Dev Containers" extension in the Visual Studio Code and install that.
-   b. Install the "Docker" extension for Visual Studio Code, you'll easily find that by searching "docker" in the extensions tab.
-   c. Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to " >< " overlapped on each other.
-   d. Clicking on that will open a bar at the top which will give you an option "Open Folder in Container...", click on that.
-   e. You'll be inside the container now, where you can locally run the tests that you've modified by running the command, "pytest test_file_path::test_fn_name". Opening the container may take a long time, as the Docker image is very large (5+ GB).
+.. dropdown:: **Windows, docker and VsCode**
+   
+   #. Open the Docker desktop, make sure it's running in the background while following the process below.
+   #. Open Ivy repo folder with Visual Studio Code, and follow the next steps:
+      a. At the bottom right a window will pop up asking for "Dev Containers" extension, install that.
+         In case the window doesn't pop up, search for the "Dev Containers" extension in the Visual Studio Code and install that.
+      b. Install the "Docker" extension for Visual Studio Code, you'll easily find that by searching "docker" in the extensions tab.
+      c. Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to " >< " overlapped on each other.
+      d. Clicking on that will open a bar at the top which will give you an option "Open Folder in Container...", click on that.
+      e. Run tests with the next command "pytest test_file_path::test_fn_name". You are inside the container now, and you can locally run the tests that you've modified.
+      
+   .. warning::
+      Opening the container may take a long time, as the Docker image is very large (5+ GB).
 
 
 How to run tests
 ****************
 To find tests which are currently failing, you can go to our github repo and go to `issues`_, then filter by label :code:`Failing Test`.
-There you will find all the failing tests
-which you can work on. For instance :code:`test_jax_transpose` is failing in this `issue`_, this function is in the Jax frontends in the manipulaiton submodule.
-To run tests locally, you can run the command "pytest test_file_path::test_fn_name". So in the case of :code:`test_jax_transpose`, the command will be
-:code:`pytest ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_manipulations.py::test_jax_transpose`. You can also run tests via the green button but for that, you will first have to
-setup testing on vs code.
+There you will find all the failing tests which you can work on.
 
-**Setting Up Testing**
+You can notice :code:`test_jax_transpose` is failing in this `issue`_, this function is in the Jax frontends in the manipulaiton submodule.
 
-The steps are as following to setup testing on VS Code.
-1. Under the flask Icon in the toolbar select "Configure Python Tests" and select PyTest as the test framework.
+To run test locally, you need to run the following command: 
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_01.png?raw=true
-   :width: 420
+:code:`pytest test_file_path::test_fn_name`
 
-2. Select ivy_tests as the root directory for testing.
+In the case of :code:`test_jax_transpose`, the command will be
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_02.png?raw=true
-   :width: 420
+:code:`pytest ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_manipulations.py::test_jax_transpose`. 
 
-3. Configure the _array_module.py file in the array_api_tests to be set to one of the supported frameworks.
+You will need to read through the errors in the terminal and use the common errors in the list at the end of this page to solve the test.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true
-   :width: 420
+**Setting Up Testing for VsCode**
 
-4. Following all of this, you should refresh the test suite and you should now be able to run tests right from VS Code!
+.. dropdown:: VsCode
+   
+   The steps are as following to setup testing on VS Code.
 
-5. To simply run the tests using the play button in the toolbar, you will need to add the .vscode folder to your workspace. Then add the ``settings.json`` file containing the following:
+   1. In the left toolbar menu, click on the flask Icon and select "Configure Python Tests" and select PyTest as the test framework.
 
-.. code-block:: json
+   .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_01.png?raw=true
+      :width: 420
 
-      {
-         "python.testing.pytestArgs": [
-            "./ivy_tests/test_ivy/",
-            "./ivy_tests/array_api_testing/test_array_api/",
-            "--continue-on-collection-errors",
-         ],
-         "python.testing.unittestEnabled": false,
-         "python.testing.pytestEnabled": true,
-         "python.testing.autoTestDiscoverOnSaveEnabled": true,
-      }
+   1. Select ivy_tests as the root directory for testing.
+
+   .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_02.png?raw=true
+      :width: 420
+
+   1. Configure the _array_module.py file in the array_api_tests to be set to one of the supported frameworks.
+
+   .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true
+      :width: 420
+
+   1. Following all of this, you should refresh the test suite and you should now be able to run tests right from VS Code!
+
+   2. To simply run the tests using the play button in the toolbar, you will need to add the .vscode folder to your workspace. Then add the ``settings.json`` file containing the following:
+
+   .. code-block:: json
+
+         {
+            "python.testing.pytestArgs": [
+               "./ivy_tests/test_ivy/",
+               "./ivy_tests/array_api_testing/test_array_api/",
+               "--continue-on-collection-errors",
+            ],
+            "python.testing.unittestEnabled": false,
+            "python.testing.pytestEnabled": true,
+            "python.testing.autoTestDiscoverOnSaveEnabled": true,
+         }
 
 Common Errors
 *************
