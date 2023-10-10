@@ -120,3 +120,29 @@ def test_layer_norm(
         offset=offset[0],
         new_std=new_std,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.weight_norm",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=16,
+        small_abs_safety_factor=16,
+        safety_factor_scale="log",
+    ),
+    g=st.floats(min_value=0.001),
+    test_with_out=False,
+)
+def test_weight_norm(*, dtype_and_x, g, test_flags, backend_fw, fn_name, on_device):
+    dtype, v = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=0.5,
+        atol_=0.5,
+        v=v[0],
+        g=g,
+    )
