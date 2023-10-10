@@ -36,6 +36,56 @@ def _generate_batchnorm_data(draw):
 
 
 @handle_method(
+    method_tree="BatchNorm1D.__call__",
+    dtype_and_x_features=_generate_batchnorm_data(),
+    momentum=st.floats(min_value=0.0, max_value=1.0, exclude_min=True),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+)
+def test_batch_norm_1d_layer(
+    *,
+    dtype_and_x_features,
+    momentum,
+    init_with_v,
+    method_with_v,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    backend_fw,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, features = dtype_and_x_features
+    helpers.test_method(
+        backend_to_test=backend_fw,
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "num_features": features,
+            "eps": ivy.min_base,
+            "affine": True,
+            "momentum": momentum,
+            "track_running_stats": True,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        test_gradients=test_gradients,
+        rtol_=1e-02,
+        atol_=1e-02,
+        on_device=on_device,
+    )
+
+
+@handle_method(
     method_tree="BatchNorm2D.__call__",
     dtype_and_x_features=_generate_batchnorm_data(),
     momentum=st.floats(min_value=0.0, max_value=1.0, exclude_min=True),
@@ -124,6 +174,64 @@ def test_layer_norm_layer(
             "dtype": input_dtype[0],
         },
         method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+@handle_method(
+    method_tree="WeightNorm.__call__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+)
+def test_weight_norm_layer(
+    *,
+    dtype_and_x,
+    init_with_v,
+    method_with_v,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    backend_fw,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    dtype_x, x = dtype_and_x
+    if x[0].shape[1] == 1:
+        layer = st.example(
+            st.sampled_from([Conv2D(1, 20, (5, 5)), Conv2DTranspose(1, 20, (5, 5))])
+        )
+
+    elif x[0].shape[1] == 2:
+        layer = st.example(
+            st.sampled_from([Conv2D(2, 20, (5, 5)), Conv2DTranspose(2, 20, (5, 5))])
+        )
+
+    elif x[0].shape[2] == 3:
+        layer = st.example(
+            st.sampled_from([Conv2D(3, 20, (5, 5)), Conv2DTranspose(3, 20, (5, 5))])
+        )
+
+    helpers.test_method(
+        backend_to_test=backend_fw,
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "layer": layer,
+            "device": on_device,
+        },
+        method_input_dtypes=dtype_x,
         method_all_as_kwargs_np={"inputs": x[0]},
         class_name=class_name,
         method_name=method_name,
