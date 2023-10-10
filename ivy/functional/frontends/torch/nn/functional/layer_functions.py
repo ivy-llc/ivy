@@ -43,10 +43,8 @@ def _generic_lstm(
 
     unidirectional = not bidirectional
 
-    h_outs = []
-
     h0, c0 = initial_states
-    c_outs = []
+    h_outs, c_outs = [], []
 
     # pytorch is input, forget, cell, output.
     # onnx is    input, output, forget, cell.
@@ -114,11 +112,14 @@ def _generic_lstm(
             output = ivy.squeeze(output, axis=1)
 
         h_outs.append(h_out)
+        c_outs.append(c_out)
 
     if batch_first:
         output = ivy.permute_dims(output, axes=(1, 0, 2))
+
     h_outs = h_out if num_layers == 1 else ivy.concat(h_outs, axis=0)
     c_outs = c_out if num_layers == 1 else ivy.concat(c_outs, axis=0)
+
     return output, h_outs, c_outs
 
 
