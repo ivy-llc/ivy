@@ -88,6 +88,7 @@ class LayerNorm(Module):
             new_std=self._new_std,
         )
 
+
 class BatchNorm1D(Module):
     def __init__(
         self,
@@ -105,6 +106,7 @@ class BatchNorm1D(Module):
     ):
         """
         Class for applying Layer Normalization over a mini-batch of inputs.
+
         Parameters
         ----------
         num_features
@@ -177,6 +179,7 @@ class BatchNorm1D(Module):
     ):
         """
         Perform forward pass of the BatchNorm layer.
+
         Parameters
         ----------
         inputs
@@ -205,6 +208,7 @@ class BatchNorm1D(Module):
             self.v.running_var = running_var
 
         return normalized
+
 
 class BatchNorm2D(Module):
     def __init__(
@@ -321,6 +325,7 @@ class BatchNorm2D(Module):
 
         return normalized
 
+
 class WeightNorm(Module):
     def __init__(self, layer, data_init=True, **kwargs):
         self.layer = layer
@@ -332,8 +337,7 @@ class WeightNorm(Module):
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer."""
         v = {
-            "w": self._weight_init.create_variables(
-                    self._w_shape, device, dtype),
+            "w": self._weight_init.create_variables(self._w_shape, device, dtype),
         }
         v = dict(
             **v,
@@ -361,7 +365,8 @@ class WeightNorm(Module):
     def data_dep_init(self, x):
         # TODO: check expand dims works well with all types of layers
         self.v.w = ivy.l2_normalize(
-            self.v.v, axis=self.kernel_norm_axes) * ivy.expand_dims(self.v.g, -4)
+            self.v.v, axis=self.kernel_norm_axes
+        ) * ivy.expand_dims(self.v.g, -4)
         act = self.layer.activation
         self.layer.activation = None
 
@@ -371,9 +376,9 @@ class WeightNorm(Module):
 
         mean_t, std_t = ivy.mean(x_init, norm_axes_out), ivy.std(x_init, norm_axes_out)
 
-        self.v.g = 1. / (std_t + 1e-10)
+        self.v.g = 1.0 / (std_t + 1e-10)
 
-        self.v.b = -mean_t/std_t
+        self.v.b = -mean_t / std_t
 
         self.layer.activation = act
 

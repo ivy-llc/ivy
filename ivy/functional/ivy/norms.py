@@ -16,16 +16,15 @@ from ivy.utils.exceptions import handle_exceptions
 # Extra #
 # ------#
 
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-def weight_norm(
-        v: Union[ivy.Array, ivy.NativeArray],
-        g: Union[int, float]
-        ):
-    return (g/ivy.vector_norm(v)) * v
+def weight_norm(v: Union[ivy.Array, ivy.NativeArray], g: Union[int, float]):
+    return (g / ivy.vector_norm(v)) * v
+
 
 @handle_exceptions
 @handle_nestable
