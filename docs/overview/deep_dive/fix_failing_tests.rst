@@ -36,9 +36,9 @@ Setting Up
 
 **Forking and cloning the repo**
 
-#. `Fork Ivy Repo <https://github.com/unifyai/ivy/fork>`_ 
+#. `Fork Ivy Repo <https://github.com/unifyai/ivy/fork>`_
 #. `Clone <https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository>`_ the fork with it's submoodules locally or on codespaces
-   
+
    .. dropdown:: If you are new to Git:
 
       Depending on your preferred mode of cloning, any of the below should work:
@@ -62,7 +62,7 @@ Setting Up
          git remote add upstream https://github.com/unifyai/ivy.git
 
 .. dropdown:: **Windows, docker and VsCode**
-   
+
    #. Open the Docker desktop, make sure it's running in the background while following the process below.
    #. Open Ivy repo folder with Visual Studio Code, and follow the next steps:
       a. At the bottom right a window will pop up asking for "Dev Containers" extension, install that.
@@ -71,7 +71,7 @@ Setting Up
       c. Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to " >< " overlapped on each other.
       d. Clicking on that will open a bar at the top which will give you an option "Open Folder in Container...", click on that.
       e. Run tests with the next command "pytest test_file_path::test_fn_name". You are inside the container now, and you can locally run the tests that you've modified.
-      
+
    .. warning::
       Opening the container may take a long time, as the Docker image is very large (5+ GB).
 
@@ -83,20 +83,20 @@ There you will find all the failing tests which you can work on.
 
 You can notice :code:`test_jax_transpose` is failing in this `issue`_, this function is in the Jax frontends in the manipulaiton submodule.
 
-To run test locally, you need to run the following command: 
+To run test locally, you need to run the following command:
 
 :code:`pytest test_file_path::test_fn_name`
 
 In the case of :code:`test_jax_transpose`, the command will be
 
-:code:`pytest ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_manipulations.py::test_jax_transpose`. 
+:code:`pytest ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_manipulations.py::test_jax_transpose`.
 
 You will need to read through the errors in the terminal and use the common errors in the list at the end of this page to solve the test.
 
 **Setting Up Testing for VsCode**
 
 .. dropdown:: VsCode
-   
+
    The steps are as following to setup testing on VS Code.
 
    1. In the left toolbar menu, click on the flask Icon and select "Configure Python Tests" and select PyTest as the test framework.
