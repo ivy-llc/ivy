@@ -515,7 +515,7 @@ def ndenumerate(
             for idx in _iter_product(*i):
                 yield idx, input[idx]
 
-    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
+    input = input if ivy.is_ivy_array(input) else ivy.array(input)
     return _ndenumerate(input)
 
 
@@ -949,7 +949,7 @@ def random_parafac2(
     -------
       ivy.Parafac2Tensor
     """
-    if not all(shape[1] == shapes[0][1] for shape in shapes):
+    if any(shape[1] != shapes[0][1] for shape in shapes):
         raise ValueError("All matrices must have equal number of columns.")
 
     projection_matrices = [
@@ -1013,14 +1013,14 @@ def random_tt(
     rank = list(rank)
     if rank[0] != 1:
         message = (
-            "Provided rank[0] == {} but boundaring conditions dictatate rank[0] =="
-            " rank[-1] == 1.".format(rank[0])
+            f"Provided rank[0] == {rank[0]} but boundaring conditions dictatate rank[0]"
+            " == rank[-1] == 1."
         )
         raise ValueError(message)
     if rank[-1] != 1:
         message = (
-            "Provided rank[-1] == {} but boundaring conditions dictatate rank[0] =="
-            " rank[-1] == 1.".format(rank[-1])
+            f"Provided rank[-1] == {rank[-1]} but boundaring conditions dictatate"
+            " rank[0] == rank[-1] == 1."
         )
         raise ValueError(message)
 
