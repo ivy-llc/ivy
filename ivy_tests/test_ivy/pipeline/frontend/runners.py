@@ -23,137 +23,6 @@ except ImportError:
     tf.TensorShape = None
 
 
-class FrontendTestCaseSubRunner(TestCaseSubRunner):
-    def __init__(
-        self,
-        frontend,
-        backend_handler,
-        backend_to_test,
-        on_device,
-        traced_fn,
-    ):
-        self.frontend = frontend
-        self.on_device = on_device
-        self.backend_to_test = backend_to_test
-        self.traced_fn = traced_fn
-        self._backend_handler = backend_handler
-        self.__ivy = self._backend_handler.set_backend(backend_to_test)
-        self.local_importer = self._ivy.utils.dynamic_import
-
-    @staticmethod
-    def _is_frontend_array(x):
-        return hasattr(x, "ivy_array")
-
-    @staticmethod
-    def _frontend_array_to_ivy(x):
-        if FunctionTestCaseSubRunner._is_frontend_array(x):
-            return x.ivy_array
-        else:
-            return x
-
-    @property
-    def _ivy(self):
-        return self.__ivy
-
-    @property
-    def backend_handler(self):
-        return self._backend_handler
-
-    def _get_dev_str(self, x):
-        config_module = importlib.import_module(
-            f"ivy_tests.test_ivy.test_frontends.config.{self.frontend}"
-        )
-        return config_module.get_config().as_native_device(self._ivy.dev(x))
-
-    def _arrays_to_frontend(self):
-        def _new_fn(x):
-            if FunctionTestCaseSubRunner._is_frontend_array(x):
-                return x
-            elif self._ivy.is_array(x):
-                frontend_array_fn = self._get_frontend_creation_fn()
-                if tuple(x.shape) == ():
-                    try:
-                        ret = frontend_array_fn(x, dtype=self._ivy.Dtype(str(x.dtype)))
-                    except self._ivy.utils.exceptions.IvyException:
-                        ret = frontend_array_fn(x, dtype=self._ivy.array(x).dtype)
-                else:
-                    ret = frontend_array_fn(x)
-                return ret
-            return x
-
-        return _new_fn
-
-    def _args_to_frontend(self, *args, include_derived=None, **kwargs):
-        frontend_args = self._ivy.nested_map(
-            self._arrays_to_frontend(),
-            args,
-            include_derived,
-            shallow=False,
-        )
-        frontend_kwargs = self._ivy.nested_map(
-            self._arrays_to_frontend(),
-            kwargs,
-            include_derived,
-            shallow=False,
-        )
-        return frontend_args, frontend_kwargs
-
-    def _get_frontend_creation_fn(self):
-        # ToDo: do this through config file
-        return self.local_importer.import_module(
-            f"ivy.functional.frontends.{self.frontend}"
-        )._frontend_array
-
-    def _assert_ret_is_frontend_array(self, ret):
-        assert self._ivy.nested_map(
-            lambda x: (
-                FunctionTestCaseSubRunner._is_frontend_array(x)
-                if self._ivy.is_array(x)
-                else True
-            ),
-            ret,
-            shallow=False,
-        ), "Frontend function returned non-frontend arrays: {}".format(ret)
-
-
-class GTFrontendTestCaseSubRunner(TestCaseSubRunner):
-    def __init__(
-        self,
-        frontend,
-        on_device,
-    ):
-        self.frontend = frontend
-        self.on_device = on_device
-        self.frontend_config = self._get_frontend_config()
-
-    def _get_frontend_config(self):
-        config_module = importlib.import_module(
-            f"ivy_tests.test_ivy.test_frontends.config.{self.frontend}"
-        )
-        return config_module.get_config()
-
-    def _get_dev_str(self, x):
-        return self.frontend_config.get_native_device(x)
-
-    def _is_array(self, x):
-        return self.frontend_config.is_native_array(x)
-
-    def _flatten(self, *, ret):
-        if self.frontend_config.isscalar(ret):
-            frontend_ret_flat = [ret]
-        else:
-            # tuplify the frontend return
-            frontend_ret = (ret,) if not isinstance(ret, tuple) else ret
-            frontend_ret_idxs = ivy.nested_argwhere(
-                frontend_ret, self.frontend_config.is_native_array
-            )
-            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-        return frontend_ret_flat
-
-    def _flatten_ret_to_np(self, ret_flat):
-        return [self.frontend_config.to_numpy(x) for x in ret_flat]
-
-
 class FrontendFunctionTestCaseRunner(TestCaseRunner):
     def __init__(
         self,
@@ -347,6 +216,137 @@ class FrontendMethodTestCaseRunner(TestCaseRunner):
             method_all_as_kwargs_np,
         )
         self._check_assertions(target_results, ground_truth_results)
+
+
+class FrontendTestCaseSubRunner(TestCaseSubRunner):
+    def __init__(
+        self,
+        frontend,
+        backend_handler,
+        backend_to_test,
+        on_device,
+        traced_fn,
+    ):
+        self.frontend = frontend
+        self.on_device = on_device
+        self.backend_to_test = backend_to_test
+        self.traced_fn = traced_fn
+        self._backend_handler = backend_handler
+        self.__ivy = self._backend_handler.set_backend(backend_to_test)
+        self.local_importer = self._ivy.utils.dynamic_import
+
+    @staticmethod
+    def _is_frontend_array(x):
+        return hasattr(x, "ivy_array")
+
+    @staticmethod
+    def _frontend_array_to_ivy(x):
+        if FunctionTestCaseSubRunner._is_frontend_array(x):
+            return x.ivy_array
+        else:
+            return x
+
+    @property
+    def _ivy(self):
+        return self.__ivy
+
+    @property
+    def backend_handler(self):
+        return self._backend_handler
+
+    def _get_dev_str(self, x):
+        config_module = importlib.import_module(
+            f"ivy_tests.test_ivy.test_frontends.config.{self.frontend}"
+        )
+        return config_module.get_config().as_native_device(self._ivy.dev(x))
+
+    def _arrays_to_frontend(self):
+        def _new_fn(x):
+            if FunctionTestCaseSubRunner._is_frontend_array(x):
+                return x
+            elif self._ivy.is_array(x):
+                frontend_array_fn = self._get_frontend_creation_fn()
+                if tuple(x.shape) == ():
+                    try:
+                        ret = frontend_array_fn(x, dtype=self._ivy.Dtype(str(x.dtype)))
+                    except self._ivy.utils.exceptions.IvyException:
+                        ret = frontend_array_fn(x, dtype=self._ivy.array(x).dtype)
+                else:
+                    ret = frontend_array_fn(x)
+                return ret
+            return x
+
+        return _new_fn
+
+    def _args_to_frontend(self, *args, include_derived=None, **kwargs):
+        frontend_args = self._ivy.nested_map(
+            self._arrays_to_frontend(),
+            args,
+            include_derived,
+            shallow=False,
+        )
+        frontend_kwargs = self._ivy.nested_map(
+            self._arrays_to_frontend(),
+            kwargs,
+            include_derived,
+            shallow=False,
+        )
+        return frontend_args, frontend_kwargs
+
+    def _get_frontend_creation_fn(self):
+        # ToDo: do this through config file
+        return self.local_importer.import_module(
+            f"ivy.functional.frontends.{self.frontend}"
+        )._frontend_array
+
+    def _assert_ret_is_frontend_array(self, ret):
+        assert self._ivy.nested_map(
+            lambda x: (
+                FunctionTestCaseSubRunner._is_frontend_array(x)
+                if self._ivy.is_array(x)
+                else True
+            ),
+            ret,
+            shallow=False,
+        ), "Frontend function returned non-frontend arrays: {}".format(ret)
+
+
+class GTFrontendTestCaseSubRunner(TestCaseSubRunner):
+    def __init__(
+        self,
+        frontend,
+        on_device,
+    ):
+        self.frontend = frontend
+        self.on_device = on_device
+        self.frontend_config = self._get_frontend_config()
+
+    def _get_frontend_config(self):
+        config_module = importlib.import_module(
+            f"ivy_tests.test_ivy.test_frontends.config.{self.frontend}"
+        )
+        return config_module.get_config()
+
+    def _get_dev_str(self, x):
+        return self.frontend_config.get_native_device(x)
+
+    def _is_array(self, x):
+        return self.frontend_config.is_native_array(x)
+
+    def _flatten(self, *, ret):
+        if self.frontend_config.isscalar(ret):
+            frontend_ret_flat = [ret]
+        else:
+            # tuplify the frontend return
+            frontend_ret = (ret,) if not isinstance(ret, tuple) else ret
+            frontend_ret_idxs = ivy.nested_argwhere(
+                frontend_ret, self.frontend_config.is_native_array
+            )
+            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        return frontend_ret_flat
+
+    def _flatten_ret_to_np(self, ret_flat):
+        return [self.frontend_config.to_numpy(x) for x in ret_flat]
 
 
 class FunctionTestCaseSubRunner(FrontendTestCaseSubRunner):
@@ -1001,13 +1001,16 @@ class GTMethodTestCaseSubRunner(GTFrontendTestCaseSubRunner):
             (init_args_result, init_kwargs_result, _),
             (method_args_result, method_kwargs_result, _),
         ) = self._search_args(init_all_as_kwargs_np, method_all_as_kwargs_np)
-        args_constructor, kwargs_constructor, args_method, kwargs_method = (
-            self._preprocess_args(
-                init_args_result,
-                init_kwargs_result,
-                method_args_result,
-                method_kwargs_result,
-            )
+        (
+            args_constructor,
+            kwargs_constructor,
+            args_method,
+            kwargs_method,
+        ) = self._preprocess_args(
+            init_args_result,
+            init_kwargs_result,
+            method_args_result,
+            method_kwargs_result,
         )
         return self._call_function(
             args_constructor, kwargs_constructor, args_method, kwargs_method
