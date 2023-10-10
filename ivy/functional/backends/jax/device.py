@@ -76,104 +76,38 @@ def _to_device(x, device=None):
     return x
 
 
-def is_valid_device(device_platform, device_id, /):
+def _is_valid_device(device_platform, device_id, /):
     return device_platform in ["gpu", "tpu"] and device_id in range(
         0, jax.device_count(device_platform)
     )
 
 
 def as_ivy_dev(device, /):
-    """
-    Convert a JAX device to an ivy Device.
-
-    Parameters
-    ----------
-    device
-        The JAX device to convert.
-        If the device is a string, it must be in the format
-        'platform:id'.
-
-    If the device is a JAX device, the platform and id are extracted.
-    If the device is None, the default device is returned.
-    returns
-    -------
-    ret
-        The converted ivy Device.
-    Examples
-    --------
-    >>> ivy.as_ivy_dev(jax.devices()[0])
-    Device(cpu)
-    >>> ivy.as_ivy_dev('gpu:0')
-    Device(gpu:0)
-    >>> ivy.as_ivy_dev(None)
-    Device(cpu)
-    >>> ivy.as_ivy_dev(jax.devices()[1])
-    Device(cpu:1)
-    >>> ivy.as_ivy_dev('gpu:1')
-    Device(gpu:1)
-    >>> ivy.as_ivy_dev('tpu:0')
-    Device(tpu:0)
-    >>> ivy.as_ivy_dev('tpu:1')
-    Device(tpu:1)
-    >>> ivy.as_ivy_dev('tpu:2')
-    Device(tpu:2)
-    >>> ivy.as_ivy_dev('tpu:3')
-    """
-    if device is None:
-        return ivy.Device("cpu")
     if isinstance(device, str):
         device = ivy.Device(device)
-        p, dev_id = (device[0:3], int(device[4:]))
+        device_platform, device_id = (device[0:3], int(device[4:]))
+    elif isinstance(device, ivy.NativeDevice):
+        device_platform, device_id = (device.platform, device.id)
+    if device_platform in [None, "cpu"]:
+        return ivy.Device("cpu")
+    if _is_valid_device(device_platform, device_id):
+        return ivy.Device(f"{device_platform}:{device_id}")
     else:
-        p, dev_id = (device.platform, device.id)
-    if p == "cpu":
-        return ivy.Device(p)
-    if is_valid_device(p, dev_id):
-        return ivy.Device(p + ":" + str(dev_id))
-    else:
-        return ivy.Device(p + ":" + str(0))
+        return ivy.Device(f"{device_platform}:{0}")
 
 
 def as_native_dev(device, /):
-    """
-    Convert an ivy Device to a JAX device.
-
-    Parameters
-    ----------
-    device
-        The ivy Device to convert.
-    If the device is a string, it must be in the format
-    'platform:id'.
-    If the device is a Ivy device, it must be in the format
-        'platform:id'.
-    If the device is None, the default device is returned.
-    returns
-    -------
-    ret
-        The converted JAX device.
-    Examples
-    --------
-    >>> ivy.as_native_dev(ivy.Device('cpu'))
-    CpuDevice(id=0)
-    """
-    if isinstance(device, jaxlib.xla_extension.Device) and is_valid_device(
-        device.platform, device.id
-    ):
+    if isinstance(device, jaxlib.xla_extension.Device):
         return device
-    dev_split = ivy.Device(device).split(":")
-    device = dev_split[0]
-    if len(dev_split) > 1:
-        idx = int(dev_split[1])
+    if isinstance(device, str):
+        device = ivy.Device(device)
+        device_platform, device_id = (device[0:3], int(device[4:]))
+    if device_platform in [None, "cpu"]:
+        return jax.devices("cpu")[0]
+    if _is_valid_device(device_platform, device_id):
+        return jax.devices(device_platform)[device_id]
     else:
-        idx = 0
-
-    if device == "cpu":
-        return jax.devices(device)[idx]
-
-    elif is_valid_device(device, idx):
-        return jax.devices(device)[idx]
-    else:
-        return jax.devices(device)[0]
+        return jax.devices(device_platform)[0]
 
 
 def handle_soft_device_variable(*args, fn, **kwargs):

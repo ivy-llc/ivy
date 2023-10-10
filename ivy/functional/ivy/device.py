@@ -387,10 +387,6 @@ def dev(
 # Conversions
 
 
-def get_all_native_devices():
-    return ivy.current_backend().get_all_local_devices()
-
-
 @handle_exceptions
 def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
     """
