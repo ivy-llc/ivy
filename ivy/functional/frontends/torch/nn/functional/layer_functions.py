@@ -53,14 +53,14 @@ def _generic_lstm(
     for i in range(num_layers):
         if unidirectional:
             if weights_per_layer == 4:
-                weight_ih, weight_hh, bias_concat = _transform_weights(
+                weight_ih, weight_hh, (bias_f, bias_b) = _transform_weights(
                     layer_weights, i, hidden_size, reform_permutation
                 )
             else:
                 weight_ih, weight_hh = _transform_weights_no_bias(
                     layer_weights, i, hidden_size, reform_permutation
                 )
-                bias_concat = None
+                bias_f = bias_b = None
 
             state_indices = i, i + 1
         else:
@@ -71,7 +71,6 @@ def _generic_lstm(
                 weight_ih_b, weight_hh_b, bias_b = _transform_weights(
                     layer_weights, 2 * i + 1, hidden_size, reform_permutation
                 )
-                bias_concat = ivy.concat([bias_f, bias_b], axis=0)
             else:
                 weight_ih_f, weight_hh_f = _transform_weights_no_bias(
                     layer_weights, 2 * i, hidden_size, reform_permutation
@@ -79,7 +78,7 @@ def _generic_lstm(
                 weight_ih_b, weight_hh_b = _transform_weights_no_bias(
                     layer_weights, 2 * i + 1, hidden_size, reform_permutation
                 )
-                bias_concat = None
+                bias_f = bias_b = None
 
             weight_ih = ivy.concat([weight_ih_f, weight_ih_b], axis=0)
             weight_hh = ivy.concat([weight_hh_f, weight_hh_b], axis=0)
@@ -93,7 +92,7 @@ def _generic_lstm(
                 _retrieve_state(c0, *state_indices, num_layers),
             ),
             (weight_ih, weight_hh),
-            bias_concat,
+            (bias_f, bias_b),
             batch_first,
             bidirectional,
         )
@@ -121,7 +120,7 @@ def _generic_lstm(
     return output, h_outs, c_outs
 
 
-def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias):
+def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias):
     x_shape = list(x.shape)
     batch_shape = x_shape[:-2]
     timesteps = x_shape[-2]
@@ -147,7 +146,9 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias):
     ):
         htm1 = ht
         ctm1 = ct
-        Wh_htm1 = ivy.matmul(htm1, Wh)
+        Wh_htm1 = ivy.matmul(htm1, Wh) + (
+            recurrent_bias if recurrent_bias is not None else 0
+        )
         Whi_htm1, Whf_htm1, Whg_htm1, Who_htm1 = ivy.split(
             Wh_htm1, num_or_size_splits=4, axis=-1
         )
@@ -186,7 +187,7 @@ def _lstm_full(
     )
 
 
-def _lstm_layer(x, hidden, weights, bias, batch_first, bidirectional):
+def _lstm_layer(x, hidden, weights, biases, batch_first, bidirectional):
     if batch_first:
         x = ivy.swapaxes(x, 0, 1)
 
@@ -204,11 +205,11 @@ def _lstm_layer(x, hidden, weights, bias, batch_first, bidirectional):
             cx_fw = cx_fw[0]
         hidden_bw = hx_bw, cx_bw
     hidden_fw = hx_fw, cx_fw
-    result_fw, hidden_fw = _lstm_cell(x, *hidden_fw, *weights, bias)
+    result_fw, hidden_fw = _lstm_cell(x, *hidden_fw, *weights, *biases)
 
     if bidirectional:
         x_reversed = ivy.flip(x, axis=0)
-        result_bw, hidden_bw = _lstm_cell(x_reversed, *hidden_bw, *weights, bias)
+        result_bw, hidden_bw = _lstm_cell(x_reversed, *hidden_bw, *weights, *biases)
         result_bw = ivy.flip(result_bw, axis=0)
 
         result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
@@ -299,8 +300,11 @@ def _transform_weights(layer_weights, layer_index, hidden_size, reform_permutati
     weight_ih, weight_hh, bias_ih, bias_hh = (
         _reform_weights(w, hidden_size, reform_permutation) for w in weights
     )
-    bias_concat = ivy.concat([bias_ih, bias_hh], axis=0)
-    return ivy.swapaxes(weight_ih, 0, 1), ivy.swapaxes(weight_hh, 0, 1), bias_concat
+    return (
+        ivy.swapaxes(weight_ih, 0, 1),
+        ivy.swapaxes(weight_hh, 0, 1),
+        (bias_ih, bias_hh),
+    )
 
 
 def _transform_weights_no_bias(
