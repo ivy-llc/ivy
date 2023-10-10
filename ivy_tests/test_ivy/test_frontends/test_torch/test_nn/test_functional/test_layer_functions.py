@@ -4,7 +4,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy.functional.backends.torch.layers import _get_embed_dim
+from ivy.functional.ivy.layers import _get_embed_dim
 from ivy.functional.frontends.torch.nn.functional.layer_functions import (
     _pack_padded_sequence,
 )
