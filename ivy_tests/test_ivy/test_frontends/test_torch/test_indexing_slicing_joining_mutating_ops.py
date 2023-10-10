@@ -14,9 +14,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
 )
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
-    _get_splits,
-)
 
 
 # --- Helpers --- #
