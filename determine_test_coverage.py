@@ -31,7 +31,7 @@ if __name__ == "__main__":
         x for x in directories if not (x.endswith("__pycache__") or "hypothesis" in x)
     ]
     directories = set(directories_filtered)
-    num_tests = 128
+    num_tests = len(test_names)
     tests_per_run = num_tests // N
     start = run_iter * tests_per_run
     end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
