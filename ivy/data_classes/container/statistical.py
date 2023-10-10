@@ -15,6 +15,8 @@ class _ContainerWithStatistical(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
+        initial: Optional[Union[int, float, complex]] = None,
+        where: Optional[ivy.Array] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -43,6 +45,10 @@ class _ContainerWithStatistical(ContainerBase):
             (see :ref:`broadcasting`). Otherwise, if ``False``, the
             reduced axes (dimensions) must not be included in the
             result. Default: ``False``.
+        initial
+            The starting value for the output element.
+        where
+            Elements to compare for minimum
         out
             optional output array, for writing the result to.
 
@@ -80,7 +86,9 @@ class _ContainerWithStatistical(ContainerBase):
         return self.cont_handle_inplace(
             self.cont_map(
                 lambda x_, _: (
-                    ivy.min(x_, axis=axis, keepdims=keepdims)
+                    ivy.min(
+                        x_, axis=axis, keepdims=keepdims, initial=initial, where=where
+                    )
                     if ivy.is_array(x_)
                     else x_
                 ),
@@ -98,6 +106,8 @@ class _ContainerWithStatistical(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
+        initial: Optional[Union[int, float, complex]] = None,
+        where: Optional[ivy.Array] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -125,6 +135,10 @@ class _ContainerWithStatistical(ContainerBase):
             input array (see :ref:`broadcasting`). Otherwise, if ``False``,
             the reduced axes (dimensions) must not be included in the
             result. Default: ``False``.
+        initial
+            The starting value for the output element.
+        where
+            Elements to compare for maximum
         out
             optional output array, for writing the result to.
 
@@ -160,7 +174,9 @@ class _ContainerWithStatistical(ContainerBase):
         return self.cont_handle_inplace(
             self.cont_map(
                 lambda x_, _: (
-                    ivy.max(x_, axis=axis, keepdims=keepdims)
+                    ivy.max(
+                        x_, axis=axis, keepdims=keepdims, initial=initial, where=where
+                    )
                     if ivy.is_array(x_)
                     else x_
                 ),
@@ -178,6 +194,8 @@ class _ContainerWithStatistical(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        where: Optional[ivy.Array] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -204,6 +222,12 @@ class _ContainerWithStatistical(ContainerBase):
             compatible with the input array (see :ref:`broadcasting`). Otherwise,
             if ``False``, the reduced axes (dimensions) must not be included in
             the result. Default: ``False``.
+        dtype
+            Type to use in computing the mean.
+            For integer inputs, the default is float64; for floating point inputs,
+            it is the same as the input dtype.
+        where
+            Elements to include in the mean
         key_chains
             The key-chains to apply or not apply the method to.
             Default is ``None``.
@@ -294,7 +318,7 @@ class _ContainerWithStatistical(ContainerBase):
         return self.cont_handle_inplace(
             self.cont_map(
                 lambda x_, _: (
-                    ivy.mean(x_, axis=axis, keepdims=keepdims)
+                    ivy.mean(x_, axis=axis, keepdims=keepdims, dtype=dtype, where=where)
                     if ivy.is_array(x_)
                     else x_
                 ),
@@ -311,6 +335,9 @@ class _ContainerWithStatistical(ContainerBase):
         /,
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        where: Optional[ivy.Array] = None,
+        ddof: Optional[int] = 0,
         correction: Union[int, float, ivy.Container] = 0.0,
         keepdims: Union[bool, ivy.Container] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -352,6 +379,16 @@ class _ContainerWithStatistical(ContainerBase):
             reduced axes (dimensions) must not be included in the result.
             Default: ``False``.
             input array. Should have a floating-point data type.
+        dtype
+            Type to use in computing the mean. For integer inputs,
+            the default is float64; for floating point inputs,
+            it is the same as the input dtype
+        where
+            Elements to include in the mean
+        ddof
+            “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof,
+            where N represents the number of elements.
+            By default ddof is zero.
         key_chains
             The key-chains to apply or not apply the method to.
             Default is ``None``.
@@ -411,7 +448,15 @@ class _ContainerWithStatistical(ContainerBase):
         return self.cont_handle_inplace(
             self.cont_map(
                 lambda x_, _: (
-                    ivy.var(x_, axis=axis, correction=correction, keepdims=keepdims)
+                    ivy.var(
+                        x_,
+                        axis=axis,
+                        correction=correction,
+                        dtype=dtype,
+                        where=where,
+                        ddof=ddof,
+                        keepdims=keepdims,
+                    )
                     if ivy.is_array(x_)
                     else x_
                 ),
@@ -430,6 +475,9 @@ class _ContainerWithStatistical(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         correction: Union[int, float, ivy.Container] = 0.0,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        where: Optional[ivy.Array] = None,
+        ddof: Optional[int] = 0,
         keepdims: Union[bool, ivy.Container] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -487,6 +535,9 @@ class _ContainerWithStatistical(ContainerBase):
             x,
             key_chains=key_chains,
             axis=axis,
+            dtype=dtype,
+            where=where,
+            ddof=ddof,
             correction=correction,
             keepdims=keepdims,
             to_apply=to_apply,
@@ -501,6 +552,8 @@ class _ContainerWithStatistical(ContainerBase):
         /,
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        where: Optional[ivy.Array] = None,
+        initial: Optional[Union[int, float, complex]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -627,6 +680,8 @@ class _ContainerWithStatistical(ContainerBase):
             x,
             axis=axis,
             dtype=dtype,
+            where=where,
+            initial=initial,
             keepdims=keepdims,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -641,6 +696,8 @@ class _ContainerWithStatistical(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        where: Optional[ivy.Array] = None,
+        initial: Optional[Union[int, float, complex]] = None,
         keepdims: Union[bool, ivy.Container] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -768,6 +825,8 @@ class _ContainerWithStatistical(ContainerBase):
             axis=axis,
             dtype=dtype,
             keepdims=keepdims,
+            where=where,
+            initial=initial,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -781,6 +840,8 @@ class _ContainerWithStatistical(ContainerBase):
         /,
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        where: Optional[ivy.Array] = None,
+        initial: Optional[Union[int, float, complex]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -794,6 +855,8 @@ class _ContainerWithStatistical(ContainerBase):
             x,
             axis=axis,
             dtype=dtype,
+            where=where,
+            initial=initial,
             keepdims=keepdims,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -808,6 +871,8 @@ class _ContainerWithStatistical(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        where: Optional[ivy.Array] = None,
+        initial: Optional[Union[int, float, complex]] = None,
         keepdims: Union[bool, ivy.Container] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -820,6 +885,8 @@ class _ContainerWithStatistical(ContainerBase):
             axis=axis,
             dtype=dtype,
             keepdims=keepdims,
+            where=where,
+            initial=initial,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -832,6 +899,9 @@ class _ContainerWithStatistical(ContainerBase):
         /,
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        where: Optional[ivy.Array] = None,
+        ddof: Optional[int] = 0,
         correction: Union[int, float, ivy.Container] = 0.0,
         keepdims: Union[bool, ivy.Container] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -961,7 +1031,15 @@ class _ContainerWithStatistical(ContainerBase):
         return self.cont_handle_inplace(
             self.cont_map(
                 lambda x_, _: (
-                    ivy.std(x_, axis=axis, correction=correction, keepdims=keepdims)
+                    ivy.std(
+                        x_,
+                        axis=axis,
+                        correction=correction,
+                        keepdims=keepdims,
+                        dtype=dtype,
+                        where=where,
+                        ddof=ddof,
+                    )
                     if ivy.is_array(x_)
                     else x_
                 ),

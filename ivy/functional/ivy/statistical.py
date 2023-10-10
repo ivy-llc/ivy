@@ -48,6 +48,8 @@ def min(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -83,6 +85,10 @@ def min(
         compatible with the input array (see :ref:`broadcasting`). Otherwise,
         if ``False``, the reduced axes (dimensions) must not be included in the result.
         Default: ``False``.
+    initial
+        The starting value for the output element.
+    where
+        Elements to compare for minimum
     out
         optional output array, for writing the result to.
 
@@ -140,7 +146,9 @@ def min(
         b: ivy.array(2)
     }
     """
-    return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
+    return current_backend(x).min(
+        x, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+    )
 
 
 @handle_exceptions
@@ -157,6 +165,8 @@ def max(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -190,6 +200,10 @@ def max(
         singleton dimensions, and, accordingly, the result must be compatible with the
         input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
         (dimensions) must not be included in the result. Default: ``False``.
+    initial
+        The starting value for the output element.
+    where
+        Elements to compare for maximum
     out
         optional output array, for writing the result to.
 
@@ -251,7 +265,9 @@ def max(
         b: ivy.array([4, 2])
     }
     """
-    return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
+    return current_backend(x).max(
+        x, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+    )
 
 
 @handle_exceptions
@@ -268,6 +284,8 @@ def mean(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    where: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -293,6 +311,12 @@ def mean(
         as singleton dimensions, and, accordingly, the result must be compatible with
         the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced
         axes (dimensions) must not be included in the result. Default: ``False``.
+    dtype
+        Type to use in computing the mean.
+        For integer inputs, the default is float64; for floating point inputs,
+        it is the same as the input dtype.
+    where
+        Elements to include in the mean
     out
         optional output array, for writing the result to.
 
@@ -379,6 +403,8 @@ def prod(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
+    where: Optional[ivy.Array] = None,
+    initial: Optional[Union[int, float, complex]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
@@ -515,6 +541,9 @@ def std(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    where: Optional[ivy.Array] = None,
+    ddof: Optional[int] = 0,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
@@ -637,7 +666,14 @@ def std(
     }
     """
     return current_backend(x).std(
-        x, axis=axis, correction=correction, keepdims=keepdims, out=out
+        x,
+        axis=axis,
+        correction=correction,
+        keepdims=keepdims,
+        dtype=dtype,
+        where=where,
+        ddof=ddof,
+        out=out,
     )
 
 
@@ -656,6 +692,8 @@ def sum(
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: Optional[bool] = False,
+    where: Optional[ivy.Array] = None,
+    initial: Optional[Union[int, float, complex]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -779,7 +817,15 @@ def sum(
         b: ivy.array(12.)
     }
     """
-    return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    return current_backend(x).sum(
+        x,
+        axis=axis,
+        dtype=dtype,
+        keepdims=keepdims,
+        initial=initial,
+        where=where,
+        out=out,
+    )
 
 
 @handle_exceptions
@@ -795,6 +841,9 @@ def var(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    where: Optional[ivy.Array] = None,
+    ddof: Optional[int] = 0,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
@@ -834,6 +883,16 @@ def var(
         singleton dimensions, and, accordingly, the result must be compatible with the
         input array (see Broadcasting). Otherwise, if False, the reduced axes
         (dimensions) must not be included in the result. Default: ``False``.
+    dtype
+        Type to use in computing the mean. For integer inputs,
+        the default is float64; for floating point inputs,
+        it is the same as the input dtype
+    where
+        Elements to include in the mean
+    ddof
+        “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof,
+        where N represents the number of elements.
+        By default ddof is zero.
     out
         optional output array, for writing the result to.
 
@@ -891,7 +950,14 @@ def var(
     }
     """
     return current_backend(x).var(
-        x, axis=axis, correction=correction, keepdims=keepdims, out=out
+        x,
+        axis=axis,
+        correction=correction,
+        keepdims=keepdims,
+        dtype=dtype,
+        where=where,
+        ddof=ddof,
+        out=out,
     )
 
 

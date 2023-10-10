@@ -530,6 +530,7 @@ class _ArrayWithStatistical(abc.ABC):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
+        correction: Union[int, float] = 0.0,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         where: Optional[ivy.Array] = None,
         ddof: Optional[int] = 0,
@@ -550,6 +551,23 @@ class _ArrayWithStatistical(abc.ABC):
             By default, the product must be computed over the entire array.
             If a tuple of integers, products must be computed over multiple
             axes. Default: ``None``.
+        correction
+            degrees of freedom adjustment. Setting this parameter to a
+            value other than ``0`` has the effect of adjusting the
+            divisor during the calculation of the standard deviation
+            according to ``N-c`` where ``N`` corresponds to the total
+            number of elements over which the standard deviation is
+            computed and ``c`` corresponds to the provided degrees of
+            freedom adjustment. When computing the standard deviation
+            of a population, setting this parameter to ``0`` is the
+            standard choice (i.e., the provided array contains data
+            constituting an entire population). When computing
+            the corrected sample standard deviation, setting this
+            parameter to ``1`` is the standard choice (i.e., the
+            provided array contains data sampled from a larger
+            population; this is commonly referred to as Bessel's
+            correction). Default: ``0``.
+
         dtype
             Type to use in computing the standard deviation.
             For integer inputs, the default is float64;
@@ -608,6 +626,7 @@ class _ArrayWithStatistical(abc.ABC):
         return ivy.std(
             self,
             axis=axis,
+            correction=correction,
             keepdims=keepdims,
             dtype=dtype,
             ddof=ddof,
@@ -769,13 +788,8 @@ class _ArrayWithStatistical(abc.ABC):
         )
 
     def einsum(
-        subscripts: str,
         self: ivy.Array,
         equation: str,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        order: Optional[str] = "K",
-        casting: Optional[str] = "safe",
-        optimize: Optional[str] = "False",
         *operands: Union[ivy.Array, ivy.NativeArray],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -791,21 +805,6 @@ class _ArrayWithStatistical(abc.ABC):
         operands
             seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes
             should be consistent with equation.
-        casting
-            Controls what kind of data casting may occur.
-            Setting this to ‘unsafe’ is not recommended,
-            as it can adversely affect accumulations.
-        optimize
-            Controls if intermediate optimization should occur.
-            No optimization will occur if False and True will
-            default to the greedy algorithm
-        order
-            Controls the memory layout of the output.
-        dtype
-            If provided, forces the calculation to use the data type specified.
-            Note that you may have to also give a more liberal casting parameter
-            to allow the conversions.
-            Default is None.
         out
             optional output array, for writing the result to.
 
@@ -863,12 +862,4 @@ class _ArrayWithStatistical(abc.ABC):
         >>> print(C)
         ivy.array(510)
         """
-        return ivy.einsum(
-            equation=equation,
-            *(self._data,) + operands,
-            dtype=dtype,
-            order=order,
-            casting=casting,
-            optimize=optimize,
-            out=out,
-        )
+        return ivy.einsum(equation, *(self._data,) + operands, out=out)
