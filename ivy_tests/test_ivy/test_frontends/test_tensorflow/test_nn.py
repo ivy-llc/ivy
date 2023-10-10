@@ -1500,7 +1500,7 @@ def test_tensorflow_max_pool2d(
 # max_pool3d
 @handle_frontend_test(
     fn_tree="tensorflow.nn.max_pool3d",
-    data_format=df(data_format=st.sampled_from(["NDHWC"])),
+    data_format=st.sampled_from(["NDHWC", "NCDHW"]),
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
     test_with_out=st.just(False),
 )
