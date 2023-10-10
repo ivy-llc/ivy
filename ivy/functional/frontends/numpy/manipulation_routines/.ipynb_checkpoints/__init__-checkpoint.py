@@ -1,4 +1,4 @@
- from . import adding_and_removing_elements
+from . import adding_and_removing_elements
 from .adding_and_removing_elements import *
 from . import basic_operations
 from .basic_operations import *
@@ -20,5 +20,3 @@ from . import tiling_arrays
 from .tiling_arrays import *
 from . import transpose_like_operations
 from .transpose_like_operations import *
-from . import string_operations
-from .string_operations import *

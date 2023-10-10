@@ -647,7 +647,6 @@ _frontend_array = array
 # ---------------------#
 
 absolute = ufunc("_absolute")
-add = ufunc("_add")
 cbrt = ufunc("_cbrt")
 copysign = ufunc("_copysign")
 fabs = ufunc("_fabs")

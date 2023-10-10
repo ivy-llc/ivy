@@ -22,5 +22,3 @@ from . import extrema_finding
 from .extrema_finding import *
 from . import miscellaneous
 from .miscellaneous import *
-from . import manipulation_routines
-from .manipulation_routines import *
