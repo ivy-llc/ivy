@@ -2119,9 +2119,6 @@ def test_paddle_tensor_exp_(
     )
 
 
-
-
-
 # fill_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
