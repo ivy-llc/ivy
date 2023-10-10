@@ -115,7 +115,9 @@ class Booster:
         self.gbm = GBLinear(params, compile=compile, cache=cache)
         self.compile = compile
         if self.compile:
-            self._comp_binary_prediction = ivy.trace_graph(_binary_prediction, backend_compile=True, static_argnums=(0,))
+            self._comp_binary_prediction = ivy.trace_graph(
+                _binary_prediction, backend_compile=True, static_argnums=(0,)
+            )
 
             # invoke function to get its compiled version
             self._comp_binary_prediction(self.gbm.obj, cache[1])
@@ -224,6 +226,10 @@ class Booster:
             return self._comp_binary_prediction(*args)
         else:
             return _binary_prediction(*args)
+
+
+# --- Helpers --- #
+# --------------- #
 
 
 def _binary_prediction(obj, raw_pred):
