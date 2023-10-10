@@ -781,9 +781,14 @@ def scaled_tanh(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([22.])
-    >>> y = ivy.elu(x)
+    >>> y = ivy.scaled_tanh(x)
     >>> y
     ivy.array([1.71589994]))
+
+    >>> x = ivy.array([4.0, 7.0])
+    >>> y = ivy.scaled_tanh(x, alpha=1.2, beta=5)
+    >>> y
+    ivy.array([1.20000005, 1.20000005])
 
     With :class:`ivy.Container` input:
 
@@ -793,6 +798,13 @@ def scaled_tanh(
     {
         a: ivy.array([1.14324772, -1.14324772]),
         b: ivy.array([1.70648694, -1.54488957])
+    }
+    >>> x = ivy.Container(a=ivy.array([1.2]), b=ivy.array([4.4]))
+    >>> y = ivy.scaled_tanh(x, alpha=0.2, beta=0.5)
+    >>> y
+    {
+    a: ivy.array([0.10740992]),
+    b: ivy.array([0.19514863])
     }
     """
     return current_backend(x).scaled_tanh(x, alpha=alpha, beta=beta, out=out)

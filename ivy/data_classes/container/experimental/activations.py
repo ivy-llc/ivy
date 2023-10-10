@@ -1379,10 +1379,26 @@ class _ContainerWithActivationExperimental(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([8.931, -0.85]), b=ivy.array([1., -0.2])))
         >>> y = ivy.Container._static_scaled_tanh(x)
-        >>> print(y)
+        >>> y
         {
             a: ivy.array([1.71587813, -0.88367474]),
             b: ivy.array([1.00376701, -0.2285642])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([8.9, -8.9]), b=ivy.array([3., 33.2]))
+        >>> y = ivy.Container._static_scaled_tanh(x, alpha=2, beta=2.5)
+        >>> y
+        {
+            a: ivy.array([2., -2.]),
+            b: ivy.array([1.99999881, 2.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0.3, -0.3]), b=ivy.array([33.0, -33.0]))
+        >>> y = ivy.Container._static_scaled_tanh(x, alpha=1.5, beta=25)
+        >>> y
+        {
+            a: ivy.array([1.49999905, -1.49999905]),
+            b: ivy.array([1.5, -1.5])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1453,6 +1469,20 @@ class _ContainerWithActivationExperimental(ContainerBase):
         {
             a: ivy.array([1.49570239, 1.65537548]),
             b: ivy.array([1.00376701, 1.49570239])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1., 1.]), b=ivy.array([1., 1.]))
+        >>> x.scaled_tanh(alpha=30)
+        {
+            a: ivy.array([17.54939651, 17.54939651]),
+            b: ivy.array([17.54939651, 17.54939651])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([20., 21.]), b=ivy.array([3., 1.]))
+        >>> x.scaled_tanh(alpha=0.1, beta=-0.4)
+        {
+            a: ivy.array([-0.09999998, -0.09999999]),
+            b: ivy.array([-0.08336546, -0.0379949])
         }
         """
         return self._static_scaled_tanh(

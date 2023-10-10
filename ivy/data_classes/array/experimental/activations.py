@@ -440,5 +440,13 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([-3., 2., 3.])
         >>> x.scaled_tanh()
         ivy.array([-1.65537548,  1.49570239,  1.65537548])
+
+        >>> x = ivy.array([2., 2., 2.])
+        >>> x.scaled_tanh(alpha=9, beta=0.1)
+        ivy.array([1.77637792, 1.77637792, 1.77637792])
+
+        >>> x = ivy.array([2., 2., 2.])
+        >>> x.scaled_tanh(alpha=0.1, beta=9)
+        ivy.array([0.1, 0.1, 0.1])
         """
         return ivy.scaled_tanh(self._data, alpha=alpha, beta=beta, out=out)
