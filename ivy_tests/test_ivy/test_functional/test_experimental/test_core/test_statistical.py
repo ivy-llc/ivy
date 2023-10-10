@@ -19,6 +19,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 def _get_castable_float_dtype_nan(draw, min_value=None, max_value=None):
     available_dtypes = helpers.get_dtypes("float")
     shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
+    dtype3, where = draw(
+        helpers.dtype_and_values(available_dtypes=["bool"], shape=shape)
+    )
     dtype, values = draw(
         helpers.dtype_and_values(
             available_dtypes=available_dtypes,
@@ -36,7 +39,7 @@ def _get_castable_float_dtype_nan(draw, min_value=None, max_value=None):
     dtype1, values, dtype2 = draw(
         helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
     )
-    return dtype1, [values], axis, dtype2
+    return dtype1, [values], axis, dtype2, dtype3, where
 
 
 @st.composite
@@ -663,7 +666,7 @@ def test_nanmin(
     fn_name,
     on_device,
 ):
-    input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+    input_dtype, x, axis, castable_dtype, dtype3, where = dtype_x_axis_castable
     x = x[0]
     helpers.test_function(
         input_dtypes=[input_dtype],
@@ -677,6 +680,7 @@ def test_nanmin(
         axis=axis,
         keepdims=keep_dims,
         initial=initial,
+        where=where[0],
     )
 
 
