@@ -586,7 +586,6 @@ def strided_slice(
     return ret
 
 
-
 @to_ivy_arrays_and_back
 def tensor_scatter_nd_add(tensor, indices, updates, name=None):
     zero_tensor = ivy.zeros_like(tensor)
