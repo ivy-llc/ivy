@@ -2118,6 +2118,7 @@ def test_paddle_tensor_exp_(
         on_device=on_device,
     )
 
+
 # expand
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2153,6 +2154,7 @@ def test_paddle_tensor_expand(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # fill_
 @handle_frontend_method(
