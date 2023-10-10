@@ -36,6 +36,8 @@ jobs:
 
       - name: Determine Test Coverage
         run: |
+          echo $PWD
+          ls
           pip install pydriller tqdm
           cd ivy
           python determine_test_coverage.py ${{ matrix.branch }}
