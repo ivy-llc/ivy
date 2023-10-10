@@ -108,8 +108,6 @@ def _generic_lstm(
             # with Reshape.
             output = ivy.permute_dims(output, axes=(0, 2, 1, 3))
             output = ivy.reshape(output, (*output.shape[:2], -1))
-        else:
-            output = ivy.squeeze(output, axis=1)
 
         h_outs.append(h_out)
         c_outs.append(c_out)
