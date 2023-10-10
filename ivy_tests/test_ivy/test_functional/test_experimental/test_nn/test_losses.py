@@ -7,6 +7,49 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# cosine embedding loss
+@handle_test(
+    fn_tree="functional.ivy.experimental.cosine_embedding_loss",
+    dtype_and_input1_input2=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=1e-04,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=5,
+    ),
+    dtype_and_target=helpers.dtype_and_values(),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    margin=helpers.floats(min_value=0.0, max_value=0.5),
+)
+def test_cosine_embedding_loss(
+    dtype_and_input1_input2,
+    dtype_and_target,
+    reduction,
+    margin,
+    test_flags,
+    backend_fn,
+    fn_name,
+    on_device,
+):
+    input_dtype, input1, input2 = dtype_and_input1_input2
+    target_dtype, target = dtype_and_target
+
+    helpers.test_function(
+        input_dtypes=input_dtype + target_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fn,
+        fn_name=fn_name,
+        on_device=on_device,
+        input1=input1[0],
+        input2=input2[0],
+        target=target[0],
+        reduction=reduction,
+        margin=margin,
+    )
+
+
 # huber_loss
 @handle_test(
     fn_tree="functional.ivy.experimental.huber_loss",
