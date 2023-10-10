@@ -26,6 +26,40 @@ def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out, dtype=ivy.int64)
 
 
+# argmin
+@to_ivy_arrays_and_back
+def argmin(a, axis=None, out=None, keepdims=None):
+    if a is not None:
+        if isinstance(a, list):
+            if all(isinstance(elem, ivy.Array) for elem in a):
+                if len(a) == 1:
+                    a = a[0]
+                else:
+                    return [
+                        ivy.argmin(
+                            ivy.to_native_arrays(elem),
+                            axis=axis,
+                            out=out,
+                            keepdims=keepdims,
+                        )
+                        for elem in a
+                    ]
+            else:
+                raise ValueError(
+                    "Input 'a' must be an Ivy array or a list of Ivy arrays."
+                )
+
+        if not isinstance(a, ivy.Array):
+            raise TypeError("Input 'a' must be an array.")
+
+        if a.size == 0:
+            raise ValueError("Input 'a' must not be empty.")
+
+        return ivy.argmin(a, axis=axis, out=out, keepdims=keepdims)
+    else:
+        raise ValueError("argmin takes at least 1 argument.")
+
+
 @to_ivy_arrays_and_back
 def argsort(a, axis=-1, kind="stable", order=None):
     if kind != "stable":
