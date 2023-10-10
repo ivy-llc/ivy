@@ -805,6 +805,33 @@ def maml_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
+
+    Examples
+    ________
+    With :class:`ivy.Container` input:
+
+    >>> import ivy
+    >>> from ivy.functional.ivy.gradients import _variable
+
+    >>> ivy.set_backend("torch")
+
+    >>> def inner_cost_fn(sub_batch, v):
+    ...     return sub_batch.mean().x / v.mean().latent
+    >>> def outer_cost_fn(sub_batch,v):
+    ...     return sub_batch.mean().x / v.mean().latent
+
+    >>> num_tasks = 2
+    >>> batch = ivy.Container({"x": ivy.arange(1, num_tasks + 1, dtype="float32")})
+    >>> variables = ivy.Container({
+    ...     "latent": _variable(ivy.repeat(ivy.array([[1.0]]), num_tasks, axis=0))
+    ... })
+
+    >>> cost = ivy.maml_step(batch, inner_cost_fn, outer_cost_fn, variables, 5, 0.01)
+    >>> print(cost)
+    (ivy.array(1.40069818), {
+    latent: ivy.array([-1.13723135])
+    }, ())
+
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
