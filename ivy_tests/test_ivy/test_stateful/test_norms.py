@@ -7,6 +7,7 @@ from hypothesis import strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_method
+from ivy.stateful import Conv2D, Conv2DTranspose
 
 
 # --- Helpers --- #
