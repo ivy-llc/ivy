@@ -200,13 +200,8 @@ def pad(img, padding, fill=0, padding_mode="constant"):
         raise "Unsupported padding_mode"
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": ("int8", "uint8", "int16", "float16", "bfloat16", "bool")
-        }
-    },
-    "paddle",
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def to_grayscale(img, num_output_channels=1):
