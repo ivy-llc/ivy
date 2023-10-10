@@ -341,7 +341,7 @@ class WeightNorm(Module):
         }
         v = dict(
             **v,
-            b=self._b_init.create_variables(
+            b=self._bias_init.create_variables(
                 device=device,
                 dtype=dtype,
             ),
