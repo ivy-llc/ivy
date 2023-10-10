@@ -192,10 +192,14 @@ def test_layer_norm_layer(
         min_num_dims=1,
         max_num_dims=3,
     ),
+    out_channels=st.integers(min_value=20, max_value=200),
+    filter_size=st.integers(min_value=0, max_value=4),
 )
 def test_weight_norm_layer(
     *,
     dtype_and_x,
+    out_channels,
+    filter_size,
     init_with_v,
     method_with_v,
     test_gradients,
@@ -208,20 +212,22 @@ def test_weight_norm_layer(
     method_flags,
 ):
     dtype_x, x = dtype_and_x
-    if x[0].shape[1] == 1:
-        layer = st.example(
-            st.sampled_from([Conv2D(1, 20, (5, 5)), Conv2DTranspose(1, 20, (5, 5))])
+    layer = st.example(
+        st.sampled_from(
+            [
+                Conv2D(
+                    x[0].shape[1],
+                    out_channels,
+                    (2 * filter_size + 1, 2 * filter_size + 1),
+                ),
+                Conv2DTranspose(
+                    x[0].shape[1],
+                    out_channels,
+                    (2 * filter_size + 1, 2 * filter_size + 1),
+                ),
+            ]
         )
-
-    elif x[0].shape[1] == 2:
-        layer = st.example(
-            st.sampled_from([Conv2D(2, 20, (5, 5)), Conv2DTranspose(2, 20, (5, 5))])
-        )
-
-    elif x[0].shape[1] == 3:
-        layer = st.example(
-            st.sampled_from([Conv2D(3, 20, (5, 5)), Conv2DTranspose(3, 20, (5, 5))])
-        )
+    )
 
     helpers.test_method(
         backend_to_test=backend_fw,
