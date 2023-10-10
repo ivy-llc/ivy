@@ -2140,14 +2140,14 @@ def test_paddle_tensor_expand_as(
     backend_fw,
 ):
     input_dtype, x = dtypes_and_x
-    # Create a dummy tensor to expand to
-    dummy_tensor = Tensor(np.random.rand(3, 4))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"other": dummy_tensor},
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,

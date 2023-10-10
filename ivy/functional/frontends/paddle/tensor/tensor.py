@@ -913,4 +913,4 @@ class Tensor:
         {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
     def expand_as(self, other, name=None):
-        return paddle_frontend.expand_as(self, other, name=name)
+        return paddle_frontend.expand_as(self, other)
