@@ -139,6 +139,7 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias):
     Wh = recurrent_kernel
     ht = init_h
     ct = init_c
+    ht_list = []
 
     for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
         ivy.unstack(Wii_x, axis=-2),
@@ -158,8 +159,9 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias):
         ot = ivy.sigmoid(Wio_xt + Who_htm1)
         ct = ft * ctm1 + it * gt
         ht = ot * ivy.tanh(ct)
+        ht_list.append(ht)
 
-    return ot, (ht, ct)
+    return ivy.concat(ht_list, axis=-2), (ht, ct)
 
 
 def _lstm_full(
