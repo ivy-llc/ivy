@@ -1,6 +1,14 @@
+# global
+from typing import List, Union
+
+# local
+import ivy
 from ivy_tests.test_ivy.pipeline.base.pipeline import Pipeline
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
-from ivy_tests.test_ivy.pipeline.backend.runners import BackendFunctionTestCaseRunner
+from ivy_tests.test_ivy.pipeline.backend.runners import (
+    BackendFunctionTestCaseRunner,
+    BackendMethodTestCaseRunner,
+)
 
 
 class BackendPipeline(Pipeline):
@@ -34,5 +42,50 @@ class BackendPipeline(Pipeline):
 
         runner.run(input_dtypes, all_as_kwargs_np, test_flags)
 
-    def test_method():
-        pass
+    @staticmethod
+    def test_method(
+        *,
+        init_input_dtypes: List[ivy.Dtype] = None,
+        method_input_dtypes: List[ivy.Dtype] = None,
+        init_all_as_kwargs_np: dict = None,
+        method_all_as_kwargs_np: dict = None,
+        init_flags,
+        method_flags,
+        class_name: str,
+        method_name: str = "__call__",
+        init_with_v: bool = False,
+        method_with_v: bool = False,
+        rtol_: float = None,
+        atol_: float = 1e-06,
+        tolerance_dict=None,
+        test_values: Union[bool, str] = True,
+        test_gradients: bool = False,
+        xs_grad_idxs=None,
+        ret_grad_idxs=None,
+        test_trace: bool = False,
+        backend_to_test: str,
+        ground_truth_backend: str,
+        on_device: str,
+        return_flat_np_arrays: bool = False,
+    ):
+        runner = BackendMethodTestCaseRunner(
+            class_name=class_name,
+            method_name=method_name,
+            backend_handler=BackendPipeline.backend_handler,
+            traced_fn=BackendPipeline.traced_fn,
+            backend_to_test=backend_to_test,
+            ground_truth_backend=ground_truth_backend,
+            on_device=on_device,
+            test_values=test_values,
+            tolerance_dict=tolerance_dict,
+            rtol_=rtol_,
+            atol_=atol_,
+        )
+        runner.run(
+            init_input_dtypes=init_input_dtypes,
+            method_input_dtypes=method_input_dtypes,
+            init_flags=init_flags,
+            method_flags=method_flags,
+            init_all_as_kwargs_np=init_all_as_kwargs_np,
+            method_all_as_kwargs_np=method_all_as_kwargs_np,
+        )
