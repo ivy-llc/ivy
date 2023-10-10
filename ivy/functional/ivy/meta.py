@@ -831,7 +831,6 @@ def maml_step(
     (ivy.array(1.40069818), {
     latent: ivy.array([-1.13723135])
     }, ())
-
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]
