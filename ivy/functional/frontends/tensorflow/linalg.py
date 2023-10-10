@@ -460,3 +460,14 @@ def tensorsolve(a, b, axes):
 @to_ivy_arrays_and_back
 def trace(x, name=None):
     return ivy.trace(x, axis1=-2, axis2=-1)
+
+
+def lu_reconstruct(l, u):
+    L, U = ivy.array(l), ivy.array(u)
+
+    if L.shape[0] != L.shape[1] or U.shape[0] != U.shape[1] or L.shape[0] != U.shape[0]:
+        raise ValueError("Invalid dimensions for LU reconstruction. `l` and `u` must be square matrices of the same size.")
+
+    A = ivy.matmul(L, U)
+
+    return A
