@@ -1,16 +1,10 @@
 # global
-from typing import Literal
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
+from typing import Optional, Union, Tuple, Literal, Sequence
 import mxnet as mx
 
+# local
 from ivy.func_wrapper import handle_partial_mixed_function
 from ivy.utils.exceptions import IvyNotImplementedException
-
-# local
 
 
 def general_pool(

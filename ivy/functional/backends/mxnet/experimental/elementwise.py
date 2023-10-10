@@ -1,15 +1,10 @@
+from typing import Union, Optional, Tuple, List, Sequence
 from numbers import Number
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
 import mxnet as mx
 
-from .. import backend_version
-from ivy.func_wrapper import with_supported_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.func_wrapper import with_supported_dtypes
+from .. import backend_version
 
 
 def amax(

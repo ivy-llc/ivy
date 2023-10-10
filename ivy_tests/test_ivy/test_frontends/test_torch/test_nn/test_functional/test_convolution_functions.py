@@ -1,9 +1,8 @@
 # global
 import math
+from hypothesis import strategies as st, assume
 
-from hypothesis import assume
-from hypothesis import strategies as st
-
+# local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -14,9 +13,6 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
 
 # --- Helpers --- #
 # --------------- #
-
-
-# local
 
 
 @st.composite

@@ -1,8 +1,6 @@
-from typing import Optional
-from typing import Union
-
-import tensorflow as tf
+from typing import Optional, Union
 import tensorflow_probability as tfp
+import tensorflow as tf
 
 
 def trapz(

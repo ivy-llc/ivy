@@ -1,20 +1,21 @@
 # global
 import abc
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    List,
+    Iterable,
+    Callable,
+    Literal,
+    Any,
+)
 from numbers import Number
-from typing import Any
-from typing import Callable
-from typing import Iterable
-from typing import List
-from typing import Literal
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
-import ivy
-from ivy import handle_view
 
 # local
+import ivy
+from ivy import handle_view
 
 
 class _ArrayWithManipulationExperimental(abc.ABC):

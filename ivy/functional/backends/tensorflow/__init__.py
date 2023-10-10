@@ -1,7 +1,6 @@
 # global
-import logging
 import sys
-
+import logging
 import tensorflow as tf
 
 for device in tf.config.experimental.list_physical_devices("GPU"):

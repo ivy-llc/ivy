@@ -1,7 +1,7 @@
-import warnings
-
-import ivy
 from .base import FactorizedTensor
+import ivy
+
+import warnings
 
 
 class TTTensor(FactorizedTensor):

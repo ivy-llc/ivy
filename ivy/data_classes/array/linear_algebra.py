@@ -1,15 +1,9 @@
 # global
 import abc
-from typing import List
-from typing import Literal
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
-import ivy
+from typing import Union, Optional, Literal, Tuple, List, Sequence
 
 # local
+import ivy
 
 inf = float("inf")
 

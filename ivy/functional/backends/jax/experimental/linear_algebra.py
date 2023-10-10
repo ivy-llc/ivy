@@ -1,18 +1,16 @@
 import math
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
+from typing import Optional, Tuple, Sequence, Union
 import jax.numpy as jnp
 import jax.scipy.linalg as jla
 
-import ivy
-from . import backend_version
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.backends.jax import JaxArray
+
+import ivy
+
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 from ivy.utils.exceptions import IvyNotImplementedException
+from . import backend_version
 
 
 def diagflat(

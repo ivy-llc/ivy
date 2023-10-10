@@ -1,9 +1,8 @@
-import json
-import logging
 import os
-from urllib import request
-
+import logging
+import json
 from pip._vendor.packaging import tags
+from urllib import request
 
 
 def _get_paths_from_binaries(binaries, root_dir=""):

@@ -1,10 +1,8 @@
-from typing import Optional
-from typing import Tuple
-
 import torch
+from typing import Optional, Tuple
 
-from .. import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
 
 
 def l1_normalize(

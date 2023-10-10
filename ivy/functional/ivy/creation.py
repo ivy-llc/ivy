@@ -1,38 +1,39 @@
 # global
 from __future__ import annotations
-
 import functools
 from numbers import Number
-from typing import Callable
-from typing import Iterable
-from typing import List
-from typing import Optional
-from typing import Protocol
-from typing import Sequence
-from typing import Tuple
-from typing import TypeVar
-from typing import Union
-
+from typing import (
+    Union,
+    Tuple,
+    Optional,
+    List,
+    Sequence,
+    Callable,
+    Protocol,
+    TypeVar,
+    Iterable,
+)
 import numpy as np
 
+# local
 import ivy
 from ivy import to_ivy
-from ivy.func_wrapper import handle_array_function
-from ivy.func_wrapper import handle_array_like_without_promotion
-from ivy.func_wrapper import handle_backend_invalid
-from ivy.func_wrapper import handle_device
-from ivy.func_wrapper import handle_nestable
-from ivy.func_wrapper import handle_out_argument
-from ivy.func_wrapper import infer_dtype
-from ivy.func_wrapper import inputs_to_native_arrays
-from ivy.func_wrapper import inputs_to_native_shapes
-from ivy.func_wrapper import outputs_to_ivy_arrays
-from ivy.func_wrapper import temp_asarray_wrapper
-from ivy.func_wrapper import to_native_arrays_and_back
-from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
-
-# local
+from ivy.utils.backend import current_backend
+from ivy.func_wrapper import (
+    handle_array_function,
+    infer_dtype,
+    handle_out_argument,
+    outputs_to_ivy_arrays,
+    inputs_to_native_arrays,
+    inputs_to_native_shapes,
+    to_native_arrays_and_back,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    handle_device,
+    handle_backend_invalid,
+    temp_asarray_wrapper,
+)
 
 # Helpers #
 # --------#

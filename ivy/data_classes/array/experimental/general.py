@@ -1,12 +1,9 @@
 # global
 import abc
-from typing import Callable
-from typing import Sequence
-from typing import Union
-
-import ivy
+from typing import Union, Callable, Sequence
 
 # local
+import ivy
 
 
 class _ArrayWithGeneralExperimental(abc.ABC):

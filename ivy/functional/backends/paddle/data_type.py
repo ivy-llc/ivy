@@ -1,14 +1,10 @@
 # global
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Union
+from typing import Optional, Union, Sequence, List
 
-import numpy as np
 import paddle
-
-import ivy
 import ivy.functional.backends.paddle as paddle_backend
+import numpy as np
+import ivy
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 

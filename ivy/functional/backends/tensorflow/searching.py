@@ -1,14 +1,12 @@
 # global
 from numbers import Number
-from typing import Optional
-from typing import Tuple
-from typing import Union
+from typing import Optional, Union, Tuple
 
 import tensorflow as tf
 
 import ivy
-from . import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 # Array API Standard #
 # ------------------ #

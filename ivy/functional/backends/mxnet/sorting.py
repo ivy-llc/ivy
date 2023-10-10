@@ -1,8 +1,4 @@
-from typing import List
-from typing import Literal
-from typing import Optional
-from typing import Union
-
+from typing import Union, Optional, Literal, List
 import mxnet as mx
 
 import ivy

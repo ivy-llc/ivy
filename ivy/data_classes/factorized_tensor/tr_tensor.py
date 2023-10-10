@@ -1,10 +1,10 @@
 # local
-import warnings
 
-import ivy
 from .base import FactorizedTensor
+import ivy
 
 # global
+import warnings
 
 
 class TRTensor(FactorizedTensor):

@@ -1,21 +1,22 @@
 """Collection of random Ivy functions."""
-# global
-from typing import Optional
-from typing import Union
 
-import ivy
-from ivy.func_wrapper import handle_array_function
-from ivy.func_wrapper import handle_backend_invalid
-from ivy.func_wrapper import handle_device
-from ivy.func_wrapper import handle_nestable
-from ivy.func_wrapper import handle_out_argument
-from ivy.func_wrapper import infer_dtype
-from ivy.func_wrapper import inputs_to_native_shapes
-from ivy.func_wrapper import to_native_arrays_and_back
-from ivy.utils.backend import backend_stack
-from ivy.utils.exceptions import handle_exceptions
+# global
+from typing import Optional, Union
 
 # local
+import ivy
+from ivy.func_wrapper import (
+    handle_array_function,
+    infer_dtype,
+    handle_out_argument,
+    to_native_arrays_and_back,
+    inputs_to_native_shapes,
+    handle_nestable,
+    handle_device,
+    handle_backend_invalid,
+)
+from ivy.utils.backend import backend_stack
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Helpers #

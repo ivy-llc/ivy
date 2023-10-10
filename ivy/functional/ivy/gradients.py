@@ -1,27 +1,25 @@
 """Collection of gradient Ivy functions."""
+
 # global
-import itertools
-from typing import Callable
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
+from typing import Sequence, Union, Optional, Tuple, Callable
 import numpy as np
-
-import ivy
-from ivy.func_wrapper import handle_array_function
-from ivy.func_wrapper import handle_array_like_without_promotion
-from ivy.func_wrapper import handle_backend_invalid
-from ivy.func_wrapper import handle_device
-from ivy.func_wrapper import handle_nestable
-from ivy.func_wrapper import handle_out_argument
-from ivy.func_wrapper import inputs_to_ivy_arrays
-from ivy.func_wrapper import to_native_arrays_and_back
-from ivy.utils.backend import current_backend
-from ivy.utils.exceptions import handle_exceptions
+import itertools
 
 # local
+import ivy
+from ivy.utils.backend import current_backend
+
+from ivy.func_wrapper import (
+    handle_array_function,
+    inputs_to_ivy_arrays,
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    handle_device,
+    handle_backend_invalid,
+)
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Helpers #

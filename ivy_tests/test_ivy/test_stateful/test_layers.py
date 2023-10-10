@@ -1,9 +1,11 @@
 """Collection of tests for unified neural network layers."""
+
 # global
 import numpy as np
 from hypothesis import assume
 from hypothesis import strategies as st
 
+# local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.data_classes.container import Container
@@ -17,8 +19,6 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_nn import (
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
     _valid_dct,
 )
-
-# local
 
 all_constant_initializers = (ivy.Zeros, ivy.Ones)
 all_gaussian_initializers = (ivy.KaimingNormal, ivy.Siren)

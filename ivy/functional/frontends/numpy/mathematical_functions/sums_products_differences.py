@@ -1,12 +1,14 @@
 # global
 import ivy
-import ivy.functional.frontends.numpy as np_frontend
-from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_dtype
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_out
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 # local
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
+)
+import ivy.functional.frontends.numpy as np_frontend
 
 
 @handle_numpy_out

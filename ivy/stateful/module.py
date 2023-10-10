@@ -1,24 +1,21 @@
 """Base class for deriving trainable modules."""
+
 # global
-import abc
-import copy
+from collections import OrderedDict
 import functools
 import os
-from collections import OrderedDict
-from typing import Dict
-from typing import Optional
-from typing import Tuple
-
+import abc
+import copy
 import dill
+from typing import Optional, Tuple, Dict
 
+# local
 import ivy
 from ivy.data_classes.container import Container
 from ivy.func_wrapper import _get_first_array
 from ivy.functional.ivy.gradients import _is_variable
-from ivy.stateful.converters import ModuleConverters
 from ivy.stateful.helpers import ModuleHelpers
-
-# local
+from ivy.stateful.converters import ModuleConverters
 
 
 # helpers

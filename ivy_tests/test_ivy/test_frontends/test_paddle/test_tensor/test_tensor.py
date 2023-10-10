@@ -1,26 +1,24 @@
 # global
 import numpy as np
-from hypothesis import assume
-from hypothesis import given
+from hypothesis import assume, given
 from hypothesis import strategies as st
 
 import ivy
+
+# local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
 from ivy_tests.test_ivy.helpers import assert_all_close
-from ivy_tests.test_ivy.helpers import BackendHandler
-from ivy_tests.test_ivy.helpers import handle_frontend_method
-from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
-    _get_dtype_and_3dbatch_matrices,
+from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa E501
+    _get_dtype_values_k_axes_for_rot90,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa E501
-    _get_dtype_values_k_axes_for_rot90,
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_and_3dbatch_matrices,
 )
-
-# local
 
 CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
 

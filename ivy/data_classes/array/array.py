@@ -2,39 +2,18 @@
 # global
 import copy
 import functools
+import numpy as np
 from operator import mul
 from typing import Optional
 
-import numpy as np
-
+# local
 import ivy
+from .conversions import args_to_native, to_ivy
 from .activations import _ArrayWithActivations
-from .conversions import args_to_native
-from .conversions import to_ivy
 from .creation import _ArrayWithCreation
 from .data_type import _ArrayWithDataTypes
 from .device import _ArrayWithDevice
 from .elementwise import _ArrayWithElementwise
-from .experimental import _ArrayWithActivationsExperimental
-from .experimental import _ArrayWithConversionsExperimental
-from .experimental import _ArrayWithCreationExperimental
-from .experimental import _ArrayWithData_typeExperimental
-from .experimental import _ArrayWithDeviceExperimental
-from .experimental import _ArrayWithElementWiseExperimental
-from .experimental import _ArrayWithGeneralExperimental
-from .experimental import _ArrayWithGradientsExperimental
-from .experimental import _ArrayWithImageExperimental
-from .experimental import _ArrayWithLayersExperimental
-from .experimental import _ArrayWithLinearAlgebraExperimental
-from .experimental import _ArrayWithLossesExperimental
-from .experimental import _ArrayWithManipulationExperimental
-from .experimental import _ArrayWithNormsExperimental
-from .experimental import _ArrayWithRandomExperimental
-from .experimental import _ArrayWithSearchingExperimental
-from .experimental import _ArrayWithSetExperimental
-from .experimental import _ArrayWithSortingExperimental
-from .experimental import _ArrayWithStatisticalExperimental
-from .experimental import _ArrayWithUtilityExperimental
 from .general import _ArrayWithGeneral
 from .gradients import _ArrayWithGradients
 from .image import _ArrayWithImage
@@ -50,8 +29,28 @@ from .sorting import _ArrayWithSorting
 from .statistical import _ArrayWithStatistical
 from .utility import _ArrayWithUtility
 from ivy.func_wrapper import handle_view_indexing
-
-# local
+from .experimental import (
+    _ArrayWithSearchingExperimental,
+    _ArrayWithActivationsExperimental,
+    _ArrayWithConversionsExperimental,
+    _ArrayWithCreationExperimental,
+    _ArrayWithData_typeExperimental,
+    _ArrayWithDeviceExperimental,
+    _ArrayWithElementWiseExperimental,
+    _ArrayWithGeneralExperimental,
+    _ArrayWithGradientsExperimental,
+    _ArrayWithImageExperimental,
+    _ArrayWithLayersExperimental,
+    _ArrayWithLinearAlgebraExperimental,
+    _ArrayWithLossesExperimental,
+    _ArrayWithManipulationExperimental,
+    _ArrayWithNormsExperimental,
+    _ArrayWithRandomExperimental,
+    _ArrayWithSetExperimental,
+    _ArrayWithSortingExperimental,
+    _ArrayWithStatisticalExperimental,
+    _ArrayWithUtilityExperimental,
+)
 
 
 class Array(

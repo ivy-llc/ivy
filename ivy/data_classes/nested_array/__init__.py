@@ -1,4 +1,3 @@
 # flake8: noqa
 # local
-from .nested_array import NestedArray
-from .nested_array import NestedArrayBase
+from .nested_array import NestedArray, NestedArrayBase  # noqa

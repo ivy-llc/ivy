@@ -1,30 +1,25 @@
 # global
-import builtins
-import itertools
 import math
+import itertools
+from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 from functools import reduce as _reduce
-from typing import Callable
-from typing import List
-from typing import Literal
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
-import ivy
-from ivy.func_wrapper import handle_array_function
-from ivy.func_wrapper import handle_array_like_without_promotion
-from ivy.func_wrapper import handle_backend_invalid
-from ivy.func_wrapper import handle_device
-from ivy.func_wrapper import handle_nestable
-from ivy.func_wrapper import handle_out_argument
-from ivy.func_wrapper import handle_partial_mixed_function
-from ivy.func_wrapper import inputs_to_ivy_arrays
-from ivy.func_wrapper import to_native_arrays_and_back
-from ivy.functional.ivy.experimental.general import _correct_ivy_callable
-from ivy.utils.exceptions import handle_exceptions
+import builtins
 
 # local
+import ivy
+from ivy.func_wrapper import (
+    handle_array_like_without_promotion,
+    handle_out_argument,
+    to_native_arrays_and_back,
+    handle_nestable,
+    handle_partial_mixed_function,
+    inputs_to_ivy_arrays,
+    handle_array_function,
+    handle_device,
+    handle_backend_invalid,
+)
+from ivy.functional.ivy.experimental.general import _correct_ivy_callable
+from ivy.utils.exceptions import handle_exceptions
 
 _min = builtins.min
 _slice = builtins.slice

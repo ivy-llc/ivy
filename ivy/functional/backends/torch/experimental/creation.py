@@ -1,17 +1,16 @@
 # global
+from typing import Optional, Tuple, Union
 import math
-from typing import Optional
-from typing import Tuple
-from typing import Union
-
 import torch
 
-import ivy
-from .. import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
-from ivy.func_wrapper import with_unsupported_dtypes
 
 # local
+import ivy
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_unsupported_device_and_dtypes,
+)
+from .. import backend_version
 
 # noinspection PyProtectedMember
 

@@ -1,11 +1,9 @@
 # global
 import abc
-from typing import Optional
-from typing import Union
-
-import ivy
+from typing import Union, Optional
 
 # local
+import ivy
 
 # ToDo: implement all methods here as public instance methods
 

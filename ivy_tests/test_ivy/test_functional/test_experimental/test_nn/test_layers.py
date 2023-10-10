@@ -1,9 +1,9 @@
 # global
 import numpy as np
 import torch
-from hypothesis import assume
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
+# local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
@@ -11,9 +11,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # --- Helpers --- #
 # --------------- #
-
-
-# local
 
 
 def _get_reduce_func(dtype):

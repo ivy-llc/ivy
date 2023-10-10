@@ -1,12 +1,11 @@
-from copy import deepcopy
-
 import ivy
-from ivy.functional.frontends.xgboost.linear.updater_coordinate import (
-    coordinate_updater,
-)
 from ivy.functional.frontends.xgboost.objective.regression_loss import (
     LogisticRegression,
 )
+from ivy.functional.frontends.xgboost.linear.updater_coordinate import (
+    coordinate_updater,
+)
+from copy import deepcopy
 
 
 class GBLinear:

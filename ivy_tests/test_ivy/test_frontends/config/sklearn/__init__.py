@@ -1,8 +1,5 @@
+from ..base import FrontendConfig, SupportedDeviecs, SupportedDtypes
 import numpy as np
-
-from ..base import FrontendConfig
-from ..base import SupportedDeviecs
-from ..base import SupportedDtypes
 
 
 def get_config():

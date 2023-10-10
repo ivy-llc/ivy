@@ -1,9 +1,4 @@
-from typing import Callable
-from typing import Iterable
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import Union
+from typing import Callable, Optional, List, Union, Iterable, Tuple
 
 
 def trace_graph(

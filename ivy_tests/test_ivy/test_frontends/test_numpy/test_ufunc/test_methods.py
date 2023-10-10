@@ -1,9 +1,8 @@
 # global
+from hypothesis import assume, strategies as st, given
 import numpy as np
-from hypothesis import assume
-from hypothesis import given
-from hypothesis import strategies as st
 
+# local
 import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.numpy.ufunc import (
     ufuncs,
@@ -12,9 +11,6 @@ from ivy.functional.frontends.numpy.ufunc import (
 
 # --- Helpers --- #
 # --------------- #
-
-
-# local
 
 
 # strategy to generate a ufunc from given list

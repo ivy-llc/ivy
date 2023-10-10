@@ -1,8 +1,11 @@
 # local
+
 import ivy
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    from_zero_dim_arrays_to_scalar,
+)
 from ivy import with_supported_dtypes
-from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back

@@ -1,9 +1,6 @@
+from .base import FrontendConfig, SupportedDeviecs, SupportedDtypes
 import numpy as np
 import pandas as pd
-
-from .base import FrontendConfig
-from .base import SupportedDeviecs
-from .base import SupportedDtypes
 
 
 def get_config():

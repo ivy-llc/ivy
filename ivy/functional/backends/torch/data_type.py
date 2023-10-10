@@ -1,18 +1,13 @@
 # global
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Union
-
+from typing import Optional, Union, Sequence, List
 import numpy as np
 import torch
 
+# local
 import ivy
-from . import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
-
-# local
+from . import backend_version
 
 ivy_dtype_dict = {
     torch.int8: "int8",

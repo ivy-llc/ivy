@@ -1,8 +1,8 @@
 # global
 import numpy as np
-from hypothesis import assume
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
+# local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -10,9 +10,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # --- Helpers --- #
 # --------------- #
-
-
-# local
 
 
 # trapz

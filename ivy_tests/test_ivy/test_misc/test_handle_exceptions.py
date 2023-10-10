@@ -1,21 +1,23 @@
-import hypothesis.strategies as st
 import pytest
 from hypothesis import given
+import hypothesis.strategies as st
 
 from ivy import handle_exceptions
-from ivy.utils.exceptions import _non_ivy_exceptions_mapping
-from ivy.utils.exceptions import InplaceUpdateException
-from ivy.utils.exceptions import IvyAttributeError
-from ivy.utils.exceptions import IvyBackendException
-from ivy.utils.exceptions import IvyBroadcastShapeError
-from ivy.utils.exceptions import IvyDeviceError
-from ivy.utils.exceptions import IvyDtypePromotionError
-from ivy.utils.exceptions import IvyError
-from ivy.utils.exceptions import IvyException
-from ivy.utils.exceptions import IvyIndexError
-from ivy.utils.exceptions import IvyInvalidBackendException
-from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.utils.exceptions import IvyValueError
+from ivy.utils.exceptions import (
+    IvyError,
+    IvyNotImplementedException,
+    IvyBroadcastShapeError,
+    IvyValueError,
+    InplaceUpdateException,
+    IvyException,
+    IvyIndexError,
+    IvyAttributeError,
+    IvyBackendException,
+    IvyDeviceError,
+    IvyInvalidBackendException,
+    IvyDtypePromotionError,
+    _non_ivy_exceptions_mapping,
+)
 
 
 @handle_exceptions

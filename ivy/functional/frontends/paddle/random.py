@@ -1,8 +1,7 @@
 # global
 import ivy
-from ivy.func_wrapper import with_supported_device_and_dtypes
 from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_device_and_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )

@@ -1,9 +1,6 @@
+from .base import SupportedDtypes, SupportedDeviecs, FrontendConfig
 import numpy as np
 import xgboost as xgb
-
-from .base import FrontendConfig
-from .base import SupportedDeviecs
-from .base import SupportedDtypes
 
 
 def get_config():

@@ -1,17 +1,16 @@
 # global
 import functools
-from typing import Callable
-from typing import Sequence
-from typing import Union
-
-import ivy
-from ivy import handle_array_function
-from ivy import handle_array_like_without_promotion
-from ivy import handle_nestable
-from ivy import inputs_to_ivy_arrays
-from ivy.utils.exceptions import handle_exceptions
+from typing import Callable, Union, Sequence
 
 # local
+import ivy
+from ivy import (
+    inputs_to_ivy_arrays,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    handle_array_function,
+)
+from ivy.utils.exceptions import handle_exceptions
 
 
 def _correct_ivy_callable(func):

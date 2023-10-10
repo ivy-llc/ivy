@@ -1,6 +1,5 @@
-import numpy as np
-
 import ivy
+import numpy as np
 
 TOLERANCE_DICT = {
     "float16": 1e-2,

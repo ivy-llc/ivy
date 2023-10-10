@@ -1,23 +1,20 @@
 import operator
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
 
-import jax.lax as jlax
-import jax.numpy as jnp
-import jax.scipy as js
-
-from .. import backend_version
-from ivy import default_float_dtype
-from ivy import is_float_dtype
-from ivy import promote_types_of_inputs
+from ivy import (
+    promote_types_of_inputs,
+    default_float_dtype,
+    is_float_dtype,
+)
 from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 from ivy.functional.backends.jax import JaxArray
+import jax.numpy as jnp
+import jax.scipy as js
+import jax.lax as jlax
+from .. import backend_version
 
 jax_ArrayLike = Union[JaxArray, Number]
 

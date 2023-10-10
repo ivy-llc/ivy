@@ -1,11 +1,9 @@
 # Run Tests
-import json
 import os
 import sys
-
-import requests
 from pymongo import MongoClient
-
+import requests
+import json
 import old_run_test_helpers as old_helpers
 from run_tests_CLI.get_all_tests import BACKENDS
 

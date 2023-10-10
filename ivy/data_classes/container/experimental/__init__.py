@@ -9,7 +9,6 @@ from .gradients import _ContainerWithGradientsExperimental
 from .image import _ContainerWithImageExperimental
 from .layers import _ContainerWithLayersExperimental
 from .linear_algebra import _ContainerWithLinearAlgebraExperimental
-from .losses import _ContainerWithLossesExperimental
 from .manipulation import _ContainerWithManipulationExperimental
 from .norms import _ContainerWithNormsExperimental
 from .random import _ContainerWithRandomExperimental
@@ -18,3 +17,4 @@ from .set import _ContainerWithSetExperimental
 from .sorting import _ContainerWithSortingExperimental
 from .statistical import _ContainerWithStatisticalExperimental
 from .utility import _ContainerWithUtilityExperimental
+from .losses import _ContainerWithLossesExperimental

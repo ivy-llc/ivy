@@ -1,10 +1,6 @@
 # global
-from typing import Optional
-from typing import Sequence
-from typing import Union
-
 import paddle
-
+from typing import Union, Optional, Sequence
 import ivy.functional.backends.paddle as paddle_backend
 
 

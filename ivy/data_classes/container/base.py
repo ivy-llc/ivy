@@ -1,17 +1,16 @@
 """Base Container Object."""
+
 # global
+import inspect
+from itertools import chain
+import re
 import abc
 import copy
-import inspect
-import json
-import re
-from itertools import chain
-
-import numpy as np
 import termcolor
+import numpy as np
+import json
 
-from ivy.utils.exceptions import IvyBackendException
-from ivy.utils.exceptions import IvyException
+from ivy.utils.exceptions import IvyBackendException, IvyException
 
 
 try:

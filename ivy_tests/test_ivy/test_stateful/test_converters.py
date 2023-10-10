@@ -1,13 +1,13 @@
 """Collection of tests for module converters."""
+
 # global
+import pytest
 from types import SimpleNamespace
 from typing import Sequence
 
-import pytest
-
-import ivy
 
 # local
+import ivy
 
 try:
     import torch

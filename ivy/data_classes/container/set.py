@@ -1,13 +1,9 @@
 # global
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
-
-import ivy
-from ivy.data_classes.container.base import ContainerBase
+from typing import Dict, List, Optional, Union
 
 # local
+from ivy.data_classes.container.base import ContainerBase
+import ivy
 
 
 class _ContainerWithSet(ContainerBase):

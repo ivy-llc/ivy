@@ -1,24 +1,24 @@
 # global
 from collections import namedtuple
+from typing import (
+    Union,
+    Optional,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    List,
+    Literal,
+    Callable,
+    Any,
+)
 from numbers import Number
-from typing import Any
-from typing import Callable
-from typing import List
-from typing import Literal
-from typing import NamedTuple
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
 import tensorflow as tf
 
-import ivy
-from .. import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.ivy.experimental.manipulation import _to_tf_padding
-
 # local
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
+import ivy
+from ivy.functional.ivy.experimental.manipulation import _to_tf_padding
 
 
 def moveaxis(

@@ -1,19 +1,15 @@
 # global
-from typing import Optional
-from typing import Sequence
-from typing import Union
-
+from typing import Optional, Union, Sequence
 import paddle
-from paddle.device import core
-
-import ivy
-from ivy import with_supported_device_and_dtypes
 from ivy import with_unsupported_device_and_dtypes
 from ivy.functional.backends.paddle import backend_version
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
 from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
 
 # local
+import ivy
+from paddle.device import core
+from ivy import with_supported_device_and_dtypes
 
 # dirichlet
 

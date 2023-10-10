@@ -1,10 +1,11 @@
 """Collection of tests for the demos."""
+
 # global
 import pytest
 
-import ivy.functional.backends.numpy
-
 # local
+import ivy
+import ivy.functional.backends.numpy
 
 
 # functional api

@@ -1,22 +1,15 @@
 # global
 import math
 from numbers import Number
-from typing import Iterable
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
+from typing import Union, Tuple, Optional, List, Sequence, Iterable
 import jax.numpy as jnp
 import numpy as np
 
+# local
 import ivy
-from . import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
-
-# local
+from . import backend_version
 
 
 def _flat_array_to_1_dim_array(x):

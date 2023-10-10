@@ -1,16 +1,15 @@
 # global
 import logging
 
+# local
 import ivy
-from ivy.func_wrapper import (
-    with_unsupported_dtypes,
-)
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
-
-# local
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+)
 
 
 @to_ivy_arrays_and_back

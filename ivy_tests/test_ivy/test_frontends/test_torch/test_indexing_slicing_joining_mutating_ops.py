@@ -1,9 +1,11 @@
 # global
-import math
 import random
 
 from hypothesis import strategies as st
+import math
 
+
+# local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
@@ -12,13 +14,13 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
 )
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
+    _get_splits,
+)
 
 
 # --- Helpers --- #
 # --------------- #
-
-
-# local
 
 
 # noinspection DuplicatedCode

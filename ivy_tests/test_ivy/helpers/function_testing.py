@@ -1,14 +1,13 @@
 # global
 import copy
+import time
+from typing import Union, List
+import numpy as np
+import types
 import importlib
 import inspect
-import time
-import types
 from collections import OrderedDict
-from typing import List
-from typing import Union
 
-import numpy as np
 
 from .globals import mod_backend
 

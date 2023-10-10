@@ -1,32 +1,29 @@
 # global
 import struct
 from numbers import Number
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
+from typing import Union, List, Optional, Sequence, Tuple
 
 import numpy as np
 import paddle
-from paddle.device import core
-
-import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from . import backend_version
+
+# local
+import ivy
 from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
 )
-from ivy.functional.ivy.creation import _asarray_handle_nestable
-from ivy.functional.ivy.creation import _asarray_infer_device
-from ivy.functional.ivy.creation import _asarray_infer_dtype
-from ivy.functional.ivy.creation import _asarray_inputs_to_native_shapes
-from ivy.functional.ivy.creation import _asarray_to_native_arrays_and_back
-from ivy.functional.ivy.creation import _remove_np_bfloat16
-from ivy.functional.ivy.creation import NestedSequence
-from ivy.functional.ivy.creation import SupportsBufferProtocol
-
-# local
+from ivy.functional.ivy.creation import (
+    _asarray_to_native_arrays_and_back,
+    _asarray_infer_device,
+    _asarray_handle_nestable,
+    _asarray_infer_dtype,
+    NestedSequence,
+    SupportsBufferProtocol,
+    _asarray_inputs_to_native_shapes,
+    _remove_np_bfloat16,
+)
+from . import backend_version
+from paddle.device import core
 
 # Array API Standard #
 # -------------------#

@@ -1,15 +1,15 @@
 """Collection of Jax activation functions, wrapped to fit Ivy syntax and signature."""
+
+
 # global
-from typing import Literal
-from typing import Optional
-from typing import Union
+
 
 import jax
 import jax.numpy as jnp
-
-from ivy.functional.backends.jax import JaxArray
+from typing import Optional, Union, Literal
 
 # local
+from ivy.functional.backends.jax import JaxArray
 
 
 def gelu(

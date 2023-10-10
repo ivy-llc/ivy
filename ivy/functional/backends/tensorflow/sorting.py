@@ -1,16 +1,11 @@
 # global
-from typing import List
-from typing import Literal
-from typing import Optional
-from typing import Union
-
 import tensorflow as tf
-
-import ivy
-from . import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes
+from typing import Union, Optional, Literal, List
 
 # local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 @with_unsupported_dtypes({"2.14.0 and below": ("complex", "bool")}, backend_version)

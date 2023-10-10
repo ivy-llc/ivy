@@ -1,7 +1,7 @@
 # global
 import abc
-from typing import Optional
-from typing import Tuple
+from typing import Optional, Tuple
+
 
 import ivy
 

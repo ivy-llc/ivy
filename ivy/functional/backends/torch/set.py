@@ -1,15 +1,12 @@
 # global
-from collections import namedtuple
-from typing import Optional
-from typing import Tuple
-
 import torch
-
-import ivy
-from . import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes
+from typing import Tuple, Optional
+from collections import namedtuple
 
 # local
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
+import ivy
 
 
 @with_unsupported_dtypes(

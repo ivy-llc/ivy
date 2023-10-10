@@ -1,13 +1,12 @@
 """Base class for helper module methods."""
+
 # global
 import abc
-
 import numpy as np
 import termcolor
 
-import ivy
-
 # local
+import ivy
 
 
 class ModuleHelpers(abc.ABC):

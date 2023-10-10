@@ -1,19 +1,19 @@
 # global
-import builtins
 import copy
-import inspect
-import logging
-import os
 import re
-import sys
 import warnings
+import logging
+import builtins
+import numpy as np
+import sys
+import inspect
+import os
 from collections.abc import Sequence
 
-import numpy as np
 
 import ivy.utils.backend.handler
-from ivy._version import __version__ as __version__
 from ivy.utils import check_for_binaries
+from ivy._version import __version__ as __version__
 
 _not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
 try:

@@ -1,19 +1,17 @@
 # global
-import multiprocessing
 import os
-import pickle
 import queue
-import random
-
-import numpy as np
 import pytest
-
-import ivy
-from ivy.data_classes.container import Container
-from ivy.functional.ivy.gradients import _variable
-from ivy.utils.exceptions import IvyException
+import random
+import numpy as np
+import multiprocessing
+import pickle
 
 # local
+import ivy
+from ivy.functional.ivy.gradients import _variable
+from ivy.data_classes.container import Container
+from ivy.utils.exceptions import IvyException
 
 
 def test_container_all_false(on_device):

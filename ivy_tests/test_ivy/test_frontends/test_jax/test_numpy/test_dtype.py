@@ -1,11 +1,9 @@
 # global
-from hypothesis import settings
-from hypothesis import strategies as st
-
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
+from hypothesis import strategies as st, settings
 
 # local
+import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
 
 
 # can_cast

@@ -1,27 +1,29 @@
 # global
-from collections import namedtuple
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    List,
+    Literal,
+    Callable,
+    Any,
+)
 from numbers import Number
-from typing import Any
-from typing import Callable
-from typing import List
-from typing import Literal
-from typing import NamedTuple
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
+from collections import namedtuple
 import torch
 
-import ivy
-from .. import backend_version
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.ivy.experimental.manipulation import _check_paddle_pad
-from ivy.functional.ivy.experimental.manipulation import _to_paddle_padding
-from ivy.functional.ivy.experimental.manipulation import _to_tf_padding
 
 # local
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from .. import backend_version
+import ivy
+from ivy.functional.ivy.experimental.manipulation import (
+    _to_tf_padding,
+    _check_paddle_pad,
+    _to_paddle_padding,
+)
 
 
 def moveaxis(

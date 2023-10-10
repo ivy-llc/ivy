@@ -1,14 +1,9 @@
 # global
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import Union
-
-import ivy
-from ivy.data_classes.container.base import ContainerBase
+from typing import Optional, Union, List, Dict, Tuple
 
 # local
+import ivy
+from ivy.data_classes.container.base import ContainerBase
 
 
 class _ContainerWithSearchingExperimental(ContainerBase):

@@ -1,17 +1,12 @@
 # Global
-import itertools
-
-import numpy as np
 import pytest
-from hypothesis import given
-from hypothesis import HealthCheck
-from hypothesis import settings
-from hypothesis import strategies as st
-
-import ivy
-from ivy.utils.backend.handler import _backend_dict
+import itertools
+from hypothesis import strategies as st, given, settings, HealthCheck
 
 # Local
+import ivy
+import numpy as np
+from ivy.utils.backend.handler import _backend_dict
 
 
 def test_is_local(backend_fw):

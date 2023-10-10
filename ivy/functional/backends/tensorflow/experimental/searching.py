@@ -1,14 +1,10 @@
 # global
-from typing import Optional
-from typing import Tuple
-from typing import Union
-
+from typing import Union, Optional, Tuple
 import tensorflow as tf
 
-from . import backend_version
-from ivy.func_wrapper import with_supported_dtypes
-
 # local
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 
 @with_supported_dtypes(

@@ -1,10 +1,9 @@
 # global
 import jax
 
+# local
 import ivy
 from ivy.func_wrapper import inputs_to_native_arrays
-
-# local
 
 
 def bind_custom_gradient_function(func, custom_grad_fn):

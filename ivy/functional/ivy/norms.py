@@ -1,14 +1,15 @@
 """Collection of Ivy normalization functions."""
-# local
-from typing import List
-from typing import Optional
-from typing import Union
 
+
+# local
+from typing import List, Union, Optional
 import ivy
-from ivy.func_wrapper import handle_array_function
-from ivy.func_wrapper import handle_array_like_without_promotion
-from ivy.func_wrapper import handle_nestable
-from ivy.func_wrapper import inputs_to_ivy_arrays
+from ivy.func_wrapper import (
+    handle_array_like_without_promotion,
+    handle_nestable,
+    handle_array_function,
+    inputs_to_ivy_arrays,
+)
 from ivy.utils.exceptions import handle_exceptions
 
 

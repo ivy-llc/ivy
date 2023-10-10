@@ -1,24 +1,19 @@
 # global
-from typing import Callable
-from typing import List
-from typing import Literal
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
+from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 import paddle
-
-import ivy
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _depth_max_pooling_helper,
+    _validate_max_pool_params,
+)
+from ivy.utils.exceptions import IvyNotImplementedException, IvyValueError
+from ivy.func_wrapper import (
+    with_supported_device_and_dtypes,
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 from .. import backend_version
-from ivy.func_wrapper import with_supported_device_and_dtypes
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.ivy.layers import _depth_max_pooling_helper
-from ivy.functional.ivy.layers import _handle_padding
-from ivy.functional.ivy.layers import _validate_max_pool_params
-from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.utils.exceptions import IvyValueError
+import ivy
 
 # local
 

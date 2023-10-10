@@ -1,16 +1,11 @@
 """Collection of MXNet network layers, wrapped to fit Ivy syntax and signature."""
 # global
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
 import mxnet as mx
-
+from typing import Optional, Tuple, Union, Sequence
 import ivy
-from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def conv1d(

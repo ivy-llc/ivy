@@ -1,18 +1,17 @@
 """Collection of Numpy network layers, wrapped to fit Ivy syntax and signature."""
+
 # global
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
 import numpy as np
+from typing import Union, Tuple, Optional, Sequence
 
-import ivy
-from ivy.functional.ivy.layers import _deconv_length
-from ivy.functional.ivy.layers import _get_x_data_format
-from ivy.functional.ivy.layers import _handle_padding
 
 # local
+import ivy
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _deconv_length,
+    _get_x_data_format,
+)
 
 
 def _add_dilations(x, dilations, axis, values=0):

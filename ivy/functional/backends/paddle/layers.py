@@ -1,22 +1,22 @@
 """Collection of Paddle network layers, wrapped to fit Ivy syntax and signature."""
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
 
-import paddle
-
-import ivy
-import ivy.functional.backends.paddle as paddle_backend
-from . import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
-from ivy.functional.ivy.layers import _deconv_length
-from ivy.functional.ivy.layers import _get_x_data_format
-from ivy.functional.ivy.layers import _handle_padding
-from ivy.utils.exceptions import IvyNotImplementedException
+from typing import Optional, Tuple, Union, Sequence
 
 # global
+import paddle
+import ivy
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _get_x_data_format,
+    _deconv_length,
+)
+import ivy.functional.backends.paddle as paddle_backend
+
 # local
+
+from . import backend_version
 
 
 def _is_list_or_tuple(inp):

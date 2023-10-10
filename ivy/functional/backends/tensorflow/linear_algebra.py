@@ -1,23 +1,16 @@
 # global
+
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
-from typing import List
-from typing import Literal
-from typing import NamedTuple
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
 
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
 
-import ivy
-from . import backend_version
-from ivy import inf
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_unsupported_dtypes
-
 # local
+import ivy
+from ivy import inf
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from . import backend_version
 
 
 # Array API Standard #

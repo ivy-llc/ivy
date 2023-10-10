@@ -1,8 +1,7 @@
 from hypothesis import strategies as st
 
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_frontend_method
 
 
 CLASS_TREE = "ivy.functional.frontends.sklearn.model_selection"

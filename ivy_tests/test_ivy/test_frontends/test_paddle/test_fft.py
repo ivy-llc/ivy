@@ -1,11 +1,9 @@
 # global
-from hypothesis import given
-from hypothesis import strategies as st
-
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from hypothesis import given, strategies as st
 
 # local
+import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # Custom Hypothesis strategy for generating sequences of 2 integers

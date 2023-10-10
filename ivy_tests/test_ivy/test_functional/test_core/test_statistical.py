@@ -1,18 +1,15 @@
 """Collection of tests for statistical functions."""
 # global
 import numpy as np
-from hypothesis import assume
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
+# local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
 # --- Helpers --- #
 # --------------- #
-
-
-# local
 
 
 @st.composite

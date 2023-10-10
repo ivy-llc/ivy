@@ -1,18 +1,17 @@
 # global
+from typing import Union, Optional
 from math import pi
-from typing import Optional
-from typing import Union
-
 import torch
 
-import ivy
-from . import backend_version
-from ivy import promote_types_of_inputs
-from ivy.func_wrapper import handle_numpy_arrays_in_specific_backend
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_unsupported_dtypes
-
 # local
+import ivy
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    handle_numpy_arrays_in_specific_backend,
+)
+from ivy import promote_types_of_inputs
+from . import backend_version
 
 
 def _cast_for_unary_op(x):

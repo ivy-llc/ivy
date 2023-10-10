@@ -1,13 +1,10 @@
 # global
+from typing import Tuple, Union, Optional
 import abc
-from typing import Optional
-from typing import Tuple
-from typing import Union
-
-import ivy
-from ivy.functional.ivy.gradients import _variable
 
 # local
+import ivy
+from ivy.functional.ivy.gradients import _variable
 
 
 # Initializer #

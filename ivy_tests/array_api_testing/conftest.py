@@ -1,6 +1,5 @@
-from pathlib import Path
-
 from pytest import mark
+from pathlib import Path
 
 
 skip_ids = []

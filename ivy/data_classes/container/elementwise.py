@@ -1,14 +1,9 @@
 # global
-from typing import Dict
-from typing import List
-from typing import Literal
-from typing import Optional
-from typing import Union
-
-import ivy
-from ivy.data_classes.container.base import ContainerBase
+from typing import Optional, Union, List, Dict, Literal
 
 # local
+import ivy
+from ivy.data_classes.container.base import ContainerBase
 
 
 class _ContainerWithElementwise(ContainerBase):

@@ -1,31 +1,25 @@
 """Collection of Jax general functions, wrapped to fit Ivy syntax and signature."""
+
 # global
-import importlib
-import multiprocessing as _multiprocessing
-from functools import reduce as _reduce
+import jax
+import numpy as np
+import jax.numpy as jnp
 from numbers import Number
 from operator import mul
-from typing import Callable
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
+from functools import reduce as _reduce
+from typing import Optional, Union, Sequence, Callable, Tuple
+import multiprocessing as _multiprocessing
+import importlib
 
-import jax
-import jax.numpy as jnp
-import numpy as np
-
-import ivy
-from . import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.backends.jax import JaxArray
-from ivy.functional.backends.jax import NativeArray
-from ivy.functional.backends.jax.device import _to_array
-from ivy.functional.backends.jax.device import _to_device
-from ivy.functional.ivy.general import _broadcast_to
-from ivy.utils.exceptions import _check_inplace_update_support
 
 # local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.jax.device import _to_array, _to_device
+from ivy.functional.ivy.general import _broadcast_to
+from ivy.functional.backends.jax import JaxArray, NativeArray
+from ivy.utils.exceptions import _check_inplace_update_support
+from . import backend_version
 
 
 def container_types():

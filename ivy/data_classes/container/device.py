@@ -1,9 +1,5 @@
 # local
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import Union, Optional, Any, List, Dict
 
 import ivy
 from ivy.data_classes.container.base import ContainerBase

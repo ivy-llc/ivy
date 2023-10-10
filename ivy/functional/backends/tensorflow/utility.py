@@ -1,13 +1,10 @@
 # global
-from typing import Optional
-from typing import Sequence
-from typing import Union
-
 import tensorflow as tf
+from typing import Union, Optional, Sequence
 
-import ivy
 
 # local
+import ivy
 
 
 def all(

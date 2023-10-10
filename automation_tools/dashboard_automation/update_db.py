@@ -1,5 +1,4 @@
 import sys
-
 from pymongo import MongoClient
 
 action_url = "https://github.com/unifyai/ivy/actions/runs/"

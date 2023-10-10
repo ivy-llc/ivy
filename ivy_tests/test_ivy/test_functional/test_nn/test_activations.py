@@ -1,12 +1,11 @@
 """Collection of tests for unified neural network activation functions."""
-# global
-from hypothesis import assume
-from hypothesis import strategies as st
 
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
+# global
+from hypothesis import strategies as st, assume
 
 # local
+import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 # gelu

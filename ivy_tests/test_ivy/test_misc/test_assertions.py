@@ -1,32 +1,32 @@
-import contextlib
-import os
 import sys
-
+import os
+import contextlib
 import pytest
-
-import ivy
+from ivy.utils.assertions import (
+    check_all,
+    check_all_or_any_fn,
+    check_any,
+    check_dev_correct_formatting,
+    check_dimensions,
+    check_elem_in_list,
+    check_equal,
+    check_exists,
+    check_false,
+    check_gather_input_valid,
+    check_gather_nd_input_valid,
+    check_greater,
+    check_inplace_sizes_valid,
+    check_isinstance,
+    check_kernel_padding_size,
+    check_less,
+    check_same_dtype,
+    check_shape,
+    check_shapes_broadcastable,
+    check_true,
+    check_unsorted_segment_min_valid_params,
+)
 from ivy.utils.assertions import _check_jax_x64_flag
-from ivy.utils.assertions import check_all
-from ivy.utils.assertions import check_all_or_any_fn
-from ivy.utils.assertions import check_any
-from ivy.utils.assertions import check_dev_correct_formatting
-from ivy.utils.assertions import check_dimensions
-from ivy.utils.assertions import check_elem_in_list
-from ivy.utils.assertions import check_equal
-from ivy.utils.assertions import check_exists
-from ivy.utils.assertions import check_false
-from ivy.utils.assertions import check_gather_input_valid
-from ivy.utils.assertions import check_gather_nd_input_valid
-from ivy.utils.assertions import check_greater
-from ivy.utils.assertions import check_inplace_sizes_valid
-from ivy.utils.assertions import check_isinstance
-from ivy.utils.assertions import check_kernel_padding_size
-from ivy.utils.assertions import check_less
-from ivy.utils.assertions import check_same_dtype
-from ivy.utils.assertions import check_shape
-from ivy.utils.assertions import check_shapes_broadcastable
-from ivy.utils.assertions import check_true
-from ivy.utils.assertions import check_unsorted_segment_min_valid_params
+import ivy
 
 
 @pytest.mark.parametrize(

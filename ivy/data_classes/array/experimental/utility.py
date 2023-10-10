@@ -1,10 +1,9 @@
 # global
-import abc
 from typing import Optional
-
-import ivy
+import abc
 
 # local
+import ivy
 
 
 class _ArrayWithUtilityExperimental(abc.ABC):

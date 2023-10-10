@@ -1,19 +1,18 @@
 # global
+from typing import Optional, Tuple, Union
 import math
-from typing import Optional
-from typing import Tuple
-from typing import Union
-
 import paddle
-from paddle.device import core
-
-import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from .. import backend_version
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from paddle.device import core
+from ivy.func_wrapper import (
+    with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
+)
+
 
 # local
+import ivy
+from .. import backend_version
 
 # noinspection PyProtectedMember
 # Helpers for calculating Window Functions

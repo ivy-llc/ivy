@@ -1,9 +1,7 @@
-from typing import Optional
-
 import numpy as np
-
-from . import backend_version
+from typing import Optional
 from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 @with_unsupported_dtypes({"1.26.0 and below": ("float16",)}, backend_version)

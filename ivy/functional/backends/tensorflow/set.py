@@ -1,13 +1,9 @@
 # global
-from collections import namedtuple
-from typing import Optional
-from typing import Tuple
-from typing import Union
-
 import tensorflow as tf
-
-from . import backend_version
+from typing import Tuple, Union, Optional
+from collections import namedtuple
 from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 @with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)

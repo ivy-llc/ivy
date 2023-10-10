@@ -1,21 +1,20 @@
 # global
-import numpy as np
-from hypothesis import assume
-from hypothesis import strategies as st
-
 import ivy
+import numpy as np
+from hypothesis import strategies as st, assume
+
+# local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_sorting import (
-    _invert_permutation_helper,
-)
-
-# local
 # fmt: off
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_sorting \
+    import (
+        _invert_permutation_helper,
+    )
 # fmt: on
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # abs

@@ -1,12 +1,9 @@
 # global
-from typing import Optional
-from typing import Tuple
-
 import jax.numpy as jnp
-
-from ivy.functional.backends.jax import JaxArray
+from typing import Optional, Tuple
 
 # local
+from ivy.functional.backends.jax import JaxArray
 
 
 def unravel_index(

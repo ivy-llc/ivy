@@ -1,20 +1,19 @@
 # global
 import sys
 
-from . import _src
-from . import array
+# local
+from ivy.functional.frontends import set_frontend_to_specific_version
 from . import config
+from . import array
+from .array import *
 from . import general_functions
+from .general_functions import *
 from . import lax
 from . import nn
 from . import numpy
 from . import random
+from . import _src
 from ._src import tree_util
-from .array import *
-from .general_functions import *
-from ivy.functional.frontends import set_frontend_to_specific_version
-
-# local
 
 
 _frontend_array = numpy.array

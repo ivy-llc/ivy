@@ -1,9 +1,11 @@
 # local
 import ivy
-import ivy.functional.frontends.numpy as np_frontend
 import ivy.functional.frontends.tensorflow as tf_frontend
-from ivy.functional.frontends.tensorflow.func_wrapper import handle_tf_dtype
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+import ivy.functional.frontends.numpy as np_frontend
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_tf_dtype,
+)
 
 
 class DType:

@@ -1,7 +1,8 @@
-import numpy as np
 import pytest
 from hypothesis import strategies as st
+import numpy as np
 
+# local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
@@ -9,9 +10,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # --- Helpers --- #
 # --------------- #
-
-
-# local
 
 
 @st.composite

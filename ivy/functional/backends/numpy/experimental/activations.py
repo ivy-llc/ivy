@@ -1,16 +1,13 @@
-from typing import Literal
-from typing import Optional
-from typing import Union
-
-import numpy as np
-
-import ivy
-from . import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from typing import Optional, Union, Literal
 
 # global
+import numpy as np
+
 # local
+import ivy
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def logit(

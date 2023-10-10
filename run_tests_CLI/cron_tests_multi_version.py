@@ -1,5 +1,4 @@
 import sys
-
 from get_all_tests import get_all_tests
 
 torch_req = ["torch/2.0.0", "torch/2.0.1"]

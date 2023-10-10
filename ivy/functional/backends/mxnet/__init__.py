@@ -1,8 +1,6 @@
 import sys
-
-import mxnet as mx
 import numpy as np
-
+import mxnet as mx
 import ivy
 from ivy.func_wrapper import _dtype_from_version
 from ivy.utils.exceptions import IvyNotImplementedException

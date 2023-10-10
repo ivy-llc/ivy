@@ -1,23 +1,24 @@
 """Collection of Paddle random functions, wrapped to fit Ivy syntax and signature."""
+
 # global
-from typing import Optional
-from typing import Sequence
-from typing import Union
-
 import paddle
-from paddle.fluid.libpaddle import Place
-
-import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from . import backend_version
-from ivy.func_wrapper import with_supported_device_and_dtypes
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
-from ivy.functional.ivy.random import _check_valid_scale
-from ivy.functional.ivy.random import _randint_check_dtype_and_bound
+from typing import Optional, Union, Sequence
 
 # local
+import ivy
+from paddle.fluid.libpaddle import Place
+from ivy.functional.ivy.random import (
+    _check_bounds_and_get_shape,
+    _randint_check_dtype_and_bound,
+    _check_valid_scale,
+)
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+    with_unsupported_dtypes,
+)
+from . import backend_version
 
 # Extra #
 # ------#

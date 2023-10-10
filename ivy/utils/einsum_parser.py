@@ -1,13 +1,8 @@
 # Einsum expression parser, this file has been adapted from `opt_einsum` parser here
 # https://github.com/dgasmith/opt_einsum/blob/master/opt_einsum/parser.py
-import itertools
-from typing import Any
-from typing import Dict
-from typing import Iterator
-from typing import List
-from typing import Tuple
-from typing import Union
 
+import itertools
+from typing import Any, Dict, Iterator, List, Tuple, Union
 import numpy as np
 
 ArrayType = Any

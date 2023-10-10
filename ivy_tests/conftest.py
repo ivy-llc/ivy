@@ -1,14 +1,13 @@
 # global
 import os
-
 import redis
 from colorama import Fore
-from hypothesis import HealthCheck
-from hypothesis import Phase
-from hypothesis import settings
-from hypothesis.database import DirectoryBasedExampleDatabase
-from hypothesis.database import MultiplexedDatabase
-from hypothesis.database import ReadOnlyDatabase
+from hypothesis import settings, HealthCheck, Phase
+from hypothesis.database import (
+    MultiplexedDatabase,
+    ReadOnlyDatabase,
+    DirectoryBasedExampleDatabase,
+)
 from hypothesis.extra.redis import RedisExampleDatabase
 
 

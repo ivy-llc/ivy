@@ -2,9 +2,9 @@
 import abc
 from typing import Optional
 
-import ivy
-
 # local
+
+import ivy
 
 
 class _ArrayWithSortingExperimental(abc.ABC):

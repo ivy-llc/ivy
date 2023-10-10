@@ -1,7 +1,6 @@
 import sys
-
-from get_all_tests import get_all_tests
 from pymongo import MongoClient
+from get_all_tests import get_all_tests
 
 
 module_map = {

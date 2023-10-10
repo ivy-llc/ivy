@@ -1,22 +1,23 @@
 """Collection of Paddle gradient functions, wrapped to fit Ivy syntax and signature."""
+
 # global
-from itertools import chain
-from typing import Callable
-from typing import Optional
 
+from typing import Optional, Callable
 import paddle
-
-import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from . import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
-from ivy.functional.ivy.gradients import _get_native_y
-from ivy.functional.ivy.gradients import _get_required_float_variables
-from ivy.functional.ivy.gradients import _get_y_and_ret_idxs
-from ivy.functional.ivy.gradients import _process_func_ret_and_grads
-from ivy.functional.ivy.gradients import _set_duplicates
+from itertools import chain
 
 # local
+import ivy
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from . import backend_version
+from ivy.functional.ivy.gradients import (
+    _get_required_float_variables,
+    _get_y_and_ret_idxs,
+    _get_native_y,
+    _set_duplicates,
+    _process_func_ret_and_grads,
+)
 
 
 def variable(x, /):

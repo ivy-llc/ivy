@@ -1,20 +1,15 @@
 # global
-import math
-from typing import Optional
-from typing import Tuple
-from typing import Type
-from typing import Union
+from typing import Union, Optional, Tuple, Type
 
 import paddle
-
-import ivy
+import math
 import ivy.functional.backends.paddle as paddle_backend
-from . import backend_version
+import ivy
 from ivy import promote_types_of_inputs
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 
 # local
+from . import backend_version
 
 
 def _elementwise_helper(x1, x2):

@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st
 
+# local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
@@ -10,9 +11,6 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipul
 
 # --- Helpers --- #
 # --------------- #
-
-
-# local
 
 
 @st.composite

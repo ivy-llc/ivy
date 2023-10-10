@@ -1,14 +1,12 @@
 # For Review
 """Collection of Ivy optimizers."""
+
 # global
 import abc
-from typing import Callable
-from typing import Optional
-from typing import Union
-
-import ivy
+from typing import Union, Optional, Callable
 
 # local
+import ivy
 
 
 # Base #

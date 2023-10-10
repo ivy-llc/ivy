@@ -1,6 +1,6 @@
 import ivy
-from .gbm import GBLinear
 from ivy.func_wrapper import with_unsupported_dtypes
+from .gbm import GBLinear
 
 
 class DMatrix:

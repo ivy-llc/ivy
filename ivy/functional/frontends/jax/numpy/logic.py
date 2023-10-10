@@ -1,6 +1,5 @@
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
@@ -8,6 +7,7 @@ from ivy.functional.frontends.jax.numpy import (
     promote_types_of_jax_inputs as promote_jax_arrays,
 )
 from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 # --- Helpers --- #

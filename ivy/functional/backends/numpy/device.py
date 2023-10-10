@@ -1,17 +1,14 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
+
 # global
 import os
 import time
-from typing import Any
-from typing import Optional
-from typing import Union
-
 import numpy as np
-
-import ivy
-from ivy.functional.ivy.device import Profiler as BaseProfiler
+from typing import Union, Optional, Any
 
 # local
+import ivy
+from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
 def dev(x: np.ndarray, /, *, as_native: bool = False) -> Union[ivy.Device, str]:

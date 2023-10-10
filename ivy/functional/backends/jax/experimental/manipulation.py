@@ -1,23 +1,23 @@
 # local
-from collections import namedtuple
-from numbers import Number
-from typing import Any
-from typing import Callable
-from typing import List
-from typing import Literal
-from typing import NamedTuple
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
-import jax.lax as jlax
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    Literal,
+    Callable,
+    Any,
+    List,
+)
 import jax.numpy as jnp
-
-import ivy
-from ivy.functional.backends.jax import JaxArray
+import jax.lax as jlax
+from numbers import Number
+from collections import namedtuple
 
 # local
+import ivy
+from ivy.functional.backends.jax import JaxArray
 
 
 def moveaxis(

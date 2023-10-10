@@ -1,21 +1,13 @@
 # global
 import abc
-from numbers import Number
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import Iterable
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import Union
-
 import numpy as np
-
-import ivy
+from numbers import Number
+from typing import Any, Iterable, Union, Optional, Dict, Callable, List, Tuple
 
 # ToDo: implement all methods here as public instance methods
+
 # local
+import ivy
 
 
 class _ArrayWithGeneral(abc.ABC):

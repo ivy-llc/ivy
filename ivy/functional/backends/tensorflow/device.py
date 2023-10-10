@@ -4,6 +4,7 @@ Tensorflow device functions.
 Collection of TensorFlow general functions, wrapped to fit Ivy syntax
 and signature.
 """
+
 # global
 _round = round
 import tensorflow as tf

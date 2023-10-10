@@ -1,25 +1,21 @@
 # global
-import math
 from numbers import Number
-from typing import Iterable
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
+from typing import Union, Optional, Tuple, List, Sequence, Iterable
+import math
 import paddle
 
+# local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
+
+# noinspection PyProtectedMember
 from . import backend_version
 from ...ivy.manipulation import _calculate_out_shape
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
-from ivy.func_wrapper import with_unsupported_dtypes
-
-# local
-# noinspection PyProtectedMember
 
 
 # Array API Standard #

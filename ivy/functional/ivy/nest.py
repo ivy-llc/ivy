@@ -1,22 +1,13 @@
 """Collection of Ivy functions for nested objects."""
+
 # global
 from builtins import map as _map
-from collections import OrderedDict
-from collections import UserDict
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import Iterable
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
-
-import ivy
-from ivy.utils.exceptions import handle_exceptions
+from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, Sequence
+from collections import UserDict, OrderedDict
 
 # local
+import ivy
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Extra #

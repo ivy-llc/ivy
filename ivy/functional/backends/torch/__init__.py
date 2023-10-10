@@ -1,12 +1,10 @@
 # global
 import sys
-
 import torch as torch
 
+# local
 import ivy
 from ivy.func_wrapper import _dtype_from_version
-
-# local
 
 backend_version = {"version": torch.__version__.split("+")[0]}
 

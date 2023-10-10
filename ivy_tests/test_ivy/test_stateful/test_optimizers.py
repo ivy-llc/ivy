@@ -1,14 +1,14 @@
 """Collection of tests for Ivy optimizers."""
+
 # global
 from hypothesis import strategies as st
 
+# local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_method
 from ivy_tests.test_ivy.test_functional.test_core.test_gradients import (
     get_gradient_arguments_with_lr,
 )
-
-# local
 
 
 # adam

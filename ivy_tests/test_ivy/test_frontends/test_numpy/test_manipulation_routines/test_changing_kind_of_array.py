@@ -1,12 +1,10 @@
 # global
 import numpy as np
 
+# local
 import ivy.functional.frontends.numpy as np_frontend
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import BackendHandler
-from ivy_tests.test_ivy.helpers import handle_frontend_test
-
-# local
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 
 
 @handle_frontend_test(

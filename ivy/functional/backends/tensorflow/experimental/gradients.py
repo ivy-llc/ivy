@@ -1,11 +1,10 @@
 # global
 import tensorflow as tf
 
+# local
 import ivy
 from ivy.func_wrapper import inputs_to_native_arrays
 from ivy.functional.ivy.gradients import _get_required_float_variables
-
-# local
 
 
 def bind_custom_gradient_function(func, custom_grad_fn):
