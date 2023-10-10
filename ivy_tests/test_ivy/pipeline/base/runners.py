@@ -8,6 +8,15 @@ import numpy as np  # for type hint only
 import ivy
 
 
+@dataclass
+class TestCaseSubRunnerResult:
+    flatten_elements_np: List[np.ndarray]
+    shape: List[Tuple] = None
+    device: List[str] = None
+    dtype: List[str] = None
+    type: List[str] = None
+
+
 class TestCaseRunner(ABC):
     @abstractmethod
     def _run_target(self):
@@ -101,12 +110,3 @@ class TestCaseSubRunner(ABC):
     @abstractmethod
     def get_results():
         pass
-
-
-@dataclass
-class TestCaseSubRunnerResult:
-    flatten_elements_np: List[np.ndarray]
-    shape: List[Tuple] = None
-    device: List[str] = None
-    dtype: List[str] = None
-    type: List[str] = None
