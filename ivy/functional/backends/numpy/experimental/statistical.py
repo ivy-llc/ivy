@@ -543,3 +543,39 @@ def igamma(
 
     igamma_vec = np.vectorize(igamma_cal)
     return igamma_vec(a, x).astype(a.dtype)
+
+
+def histogramdd(
+    a: np.ndarray,
+    /,
+    *,
+    bins: Optional[Union[int, np.ndarray]] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[np.ndarray] = None,
+    density: Optional[bool] = False,
+    dtype: Optional[np.dtype] = None,
+) -> Tuple[np.ndarray, Tuple[np.ndarray]]:
+    # Determine the number of dimensions
+    num_dims = a.shape[1]
+
+    # Handle the bins argument
+    if np.ndim(bins) == 0:
+        bins = [bins] * num_dims
+
+    # Create edge arrays for each dimension
+    edges = []
+    for dim in range(num_dims):
+        if isinstance(bins[dim], int):
+            if range:
+                min_range, max_range = range[dim]
+            else:
+                min_range, max_range = np.min(a[:, dim]), np.max(a[:, dim])
+            edge = np.linspace(start=min_range, stop=max_range, num=bins[dim] + 1)
+        else:
+            edge = np.asarray(bins[dim])
+        edges.append(edge)
+
+    # Compute the histogram using np.histogram
+    hist, _ = np.histogramdd(a=a, bins=edges, weights=weights, density=density)
+
+    return hist, tuple(edges)

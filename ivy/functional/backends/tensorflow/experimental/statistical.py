@@ -558,3 +558,67 @@ def cummin(
         return cummin_x
     else:
         return tf.cast(cummin_x, dtype)
+
+
+@tf.function
+def histogramdd(
+    a: tf.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, Tuple[tf.Tensor]]] = None,
+    range: Optional[Tuple[tf.Tensor]] = None,
+    weights: Optional[tf.Tensor] = None,
+    density: Optional[bool] = False,
+    dtype: Optional[tf.DType] = None,
+) -> Tuple[tf.Tensor, Tuple[tf.Tensor]]:
+    min_a = tf.reduce_min(a)
+    max_a = tf.reduce_max(a)
+
+    if isinstance(bins, Tuple) and range:
+        raise ivy.exceptions.IvyException(
+            "Must choose between specifying bins and range or bin edges directly"
+        )
+
+    if range:
+        bins = tuple(
+            tf.linspace(
+                start=range[i][0], stop=range[i][1], num=bins[i] + 1, dtype=a.dtype
+            )
+            for i in range(len(range))
+        )
+        range = None
+
+    if isinstance(bins, int):
+        range = (min_a, max_a)
+        bins = tuple(
+            tf.linspace(
+                start=range[i][0], stop=range[i][1], num=bins[i] + 1, dtype=a.dtype
+            )
+            for i in range(len(range))
+        )
+        range = None
+
+    if any(bins[i].shape[0] < 2 for i in range(len(bins))):
+        raise ivy.exceptions.IvyException(
+            "Each dimension of bins must have at least 1 bin (shape[0] > 1)"
+        )
+
+    bins_out = bins
+    # No need for extend_lower_interval and extend_upper_interval
+    # in multidimensional histogram
+
+    ret = tf.raw_ops.HistogramFixedWidth(
+        values=a,
+        value_range=tf.convert_to_tensor([min_a, max_a], dtype=a.dtype),
+        nbins=bins[0].shape[0] - 1,  # Number of bins
+        dtype=a.dtype,
+        weights=weights if weights is not None else tf.zeros_like(a),
+    )
+
+    dtype = ivy.as_native_dtype(dtype)
+
+    if dtype:
+        ret = tf.cast(ret, dtype)
+        bins_out = tuple(tf.cast(b, dtype) for b in bins_out)
+
+    return ret, bins_out

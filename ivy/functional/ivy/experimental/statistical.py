@@ -962,3 +962,63 @@ def cummin(
     return ivy.current_backend(x).cummin(
         x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
     )
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def histogramdd(
+    a: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    bins: Optional[Union[int, ivy.Array, ivy.NativeArray]] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    density: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+) -> ivy.Array:
+    """
+    Compute the multidimensional histogram of some data.
+
+    Parameters
+    ----------
+    a : np.ndarray
+        Input data. The histogram is computed over the flattened array.
+    bins : int or array_like, optional
+        If bins is an int, it defines the number of equal-width bins in the
+        given range (10, by default). If bins is a sequence, it defines the bin
+        edges, including the rightmost edge, allowing for non-uniform bin widths.
+    range : tuple of float, optional
+        A tuple representing the lower and upper range of values for each dimension.
+    weights : np.ndarray, optional
+        An array of values `w_i` weighing each data point `x_i`. The values of
+        `a` are weighted by `w` before binning.
+    density : bool, optional
+        If True, the result is the value of the probability density function
+        at the bin, normalized such that the integral over the range is 1.
+        If False, the result is the count of samples in each bin.
+
+    Returns
+    -------
+    hist : np.ndarray
+        The values of the multidimensional histogram.
+    edges : tuple of np.ndarray
+        A tuple of arrays describing the bin edges for each dimension.
+
+    Notes
+    -----
+    - This implementation assumes that the input `a` has multiple dimensions.
+
+    Examples
+    --------
+    >>> a = np.random.randn(100, 2)  # 100 samples in 2D
+    >>> hist, edges = histogramdd(a, bins=10, range=[(-1, 1), (-1, 1)])
+    >>> hist.shape, len(edges)
+    ((10, 10), 2)
+    """
+    return ivy.current_backend(a).histogramdd(
+        a, bins=bins, range=range, weights=weights, density=density, dtype=dtype
+    )

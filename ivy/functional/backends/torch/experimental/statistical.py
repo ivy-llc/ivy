@@ -630,3 +630,74 @@ def cummin(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret.to(dtype))
     return ret.to(dtype)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.1.0 and below": (
+            "uint8",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
+def histogramdd(
+    a: torch.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, Tuple[torch.Tensor]]] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[torch.Tensor] = None,
+    density: Optional[bool] = False,
+    dtype: Optional[torch.dtype] = None,
+) -> Tuple[torch.Tensor, Tuple[torch.Tensor]]:
+    min_a = torch.min(a)
+    max_a = torch.max(a)
+
+    if isinstance(bins, Tuple) and range:
+        raise ivy.exceptions.IvyException(
+            "Must choose between specifying bins and range or bin edges directly"
+        )
+
+    if range:
+        bins = tuple(
+            torch.linspace(
+                start=range[i][0], end=range[i][1], steps=bins[i] + 1, dtype=a.dtype
+            )
+            for i in range(len(range))
+        )
+        range = None
+
+    if isinstance(bins, int):
+        range = (min_a, max_a)
+        bins = tuple(
+            torch.linspace(
+                start=range[i][0], end=range[i][1], steps=bins[i] + 1, dtype=a.dtype
+            )
+            for i in range(len(range))
+        )
+        range = None
+
+    if any(bins[i].size()[0] < 2 for i in range(len(bins))):
+        raise ivy.exceptions.IvyException(
+            "Each dimension of bins must have at least 1 bin (size > 1)"
+        )
+
+    bins_out = bins
+    # No need for extend_lower_interval and extend_upper_interval
+    # in multidimensional histogram
+
+    ret = torch.histogramdd(a=a, bins=bins, weights=weights, density=density)[0]
+
+    dtype = ivy.as_native_dtype(dtype)
+
+    if dtype:
+        ret = ret.type(dtype)
+        bins_out = tuple(b.type(dtype) for b in bins_out)
+
+    return ret, bins_out

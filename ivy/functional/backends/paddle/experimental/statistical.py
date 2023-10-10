@@ -666,3 +666,16 @@ def cummin(
     if reverse:
         cummin_x = paddle.flip(cummin_x, axis=[axis])
     return cummin_x.cast(dtype)
+
+
+def histogramdd(
+    a: paddle.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, Tuple[paddle.Tensor]]] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[paddle.Tensor] = None,
+    density: Optional[bool] = False,
+    dtype: Optional[paddle.Tensor] = None,
+) -> Tuple[paddle.Tensor]:
+    pass

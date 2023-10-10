@@ -422,3 +422,32 @@ def igamma(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jlax.igamma(a=a, x=x)
+
+
+def histogramdd(
+    a: jnp.ndarray,
+    /,
+    *,
+    bins: Optional[Union[int, jnp.ndarray]] = None,
+    range: Optional[Tuple[float, float]] = None,
+    weights: Optional[jnp.ndarray] = None,
+    density: Optional[bool] = False,
+    dtype: Optional[jnp.dtype] = None,
+) -> Tuple[jnp.ndarray, Tuple[jnp.ndarray]]:
+    # Determine the minimum and maximum values for each dimension of the sample.
+    min_a = jnp.min(a, axis=0)
+    max_a = jnp.max(a, axis=0)
+
+    # If `range` is not provided, use the min and max values from the sample.
+    if range is None:
+        range = tuple(zip(min_a, max_a))
+
+    # Compute the multidimensional histogram using `jnp.histogramdd`.
+    hist, edges = jnp.histogramdd(a, bins=bins, range=range, density=density)
+
+    # Apply weights if provided.
+    if weights is not None:
+        hist *= weights
+
+    # Return the histogram and the bin edges.
+    return hist, edges

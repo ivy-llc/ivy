@@ -244,6 +244,97 @@ def _histogram_helper(draw):
 
 
 @st.composite
+def _histogramdd_helper(draw):
+    dtype_input = draw(st.sampled_from(draw(helpers.get_dtypes("float"))))
+    bins = draw(
+        helpers.array_values(
+            dtype=dtype_input,
+            shape=(draw(helpers.ints(min_value=1, max_value=10)),),
+            abs_smallest_val=-10,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    bins = np.asarray(sorted(set(bins)), dtype=dtype_input)
+    if len(bins) == 1:
+        bins = int(abs(bins[0]))
+        if bins == 0:
+            bins = 1
+        if dtype_input in draw(helpers.get_dtypes("unsigned")):
+            range = (
+                draw(
+                    helpers.floats(
+                        min_value=0, max_value=10, exclude_min=False, exclude_max=False
+                    )
+                ),
+                draw(
+                    helpers.floats(
+                        min_value=11, max_value=20, exclude_min=False, exclude_max=False
+                    )
+                ),
+            )
+        else:
+            range = (
+                draw(helpers.floats(min_value=-10, max_value=0)),
+                draw(helpers.floats(min_value=1, max_value=10)),
+            )
+        range = draw(st.sampled_from([range, None]))
+    else:
+        range = None
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=5
+        )
+    )
+    a = draw(
+        helpers.array_values(
+            dtype=dtype_input,
+            shape=shape,
+            min_value=-20,
+            max_value=20,
+        )
+    )
+    weights = draw(
+        helpers.array_values(
+            dtype=dtype_input,
+            shape=shape,
+            min_value=-20,
+            max_value=20,
+        )
+    )
+    # weights = draw(st.sampled_from([weights, None]))
+    axes = draw(
+        helpers.get_axis(
+            shape=shape,
+            # TODO: negative axes
+            allow_neg=False,
+            min_size=1,
+            max_size=10,
+        )
+    )
+    dtype_out = draw(
+        st.sampled_from(
+            draw(
+                helpers.get_castable_dtype(
+                    draw(helpers.get_dtypes("float")), str(dtype_input)
+                )
+            )
+        )
+    )
+    density = draw(st.booleans())
+    return (
+        a,
+        bins,
+        axes,
+        dtype_out,
+        range,
+        weights,
+        density,
+        dtype_input,
+    )
+
+
+@st.composite
 def _quantile_helper(draw):
     large_abs_safety_factor = 2
     small_abs_safety_factor = 2
@@ -530,6 +621,44 @@ def test_histogram(
         weights=weights,
         density=density,
         input_dtypes=[dtype_input],
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.histogramdd",
+    values=_histogramdd_helper(),
+    test_gradients=st.just(False),
+)
+def test_histogramdd(
+    *,
+    values,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    (
+        a,
+        bins,
+        axes,
+        dtype,
+        range,
+        weights,
+        density,
+        dtype_input,
+    ) = values
+    helpers.test_function(
+        sample=a,
+        bins=bins,
+        axes=axes,
+        dtype=dtype,
+        range=range,
+        weights=weights,
+        density=density,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,

@@ -103,3 +103,16 @@ def cov(
     dtype: Optional[type] = None,
 ) -> None:
     raise IvyNotImplementedException()
+
+
+def histogramdd(
+    a: mx.ndarray.NDArray,
+    /,
+    *,
+    bins: Optional[Union[int, Tuple[int, int]]] = 10,
+    range: Optional[Tuple[float, float]] = None,
+    weights: Optional[mx.ndarray.NDArray] = None,
+    density: Optional[bool] = False,
+    dtype: Optional[None] = None,
+) -> Tuple[mx.ndarray.NDArray, Tuple[mx.ndarray.NDArray]]:
+    raise IvyNotImplementedException()
