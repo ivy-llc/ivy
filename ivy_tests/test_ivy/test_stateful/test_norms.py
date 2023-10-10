@@ -218,7 +218,7 @@ def test_weight_norm_layer(
             st.sampled_from([Conv2D(2, 20, (5, 5)), Conv2DTranspose(2, 20, (5, 5))])
         )
 
-    elif x[0].shape[2] == 3:
+    elif x[0].shape[1] == 3:
         layer = st.example(
             st.sampled_from([Conv2D(3, 20, (5, 5)), Conv2DTranspose(3, 20, (5, 5))])
         )
