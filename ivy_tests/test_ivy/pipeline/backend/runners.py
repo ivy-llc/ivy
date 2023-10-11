@@ -229,7 +229,7 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
             return x
 
         ret = self._ivy.nested_map(map_fn, ret, include_derived={"tuple": True})
-        return self._get_results_from_ret(ret)
+        return self._get_results_from_ret(ret, store_types=True)
 
     def get_results(self, init_all_as_kwargs_np, method_all_as_kwargs_np):
         # preprocess init and method args and kwargs

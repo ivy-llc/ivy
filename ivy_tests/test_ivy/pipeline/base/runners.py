@@ -69,11 +69,14 @@ class TestCaseSubRunner(ABC):
     def _is_array(self, x):
         return self._ivy.is_array(x)
 
-    def _get_results_from_ret(self, ret, raw=False):
+    def _get_results_from_ret(self, ret, raw=False, store_types=False):
         ret_flat = self._flatten(ret=ret)
         ret_devices = [
             self._get_dev_str(ret) if self._is_array(ret) else None for ret in ret_flat
         ]
+        ret_types = []
+        if store_types:
+            ret_types = [type(ret) if self._is_array(ret) else None for ret in ret_flat]
         ret_np_flat = self._flatten_ret_to_np(ret_flat)
         ret_shapes = [
             ret_np.shape if isinstance(ret_np, np.ndarray) else None
@@ -89,8 +92,9 @@ class TestCaseSubRunner(ABC):
                 shape=ret_shapes,
                 device=ret_devices,
                 dtype=ret_dtypes,
+                type=ret_types if store_types else None,
             )
-        return ret_np_flat, ret_shapes, ret_devices, ret_dtypes
+        return ret_np_flat, ret_shapes, ret_devices, ret_dtypes, ret_types
 
     def _flatten_ret_to_np(self, ret_flat):
         return [self._ivy.to_numpy(x) for x in ret_flat]

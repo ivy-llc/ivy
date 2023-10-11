@@ -122,7 +122,7 @@ class FrontendFunctionTestCaseRunnerMP(FrontendFunctionTestCaseRunner):
                 self.traced_fn,
             )
         )
-        (ret_np_flat, ret_shapes, ret_devices, ret_dtypes), traced_fn = (
+        (ret_np_flat, ret_shapes, ret_devices, ret_dtypes, _), traced_fn = (
             output_queue.get()
         )
         if test_flags.test_trace and self.traced_fn is None:
@@ -198,7 +198,7 @@ class FrontendFunctionTestCaseRunnerMP(FrontendFunctionTestCaseRunner):
                 test_arguments,
             )
         )
-        ret_np_flat, ret_shapes, ret_devices, ret_dtypes = output_queue.get()
+        ret_np_flat, ret_shapes, ret_devices, ret_dtypes, _ = output_queue.get()
         return TestCaseSubRunnerResult(
             flatten_elements_np=ret_np_flat,
             shape=ret_shapes,
@@ -345,7 +345,7 @@ class FrontendMethodTestCaseRunnerMP(FrontendMethodTestCaseRunner):
                 method_all_as_kwargs_np,
             )
         )
-        (ret_np_flat, ret_shapes, ret_devices, ret_dtypes), traced_fn = (
+        (ret_np_flat, ret_shapes, ret_devices, ret_dtypes, _), traced_fn = (
             output_queue.get()
         )
         if method_flags.test_trace and self.traced_fn is None:
@@ -439,7 +439,7 @@ class FrontendMethodTestCaseRunnerMP(FrontendMethodTestCaseRunner):
                 method_all_as_kwargs_np,
             )
         )
-        ret_np_flat, ret_shapes, ret_devices, ret_dtypes = output_queue.get()
+        ret_np_flat, ret_shapes, ret_devices, ret_dtypes, _ = output_queue.get()
         return TestCaseSubRunnerResult(
             flatten_elements_np=ret_np_flat,
             shape=ret_shapes,
