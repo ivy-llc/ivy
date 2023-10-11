@@ -202,9 +202,9 @@ def test_numpy___abs__(
 
 
 @handle_frontend_method(
-    class_tree= ivy.functional.frontends.numpy.array(),
-    init_tree="numpy.ndarray",
-    method_name="__add__()",
+    class_tree= CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
