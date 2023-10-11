@@ -179,7 +179,7 @@ For example, let’s take the following PyTorch code and run it using JAX:
    class Network(torch.nn.Module):
 
        def __init__(self):
-        super(Network, self).__init__()
+        super().__init__()
         self._linear = torch.nn.Linear(3, 3)
 
        def forward(self, x):

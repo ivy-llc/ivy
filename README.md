@@ -282,7 +282,7 @@ torch_eff_encoder = ivy.transpile(eff_encoder, to="torch", args=(noise,))
 # Build a classifier using the transpiled encoder
 class Classifier(torch.nn.Module):
     def __init__(self, num_classes=20):
-        super(Classifier, self).__init__()
+        super().__init__()
         self.encoder = torch_eff_encoder
         self.fc = torch.nn.Linear(1280, num_classes)
 
@@ -318,7 +318,7 @@ backbone = ivy.transpile(
 # Build a classifier using the transpiled backbone
 class PerceiverIOClassifier(torch.nn.Module):
     def __init__(self, num_classes=20):
-        super(PerceiverIOClassifier, self).__init__()
+        super().__init__()
         self.backbone = backbone
         self.max_pool = torch.nn.MaxPool2d((512, 1))
         self.flatten = torch.nn.Flatten()
@@ -508,7 +508,7 @@ mlp_encoder = ivy.transpile(mlp_encoder, to="tensorflow", args=(noise,))
 # Build a classifier using the transpiled encoder
 class Classifier(tf.keras.Model):
     def __init__(self):
-        super(Classifier, self).__init__()
+        super().__init__()
         self.encoder = mlp_encoder
         self.output_dense = tf.keras.layers.Dense(units=1000, activation="softmax")
 
@@ -545,7 +545,7 @@ backbone = ivy.transpile(
 # Build a classifier using the transpiled backbone
 class PerceiverIOClassifier(tf.keras.Model):
     def __init__(self, num_classes=20):
-        super(PerceiverIOClassifier, self).__init__()
+        super().__init__()
         self.backbone = backbone
         self.max_pool = tf.keras.layers.MaxPooling1D(pool_size=512)
         self.flatten = tf.keras.layers.Flatten()
@@ -743,7 +743,7 @@ mlp_encoder = ivy.transpile(mlp_encoder, to="jax", args=(noise,))
 # Build a classifier using the transpiled encoder
 class Classifier(hk.Module):
     def __init__(self, num_classes=1000):
-        super(Classifier, self).__init__()
+        super().__init__()
         self.encoder = mlp_encoder()
         self.fc = hk.Linear(output_size=num_classes, with_bias=True)
 
@@ -787,7 +787,7 @@ hk_eff_encoder = ivy.transpile(eff_encoder, to="jax", args=(noise,))
 # Build a classifier using the transpiled encoder
 class Classifier(hk.Module):
     def __init__(self, num_classes=1000):
-        super(Classifier, self).__init__()
+        super().__init__()
         self.encoder = hk_eff_encoder()
         self.fc = hk.Linear(output_size=num_classes, with_bias=True)
 
