@@ -31,6 +31,7 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          cd ..
 
       - name: Check Files Changed
         shell: pwsh
@@ -79,9 +80,6 @@ jobs:
         id: tests
         run: |
           cd ivy
-          mkdir .ivy
-          touch .ivy/key.pem
-          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           ./run_tests_CLI/test_experimental_nn.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
         continue-on-error: true
 
