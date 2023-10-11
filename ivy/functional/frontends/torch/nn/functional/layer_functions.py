@@ -32,7 +32,7 @@ def _generic_lstm(
     if batch_sizes is not None:
         input = _pad_packed_sequence(input, batch_sizes, batch_first=batch_first)
 
-    if not batch_first:
+    if batch_first:
         input = ivy.swapaxes(input, 0, 1)
 
     if dropout and train:
@@ -100,7 +100,7 @@ def _generic_lstm(
         h_outs.append(h_out)
         c_outs.append(c_out)
 
-    if not batch_first:
+    if batch_first:
         output = ivy.swapaxes(output, 0, 1)
 
     h_outs = h_out if num_layers == 1 else ivy.concat(h_outs, axis=0)
@@ -111,15 +111,15 @@ def _generic_lstm(
 
 def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias):
     x_shape = list(x.shape)
-    batch_shape = x_shape[:-2]
-    timesteps = x_shape[-2]
+    batch_shape = x_shape[1:-1]
+    timesteps = x_shape[0]
     input_channels = x_shape[-1]
 
     Wi = kernel
     Wi_x = ivy.reshape(
         ivy.matmul(ivy.reshape(x, (-1, input_channels)), Wi)
         + (bias if bias is not None else 0),
-        batch_shape + [timesteps, -1],
+        [timesteps, *batch_shape, -1],
     )
     Wii_x, Wif_x, Wig_x, Wio_x = ivy.split(Wi_x, num_or_size_splits=4, axis=-1)
     Wh = recurrent_kernel
@@ -128,10 +128,10 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias
     ht_list = []
 
     for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
-        ivy.unstack(Wii_x, axis=-2),
-        ivy.unstack(Wif_x, axis=-2),
-        ivy.unstack(Wig_x, axis=-2),
-        ivy.unstack(Wio_x, axis=-2),
+        ivy.unstack(Wii_x, axis=0),
+        ivy.unstack(Wif_x, axis=0),
+        ivy.unstack(Wig_x, axis=0),
+        ivy.unstack(Wio_x, axis=0),
     ):
         htm1 = ht
         ctm1 = ct
@@ -149,7 +149,7 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias
         ht = ot * ivy.tanh(ct)
         ht_list.append(ht)
 
-    return ivy.concat(ht_list, axis=-2), (ht, ct)
+    return ivy.concat(ht_list, axis=0), (ht, ct)
 
 
 def _lstm_full(
