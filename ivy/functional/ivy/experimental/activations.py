@@ -808,3 +808,6 @@ def scaled_tanh(
     }
     """
     return current_backend(x).scaled_tanh(x, alpha=alpha, beta=beta, out=out)
+
+
+stanh = scaled_tanh
