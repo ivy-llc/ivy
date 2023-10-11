@@ -9,7 +9,7 @@ from ...test_numpy.test_sorting_searching_counting.test_searching import (
     _broadcastable_trio as _where_helper,
 )
 from ...test_numpy.test_sorting_searching_counting.test_searching import (
-    __extract_strategy,
+    _extract_strategy,
 )
 
 
@@ -172,7 +172,7 @@ def test_jax_argwhere(
 # extract
 @handle_frontend_test(
     fn_tree="jax.numpy.extract",
-    dtype_and_x=__extract_strategy(),
+    dtype_and_x=_extract_strategy(),
     test_with_out=st.just(False),
 )
 def test_jax_extract(
