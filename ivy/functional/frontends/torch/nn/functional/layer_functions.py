@@ -188,7 +188,7 @@ def _lstm_full(
 
 
 def _lstm_layer(x, hidden, weights, biases, batch_first, bidirectional):
-    if batch_first:
+    if not batch_first:
         x = ivy.swapaxes(x, 0, 1)
 
     hx_fw, cx_fw = hidden
@@ -227,7 +227,7 @@ def _lstm_layer(x, hidden, weights, biases, batch_first, bidirectional):
         result = result_fw
         h, c = hidden_fw
 
-    if batch_first:
+    if not batch_first:
         result = ivy.swapaxes(result, 0, 1)
 
     return result, (h, c)
