@@ -99,11 +99,11 @@ FROM_CONVERTERS = {
 
 class TensorflowLinear(tf.keras.Model):
     def __init__(self, out_size):
-        super(TensorflowLinear, self).__init__()
+        super().__init__()
         self._linear = tf.keras.layers.Dense(out_size)
 
     def build(self, input_shape):
-        super(TensorflowLinear, self).build(input_shape)
+        super().build(input_shape)
 
     def call(self, x):
         return self._linear(x)
@@ -111,7 +111,7 @@ class TensorflowLinear(tf.keras.Model):
 
 class TensorflowModule(tf.keras.Model):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
-        super(TensorflowModule, self).__init__()
+        super().__init__()
         self._linear0 = TensorflowLinear(hidden_size)
         self._linear1 = TensorflowLinear(hidden_size)
         self._linear2 = TensorflowLinear(out_size)
@@ -125,7 +125,7 @@ class TensorflowModule(tf.keras.Model):
 
 class TorchLinearModule(nn.Module):
     def __init__(self, in_size, out_size):
-        super(TorchLinearModule, self).__init__()
+        super().__init__()
         self._linear = nn.Linear(in_size, out_size)
 
     def forward(self, x):
@@ -134,7 +134,7 @@ class TorchLinearModule(nn.Module):
 
 class TorchModule(nn.Module):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
-        super(TorchModule, self).__init__()
+        super().__init__()
         self._linear0 = TorchLinearModule(in_size, hidden_size)
         self._linear1 = TorchLinearModule(hidden_size, hidden_size)
         self._linear2 = TorchLinearModule(hidden_size, out_size)
@@ -148,7 +148,7 @@ class TorchModule(nn.Module):
 
 class HaikuLinear(hk.Module):
     def __init__(self, out_size):
-        super(HaikuLinear, self).__init__()
+        super().__init__()
         self._linear = hk.Linear(out_size)
 
     def __call__(self, x):
@@ -157,7 +157,7 @@ class HaikuLinear(hk.Module):
 
 class HaikuModule(hk.Module):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
-        super(HaikuModule, self).__init__()
+        super().__init__()
         self._linear0 = HaikuLinear(hidden_size)
         self._linear1 = HaikuLinear(hidden_size)
         self._linear2 = HaikuLinear(out_size)
@@ -199,7 +199,7 @@ class FlaxModule(flax.linen.Module):
 
 class PaddleLinearModule(paddle.nn.Layer):
     def __init__(self, in_size, out_size):
-        super(PaddleLinearModule, self).__init__()
+        super().__init__()
         self._linear = paddle.nn.Linear(in_size, out_size)
 
     def forward(self, x):
@@ -208,7 +208,7 @@ class PaddleLinearModule(paddle.nn.Layer):
 
 class PaddleModule(paddle.nn.Layer):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
-        super(PaddleModule, self).__init__()
+        super().__init__()
         self._linear0 = PaddleLinearModule(in_size, hidden_size)
         self._linear1 = PaddleLinearModule(hidden_size, hidden_size)
         self._linear2 = PaddleLinearModule(hidden_size, out_size)
