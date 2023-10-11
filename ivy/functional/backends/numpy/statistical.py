@@ -24,6 +24,8 @@ def min(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if where is None:
+        where = True
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(
         np.amin(

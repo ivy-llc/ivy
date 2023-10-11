@@ -37,6 +37,7 @@ def min(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
+    print(where)
     if paddle.is_complex(x):
         real = paddle.amin(x.real(), axis=axis, keepdim=keepdims)
         imag = paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
