@@ -32,8 +32,8 @@ def _generic_lstm(
     if batch_sizes is not None:
         input = _pad_packed_sequence(input, batch_sizes, batch_first=batch_first)
 
-    if batch_first:
-        input = ivy.permute_dims(input, axes=(1, 0, 2))
+    if not batch_first:
+        input = ivy.swapaxes(input, 0, 1)
 
     if dropout and train:
         raise IvyNotImplementedException()
@@ -95,14 +95,13 @@ def _generic_lstm(
             ),
             (weight_ih, weight_hh),
             (bias_i, bias_h),
-            batch_first,
             bidirectional,
         )
         h_outs.append(h_out)
         c_outs.append(c_out)
 
-    if batch_first:
-        output = ivy.permute_dims(output, axes=(1, 0, 2))
+    if not batch_first:
+        output = ivy.swapaxes(output, 0, 1)
 
     h_outs = h_out if num_layers == 1 else ivy.concat(h_outs, axis=0)
     c_outs = c_out if num_layers == 1 else ivy.concat(c_outs, axis=0)
@@ -177,9 +176,7 @@ def _lstm_full(
     )
 
 
-def _lstm_layer(x, hidden, weights, biases, batch_first, bidirectional):
-    if not batch_first:
-        x = ivy.swapaxes(x, 0, 1)
+def _lstm_layer(x, hidden, weights, biases, bidirectional):
     if not bidirectional:
         result, (h, c) = _lstm_cell(x, *hidden, *weights, *biases)
     else:
@@ -206,8 +203,6 @@ def _lstm_layer(x, hidden, weights, biases, batch_first, bidirectional):
         result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
         h = ivy.concat([hidden_fw[0], hidden_bw[0]], axis=0)
         c = ivy.concat([hidden_fw[1], hidden_bw[1]], axis=0)
-    if not batch_first:
-        result = ivy.swapaxes(result, 0, 1)
     return result, (h, c)
 
 
