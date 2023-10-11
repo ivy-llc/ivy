@@ -3895,12 +3895,16 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
         # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_unsupported_dnd.__get__().values())[0], dict):
+        if fn_unsupported_dnd and isinstance(
+            list(fn_unsupported_dnd.__get__().values())[0], dict
+        ):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
         # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_supported_dnd.__get__().values())[0], dict):
+        if fn_supported_dnd and isinstance(
+            list(fn_supported_dnd.__get__().values())[0], dict
+        ):
             fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
     ivy.utils.assertions.check_false(
@@ -3991,7 +3995,11 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
         if "einops" in fn.__name__ and isinstance(fn_supported_dnd, dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, supported)
 
-        ivy.utils.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
+        if fn_supported_dnd:
+            ivy.utils.assertions.check_isinstance(
+                list(fn_supported_dnd.values())[0], tuple
+            )
+
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
@@ -4001,9 +4009,10 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
         if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
-        ivy.utils.assertions.check_isinstance(
-            list(fn_unsupported_dnd.values())[0], tuple
-        )
+        if fn_unsupported_dnd:
+            ivy.utils.assertions.check_isinstance(
+                list(fn_unsupported_dnd.values())[0], tuple
+            )
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 

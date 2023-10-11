@@ -645,43 +645,6 @@ def test_shape__rsub__(
 
 
 @handle_method(
-    method_tree="Shape.__rtruediv__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
-        safety_factor_scale="log",
-        shared_dtype=True,
-    ),
-)
-def test_shape__rtruediv__(
-    dtype_and_x,
-    method_name,
-    class_name,
-    ground_truth_backend,
-    backend_fw,
-    init_flags,
-    method_flags,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_method(
-        on_device=on_device,
-        ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        init_all_as_kwargs_np={"shape": x[0]},
-        init_input_dtypes=dtype,
-        method_input_dtypes=dtype,
-        method_all_as_kwargs_np={"other": x[1]},
-        class_name=class_name,
-        method_name=method_name,
-    )
-
-
-@handle_method(
     method_tree="Shape.__sub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -693,43 +656,6 @@ def test_shape__rtruediv__(
     ),
 )
 def test_shape__sub__(
-    dtype_and_x,
-    method_name,
-    class_name,
-    ground_truth_backend,
-    backend_fw,
-    init_flags,
-    method_flags,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_method(
-        on_device=on_device,
-        ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        init_all_as_kwargs_np={"shape": x[0]},
-        init_input_dtypes=dtype,
-        method_input_dtypes=dtype,
-        method_all_as_kwargs_np={"other": x[1]},
-        class_name=class_name,
-        method_name=method_name,
-    )
-
-
-@handle_method(
-    method_tree="Shape.__truediv__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
-        safety_factor_scale="log",
-        shared_dtype=True,
-    ),
-)
-def test_shape__truediv__(
     dtype_and_x,
     method_name,
     class_name,
