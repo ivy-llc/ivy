@@ -51,6 +51,14 @@ jobs:
           submodules: "recursive"
           fetch-depth: 100
 
+      - name: Install ivy and fetch binaries
+        run: |
+          cd ivy
+          pip3 install -e .
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+
       - name: Get Job URL
         uses: Tiryoh/gha-jobid-action@v0
         id: jobs
