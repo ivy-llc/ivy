@@ -29,7 +29,7 @@ def _lstm_helper(draw):
     )  # not yet supported by original function
     packed = draw(st.booleans())
 
-    batch_first = draw(st.booleans())
+    batch_first = draw(st.booleans()) and not packed
     num_batches = draw(st.integers(min_value=1, max_value=5))
     num_layers = draw(st.integers(min_value=1, max_value=3))
     num_directions = 2 if bidirectional else 1
@@ -120,9 +120,7 @@ def _lstm_helper(draw):
             )
         )
         batch_sizes = np.array(draw(st.permutations(batch_sizes)))
-        input = np.array(
-            _pack_padded_sequence(input, batch_sizes, batch_first=batch_first)
-        )
+        input = np.array(_pack_padded_sequence(input, batch_sizes))
     else:
         batch_sizes = None
 

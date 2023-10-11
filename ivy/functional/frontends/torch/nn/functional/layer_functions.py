@@ -18,7 +18,7 @@ def _generic_lstm(
     dropout,
     train,
     bidirectional,
-    batch_first=None,
+    batch_first=False,
     batch_sizes=None,
 ):
     weights_per_layer = 4 if has_biases else 2
