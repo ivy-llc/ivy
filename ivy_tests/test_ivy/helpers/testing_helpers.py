@@ -679,6 +679,7 @@ def handle_method(
             as_variable=_get_runtime_flag_value(method_as_variable_flags),
             native_arrays=_get_runtime_flag_value(method_native_arrays),
             container_flags=_get_runtime_flag_value(method_container_flags),
+            test_trace=_get_runtime_flag_value(test_trace),
             precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
