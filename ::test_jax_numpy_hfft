@@ -1,0 +1,350 @@
+Use Database in ReadOnly Mode with local caching !
+============================= test session starts ==============================
+platform darwin -- Python 3.11.5, pytest-7.4.2, pluggy-1.3.0
+backend(s): all
+device: cpu
+number of Hypothesis examples: 25
+rootdir: /Users/apple/Desktop/ivy
+plugins: anyio-4.0.0, hypothesis-6.84.3
+collected 25 items
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py ...... [ 24%]
+.........FFFFF....s                                                      [100%]
+
+=================================== FAILURES ===================================
+__________________ test_jax_numpy_hfft[cpu-numpy-False-False] __________________
+
+frontend = 'jax', backend_fw = 'numpy', on_device = 'cpu'
+
+    @handle_frontend_test(
+>       fn_tree="jax.numpy.fft.hfft",
+        dtype_values_axis=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("complex"),
+            num_arrays=1,
+        ),
+        n=st.integers(min_value=2, max_value=10),
+        norm=st.sampled_from(["backward", "ortho", "forward", None]),
+    )
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py:128:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+dtype_values_axis = (['complex64'], [array(-1.-1.j, dtype=complex64)]), n = 2
+norm = 'backward', frontend = 'jax', backend_fw = 'numpy'
+test_flags = num_positional_args=0. with_out=False. inplace=False. native_arrays=[False]. as_variable=[False]. test_compile=False. generate_frontend_arrays=False. transpile=False.precision_mode=False.
+fn_tree = 'ivy.functional.frontends.jax.numpy.fft.hfft', on_device = 'cpu'
+
+    @handle_frontend_test(
+        fn_tree="jax.numpy.fft.hfft",
+        dtype_values_axis=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("complex"),
+            num_arrays=1,
+        ),
+        n=st.integers(min_value=2, max_value=10),
+        norm=st.sampled_from(["backward", "ortho", "forward", None]),
+    )
+    def test_jax_numpy_hfft(
+        dtype_values_axis, n, norm, frontend, backend_fw, test_flags, fn_tree, on_device
+    ):
+>       dtype, values, axis = dtype_values_axis
+E       ValueError: not enough values to unpack (expected 3, got 2)
+E       Falsifying example: test_jax_numpy_hfft(
+E           frontend='jax',
+E           backend_fw='numpy',
+E           on_device='cpu',
+E           dtype_values_axis=(['complex64'], [array(-1.-1.j, dtype=complex64)]),
+E           n=2,
+E           norm='backward',
+E           fn_tree='ivy.functional.frontends.jax.numpy.fft.hfft',
+E           test_flags=FrontendFunctionTestFlags(
+E               num_positional_args=0,
+E               with_out=False,
+E               inplace=False,
+E               as_variable=[False],
+E               native_arrays=[False],
+E               test_compile=False,
+E               generate_frontend_arrays=False,
+E               transpile=False,
+E               precision_mode=False,
+E           ),
+E       )
+E
+E       You can reproduce this example by temporarily adding @reproduce_failure('6.84.3', b'AXicY2AAAkYGCGBEY4MBAABuAAU=') as a decorator on your test case
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py:139: ValueError
+___________________ test_jax_numpy_hfft[cpu-jax-False-False] ___________________
+
+frontend = 'jax', backend_fw = 'jax', on_device = 'cpu'
+
+    @handle_frontend_test(
+>       fn_tree="jax.numpy.fft.hfft",
+        dtype_values_axis=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("complex"),
+            num_arrays=1,
+        ),
+        n=st.integers(min_value=2, max_value=10),
+        norm=st.sampled_from(["backward", "ortho", "forward", None]),
+    )
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py:128:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+dtype_values_axis = (['complex64'], [array(-1.-1.j, dtype=complex64)]), n = 2
+norm = 'backward', frontend = 'jax', backend_fw = 'jax'
+test_flags = num_positional_args=0. with_out=False. inplace=False. native_arrays=[False]. as_variable=[False]. test_compile=False. generate_frontend_arrays=False. transpile=False.precision_mode=False.
+fn_tree = 'ivy.functional.frontends.jax.numpy.fft.hfft', on_device = 'cpu'
+
+    @handle_frontend_test(
+        fn_tree="jax.numpy.fft.hfft",
+        dtype_values_axis=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("complex"),
+            num_arrays=1,
+        ),
+        n=st.integers(min_value=2, max_value=10),
+        norm=st.sampled_from(["backward", "ortho", "forward", None]),
+    )
+    def test_jax_numpy_hfft(
+        dtype_values_axis, n, norm, frontend, backend_fw, test_flags, fn_tree, on_device
+    ):
+>       dtype, values, axis = dtype_values_axis
+E       ValueError: not enough values to unpack (expected 3, got 2)
+E       Falsifying example: test_jax_numpy_hfft(
+E           frontend='jax',
+E           backend_fw='jax',
+E           on_device='cpu',
+E           dtype_values_axis=(['complex64'], [array(-1.-1.j, dtype=complex64)]),
+E           n=2,
+E           norm='backward',
+E           fn_tree='ivy.functional.frontends.jax.numpy.fft.hfft',
+E           test_flags=FrontendFunctionTestFlags(
+E               num_positional_args=0,
+E               with_out=False,
+E               inplace=False,
+E               as_variable=[False],
+E               native_arrays=[False],
+E               test_compile=False,
+E               generate_frontend_arrays=False,
+E               transpile=False,
+E               precision_mode=False,
+E           ),
+E       )
+E
+E       You can reproduce this example by temporarily adding @reproduce_failure('6.84.3', b'AXicY2AAAkYGCGBEY0MAAABzAAU=') as a decorator on your test case
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py:139: ValueError
+_______________ test_jax_numpy_hfft[cpu-tensorflow-False-False] ________________
+
+frontend = 'jax', backend_fw = 'tensorflow', on_device = 'cpu'
+
+    @handle_frontend_test(
+>       fn_tree="jax.numpy.fft.hfft",
+        dtype_values_axis=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("complex"),
+            num_arrays=1,
+        ),
+        n=st.integers(min_value=2, max_value=10),
+        norm=st.sampled_from(["backward", "ortho", "forward", None]),
+    )
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py:128:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+dtype_values_axis = (['complex64'], [array(-1.-1.j, dtype=complex64)]), n = 2
+norm = 'backward', frontend = 'jax', backend_fw = 'tensorflow'
+test_flags = num_positional_args=0. with_out=False. inplace=False. native_arrays=[False]. as_variable=[False]. test_compile=False. generate_frontend_arrays=False. transpile=False.precision_mode=False.
+fn_tree = 'ivy.functional.frontends.jax.numpy.fft.hfft', on_device = 'cpu'
+
+    @handle_frontend_test(
+        fn_tree="jax.numpy.fft.hfft",
+        dtype_values_axis=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("complex"),
+            num_arrays=1,
+        ),
+        n=st.integers(min_value=2, max_value=10),
+        norm=st.sampled_from(["backward", "ortho", "forward", None]),
+    )
+    def test_jax_numpy_hfft(
+        dtype_values_axis, n, norm, frontend, backend_fw, test_flags, fn_tree, on_device
+    ):
+>       dtype, values, axis = dtype_values_axis
+E       ValueError: not enough values to unpack (expected 3, got 2)
+E       Falsifying example: test_jax_numpy_hfft(
+E           frontend='jax',
+E           backend_fw='tensorflow',
+E           on_device='cpu',
+E           dtype_values_axis=(['complex64'], [array(-1.-1.j, dtype=complex64)]),
+E           n=2,
+E           norm='backward',
+E           fn_tree='ivy.functional.frontends.jax.numpy.fft.hfft',
+E           test_flags=FrontendFunctionTestFlags(
+E               num_positional_args=0,
+E               with_out=False,
+E               inplace=False,
+E               as_variable=[False],
+E               native_arrays=[False],
+E               test_compile=False,
+E               generate_frontend_arrays=False,
+E               transpile=False,
+E               precision_mode=False,
+E           ),
+E       )
+E
+E       You can reproduce this example by temporarily adding @reproduce_failure('6.84.3', b'AXicY2AAAkYGCGBEY0MAAABzAAU=') as a decorator on your test case
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py:139: ValueError
+__________________ test_jax_numpy_hfft[cpu-torch-False-False] __________________
+
+frontend = 'jax', backend_fw = 'torch', on_device = 'cpu'
+
+    @handle_frontend_test(
+>       fn_tree="jax.numpy.fft.hfft",
+        dtype_values_axis=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("complex"),
+            num_arrays=1,
+        ),
+        n=st.integers(min_value=2, max_value=10),
+        norm=st.sampled_from(["backward", "ortho", "forward", None]),
+    )
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py:128:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+dtype_values_axis = (['complex64'], [array(-1.-1.j, dtype=complex64)]), n = 2
+norm = 'backward', frontend = 'jax', backend_fw = 'torch'
+test_flags = num_positional_args=0. with_out=False. inplace=False. native_arrays=[False]. as_variable=[False]. test_compile=False. generate_frontend_arrays=False. transpile=False.precision_mode=False.
+fn_tree = 'ivy.functional.frontends.jax.numpy.fft.hfft', on_device = 'cpu'
+
+    @handle_frontend_test(
+        fn_tree="jax.numpy.fft.hfft",
+        dtype_values_axis=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("complex"),
+            num_arrays=1,
+        ),
+        n=st.integers(min_value=2, max_value=10),
+        norm=st.sampled_from(["backward", "ortho", "forward", None]),
+    )
+    def test_jax_numpy_hfft(
+        dtype_values_axis, n, norm, frontend, backend_fw, test_flags, fn_tree, on_device
+    ):
+>       dtype, values, axis = dtype_values_axis
+E       ValueError: not enough values to unpack (expected 3, got 2)
+E       Falsifying example: test_jax_numpy_hfft(
+E           frontend='jax',
+E           backend_fw='torch',
+E           on_device='cpu',
+E           dtype_values_axis=(['complex64'], [array(-1.-1.j, dtype=complex64)]),
+E           n=2,
+E           norm='backward',
+E           fn_tree='ivy.functional.frontends.jax.numpy.fft.hfft',
+E           test_flags=FrontendFunctionTestFlags(
+E               num_positional_args=0,
+E               with_out=False,
+E               inplace=False,
+E               as_variable=[False],
+E               native_arrays=[False],
+E               test_compile=False,
+E               generate_frontend_arrays=False,
+E               transpile=False,
+E               precision_mode=False,
+E           ),
+E       )
+E
+E       You can reproduce this example by temporarily adding @reproduce_failure('6.84.3', b'AXicY2AAAkYGCGBEY0MAAABzAAU=') as a decorator on your test case
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py:139: ValueError
+_________________ test_jax_numpy_hfft[cpu-paddle-False-False] __________________
+
+frontend = 'jax', backend_fw = 'paddle', on_device = 'cpu'
+
+    @handle_frontend_test(
+>       fn_tree="jax.numpy.fft.hfft",
+        dtype_values_axis=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("complex"),
+            num_arrays=1,
+        ),
+        n=st.integers(min_value=2, max_value=10),
+        norm=st.sampled_from(["backward", "ortho", "forward", None]),
+    )
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py:128:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+dtype_values_axis = (['complex64'], [array(-1.-1.j, dtype=complex64)]), n = 2
+norm = 'backward', frontend = 'jax', backend_fw = 'paddle'
+test_flags = num_positional_args=0. with_out=False. inplace=False. native_arrays=[False]. as_variable=[False]. test_compile=False. generate_frontend_arrays=False. transpile=False.precision_mode=False.
+fn_tree = 'ivy.functional.frontends.jax.numpy.fft.hfft', on_device = 'cpu'
+
+    @handle_frontend_test(
+        fn_tree="jax.numpy.fft.hfft",
+        dtype_values_axis=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("complex"),
+            num_arrays=1,
+        ),
+        n=st.integers(min_value=2, max_value=10),
+        norm=st.sampled_from(["backward", "ortho", "forward", None]),
+    )
+    def test_jax_numpy_hfft(
+        dtype_values_axis, n, norm, frontend, backend_fw, test_flags, fn_tree, on_device
+    ):
+>       dtype, values, axis = dtype_values_axis
+E       ValueError: not enough values to unpack (expected 3, got 2)
+E       Falsifying example: test_jax_numpy_hfft(
+E           frontend='jax',
+E           backend_fw='paddle',
+E           on_device='cpu',
+E           dtype_values_axis=(['complex64'], [array(-1.-1.j, dtype=complex64)]),
+E           n=2,
+E           norm='backward',
+E           fn_tree='ivy.functional.frontends.jax.numpy.fft.hfft',
+E           test_flags=FrontendFunctionTestFlags(
+E               num_positional_args=0,
+E               with_out=False,
+E               inplace=False,
+E               as_variable=[False],
+E               native_arrays=[False],
+E               test_compile=False,
+E               generate_frontend_arrays=False,
+E               transpile=False,
+E               precision_mode=False,
+E           ),
+E       )
+E
+E       You can reproduce this example by temporarily adding @reproduce_failure('6.84.3', b'AXicY2AAAkYGCGBEY0MAAABzAAU=') as a decorator on your test case
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py:139: ValueError
+=============================== warnings summary ===============================
+ivy/utils/exceptions.py:385
+  /Users/apple/Desktop/ivy/ivy/utils/exceptions.py:385: UserWarning: The current backend: 'jax' does not support inplace updates natively. Ivy would quietly create new arrays when using inplace updates with this backend, leading to memory overhead (same applies for views). If you want to control your memory management, consider doing ivy.set_inplace_mode('strict') which should raise an error whenever an inplace update is attempted with this backend.
+    warnings.warn(
+
+ivy/utils/exceptions.py:385
+  /Users/apple/Desktop/ivy/ivy/utils/exceptions.py:385: UserWarning: The current backend: 'tensorflow' does not support inplace updates natively. Ivy would quietly create new arrays when using inplace updates with this backend, leading to memory overhead (same applies for views). If you want to control your memory management, consider doing ivy.set_inplace_mode('strict') which should raise an error whenever an inplace update is attempted with this backend.
+    warnings.warn(
+
+ivy/utils/exceptions.py:385
+  /Users/apple/Desktop/ivy/ivy/utils/exceptions.py:385: UserWarning: The current backend: 'paddle' does not support inplace updates natively. Ivy would quietly create new arrays when using inplace updates with this backend, leading to memory overhead (same applies for views). If you want to control your memory management, consider doing ivy.set_inplace_mode('strict') which should raise an error whenever an inplace update is attempted with this backend.
+    warnings.warn(
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py: 12 warnings
+  /Users/apple/Desktop/ivy/ivy/functional/backends/torch/experimental/layers.py:964: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+    return torch.tensor(
+
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_fftshift[cpu-numpy-False-False]
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_fftshift[cpu-numpy-False-False]
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_fftshift[cpu-numpy-False-False]
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_fftshift[cpu-numpy-False-False]
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_fftshift[cpu-numpy-False-False]
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_fftshift[cpu-numpy-False-False]
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_fftshift[cpu-numpy-False-False]
+ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_fftshift[cpu-numpy-False-False]
+  /Users/apple/miniconda3/envs/ivy_dev/lib/python3.11/site-packages/numpy/core/numeric.py:2361: RuntimeWarning: overflow encountered in absolute
+    return less_equal(abs(x-y), atol + rtol * abs(y))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+[32m============================== 80.0% of 25 passed ========================================================= short test summary info ============================
+FAILED ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_hfft[cpu-numpy-False-False]
+FAILED ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_hfft[cpu-jax-False-False]
+FAILED ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_hfft[cpu-tensorflow-False-False]
+FAILED ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_hfft[cpu-torch-False-False]
+FAILED ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_fft.py::test_jax_numpy_hfft[cpu-paddle-False-False]
+======= 5 failed, 19 passed, 1 skipped, 23 warnings in 105.12s (0:01:45) =======

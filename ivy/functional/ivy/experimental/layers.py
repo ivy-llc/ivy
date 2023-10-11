@@ -2820,7 +2820,7 @@ def stft(
     /,
     *,
     fft_length: Optional[int] = None,
-    window_fn: Optional = None,
+    window_fn: Optional[str] = None,
     pad_end: bool = False,
     name: Optional[str] = None,
     out: Optional[ivy.Array] = None,
@@ -2871,3 +2871,85 @@ def stft(
         name=name,
         out=out,
     )
+
+
+# hfft
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def hfft(
+    a: Union[ivy.Array, ivy.NativeArray],
+    dim: int,
+    /,
+    *,
+    axis=-1,
+    norm: str = "backward",
+    n=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the FFT of a signal that has Hermitian symmetry, i.e., a real spectrum.
+
+    Parameters
+    ----------
+    a : array_like
+        The input array.
+    n : int, optional
+        Length of the transformed axis of the output. For `n` output
+        points, ``n//2 + 1`` input points are necessary.  If the input is
+        longer than this, it is cropped.  If it is shorter than this, it is
+        padded with zeros.  If `n` is not given, it is taken to be ``2*(m-1)``
+        where ``m`` is the length of the input along the axis specified by
+        `axis`.
+    axis : int, optional
+        Axis over which to compute the FFT. If not given, the last
+        axis is used.
+    norm : {"backward", "ortho", "forward"}, optional
+        .. versionadded:: 1.10.0
+
+        Normalization mode (see `numpy.fft`). Default is "backward".
+        Indicates which direction of the forward/backward pair of transforms
+        is scaled and with what normalization factor.
+
+        .. versionadded:: 1.20.0
+
+            The "backward", "forward" values were added.
+
+    Returns
+    -------
+    out : ndarray
+        The truncated or zero-padded input, transformed along the axis
+        indicated by `axis`, or the last one if `axis` is not specified.
+        The length of the transformed axis is `n`, or, if `n` is not given,
+        ``2*m - 2`` where ``m`` is the length of the transformed axis of
+        the input. To get an odd number of output points, `n` must be
+        specified, for instance as ``2*m - 1`` in the typical case,
+
+    Examples
+    --------
+    >>> signal = np.array([1, 2, 3, 4, 3, 2])
+    >>> np.fft.fft(signal)
+    array([15.+0.j,  -4.+0.j,   0.+0.j,  -1.-0.j,   0.+0.j,  -4.+0.j]) # may vary
+    >>> np.fft.hfft(signal[:4]) # Input first half of signal
+    array([15.,  -4.,   0.,  -1.,   0.,  -4.])
+    >>> np.fft.hfft(signal, 6)  # Input entire signal and truncate
+    array([15.,  -4.,   0.,  -1.,   0.,  -4.])
+
+
+    >>> signal = np.array([[1, 1.j], [-1.j, 2]])
+    >>> np.conj(signal.T) - signal   # check Hermitian symmetry
+    array([[ 0.-0.j,  -0.+0.j], # may vary
+           [ 0.+0.j,  0.-0.j]])
+    >>> freq_spectrum = np.fft.hfft(signal)
+    >>> freq_spectrum
+    array([[ 1.,  1.],
+           [ 2., -2.]])
+    """
+    if n is None:
+        n = (a.shape[axis] - 1) * 2
+    output = fft(a, dim, axis, norm=norm, n=n, out=out)
+    return output
