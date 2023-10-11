@@ -2503,7 +2503,7 @@ def test_jax_array_squeeze(
     init_tree="jax.numpy.array",
     method_name="std",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float")
+        available_dtypes=helpers.get_dtypes("valid")
     ),
     ddof=st.booleans(),
     keepdims=st.booleans(),
