@@ -8,6 +8,7 @@ Should not be used inside any of the test functions.
 
 from dataclasses import dataclass
 from ivy_tests.test_ivy.pipeline.frontend.pipeline import FrontendPipeline
+from ivy_tests.test_ivy.pipeline.backend.pipeline import BackendPipeline
 
 # needed for multiversion
 available_frameworks = [
@@ -79,6 +80,7 @@ def setup_api_test(
         _set_test_data(test_data)
     if ground_truth_backend is not None:
         _set_ground_truth_backend(ground_truth_backend)
+    _set_backend_pipeline()
     _set_backend(backend)
     _set_device(device)
 
@@ -112,6 +114,19 @@ def _set_test_data(test_data: TestData):
     if CURRENT_RUNNING_TEST is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     CURRENT_RUNNING_TEST = test_data
+
+
+def _set_backend_pipeline():
+    global CURRENT_PIPELINE
+    if CURRENT_PIPELINE is not _Notsetval:
+        raise InterruptedTest(CURRENT_RUNNING_TEST)
+    CURRENT_PIPELINE = BackendPipeline()
+
+
+def _unset_backend_pipeline():
+    global CURRENT_PIPELINE
+    CURRENT_PIPELINE.set_traced_fn(None)
+    CURRENT_PIPELINE = _Notsetval
 
 
 def _set_frontend(framework: str):
