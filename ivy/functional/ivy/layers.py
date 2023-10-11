@@ -24,6 +24,19 @@ from ivy.utils.exceptions import handle_exceptions
 # ------#
 
 
+def _get_embed_dim(
+    in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query
+):
+    pre_embed_dim = query.shape[-1]
+    if ivy.exists(in_proj_weights):
+        embed_dim = in_proj_weights.shape[0] / 3
+    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+        embed_dim = q_proj_weights.shape[0]
+    else:
+        embed_dim = None
+    return pre_embed_dim, embed_dim
+
+
 def _in_projection(
     q,
     k,
@@ -32,9 +45,9 @@ def _in_projection(
     b=None,
 ):
     """
-    Projects query, key and value effeciently, depending on whether we are doing self-
+    Projects query, key and value efficiently, depending on whether we are doing self-
     attention (query is key is value) or cross-attention (key is value) or an attention
-    where query, key and value are all diferrent.
+    where query, key and value are all different.
 
     it is only used in
     multi_head_attention layer.
@@ -385,7 +398,7 @@ def dropout(
     if prob == 0 or not training:
         if dtype is not None:
             x = ivy.astype(x, dtype)
-        return x if not ivy.exists(out) else ivy.inplace_update(out, x)
+        return ivy.inplace_update(out, x) if ivy.exists(out) else x
     if noise_shape is None:
         noise_shape = x.shape
     else:
@@ -402,7 +415,7 @@ def dropout(
     x = x * mask
     if scale:
         x = ivy.multiply(x, 1.0 / (1.0 - prob), out=out)
-    return x if not ivy.exists(out) else ivy.inplace_update(out, x)
+    return ivy.inplace_update(out, x) if ivy.exists(out) else x
 
 
 dropout.mixed_backend_wrappers = {
@@ -460,7 +473,7 @@ def scaled_dot_product_attention(
         The mask input array. The mask to apply to the query-key values. Default is
         None. The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
     dropout_p
-        Specifies the dropout probablity, if greater than 0.0, dropout is applied
+        Specifies the dropout probability, if greater than 0.0, dropout is applied
     is_causal
         If true, assumes causal attention masking
         and errors if both `mask` and `is_causal` are set.
@@ -678,7 +691,7 @@ def scaled_dot_product_attention(
         "is_causal and attn_mask cannot be set at the same time",
     )
     embed_dim = query.shape[-1]
-    scale = 1 / (embed_dim**0.5) if not scale else scale
+    scale = scale if scale else 1 / (embed_dim**0.5)
     sim = ivy.einsum("... q f, ... k f -> ... q k", query, key) * scale
     sim = ivy.dropout(sim, dropout_p, training=training)
     if ivy.exists(mask):
@@ -699,7 +712,7 @@ def scaled_dot_product_attention(
         )
     attn = ivy.softmax(sim, axis=-1)
     result = ivy.einsum("... qk, ...kf -> ...qf", attn, value)
-    return result if not ivy.exists(out) else ivy.inplace_update(out, result)
+    return ivy.inplace_update(out, result) if ivy.exists(out) else result
 
 
 @handle_exceptions
@@ -800,9 +813,11 @@ def multi_head_attention(
     bias_v
         An additional bias added to the value sequence. Shape: `(E,)`.
     static_k
-        A static key to be used in the attention operators. Shape: `(N*num_heads, S, E//num_heads)`.
+        A static key to be used in the attention operators.
+        Shape: `(N*num_heads, S, E//num_heads)`.
     static_v
-        A static value to be used in the attention operators. Shape: `(N*num_heads, S, E//num_heads)`.
+        A static value to be used in the attention operators.
+        Shape: `(N*num_heads, S, E//num_heads)`.
     add_zero_attn
         A boolean flag indicating whether to add a batch of zeros to key and value.
     return_attention_weights
@@ -2252,7 +2267,7 @@ def lstm_update(
     ct = init_c
 
     # lstm outputs
-    hts_list = list()
+    hts_list = []
 
     # unrolled time dimension with lstm steps
     for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
@@ -2297,25 +2312,27 @@ def _handle_padding(x, strides, filters, padding):
     return pad
 
 
-def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dims):
+def _validate_max_pool_params(
+    kernel, strides, padding, dilation, ceil_mode, dims, data_format
+):
     if isinstance(kernel, int):
         kernel = (kernel,) * dims
     elif len(kernel) == 1:
         kernel = (kernel[0],) * dims
-    elif (len(kernel) != dims) and (len(kernel) != dims + 2):
+    elif len(kernel) not in [dims, dims + 2]:
         raise ValueError(
             "The kernel should be an integer, or a tuple of length"
-            f" {list(set((1, dims, dims+2)))}"
+            f" {list({1, dims, dims + 2})}"
         )
 
     if isinstance(strides, int):
         strides = (strides,) * dims
     elif len(strides) == 1:
         strides = (strides[0],) * dims
-    elif (len(strides) != dims) and (len(strides) != dims + 2):
+    elif len(strides) not in [dims, dims + 2]:
         raise ValueError(
             "The stride should be an integer, or a tuple of length"
-            f" {list(set((1, dims, dims+2)))}"
+            f" {list({1, dims, dims + 2})}"
         )
 
     if isinstance(padding, int):
@@ -2325,7 +2342,7 @@ def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dim
     elif isinstance(padding, tuple) and len(padding) == dims:
         padding = [(padding[i],) * 2 for i in range(dims)]
     elif isinstance(padding, list) and len(padding) == dims:
-        if not all([isinstance(p, tuple) and len(p) == 2 for p in padding]):
+        if not all(isinstance(p, tuple) and len(p) == 2 for p in padding):
             raise ValueError("Explicit padding must be a list of tuple of two integers")
     if isinstance(padding, str) and padding.upper() not in ["VALID", "SAME"]:
         raise ValueError(
@@ -2338,7 +2355,7 @@ def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dim
         dilation = (dilation[0],) * dims
     elif len(dilation) != dims:
         raise ValueError(
-            f"Dilation must be an integer or a tuple of length {list(set((1, dims)))}"
+            f"Dilation must be an integer or a tuple of length {list({1, dims})}"
         )
     if min(dilation) < 1:
         raise ValueError("All values of `dilation` must be positive")
@@ -2348,14 +2365,27 @@ def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dim
         raise ValueError("When 'padding' is 'VALID', 'ceil_mode' must be False")
     assert len(kernel) == len(strides), f"len({kernel}) must equal len({strides})"
 
+    ret = kernel, strides, padding, dilation
+
     # Account for dilation when padding > kernel/2. Not the case in torch by default.
+    if len(dilation) < len(kernel):
+        if data_format[:2] == "NC":
+            dilation = [1, 1, *dilation]
+        else:
+            dilation = [1, *dilation, 1]
+    elif len(dilation) > len(kernel):
+        if data_format[:2] == "NC":
+            kernel = [1, 1, *kernel]
+        else:
+            kernel = [1, *kernel, 1]
     new_kernel = tuple(
         [dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel))]
     )
+    new_kernel = tuple(dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel)))
     if isinstance(padding, list) and len(padding) == len(new_kernel):
         ivy.utils.assertions.check_kernel_padding_size(new_kernel, padding)
 
-    return kernel, strides, padding, dilation
+    return ret
 
 
 def _depth_max_pooling_helper(
@@ -2665,7 +2695,7 @@ def nms(
             yy2 = ivy.minimum(y2[i], y2[order[1:]])
 
             w = ivy.maximum(0.0, xx2 - xx1)  # maximum width
-            h = ivy.maximum(0.0, yy2 - yy1)  # maxiumum height
+            h = ivy.maximum(0.0, yy2 - yy1)  # maximum height
             inter = w * h
             ovr = inter / (areas[i] + areas[order[1:]] - inter)
             inds = ivy.nonzero(ovr <= iou_threshold)[0]
