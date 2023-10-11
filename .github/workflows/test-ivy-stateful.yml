@@ -25,6 +25,14 @@ jobs:
           submodules: "recursive"
           fetch-depth: 2
 
+      - name: Install ivy and fetch binaries
+        run: |
+          cd ivy
+          pip3 install -e .
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+
       - name: Check Files Changed
         if: ${{ (github.event_name == 'push') || !contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') }}
         shell: pwsh
