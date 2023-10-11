@@ -184,7 +184,7 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional):
         result_fw, hidden_fw = _lstm_cell(
             x,
             hidden[0][:1],
-            hidden[1][1:2],
+            hidden[1][:1],
             weights[0][0],
             weights[1][0],
             biases[0][0],
@@ -193,8 +193,8 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional):
         x_reversed = ivy.flip(x, axis=0)
         result_bw, hidden_bw = _lstm_cell(
             x_reversed,
-            hidden[0][:1],
-            hidden[1][1:2],
+            hidden[0][1:],
+            hidden[1][1:],
             weights[0][1],
             weights[1][1],
             biases[0][1],
