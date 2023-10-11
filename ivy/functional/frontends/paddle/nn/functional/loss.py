@@ -51,7 +51,7 @@ def _pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
 @to_ivy_arrays_and_back
 def binary_cross_entropy(input, label, weight=None, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
-    result = ivy.binary_cross_entropy(label, input, epsilon=0.0)
+    result = ivy.binary_cross_entropy(label, input, epsilon=0.0, reduction="none")
     if weight is not None:
         result = ivy.multiply(weight, result)
     result = reduction(result)
