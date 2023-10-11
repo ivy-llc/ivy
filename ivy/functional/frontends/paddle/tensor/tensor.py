@@ -859,3 +859,19 @@ class Tensor:
     def cpu(self):
         self.ivy_array = ivy.to_device(self.ivy_array, ivy.as_ivy_dev("cpu"))
         return self
+
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "float16",
+                "float32",
+                "float64",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "paddle",
+    )
+    def to_dense(self):
+        return paddle_frontend.Tensor(ivy.to_dense_array(self))
