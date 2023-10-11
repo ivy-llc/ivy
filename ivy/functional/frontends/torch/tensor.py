@@ -2154,6 +2154,18 @@ class Tensor:
     def rad2deg(self, *, out=None):
         return torch_frontend.rad2deg(self, out=out)
 
+    @with_unsupported_dtypes(
+        {
+            "2.1.0 and below": (
+                "float16",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def corrcoef(self):
+        return torch_frontend.corrcoef(self)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
