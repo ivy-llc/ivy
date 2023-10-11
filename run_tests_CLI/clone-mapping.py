@@ -1,4 +1,5 @@
 import os
+import sys
 import git
 import bz2
 import _pickle as cPickle
@@ -9,7 +10,7 @@ mapping_dir = "Mapping/"
 # Check if the directory exists
 if not os.path.exists(mapping_dir):
     print(f"Directory does not exist: {mapping_dir}")
-    exit(1)
+    sys.exit(1)
 
 # Create a Repo object to interact with the Git repositories
 current_repo = git.Repo("ivy/")

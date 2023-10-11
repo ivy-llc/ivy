@@ -106,7 +106,7 @@ def main():
                 "latest-stable",
             )
     if failed:
-        exit(1)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
