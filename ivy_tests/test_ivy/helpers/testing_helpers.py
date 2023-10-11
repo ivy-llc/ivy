@@ -29,6 +29,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltFrontendArrayStrategy,
     BuiltTranspileStrategy,
     BuiltPrecisionModeStrategy,
+    BuiltWithVStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -623,7 +624,9 @@ def handle_method(
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
+    init_test_with_v=BuiltWithVStrategy,
     method_num_positional_args=None,
+    method_test_with_v=BuiltWithVStrategy,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
     method_container_flags=BuiltContainerStrategy,
@@ -666,6 +669,7 @@ def handle_method(
             num_positional_args=init_num_positional_args,
             as_variable=_get_runtime_flag_value(init_as_variable_flags),
             native_arrays=_get_runtime_flag_value(init_native_arrays),
+            test_with_v=_get_runtime_flag_value(init_test_with_v),
             precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
@@ -680,6 +684,7 @@ def handle_method(
             native_arrays=_get_runtime_flag_value(method_native_arrays),
             container_flags=_get_runtime_flag_value(method_container_flags),
             test_trace=_get_runtime_flag_value(test_trace),
+            test_with_v=_get_runtime_flag_value(method_test_with_v),
             precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
