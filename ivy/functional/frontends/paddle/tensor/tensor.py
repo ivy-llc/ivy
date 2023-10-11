@@ -885,7 +885,6 @@ class Tensor:
         self.ivy_array = ivy.to_device(self.ivy_array, ivy.as_ivy_dev("cpu"))
         return self
 
-
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
@@ -925,4 +924,3 @@ class Tensor:
     def gather_(self, y, name=None):
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
-
