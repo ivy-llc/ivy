@@ -117,6 +117,8 @@ def _lstm_helper(draw):
                 shape=(num_batches,),
                 min_value=1,
                 max_value=seq_size,
+                exclude_max=False,
+                exclude_min=False,
             ).filter(lambda x: seq_size in x)
         )
         input = np.array(
