@@ -112,10 +112,11 @@ def _lstm_helper(draw):
 
     if packed:
         batch_sizes = draw(
-            st.lists(
-                st.integers(min_value=1, max_value=seq_size),
-                min_size=num_batches,
-                max_size=num_batches,
+            helpers.array_values(
+                dtype="int64",
+                shape=(num_batches,),
+                min_value=1,
+                max_value=seq_size,
             ).filter(lambda x: seq_size in x)
         )
         input = np.array(
