@@ -2,7 +2,7 @@ Fix Failing Tests:
 ==============================
 
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`issues`: https://github.com/unifyai/ivy/issues
+.. _`issues`: https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Failing+Test%22
 .. _`issue`: https://github.com/unifyai/ivy/issues/25849
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
@@ -78,8 +78,7 @@ Setting Up
 
 How to run tests
 ****************
-To find tests which are currently failing, you can go to our github repo and go to `issues`_, then filter by label :code:`Failing Test`.
-There you will find all the failing tests which you can work on.
+To find tests which are currently failing, open the `issues`_ in our GitHub.,
 
 You can notice :code:`test_jax_transpose` is failing in this `issue`_, this function is in the Jax frontends in the manipulaiton submodule.
 
@@ -89,13 +88,13 @@ To run test locally, you need to run the following command:
 
 In the case of :code:`test_jax_transpose`, the command will be
 
-:code:`pytest ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_manipulations.py::test_jax_transpose`.
+.. code-block:: bash
+
+   pytest ivy_tests/test_ivy/test_frontends/test_jax/test_numpy/test_manipulations.py::test_jax_transpose
 
 You will need to read through the errors in the terminal and use the common errors in the list at the end of this page to solve the test.
 
-**Setting Up Testing for VsCode**
-
-.. dropdown:: VsCode
+.. dropdown:: **Setting Up Testing for VsCode**
 
    The steps are as following to setup testing on VS Code.
 
