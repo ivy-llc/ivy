@@ -497,7 +497,7 @@ def test_shape__radd__(
 
 
 @handle_method(
-    method_tree="Shape.__rdivmod__",
+    method_tree="Shape.__rdiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -507,7 +507,7 @@ def test_shape__radd__(
         shared_dtype=True,
     ),
 )
-def test_shape__rdivmod__(
+def test_shape__rdiv__(
     dtype_and_x,
     method_name,
     class_name,
