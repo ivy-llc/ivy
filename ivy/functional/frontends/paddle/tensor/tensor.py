@@ -912,7 +912,8 @@ class Tensor:
 
     @with_supported_device_and_dtypes(
         {
-            "2.5.1 and below": {"cpu": (
+            "2.5.1 and below": {
+                "cpu": (
                     "bool",
                     "int32",
                     "int64",
@@ -920,7 +921,8 @@ class Tensor:
                     "float64",
                     "complex64",
                     "complex128",
-            )}
+                )
+            }
         },
         "paddle",
     )
