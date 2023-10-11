@@ -2,7 +2,7 @@
 import abc
 import numpy as np
 from numbers import Number
-from typing import Any, Union, Optional, Dict, Callable, List, Tuple
+from typing import Any, Union, Optional, Dict, Callable, List, Tuple, Iterable
 
 # ToDo: implement all methods here as public instance methods
 
@@ -125,7 +125,7 @@ class _ArrayWithGeneral(abc.ABC):
 
     def all_equal(
         self: ivy.Array,
-        *xs: [Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        *xs: Iterable[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         equality_matrix: bool = False,
     ) -> Union[bool, ivy.Array, ivy.NativeArray]:
         """
