@@ -18,11 +18,20 @@ def min(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[JaxArray] = None,
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    return jnp.min(
+        a=jnp.asarray(x),
+        axis=axis,
+        keepdims=keepdims,
+        initial=initial,
+        where=where,
+        out=out,
+    )
 
 
 def max(
