@@ -58,4 +58,4 @@ def kaiser_window(
     device=None,
     requires_grad=False
 ):
-    return ivy.kaiser_window(window_length, periodic=periodic, dtype=dtype)
+    return ivy.kaiser_window(window_length, periodic=periodic, beta=beta, dtype=dtype)
