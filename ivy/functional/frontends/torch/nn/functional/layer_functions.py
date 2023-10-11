@@ -237,20 +237,21 @@ def _pack_padded_sequence(padded_sequence, lengths, batch_first=False):
         padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
     data = []
     for i, length in enumerate(lengths):
-        data += [padded_sequence[i, :length]]
+        data += [padded_sequence[i, : int(length)]]
     data = ivy.concat(data)
     return data
 
 
 def _pad_packed_sequence(data, batch_sizes, batch_first=False, padding_value=0):
     padded_sequence = ivy.full(
-        (len(batch_sizes), max(batch_sizes), data.shape[-1]),
+        (len(batch_sizes), int(max(batch_sizes)), data.shape[-1]),
         padding_value,
         dtype=data.dtype,
         device=data.device,
     )
     data_pointer = 0
     for i, batch_size in enumerate(batch_sizes):
+        batch_size = int(batch_size)
         padded_sequence[i, :batch_size] = data[data_pointer : data_pointer + batch_size]
         data_pointer += batch_size
     if not batch_first:
