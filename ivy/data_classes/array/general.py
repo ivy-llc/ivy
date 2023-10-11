@@ -2,7 +2,7 @@
 import abc
 import numpy as np
 from numbers import Number
-from typing import Any, Iterable, Union, Optional, Dict, Callable, List, Tuple
+from typing import Any, Union, Optional, Dict, Callable, List, Tuple
 
 # ToDo: implement all methods here as public instance methods
 
@@ -124,7 +124,9 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.is_ivy_container(self)
 
     def all_equal(
-        self: ivy.Array, *x2: Iterable[Any], equality_matrix: bool = False
+        self: ivy.Array,
+        *xs: [Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        equality_matrix: bool = False,
     ) -> Union[bool, ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.all_equal. This method simply wraps the
@@ -136,16 +138,17 @@ class _ArrayWithGeneral(abc.ABC):
         self
             input array
         x2
-            input iterable to compare to ``self``
+            input iterable of arrays to compare to ``self``
         equality_matrix
-            Whether to return a matrix of equalities comparing each input with every
-            other. Default is ``False``.
+            Boolean flag determining whether to return a boolean or a boolean matrix
+            consisting of elementwise equality comparisons among input iterables.
+            Default is ``False``.
 
         Returns
         -------
         ret
-            Boolean, whether or not the inputs are equal, or matrix array of booleans if
-            equality_matrix=True is set.
+            Boolean or boolean matrix consisting of the result of elementwise
+            comparisons if equality_matrix=True is set.
 
         Examples
         --------
@@ -164,7 +167,7 @@ class _ArrayWithGeneral(abc.ABC):
            [ True,  True, False],
            [False, False,  True]])
         """
-        arrays = [self] + [x for x in x2]
+        arrays = [self] + [x for x in xs]
         return ivy.all_equal(*arrays, equality_matrix=equality_matrix)
 
     def has_nans(self: ivy.Array, /, *, include_infs: bool = True):

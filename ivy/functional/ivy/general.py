@@ -694,7 +694,8 @@ def array_equal(
 @inputs_to_ivy_arrays
 @handle_array_function
 def all_equal(
-    *xs: Iterable[Any], equality_matrix: bool = False
+    *xs: Iterable[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+    equality_matrix: bool = False,
 ) -> Union[bool, ivy.Array, ivy.NativeArray]:
     """
     Determine whether the inputs are all equal.
@@ -702,16 +703,17 @@ def all_equal(
     Parameters
     ----------
     xs
-        inputs to compare.
+        iterable of arrays to compare with each other
     equality_matrix
-        Whether to return a matrix of equalities comparing each input with every other.
+        Boolean flag determining whether to return a boolean or a boolean matrix
+        consisting of elementwise equality comparisons among input iterables.
         Default is ``False``.
 
     Returns
     -------
     ret
-        Boolean, whether or not the inputs are equal, or matrix array of booleans if
-        equality_matrix=True is set.
+        Boolean or boolean matrix consisting of the result of elementwise
+        comparisons if equality_matrix=True is set.
 
     Examples
     --------
@@ -757,27 +759,25 @@ def all_equal(
         b: False
     }
     """
-    equality_fn = ivy.array_equal if ivy.is_array(xs[0]) else lambda a, b: a == b
     if equality_matrix:
-        num_arrays = len(xs)
-        mat = [[None for _ in range(num_arrays)] for _ in range(num_arrays)]
+        N = len(xs)
+        mat = [[None for _ in range(N)] for _ in range(N)]
         for i, xa in enumerate(xs):
-            for j_, xb in enumerate(xs[i:]):
-                j = j_ + i
-                res = equality_fn(xa, xb)
+            for j, xb in enumerate(xs[i:]):
+                res = ivy.array_equal(xa, xb)
                 if ivy.is_native_array(res):
                     # noinspection PyTypeChecker
                     res = ivy.to_scalar(res)
                 # noinspection PyTypeChecker
-                mat[i][j] = res
+                mat[i][j + i] = res
                 # noinspection PyTypeChecker
-                mat[j][i] = res
+                mat[j + i][i] = res
         return ivy.array(mat)
-    x0 = xs[0]
-    for x in xs[1:]:
-        if not equality_fn(x0, x):
-            return False
-    return True
+    else:
+        for x in xs[1:]:
+            if not ivy.array_equal(xs[0], x):
+                return False
+        return True
 
 
 @handle_exceptions
