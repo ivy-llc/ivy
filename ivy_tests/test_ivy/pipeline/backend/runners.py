@@ -21,8 +21,6 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
         self,
         class_name,
         method_name,
-        init_with_v,
-        method_with_v,
         backend_handler,
         backend,
         on_device,
@@ -35,8 +33,6 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
     ):
         self.class_name = class_name
         self.method_name = method_name
-        self.init_with_v = init_with_v
-        self.method_with_v = method_with_v
         self._backend_handler = backend_handler
         self.backend = backend
         self.on_device = on_device
@@ -59,7 +55,7 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
     def _get_v_np(self, ins, args_constructor, kwargs_constructor, kwargs_method):
         v_np = None
         if isinstance(ins, self._ivy.Module):
-            if self.init_with_v:
+            if self.init_flags.init_with_v:
                 v = self._ivy.Container(
                     ins._create_variables(
                         device=self.on_device, dtype=self.method_input_dtypes[0]
@@ -72,7 +68,7 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
             v_np = v.cont_map(
                 lambda x, kc: self._ivy.to_numpy(x) if self._ivy.is_array(x) else x
             )
-            if self.method_with_v:
+            if self.method_flags.method_with_v:
                 kwargs_method = dict(**kwargs_method, v=v)
         MethodTestCaseSubRunner.v_np = v_np
         return kwargs_method
@@ -548,8 +544,6 @@ class BackendMethodTestCaseRunner(TestCaseRunner):
         *,
         class_name,
         method_name,
-        init_with_v,
-        method_with_v,
         rtol_,
         atol_,
         tolerance_dict,
@@ -568,8 +562,6 @@ class BackendMethodTestCaseRunner(TestCaseRunner):
         self.method_name = method_name
         self.backend_handler = backend_handler
         self.backend_to_test = backend_to_test
-        self.init_with_v = init_with_v
-        self.method_with_v = method_with_v
         self.grond_truth_backend = ground_truth_backend
         self.on_device = on_device
         self.test_values = test_values
@@ -594,8 +586,6 @@ class BackendMethodTestCaseRunner(TestCaseRunner):
         sub_runner_target = MethodTestCaseSubRunner(
             self.class_name,
             self.method_name,
-            self.init_with_v,
-            self.method_with_v,
             self.backend_handler,
             self.backend_to_test,
             self.on_device,
@@ -624,8 +614,6 @@ class BackendMethodTestCaseRunner(TestCaseRunner):
         sub_runner_target = MethodTestCaseSubRunner(
             self.class_name,
             self.method_name,
-            self.init_with_v,
-            self.method_with_v,
             self.backend_handler,
             self.grond_truth_backend,
             self.on_device,
