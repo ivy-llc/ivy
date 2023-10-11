@@ -493,7 +493,7 @@ def test_cummin(
 #       - Error description: typo that throws unintended exceptions when using both
 #       weights and multiple axis.
 #       - fixed in TFP 0.20 release.
-#       - Test helper needs to be modified to handle this case in older verions.
+#       - Test helper needs to be modified to handle this case in older versions.
 @handle_test(
     fn_tree="functional.ivy.experimental.histogram",
     values=_histogram_helper(),
@@ -590,7 +590,7 @@ def test_median(*, dtype_x_axis, keep_dims, test_flags, backend_fw, fn_name, on_
     fn_tree="functional.ivy.experimental.nanmean",
     dtype_x_axis=_statistical_dtype_values(function="nanmean"),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     test_gradients=st.just(False),
 )
 def test_nanmean(
@@ -616,7 +616,7 @@ def test_nanmean(
     fn_tree="functional.ivy.experimental.nanmedian",
     dtype_x_axis=_statistical_dtype_values(function="nanmedian"),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     overwriteinput=st.booleans(),
     test_gradients=st.just(False),
 )

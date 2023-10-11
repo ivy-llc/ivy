@@ -30,10 +30,7 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
             if ivy.is_bool_dtype(dtype):
                 assert_fn = ivy.is_bool_dtype
             if ivy.is_int_dtype(dtype):
-
-                def assert_fn(x):
-                    return not ivy.is_float_dtype(x)
-
+                assert_fn = lambda x: not ivy.is_float_dtype(x)
             if assert_fn:
                 ivy.utils.assertions.check_all_or_any_fn(
                     *args,
@@ -54,19 +51,13 @@ def _assert_no_array(args, dtype, scalar_check=False, none=False):
     if args:
         first_arg = args[0]
         fn_func = ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
-
-        def assert_fn(x):
-            return ivy.dtype(x) == fn_func
-
+        assert_fn = lambda x: ivy.dtype(x) == fn_func
         if scalar_check:
-
-            def assert_fn(x):
-                return (
-                    ivy.dtype(x) == fn_func
-                    if ivy.shape(x) != ()
-                    else _casting_no_special_case(ivy.dtype(x), fn_func, none)
-                )
-
+            assert_fn = lambda x: (
+                ivy.dtype(x) == fn_func
+                if ivy.shape(x) != ()
+                else _casting_no_special_case(ivy.dtype(x), fn_func, none)
+            )
         ivy.utils.assertions.check_all_or_any_fn(
             *args,
             fn=assert_fn,
@@ -82,7 +73,7 @@ def _assert_no_scalar(args, dtype, none=False):
             *args,
             fn=lambda x: type(x) == type(first_arg),  # noqa: E721
             type="all",
-            message=f"type of input is incompatible with dtype {dtype}",
+            message=f"type of input is incompatible with dtype: {dtype}",
         )
         if dtype:
             if ivy.is_int_dtype(dtype):
@@ -94,7 +85,7 @@ def _assert_no_scalar(args, dtype, none=False):
             ivy.utils.assertions.check_equal(
                 type(args[0]),
                 check_dtype,
-                message=f"type of input is incompatible with dtype {dtype}",
+                message=f"type of input is incompatible with dtype: {dtype}",
                 as_array=False,
             )
             if ivy.as_ivy_dtype(dtype) not in ["float64", "int8", "int64", "uint8"]:
@@ -114,15 +105,9 @@ def _assert_scalar(args, dtype):
     if args and dtype:
         assert_fn = None
         if ivy.is_int_dtype(dtype):
-
-            def assert_fn(x):
-                return not isinstance(x, float)
-
+            assert_fn = lambda x: not isinstance(x, float)
         elif ivy.is_bool_dtype(dtype):
-
-            def assert_fn(x):
-                return isinstance(x, bool)
-
+            assert_fn = lambda x: isinstance(x, bool)
         if assert_fn:
             ivy.utils.assertions.check_all_or_any_fn(
                 *args,
@@ -249,7 +234,7 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
         if ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs:
             if isinstance(ret, tuple):
                 # converting every scalar element of the tuple to float
-                data = tuple([ivy.native_array(i) for i in ret])
+                data = tuple(ivy.native_array(i) for i in ret)
                 data = ivy.copy_nest(data, to_mutable=True)
                 ret_idx = ivy.nested_argwhere(data, lambda x: x.shape == ())
                 try:
@@ -258,10 +243,10 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                         ret_idx,
                         lambda x: np_frontend.numpy_dtype_to_scalar[ivy.dtype(x)](x),
                     )
-                except KeyError:
+                except KeyError as e:
                     raise ivy.utils.exceptions.IvyException(
                         "Casting to specified type is unsupported"
-                    )
+                    ) from e
                 return tuple(data)
             else:
                 # converting the scalar to float
@@ -269,10 +254,10 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                 if data.shape == ():
                     try:
                         return np_frontend.numpy_dtype_to_scalar[ivy.dtype(data)](data)
-                    except KeyError:
+                    except KeyError as e:
                         raise ivy.utils.exceptions.IvyException(
                             f"Casting to {ivy.dtype(data)} is unsupported"
-                        )
+                        ) from e
         return ret
 
     _from_zero_dim_arrays_to_scalar.from_zero_dim_arrays_to_scalar = True
@@ -476,7 +461,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         #  once frontend specific backend setting is added
         set_default_dtype = False
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
-            [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
+            not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args
         ):
             if ivy.current_backend_str() == "jax":
                 import jax

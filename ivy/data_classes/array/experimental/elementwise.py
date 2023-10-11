@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
 
 # local
@@ -8,6 +8,130 @@ import ivy
 
 
 class _ArrayWithElementWiseExperimental(abc.ABC):
+    def amax(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.amax. This method simply wraps the
+        function, and so the docstring for ivy.amax also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a real-valued data type.
+        axis
+            axis or axes along which maximum values must be computed. By default, the
+            maximum value must be computed over the entire array. If a tuple of
+            integers, maximum values must be computed over multiple axes.
+            Default: ``None``.
+        keepdims
+            optional boolean, if ``True``, the reduced axes (dimensions) must be
+            included in the result as singleton dimensions, and, accordingly, the
+            result must be compatible with the input array
+            (see `broadcasting<https://data-apis.org/array-api/latest/
+            API_specification/broadcasting.html#broadcasting>`_).
+            Otherwise, if ``False``, the reduced axes (dimensions)
+            must not be included in the result.
+            Default: ``False``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            if the maximum value was computed over the entire array, a zero-dimensional
+            array containing the maximum value; otherwise, a non-zero-dimensional array
+            containing the maximum values. The returned array must have the same
+            data type as ``x``.
+
+        Examples
+        --------
+        >>> x = ivy.array([3., 4., 5.])
+        >>> y = x.amax()
+        >>> print(y)
+        ivy.array(5.)
+
+        >>> x = ivy.array([[-1, 0, 1], [2, 3, 4]])
+        >>> y = x.amax(axis=1)
+        >>> print(y)
+        ivy.array([1,  4])
+
+        >>> x = ivy.array([0.1, 1.1, 2.1])
+        >>> y = ivy.array(0.)
+        >>> x.amax(out=y)
+        >>> print(y)
+        ivy.array(2.1)
+        """
+        return ivy.amax(self._data, axis=axis, keepdims=keepdims, out=out)
+
+    def amin(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.amin. This method simply wraps the
+        function, and so the docstring for ivy.amin also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a real-valued data type.
+        axis
+            axis or axes along which minimum values must be computed. By default, the
+            minimum value must be computed over the entire array. If a tuple of
+            integers, minimum values must be computed over multiple axes.
+            Default: ``None``.
+        keepdims
+            optional boolean, if ``True``, the reduced axes (dimensions) must be
+            included in the result as singleton dimensions, and, accordingly, the
+            result must be compatible with the input array
+            (see `broadcasting<https://data-apis.org/array-api/latest/
+            API_specification/broadcasting.html#broadcasting>`_). Otherwise,
+            if ``False``, the reduced axes (dimensions)
+            must not be included in the result.
+            Default: ``False``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            if the minimum value was computed over the entire array, a zero-dimensional
+            array containing the minimum value; otherwise, a non-zero-dimensional array
+            containing the minimum values. The returned array must have the same
+            data type as ``x``.
+
+        Examples
+        --------
+        >>> x = ivy.array([3., 4., 5.])
+        >>> y = x.amin()
+        >>> print(y)
+        ivy.array(3.)
+
+        >>> x = ivy.array([[-1, 0, 1], [2, 3, 4]])
+        >>> y = x.amin(axis=1)
+        >>> print(y)
+        ivy.array([-1,  2])
+
+        >>> x = ivy.array([0.1, 1.1, 2.1])
+        >>> y = ivy.array(0.)
+        >>> x.amin(out=y)
+        >>> print(y)
+        ivy.array(0.1)
+        """
+        return ivy.amin(self._data, axis=axis, keepdims=keepdims, out=out)
+
     def lgamma(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.lgamma. This method simply wraps the
@@ -705,7 +829,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
             Note: jax supports edge_order=1 case only
         axis
             dimension(s) to approximate the gradient over
-            by default partial gradient is computed in every dimention
+            by default partial gradient is computed in every dimension
 
 
         Returns

@@ -280,6 +280,7 @@ def test_poisson_nll_loss(
     ),
     beta=helpers.floats(min_value=0.0, max_value=1.0),
     reduction=st.sampled_from(["none", "sum", "mean"]),
+    ground_truth_backend="torch",
 )
 def test_smooth_l1_loss(
     dtype_and_input,
