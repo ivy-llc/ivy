@@ -111,16 +111,15 @@ def _lstm_helper(draw):
                 all_weights += [bias_ih, bias_hh]
 
     if packed:
-        batch_sizes = draw(
-            helpers.array_values(
-                dtype="int64",
-                shape=(num_batches,),
-                min_value=1,
-                max_value=seq_size,
-                exclude_max=False,
-                exclude_min=False,
-            ).filter(lambda x: seq_size in x)
+        batch_sizes = [seq_size]
+        batch_sizes += draw(
+            st.lists(
+                st.integers(min_value=1, max_value=seq_size),
+                min_size=num_batches - 1,
+                max_size=num_batches - 1,
+            )
         )
+        batch_sizes = np.array(draw(st.permutations(batch_sizes)))
         input = np.array(
             _pack_padded_sequence(input, batch_sizes, batch_first=batch_first)
         )
