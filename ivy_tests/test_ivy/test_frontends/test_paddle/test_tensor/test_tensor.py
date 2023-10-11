@@ -4875,13 +4875,13 @@ def test_paddle_tensor_zero_(
     dt_x_repeats=_tile_helper(),
 )
 def test_paddle_tensor_tile(
-        dt_x_repeats,
-        frontend,
-        backend_fw,
-        frontend_method_data,
-        init_flags,
-        method_flags,
-        on_device,
+    dt_x_repeats,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
 ):
     input_dtypes, x, repeats = dt_x_repeats
     helpers.test_frontend_method(
