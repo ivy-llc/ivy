@@ -78,6 +78,8 @@ def nanmin(
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
     nan_mask = tf.math.is_nan(a)
+    if where is not None:
+        nan_mask = tf.math.logical_or(nan_mask, tf.math.logical_not(where))
 
     masked_tensor = tf.where(nan_mask, tf.constant(float("inf"), dtype=a.dtype), a)
 

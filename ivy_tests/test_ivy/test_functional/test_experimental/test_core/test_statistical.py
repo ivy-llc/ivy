@@ -669,7 +669,7 @@ def test_nanmin(
     input_dtype, x, axis, castable_dtype, dtype3, where = dtype_x_axis_castable
     x = x[0]
     helpers.test_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=[input_dtype, dtype3[0]],
         test_flags=test_flags,
         rtol_=1e-1,
         atol_=1e-1,

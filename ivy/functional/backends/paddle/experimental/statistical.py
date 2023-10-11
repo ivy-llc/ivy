@@ -99,8 +99,20 @@ def _validate_quantile(q):
     return True
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "bfloat16",
+                "complex64",
+                "complex128",
+            )
+        }
+    },
     backend_version,
 )
 def nanmin(
@@ -114,6 +126,8 @@ def nanmin(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     nan_mask = paddle.isnan(a)
+    if where is not None:
+        nan_mask = paddle.logical_or(nan_mask, paddle.logical_not(where))
     a_copy = a.clone()
     a_copy = paddle.where(nan_mask, paddle.full_like(a_copy, float("inf")), a_copy)
     if axis is None:

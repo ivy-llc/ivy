@@ -196,6 +196,8 @@ def nanmin(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     nan_mask = torch.isnan(a)
+    if where is not None:
+        nan_mask = torch.logical_or(nan_mask, torch.logical_not(where))
     a_copy = a.clone()
     a_copy[nan_mask] = float("inf")
     if axis is None:

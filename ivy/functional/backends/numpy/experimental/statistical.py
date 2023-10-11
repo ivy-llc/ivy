@@ -178,15 +178,13 @@ def nanmin(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(
-        np.nanmin(
-            a=a,
-            axis=axis,
-            keepdims=keepdims,
-            out=out,
-            initial=initial,
-            where=where,
-        )
+    return np.nanmin(
+        a=a,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+        initial=initial,
+        where=where,
     )
 
 
