@@ -87,33 +87,33 @@ def gather_nd(x, index, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("int32", "int64", "float16", "float32", "float64")},
+    {"2.5.1 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
-def index_add(input, dim, index, source, *, alpha=1, out=None):
-    input = ivy.swapaxes(input, dim, 0)
-    source = ivy.swapaxes(source, dim, 0)
+def index_add(x, index, axis, value, *, name=None):
+    x = ivy.swapaxes(x, axis, 0)
+    value = ivy.swapaxes(value, axis, 0)
     _to_adds = []
-    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda x: x[0]))
+    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda i: i[0]))
     while index:
         _curr_idx = index[0][0]
         while len(_to_adds) < _curr_idx:
-            _to_adds.append(ivy.zeros_like(source[0]))
-        _to_add_cum = ivy.get_item(source, index[0][1])
+            _to_adds.append(ivy.zeros_like(value[0]))
+        _to_add_cum = ivy.get_item(value, index[0][1])
         while (len(index)) > 1 and (index[0][0] == index[1][0]):
-            _to_add_cum = _to_add_cum + ivy.get_item(source, index.pop(1)[1])
+            _to_add_cum = _to_add_cum + ivy.get_item(value, index.pop(1)[1])
         index.pop(0)
         _to_adds.append(_to_add_cum)
-    while len(_to_adds) < input.shape[0]:
-        _to_adds.append(ivy.zeros_like(source[0]))
+    while len(_to_adds) < x.shape[0]:
+        _to_adds.append(ivy.zeros_like(value[0]))
     _to_adds = ivy.stack(_to_adds)
-    if len(input.shape) < 2:
+    if len(x.shape) < 2:
         # Added this line due to the paddle backend treating scalars as 1-d arrays
         _to_adds = ivy.flatten(_to_adds)
 
-    ret = ivy.add(input, _to_adds, alpha=alpha)
-    ret = ivy.swapaxes(ret, 0, dim, out=out)
+    ret = ivy.add(x, _to_adds)
+    ret = ivy.swapaxes(ret, axis, 0)
     return ret
 
 
