@@ -4286,3 +4286,38 @@ def is_ivy_nested_array(x: Any, /) -> bool:
         Boolean, whether or not x is an ivy nested array.
     """
     return isinstance(x, ivy.NestedArray)
+
+
+@inputs_to_native_arrays
+@handle_exceptions
+def native_compile(
+    obj: Callable,
+    backend_kwargs: Optional[dict] = None,
+    args: Optional[Tuple] = None,
+    kwargs: Optional[dict] = None,
+):
+    """
+    Compile a given object using the native compilation function.
+
+    Parameters
+    ----------
+    obj
+        Object to be compiled.
+    backend_kwargs
+        Dictionary containing kwargs that will be passed to the corresponding
+        compile function.
+    args
+        If specified, arguments used to trigger the actual tracing pass.
+    kwargs
+        If specified, keyword arguments used to trigger the actual tracing pass.
+
+    Returns
+    -------
+    ret
+        Compiled object.
+    """
+    # TODO: add tests
+    # TODO: check decorators
+    return ivy.current_backend().native_compile(
+        obj=obj, backend_kwargs=backend_kwargs, args=args, kwargs=kwargs
+    )

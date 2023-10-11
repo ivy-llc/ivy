@@ -434,3 +434,19 @@ def isin(
 
 def itemsize(x: JaxArray) -> int:
     return x.itemsize
+
+
+def native_compile(
+    obj: Callable,
+    backend_kwargs: Optional[dict] = None,
+    args: Optional[Tuple] = None,
+    kwargs: Optional[dict] = None,
+):
+    backend_kwargs = ivy.default(backend_kwargs, {})
+    compiled_obj = jax.jit(obj, **backend_kwargs)
+
+    if args or kwargs:
+        args = ivy.default(args, ())
+        kwargs = ivy.default(kwargs, {})
+        _ = compiled_obj(*args, **kwargs)
+    return compiled_obj

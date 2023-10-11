@@ -196,19 +196,6 @@ def unify(
     )
 
 
-def native_compile(
-    obj: Callable,
-    backend_kwargs: Optional[dict] = None,
-    args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None,
-):
-    raise NotImplementedError()
-
-    return ivy.current_backend().native_compile(
-        obj=obj, backend_kwargs=backend_kwargs, args=args, kwargs=kwargs
-    )
-
-
 def _apply_autotuner_config(
     obj: Callable,
     config: Union[dict, str],
@@ -267,7 +254,7 @@ def _apply_autotuner_config(
     )
 
     if return_obj:
-        return_obj
+        return out_obj
 
     # TODO: else: serialize
 

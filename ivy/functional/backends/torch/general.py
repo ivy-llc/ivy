@@ -548,3 +548,20 @@ isin.support_native_out = True
 
 def itemsize(x: torch.tensor) -> int:
     return x.element_size()
+
+
+def native_compile(
+    obj: Callable,
+    backend_kwargs: Optional[dict] = None,
+    args: Optional[Tuple] = None,
+    kwargs: Optional[dict] = None,
+):
+    # TODO: Add support for compilation when torch version < 2.0
+    backend_kwargs = ivy.default(backend_kwargs, {})
+    compiled_obj = torch.compile(obj, **backend_kwargs)
+
+    if args or kwargs:
+        args = ivy.default(args, ())
+        kwargs = ivy.default(kwargs, {})
+        _ = compiled_obj(*args, **kwargs)
+    return compiled_obj

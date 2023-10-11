@@ -457,3 +457,12 @@ isin.support_native_out = True
 
 def itemsize(x: np.ndarray) -> int:
     return x.itemsize
+
+
+def native_compile(
+    obj: Callable,
+    backend_kwargs: Optional[dict] = None,
+    args: Optional[Tuple] = None,
+    kwargs: Optional[dict] = None,
+):
+    raise ValueError("Numpy doesn't support native compilation.")
