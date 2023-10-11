@@ -320,12 +320,14 @@ class MethodTestFlags(TestFlags):
         as_variable,
         native_arrays,
         container_flags,
+        test_trace,
         precision_mode,
     ):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
         self.container = container_flags
+        self.test_trace = test_trace
         self.precision_mode = precision_mode
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
@@ -348,6 +350,7 @@ class MethodTestFlags(TestFlags):
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
             f"container_flags={self.container}. "
+            f"test_trace={self.test_trace}."
             f"precision_mode={self.precision_mode}. "
         )
 
@@ -363,6 +366,7 @@ def method_flags(
     as_variable,
     native_arrays,
     container_flags,
+    test_trace,
     precision_mode,
 ):
     return draw(
@@ -372,6 +376,7 @@ def method_flags(
             as_variable=as_variable,
             native_arrays=native_arrays,
             container_flags=container_flags,
+            test_trace=test_trace,
             precision_mode=precision_mode,
         )
     )

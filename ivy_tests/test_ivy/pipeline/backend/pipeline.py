@@ -62,7 +62,6 @@ class BackendPipeline(Pipeline):
         test_gradients: bool = False,
         xs_grad_idxs=None,
         ret_grad_idxs=None,
-        test_trace: bool = False,
         backend_to_test: str,
         ground_truth_backend: str,
         on_device: str,
@@ -78,6 +77,9 @@ class BackendPipeline(Pipeline):
             on_device=on_device,
             test_values=test_values,
             tolerance_dict=tolerance_dict,
+            test_gradients=test_gradients,
+            xs_grad_idxs=xs_grad_idxs,
+            ret_grad_idxs=ret_grad_idxs,
             rtol_=rtol_,
             atol_=atol_,
         )

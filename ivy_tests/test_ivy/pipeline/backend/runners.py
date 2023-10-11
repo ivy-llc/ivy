@@ -557,7 +557,6 @@ class BackendMethodTestCaseRunner(TestCaseRunner):
         test_gradients,
         xs_grad_idxs,
         ret_grad_idxs,
-        test_trace,
         backend_to_test,
         ground_truth_backend,
         on_device,
@@ -579,6 +578,9 @@ class BackendMethodTestCaseRunner(TestCaseRunner):
         self.rtol = rtol_
         self.atol = atol_
         self.traced_fn = traced_fn
+        self.test_gradients = test_gradients
+        self.xs_grad_idxs = xs_grad_idxs
+        self.ret_grad_idxs = ret_grad_idxs
 
     def _run_target(
         self,
