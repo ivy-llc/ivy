@@ -17,11 +17,14 @@ def dev(x: np.ndarray, /, *, as_native: bool = False) -> Union[ivy.Device, str]:
     return ivy.as_ivy_dev("cpu")
 
 
-# def as_ivy_dev(device: str, /):
-#     return ivy.Device("cpu")
+def get_native_device_platform_and_id(device, /):
+    device_platform = device[:3]
+    if device_platform == "gpu":
+        raise ivy.exceptions.IvyDeviceError(f"{device.upper()} not supported in Numpy!")
+    return (device_platform, 0)
 
 
-def as_native_dev(device: str, /):
+def get_native_device(device_platform, device_id, /):
     return "cpu"
 
 
@@ -69,7 +72,7 @@ def to_device(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if device is not None:
-        device = as_native_dev(device)
+        device = ivy.as_native_dev(device)
         if "gpu" in device:
             raise ivy.utils.exceptions.IvyException(
                 "Native Numpy does not support GPU placement, "
