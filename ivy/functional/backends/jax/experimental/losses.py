@@ -1,8 +1,6 @@
 import jax.numpy as jnp
-import jax
 from typing import Optional
 from ivy.functional.backends.jax import JaxArray
-import ivy
 
 # local
 from ivy.func_wrapper import (
@@ -155,68 +153,3 @@ def poisson_nll_loss(
         cond = jnp.logical_and(target_arr >= zeroes, target_arr <= ones)
         loss = loss + jnp.where(cond, zeroes, striling_approx_term)
     return _apply_loss_reduction(loss, reduction)
-
-
-@with_supported_device_and_dtypes(
-    {
-        "0.4.14 and below": {
-            "cpu": ("float16", "float32", "float64"),
-        }
-    },
-    backend_version,
-)
-def binary_cross_entropy(
-    input: JaxArray,
-    target: JaxArray,
-    /,
-    *,
-    from_logits: bool = False,
-    epsilon: float = 1e-7,
-    reduction: str = "none",
-    pos_weight: Optional[JaxArray] = None,
-    axis: Optional[int] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-
-    if not (0.0 <= epsilon <= 1.0):
-        raise ValueError("epsilon should be a float in [0, 1]")
-
-    if not from_logits and pos_weight is not None:
-        raise ValueError("pos_weight is only allowed when from_logits is set to True")
-
-    if out is not None:
-        raise NotImplementedError(
-            "The 'out' argument to jnp.binary_cross_entropy is not supported."
-        )
-
-    input_arr = jnp.asarray(input, dtype=input.dtype)
-    target_arr = jnp.asarray(target, dtype=input.dtype)
-
-    if from_logits:
-        input = jax.nn.sigmoid(input_arr)
-        if pos_weight is not None:
-            pos_weight = jnp.asarray(pos_weight, dtype=input.dtype)
-            num_classes = (
-                input_arr.shape[0] if len(input_arr.shape) == 1 else input_arr.shape[1]
-            )
-            if pos_weight.shape[0] != num_classes:
-                raise ValueError(
-                    "pos_weight must have the same size as the number of classes in"
-                    " pred at non-singleton dimension 1"
-                )
-            loss = -1.0 * (
-                (pos_weight * target_arr * jnp.log(input_arr + epsilon))
-                + (1.0 - target_arr) * jnp.log(1.0 - input_arr + epsilon)
-            )
-        else:
-            loss = -1.0 * (
-                target_arr * jnp.log(input_arr + epsilon)
-                + (1.0 - target_arr) * jnp.log(1.0 - input_arr + epsilon)
-            )
-    else:
-        loss = -1.0 * (
-            target_arr * jnp.log(input_arr + epsilon)
-            + (1.0 - target_arr) * jnp.log(1.0 - input_arr + epsilon)
-        )
-    return _apply_loss_reduction(loss, reduction, axis=axis)
