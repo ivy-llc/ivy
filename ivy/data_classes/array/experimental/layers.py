@@ -1086,6 +1086,62 @@ class _ArrayWithLayersExperimental(abc.ABC):
         """
         return ivy.ifftn(self._data, s=s, axes=axes, norm=norm, out=out)
 
+    def rfft(
+        self: ivy.Array,
+        /,
+        *,
+        n: Optional[int] = None,
+        axis: int = -1,
+        norm: Literal["backward", "ortho", "forward"] = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.rfft. This method simply wraps the
+        function, and so the docstring for ivy.rfft also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Must have a real-valued floating-point data type.
+        n
+            length of the transformed axis of the input. If
+            -   n is greater than the length of the input array, the input array
+            is zero-padded to length n.
+            -   n is less than the length of the input array, the input array is
+            trimmed to length n.
+            -   n is not provided, the length of the transformed axis of the
+            output must equal the length of the input along the axis specified
+            by axis. Default is ``None``.
+        axis
+            axis (dimension) over which to compute the Fourier transform.
+            If not set, the last axis (dimension) is used. Default is ``-1``.
+        norm
+            normalization mode. Should be one of the following modes:
+            -   'backward': no normalization.
+            -   'ortho': normalize by 1/sqrt(n) (i.e., make the FFT orthonormal).
+            -   'forward': normalize by 1/n.
+            Default is ``backward``.
+        out
+            Optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array transformed along the axis (dimension) indicated by axis.
+            The returned array must have a complex-valued floating-point
+            data type determined by Type Promotion Rules.
+
+        Examples
+        --------
+        >>> x = ivy.array([0,1,2])
+        >>> y = x.rfft()
+        >>> print(y)
+        ivy.array([ 3. +0.j       , -1.5+0.8660254j])
+        """
+        return ivy.rfft(self, n=n, axis=axis, norm=norm, out=out)
+
     def rfftn(
         self: ivy.Array,
         s: Sequence[int] = None,

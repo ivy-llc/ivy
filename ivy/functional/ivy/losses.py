@@ -8,7 +8,6 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
-    to_native_arrays_and_back,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -42,7 +41,7 @@ def cross_entropy(
     *,
     axis: int = -1,
     epsilon: float = 1e-7,
-    reduction: str = "sum",
+    reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -89,7 +88,8 @@ def cross_entropy(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_array_function
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -97,7 +97,7 @@ def binary_cross_entropy(
     *,
     from_logits: bool = False,
     epsilon: float = 0.0,
-    reduction: str = "none",
+    reduction: str = "mean",
     pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
@@ -278,7 +278,7 @@ def sparse_cross_entropy(
     *,
     axis: int = -1,
     epsilon: float = 1e-7,
-    reduction: str = "sum",
+    reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
