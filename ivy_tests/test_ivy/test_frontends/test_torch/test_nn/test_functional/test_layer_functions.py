@@ -68,8 +68,8 @@ def _lstm_helper(draw):
     )
 
     all_weights = []
-    for n in range(num_directions):
-        for k in range(num_layers):
+    for k in range(num_layers):
+        for _ in range(num_directions):
             weight_ih = draw(
                 helpers.array_values(
                     dtype=dtype[0],
