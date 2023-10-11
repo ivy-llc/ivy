@@ -756,13 +756,11 @@ def truediv(x, y, name="truediv"):
 
 @to_ivy_arrays_and_back
 def unsorted_segment_max(data, segment_ids, num_segments, name="unsorted_segment_max"):
-    data = ivy.array(data)
-    segment_ids = ivy.array(segment_ids)
     ivy.utils.assertions.check_equal(
         list(segment_ids.shape), [list(data.shape)[0]], as_array=False
     )
     max_array = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
-    for i in range((segment_ids).shape[0]):
+    for i in range(segment_ids.shape[0]):
         max_array[segment_ids[i]] = max(max_array[segment_ids[i]], data[i])
     return max_array
 

@@ -3075,17 +3075,13 @@ def test_tensorflow_truediv(
 @handle_frontend_test(
     fn_tree="tensorflow.math.unsorted_segment_max",
     data=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=helpers.get_shape(),
     ),
     segment_ids=helpers.dtype_and_values(
         available_dtypes=["int32", "int64"],
         shape=helpers.get_shape(),
     ),
-    # num_segments=helpers.dtype_and_values(
-    #    available_dtypes=[ivy.int32, ivy.int64],
-    #    shape=helpers.get_shape(),
-    # ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_unsorted_segment_max(
