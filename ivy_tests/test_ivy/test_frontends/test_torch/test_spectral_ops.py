@@ -71,12 +71,14 @@ def test_torch_blackman_window(
     dtype=helpers.get_dtypes("float", full=False),
     fn_tree="torch.kaiser_window",
     periodic=st.booleans(),
+    beta=helpers.floats(min_value=1, max_value=20),
 )
 def test_torch_kaiser_window(
     *,
     window_length,
     dtype,
     periodic,
+    beta,
     on_device,
     fn_tree,
     frontend,
@@ -92,6 +94,7 @@ def test_torch_kaiser_window(
         fn_tree=fn_tree,
         window_length=window_length,
         periodic=periodic,
+        beta=beta,
         dtype=dtype[0],
         rtol=1e-02,
         atol=1e-02,
