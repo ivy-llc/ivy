@@ -985,7 +985,9 @@ def test_frontend_function(
         frontend_config.to_numpy,
     )
 
-    if not frontend_config.isscalar(frontend_ret) and not isinstance(frontend_ret, tuple):
+    if not frontend_config.isscalar(frontend_ret) and not isinstance(
+        frontend_ret, tuple
+    ):
         frontend_ret = (frontend_ret,)
     if not isinstance(ret, tuple):
         ret = (ret,)
