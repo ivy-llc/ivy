@@ -107,6 +107,9 @@ def _generic_lstm(
     h_outs = h_out if num_layers == 1 else ivy.concat(h_outs, axis=0)
     c_outs = c_out if num_layers == 1 else ivy.concat(c_outs, axis=0)
 
+    if batch_sizes is not None:
+        output = _pack_padded_sequence(output, batch_sizes)
+
     return output, h_outs, c_outs
 
 
@@ -231,7 +234,6 @@ def _lstm_packed(
     )
 
 
-# used in testing
 def _pack_padded_sequence(padded_sequence, lengths, batch_first=False):
     if not batch_first:
         padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
