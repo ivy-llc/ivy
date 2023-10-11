@@ -691,13 +691,13 @@ def test_frontend_function(
                 on_device
             ]
         )
+        castable_dtype = None
         if input_dtypes[0] not in backend_supported_dtypes["valid"]:
             # cast dtype to some supported dtype
             castable_dtype = get_nearest_castable_dtype(
                 input_dtypes[0], backend_supported_dtypes["valid"]
             )
             if castable_dtype is not None:
-                # input_dtypes[:] = [castable_dtype] * len(castable_dtype)
                 # change dtype for args_for_test and kwargs_for_test
                 target_args_np = [
                     (
@@ -814,6 +814,8 @@ def test_frontend_function(
             **kwargs_for_test,
         )
 
+        if castable_dtype:
+            ret = ivy_backend.astype(ret, input_dtypes[0])
         # test if frontend array was returned
         if test_flags.generate_frontend_arrays:
             assert ivy_backend.nested_map(
