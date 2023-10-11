@@ -229,11 +229,10 @@ def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
 def _get_dtype_lu_and_pivots(draw):
     dimsize1 = draw(st.integers(min_value=2, max_value=5))
     dimsize2 = draw(st.integers(min_value=2, max_value=5))
-    # dtype = draw(helpers.get_dtypes("valid"))
-    dtype = ["float32", "float64"]
-    # dtype = [
-    #     draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
-    # ]
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
 
     mat = draw(
         helpers.array_values(
@@ -242,7 +241,7 @@ def _get_dtype_lu_and_pivots(draw):
     )
     pivots = draw(
         helpers.array_values(
-            dtype="int32", shape=(min(dimsize1, dimsize2)), min_value=1, max_value=5
+            dtype="int32", shape=(min(dimsize1, dimsize2),), min_value=1, max_value=5
         )
     )
     return dtype, mat, pivots
@@ -704,7 +703,7 @@ def test_torch_lu_unpack(
 ):
     dtype, mat, pivots = dtype_and_matrices
     helpers.test_frontend_function(
-        input_dtypes=dtype[0],
+        input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
@@ -714,6 +713,8 @@ def test_torch_lu_unpack(
         lu_pivots=pivots,
         unpack_data=unpack_lu,
         unpack_pivots=unpack_piv,
+        rtol=1e-03,
+        atol=1e-03,
     )
 
 

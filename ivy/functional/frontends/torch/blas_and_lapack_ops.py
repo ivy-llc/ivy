@@ -131,7 +131,7 @@ def logdet(input):
 
 
 @to_ivy_arrays_and_back
-def lu_unpack(lu_data, lu_pivots, unpack_data=True, unpack_pivots=True):
+def lu_unpack(lu_data, lu_pivots, unpack_data=True, unpack_pivots=True, *, out=None):
     if lu_data.ndim < 2:
         raise ValueError(
             "The shape of x should be (*, M, N), but received ndim is"
@@ -142,7 +142,12 @@ def lu_unpack(lu_data, lu_pivots, unpack_data=True, unpack_pivots=True):
             "The shape of Pivots should be (*, K), but received ndim is"
             f" [{lu_pivots.ndim} < 1]"
         )
+    lu_data, lu_pivots = torch_frontend.promote_types_of_torch_inputs(
+        lu_data, lu_pivots
+    )
+
     m, n = lu_data.shape[-2:]
+    print(m, n)
     k = min(m, n)
     if unpack_pivots:
         permute = ivy.arange(m)
