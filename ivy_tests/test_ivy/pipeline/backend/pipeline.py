@@ -53,8 +53,6 @@ class BackendPipeline(Pipeline):
         method_flags,
         class_name: str,
         method_name: str = "__call__",
-        init_with_v: bool = False,
-        method_with_v: bool = False,
         rtol_: float = None,
         atol_: float = 1e-06,
         tolerance_dict=None,
@@ -81,8 +79,6 @@ class BackendPipeline(Pipeline):
             xs_grad_idxs=xs_grad_idxs,
             ret_grad_idxs=ret_grad_idxs,
             return_flat_np_arrays=return_flat_np_arrays,
-            init_with_v=init_with_v,
-            method_with_v=method_with_v,
             rtol_=rtol_,
             atol_=atol_,
         )
