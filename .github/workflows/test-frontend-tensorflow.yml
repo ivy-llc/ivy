@@ -23,6 +23,7 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          cd ..
 
       - name: Download artifact
         if: github.event_name == 'pull_request'
