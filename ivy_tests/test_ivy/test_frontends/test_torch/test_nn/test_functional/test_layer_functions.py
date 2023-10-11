@@ -124,54 +124,10 @@ def _lstm_helper(draw):
     else:
         batch_sizes = None
 
-    return (
-        dtype + ["int64"],
-        input,
-        (init_h, init_c),
-        tuple(all_weights),
-        has_biases,
-        num_layers,
-        dropout,
-        train,
-        bidirectional,
-        batch_first,
-        batch_sizes,
-    )
-
-
-# --- Main --- #
-# ------------ #
-
-
-# lstm
-@handle_frontend_test(
-    fn_tree="torch.lstm",
-    dtype_lstm=_lstm_helper(),
-    test_with_out=st.just(False),
-)
-def test_torch_lstm(
-    *,
-    dtype_lstm,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    (
-        dtypes,
-        input,
-        initial_states,
-        all_weights,
-        has_biases,
-        num_layers,
-        dropout,
-        train,
-        bidirectional,
-        batch_first,
-        batch_sizes,
-    ) = dtype_lstm
+    initial_states = init_h, init_c
+    all_weights = tuple(all_weights)
     if batch_sizes is not None:
+        dtypes = dtype + ["int64"]
         kwargs = {
             "data": input,
             "batch_sizes": batch_sizes,
@@ -184,7 +140,7 @@ def test_torch_lstm(
             "bidirectional": bidirectional,
         }
     else:
-        dtypes = dtypes[:1]
+        dtypes = dtype
         kwargs = {
             "input": input,
             "hx": initial_states,
@@ -196,6 +152,29 @@ def test_torch_lstm(
             "bidirectional": bidirectional,
             "batch_first": batch_first,
         }
+    return dtypes, kwargs
+
+
+# --- Main --- #
+# ------------ #
+
+
+# lstm
+@handle_frontend_test(
+    fn_tree="torch.lstm",
+    dtypes_kwargs=_lstm_helper(),
+    test_with_out=st.just(False),
+)
+def test_torch_lstm(
+    *,
+    dtypes_kwargs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtypes, kwargs = dtypes_kwargs
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         backend_to_test=backend_fw,
