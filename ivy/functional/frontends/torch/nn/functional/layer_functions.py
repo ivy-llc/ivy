@@ -30,7 +30,7 @@ def _generic_lstm(
     ]
 
     if batch_sizes is not None:
-        input = _pad_packed_sequence(input, batch_sizes, batch_first=batch_first)
+        input = _pad_packed_sequence(input, batch_sizes)
 
     if batch_first:
         input = ivy.swapaxes(input, 0, 1)
@@ -108,7 +108,7 @@ def _generic_lstm(
     c_outs = c_out if num_layers == 1 else ivy.concat(c_outs, axis=0)
 
     if batch_sizes is not None:
-        output = _pack_padded_sequence(output, batch_sizes)
+        output = _pack_padded_sequence(output, None)
 
     return output, h_outs, c_outs
 
@@ -234,31 +234,36 @@ def _lstm_packed(
     )
 
 
-def _pack_padded_sequence(padded_sequence, lengths, batch_first=False):
-    if not batch_first:
-        padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
+def _pack_padded_sequence(input, lengths):
+    input = ivy.swapaxes(input, 0, 1)
     data = []
-    for i, length in enumerate(lengths):
-        data += [padded_sequence[i, : int(length)]]
-    data = ivy.concat(data)
-    return data
+    if lengths is not None:
+        batch_sizes = []
+        for i in range(int(max(lengths))):
+            valid_data_mask = lengths > i
+            data.append(input[i][valid_data_mask])
+            batch_sizes.append(int(sum(valid_data_mask)))
+        data = ivy.concat(data)
+        batch_sizes = ivy.array(batch_sizes, dtype=ivy.int64)
+        return data, batch_sizes
+    for i in range(input.shape[1]):
+        data.append(input[:, i])
+    return ivy.concat(data)
 
 
-def _pad_packed_sequence(data, batch_sizes, batch_first=False, padding_value=0):
-    padded_sequence = ivy.full(
+def _pad_packed_sequence(data, batch_sizes):
+    padded_data = ivy.full(
         (len(batch_sizes), int(max(batch_sizes)), data.shape[-1]),
-        padding_value,
+        0,
         dtype=data.dtype,
         device=data.device,
     )
-    data_pointer = 0
+    data_offset = 0
     for i, batch_size in enumerate(batch_sizes):
         batch_size = int(batch_size)
-        padded_sequence[i, :batch_size] = data[data_pointer : data_pointer + batch_size]
-        data_pointer += batch_size
-    if not batch_first:
-        padded_sequence = ivy.swapaxes(padded_sequence, 0, 1)
-    return padded_sequence
+        padded_data[i, :batch_size] = data[data_offset : data_offset + batch_size]
+        data_offset += batch_size
+    return padded_data
 
 
 def _reform_weights(w, n, intervals):
