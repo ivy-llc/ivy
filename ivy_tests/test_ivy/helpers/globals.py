@@ -88,6 +88,7 @@ def setup_api_test(
 def teardown_api_test():
     _unset_test_data()
     _unset_ground_truth_backend()
+    _unset_backend_pipeline()
     _unset_backend()
     _unset_device()
 
