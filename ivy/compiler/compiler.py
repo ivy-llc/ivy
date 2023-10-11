@@ -19,7 +19,7 @@ def trace_graph(
     kwargs: Optional[dict] = None
 ):
     """
-    Takes `fn` and traces it into a more efficient composition of backend operations.
+    Take `fn` and traces it into a more efficient composition of backend operations.
 
     Parameters
     ----------
