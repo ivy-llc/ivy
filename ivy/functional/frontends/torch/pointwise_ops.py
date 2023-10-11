@@ -413,6 +413,14 @@ def nextafter(input, other, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def polygamma(n, input, *, out=None):
+    if n == 0:
+        return ivy.digamma(input, out=out)
+    fact = ivy.prod(ivy.arange(1, n + 1, dtype="int32"))
+    return (-1.0) ** (n + 1) * fact * ivy.zeta(ivy.full(input.shape, n + 1), input)
+
+
+@to_ivy_arrays_and_back
 def positive(input, *, out=None):
     return ivy.positive(input, out=out)
 
@@ -570,12 +578,6 @@ def trunc(input, *, out=None):
 def xlogy(input, other, *, out=None):
     return ivy.xlogy(input, other, out=out)
 
-@to_ivy_arrays_and_back
-def polygamma(n, input, *, out=None):
-    if n==0:
-        return ivy.digamma(input,out=out)
-    fact = ivy.prod(ivy.arange(1, n + 1, dtype='int32'))
-    return (-1.0)**(n+1) * fact *ivy.zeta(ivy.full(input.shape,n+1), input)
 
 absolute = abs
 arccos = acos
