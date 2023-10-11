@@ -80,6 +80,9 @@ class BackendPipeline(Pipeline):
             test_gradients=test_gradients,
             xs_grad_idxs=xs_grad_idxs,
             ret_grad_idxs=ret_grad_idxs,
+            return_flat_np_arrays=return_flat_np_arrays,
+            init_with_v=init_with_v,
+            method_with_v=method_with_v,
             rtol_=rtol_,
             atol_=atol_,
         )
