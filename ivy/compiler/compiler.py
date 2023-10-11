@@ -1,4 +1,4 @@
-from typing import Callable, Optional, List, Union, Iterable, Tuple
+from typing import Callable, Optional, List, Union, Iterable, Tuple, Mapping
 
 
 def trace_graph(
@@ -16,10 +16,11 @@ def trace_graph(
     mode: Optional[str] = None,
     graph_caching: bool = False,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None
+    kwargs: Optional[Mapping] = None,
+    params_v=None,
+    v=None
 ):
-    """
-    Take `fn` and traces it into a more efficient composition of backend operations.
+    """Takes `fn` and traces it into a more efficient composition of backend operations.
 
     Parameters
     ----------
@@ -86,8 +87,7 @@ def trace_graph(
     >>> start = time.time()
     >>> graph(x)
     >>> print(time.time() - start)
-    0.0001785755157470703
-    """
+    0.0001785755157470703"""
 
     from ._compiler import trace_graph as _trace_graph
 
@@ -107,6 +107,8 @@ def trace_graph(
         graph_caching=graph_caching,
         args=args,
         kwargs=kwargs,
+        params_v=params_v,
+        v=v,
     )
 
 
@@ -124,13 +126,13 @@ def transpile(
     arg_stateful_idxs: Optional[List] = None,
     kwarg_stateful_idxs: Optional[List] = None,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None,
+    kwargs: Optional[Mapping] = None,
     params_v=None,
     v=None
 ):
-    """
-    Transpiles Callable objects passed as arguments. If args and kwargs are specified,
-    transpilation is performed eagerly, otherwise, transpilation will happen lazily.
+    """Transpiles Callable objects passed as arguments. If args and kwargs are
+    specified, transpilation is performed eagerly, otherwise, transpilation
+    will happen lazily.
 
     Parameters
     ----------
@@ -147,8 +149,7 @@ def transpile(
 
     Returns
     -------
-    Either a transpiled Graph or a non-initialized LazyGraph.
-    """
+    Either a transpiled Graph or a non-initialized LazyGraph."""
 
     from ._compiler import transpile as _transpile
 
@@ -177,7 +178,7 @@ def unify(
     source: Optional[str] = None,
     graph_caching: bool = False,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None,
+    kwargs: Optional[Mapping] = None,
     with_numpy: bool = True,
     **transpile_kwargs
 ):
