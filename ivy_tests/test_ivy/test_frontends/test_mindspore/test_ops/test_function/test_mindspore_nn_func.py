@@ -261,7 +261,7 @@ def test_mindspore_avg_pool2d(
 # conv1d
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="mindspore.ops.function.nn_func.Conv1d",
+    fn_tree="mindspore.ops.function.nn_func.conv1d",
     dtype_vals=_x_and_filters(dim=1),
 )
 def test_mindspore_conv1d(
@@ -294,7 +294,7 @@ def test_mindspore_conv1d(
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="mindspore.ops.function.nn_func.Conv2d",
+    fn_tree="mindspore.ops.function.nn_func.conv2d",
     dtype_vals=_x_and_filters(dim=2),
 )
 def test_mindspore_conv2d(
@@ -327,7 +327,7 @@ def test_mindspore_conv2d(
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="mindspore.ops.function.nn_func.Conv3d",
+    fn_tree="mindspore.ops.function.nn_func.conv3d",
     dtype_vals=_x_and_filters(dim=3),
 )
 def test_mindspore_conv3d(
@@ -714,7 +714,7 @@ def test_mindspore_max_pool3d(
 # pad
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="pad",
+    fn_tree="mindspore.ops.function.nn_func.pad",
     input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
