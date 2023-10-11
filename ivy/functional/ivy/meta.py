@@ -807,7 +807,7 @@ def maml_step(
         The cost and the gradients with respect to the outer loop variables.
 
     Examples
-    ________
+    --------
     With :class:`ivy.Container` input:
 
     >>> import ivy
