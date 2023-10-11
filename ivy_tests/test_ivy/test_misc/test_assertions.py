@@ -23,7 +23,7 @@ from ivy.utils.assertions import (
     check_shape,
     check_shapes_broadcastable,
     check_true,
-    check_unsorted_segment_min_valid_params,
+    check_unsorted_segment_valid_params,
 )
 from ivy.utils.assertions import _check_jax_x64_flag
 import ivy
@@ -852,7 +852,7 @@ def test_check_true(expression):
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), ivy.array([2])),
     ],
 )
-def test_check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
+def test_check_unsorted_segment_valid_params(data, segment_ids, num_segments):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
 
@@ -860,7 +860,7 @@ def test_check_unsorted_segment_min_valid_params(data, segment_ids, num_segments
         sys.stdout = f
         lines = ""
         try:
-            check_unsorted_segment_min_valid_params(data, segment_ids, num_segments)
+            check_unsorted_segment_valid_params(data, segment_ids, num_segments)
             local_vars = {**locals()}
         except Exception as e:
             local_vars = {**locals()}
