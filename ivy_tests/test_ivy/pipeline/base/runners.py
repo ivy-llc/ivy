@@ -76,7 +76,9 @@ class TestCaseSubRunner(ABC):
         ]
         ret_types = []
         if store_types:
-            ret_types = [type(ret) if self._is_array(ret) else None for ret in ret_flat]
+            ret_types = [
+                str(type(ret)) if self._is_array(ret) else None for ret in ret_flat
+            ]
         ret_np_flat = self._flatten_ret_to_np(ret_flat)
         ret_shapes = [
             ret_np.shape if isinstance(ret_np, np.ndarray) else None
