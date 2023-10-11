@@ -1,5 +1,6 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -29,3 +30,17 @@ def bartlett_window(
         )
 
         return res[:-1] if periodic else res
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.51.0 and below": ("float32", "float64")}, "torch")
+def blackman_window(
+    window_length,
+    periodic=True,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    return ivy.blackman_window(window_length, periodic=periodic, dtype=dtype)

@@ -64,11 +64,11 @@ def soft_margin_loss(
         return loss
 
 
-def _apply_loss_reduction(loss: JaxArray, reduction: str) -> JaxArray:
+def _apply_loss_reduction(loss: JaxArray, reduction: str, axis=None) -> JaxArray:
     if reduction == "sum":
-        return jnp.sum(loss)
+        return jnp.sum(loss, axis=axis)
     elif reduction == "mean":
-        return jnp.mean(loss)
+        return jnp.mean(loss, axis=axis)
     else:  # reduction == "none"
         return loss
 

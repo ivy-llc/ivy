@@ -1,10 +1,10 @@
 import ivy
 from ivy import with_supported_dtypes
-from ivy.functional.frontends.torch import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, "torch")
 def multi_head_attention_forward(
     query,
     key,
