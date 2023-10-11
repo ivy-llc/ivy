@@ -4,6 +4,39 @@ from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _handle_padding_shape(padding, x_dim, mode):
+    if mode == "constant" and len(padding) == x_dim * 2:
+        padding = tuple(
+            [
+                (padding[i * 2], padding[i * 2 + 1])
+                for i in range(int(len(padding) / 2) - 1, -1, -1)
+            ]
+        )
+        while len(padding) < x_dim:
+            padding = padding + ((0, 0),)
+        padding = tuple(list(padding)[::-1])
+
+    else:
+        padding = tuple(
+            [
+                (padding[i * 2], padding[i * 2 + 1])
+                for i in range(int(len(padding) / 2) - 1, -1, -1)
+            ]
+        )
+        while len(padding) < x_dim:
+            padding = ((0, 0),) + padding
+
+    return padding
+
+
+# --- Main --- #
+# ------------ #
+
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
@@ -95,6 +128,40 @@ def interpolate(
 def linear(x, weight, bias=None, name=None):
     weight = ivy.swapaxes(weight, -1, -2)
     return ivy.linear(x, weight, bias=bias)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+def pad(x, padding, mode="constant", value=0.0, data_format="NCHW", name=None):
+    mode_dict = {
+        "constant": "constant",
+        "reflect": "reflect",
+        "replicate": "edge",
+        "circular": "wrap",
+    }
+    if mode not in mode_dict:
+        raise ValueError(f"Unsupported padding mode: {mode}")
+
+    data_format = data_format.upper()
+    if data_format not in ["NCL", "NCHW", "NCDHW", "NLC", "NHWC", "NDHWC"]:
+        raise ValueError(
+            "data_format should be in one of [NCL, NCHW, NCDHW, NLC, NHWC, NDHWC], "
+            f"but got {data_format}"
+        )
+
+    x_dim = len(x.shape)
+
+    if x_dim not in [3, 4, 5]:
+        raise ValueError(f"input tensor dimension must be in [3, 4, 5] but got {x_dim}")
+
+    padding = _handle_padding_shape(padding, x_dim, mode)
+
+    if mode_dict[mode] == "constant":
+        return ivy.pad(x, padding, mode=mode_dict[mode], constant_values=value)
+    else:
+        return ivy.pad(x, padding, mode=mode_dict[mode])
 
 
 @to_ivy_arrays_and_back
