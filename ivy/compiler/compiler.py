@@ -204,7 +204,8 @@ def _apply_autotuner_config(
     kwargs: Optional[dict] = None,
 ):
     """
-    Applies a given configuration file to a callable object and applies the corresponding transformations.
+    Applies a given configuration file to a callable object and applies the
+    corresponding transformations.
 
     Parameters
     ----------
