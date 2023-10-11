@@ -1,6 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_device_and_dtypes
 
 
 # --- Helpers --- #
@@ -45,6 +45,10 @@ def fftfreq(n, d=1.0):
     return results * val
 
 
+@with_supported_device_and_dtypes(
+    {"1.26.0 and below": {"cpu": ("float32", "float64", "complex64", "complex128")}},
+    "numpy",
+)
 @to_ivy_arrays_and_back
 def fftn(a, s=None, axes=None, norm=None):
     invreal = 0
@@ -69,7 +73,7 @@ def fftn(a, s=None, axes=None, norm=None):
     itl.reverse()
     for ii in itl:
         a = ivy.fft(a, axes[ii], norm=norm, n=int(s[ii]))
-    return a
+    return ivy.astype(a, ivy.complex128)
 
 
 @to_ivy_arrays_and_back
