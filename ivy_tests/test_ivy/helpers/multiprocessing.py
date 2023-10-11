@@ -19,8 +19,6 @@ from .testing_helpers import (
 from .function_testing import (
     test_function_backend_computation,
     test_function_ground_truth_computation,
-    test_method_backend_computation,
-    test_method_ground_truth_computation,
     test_gradient_backend_computation,
     test_gradient_ground_truth_computation,
     _transpile_if_required_backend,
@@ -28,6 +26,9 @@ from .function_testing import (
 from ..pipeline.frontend.multiprocessing import (
     FrontendFunctionTestCaseRunnerMP,
     FrontendMethodTestCaseRunnerMP,
+)
+from ..pipeline.backend.multiprocessing import (
+    BackendMethodTestCaseRunnerMP,
 )
 
 framework_path = "/opt/fw/"
@@ -242,114 +243,74 @@ def backend_proc(input_queue, output_queue):
             )
             output_queue.put(grads_np_from_gt_flat)
 
-        elif data[0] == "method_backend_computation":
+        elif data[0] == "_method_backend":
             (
                 _,
-                init_input_dtypes,
-                init_flags,
-                backend_to_test,
-                init_all_as_kwargs_np,
-                on_device,
-                method_input_dtypes,
-                method_flags,
-                method_all_as_kwargs_np,
                 class_name,
                 method_name,
-                init_with_v,
-                test_trace,
-                method_with_v,
-            ) = data
-            (
-                ret,
-                ret_np_flat,
-                ret_device,
-                org_con_data,
-                args_np_method,
-                met_arg_np_vals,
-                met_args_idxs,
-                kwargs_np_method,
-                met_kwarg_np_vals,
-                met_kwargs_idxs,
+                backend_handler,
+                ground_truth_backend,
+                on_device,
+                traced_fn,
                 v_np,
-                fw_list,
-            ) = test_method_backend_computation(
                 init_input_dtypes,
-                init_flags,
-                backend_to_test,
-                init_all_as_kwargs_np,
-                on_device,
                 method_input_dtypes,
+                init_flags,
                 method_flags,
+                init_all_as_kwargs_np,
                 method_all_as_kwargs_np,
+            ) = data
+            ret = BackendMethodTestCaseRunnerMP._run_target_helper(
                 class_name,
                 method_name,
-                init_with_v,
-                test_trace,
-                method_with_v,
+                backend_handler,
+                ground_truth_backend,
+                on_device,
+                traced_fn,
+                v_np,
+                init_input_dtypes,
+                method_input_dtypes,
+                init_flags,
+                method_flags,
+                init_all_as_kwargs_np,
+                method_all_as_kwargs_np,
             )
-            # ret is none here, because main process doesn't import framework
-            output_queue.put(
-                (
-                    (None),
-                    ret_np_flat,
-                    ret_device,
-                    org_con_data,
-                    args_np_method,
-                    met_arg_np_vals,
-                    met_args_idxs,
-                    kwargs_np_method,
-                    met_kwarg_np_vals,
-                    met_kwargs_idxs,
-                    v_np,
-                    fw_list,
-                )
-            )
+            output_queue.put(ret)
 
-        elif data[0] == "method_ground_truth_computation":
+        elif data[0] == "_method_ground_truth":
             (
                 _,
-                ground_truth_backend,
-                on_device,
-                org_con_data,
-                args_np_method,
-                met_arg_np_vals,
-                met_args_idxs,
-                kwargs_np_method,
-                met_kwarg_np_vals,
-                met_kwargs_idxs,
-                method_input_dtypes,
-                method_flags,
                 class_name,
                 method_name,
-                test_trace,
+                backend_handler,
+                ground_truth_backend,
+                on_device,
+                traced_fn,
                 v_np,
+                init_input_dtypes,
+                method_input_dtypes,
+                init_flags,
+                method_flags,
+                init_all_as_kwargs_np,
+                method_all_as_kwargs_np,
             ) = data
-            (
-                ret_from_gt,
-                ret_np_from_gt_flat,
-                ret_from_gt_device,
-                fw_list2,
-            ) = test_method_ground_truth_computation(
-                ground_truth_backend,
-                on_device,
-                org_con_data,
-                args_np_method,
-                met_arg_np_vals,
-                met_args_idxs,
-                kwargs_np_method,
-                met_kwarg_np_vals,
-                met_kwargs_idxs,
-                method_input_dtypes,
-                method_flags,
+            ret = BackendMethodTestCaseRunnerMP._run_ground_truth_helper(
                 class_name,
                 method_name,
-                test_trace,
+                backend_handler,
+                ground_truth_backend,
+                on_device,
+                traced_fn,
                 v_np,
+                init_input_dtypes,
+                method_input_dtypes,
+                init_flags,
+                method_flags,
+                init_all_as_kwargs_np,
+                method_all_as_kwargs_np,
             )
-            # ret from gt None here, because main process doesn't import framework
-            output_queue.put(
-                ((None), ret_np_from_gt_flat, ret_from_gt_device, fw_list2)
-            )
+            output_queue.put(ret)
+
         elif data[0] == "_run_target_frontend_function":
             (
                 _,
