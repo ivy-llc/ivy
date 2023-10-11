@@ -115,6 +115,7 @@ def tanhshrink(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
 def softshrink(
     x: JaxArray, /, *, lambd: float = 0.5, out: Optional[JaxArray] = None
 ) -> JaxArray:

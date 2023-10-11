@@ -93,7 +93,7 @@ def celu(
     return torch.celu(x, alpha=alpha)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def hardtanh(
     x: torch.Tensor,
     /,
@@ -118,7 +118,7 @@ def tanhshrink(
     return ivy.astype(ret, x.dtype)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
 def softshrink(
     x: torch.Tensor, /, *, lambd: float = 0.5, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:

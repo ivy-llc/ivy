@@ -1248,7 +1248,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         )
 
     def softshrink(
-        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        self: ivy.Container,
         /,
         *,
         lambd: ivy.Container = 0.5,
@@ -1297,7 +1297,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
         }
         """
         return self._static_softshrink(
-            "softshrink",
             self,
             lambd=lambd,
             key_chains=key_chains,
