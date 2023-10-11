@@ -8,7 +8,11 @@ from typing import Union, Optional, Any
 
 # local
 import ivy
-from ivy.functional.ivy.device import Profiler as BaseProfiler
+from ivy.functional.ivy.device import (
+    _as_ivy_dev_helper,
+    _as_native_dev_helper,
+    Profiler as BaseProfiler,
+)
 
 
 def dev(x: np.ndarray, /, *, as_native: bool = False) -> Union[ivy.Device, str]:
@@ -26,6 +30,14 @@ def get_native_device_platform_and_id(device, /):
 
 def get_native_device(device_platform, device_id, /):
     return "cpu"
+
+
+def as_ivy_dev(device, /):
+    return _as_ivy_dev_helper(device)
+
+
+def as_native_dev(device, /):
+    return _as_native_dev_helper(device)
 
 
 def clear_cached_mem_on_dev(device: str, /):

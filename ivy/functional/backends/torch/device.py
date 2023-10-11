@@ -13,6 +13,8 @@ from torch.profiler import profile
 import ivy
 from ivy.functional.ivy.device import (
     _shift_native_arrays_on_default_device,
+    _as_ivy_dev_helper,
+    _as_native_dev_helper,
     Profiler as BaseProfiler,
 )
 
@@ -61,6 +63,14 @@ def get_native_device(device_platform, device_id, /):
     else:
         device_platform = device_platform.replace("gpu", "cuda")
     return torch.device(device_platform + ":" + str(device_id))
+
+
+def as_ivy_dev(device, /):
+    return _as_ivy_dev_helper(device)
+
+
+def as_native_dev(device, /):
+    return _as_native_dev_helper(device)
 
 
 def clear_cached_mem_on_dev(device: Union[ivy.Device, torch.device], /) -> None:

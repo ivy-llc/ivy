@@ -8,6 +8,8 @@ import time
 import ivy
 from ivy.functional.ivy.device import (
     _shift_native_arrays_on_default_device,
+    _as_ivy_dev_helper,
+    _as_native_dev_helper,
     Profiler as BaseProfiler,
 )
 from paddle.device import core
@@ -53,6 +55,14 @@ def get_native_device(device_platform, device_id, /):
         native_dev.set_place(paddle.device.core.CUDAPlace(device_id))
 
     return native_dev
+
+
+def as_ivy_dev(device, /):
+    return _as_ivy_dev_helper(device)
+
+
+def as_native_dev(device, /):
+    return _as_native_dev_helper(device)
 
 
 def clear_mem_on_dev(device: core.Place, /):
