@@ -565,7 +565,7 @@ class BackendMethodTestCaseRunner(TestCaseRunner):
         self.method_name = method_name
         self.backend_handler = backend_handler
         self.backend_to_test = backend_to_test
-        self.grond_truth_backend = ground_truth_backend
+        self.ground_truth_backend = ground_truth_backend
         self.on_device = on_device
         self.test_values = test_values
         self.return_flat_np_arrays = return_flat_np_arrays
@@ -619,7 +619,7 @@ class BackendMethodTestCaseRunner(TestCaseRunner):
             self.class_name,
             self.method_name,
             self.backend_handler,
-            self.grond_truth_backend,
+            self.ground_truth_backend,
             self.on_device,
             self.traced_fn,
             init_input_dtypes,
@@ -640,6 +640,7 @@ class BackendMethodTestCaseRunner(TestCaseRunner):
                 target_results,
                 ground_truth_results,
                 self.backend_to_test,
+                self.ground_truth_backend,
                 self.tolerance_dict,
                 self.rtol,
                 self.atol,
