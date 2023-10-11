@@ -200,7 +200,7 @@ def cross_entropy(
     reduction="mean",
     label_smoothing=0.0,
 ):
-    loss = ivy.cross_entropy(target, input, epsilon=label_smoothing)
+    loss = ivy.cross_entropy(target, input, epsilon=label_smoothing, reduction="none")
 
     if ignore_index != -100:
         mask = ivy.not_equal(target, ignore_index)
