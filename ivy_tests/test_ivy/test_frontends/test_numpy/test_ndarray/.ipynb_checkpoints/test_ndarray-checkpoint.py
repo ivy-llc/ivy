@@ -199,7 +199,7 @@ def test_numpy___abs__(
 
 
 @handle_frontend_method(
-    class_tree= ivy.functional.frontends.numpy.array(),
+    class_tree=ivy.functional.frontends.numpy.array(),
     init_tree="numpy.ndarray",
     method_name="__add__()",
     dtype_and_x=helpers.dtype_and_values(

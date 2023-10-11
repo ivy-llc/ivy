@@ -6,12 +6,12 @@ import ivy
 def add(x1,
         x2,
         /,
-        out=None, 
+        out=None,
         *,
-        where=True, 
-        casting='same_kind', 
-        order='K', 
-        dtype=None, 
+        where=True,
+        casting='same_kind',
+        order='K',
+        dtype=None,
         subok=True[, signature, extobj]) =                 <ufunc'add'>:
     return ivy.add(x1,x2, axis,out=out)
 
