@@ -82,11 +82,14 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
         if not self.is_gt:
             method_kwargs = self._get_v_np(ins, init_args, init_kwargs, method_kwargs)
         else:
-            v_gt = MethodTestCaseSubRunner.v_np.cont_map(
-                lambda x, kc: self._ivy.asarray(x) if isinstance(x, np.ndarray) else x
-            )
-            method_kwargs = dict(**method_kwargs, v=v_gt)
-            MethodTestCaseSubRunner.v_np = None
+            if isinstance(ins, self._ivy.Module):
+                v_gt = MethodTestCaseSubRunner.v_np.cont_map(
+                    lambda x, kc: (
+                        self._ivy.asarray(x) if isinstance(x, np.ndarray) else x
+                    )
+                )
+                method_kwargs = dict(**method_kwargs, v=v_gt)
+                MethodTestCaseSubRunner.v_np = None
         if self.traced_fn is None and not self.is_gt:
             backend_fn = self.trace_if_required(
                 backend_fn,
