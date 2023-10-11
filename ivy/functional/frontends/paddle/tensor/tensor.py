@@ -912,13 +912,13 @@ class Tensor:
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
-                    "bool",
-                    "int32",
-                    "int64",
-                    "float32",
-                    "float64",
-                    "complex64",
-                    "complex128",
+                "bool",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+                "complex64",
+                "complex128",
             )
         },
         "paddle",
