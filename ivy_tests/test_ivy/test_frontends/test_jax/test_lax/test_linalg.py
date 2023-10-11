@@ -7,6 +7,7 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import assert_all_close
 from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
+from ivy.functional.frontends.jax.lax.linalg import qdwh
 
 
 # cholesky
@@ -117,6 +118,83 @@ def test_jax_eigh(
         backend=backend_fw,
         ground_truth_backend=frontend,
     )
+
+
+# qdwh
+@handle_frontend_test(
+    fn_tree="jax.lax.linalg.qdwh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    is_hermitian=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_qdwh(
+    *,
+    x,
+    is_hermitian,
+    max_iterations,
+    eps,
+    dynamic_shape,
+):
+    # Pad x if dynamic_shape is provided
+    if dynamic_shape:
+        m, n = dynamic_shape
+        x_pad = np.zeros((m, n), dtype=x.dtype)
+        x_pad[: x.shape[0], : x.shape[1]] = x
+        x = x_pad
+
+    # Compute the SVD of x using the reference implementation
+    u_ref, s_ref, vh_ref = np.linalg.svd(x, full_matrices=False)
+    v_ref = vh_ref.T.conj()
+
+    # Compute the SVD of x using the qdwh function
+    u, h, num_iters, is_converged = qdwh(
+        x,
+        is_hermitian=is_hermitian,
+        max_iterations=max_iterations,
+        eps=eps,
+        dynamic_shape=dynamic_shape,
+    )
+    u.conj().T
+
+    # Compute the weighted average of u and v using the reference implementation
+    alpha = 0.5
+    u_avg_ref = alpha * u_ref + (1 - alpha) * v_ref
+
+    # Compute the diagonal matrix h_ref = u_avg_ref^H * x
+    h_ref = u_avg_ref.conj().T @ x
+
+    # Compare u and u_ref
+    assert_all_close(u, u_ref, atol=1e-6)
+
+    # Compare h and h_ref
+    assert_all_close(h, h_ref, atol=1e-6)
+
+    # Perform additional checks based on the specified conditions
+    if is_hermitian:
+        # Check if h is Hermitian
+        assert_all_close(h, h.conj().T, atol=1e-6)
+
+    if eps:
+        # Check convergence based on epsilon
+        x_norm = np.linalg.norm(x)
+        y = np.linalg.norm(h) * (4 * eps) ** (1 / 3)
+        if x_norm < y:
+            assert is_converged
+
+    if max_iterations:
+        # Check if the maximum number of iterations is reached
+        if num_iters >= max_iterations:
+            assert not is_converged
 
 
 # qr
