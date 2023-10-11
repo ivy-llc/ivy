@@ -594,6 +594,7 @@ class BackendMethodTestCaseRunner(TestCaseRunner):
             method_input_dtypes,
             init_flags,
             method_flags,
+            is_gt=False,
         )
         ret = sub_runner_target.get_results(
             init_all_as_kwargs_np, method_all_as_kwargs_np
