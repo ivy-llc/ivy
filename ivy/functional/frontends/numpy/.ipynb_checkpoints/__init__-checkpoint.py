@@ -40,8 +40,6 @@ from .linalg.matrix_and_vector_products import (
 )
 
 
-
-
 # importing private functions for ufunc initialization #
 # -----------------------------------------------------#
 
@@ -83,8 +81,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numb
 )
 
 
-
-
 from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (  # noqa
     _exp,
     _exp2,
@@ -98,9 +94,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarit
     _ldexp,
     _frexp,
 )
-
-
-
 
 
 from ivy.functional.frontends.numpy.mathematical_functions.floating_point_routines import (  # noqa
@@ -313,6 +306,7 @@ def promote_types_of_numpy_inputs(
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
     return x1, x2
+
 
 numpy_casting_rules = {
     _bool: [
