@@ -50,6 +50,7 @@ def _generic_lstm(
     # onnx is    input, output, forget, cell.
     reform_permutation = [(0, 1), (3, 4), (1, 3)]
 
+    output = input
     for i in range(num_layers):
         if unidirectional:
             if weights_per_layer == 4:
@@ -88,7 +89,7 @@ def _generic_lstm(
             state_indices = 2 * i, 2 * i + 2
 
         output, (h_out, c_out) = _lstm_layer(
-            input,
+            output,
             (
                 _retrieve_state(h0, *state_indices, num_layers),
                 _retrieve_state(c0, *state_indices, num_layers),
