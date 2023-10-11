@@ -220,6 +220,10 @@ def get_dtypes(
                         kind=kind,
                     )
                 )
+            frontend_dtypes = _get_type_dict_helper(
+                test_globals.CURRENT_BACKEND, kind, True
+            )
+            valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
         else:
             raise RuntimeError(
                 "No function is set to prune, calling "
@@ -234,45 +238,6 @@ def get_dtypes(
             valid_dtypes = _get_type_dict_helper(
                 test_globals.CURRENT_BACKEND, kind, False
             )
-
-        # retrieval_fn = _get_type_dict
-        # valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND, kind))
-
-    # The function may be called from a frontend test or an Ivy API test
-    # In the case of an Ivy API test, the function should make sure it returns a valid
-    # dtypes for the backend and also for the ground truth backend, if it is called from
-    # a frontend test, we should also count for the frontend support data types
-    # In conclusion, the following operations will get the intersection of
-    # FN_DTYPES & BACKEND_DTYPES & FRONTEND_DTYPES & GROUND_TRUTH_DTYPES
-
-    # If being called from a frontend test
-    # if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
-    #     frontend_dtypes = _get_type_dict_helper(
-    #         test_globals.CURRENT_FRONTEND, kind, True
-    #     )
-    #     valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
-
-    # # If being called from an Ivy API test
-    # elif test_globals.CURRENT_BACKEND is not test_globals._Notsetval:
-    #     backend_dtypes = _get_type_dict_helper(
-    #         test_globals.CURRENT_BACKEND, kind, False
-    #     )
-    #     valid_dtypes = valid_dtypes.intersection(backend_dtypes)
-    # we don't need ground truth dtypes as :
-    # 1 - in case of frontend we now have to check all the dtypes that are supported
-    # by frontend framework irrespective of gt backend or target backend.
-    # 2 - in case of Ivy API we now just want to test all the dtypes supported by target
-    # backend irrespective of gt backend.
-
-    # Make sure we return dtypes that are compatible with ground truth backend
-    # ground_truth_is_set = (
-    #     test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
-    # )
-    # if ground_truth_is_set:
-    #     valid_dtypes = valid_dtypes.intersection(
-    #         retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND, kind=kind)
-    #     )
-
     valid_dtypes = list(valid_dtypes)
     if none:
         valid_dtypes.append(None)
