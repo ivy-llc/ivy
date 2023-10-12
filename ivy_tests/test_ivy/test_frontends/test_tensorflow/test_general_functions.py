@@ -2363,7 +2363,7 @@ def _sequence_mask_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=1,
-            min_value=1,
+            min_value=-max_val,
             max_value=max_val,
         )
     )
