@@ -567,3 +567,7 @@ class Tensor:
 
     def tolist(self):
         return paddle_frontend.Tensor(ivy.to_list(self._ivy_array))
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16",)}, "paddle")
+    def lstsq(self, name=None):
+        return paddle_frontend.Tensor(ivy.lstsq(self._ivy_array))
