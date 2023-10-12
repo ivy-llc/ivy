@@ -753,7 +753,6 @@ def sequence_insert(
     *,
     out: None = None,
 ) -> paddle.Tensor:
-
     if axis is None:
         axis = -1
 
@@ -763,7 +762,9 @@ def sequence_insert(
     indices = paddle.reshape(indices, [-1])
     values = paddle.reshape(values, [-1])
 
-    new_tensor = paddle.concat([data[:indices[0]], values, data[indices[-1:] + 1]], axis=axis)
+    new_tensor = paddle.concat(
+        [data[: indices[0]], values, data[indices[-1:] + 1]], axis=axis
+    )
 
     if out is not None:
         new_tensor = paddle.identity(new_tensor, name=out)
