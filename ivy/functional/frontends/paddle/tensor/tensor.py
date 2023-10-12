@@ -952,27 +952,6 @@ class Tensor:
 
     # Paddle source code implementation
     def fill_diagonal_tensor_(self, y, offset=0, dim1=0, dim2=1, name=None):
-        """
-        Args:
-            y (Tensor): `y` is the Tensor to be filled in `x`
-            dim1 (int, optional): First dimension with respect to which to fill diagonal. Default: 0.
-            dim2 (int, optional): Second dimension with respect to which to fill diagonal. Default: 1.
-            offset (int, optional): The offset to the main diagonal. Default: 0 (main diagonal).
-            name (str, optional): Name for the operation (optional, default is None)
-
-        Returns:
-            Tensor: Tensor with diagonal filled with `y`.
-
-        Returns type:
-            list: dtype is the same as `x` Tensor
-
-        Examples:
-                x = Tensor(np.random.rand(5, 5))  # Create a random Tensor 'x'
-                y = Tensor(np.random.rand(5))  # Create a random Tensor 'y'
-                x.fill_diagonal_tensor_(y)
-                print(x)  # Check the modified 'x' Tensor
-
-        """
         self = self.fill_diagonal_tensor_impl(
             self, y, offset=offset, dim1=dim1, dim2=dim2, inplace=True
         )
