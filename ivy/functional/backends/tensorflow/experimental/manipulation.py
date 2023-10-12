@@ -431,3 +431,30 @@ def trim_zeros(a: tf.Tensor, /, *, trim: Optional[str] = "bf") -> tf.Tensor:
         last = tf.minimum(last, tf.cast(tf.shape(a)[0], tf.int64))
 
     return a[first:last]
+
+
+def sequence_insert(
+    arr: tf.Tensor,
+    indices: Union[tf.Tensor, int],
+    values: tf.Tensor,
+    axis: Optional[int] = None,
+    /,
+    *,
+    out: None = None,
+) -> tf.Tensor:
+
+    if axis is None:
+        axis = -1
+
+    indices = tf.convert_to_tensor(indices, dtype=tf.int64)
+    values = tf.convert_to_tensor(values, dtype=arr.dtype)
+
+    indices = tf.reshape(indices, [-1])
+    values = tf.reshape(values, [-1])
+
+    new_tensor = tf.concat([arr[:indices[0]], values, arr[indices[-1:] + 1]], axis=axis)
+
+    if out is not None:
+        new_tensor = tf.identity(new_tensor, name=out)
+
+    return new_tensor
