@@ -1,4 +1,5 @@
-"""Tensorflow device functions.
+"""
+Tensorflow device functions.
 
 Collection of TensorFlow general functions, wrapped to fit Ivy syntax
 and signature.

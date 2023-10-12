@@ -53,9 +53,10 @@ half = float16
 
 @handle_exceptions
 def check_tensorflow_casting(x1, x2):
-    """Check whether the two arguments provided in the function have the same
-    dtype, unless one of them is an array_like or scalar, where it gets casted
-    to the other input's dtype.
+    """
+    Check whether the two arguments provided in the function have the same dtype, unless
+    one of them is an array_like or scalar, where it gets casted to the other input's
+    dtype.
 
     Parameters
     ----------

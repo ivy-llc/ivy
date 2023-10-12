@@ -372,8 +372,8 @@ def group_norm(
     data_format: Optional[str] = "NSC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply group normalization to the input array and returns the normalized
-    input.
+    """
+    Apply group normalization to the input array and returns the normalized input.
 
     Parameters
     ----------

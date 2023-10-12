@@ -19,9 +19,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.hann_window. This method
-        simply wraps the function, and so the docstring for ivy.hann_window
-        also applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.hann_window. This method simply wraps
+        the function, and so the docstring for ivy.hann_window also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -70,9 +71,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.hann_window. This
-        method simply wraps the function, and so the docstring for
-        ivy.hann_window also applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.hann_window. This method simply
+        wraps the function, and so the docstring for ivy.hann_window also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -117,9 +119,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.kaiser_window. This
-        method simply wraps the function, and so the docstring for
-        ivy.kaiser_window also applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.kaiser_window. This method simply
+        wraps the function, and so the docstring for ivy.kaiser_window also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -174,9 +177,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.kaiser_window. This
-        method simply wraps the function, and so the docstring for
-        ivy.kaiser_window also applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.kaiser_window. This method simply
+        wraps the function, and so the docstring for ivy.kaiser_window also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -231,10 +235,11 @@ class _ContainerWithCreationExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of
-        ivy.kaiser_bessel_derived_window. This method simply wraps the
-        function, and so the docstring for ivy.kaiser_bessel_derived_window
-        also applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.kaiser_bessel_derived_window. This
+        method simply wraps the function, and so the docstring for
+        ivy.kaiser_bessel_derived_window also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -289,10 +294,11 @@ class _ContainerWithCreationExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of
-        ivy.kaiser_bessel_derived_window. This method simply wraps the
-        function, and so the docstring for ivy.kaiser_bessel_derived_window
-        also applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.kaiser_bessel_derived_window. This
+        method simply wraps the function, and so the docstring for
+        ivy.kaiser_bessel_derived_window also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -349,9 +355,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.hamming_window. This
-        method simply wraps the function, and so the docstring for
-        ivy.hamming_window also applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.hamming_window. This method simply
+        wraps the function, and so the docstring for ivy.hamming_window also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -410,9 +417,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.hamming_window. This
-        method simply wraps the function, and so the docstring for
-        ivy.hamming_window also applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.hamming_window. This method simply
+        wraps the function, and so the docstring for ivy.hamming_window also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -460,9 +468,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.vorbis_window. This
-        method simply wraps the function, and so the docstring for
-        ivy.vorbis_window also applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.vorbis_window. This method simply
+        wraps the function, and so the docstring for ivy.vorbis_window also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -511,9 +520,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.vorbis_window. This
-        method simply wraps the function, and so the docstring for
-        ivy.vorbis_window also applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.vorbis_window. This method simply
+        wraps the function, and so the docstring for ivy.vorbis_window also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -614,9 +624,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.eye_like. This method
-        simply wraps the function, and so the docstring for ivy.eye_like also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.eye_like. This method simply wraps
+        the function, and so the docstring for ivy.eye_like also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -690,9 +701,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.eye_like. This method
-        simply wraps the function, and so the docstring for ivy.eye_like also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.eye_like. This method simply wraps
+        the function, and so the docstring for ivy.eye_like also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -764,10 +776,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""ivy.Container instance method variant of ivy.unsorted_segment_min.
-        This method simply wraps the function, and so the docstring for
-        ivy.unsorted_segment_min also applies to this method with minimal
-        changes.
+        r"""
+        ivy.Container instance method variant of ivy.unsorted_segment_min. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_min
+        also applies to this method with minimal changes.
 
         Note
         ----
@@ -819,10 +831,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         segment_ids: ivy.Container,
         num_segments: Union[int, ivy.Container],
     ):
-        r"""ivy.Container instance method variant of ivy.unsorted_segment_min.
-        This method simply wraps the function, and so the docstring for
-        ivy.unsorted_segment_min also applies to this method with minimal
-        changes.
+        r"""
+        ivy.Container instance method variant of ivy.unsorted_segment_min. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_min
+        also applies to this method with minimal changes.
 
         Note
         ----
@@ -864,10 +876,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""ivy.Container instance method variant of ivy.unsorted_segment_sum.
-        This method simply wraps the function, and so the docstring for
-        ivy.unsorted_segment_sum also applies to this method with minimal
-        changes.
+        r"""
+        ivy.Container instance method variant of ivy.unsorted_segment_sum. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_sum
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -914,10 +926,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         segment_ids: ivy.Container,
         num_segments: Union[int, ivy.Container],
     ):
-        r"""ivy.Container instance method variant of ivy.unsorted_segment_sum.
-        This method simply wraps the function, and so the docstring for
-        ivy.unsorted_segment_sum also applies to this method with minimal
-        changes.
+        r"""
+        ivy.Container instance method variant of ivy.unsorted_segment_sum. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_sum
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -955,9 +967,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.blackman_window. This
-        method simply wraps the function, and so the docstring for
-        ivy.blackman_window also applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.blackman_window. This method simply
+        wraps the function, and so the docstring for ivy.blackman_window also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1006,9 +1019,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.blackman_window. This
-        method simply wraps the function, and so the docstring for
-        ivy.blackman_window also applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.blackman_window. This method simply
+        wraps the function, and so the docstring for ivy.blackman_window also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1101,9 +1115,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""ivy.Container instance method variant of ivy.mel_weight_matrix. This
-        method simply wraps the function, and so the docstring for
-        ivy.mel_weight_matrix also applies to this method with minimal changes.
+        r"""
+        ivy.Container instance method variant of ivy.mel_weight_matrix. This method
+        simply wraps the function, and so the docstring for ivy.mel_weight_matrix also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1155,9 +1170,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         lower_edge_hertz: Optional[float] = 0.0,
         upper_edge_hertz: Optional[float] = 3000.0,
     ):
-        r"""ivy.Container instance method variant of ivy.mel_weight_matrix. This
-        method simply wraps the function, and so the docstring for
-        ivy.mel_weight_matrix also applies to this method with minimal changes.
+        r"""
+        ivy.Container instance method variant of ivy.mel_weight_matrix. This method
+        simply wraps the function, and so the docstring for ivy.mel_weight_matrix also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

@@ -39,8 +39,8 @@ def reduce(
     axes: Union[int, Sequence[int]] = 0,
     keepdims: bool = False,
 ) -> ivy.Array:
-    """Reduces the input array's dimensions by applying a function along one or
-    more axes.
+    """
+    Reduces the input array's dimensions by applying a function along one or more axes.
 
     Parameters
     ----------
