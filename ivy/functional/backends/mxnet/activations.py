@@ -1,4 +1,5 @@
-"""MXNet activation functions.
+"""
+MXNet activation functions.
 
 Collection of MXNet activation functions, wrapped to fit Ivy syntax and
 signature.

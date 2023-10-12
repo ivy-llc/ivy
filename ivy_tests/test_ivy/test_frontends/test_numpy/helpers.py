@@ -27,8 +27,8 @@ def _array_and_axes_permute_helper(
     max_dim_size,
     allow_none=False,
 ):
-    """Return array, its dtype and either the random permutation of its axes or
-    None.
+    """
+    Return array, its dtype and either the random permutation of its axes or None.
 
     Parameters
     ----------
@@ -275,8 +275,9 @@ def dtypes_values_casting_dtype(
 # ufunc num_positional_args helper
 @st.composite
 def get_num_positional_args_ufunc(draw, *, fn_name=None):
-    """Draws data randomly from numbers between nin and nargs where nin and
-    nargs are properties of the given ufunc.
+    """
+    Draws data randomly from numbers between nin and nargs where nin and nargs are
+    properties of the given ufunc.
 
     Parameters
     ----------

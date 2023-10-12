@@ -19,9 +19,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         ] = None,
         tol: Optional[float] = None,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
-        """ivy.Array instance method variant of ivy.eigh_tridiagonal. This
-        method simply wraps the function, and so the docstring for
-        ivy.eigh_tridiagonal also applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.eigh_tridiagonal. This method simply
+        wraps the function, and so the docstring for ivy.eigh_tridiagonal also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -88,9 +89,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         num_cols: int = -1,
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.diagflat. This method
-        simply wraps the function, and so the docstring for ivy.diagflat also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.diagflat. This method simply wraps the
+        function, and so the docstring for ivy.diagflat also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -117,9 +119,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.kron. This method simply
-        wraps the function, and so the docstring for ivy.kron also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.kron. This method simply wraps the
+        function, and so the docstring for ivy.kron also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -131,9 +134,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.kron(self._data, b, out=out)
 
     def matrix_exp(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.kron. This method simply
-        wraps the function, and so the docstring for ivy.matrix_exp also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.kron. This method simply wraps the
+        function, and so the docstring for ivy.matrix_exp also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -153,9 +157,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         self: ivy.Array,
         /,
     ) -> Tuple[ivy.Array, ...]:
-        """ivy.Array instance method variant of ivy.eig. This method simply
-        wraps the function, and so the docstring for ivy.eig also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.eig. This method simply wraps the
+        function, and so the docstring for ivy.eig also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -173,9 +178,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         self: ivy.Array,
         /,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.eigvals. This method simply
-        wraps the function, and so the docstring for ivy.eigvals also applies
-        to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.eigvals. This method simply wraps the
+        function, and so the docstring for ivy.eigvals also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -191,9 +197,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.adjoint. This method simply
-        wraps the function, and so the docstring for ivy.adjoint also applies
-        to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.adjoint. This method simply wraps the
+        function, and so the docstring for ivy.adjoint also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -216,9 +223,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.multi_dot. This method
-        simply wraps the function, and so the docstring for ivy.multi_dot also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.multi_dot. This method simply wraps the
+        function, and so the docstring for ivy.multi_dot also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -234,9 +242,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
     def cond(
         self: ivy.Array, /, *, p: Optional[Union[int, float, str]] = None
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.cond. This method simply
-        wraps the function, and so the docstring for ivy.cond also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.cond. This method simply wraps the
+        function, and so the docstring for ivy.cond also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -259,9 +268,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.mode_dot. This method
-        simply wraps the function, and so the docstring for ivy.mode_dot also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.mode_dot. This method simply wraps the
+        function, and so the docstring for ivy.mode_dot also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -300,9 +310,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        r"""ivy.Array instance method variant of ivy.multi_mode_dot. This method
-        simply wraps the function, and so the docstring for ivy.multi_mode_dot
-        also applies to this method with minimal changes.
+        r"""
+        ivy.Array instance method variant of ivy.multi_mode_dot. This method simply
+        wraps the function, and so the docstring for ivy.multi_mode_dot also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -346,9 +357,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         /,
         u_based_decision: Optional[bool] = True,
     ) -> Tuple[ivy.Array, ivy.Array]:
-        """ivy.Array instance method variant of ivy.svd_flip. This method
-        simply wraps the function, and so the docstring for ivy.svd_flip also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.svd_flip. This method simply wraps the
+        function, and so the docstring for ivy.svd_flip also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -376,10 +388,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         *,
         nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
     ) -> Tuple[ivy.Array, ivy.Array]:
-        """ivy.Array instance method variant of ivy.make_svd_non_negative. This
-        method simply wraps the function, and so the docstring for
-        ivy.make_svd_non_negative also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of ivy.make_svd_non_negative. This method
+        simply wraps the function, and so the docstring for ivy.make_svd_non_negative
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -406,9 +418,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
         verbose: Optional[bool] = False,
     ) -> ivy.TTTensor:
-        """ivy.Array instance method variant of ivy.tensor_train. This method
-        simply wraps the function, and so the docstring for ivy.tensor_train
-        also applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.tensor_train. This method simply wraps
+        the function, and so the docstring for ivy.tensor_train also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -435,10 +448,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         compute_uv: bool = True,
         n_eigenvecs: Optional[int] = None,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array, ivy.Array]]:
-        """ivy.Array instance method variant of ivy.make_svd_non_negative. This
-        method simply wraps the function, and so the docstring for
-        ivy.make_svd_non_negative also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of ivy.make_svd_non_negative. This method
+        simply wraps the function, and so the docstring for ivy.make_svd_non_negative
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -474,9 +487,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         svd_mask_repeats: Optional[int] = 5,
     ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
-        """ivy.Array instance method variant of ivy.initialize_tucker. This
-        method simply wraps the function, and so the docstring for
-        ivy.initialize_tucker also applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.initialize_tucker. This method simply
+        wraps the function, and so the docstring for ivy.initialize_tucker also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -539,9 +553,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         verbose: Optional[bool] = False,
         return_errors: Optional[bool] = False,
     ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
-        """ivy.Array instance method variant of ivy.partial_tucker. This method
-        simply wraps the function, and so the docstring for ivy.partial_tucker
-        also applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.partial_tucker. This method simply
+        wraps the function, and so the docstring for ivy.partial_tucker also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -620,9 +635,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         verbose: Optional[bool] = False,
         return_errors: Optional[bool] = False,
     ):
-        """ivy.Array instance method variant of ivy.tucker. This method simply
-        wraps the function, and so the docstring for ivy.tucker also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.tucker. This method simply wraps the
+        function, and so the docstring for ivy.tucker also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -697,10 +713,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Ivy.Array instance method variant of ivy.tt_matrix_to_tensor. This
-        method simply wraps the function, and so the docstring for
-        ivy.tt_matrix_to_tensor also applies to this method with minimal
-        changes.
+        """
+        Ivy.Array instance method variant of ivy.tt_matrix_to_tensor. This method simply
+        wraps the function, and so the docstring for ivy.tt_matrix_to_tensor also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -750,9 +766,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ):
-        """Compute the dot product between two arrays `a` and `b` using the
-        current backend's implementation. The dot product is defined as the sum
-        of the element- wise product of the input arrays.
+        """
+        Compute the dot product between two arrays `a` and `b` using the current
+        backend's implementation. The dot product is defined as the sum of the element-
+        wise product of the input arrays.
 
         Parameters
         ----------
@@ -803,10 +820,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.general_inner_product. This
-        method simply wraps the function, and so the docstring for
-        ivy.general_inner_product also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of ivy.general_inner_product. This method
+        simply wraps the function, and so the docstring for ivy.general_inner_product
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -858,10 +875,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.higher_order_moment. This
-        method simply wraps the function, and so the docstring for
-        ivy.higher_order_moment also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of ivy.higher_order_moment. This method simply
+        wraps the function, and so the docstring for ivy.higher_order_moment also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -899,9 +916,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Ivy Array instance method variant of ivy.batched_outer. This method
-        simply wraps the function, and so the docstring for ivy.batched_outer
-        also applies to this method with minimal changes.
+        """
+        Ivy Array instance method variant of ivy.batched_outer. This method simply wraps
+        the function, and so the docstring for ivy.batched_outer also applies to this
+        method with minimal changes.
 
         Parameters
         ----------

@@ -231,15 +231,3 @@ def interpolate(
     out: Optional[mx.nd.NDArray] = None,
 ):
     raise IvyNotImplementedException()
-
-
-def rfft(
-    x: mx.nd.NDArray,
-    /,
-    *,
-    n: Optional[int] = None,
-    axis: int = -1,
-    norm: Literal["backward", "ortho", "forward"] = "backward",
-    out: Optional[mx.nd.NDArray] = None,
-) -> mx.nd.NDArray:
-    raise IvyNotImplementedException()

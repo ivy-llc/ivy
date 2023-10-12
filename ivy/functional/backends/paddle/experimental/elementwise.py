@@ -755,7 +755,8 @@ def _EvaluatePolynomial(x, coefficients):
 
 
 def _is_scalar(x):
-    """Determines if the given tensor is a scalar.
+    """
+    Determines if the given tensor is a scalar.
 
     Args:
     - x (paddle.Tensor): Input tensor.
