@@ -190,7 +190,7 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional, batch_sizes=None):
     if not bidirectional:
         result, c = _lstm_cell(x, *hidden, *weights, *biases)
         if batch_sizes is None:
-            h = result[-1]
+            h = ivy.expand_dims(result[-1], axis=0)
         else:
             h = _extract_h(result, batch_sizes)
             result = _pack_padded_sequence(result, batch_sizes)[0]
@@ -218,7 +218,9 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional, batch_sizes=None):
         result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
         c = ivy.concat([c_fw, c_bw], axis=0)
         if batch_sizes is None:
-            h_fw, h_bw = result_fw[-1], result_bw[-1]
+            h_fw, h_bw = ivy.expand_dims(result_fw[-1], axis=0), ivy.expand_dims(
+                result_bw[-1], axis=0
+            )
             h = ivy.concat([h_fw, h_bw], axis=0)
         else:
             h_fw = _extract_h(result_fw, batch_sizes)
