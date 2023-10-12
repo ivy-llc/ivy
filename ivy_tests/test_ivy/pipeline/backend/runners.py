@@ -49,192 +49,6 @@ class BackendTestCaseRunner(TestCaseRunner):
             assertion_checker.check_assertions()
 
 
-class BackendFunctionTestCaseRunner(BackendTestCaseRunner):
-    def __init__(
-        self,
-        backend_handler,
-        fn_name,
-        backend_to_test,
-        ground_truth_backend,
-        on_device,
-        tolerance_dict,
-        test_values,
-        rtol,
-        atol,
-    ):
-        self.fn_name = fn_name
-        super().__init__(
-            backend_handler,
-            backend_to_test,
-            ground_truth_backend,
-            on_device,
-            tolerance_dict,
-            rtol,
-            atol,
-            test_values,
-        )
-
-    def _run_target(self, input_dtypes, test_arguments, test_flags):
-        sub_runner_target = FunctionTestCaseSubRunner(
-            self.fn_name,
-            self.backend_handler,
-            self.backend_to_test,
-            self.on_device,
-            input_dtypes,
-            test_flags,
-        )
-        results = sub_runner_target.get_results(test_arguments)
-        sub_runner_target.exit()
-        return results
-
-    def _run_ground_truth(self, input_dtypes, test_arguments, test_flags):
-        sub_runner_target = FunctionTestCaseSubRunner(
-            self.fn_name,
-            self.backend_handler,
-            self.grond_truth_backend,
-            self.on_device,
-            input_dtypes,
-            test_flags,
-        )
-        results = sub_runner_target.get_results(test_arguments)
-        sub_runner_target.exit()
-        return results
-
-    def run(self, input_dtypes, test_arguments, test_flags):
-        target_results: TestCaseSubRunnerResult = self._run_target(
-            input_dtypes, test_arguments, test_flags
-        )
-        ground_truth_results: TestCaseSubRunnerResult = self._run_ground_truth(
-            input_dtypes, test_arguments, test_flags
-        )
-
-        self._check_assertions(target_results, ground_truth_results)
-
-
-class BackendMethodTestCaseRunner(BackendTestCaseRunner):
-    def __init__(
-        self,
-        *,
-        class_name,
-        method_name,
-        rtol_,
-        atol_,
-        tolerance_dict,
-        test_values,
-        test_gradients,
-        xs_grad_idxs,
-        ret_grad_idxs,
-        backend_to_test,
-        ground_truth_backend,
-        on_device,
-        return_flat_np_arrays,
-        backend_handler,
-        traced_fn,
-    ):
-        self.class_name = class_name
-        self.method_name = method_name
-        self.return_flat_np_arrays = return_flat_np_arrays
-        self.test_gradients = test_gradients
-        self.xs_grad_idxs = xs_grad_idxs
-        self.ret_grad_idxs = ret_grad_idxs
-        self.traced_fn = traced_fn
-        super().__init__(
-            backend_handler,
-            backend_to_test,
-            ground_truth_backend,
-            on_device,
-            tolerance_dict,
-            rtol_,
-            atol_,
-            test_values,
-        )
-
-    def _run_target(
-        self,
-        init_input_dtypes,
-        method_input_dtypes,
-        init_flags,
-        method_flags,
-        init_all_as_kwargs_np,
-        method_all_as_kwargs_np,
-    ):
-        sub_runner_target = MethodTestCaseSubRunner(
-            self.class_name,
-            self.method_name,
-            self.backend_handler,
-            self.backend_to_test,
-            self.on_device,
-            self.traced_fn,
-            init_input_dtypes,
-            method_input_dtypes,
-            init_flags,
-            method_flags,
-            is_gt=False,
-        )
-        ret = sub_runner_target.get_results(
-            init_all_as_kwargs_np, method_all_as_kwargs_np
-        )
-        sub_runner_target.exit()
-        return ret
-
-    def _run_ground_truth(
-        self,
-        init_input_dtypes,
-        method_input_dtypes,
-        init_flags,
-        method_flags,
-        init_all_as_kwargs_np,
-        method_all_as_kwargs_np,
-    ):
-        # no need to exit since we're not setting any backend for this
-        sub_runner_target = MethodTestCaseSubRunner(
-            self.class_name,
-            self.method_name,
-            self.backend_handler,
-            self.ground_truth_backend,
-            self.on_device,
-            self.traced_fn,
-            init_input_dtypes,
-            method_input_dtypes,
-            init_flags,
-            method_flags,
-            is_gt=True,
-        )
-        ret = sub_runner_target.get_results(
-            init_all_as_kwargs_np, method_all_as_kwargs_np
-        )
-        sub_runner_target.exit()
-        return ret
-
-    def run(
-        self,
-        init_input_dtypes,
-        method_input_dtypes,
-        init_flags,
-        method_flags,
-        init_all_as_kwargs_np,
-        method_all_as_kwargs_np,
-    ):
-        # getting results from target and ground truth
-        target_results: TestCaseSubRunnerResult = self._run_target(
-            init_input_dtypes,
-            method_input_dtypes,
-            init_flags,
-            method_flags,
-            init_all_as_kwargs_np,
-            method_all_as_kwargs_np,
-        )
-        ground_truth_results: TestCaseSubRunnerResult = self._run_ground_truth(
-            init_input_dtypes,
-            method_input_dtypes,
-            init_flags,
-            method_flags,
-            init_all_as_kwargs_np,
-            method_all_as_kwargs_np,
-        )
-        self._check_assertions(target_results, ground_truth_results)
-
-
 class FunctionTestCaseSubRunner(TestCaseSubRunner):
     def __init__(
         self, fn_name, backend_handler, backend, device, input_dtypes, test_flags
@@ -762,3 +576,189 @@ class MethodTestCaseSubRunner(TestCaseSubRunner):
         )
 
         return self._call_function(init_args, init_kwargs, method_args, method_kwargs)
+
+
+class BackendFunctionTestCaseRunner(BackendTestCaseRunner):
+    def __init__(
+        self,
+        backend_handler,
+        fn_name,
+        backend_to_test,
+        ground_truth_backend,
+        on_device,
+        tolerance_dict,
+        test_values,
+        rtol,
+        atol,
+    ):
+        self.fn_name = fn_name
+        super().__init__(
+            backend_handler,
+            backend_to_test,
+            ground_truth_backend,
+            on_device,
+            tolerance_dict,
+            rtol,
+            atol,
+            test_values,
+        )
+
+    def _run_target(self, input_dtypes, test_arguments, test_flags):
+        sub_runner_target = FunctionTestCaseSubRunner(
+            self.fn_name,
+            self.backend_handler,
+            self.backend_to_test,
+            self.on_device,
+            input_dtypes,
+            test_flags,
+        )
+        results = sub_runner_target.get_results(test_arguments)
+        sub_runner_target.exit()
+        return results
+
+    def _run_ground_truth(self, input_dtypes, test_arguments, test_flags):
+        sub_runner_target = FunctionTestCaseSubRunner(
+            self.fn_name,
+            self.backend_handler,
+            self.grond_truth_backend,
+            self.on_device,
+            input_dtypes,
+            test_flags,
+        )
+        results = sub_runner_target.get_results(test_arguments)
+        sub_runner_target.exit()
+        return results
+
+    def run(self, input_dtypes, test_arguments, test_flags):
+        target_results: TestCaseSubRunnerResult = self._run_target(
+            input_dtypes, test_arguments, test_flags
+        )
+        ground_truth_results: TestCaseSubRunnerResult = self._run_ground_truth(
+            input_dtypes, test_arguments, test_flags
+        )
+
+        self._check_assertions(target_results, ground_truth_results)
+
+
+class BackendMethodTestCaseRunner(BackendTestCaseRunner):
+    def __init__(
+        self,
+        *,
+        class_name,
+        method_name,
+        rtol_,
+        atol_,
+        tolerance_dict,
+        test_values,
+        test_gradients,
+        xs_grad_idxs,
+        ret_grad_idxs,
+        backend_to_test,
+        ground_truth_backend,
+        on_device,
+        return_flat_np_arrays,
+        backend_handler,
+        traced_fn,
+    ):
+        self.class_name = class_name
+        self.method_name = method_name
+        self.return_flat_np_arrays = return_flat_np_arrays
+        self.test_gradients = test_gradients
+        self.xs_grad_idxs = xs_grad_idxs
+        self.ret_grad_idxs = ret_grad_idxs
+        self.traced_fn = traced_fn
+        super().__init__(
+            backend_handler,
+            backend_to_test,
+            ground_truth_backend,
+            on_device,
+            tolerance_dict,
+            rtol_,
+            atol_,
+            test_values,
+        )
+
+    def _run_target(
+        self,
+        init_input_dtypes,
+        method_input_dtypes,
+        init_flags,
+        method_flags,
+        init_all_as_kwargs_np,
+        method_all_as_kwargs_np,
+    ):
+        sub_runner_target = MethodTestCaseSubRunner(
+            self.class_name,
+            self.method_name,
+            self.backend_handler,
+            self.backend_to_test,
+            self.on_device,
+            self.traced_fn,
+            init_input_dtypes,
+            method_input_dtypes,
+            init_flags,
+            method_flags,
+            is_gt=False,
+        )
+        ret = sub_runner_target.get_results(
+            init_all_as_kwargs_np, method_all_as_kwargs_np
+        )
+        sub_runner_target.exit()
+        return ret
+
+    def _run_ground_truth(
+        self,
+        init_input_dtypes,
+        method_input_dtypes,
+        init_flags,
+        method_flags,
+        init_all_as_kwargs_np,
+        method_all_as_kwargs_np,
+    ):
+        # no need to exit since we're not setting any backend for this
+        sub_runner_target = MethodTestCaseSubRunner(
+            self.class_name,
+            self.method_name,
+            self.backend_handler,
+            self.ground_truth_backend,
+            self.on_device,
+            self.traced_fn,
+            init_input_dtypes,
+            method_input_dtypes,
+            init_flags,
+            method_flags,
+            is_gt=True,
+        )
+        ret = sub_runner_target.get_results(
+            init_all_as_kwargs_np, method_all_as_kwargs_np
+        )
+        sub_runner_target.exit()
+        return ret
+
+    def run(
+        self,
+        init_input_dtypes,
+        method_input_dtypes,
+        init_flags,
+        method_flags,
+        init_all_as_kwargs_np,
+        method_all_as_kwargs_np,
+    ):
+        # getting results from target and ground truth
+        target_results: TestCaseSubRunnerResult = self._run_target(
+            init_input_dtypes,
+            method_input_dtypes,
+            init_flags,
+            method_flags,
+            init_all_as_kwargs_np,
+            method_all_as_kwargs_np,
+        )
+        ground_truth_results: TestCaseSubRunnerResult = self._run_ground_truth(
+            init_input_dtypes,
+            method_input_dtypes,
+            init_flags,
+            method_flags,
+            init_all_as_kwargs_np,
+            method_all_as_kwargs_np,
+        )
+        self._check_assertions(target_results, ground_truth_results)
