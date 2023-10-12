@@ -422,9 +422,8 @@ def _as_ivy_dev_helper(device, /):
 
 @handle_exceptions
 def as_ivy_dev(device: Union[ivy.NativeDevice, str], /) -> ivy.Device:
-    """
-    Convert device to string representation.
-    
+    """Convert device to string representation.
+
     Parameters
     ----------
     device
