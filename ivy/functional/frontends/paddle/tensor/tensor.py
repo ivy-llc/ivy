@@ -7,6 +7,9 @@ from ivy.func_wrapper import (
 )
 from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
 
+from typing import (
+    Union,
+)
 
 class Tensor:
     def __init__(self, array, dtype=None, place="cpu", stop_gradient=True):
@@ -909,7 +912,74 @@ class Tensor:
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
     
-    
-def fill_diagonal_tensor_(x, y, offset=0, dim1=0, dim2=1, name=None):
-    return paddle_frontend.tensor.manipulation.fill_diagonal_tensor_(x, y, offset=0, dim1=0, dim2=1, name=None)
+    def _fill_diagonal_tensor_impl(self, x, y, offset=0, dim1=0, dim2=1, inplace=False):
+        inshape = x.shape
+        print(inshape)
+        assert dim1 < len(inshape) and dim1 >= -len(inshape), (
+            'dim1 should be between [-rank, rank) in fill_diagonal_tensor_')
+        assert dim2 < len(inshape) and dim2 >= -len(inshape), (
+            'dim2 should be between [-rank, rank) in fill_diagonal_tensor_')
+        assert len(inshape) >= 2, (
+            'Tensor dims should be >= 2 in fill_diagonal_tensor_')
+        dim1 %= len(inshape)
+        dim2 %= len(inshape)
+
+        predshape = []
+        for i in range(len(inshape)):
+            if i != dim1 and i != dim2:
+                predshape.append(inshape[i])
+        diaglen = min(
+            min(inshape[dim1], inshape[dim1] + offset),
+            min(inshape[dim2], inshape[dim2] - offset))
+        predshape.append(diaglen)
+        assert tuple(predshape) == tuple(y.shape), (
+            "the y shape should be {}".format(predshape))
+        if len(y.shape) == 1:
+            y = y.reshape([1, -1])
+
+        diag_start = max(0, offset)
+        diag_end = diag_start + diaglen
+
+        if inplace:
+            # Modify the input tensor 'x' directly
+            x[:diaglen, diag_start:diag_end] = y
+            return x
+        else:
+            # Create a copy of 'x' and apply the modification to the copy
+            result = x.clone()
+            result[:diaglen, diag_start:diag_end] = y
+            return result
+
+    #Paddle source code implementation 
+    def fill_diagonal_tensor_(self, y, offset=0, dim1=0, dim2=1, name=None):
+        """
+        **Notes**:
+            **This API is ONLY available in Dygraph mode**
+
+        This function fills the source Tensor `y` into the `x` Tensor's diagonal inplace.
+
+        Args:
+            y (Tensor): `y` is the Tensor to be filled in `x`
+            dim1 (int, optional): First dimension with respect to which to fill diagonal. Default: 0.
+            dim2 (int, optional): Second dimension with respect to which to fill diagonal. Default: 1.
+            offset (int, optional): The offset to the main diagonal. Default: 0 (main diagonal).
+            name (str, optional): Name for the operation (optional, default is None)
+
+        Returns:
+            Tensor: Tensor with diagonal filled with `y`.
+
+        Returns type:
+            list: dtype is the same as `x` Tensor
+
+        Examples:
+            .. code-block:: python
+            
+                x = Tensor(np.random.rand(5, 5))  # Create a random Tensor 'x'
+                y = Tensor(np.random.rand(5))  # Create a random Tensor 'y'
+                x.fill_diagonal_tensor_(y)
+                print(x)  # Check the modified 'x' Tensor
+
+        """
+        self._ivy_array = self.fill_diagonal_tensor_impl(self._ivy_array, y, offset=offset, dim1=dim1, dim2=dim2, inplace=True)
+        return self
         
