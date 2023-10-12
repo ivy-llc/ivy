@@ -291,14 +291,11 @@ def test_paddle_greater_than(
     )
 
 
+# is_empty
 @handle_frontend_test(
     fn_tree="paddle.is_empty",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        shared_dtype=True,
-        safety_factor_scale="log",
-        small_abs_safety_factor=32,
     ),
 )
 def test_paddle_is_empty(

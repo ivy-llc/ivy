@@ -5,6 +5,7 @@ from ivy.func_wrapper import (
     with_unsupported_dtypes,
     handle_out_argument,
     with_supported_dtypes,
+    with_supported_device_and_dtypes,
 )
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -153,12 +154,21 @@ def greater_than(x, y, /, *, name=None):
     return ivy.greater(x, y)
 
 
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("uint8", "int8", "int16", "complex64", "complex128")}, "paddle"
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("int32", "int64", "float32", "float64"),
+            "gpu": ("int32", "int64", "float32", "float64"),
+        }
+    },
+    "paddle",
 )
 @to_ivy_arrays_and_back
 def is_empty(x, name=None):
-    return ivy.is_empty(x)
+    # handle scalar values
+    if len(x.shape) == 0:
+        return False
+    return any(dim == 0 for dim in x.shape)
 
 
 @to_ivy_arrays_and_back
