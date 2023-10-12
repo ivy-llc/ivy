@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_dtypes,
     with_supported_device_and_dtypes,
+    with_unsupported_device_and_dtypes,
 )
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.utils.einsum_parser import legalise_einsum_expr
@@ -22,8 +23,20 @@ from . import backend_version
 # -------------------#
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "bfloat16",
+                "complex64",
+                "complex128",
+            )
+        }
+    },
     backend_version,
 )
 def min(
