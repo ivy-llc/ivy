@@ -81,7 +81,7 @@ def ifftshift(x, axes=None):
 
     # If axes is None, shift all axes
     if axes is None:
-        axes = list(range(len(shape))
+        axes = list(range(len(shape)))
 
     # Initialize a list to store the shift values
     shift_values = []
