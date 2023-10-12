@@ -1396,3 +1396,68 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         changes.
         """
         return ivy.put_along_axis(self._data, indices, values, axis, mode=mode, out=out)
+
+
+def sequence_insert(
+    arr: ivy.Array,
+    indices: Union[ivy.Array, int],
+    values: ivy.Array,
+    axis: Optional[int] = None,
+    /,
+    *,
+    out: None = None,
+) -> ivy.Array:
+
+    """Inserts values into a sequence at the specified indices.
+
+    Parameters
+    ----------
+    arr
+        The sequence to insert into.
+    indices
+        The indices to insert at.
+    values
+        The values to insert.
+    axis
+        The axis along which to insert. If None, the last axis is used.
+    out
+        The output sequence.
+
+    Returns
+    -------
+    ret
+        The returned array has the same shape as `arr`, but with the values inserted
+        at the specified indices.
+
+    Examples
+    --------
+    >>> arr = ivy.array([1, 2, 3, 4])
+    >>> indices = ivy.array([1, 3])
+    >>> values = ivy.array([5, 6])
+
+    >>> print(sequence_insert(arr, indices, values))
+    ivy.array([1, 5, 2, 6, 4])
+
+    >>> print(sequence_insert(arr, indices, values, axis=0))
+    ivy.array([[1, 5],
+                [2, 6],
+                [4]])
+    """
+
+    if axis is None:
+        axis = -1
+
+    indices = ivy.asarray(indices, dtype=ivy.int64)
+    values = ivy.asarray(values, dtype=arr.dtype)
+
+    # Flatten the indices and values tensors.
+    indices = indices.ravel()
+    values = values.ravel()
+
+    # Create a new tensor with the values inserted at the specified indices.
+    new_tensor = ivy.concatenate([arr[:indices[0]], values, arr[indices[-1:] + 1]], axis=axis)
+
+    if out is not None:
+        new_tensor = new_tensor.at[out].set(new_tensor)
+
+    return new_tensor
