@@ -309,7 +309,7 @@ def igamma(a, x, name=None):
     return ivy.igamma(a, x=x)
 
 
-#igammac
+# igammac
 @with_supported_device_and_dtypes(
     {
         "2.13.0 and below": {
