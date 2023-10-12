@@ -6,7 +6,12 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+
+from ivy.func_wrapper import with_supported_dtypes
+
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+)
 from . import backend_version
 
 
@@ -158,3 +163,14 @@ def softshrink(
 
 
 softshrink.support_native_out = True
+
+@_scalar_output_to_0d_array
+def scaled_tanh(
+    x: np.ndarray,
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return alpha * np.tanh(beta * x)
