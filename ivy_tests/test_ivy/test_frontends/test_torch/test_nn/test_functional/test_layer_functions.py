@@ -19,7 +19,7 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _mha_helper
 
 @st.composite
 def _lstm_helper(draw):
-    dtype = draw(helpers.get_dtypes("float", full=False))
+    dtype = draw(helpers.get_dtypes("valid", full=False))
 
     has_biases = draw(st.booleans())
     bidirectional = draw(st.booleans())

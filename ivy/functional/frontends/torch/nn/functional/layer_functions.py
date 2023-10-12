@@ -1,5 +1,5 @@
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_supported_device_and_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.ivy.experimental.manipulation import _slice_along_axis
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -320,7 +320,10 @@ def _transform_weights_no_bias(
 # ------------ #
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, "torch")
+@with_supported_device_and_dtypes(
+    {"2.1.0 and below": {"cpu": ("float32", "float64")}},
+    "torch",
+)
 @to_ivy_arrays_and_back
 def lstm(*args, **kwargs):
     if "batch_sizes" in kwargs or (len(args) >= 4 and not isinstance(args[3], bool)):
