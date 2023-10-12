@@ -9,10 +9,10 @@ from ivy.utils.exceptions import IvyNotImplementedException
 # --------------- #
 
 
-def _extract_h(output, batch_sizes):
+def _extract_states(states, batch_sizes):
     h = []
-    for i in range(output.shape[1]):
-        h.append(output[int(batch_sizes[i] - 1), i])
+    for i in range(states.shape[1]):
+        h.append(states[int(batch_sizes[i] - 1), i])
     h = ivy.expand_dims(ivy.stack(h, axis=0), axis=0)
     return h
 
@@ -119,7 +119,9 @@ def _generic_lstm(
     return output, h_outs, c_outs
 
 
-def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias):
+def _lstm_cell(
+    x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias, batch_sizes=None
+):
     x_shape = list(x.shape)
     batch_shape = x_shape[1:-1]
     timesteps = x_shape[0]
@@ -136,6 +138,7 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias
     ht = init_h
     ct = init_c
     ht_list = []
+    ct_list = []
 
     for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
         ivy.unstack(Wii_x, axis=0),
@@ -157,9 +160,20 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias
         ot = ivy.sigmoid(Wio_xt + Who_htm1)
         ct = ft * ctm1 + it * gt
         ht = ot * ivy.tanh(ct)
+        ct_list.append(ct)
         ht_list.append(ht)
 
-    return ivy.concat(ht_list, axis=0), ct
+    if batch_sizes is None:
+        c = ivy.expand_dims(ct_list[-1], axis=0)
+        h = ivy.expand_dims(ht_list[-1], axis=0)
+        output = ivy.concat(ht_list, axis=0)
+    else:
+        ct_list = ivy.concat(ct_list, axis=0)
+        ht_list = ivy.concat(ht_list, axis=0)
+        c = _extract_states(ct_list, batch_sizes)
+        h = _extract_states(ht_list, batch_sizes)
+        output = _pack_padded_sequence(ht_list, batch_sizes)[0]
+    return output, (h, c)
 
 
 def _lstm_full(
@@ -188,14 +202,11 @@ def _lstm_full(
 
 def _lstm_layer(x, hidden, weights, biases, bidirectional, batch_sizes=None):
     if not bidirectional:
-        result, c = _lstm_cell(x, *hidden, *weights, *biases)
-        if batch_sizes is None:
-            h = ivy.expand_dims(result[-1], axis=0)
-        else:
-            h = _extract_h(result, batch_sizes)
-            result = _pack_padded_sequence(result, batch_sizes)[0]
+        result, (h, c) = _lstm_cell(
+            x, *hidden, *weights, *biases, batch_sizes=batch_sizes
+        )
     else:
-        result_fw, c_fw = _lstm_cell(
+        result_fw, (h_fw, c_fw) = _lstm_cell(
             x,
             hidden[0][:1],
             hidden[1][:1],
@@ -205,7 +216,7 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional, batch_sizes=None):
             biases[1][0],
         )
         x_reversed = ivy.flip(x, axis=0)
-        result_bw, c_bw = _lstm_cell(
+        result_bw, (h_bw, c_bw) = _lstm_cell(
             x_reversed,
             hidden[0][1:],
             hidden[1][1:],
@@ -217,16 +228,7 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional, batch_sizes=None):
         result_bw = ivy.flip(result_bw, axis=0)
         result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
         c = ivy.concat([c_fw, c_bw], axis=0)
-        if batch_sizes is None:
-            h_fw, h_bw = ivy.expand_dims(result_fw[-1], axis=0), ivy.expand_dims(
-                result_bw[-1], axis=0
-            )
-            h = ivy.concat([h_fw, h_bw], axis=0)
-        else:
-            h_fw = _extract_h(result_fw, batch_sizes)
-            h_bw = _extract_h(result_bw, batch_sizes)
-            h = ivy.concat([h_fw, h_bw], axis=0)
-            result = _pack_padded_sequence(result, batch_sizes)[0]
+        h = ivy.concat([h_fw, h_bw], axis=0)
     return result, (h, c)
 
 
