@@ -4011,7 +4011,8 @@ def sequence_insert(
     values = values.ravel()
 
     # Create a new tensor with the values inserted at the specified indices.
-    new_tensor = ivy.concatenate([data[:indices[0]], values, data[indices[-1:] + 1]], axis=axis)
+    new_tensor = ivy.concatenate(
+        [data[: indices[0]], values, data[indices[-1:] + 1]], axis=axis
+    )
 
     return ivy_container.Container(new_tensor, data.shape)
-
