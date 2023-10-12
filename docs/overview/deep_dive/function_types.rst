@@ -103,7 +103,7 @@ For example, the implementation of :func:`ivy.cross_entropy` in :mod:`ivy/functi
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])

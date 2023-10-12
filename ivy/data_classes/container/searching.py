@@ -20,10 +20,9 @@ class _ContainerWithSearching(ContainerBase):
         select_last_index: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.argmax. This method simply wraps the
-        function, and so the docstring for ivy.argmax also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.argmax. This method
+        simply wraps the function, and so the docstring for ivy.argmax also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -31,7 +30,7 @@ class _ContainerWithSearching(ContainerBase):
             input array or container. Should have a numeric data type.
         axis
             axis along which to search. If None, the function must return the index of
-            the maximum value of the flattened array. Deafult: ``None``.
+            the maximum value of the flattened array. Default: ``None``.
         keepdims
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
@@ -81,10 +80,9 @@ class _ContainerWithSearching(ContainerBase):
         select_last_index: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.argmax. This method simply wraps
-        the function, and so the docstring for ivy.argmax also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.argmax. This method
+        simply wraps the function, and so the docstring for ivy.argmax also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -92,7 +90,7 @@ class _ContainerWithSearching(ContainerBase):
             input array or container. Should have a numeric data type.
         axis
             axis along which to search. If None, the function must return the index of
-            the maximum value of the flattened array. Deafult: ``None``.
+            the maximum value of the flattened array. Default: ``None``.
         keepdims
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
@@ -143,10 +141,9 @@ class _ContainerWithSearching(ContainerBase):
         select_last_index: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.argmin. This method simply wraps the
-        function, and so the docstring for ivy.argmin also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.argmin. This method
+        simply wraps the function, and so the docstring for ivy.argmin also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -205,10 +202,9 @@ class _ContainerWithSearching(ContainerBase):
         select_last_index: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.argmin. This method simply wraps
-        the function, and so the docstring for ivy.argmin also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.argmin. This method
+        simply wraps the function, and so the docstring for ivy.argmin also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -275,10 +271,9 @@ class _ContainerWithSearching(ContainerBase):
         size: Optional[Union[int, ivy.Container]] = None,
         fill_value: Union[Number, ivy.Container] = 0,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.nonzero. This method simply wraps the
-        function, and so the docstring for ivy.nonzero also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.nonzero. This method
+        simply wraps the function, and so the docstring for ivy.nonzero also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -315,10 +310,9 @@ class _ContainerWithSearching(ContainerBase):
         size: Optional[Union[int, ivy.Container]] = None,
         fill_value: Union[Number, ivy.Container] = 0,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.nonzero. This method simply wraps
-        the function, and so the docstring for ivy.nonzero also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.nonzero. This method
+        simply wraps the function, and so the docstring for ivy.nonzero also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -356,10 +350,9 @@ class _ContainerWithSearching(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.where. This method simply wraps the
-        function, and so the docstring for ivy.where also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.where. This method simply
+        wraps the function, and so the docstring for ivy.where also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -402,10 +395,9 @@ class _ContainerWithSearching(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.where. This method simply wraps the
-        function, and so the docstring for ivy.where also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.where. This method
+        simply wraps the function, and so the docstring for ivy.where also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -452,10 +444,9 @@ class _ContainerWithSearching(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.argwhere. This method simply wraps
-        the function, and so the docstring for ivy.argwhere also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.argwhere. This method
+        simply wraps the function, and so the docstring for ivy.argwhere also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -518,10 +509,9 @@ class _ContainerWithSearching(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container instance method variant of ivy.argwhere. This method simply wraps
-        the function, and so the docstring for ivy.argwhere also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.argwhere. This method
+        simply wraps the function, and so the docstring for ivy.argwhere also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
