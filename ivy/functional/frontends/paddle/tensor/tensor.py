@@ -8,7 +8,6 @@ from ivy.func_wrapper import (
 from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
 
 
-
 class Tensor:
     def __init__(self, array, dtype=None, place="cpu", stop_gradient=True):
         self._ivy_array = (
