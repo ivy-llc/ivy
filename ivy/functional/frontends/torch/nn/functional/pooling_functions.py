@@ -308,3 +308,24 @@ def max_pool3d(
         dilation=dilation,
         ceil_mode=ceil_mode,
     )
+
+
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def max_unpool3d(
+    input,
+    indices,
+    kernel_size,
+    stride=None,
+    padding=0,
+):
+    if stride is None:
+        stride = kernel_size
+    return ivy.max_unpool3d(
+        input,
+        indices,
+        kernel_size,
+        stride,
+        padding,
+        data_format="NCDWH",
+    )
