@@ -151,6 +151,27 @@ def test_numpy_put_along_axis(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.ravel_multi_index",
+    dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        ret_shape=True,
+    ),
+)
+def test_numpy_ravel_multi_index(fn_tree, frontend, backend_fw, test_flags, dtypes):
+    dtype, x, shape = dtypes
+    helpers.test_frontend_function(
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        input_dtypes=dtype,
+        arr=x,
+        dims=shape,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.take_along_axis",
     dtype_x_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
