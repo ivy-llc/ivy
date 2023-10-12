@@ -1,0 +1,32 @@
+h5py==3.7.0
+pytest==7.1.2
+networkx==2.8.4
+hypothesis==6.55.0
+pymongo==4.3.3
+redis==4.3.4
+matplotlib==3.5.2
+opencv-python==4.6.0.66 # mod_name=cv2
+scipy==1.8.1
+pydriller
+tqdm
+coverage
+einops
+psutil
+termcolor
+colorama
+packaging
+nvidia-ml-py<=11.495.46 # mod_name=pynvml
+paddle-bfloat
+jsonpickle
+ml_dtypes
+diskcache
+google-auth # mod_name=google.auth
+requests
+pyvis
+dill
+scikit-learn # mod_name=sklearn
+pandas
+pyspark
+autoflake # for backend generation
+snakeviz # for profiling
+cryptography

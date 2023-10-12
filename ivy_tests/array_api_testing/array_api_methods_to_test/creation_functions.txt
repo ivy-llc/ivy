@@ -1,0 +1,16 @@
+#arange # failing sporadically for tensorflow - https://github.com/tensorflow/tensorflow/issues/55796, and numpy due to isequal tol https://github.com/unifyai/ivy/actions/runs/3218044361/jobs/5261744015
+#asarray
+empty
+empty_like
+#eye #fails for jax non deterministically, possibly due to +0 vs -0 inconsistencies
+from_dlpack
+full
+full_like
+#linspace # fails for numpy due to tolerance issues e.g. out[-1]=16777217.0, but should be 16777217.0
+meshgrid
+ones
+ones_like
+tril
+triu
+zeros
+zeros_like

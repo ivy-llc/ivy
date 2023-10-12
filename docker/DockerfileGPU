@@ -1,0 +1,129 @@
+# BASE CUDA IMAGE #
+# ----------------#
+
+ARG UBUNTU_VERSION=20.04
+ARG CUDA=11.2
+FROM nvidia/cuda:${CUDA}.2-base-ubuntu${UBUNTU_VERSION} as base
+WORKDIR /ivy
+
+# For TensorFlow #
+# ---------------#
+# Adapted from
+# https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu.Dockerfile
+
+# CUDA is specified again because the FROM directive resets ARGs
+# (but their default value is retained if set previously)
+ARG CUDA
+ARG CUDNN=8.1.0.77-1
+ARG CUDNN_MAJOR_VERSION=8
+ARG LIB_DIR_PREFIX=x86_64
+ARG LIBNVINFER=7.2.2-1
+ARG LIBNVINFER_MAJOR_VERSION=7
+
+# Let us install tzdata painlessly
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Needed for string substitution
+SHELL ["/bin/bash", "-c"]
+
+# taken from https://github.com/Kaggle/docker-python/commit/f1a3cfc6ee71899b1af8d76598b42a2da280448d
+RUN \
+    # Temporarily swap the NVIDIA GPG key. Remove once new base image with new GPG key is released.
+    rm /etc/apt/sources.list.d/cuda.list && \
+    apt-key del 7fa2af80 && \
+    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub && \
+    apt-get update
+
+# Refer to https://forums.developer.nvidia.com/t/notice-cuda-linux-repository-key-rotation/212772
+RUN apt-get update && apt-get install -y wget
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
+RUN dpkg -i cuda-keyring_1.0-1_all.deb
+RUN apt-get update
+
+# Pick up some TF dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        cuda-command-line-tools-${CUDA/./-} \
+        libcublas-${CUDA/./-} \
+        cuda-nvrtc-${CUDA/./-} \
+        libcufft-${CUDA/./-} \
+        libcurand-${CUDA/./-} \
+        libcusolver-${CUDA/./-} \
+        libcusparse-${CUDA/./-} \
+        curl \
+        libcudnn8=${CUDNN}+cuda${CUDA} \
+        libfreetype6-dev \
+        libhdf5-serial-dev \
+        libzmq3-dev \
+        pkg-config \
+        software-properties-common \
+        unzip
+
+# Install TensorRT if not building for PowerPC
+RUN apt-get update && \
+        apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub && \
+        echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /"  > /etc/apt/sources.list.d/tensorRT.list && \
+        apt-get update && \
+        apt-get install -y --no-install-recommends libnvinfer${LIBNVINFER_MAJOR_VERSION}=${LIBNVINFER}+cuda11.0 \
+        libnvinfer-plugin${LIBNVINFER_MAJOR_VERSION}=${LIBNVINFER}+cuda11.0 \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*
+
+# For CUDA profiling, TensorFlow requires CUPTI.
+ENV LD_LIBRARY_PATH /usr/local/cuda-11.0/targets/x86_64-linux/lib:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+
+# Link the libcuda stub to the location where tensorflow is searching for it and reconfigure
+# dynamic linker run-time bindings
+RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
+    && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
+    && ldconfig
+
+# See http://bugs.python.org/issue19846
+ENV LANG C.UTF-8
+
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip
+RUN pip3 install --upgrade pip
+
+RUN python3 -m pip --no-cache-dir install --upgrade \
+    pip \
+    setuptools==58.5.3
+
+# Some TF tools expect a "python" binary
+RUN ln -s $(which python3) /usr/local/bin/python
+
+RUN apt-get install -y git
+RUN apt-get install -y python-opengl
+
+# Ivy #
+# ----#
+
+# Make sure torch installed before torch-scatter (in optional_gpu.txt)
+RUN pip install --no-cache-dir torch==1.11.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
+
+# Install Ivy Upstream
+RUN git clone --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
+    cd ivy && \
+    cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    cat requirements/optional_gpu.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    python3 -m pip install --user -e . && \
+    cd ivy_tests/array_api_testing/test_array_api && \
+    pip3 install --no-cache-dir -r requirements.txt
+
+# Install local requirements
+COPY requirements/requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Install local optional
+COPY requirements/optional_gpu.txt .
+RUN pip3 install --no-cache-dir -r optional_gpu.txt
+
+# Install jax cuda after optional_gpu.txt, otherwise cpu version will override
+RUN pip install --no-cache-dir jaxlib -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
+COPY run_tests_CLI/test_dependencies.py .
+RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
+    rm -rf requirements.txt && \
+    rm -rf optional_gpu.txt && \
+    rm -rf test_dependencies.py

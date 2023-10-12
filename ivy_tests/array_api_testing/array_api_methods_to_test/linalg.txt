@@ -1,0 +1,23 @@
+cholesky
+#cross #fails for jax, torch, issue: https://github.com/pytorch/pytorch/issues/76588
+det
+diagonal
+eigh
+#eigvalsh
+# inv  # failing sporadically for jax - https://github.com/data-apis/array-api-tests/issues/117
+#matmul # failing for torch - https://github.com/data-apis/array-api-tests/issues/117
+#matrix_norm # failing for jax non-deterministically
+#matrix_power # failing for jax, torch, and tensorflow- waiting on fix for https://github.com/data-apis/array-api-tests/issues/117
+#matrix_rank # failing for numpy (KeyError from a dtype), tensorflow (incompatible shapes)
+matrix_transpose
+outer
+pinv
+qr
+#slogdet # failing for numpy due to tol issues e.g. x = 0.6931471805599453, y = ivy.array(0.69314718) not equal
+solve
+svd
+svdvals
+tensordot
+#trace # failing for jax, numpy, tensorflow, torch due to issues with dtypes in output in test: https://github.com/data-apis/array-api/issues/202
+#vecdot #failing for torch, due to unexpected behaviour on some dtypes while type-casting (https://github.com/pytorch/pytorch/issues/84530)
+vector_norm
