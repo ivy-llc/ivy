@@ -1,6 +1,7 @@
 # local
 from typing import Optional, Union, Sequence
 import ivy
+
 # from ivy.func_wrapper import (
 #     handle_out_argument,
 #     to_native_arrays_and_back,
@@ -10,14 +11,22 @@ import ivy
 #     handle_device,
 #     handle_backend_invalid,
 # )
-from random import SystemRandom
+
+
 def handle_device(*args, **kwargs):
     pass  # You can add your implementation here, or leave it empty
 
+
 # Import statements for other functions
-from ivy.func_wrapper import handle_backend_invalid, handle_nestable, handle_out_argument, to_native_arrays_and_back
+from ivy.func_wrapper import (
+    handle_backend_invalid,
+    handle_nestable,
+    handle_out_argument,
+    to_native_arrays_and_back,
+)
 from ivy.func_wrapper import inputs_to_native_shapes, infer_dtype
 from ivy.utils.exceptions import handle_exceptions
+
 
 # dirichlet
 @handle_exceptions

@@ -1,12 +1,11 @@
 # global
 from typing import Union, Optional, Literal
-from my_random import SystemRandom
-import numpy as np
 
 # local
 import ivy
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
+
 
 def _logit_jax_like(
     x: Union[float, int, ivy.Array],
@@ -25,6 +24,7 @@ def _logit_jax_like(
     z = ivy.log(z / (1 - z))
     return z
 
+
 def logit(
     x: Union[float, int, ivy.Array],
     /,
@@ -35,7 +35,9 @@ def logit(
 ) -> ivy.Array:
     return current_backend(x).logit(x, eps=eps, out=out)
 
+
 logit.jax_like = _logit_jax_like
+
 
 @handle_exceptions
 def prelu(
@@ -47,6 +49,7 @@ def prelu(
 ) -> ivy.Array:
     return ivy.where(x > 0, x, x * slope, out=out)
 
+
 @handle_exceptions
 def thresholded_relu(
     x: ivy.Array,
@@ -57,6 +60,7 @@ def thresholded_relu(
 ) -> ivy.Array:
     return ivy.where(x > threshold, x, ivy.zeros_like(x), out=out)
 
+
 @handle_exceptions
 def relu6(
     x: ivy.Array,
@@ -64,7 +68,13 @@ def relu6(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    return ivy.where(x < 0, ivy.zeros_like(x), ivy.where(x > 6, ivy.array(6, dtype=x.dtype), x), out=out)
+    return ivy.where(
+        x < 0,
+        ivy.zeros_like(x),
+        ivy.where(x > 6, ivy.array(6, dtype=x.dtype), x),
+        out=out,
+    )
+
 
 @handle_exceptions
 def logsigmoid(
@@ -75,6 +85,7 @@ def logsigmoid(
 ) -> ivy.Array:
     return ivy.log(1 / (1 + ivy.exp(-x)), out=out)
 
+
 @handle_exceptions
 def selu(
     x: ivy.Array,
@@ -82,9 +93,9 @@ def selu(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    alpha = 1.67326
     scale = 1.0507
     return ivy.where(x > 0, x, scale * (ivy.exp(x) - 1), out=out)
+
 
 @handle_exceptions
 def silu(
@@ -94,6 +105,7 @@ def silu(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     return x * ivy.sigmoid(x, out=out)
+
 
 @handle_exceptions
 def elu(
