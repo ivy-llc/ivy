@@ -416,3 +416,30 @@ def fill_diagonal(
 
 def trim_zeros(a: JaxArray, /, *, trim: Optional[str] = "bf") -> JaxArray:
     return jnp.trim_zeros(a, trim=trim)
+
+
+def sequence_insert(
+    arr: jnp.ndarray,
+    indices: Union[jnp.ndarray, int],
+    values: jnp.ndarray,
+    axis: Optional[int] = None,
+    /,
+    *,
+    out: None = None,
+) -> jnp.ndarray:
+
+    if axis is None:
+        axis = -1
+
+    indices = jnp.asarray(indices, dtype=jnp.int64)
+    values = jnp.asarray(values, dtype=arr.dtype)
+
+    indices = indices.ravel()
+    values = values.ravel()
+
+    new_tensor = jnp.concatenate([arr[:indices[0]], values, arr[indices[-1:] + 1]], axis=axis)
+
+    if out is not None:
+        new_tensor = new_tensor.at[out].set(new_tensor)
+
+    return new_tensor
