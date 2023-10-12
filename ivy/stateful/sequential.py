@@ -16,9 +16,8 @@ class Sequential(Module):
         v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     ):
-        """
-        Initialize a sequential container. Modules will be added to it in the order they
-        are passed in the constructor.
+        """Initialize a sequential container. Modules will be added to it in
+        the order they are passed in the constructor.
 
         Parameters
         ----------
@@ -49,8 +48,7 @@ class Sequential(Module):
         return iter(self._submodules)
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Sequential container.
+        """Perform forward pass of the Sequential container.
 
         Parameters
         ----------

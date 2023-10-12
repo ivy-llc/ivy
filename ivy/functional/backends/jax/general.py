@@ -1,4 +1,5 @@
-"""Collection of Jax general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Jax general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import jax

@@ -18,8 +18,13 @@ def trace_graph(
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None
 ):
+<<<<<<< HEAD
     """
     Take `fn` and traces it into a more efficient composition of backend operations.
+=======
+    """Takes `fn` and traces it into a more efficient composition of backend
+    operations.
+>>>>>>> 2832ba0fbbd2ea244c078c1ff6e20d20051be152
 
     Parameters
     ----------
@@ -127,9 +132,9 @@ def transpile(
     params_v=None,
     v=None
 ):
-    """
-    Transpiles Callable objects passed as arguments. If args and kwargs are specified,
-    transpilation is performed eagerly, otherwise, transpilation will happen lazily.
+    """Transpiles Callable objects passed as arguments. If args and kwargs are
+    specified, transpilation is performed eagerly, otherwise, transpilation
+    will happen lazily.
 
     Parameters
     ----------

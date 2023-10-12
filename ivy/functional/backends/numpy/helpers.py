@@ -4,8 +4,7 @@ import numpy as np
 
 
 def _scalar_output_to_0d_array(function: Callable) -> Callable:
-    """
-    Convert scalar outputs to 0d arrays.
+    """Convert scalar outputs to 0d arrays.
 
     Sometimes NumPy functions return scalars e.g. `np.add` does when the
     inputs are both 0 dimensional.
