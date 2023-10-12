@@ -49,7 +49,7 @@ def _forward_fn(
                 ivy.index_nest(xs, grad_idx), ivy.is_array
             )
             for idx in xs_grad_arr_idx:
-                xs_grad_arr_idxs.append(grad_idx + idx)
+                xs_grad_arr_idxs.append(list(grad_idx) + idx)
         ivy.set_nest_at_indices(xs, xs_grad_arr_idxs, x_arr_values)
     elif ivy.is_array(xs):
         xs = x
