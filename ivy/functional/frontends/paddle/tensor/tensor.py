@@ -7,9 +7,7 @@ from ivy.func_wrapper import (
 )
 from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
 
-from typing import (
-    Union,
-)
+
 
 class Tensor:
     def __init__(self, array, dtype=None, place="cpu", stop_gradient=True):
@@ -911,16 +909,17 @@ class Tensor:
     def gather_(self, y, name=None):
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
-    
+
     def _fill_diagonal_tensor_impl(self, x, y, offset=0, dim1=0, dim2=1, inplace=False):
         inshape = x.shape
         print(inshape)
-        assert dim1 < len(inshape) and dim1 >= -len(inshape), (
-            'dim1 should be between [-rank, rank) in fill_diagonal_tensor_')
-        assert dim2 < len(inshape) and dim2 >= -len(inshape), (
-            'dim2 should be between [-rank, rank) in fill_diagonal_tensor_')
-        assert len(inshape) >= 2, (
-            'Tensor dims should be >= 2 in fill_diagonal_tensor_')
+        assert dim1 < len(inshape) and dim1 >= -len(
+            inshape
+        ), "dim1 should be between [-rank, rank) in fill_diagonal_tensor_"
+        assert dim2 < len(inshape) and dim2 >= -len(
+            inshape
+        ), "dim2 should be between [-rank, rank) in fill_diagonal_tensor_"
+        assert len(inshape) >= 2, "Tensor dims should be >= 2 in fill_diagonal_tensor_"
         dim1 %= len(inshape)
         dim2 %= len(inshape)
 
@@ -930,10 +929,12 @@ class Tensor:
                 predshape.append(inshape[i])
         diaglen = min(
             min(inshape[dim1], inshape[dim1] + offset),
-            min(inshape[dim2], inshape[dim2] - offset))
+            min(inshape[dim2], inshape[dim2] - offset),
+        )
         predshape.append(diaglen)
-        assert tuple(predshape) == tuple(y.shape), (
-            "the y shape should be {}".format(predshape))
+        assert tuple(predshape) == tuple(y.shape), "the y shape should be {}".format(
+            predshape
+        )
         if len(y.shape) == 1:
             y = y.reshape([1, -1])
 
@@ -950,7 +951,7 @@ class Tensor:
             result[:diaglen, diag_start:diag_end] = y
             return result
 
-    #Paddle source code implementation 
+    # Paddle source code implementation
     def fill_diagonal_tensor_(self, y, offset=0, dim1=0, dim2=1, name=None):
         """
         Args:
@@ -973,6 +974,7 @@ class Tensor:
                 print(x)  # Check the modified 'x' Tensor
 
         """
-        self = self.fill_diagonal_tensor_impl(self, y, offset=offset, dim1=dim1, dim2=dim2, inplace=True)
+        self = self.fill_diagonal_tensor_impl(
+            self, y, offset=offset, dim1=dim1, dim2=dim2, inplace=True
+        )
         return self
-        
