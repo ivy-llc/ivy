@@ -529,7 +529,6 @@ def sequence_insert(
     *,
     out: None = None,
 ) -> np.ndarray:
-
     if axis is None:
         axis = -1
 
@@ -539,7 +538,9 @@ def sequence_insert(
     indices = indices.ravel()
     values = values.ravel()
 
-    new_tensor = np.concatenate([arr[:indices[0]], values, arr[indices[-1:] + 1]], axis=axis)
+    new_tensor = np.concatenate(
+        [arr[: indices[0]], values, arr[indices[-1:] + 1]], axis=axis
+    )
 
     if out is not None:
         new_tensor = np.copyto(out, new_tensor)

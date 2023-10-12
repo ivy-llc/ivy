@@ -427,7 +427,6 @@ def sequence_insert(
     *,
     out: None = None,
 ) -> jnp.ndarray:
-
     if axis is None:
         axis = -1
 
@@ -437,7 +436,9 @@ def sequence_insert(
     indices = indices.ravel()
     values = values.ravel()
 
-    new_tensor = jnp.concatenate([arr[:indices[0]], values, arr[indices[-1:] + 1]], axis=axis)
+    new_tensor = jnp.concatenate(
+        [arr[: indices[0]], values, arr[indices[-1:] + 1]], axis=axis
+    )
 
     if out is not None:
         new_tensor = new_tensor.at[out].set(new_tensor)
