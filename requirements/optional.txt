@@ -17,7 +17,8 @@ scipy # unpinned
 dm-haiku # unpinned mod_name=haiku
 flax
 pydriller
-coverage==7.3.1 # hardcoded temporarily
+tqdm
+coverage
 scikit-learn # mod_name=sklearn
 pandas
 pyspark
