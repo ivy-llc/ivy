@@ -363,7 +363,7 @@ def test_paddle_diff(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
-        x=x[0]
+        x=x[0],
     )
 
 
