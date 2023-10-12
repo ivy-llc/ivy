@@ -1,7 +1,0 @@
-max
-mean
-min
-prod #failing for torch due to bug in Array API test suite (https://github.com/data-apis/array-api-tests/issues/10#issuecomment-1068840049)
-std
-sum #failing for torch due to the same bug as prod
-var

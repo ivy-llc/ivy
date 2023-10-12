@@ -1,3 +1,0 @@
-func_signature
-extension_func_signature
-array_method_signature
