@@ -16,6 +16,10 @@ from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_linalg import (
     _get_cholesky_matrix,
 )
 
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_input_and_mat_vec,
+)
+
 
 # --- Helpers --- #
 # --------------- #
@@ -684,6 +688,43 @@ def test_paddle_eigvalsh(
     )
 
 
+@handle_frontend_test(
+    fn_tree="paddle.lu_unpack",
+    dtype_x=_get_dtype_and_square_matrix(real_and_complex_only=True),
+    p=st.lists(st.floats(1, 5), max_size=5),
+    unpack_datas=st.booleans(),
+    unpack_pivots=st.booleans(),
+)
+def test_paddle_lu_unpack(
+    *,
+    dtype_x,
+    p,
+    unpack_datas,
+    unpack_pivots,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x = dtype_x
+    x = np.array(x[0], dtype=dtype[0])
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lu_data=x,
+        lu_pivots=p,
+        unpack_datas=unpack_datas,
+        unpack_pivots=unpack_pivots,
+        rtol=1e-03,
+        atol=1e-03,
+    )
+
+
 # matmul
 @handle_frontend_test(
     fn_tree="paddle.matmul",
@@ -756,6 +797,33 @@ def test_paddle_matrix_power(
         on_device=on_device,
         x=x[0],
         n=n,
+    )
+
+
+# mv
+@handle_frontend_test(
+    fn_tree="paddle.mv",
+    dtype_mat_vec=_get_dtype_input_and_mat_vec(),
+    test_with_out=st.just(False),
+)
+def test_paddle_mv(
+    dtype_mat_vec,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, mat, vec = dtype_mat_vec
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=mat,
+        vec=vec,
     )
 
 

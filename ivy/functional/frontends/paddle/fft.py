@@ -23,6 +23,32 @@ def fft(x, n=None, axis=-1.0, norm="backward", name=None):
             "int64",
             "float32",
             "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def fftfreq(n, d=1.0, dtype=None, name=None):
+    if d * n == 0:
+        raise ValueError("d or n should not be 0.")
+
+    if dtype is None:
+        dtype = ivy.default_dtype()
+    val = 1.0 / (n * d)
+    pos_max = (n + 1) // 2
+    neg_max = n // 2
+    indices = ivy.arange(-neg_max, pos_max, dtype=dtype)
+    indices = ivy.roll(indices, -neg_max)
+    return ivy.multiply(indices, val)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
             "complex64",
             "complex128",
         )
@@ -51,19 +77,19 @@ def fftshift(x, axes=None, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def hfft(x, n=None, axis=-1, norm="backward", name=None):
+def hfft(x, n=None, axes=-1, norm="backward", name=None):
     """Compute the FFT of a signal that has Hermitian symmetry, resulting in a real
     spectrum."""
     # Determine the input shape and axis length
     input_shape = x.shape
-    input_len = input_shape[axis]
+    input_len = input_shape[axes]
 
     # Calculate n if not provided
     if n is None:
         n = 2 * (input_len - 1)
 
     # Perform the FFT along the specified axis
-    result = ivy.fft(x, axis, n=n, norm=norm)
+    result = ivy.fft(x, axes, n=n, norm=norm)
 
     return ivy.real(result)
 
@@ -128,6 +154,41 @@ def ifftshift(x, axes=None, name=None):
 
 
 @with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def ihfft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
+    # check if the input array is two-dimensional and real
+    if len(ivy.array(x).shape) != 2 or ivy.is_complex_dtype(x):
+        raise ValueError("input must be a two-dimensional real array")
+
+    # cast the input to the same float64 type so that there are no backend issues
+    x_ = ivy.astype(x, ivy.float64)
+
+    ihfft2_result = 0
+    # Compute the complex conjugate of the 2-dimensional discrete Fourier Transform
+    if norm == "backward":
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="forward"))
+    if norm == "forward":
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="backward"))
+    if norm == "ortho":
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="ortho"))
+
+    if x.dtype == ivy.float32 or x.dtype == ivy.int32 or x.dtype == ivy.int64:
+        return ivy.astype(ihfft2_result, ivy.complex64)
+    if x.dtype == ivy.float64:
+        return ivy.astype(ihfft2_result, ivy.complex128)
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("complex64", "complex128")},
     "paddle",
 )
@@ -143,6 +204,43 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
     if ivy.isreal(x):
         time_domain = ivy.real(time_domain)
     return time_domain
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def irfft2(x, s=None, axes=(-2, -1), norm="backward"):
+    # Handle values if None
+    if s is None:
+        s = x.shape
+    if axes is None:
+        axes = (-2, -1)
+
+    # Calculate the normalization factor 'n' based on the shape 's'
+    n = ivy.prod(ivy.array(s))
+
+    result = ivy.ifftn(x, dim=axes[0], norm=norm)
+
+    # Normalize the result based on the 'norm' parameter
+    if norm == "backward":
+        result /= n
+    elif norm == "forward":
+        result *= n
+    elif norm == "ortho":
+        result /= ivy.sqrt(n)
+    return result
 
 
 @with_supported_dtypes(
@@ -195,6 +293,12 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
 
     result_t = ivy.astype(real_result, output_dtype)
     return result_t
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def rfft(x, n=None, axis=-1, norm="backward", name=None):
+    return ivy.dft(x, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
 
 
 @to_ivy_arrays_and_back

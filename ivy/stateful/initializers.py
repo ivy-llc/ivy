@@ -84,13 +84,13 @@ class Constant(Initializer):
 
 class Zeros(Constant):
     def __init__(self):
-        """Constant initalizer that fills with the constant value `0.0`."""
+        """Constant initializer that fills with the constant value `0.0`."""
         super().__init__(0.0)
 
 
 class Ones(Constant):
     def __init__(self):
-        """Constant initalizer that fills with the constant value `1.0`."""
+        """Constant initializer that fills with the constant value `1.0`."""
         super().__init__(1.0)
 
 
@@ -110,7 +110,7 @@ class Uniform(Initializer):
         is `0` and the variance is
         `(gain * numerator / fan)^power / 4`.
 
-        This is intended as a base-class for special predefined initialzers.
+        This is intended as a base-class for special predefined initializers.
 
         Parameters
         ----------
@@ -218,7 +218,7 @@ class GlorotUniform(Uniform):
         """
         Initialize Glorot uniform, also known as the Xavier uniform initializer.
 
-        It draws values from a uniform distribtion `[-limit, limit]` where
+        It draws values from a uniform distribution `[-limit, limit]` where
         `limit = sqrt(6 / (fan_in + fan_out))` where `fan_in` and `fan_out` are the
         number of input and output features respectively.
         """
@@ -230,7 +230,7 @@ class FirstLayerSiren(Uniform):
         """
         Initialize Siren uniform for the first layer.
 
-        It draws values from a uniform distribtion `[-limit, limit]`
+        It draws values from a uniform distribution `[-limit, limit]`
         where `limit=fan_in` where `fan_in` is the number of input
         features.
         """
@@ -242,7 +242,7 @@ class Siren(Uniform):
         """
         Initialize Siren uniform initializer for the first layer.
 
-        It draws values from a uniform distribtion `[-limit, limit]`
+        It draws values from a uniform distribution `[-limit, limit]`
         where `limit=sqrt(6 / fan_in) / w0` where `fan_in` is the number
         of input features.
         """

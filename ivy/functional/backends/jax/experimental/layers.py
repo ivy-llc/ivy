@@ -175,7 +175,7 @@ def max_pool1d(
 ) -> JaxArray:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCW":
@@ -214,7 +214,7 @@ def max_pool2d(
     dims = 2
     odtype = x.dtype
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCHW":
@@ -257,7 +257,7 @@ def max_pool3d(
 ) -> JaxArray:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
@@ -441,7 +441,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.16 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.18 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -814,7 +814,7 @@ def ifftn(
 
 
 @with_unsupported_dtypes(
-    {"0.4.16 and below": ("bfloat16", "float16", "complex")}, backend_version
+    {"0.4.18 and below": ("bfloat16", "float16", "complex")}, backend_version
 )
 def embedding(
     weights: JaxArray,
@@ -840,7 +840,29 @@ def embedding(
     return embeddings
 
 
-@with_unsupported_dtypes({"0.4.16 and below": ("float16", "complex")}, backend_version)
+def rfft(
+    x: JaxArray,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    x = x.real
+    if x.dtype == jnp.float16:
+        x = x.astype(jnp.float32)
+
+    ret = jnp.fft.rfft(x, n=n, axis=axis, norm=norm)
+
+    if x.dtype != jnp.float64:
+        ret = ret.astype(jnp.complex64)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+@with_unsupported_dtypes({"0.4.18 and below": ("float16", "complex")}, backend_version)
 def rfftn(
     x: JaxArray,
     s: Sequence[int] = None,
