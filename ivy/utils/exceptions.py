@@ -373,7 +373,7 @@ def handle_exceptions(fn: Callable) -> Callable:
 _inplace_warning_cache = {}
 
 
-def _handle_(ivy_pack=None):
+def _handle_(ivy_pack="strict"):
     if not ivy_pack:
         ivy_pack = ivy
     current_backend = ivy_pack.current_backend_str()
