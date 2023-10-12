@@ -271,7 +271,7 @@ class _ArrayWithCreationExperimental(abc.ABC):
         num_segments: Union[int, ivy.Array],
     ) -> ivy.Array:
         """
-        Computes the mean of values in the array 'self' based on segment identifiers.
+        Compute the mean of values in the array 'self' based on segment identifiers.
 
         Parameters
         ----------

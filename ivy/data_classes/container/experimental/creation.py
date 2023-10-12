@@ -1213,22 +1213,25 @@ class _ContainerWithCreationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        Computes the mean of values in the input data based on segment identifiers.
+        Compute the mean of values in the input data based on segment identifiers.
 
         Parameters
         ----------
         data : ivy.Container
             Input array or container from which to gather the input.
         segment_ids : ivy.Container
-            An array of integers indicating the segment identifier for each element in 'data'.
+            An array of integers indicating the segment identifier for each element in
+            'data'.
         num_segments : Union[int, ivy.Container]
             An integer or array representing the total number of distinct segment IDs.
         key_chains : Optional[Union[List[str], Dict[str, str], ivy.Container]], optional
             The key-chains to apply or not apply the method to. Default is None.
         to_apply : Union[bool, ivy.Container], optional
-            If True, the method will be applied to key-chains, otherwise key-chains will be skipped. Default is True.
+            If True, the method will be applied to key-chains, otherwise key-chains will
+            be skipped. Default is True.
         prune_unapplied : Union[bool, ivy.Container], optional
-            Whether to prune key-chains for which the function was not applied. Default is False.
+            Whether to prune key-chains for which the function was not applied.
+            Default is False.
         map_sequences : Union[bool, ivy.Container], optional
             Whether to also map method to sequences (lists, tuples). Default is False.
 
@@ -1256,7 +1259,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         num_segments: Union[int, ivy.Container],
     ) -> ivy.Container:
         """
-        Computes the mean of values in the input array or container based on segment
+        Compute the mean of values in the input array or container based on segment
         identifiers.
 
         Parameters
@@ -1264,7 +1267,8 @@ class _ContainerWithCreationExperimental(ContainerBase):
         self : ivy.Container
             Input array or container from which to gather the input.
         segment_ids : ivy.Container
-            An array of integers indicating the segment identifier for each element in 'self'.
+            An array of integers indicating the segment identifier for each element
+            in 'self'.
         num_segments : Union[int, ivy.Container]
             An integer or array representing the total number of distinct segment IDs.
 
