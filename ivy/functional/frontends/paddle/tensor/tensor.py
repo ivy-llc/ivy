@@ -766,7 +766,7 @@ class Tensor:
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def inner(self, y, name=None):
-        return paddle_frontend.inner(self._ivy_array, y, name)
+        return paddle_frontend.inner(self, y, name)
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def acos(self, name=None):
