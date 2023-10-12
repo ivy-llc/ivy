@@ -570,6 +570,14 @@ def FFT2D(*, input, name="FFT2D"):
 
 
 @to_ivy_arrays_and_back
+def FFT3D(*, input, name="FFT3D"):
+    fft_result = ivy.fft(input, -1)
+    fft_result = ivy.fft(fft_result, -2)
+    fft_result = ivy.fft(fft_result, -3)
+    return ivy.astype(fft_result, input.dtype)
+
+
+@to_ivy_arrays_and_back
 def Fill(*, dims, value, name="Full"):
     return ivy.full(dims, value)
 
