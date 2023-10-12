@@ -21,10 +21,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.relu. This method simply wraps the
-        function, and so the docstring for ivy.relu also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.relu. This method simply
+        wraps the function, and so the docstring for ivy.relu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -86,10 +85,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.relu. This method simply wraps the
-        function, and so the docstring for ivy.relu also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.relu. This method
+        simply wraps the function, and so the docstring for ivy.relu also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -152,10 +150,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.leaky_relu. This method simply wraps
-        the function, and so the docstring for ivy.leaky_relu also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.leaky_relu. This method
+        simply wraps the function, and so the docstring for ivy.leaky_relu also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -220,10 +217,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.leaky_relu. This method simply
-        wraps the function, and so the docstring for ivy.leaky_relu also applies to this
-        method with minimal changes.
+        """ivy.Container instance method variant of ivy.leaky_relu. This method
+        simply wraps the function, and so the docstring for ivy.leaky_relu also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -288,10 +284,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.gelu. This method simply wraps the
-        function, and so the docstring for ivy.gelu also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.gelu. This method simply
+        wraps the function, and so the docstring for ivy.gelu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -355,10 +350,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.gelu. This method simply wraps the
-        function, and so the docstring for ivy.gelu also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.gelu. This method
+        simply wraps the function, and so the docstring for ivy.gelu also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -422,10 +416,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.sigmoid. This method simply wraps the
-        function, and so the docstring for ivy.sigmoid also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.sigmoid. This method
+        simply wraps the function, and so the docstring for ivy.sigmoid also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -486,10 +479,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.sigmoid. This method simply wraps
-        the function, and so the docstring for ivy.sigmoid also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.sigmoid. This method
+        simply wraps the function, and so the docstring for ivy.sigmoid also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -551,10 +543,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.softmax. This method simply wraps the
-        function, and so the docstring for ivy.softmax also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.softmax. This method
+        simply wraps the function, and so the docstring for ivy.softmax also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -619,10 +610,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.softmax. This method simply wraps
-        the function, and so the docstring for ivy.softmax also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.softmax. This method
+        simply wraps the function, and so the docstring for ivy.softmax also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -688,10 +678,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.softplus. This method simply wraps
-        the function, and so the docstring for ivy.softplus also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.softplus. This method
+        simply wraps the function, and so the docstring for ivy.softplus also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -767,10 +756,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.softplus. This method simply wraps
-        the function, and so the docstring for ivy.softplus also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.softplus. This method
+        simply wraps the function, and so the docstring for ivy.softplus also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -844,10 +832,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.log_softmax. This method simply wraps
-        the function, and so the docstring for ivy.log_softmax also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.log_softmax. This method
+        simply wraps the function, and so the docstring for ivy.log_softmax
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -919,10 +906,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container instance method variant of ivy.log_softmax. This method simply
-        wraps the function, and so the docstring for ivy.log_softmax also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.log_softmax. This
+        method simply wraps the function, and so the docstring for
+        ivy.log_softmax also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -993,10 +979,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.mish. This method simply wraps the
-        function, and so the docstring for ivy.mish also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.mish. This method simply
+        wraps the function, and so the docstring for ivy.mish also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1058,10 +1043,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.mish. This method simply wraps the
-        function, and so the docstring for ivy.mish also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.mish. This method
+        simply wraps the function, and so the docstring for ivy.mish also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1123,10 +1107,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.hardswish. This method simply wraps
-        the function, and so the docstring for ivy.hardswish also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.hardswish. This method
+        simply wraps the function, and so the docstring for ivy.hardswish also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1188,10 +1171,9 @@ class _ContainerWithActivations(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.hardswish. This method simply wraps
-        the function, and so the docstring for ivy.hardswish also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.hardswish. This method
+        simply wraps the function, and so the docstring for ivy.hardswish also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
