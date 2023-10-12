@@ -19,9 +19,8 @@ def to_ivy_module(
     devices=None,
     inplace_update=False,
 ):
-    """
-    Convert an instance of a trainable module from a native framework into a trainable
-    ivy.Module instance.
+    """Convert an instance of a trainable module from a native framework into a
+    trainable ivy.Module instance.
 
     Parameters
     ----------
@@ -74,8 +73,7 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """
-        Convert a Haiku module instance to an Ivy module instance.
+        """Convert a Haiku module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -111,19 +109,19 @@ class ModuleConverters:
         """
         try:
             import haiku as hk
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as exc:
             raise ModuleNotFoundError(
                 "`haiku` was not found installed on your system. Please proceed "
                 "to install it and restart your interpreter to see the changes."
-            )
+            ) from exc
 
         try:
             from haiku._src.data_structures import FlatMapping  # noqa
-        except (ImportError, AttributeError):
+        except (ImportError, AttributeError) as exc:
             raise ImportError(
                 "Unable to import `FlatMapping` from `haiku`. Please check if the "
                 "requested attribute exists."
-            )
+            ) from exc
 
         c_args = ivy.default(constructor_args, [])
         c_kwargs = ivy.default(constructor_kwargs, {})
@@ -168,8 +166,7 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """
-        Convert a Flax module instance to an Ivy module instance.
+        """Convert a Flax module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -205,19 +202,19 @@ class ModuleConverters:
         """
         try:
             import flax  # noqa
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as exc:
             raise ModuleNotFoundError(
                 "`flax` was not found installed on your system. Please proceed "
                 "to install it and restart your interpreter to see the changes."
-            )
+            ) from exc
 
         try:
             import jax
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as exc:
             raise ModuleNotFoundError(
                 "`jax` was not found installed on your system. Please proceed "
                 "to install it and restart your interpreter to see the changes."
-            )
+            ) from exc
 
         c_args = ivy.default(constructor_args, [])
         c_kwargs = ivy.default(constructor_kwargs, {})
@@ -258,8 +255,7 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """
-        Convert a Keras module instance to an Ivy module instance.
+        """Convert a Keras module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -321,8 +317,7 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """
-        Convert a Paddle layer instance to an Ivy module instance.
+        """Convert a Paddle layer instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -378,8 +373,7 @@ class ModuleConverters:
         devices=None,
         inplace_update=False,
     ):
-        """
-        Convert a Torch module instance to an Ivy module instance.
+        """Convert a Torch module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -412,11 +406,11 @@ class ModuleConverters:
         """
         try:
             import torch  # noqa
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as exc:
             raise ModuleNotFoundError(
                 "`torch` was not found installed on your system. Please proceed "
                 "to install it and restart your interpreter to see the changes."
-            )
+            ) from exc
 
         c_args = ivy.default(constructor_args, [])
         c_kwargs = ivy.default(constructor_kwargs, {})

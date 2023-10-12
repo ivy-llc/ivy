@@ -1116,9 +1116,9 @@ def test_container_from_queues(on_device):
                 }
             )
 
-    workers = list()
-    in_queues = list()
-    out_queues = list()
+    workers = []
+    in_queues = []
+    out_queues = []
     queue_load_sizes = [1, 2, 1]
     for i, queue_load_size in enumerate(queue_load_sizes):
         input_queue = multiprocessing.Queue()
@@ -3221,10 +3221,10 @@ def test_container_try_kc(on_device):
 
 def test_container_unify(on_device):
     # on_devices and containers
-    on_devices = list()
+    on_devices = []
     dev0 = on_device
     on_devices.append(dev0)
-    conts = dict()
+    conts = {}
     conts[dev0] = Container(
         {
             "a": ivy.array([1], device=dev0),

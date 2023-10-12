@@ -32,6 +32,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device,
     handle_backend_invalid,
+    temp_asarray_wrapper,
 )
 
 # Helpers #
@@ -43,10 +44,9 @@ def _asarray_handle_nestable(fn: Callable) -> Callable:
 
     @functools.wraps(fn)
     def _asarray_handle_nestable_wrapper(*args, **kwargs):
-        """
-        Call `fn` with the *nestable* property of the function correctly handled. This
-        means mapping the function to the container leaves if any containers are passed
-        in the input.
+        """Call `fn` with the *nestable* property of the function correctly
+        handled. This means mapping the function to the container leaves if any
+        containers are passed in the input.
 
         Parameters
         ----------
@@ -62,7 +62,7 @@ def _asarray_handle_nestable(fn: Callable) -> Callable:
         """
         # This decorator should only be applied to ivy.asarray, so we know where
         # the container must be if there is one.
-        cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        cont_fn = getattr(ivy.Container, f"static_{fn_name}")
         if isinstance(args[0], ivy.Container):
             return cont_fn(*args, **kwargs)
 
@@ -83,28 +83,35 @@ def _ivy_to_native(x):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
             x[i] = _ivy_to_native(item)
-    else:
-        if (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
-            x = ivy.to_native(x, nested=True)
-        elif ivy.is_ivy_array(x):
-            x = ivy.to_native(x)
+    elif (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
+        x = ivy.to_native(x, nested=True)
+    elif ivy.is_ivy_array(x):
+        x = ivy.to_native(x)
     return x
 
 
-def _shape_to_native(x):
+def _shape_to_native(x: Iterable) -> Tuple[int]:
     # checks the first element of the leaf list and
     # converts it to a native array if it is an ivy array
+
+    # This function is to be used with the nested_map function
+    # it was a lambda function before but was replaced with the defined function below
+    def nested_map_shape_fn(x: Iterable) -> List:
+        return x.shape if isinstance(x, ivy.Shape) else x
+
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
             x[i] = _shape_to_native(item)
+
     else:
         if (isinstance(x, (list, tuple)) and len(x) > 0) and (
             isinstance(x[0], ivy.Shape) and ivy.array_mode
         ):
-            x = ivy.nested_map(lambda x: x.shape if isinstance(x, ivy.Shape) else x, x)
+            x = ivy.nested_map(x, nested_map_shape_fn)
         elif isinstance(x, ivy.Shape) and ivy.array_mode:
             x = x.shape
+
     return x
 
 
@@ -128,9 +135,9 @@ def _remove_np_bfloat16(obj):
 def _asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _asarray_to_native_arrays_and_back_wrapper(*args, dtype=None, **kwargs):
-        """
-        Wrap `fn` so that input arrays are all converted to `ivy.NativeArray` instances
-        and return arrays are all converted to `ivy.Array` instances.
+        """Wrap `fn` so that input arrays are all converted to
+        `ivy.NativeArray` instances and return arrays are all converted to
+        `ivy.Array` instances.
 
         This wrapper is specifically for the backend implementations of
         asarray.
@@ -152,10 +159,9 @@ def _asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
 def _asarray_infer_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _asarray_infer_dtype_wrapper(*args, dtype=None, **kwargs):
-        """
-        Determine the correct `dtype`, and then calls the function with the `dtype`
-        passed explicitly. This wrapper is specifically for the backend implementations
-        of asarray.
+        """Determine the correct `dtype`, and then calls the function with the
+        `dtype` passed explicitly. This wrapper is specifically for the backend
+        implementations of asarray.
 
         Parameters
         ----------
@@ -210,10 +216,9 @@ def _asarray_infer_dtype(fn: Callable) -> Callable:
 def _asarray_infer_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _asarray_infer_device_wrapper(*args, device=None, **kwargs):
-        """
-        Determine the correct `device`, and then calls the function with the `device`
-        passed explicitly. This wrapper is specifically for the backend implementations
-        of asarray.
+        """Determine the correct `device`, and then calls the function with the
+        `device` passed explicitly. This wrapper is specifically for the
+        backend implementations of asarray.
 
         Parameters
         ----------
@@ -291,9 +296,8 @@ def arange(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return evenly spaced values within a given interval, with the spacing being
-    specified.
+    """Return evenly spaced values within a given interval, with the spacing
+    being specified.
 
     Values are generated within the half-open interval [start, stop) (in other words,
     the interval including start but excluding stop). For integer arguments the function
@@ -377,6 +381,7 @@ def arange(
     )
 
 
+@temp_asarray_wrapper
 @handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -402,8 +407,7 @@ def asarray(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Convert the input to an array.
+    """Convert the input to an array.
 
     Parameters
     ----------
@@ -488,8 +492,7 @@ def zeros(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a new array having a specified ``shape`` and filled with zeros.
+    """Return a new array having a specified ``shape`` and filled with zeros.
 
     Parameters
     ----------
@@ -553,8 +556,7 @@ def ones(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a new array having a specified ``shape`` and filled with ones.
+    """Return a new array having a specified ``shape`` and filled with ones.
 
     .. note::
 
@@ -652,9 +654,8 @@ def full_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a new array filled with ``fill_value`` and having the same ``shape`` as an
-    input array ``x`` .
+    """Return a new array filled with ``fill_value`` and having the same
+    ``shape`` as an input array ``x`` .
 
     Parameters
     ----------
@@ -760,9 +761,8 @@ def ones_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a new array filled with ones and having the same shape as an input array
-    ``x``.
+    """Return a new array filled with ones and having the same shape as an
+    input array ``x``.
 
     .. note::
 
@@ -880,9 +880,8 @@ def zeros_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a new array filled with zeros and having the same ``shape`` as an input array
-    ``x``.
+    """Return a new array filled with zeros and having the same ``shape`` as an
+    input array ``x``.
 
     Parameters
     ----------
@@ -993,8 +992,8 @@ def tril(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the lower triangular part of a matrix (or a stack of matrices) ``x``.
+    """Return the lower triangular part of a matrix (or a stack of matrices)
+    ``x``.
 
     .. note::
 
@@ -1049,8 +1048,8 @@ def triu(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the upper triangular part of a matrix (or a stack of matrices) ``x``.
+    """Return the upper triangular part of a matrix (or a stack of matrices)
+    ``x``.
 
     .. note::
 
@@ -1107,8 +1106,7 @@ def empty(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a new array of given shape and type, filled with zeros.
+    """Return a new array of given shape and type, filled with zeros.
 
     Parameters
     ----------
@@ -1158,8 +1156,7 @@ def empty_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return an uninitialized array with the same shape as an input array x.
+    """Return an uninitialized array with the same shape as an input array x.
 
     Parameters
     ----------
@@ -1167,7 +1164,7 @@ def empty_like(
         input array from which to derive the output array shape.
     dtype
         output array data type. If dtype is None, the output array data type must be
-        inferred from x. Deafult: ``None``.
+        inferred from x. Default: ``None``.
     device
         device on which to place the created array. If device is None, the output array
         device must be inferred from x. Default: ``None``.
@@ -1213,8 +1210,8 @@ def eye(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a two-dimensional array with ones on the k diagonal and zeros elsewhere.
+    """Return a two-dimensional array with ones on the k diagonal and zeros
+    elsewhere.
 
     Parameters
     ----------
@@ -1356,8 +1353,8 @@ def linspace(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Generate a certain number of evenly-spaced values in an interval along a given axis.
+    """Generate a certain number of evenly-spaced values in an interval along a
+    given axis.
 
     See :math:`arange` that allows to specify the step size of evenly spaced values in
     an interval.
@@ -1459,8 +1456,7 @@ def meshgrid(
     indexing: str = "xy",
     out: Optional[ivy.Array] = None,
 ) -> List[ivy.Array]:
-    """
-    Return coordinate matrices from coordinate vectors.
+    """Return coordinate matrices from coordinate vectors.
 
     Parameters
     ----------
@@ -1584,8 +1580,8 @@ def full(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a new array having a specified ``shape`` and filled with ``fill_value``.
+    """Return a new array having a specified ``shape`` and filled with
+    ``fill_value``.
 
     Parameters
     ----------
@@ -1687,8 +1683,7 @@ def full(
 def to_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ):
-    """
-    Return PyCapsule Object.
+    """Return PyCapsule Object.
 
     Parameters
     ----------
@@ -1727,9 +1722,8 @@ def to_dlpack(
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """
-    Return a new array containing the data from another (array) object with a
-    ``__dlpack__`` method.
+    """Return a new array containing the data from another (array) object with
+    a ``__dlpack__`` method.
 
     Parameters
     ----------
@@ -1785,8 +1779,7 @@ def copy_array(
     to_ivy_array: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Copy an array.
+    """Copy an array.
 
     Parameters
     ----------
@@ -1891,8 +1884,7 @@ def native_array(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.NativeArray:
-    """
-    Convert the input to a native array.
+    """Convert the input to a native array.
 
     Parameters
     ----------
@@ -1956,9 +1948,9 @@ def one_hot(
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a one-hot array. The locations represented by indices in the parameter
-    indices take value on_value, while all other locations take value off_value.
+    """Return a one-hot array. The locations represented by indices in the
+    parameter indices take value on_value, while all other locations take value
+    off_value.
 
     Parameters
     ----------
@@ -2072,9 +2064,8 @@ def logspace(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Generate a certain number of evenly-spaced values in log space, in an interval along
-    a given axis.
+    """Generate a certain number of evenly-spaced values in log space, in an
+    interval along a given axis.
 
     Parameters
     ----------
@@ -2177,8 +2168,7 @@ def frombuffer(
     count: Optional[int] = -1,
     offset: Optional[int] = 0,
 ) -> ivy.Array:
-    r"""
-    Interpret a buffer as a 1-dimensional array.
+    r"""Interpret a buffer as a 1-dimensional array.
 
     .. note::
         Note that either of the following must be true:
@@ -2243,16 +2233,16 @@ def triu_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array]:
-    """
-    Return the indices of the upper triangular part of a row by col matrix in a 2-by-N
-    shape (tuple of two N dimensional arrays), where the first row contains row
-    coordinates of all indices and the second row contains column coordinates. Indices
-    are ordered based on rows and then columns.  The upper triangular part of the matrix
-    is defined as the elements on and above the diagonal.  The argument k controls which
-    diagonal to consider. If k = 0, all elements on and above the main diagonal are
-    retained. A positive value excludes just as many diagonals above the main diagonal,
-    and similarly a negative value includes just as many diagonals below the main
-    diagonal. The main diagonal are the set of indices {(i,i)} for i∈[0,min{n_rows,
+    """Return the indices of the upper triangular part of a row by col matrix
+    in a 2-by-N shape (tuple of two N dimensional arrays), where the first row
+    contains row coordinates of all indices and the second row contains column
+    coordinates. Indices are ordered based on rows and then columns.  The upper
+    triangular part of the matrix is defined as the elements on and above the
+    diagonal.  The argument k controls which diagonal to consider. If k = 0,
+    all elements on and above the main diagonal are retained. A positive value
+    excludes just as many diagonals above the main diagonal, and similarly a
+    negative value includes just as many diagonals below the main diagonal. The
+    main diagonal are the set of indices {(i,i)} for i∈[0,min{n_rows,
     n_cols}−1].
 
     Notes

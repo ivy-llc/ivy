@@ -22,8 +22,7 @@ def invert_permutation(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
 ) -> ivy.Array:
-    """
-    Compute the inverse of an index permutation.
+    """Compute the inverse of an index permutation.
 
     Parameters
     ----------
@@ -62,11 +61,11 @@ def lexsort(
     axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Perform an indirect stable sort with an array of keys in ascending order, with the
-    last key used as primary sort order, second-to-last for secondary, and so on. Each
-    row of the key must have the same length, which will also be the length of the
-    returned array of integer indices, which describes the sort order.
+    """Perform an indirect stable sort with an array of keys in ascending
+    order, with the last key used as primary sort order, second-to-last for
+    secondary, and so on. Each row of the key must have the same length, which
+    will also be the length of the returned array of integer indices, which
+    describes the sort order.
 
     Parameters
     ----------

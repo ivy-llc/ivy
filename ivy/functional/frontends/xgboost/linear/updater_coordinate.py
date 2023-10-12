@@ -8,15 +8,15 @@ from ivy.functional.frontends.xgboost.linear.coordinate_common import (
 
 
 def coordinate_updater(gpair, data, lr, weight, n_feat, n_iter, reg_alpha, reg_lambda):
-    """
-    Implements one step of coordinate descent. The original optimizer implements
-    parallel calculations. The below code is an approximation of the original one, but
-    rather than computing the update direction for a single parameter at a time using a
-    for loop and cumulative gradients, it does the update in parallel by means of
-    matrix-vector multiplications. Given that xgboost's updater is non-deterministic,
-    the approximated and original implementations converge to pretty the same optima,
-    resulting in metrics' values(accuracy, f1-score) differing at a level of 0.001(for
-    separate runs metrics may end up being the same).
+    """Implements one step of coordinate descent. The original optimizer
+    implements parallel calculations. The below code is an approximation of the
+    original one, but rather than computing the update direction for a single
+    parameter at a time using a for loop and cumulative gradients, it does the
+    update in parallel by means of matrix-vector multiplications. Given that
+    xgboost's updater is non-deterministic, the approximated and original
+    implementations converge to pretty the same optima, resulting in metrics'
+    values(accuracy, f1-score) differing at a level of 0.001(for separate runs
+    metrics may end up being the same).
 
     Parameters
     ----------

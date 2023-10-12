@@ -1,4 +1,5 @@
-"""Collection of Paddle network layers, wrapped to fit Ivy syntax and signature."""
+"""Collection of Paddle network layers, wrapped to fit Ivy syntax and
+signature."""
 
 from typing import Optional, Tuple, Union, Sequence
 
