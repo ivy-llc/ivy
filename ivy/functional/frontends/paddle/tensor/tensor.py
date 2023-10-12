@@ -939,7 +939,7 @@ class Tensor:
 
         diag_start = max(0, offset)
         diag_end = diag_start + diaglen
-
+        # should use ivy.inplace_update(self, res) instead
         if inplace:
             # Modify the input tensor 'x' directly
             x[:diaglen, diag_start:diag_end] = y
@@ -953,11 +953,6 @@ class Tensor:
     #Paddle source code implementation 
     def fill_diagonal_tensor_(self, y, offset=0, dim1=0, dim2=1, name=None):
         """
-        **Notes**:
-            **This API is ONLY available in Dygraph mode**
-
-        This function fills the source Tensor `y` into the `x` Tensor's diagonal inplace.
-
         Args:
             y (Tensor): `y` is the Tensor to be filled in `x`
             dim1 (int, optional): First dimension with respect to which to fill diagonal. Default: 0.
@@ -972,14 +967,12 @@ class Tensor:
             list: dtype is the same as `x` Tensor
 
         Examples:
-            .. code-block:: python
-            
                 x = Tensor(np.random.rand(5, 5))  # Create a random Tensor 'x'
                 y = Tensor(np.random.rand(5))  # Create a random Tensor 'y'
                 x.fill_diagonal_tensor_(y)
                 print(x)  # Check the modified 'x' Tensor
 
         """
-        self._ivy_array = self.fill_diagonal_tensor_impl(self._ivy_array, y, offset=offset, dim1=dim1, dim2=dim2, inplace=True)
+        self = self.fill_diagonal_tensor_impl(self, y, offset=offset, dim1=dim1, dim2=dim2, inplace=True)
         return self
         
