@@ -167,6 +167,30 @@ def nanmean(
 nanmean.support_native_out = True
 
 
+def nanmin(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.nanmin(
+        a=a,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+        initial=initial,
+        where=where,
+    )
+
+
+nanmin.support_native_out = True
+
+
 def nanprod(
     a: np.ndarray,
     /,
