@@ -9,8 +9,7 @@ is_snakeviz = find_spec("snakeviz")
 
 
 class Profiler(cProfile.Profile):
-    """
-    A Profiler class that allows code profiling.
+    """A Profiler class that allows code profiling.
 
     Attributes
     ----------
