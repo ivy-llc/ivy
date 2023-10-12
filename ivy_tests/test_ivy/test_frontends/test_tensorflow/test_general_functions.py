@@ -2369,18 +2369,23 @@ def _sequence_mask_helper(draw):
     )
 
     max_len = draw(st.integers(min_value=max_val, max_value=max_val))
-    dtype = draw(st.sampled_from([
-    'float16',
-    'uint8',
-    'complex128',
-    'bool',
-    'float64',
-    'int8',
-    'int16',
-    'complex64',
-    'float32',
-    'int32',
-    'int64']))
+    dtype = draw(
+        st.sampled_from(
+            [
+                "float16",
+                "uint8",
+                "complex128",
+                "bool",
+                "float64",
+                "int8",
+                "int16",
+                "complex64",
+                "float32",
+                "int32",
+                "int64",
+            ]
+        )
+    )
     return in_dtype, lens, max_len, dtype
 
 
@@ -2408,8 +2413,9 @@ def test_tensorflow_sequence_mask(
         on_device=on_device,
         lengths=lens[0],
         maxlen=max_len,
-        dtype=dtype
+        dtype=dtype,
     )
+
 
 # @handle_frontend_test(
 #     fn_tree="tensorflow.zeros_initializer",
@@ -2442,4 +2448,3 @@ def test_tensorflow_sequence_mask(
 #         shape=shape,
 #         dtype=dtype[0],
 #     )
-

@@ -657,7 +657,9 @@ def unravel_index(indices, dims, out=None, name=None):
     return ivy.unravel_index(indices, dims, out=out)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("int8","int16","int32","int64")}, "tensorflow")
+@with_supported_dtypes(
+    {"2.13.0 and below": ("int8", "int16", "int32", "int64")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
     if maxlen is None:
@@ -681,7 +683,7 @@ def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
         return result
     else:
         return ivy.astype(result, dtype)
-      
+
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
