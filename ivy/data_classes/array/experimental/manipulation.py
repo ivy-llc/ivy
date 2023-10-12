@@ -1407,7 +1407,6 @@ def sequence_insert(
     *,
     out: None = None,
 ) -> ivy.Array:
-
     """Inserts values into a sequence at the specified indices.
 
     Parameters
@@ -1455,7 +1454,9 @@ def sequence_insert(
     values = values.ravel()
 
     # Create a new tensor with the values inserted at the specified indices.
-    new_tensor = ivy.concatenate([arr[:indices[0]], values, arr[indices[-1:] + 1]], axis=axis)
+    new_tensor = ivy.concatenate(
+        [arr[: indices[0]], values, arr[indices[-1:] + 1]], axis=axis
+    )
 
     if out is not None:
         new_tensor = new_tensor.at[out].set(new_tensor)
