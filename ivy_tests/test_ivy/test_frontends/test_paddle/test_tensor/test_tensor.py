@@ -2124,12 +2124,10 @@ def test_paddle_tensor_exp_(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="expand",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
-    ),
+    dtype_x_shape=_reshape_helper(),
 )
 def test_paddle_tensor_expand(
-    dtype_and_x,
+    dtype_x_shape,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -2137,7 +2135,15 @@ def test_paddle_tensor_expand(
     on_device,
     backend_fw,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, shape = dtype_x_shape
+    assume(len(shape) != 0)
+    assume(len(shape) <= 6)
+    assume(len(x.shape) <= 6)
+    assume(len(x.shape) < len(shape))
+    assume(shape.count(0) == 1)
+    shape = {
+        "shape": shape,
+    }
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -2145,9 +2151,7 @@ def test_paddle_tensor_expand(
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "shape": x[1],
-        },
+        method_all_as_kwargs_np=shape,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
