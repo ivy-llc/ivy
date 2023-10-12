@@ -504,7 +504,6 @@ def sequence_insert(
     *,
     out: None = None,
 ) -> torch.Tensor:
-
     if axis is None:
         axis = -1
 
@@ -514,7 +513,7 @@ def sequence_insert(
     indices = indices.view(-1)
     values = values.view(-1)
 
-    new_tensor = torch.cat([arr[:indices[0]], values, arr[indices[-1:] + 1]], dim=axis)
+    new_tensor = torch.cat([arr[: indices[0]], values, arr[indices[-1:] + 1]], dim=axis)
 
     if out is not None:
         new_tensor = new_tensor.to(out)

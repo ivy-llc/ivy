@@ -442,7 +442,6 @@ def sequence_insert(
     *,
     out: None = None,
 ) -> tf.Tensor:
-
     if axis is None:
         axis = -1
 
@@ -452,7 +451,9 @@ def sequence_insert(
     indices = tf.reshape(indices, [-1])
     values = tf.reshape(values, [-1])
 
-    new_tensor = tf.concat([arr[:indices[0]], values, arr[indices[-1:] + 1]], axis=axis)
+    new_tensor = tf.concat(
+        [arr[: indices[0]], values, arr[indices[-1:] + 1]], axis=axis
+    )
 
     if out is not None:
         new_tensor = tf.identity(new_tensor, name=out)
