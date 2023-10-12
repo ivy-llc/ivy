@@ -23,7 +23,44 @@ except ImportError:
     tf.TensorShape = None
 
 
-class FrontendFunctionTestCaseRunner(TestCaseRunner):
+class FrontendTestCaseRunner(TestCaseRunner):
+    def __init__(
+        self,
+        backend_handler,
+        backend_to_test,
+        frontend,
+        on_device,
+        rtol,
+        atol,
+        tolerance_dict,
+        traced_fn,
+        test_values,
+    ):
+        self.backend_handler = backend_handler
+        self.backend_to_test = backend_to_test
+        self.frontend = frontend
+        self.on_device = on_device
+        self.rtol = rtol
+        self.atol = atol
+        self.tolerance_dict = tolerance_dict
+        self.traced_fn = traced_fn
+        self.test_values = test_values
+
+    def _check_assertions(self, target_results, ground_truth_results):
+        if self.test_values:
+            assertion_checker = FrontendAssertionChecker(
+                target_results,
+                ground_truth_results,
+                self.backend_to_test,
+                self.frontend,
+                self.tolerance_dict,
+                self.rtol,
+                self.atol,
+            )
+            assertion_checker.check_assertions()
+
+
+class FrontendFunctionTestCaseRunner(FrontendTestCaseRunner):
     def __init__(
         self,
         backend_handler,
@@ -39,16 +76,18 @@ class FrontendFunctionTestCaseRunner(TestCaseRunner):
         atol,
     ):
         self.fn_tree = fn_tree
-        self.backend_handler = backend_handler
-        self.backend_to_test = backend_to_test
         self.gt_fn_tree = gt_fn_tree
-        self.frontend = frontend
-        self.on_device = on_device
-        self.traced_fn = traced_fn
-        self.test_values = test_values
-        self.tolerance_dict = tolerance_dict
-        self.rtol = rtol
-        self.atol = atol
+        super().__init__(
+            backend_handler,
+            backend_to_test,
+            frontend,
+            on_device,
+            rtol,
+            atol,
+            tolerance_dict,
+            traced_fn,
+            test_values,
+        )
 
     def _run_target(self, input_dtypes, test_arguments, test_flags):
         sub_runner_target = FunctionTestCaseSubRunner(
@@ -77,19 +116,6 @@ class FrontendFunctionTestCaseRunner(TestCaseRunner):
         ret = sub_runner_gt.get_results(test_arguments)
         return ret
 
-    def _check_assertions(self, target_results, ground_truth_results):
-        if self.test_values:
-            assertion_checker = FrontendAssertionChecker(
-                target_results,
-                ground_truth_results,
-                self.backend_to_test,
-                self.frontend,
-                self.tolerance_dict,
-                self.rtol,
-                self.atol,
-            )
-            assertion_checker.check_assertions()
-
     def run(self, input_dtypes, test_arguments, test_flags):
         # getting results from target and ground truth
         target_results: TestCaseSubRunnerResult = self._run_target(
@@ -102,7 +128,7 @@ class FrontendFunctionTestCaseRunner(TestCaseRunner):
         return self._check_assertions(target_results, ground_truth_results)
 
 
-class FrontendMethodTestCaseRunner(TestCaseRunner):
+class FrontendMethodTestCaseRunner(FrontendTestCaseRunner):
     def __init__(
         self,
         backend_handler,
@@ -116,16 +142,18 @@ class FrontendMethodTestCaseRunner(TestCaseRunner):
         tolerance_dict,
         test_values,
     ):
-        self.backend_handler = backend_handler
-        self.frontend = frontend
         self.frontend_method_data = frontend_method_data
-        self.backend_to_test = backend_to_test
-        self.on_device = on_device
-        self.traced_fn = traced_fn
-        self.rtol = rtol_
-        self.atol = atol_
-        self.tolerance_dict = tolerance_dict
-        self.test_values = test_values
+        super().__init__(
+            backend_handler,
+            backend_to_test,
+            frontend,
+            on_device,
+            rtol_,
+            atol_,
+            tolerance_dict,
+            traced_fn,
+            test_values,
+        )
 
     def _run_target(
         self,
@@ -175,19 +203,6 @@ class FrontendMethodTestCaseRunner(TestCaseRunner):
             init_all_as_kwargs_np, method_all_as_kwargs_np
         )
         return ret
-
-    def _check_assertions(self, target_results, ground_truth_results):
-        if self.test_values:
-            assertion_checker = FrontendAssertionChecker(
-                target_results,
-                ground_truth_results,
-                self.backend_to_test,
-                self.frontend,
-                self.tolerance_dict,
-                self.rtol,
-                self.atol,
-            )
-            assertion_checker.check_assertions()
 
     def run(
         self,
