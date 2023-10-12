@@ -8,6 +8,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 )
 from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
 from ivy.func_wrapper import (
+    with_supported_device_and_dtypes,
     with_unsupported_dtypes,
 )
 
@@ -28,6 +29,10 @@ def argmax(a, axis=None, out=None, keepdims=False):
 
 # argmin
 @to_ivy_arrays_and_back
+@with_supported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int16", "int32", "int64")}},
+    "paddle",
+)
 def argmin(a, axis=None, out=None, keepdims=None):
     if a is not None:
         if isinstance(a, list):

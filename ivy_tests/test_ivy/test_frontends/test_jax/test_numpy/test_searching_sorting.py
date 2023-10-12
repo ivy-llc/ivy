@@ -13,10 +13,6 @@ from ...test_numpy.test_sorting_searching_counting.test_searching import (
 )
 
 
-import ivy
-import pytest
-
-
 # --- Helpers --- #
 # --------------- #
 
@@ -131,25 +127,18 @@ def test_jax_argmin(
     test_flags,
 ):
     input_dtype, x, axis = dtype_and_x
-
-    try:
-        helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            frontend=frontend,
-            backend_to_test=backend_fw,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            a=x[0],
-            axis=axis,
-            out=None,
-            keepdims=keepdims,
-        )
-    except ivy.utils.exceptions.IvyBackendException as e:
-        if "paddle: argmin" in str(e) and "int8" in str(e):
-            pytest.skip("argmin with int8 not supported by PaddlePaddle")
-        else:
-            raise e
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        out=None,
+        keepdims=keepdims,
+    )
 
 
 # argsort
