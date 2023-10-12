@@ -840,6 +840,28 @@ def embedding(
     return embeddings
 
 
+def rfft(
+    x: JaxArray,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    x = x.real
+    if x.dtype == jnp.float16:
+        x = x.astype(jnp.float32)
+
+    ret = jnp.fft.rfft(x, n=n, axis=axis, norm=norm)
+
+    if x.dtype != jnp.float64:
+        ret = ret.astype(jnp.complex64)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 @with_unsupported_dtypes({"0.4.18 and below": ("float16", "complex")}, backend_version)
 def rfftn(
     x: JaxArray,
