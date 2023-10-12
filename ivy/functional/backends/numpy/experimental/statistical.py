@@ -178,6 +178,8 @@ def nanmin(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
+    if where is None:
+        where = True
     return np.nanmin(
         a=a,
         axis=axis,

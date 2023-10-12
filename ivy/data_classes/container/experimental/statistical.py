@@ -456,7 +456,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         initial: Optional[Union[int, float, complex, ivy.Container]] = None,
-        where: Optional[Union[ivy.Array, ivy.Container]] = True,
+        where: Optional[Union[ivy.Array, ivy.Container]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
