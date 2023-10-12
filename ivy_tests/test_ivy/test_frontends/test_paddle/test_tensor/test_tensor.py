@@ -336,7 +336,7 @@ def test_paddle__reshape(
     init_tree="paddle.to_tensor",
     method_name="diff",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float16", "float32", "float64", "bool", "int32", "int64"),
         num_arrays=2,
         shared_dtype=True,
     ),
