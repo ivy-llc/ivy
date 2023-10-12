@@ -381,7 +381,7 @@ def _handle_inplace_mode(ivy_pack=None):
         current_backend != ""
         and not _inplace_warning_cache.get(current_backend)
         and not ivy_pack.native_inplace_support
-        and ivy_pack.inplace_mode == "lenient"
+        and ivy_pack.inplace_mode == "strict"
     ):
         warnings.warn(
             f"The current backend: '{current_backend}' does not support "
