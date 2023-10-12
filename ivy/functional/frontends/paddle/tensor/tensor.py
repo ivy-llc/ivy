@@ -551,8 +551,8 @@ class Tensor:
         },
         "paddle",
     )
-    def diff(self_, n=1, axis=-1, prepend=None, append=None, name=None):
-        self_ = paddle_frontend.diff(self_)
+    def diff(self_,n=1, axis=-1, prepend=None, append=None, name=None):
+        self_ = paddle_frontend.diff(self_,n=n, axis=axis, prepend=prepend, append=append)
         return self_
 
     @with_unsupported_dtypes(
