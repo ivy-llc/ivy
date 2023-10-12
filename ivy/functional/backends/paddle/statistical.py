@@ -64,8 +64,20 @@ def min(
     return ret.astype(ret_dtype)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64", "int32", "int64")},
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "bfloat16",
+                "complex64",
+                "complex128",
+            )
+        }
+    },
     backend_version,
 )
 def max(
@@ -102,8 +114,21 @@ def max(
     return ret.astype(ret_dtype)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "complex", "float32", "float64")}, backend_version
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "bfloat16",
+                "complex64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
 )
 def mean(
     x: paddle.Tensor,

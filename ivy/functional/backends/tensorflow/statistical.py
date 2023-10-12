@@ -39,6 +39,17 @@ def min(
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.14.0 and below": {
+            "cpu": (
+                "complex",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
 def max(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -65,7 +76,10 @@ def max(
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {"2.14.0 and below": {"cpu": ("bool",)}},
+    backend_version,
+)
 def mean(
     x: Union[tf.Tensor, tf.Variable],
     /,
