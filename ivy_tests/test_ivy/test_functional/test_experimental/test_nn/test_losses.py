@@ -7,21 +7,48 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
-# cosine embedding loss
+# --- Helpers --- #
+# --------------- #
+
+
+# cosine_embedding_loss
+@st.composite
+def _loss_helper(draw):
+    dtype, target = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(kind="integer"),
+            num_arrays=1,
+            min_value=-1,
+            max_value=1,
+            min_num_dims=1,
+            max_num_dims=10,
+            min_dim_size=1,
+            max_dim_size=100,
+        )
+    )
+    if target[0][0] == 0:
+        target[0][0] = 1
+    return dtype, target
+
+
+# --- Main --- #
+# ------------ #
+
+
 @handle_test(
     fn_tree="functional.ivy.experimental.cosine_embedding_loss",
     dtype_and_input1_input2=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        min_value=1e-04,
-        max_value=10,
+        min_value=1e-4,
         min_num_dims=1,
         max_num_dims=2,
-        min_dim_size=5,
+        min_dim_size=1,
+        max_dim_size=100,
     ),
-    dtype_and_target=helpers.dtype_and_values(),
-    reduction=st.sampled_from(["none", "sum", "mean"]),
-    margin=helpers.floats(min_value=0.0, max_value=0.5),
+    dtype_and_target=_loss_helper(),
+    reduction=st.sampled_from([["none", "sum", "mean"]]),
+    margin=st.sampled_from([0.0, 0.5]),
 )
 def test_cosine_embedding_loss(
     dtype_and_input1_input2,
@@ -29,7 +56,7 @@ def test_cosine_embedding_loss(
     reduction,
     margin,
     test_flags,
-    backend_fn,
+    backend_fw,
     fn_name,
     on_device,
 ):
@@ -39,7 +66,7 @@ def test_cosine_embedding_loss(
     helpers.test_function(
         input_dtypes=input_dtype + target_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fn,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         input1=input1[0],
