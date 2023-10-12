@@ -341,6 +341,20 @@ def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
     return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
 
 
+@with_unsupported_dtypes({"2.14.0 and below": ("int8", "int16", "unsigned")}, "tensorflow")
+@to_ivy_arrays_and_back
+def random_uniform_initializer(shape, minval=None, maxval=None, dtype=ivy.float32, seed=None, name=None):
+    try:
+        minval = float(minval)
+    except (ValueError, TypeError):
+        minval = 0.0
+    try:
+        maxval = float(maxval)
+    except (ValueError, TypeError):
+        maxval = 1.0
+    return ivy.random_uniform(shape=shape, low=minval, high=maxval, dtype=dtype, seed=seed)
+
+
 @with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
