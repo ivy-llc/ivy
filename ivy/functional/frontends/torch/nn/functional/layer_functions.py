@@ -164,8 +164,8 @@ def _lstm_cell(
         ht_list.append(ht)
 
     if batch_sizes is None:
-        c = ivy.expand_dims(ct_list[-1], axis=0)
-        h = ivy.expand_dims(ht_list[-1], axis=0)
+        c = ct_list[-1]
+        h = ht_list[-1]
         output = ivy.concat(ht_list, axis=0)
     else:
         ct_list = ivy.concat(ct_list, axis=0)
@@ -214,6 +214,7 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional, batch_sizes=None):
             weights[1][0],
             biases[0][0],
             biases[1][0],
+            batch_sizes=batch_sizes,
         )
         x_reversed = ivy.flip(x, axis=0)
         result_bw, (h_bw, c_bw) = _lstm_cell(
@@ -224,6 +225,7 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional, batch_sizes=None):
             weights[1][1],
             biases[0][1],
             biases[1][1],
+            batch_sizes=batch_sizes,
         )
         result_bw = ivy.flip(result_bw, axis=0)
         result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
