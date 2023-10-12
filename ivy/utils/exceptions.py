@@ -373,7 +373,7 @@ def handle_exceptions(fn: Callable) -> Callable:
 _inplace_warning_cache = {}
 
 
-def _handle_inplace_mode(ivy_pack=None):
+def _handle_(ivy_pack=None):
     if not ivy_pack:
         ivy_pack = ivy
     current_backend = ivy_pack.current_backend_str()
@@ -381,14 +381,14 @@ def _handle_inplace_mode(ivy_pack=None):
         current_backend != ""
         and not _inplace_warning_cache.get(current_backend)
         and not ivy_pack.native_inplace_support
-        and ivy_pack.inplace_mode == "strict"
+        and ivy_pack. == "lenient"
     ):
         warnings.warn(
             f"The current backend: '{current_backend}' does not support "
             "inplace updates natively. Ivy would quietly create new arrays when "
             "using inplace updates with this backend, leading to memory overhead "
             "(same applies for views). If you want to control your memory "
-            "management, consider doing ivy.set_inplace_mode('strict') which "
+            "management, consider doing ivy.set_('strict') which "
             "should raise an error whenever an inplace update is attempted "
             "with this backend."
         )
@@ -403,10 +403,10 @@ def _check_inplace_update_support(x, ensure_in_backend):
     if (
         ensure_in_backend
         or ivy.is_native_array(x)
-        or (ivy.inplace_mode == "strict" and not is_tf_variable)
+        or (ivy. == "strict" and not is_tf_variable)
     ):
         raise ivy.utils.exceptions.InplaceUpdateException(
             f"{current_backend} does not support inplace updates "
             "and ivy cannot support the operation in 'strict' mode\n"
-            "To enable inplace update, use ivy.set_inplace_mode('lenient')\n"
+            "To enable inplace update, use ivy.set_('lenient')\n"
         )
