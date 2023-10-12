@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Ivy 🛎
-        uses: actions/checkout@v2.4.3
+        uses: actions/checkout@v2.5.1
         with:
           path: ivy
           persist-credentials: false
