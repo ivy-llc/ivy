@@ -152,6 +152,18 @@ Max = to_ivy_arrays_and_back(
         )
     )
 )
+MaxPool3D = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.14.0 and below": ("float32",),
+        },
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.nn.max_pool3d,
+        )
+    )
+)
 Maximum = to_ivy_arrays_and_back(
     with_unsupported_dtypes(
         {
@@ -567,6 +579,14 @@ def FFT(*, input, name="FFT"):
 @to_ivy_arrays_and_back
 def FFT2D(*, input, name="FFT2D"):
     return ivy.astype(ivy.fft2(input, dim=(-2, -1)), input.dtype)
+
+
+@to_ivy_arrays_and_back
+def FFT3D(*, input, name="FFT3D"):
+    fft_result = ivy.fft(input, -1)
+    fft_result = ivy.fft(fft_result, -2)
+    fft_result = ivy.fft(fft_result, -3)
+    return ivy.astype(fft_result, input.dtype)
 
 
 @to_ivy_arrays_and_back

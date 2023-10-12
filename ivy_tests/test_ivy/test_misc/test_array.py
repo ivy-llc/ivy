@@ -2257,7 +2257,8 @@ def test_array_function():
             return HANDLED_FUNCTIONS[func](*args, **kwargs)
 
     def implements(ivy_function):
-        """Register an __ivy_array_function__ implementation for MyArray objects."""
+        """Register an __ivy_array_function__ implementation for MyArray
+        objects."""
 
         def decorator(func):
             HANDLED_FUNCTIONS[ivy_function] = func
