@@ -241,7 +241,7 @@ def _pack_padded_sequence(input, lengths):
         batch_sizes = []
         for i in range(int(max(lengths))):
             valid_data_mask = lengths > i
-            data.append(input[i][valid_data_mask])
+            data.append(input[valid_data_mask, i])
             batch_sizes.append(int(sum(valid_data_mask)))
         data = ivy.concat(data)
         batch_sizes = ivy.array(batch_sizes, dtype=ivy.int64)
