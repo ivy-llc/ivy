@@ -737,8 +737,7 @@ def scaled_tanh(
     beta: float = 0.67,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the scaled hyperbolic tangent (tanh) activation.
+    """Compute the scaled hyperbolic tangent (tanh) activation.
 
     The scaled tanh activation function is defined as:
     out = alpha * tanh(beta * x)

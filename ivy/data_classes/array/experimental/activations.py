@@ -398,10 +398,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         beta: float = 0.67,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.scaled_tanh. This method simply wraps
-        the function, and so the docstring for ivy.scaled_tanh also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.scaled_tanh. This method
+        simply wraps the function, and so the docstring for ivy.scaled_tanh
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
