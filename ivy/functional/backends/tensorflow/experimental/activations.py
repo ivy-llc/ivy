@@ -111,3 +111,27 @@ def tanhshrink(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
+def celu(
+    x: Tensor,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    return tf.math.maximum(0, x) + alpha * tf.math.expm1(tf.math.minimum(0, x) / alpha)
+
+
+@with_unsupported_dtypes({"2.14.0 and below": ("uint16",)}, backend_version)
+def scaled_tanh(
+    x: Tensor,
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    return alpha * tf.nn.tanh(beta * x)
