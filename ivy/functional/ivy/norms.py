@@ -33,8 +33,7 @@ def layer_norm(
     new_std: float = 1.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply Layer Normalization over a mini-batch of inputs.
+    """Apply Layer Normalization over a mini-batch of inputs.
 
     Parameters
     ----------
@@ -145,7 +144,7 @@ layer_norm.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }

@@ -136,7 +136,7 @@ class ModuleWithBuffer(ivy.Module):
     def __init__(self, *args, **kwargs):
         pass
 
-    def _forward(*args, **kwargs):
+    def _forward(self, *args, **kwargs):
         pass
 
 
@@ -680,7 +680,7 @@ def test_module_training(batch_shape, input_channels, output_channels, on_device
     assert ivy.max(ivy.abs(grads.linear1.w)) > 0
     assert ivy.max(ivy.abs(grads.linear2.b)) > 0
     assert ivy.max(ivy.abs(grads.linear2.w)) > 0
-    # compilation test
+    # tracing test
     if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return
@@ -728,7 +728,7 @@ def test_module_training_with_duplicate(batch_shape, channels, same_layer, on_de
     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
     if not same_layer:
         assert ivy.max(ivy.abs(grads.linear1.b)) > 0
-    # compilation test
+    # tracing test
     if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return
@@ -781,7 +781,7 @@ def test_module_w_dict_training(
     assert ivy.max(ivy.abs(grads.layers.linear1.w)) > 0
     assert ivy.max(ivy.abs(grads.layers.linear2.b)) > 0
     assert ivy.max(ivy.abs(grads.layers.linear2.w)) > 0
-    # compilation test
+    # tracing test
     if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return
@@ -834,7 +834,7 @@ def test_module_w_list_training(
     assert ivy.max(ivy.abs(grads.layers.v1.w)) > 0
     assert ivy.max(ivy.abs(grads.layers.v2.b)) > 0
     assert ivy.max(ivy.abs(grads.layers.v2.w)) > 0
-    # compilation test
+    # tracing test
     if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return
@@ -905,7 +905,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, on_dev
             input_channels, output_channels, device=on_device, v=v, with_partial_v=True
         )
         raise Exception(
-            "TrainableModule did not raise exception desipite being passed "
+            "TrainableModule did not raise exception despite being passed "
             "with wrongly shaped variables."
         )
     except ivy.utils.exceptions.IvyException:
@@ -922,7 +922,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, on_dev
     try:
         TrainableModule(input_channels, output_channels, device=on_device, v=v)
         raise Exception(
-            "TrainableModule did not raise exception desipite being passed "
+            "TrainableModule did not raise exception despite being passed "
             "with wrongly shaped variables."
         )
     except ivy.utils.exceptions.IvyException:

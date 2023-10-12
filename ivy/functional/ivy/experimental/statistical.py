@@ -7,7 +7,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_nestable,
     infer_dtype,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -23,7 +23,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -38,8 +38,7 @@ def histogram(
     density: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the histogram of the array ``a``.
+    """Compute the histogram of the array ``a``.
 
     .. note::
         Given bins = [c0, ..., cK], defining intervals I0 = [c0, c1), I1 = [c1, c2),
@@ -156,7 +155,7 @@ def histogram(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def median(
     input: ivy.Array,
     /,
@@ -165,8 +164,7 @@ def median(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the median along the specified axis.
+    """Compute the median along the specified axis.
 
     Parameters
     ----------
@@ -203,7 +201,7 @@ def median(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def nanmean(
     a: ivy.Array,
     /,
@@ -213,8 +211,7 @@ def nanmean(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the mean of all non-NaN elements along the specified dimensions.
+    """Compute the mean of all non-NaN elements along the specified dimensions.
 
     Parameters
     ----------
@@ -259,7 +256,7 @@ def nanmean(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def nanprod(
     a: ivy.Array,
     /,
@@ -271,9 +268,8 @@ def nanprod(
     initial: Optional[Union[int, float, complex]] = None,
     where: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the product of array elements over a given axis treating Not a Numbers
-    (NaNs) as ones.
+    """Compute the product of array elements over a given axis treating Not a
+    Numbers (NaNs) as ones.
 
     Parameters
     ----------
@@ -326,7 +322,7 @@ def nanprod(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],
@@ -337,8 +333,7 @@ def quantile(
     interpolation: str = "linear",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the q-th quantile of the data along the specified axis.
+    """Compute the q-th quantile of the data along the specified axis.
 
     Parameters
     ----------
@@ -413,7 +408,7 @@ def quantile(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def corrcoef(
     x: ivy.Array,
     /,
@@ -430,7 +425,7 @@ def corrcoef(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def nanmedian(
     input: ivy.Array,
     /,
@@ -440,10 +435,9 @@ def nanmedian(
     overwrite_input: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    ivy.Array instance method variant of ivy.nanmedian. This method simply wraps the
-    function, and so the docstring for ivy.nanmedian also applies to this method with
-    minimal changes.
+    """ivy.Array instance method variant of ivy.nanmedian. This method simply
+    wraps the function, and so the docstring for ivy.nanmedian also applies to
+    this method with minimal changes.
 
     Parameters
     ----------
@@ -503,7 +497,7 @@ def nanmedian(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def bincount(
     x: ivy.Array,
     /,
@@ -512,8 +506,7 @@ def bincount(
     minlength: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Count the number of occurrences of each value in an integer array.
+    """Count the number of occurrences of each value in an integer array.
 
     Parameters
     ----------
@@ -547,7 +540,7 @@ def bincount(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def igamma(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -555,8 +548,7 @@ def igamma(
     x: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Compute the regularized lower gamma function of ``a`` and ``x``.
+    """Compute the regularized lower gamma function of ``a`` and ``x``.
 
     Parameters
     ----------
@@ -600,8 +592,7 @@ def cov(
     aweights: Optional[ivy.Array] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
 ) -> ivy.Array:
-    """
-    Compute the covariance of matrix x1, or variables x1 and x2.
+    """Compute the covariance of matrix x1, or variables x1 and x2.
 
     Parameters
     ----------
@@ -744,9 +735,9 @@ def cummax(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a tuple containing the cumulative maximum of elements of input along the
-    given axis and index location of each maximum value found along the given axis.
+    """Return a tuple containing the cumulative maximum of elements of input
+    along the given axis and index location of each maximum value found along
+    the given axis.
 
     Parameters
     ----------
@@ -845,8 +836,7 @@ def cummin(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the cumulative minimum of the elements along a given axis.
+    """Return the cumulative minimum of the elements along a given axis.
 
     Parameters
     ----------

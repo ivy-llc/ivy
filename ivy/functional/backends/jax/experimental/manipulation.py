@@ -414,7 +414,5 @@ def fill_diagonal(
     return a
 
 
-def column_stack(
-    arrays: Sequence[JaxArray], /, *, out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.column_stack(arrays)
+def trim_zeros(a: JaxArray, /, *, trim: Optional[str] = "bf") -> JaxArray:
+    return jnp.trim_zeros(a, trim=trim)

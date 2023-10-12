@@ -32,7 +32,6 @@ mxnet_promotion_table = {
     (_bool, _float16): _float16,
     (_bool, _float32): _float32,
     (_bool, _float64): _float64,
-    (_bool, _bool): _bool,
     (_int8, _bool): _int8,
     (_int8, _int8): _int8,
     (_int8, _int32): _int32,
@@ -105,8 +104,8 @@ def promote_types_mxnet(
     type2: Union[ivy.Dtype, ivy.NativeDtype],
     /,
 ) -> ivy.Dtype:
-    """
-    Promote the datatypes type1 and type2, returning the data type they promote to.
+    """Promote the datatypes type1 and type2, returning the data type they
+    promote to.
 
     Parameters
     ----------
@@ -133,9 +132,8 @@ def promote_types_of_mxnet_inputs(
     x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Promote the dtype of the given native array inputs to a common dtype based on type
-    promotion rules.
+    """Promote the dtype of the given native array inputs to a common dtype
+    based on type promotion rules.
 
     While passing float or integer values or any other non-array input
     to this function, it should be noted that the return will be an

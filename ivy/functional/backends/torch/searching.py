@@ -13,7 +13,7 @@ from . import backend_version
 # ------------------ #
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def argmax(
     x: torch.Tensor,
     /,
@@ -41,7 +41,7 @@ def argmax(
     return ret
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def argmin(
     x: torch.Tensor,
     /,
@@ -105,7 +105,7 @@ def where(
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if condition.dtype is not torch.bool:
-        condition = condition == 1.0
+        condition = condition.to(bool)
     return ivy.astype(torch.where(condition, x1, x2), x1.dtype, copy=False)
 
 

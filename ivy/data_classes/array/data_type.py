@@ -18,9 +18,8 @@ class _ArrayWithDataTypes(abc.ABC):
         copy: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Copy an array to a specified data type irrespective of :ref:`type-promotion`
-        rules.
+        """Copy an array to a specified data type irrespective of :ref:`type-
+        promotion` rules.
 
         .. note::
         Casting floating-point ``NaN`` and ``infinity`` values to integral data types
@@ -69,10 +68,10 @@ class _ArrayWithDataTypes(abc.ABC):
     def broadcast_arrays(
         self: ivy.Array, *arrays: Union[ivy.Array, ivy.NativeArray]
     ) -> List[ivy.Array]:
-        """
-        `ivy.Array` instance method variant of `ivy.broadcast_arrays`. This method
-        simply wraps the function, and so the docstring for `ivy.broadcast_arrays` also
-        applies to this method with minimal changes.
+        """`ivy.Array` instance method variant of `ivy.broadcast_arrays`. This
+        method simply wraps the function, and so the docstring for
+        `ivy.broadcast_arrays` also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -113,10 +112,9 @@ class _ArrayWithDataTypes(abc.ABC):
     def broadcast_to(
         self: ivy.Array, /, shape: Tuple[int, ...], *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
-        """
-        `ivy.Array` instance method variant of `ivy.broadcast_to`. This method simply
-        wraps the function, and so the docstring for `ivy.broadcast_to` also applies to
-        this method with minimal changes.
+        """`ivy.Array` instance method variant of `ivy.broadcast_to`. This
+        method simply wraps the function, and so the docstring for
+        `ivy.broadcast_to` also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -146,10 +144,9 @@ class _ArrayWithDataTypes(abc.ABC):
         return ivy.broadcast_to(self._data, shape=shape, out=out)
 
     def can_cast(self: ivy.Array, to: ivy.Dtype) -> bool:
-        """
-        `ivy.Array` instance method variant of `ivy.can_cast`. This method simply wraps
-        the function, and so the docstring for `ivy.can_cast` also applies to this
-        method with minimal changes.
+        """`ivy.Array` instance method variant of `ivy.can_cast`. This method
+        simply wraps the function, and so the docstring for `ivy.can_cast` also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -179,19 +176,39 @@ class _ArrayWithDataTypes(abc.ABC):
     def dtype(
         self: ivy.Array, as_native: bool = False
     ) -> Union[ivy.Dtype, ivy.NativeDtype]:
-        """
-        Examples
+        """`ivy.Array` instance method variant of `ivy.dtype`. This method
+        helps to get the data type of the array.
+
+        Parameters
+        ----------
+        self
+            The input array.
+        as_native
+            Whether to return the native data type of the array.
+            If True, returns the native data type. Default is False.
+
+        Returns
         -------
+        ret
+            The data type of the array. If as_native is True,
+            returns the native data type.
+
+        Examples
+        --------
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.dtype()
         >>> print(y)
         int32
+
+        >>> x= ivy.array([1.0, 2.0, 3.0], dtype=ivy.float64)
+        >>> y = x.dtype(as_native=True)
+        >>> print(y)
+        float64
         """
         return ivy.dtype(self._data, as_native=as_native)
 
     def finfo(self: ivy.Array, /) -> Finfo:
-        """
-        Array instance method variant of `ivy.finfo`.
+        """Array instance method variant of `ivy.finfo`.
 
         Parameters
         ----------
@@ -213,10 +230,9 @@ class _ArrayWithDataTypes(abc.ABC):
         return ivy.finfo(self._data)
 
     def iinfo(self: ivy.Array, /) -> Iinfo:
-        """
-        `ivy.Array` instance method variant of `ivy.iinfo`. This method simply wraps the
-        function, and so the docstring for `ivy.iinfo` also applies to this method with
-        minimal changes.
+        """`ivy.Array` instance method variant of `ivy.iinfo`. This method
+        simply wraps the function, and so the docstring for `ivy.iinfo` also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -245,14 +261,13 @@ class _ArrayWithDataTypes(abc.ABC):
         return ivy.is_bool_dtype(self._data)
 
     def is_float_dtype(self: ivy.Array) -> bool:
-        """
-        `ivy.Array` instance method variant of `ivy.is_float_dtype`. This method simply
-        checks to see if the array is of type `float`.
+        """`ivy.Array` instance method variant of `ivy.is_float_dtype`. This
+        method simply checks to see if the array is of type `float`.
 
         Parameters
         ----------
         self
-            input array from which to check for float dtype.
+            Input array from which to check for float dtype.
 
         Returns
         -------
@@ -262,8 +277,12 @@ class _ArrayWithDataTypes(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([1, 2, 3], dtype=ivy.int8)
-        >>> x.is_float_dtype()
+        >>> print(x.is_float_dtype())
         False
+
+        >>> x = ivy.array([2.3, 4.5, 6.8], dtype=ivy.float32)
+        >>> print( x.is_float_dtype())
+        True
         """
         return ivy.is_float_dtype(self._data)
 
@@ -277,10 +296,9 @@ class _ArrayWithDataTypes(abc.ABC):
         self: ivy.Array,
         *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype],
     ) -> ivy.Dtype:
-        """
-        `ivy.Array` instance method variant of `ivy.result_type`. This method simply
-        wraps the function, and so the docstring for `ivy.result_type` also applies to
-        this method with minimal changes.
+        """`ivy.Array` instance method variant of `ivy.result_type`. This
+        method simply wraps the function, and so the docstring for
+        `ivy.result_type` also applies to this method with minimal changes.
 
         Parameters
         ----------
