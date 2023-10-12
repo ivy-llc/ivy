@@ -742,3 +742,30 @@ put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mo
     "sum",
     "mul",
 ]
+
+
+def sequence_insert(
+    data: paddle.Tensor,
+    indices: Union[paddle.Tensor, int],
+    values: paddle.Tensor,
+    axis: Optional[int] = None,
+    /,
+    *,
+    out: None = None,
+) -> paddle.Tensor:
+
+    if axis is None:
+        axis = -1
+
+    indices = paddle.to_tensor(indices, dtype=paddle.int64)
+    values = paddle.to_tensor(values, dtype=data.dtype)
+
+    indices = paddle.reshape(indices, [-1])
+    values = paddle.reshape(values, [-1])
+
+    new_tensor = paddle.concat([data[:indices[0]], values, data[indices[-1:] + 1]], axis=axis)
+
+    if out is not None:
+        new_tensor = paddle.identity(new_tensor, name=out)
+
+    return new_tensor
