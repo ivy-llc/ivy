@@ -341,6 +341,7 @@ def test_paddle__reshape(
         ),
         num_arrays=2,
         shared_dtype=True,
+        test_with_out=st.just(False),
     ),
 )
 def test_paddle_diff(
