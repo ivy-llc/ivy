@@ -341,9 +341,13 @@ def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
     return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("int8", "int16", "int32", "int64", "unsigned")}, "tensorflow")
+@with_unsupported_dtypes(
+    {"2.14.0 and below": ("int8", "int16", "int32", "int64", "unsigned")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
-def random_normal_initializer(shape, mean=0.0, stddev=1.0, dtype=ivy.float32, seed=None, name=None):
+def random_normal_initializer(
+    shape, mean=0.0, stddev=1.0, dtype=ivy.float32, seed=None, name=None
+):
     return ivy.random_normal(shape=shape, mean=mean, std=stddev, dtype=dtype, seed=seed)
 
 
