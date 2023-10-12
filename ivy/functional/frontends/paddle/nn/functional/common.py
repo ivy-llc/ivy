@@ -8,29 +8,27 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 # --------------- #
 
 
-def _handle_padding_shape(padding, x_dim, mode):
+def _handle_padding_shape(padding, x_dim, mode, data_format):
+    padding_tuple = tuple(
+        [
+            (padding[i * 2], padding[i * 2 + 1])
+            for i in range(int(len(padding) / 2) - 1, -1, -1)
+        ]
+    )
+
     if mode == "constant" and len(padding) == x_dim * 2:
-        padding = tuple(
-            [
-                (padding[i * 2], padding[i * 2 + 1])
-                for i in range(int(len(padding) / 2) - 1, -1, -1)
-            ]
-        )
-        while len(padding) < x_dim:
-            padding = padding + ((0, 0),)
-        padding = tuple(list(padding)[::-1])
+        while len(padding_tuple) < x_dim:
+            padding_tuple = padding_tuple + ((0, 0),)
+        padding_tuple = tuple(list(padding_tuple)[::-1])
 
-    else:
-        padding = tuple(
-            [
-                (padding[i * 2], padding[i * 2 + 1])
-                for i in range(int(len(padding) / 2) - 1, -1, -1)
-            ]
-        )
-        while len(padding) < x_dim:
-            padding = ((0, 0),) + padding
+    elif data_format in ["NCL", "NCHW", "NCDHW"]:
+        while len(padding_tuple) < x_dim:
+            padding_tuple = ((0, 0),) + padding_tuple
 
-    return padding
+    elif data_format in ["NLC", "NHWC", "NDHWC"]:
+        padding_tuple = ((0, 0),) + padding_tuple + ((0, 0),)
+
+    return padding_tuple
 
 
 # --- Main --- #
@@ -134,7 +132,7 @@ def linear(x, weight, bias=None, name=None):
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
-def pad(x, padding, mode="constant", value=0.0, data_format="NCHW", name=None):
+def pad(x, pad, mode="constant", value=0.0, data_format="NCHW", name=None):
     mode_dict = {
         "constant": "constant",
         "reflect": "reflect",
@@ -143,6 +141,11 @@ def pad(x, padding, mode="constant", value=0.0, data_format="NCHW", name=None):
     }
     if mode not in mode_dict:
         raise ValueError(f"Unsupported padding mode: {mode}")
+
+    if mode != "constant" and value != 0.0:
+        raise ValueError(
+            f"value argument can be passed only when mode is 'constant' but got {mode}"
+        )
 
     data_format = data_format.upper()
     if data_format not in ["NCL", "NCHW", "NCDHW", "NLC", "NHWC", "NDHWC"]:
@@ -156,12 +159,49 @@ def pad(x, padding, mode="constant", value=0.0, data_format="NCHW", name=None):
     if x_dim not in [3, 4, 5]:
         raise ValueError(f"input tensor dimension must be in [3, 4, 5] but got {x_dim}")
 
-    padding = _handle_padding_shape(padding, x_dim, mode)
+    if (len(pad) != x_dim * 2) and (len(pad) != 2 * (x_dim - 2)):
+        if mode == "constant":
+            raise ValueError(
+                f"input tensor dimension {x_dim} requires padding length in"
+                f" [{2 * (x_dim - 2)},{x_dim * 2}] but got {len(pad)}"
+            )
+        else:
+            raise ValueError(
+                f"input tensor dimension {x_dim} requires padding length equal to"
+                f"{2 * (x_dim - 2)} but got {len(pad)}"
+            )
+
+    if len(pad) == 2 * (x_dim - 2):
+        if x_dim == 3 and data_format not in ["NCL", "NLC"]:
+            raise ValueError(
+                f"input tensor dimension is {x_dim}, its data format should be in"
+                f" ['NCL', 'NLC'] but got {data_format}"
+            )
+
+        elif x_dim == 4 and data_format not in ["NCHW", "NHWC"]:
+            raise ValueError(
+                f"input tensor dimension is {x_dim}, its data format should be in"
+                f" ['NCHW', 'NHWC'] but got {data_format}"
+            )
+
+        elif x_dim == 5 and data_format not in ["NCDHW", "NDHWC"]:
+            raise ValueError(
+                f"input tensor dimension is {x_dim}, its data format should be in"
+                f" ['NCDHW', 'NDHWC'] but got {data_format}"
+            )
+
+    if len(pad) == x_dim * 2 and mode != "constant":
+        raise ValueError(
+            f"input tensor dimension {x_dim} supports padding length {len(pad)} only if"
+            f" mode is 'constant' but got {mode}"
+        )
+
+    pad = _handle_padding_shape(pad, x_dim, mode, data_format)
 
     if mode_dict[mode] == "constant":
-        return ivy.pad(x, padding, mode=mode_dict[mode], constant_values=value)
+        return ivy.pad(x, pad, mode=mode_dict[mode], constant_values=value)
     else:
-        return ivy.pad(x, padding, mode=mode_dict[mode])
+        return ivy.pad(x, pad, mode=mode_dict[mode])
 
 
 @to_ivy_arrays_and_back
