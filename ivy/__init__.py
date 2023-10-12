@@ -399,6 +399,10 @@ class Shape(Sequence):
         else:
             return self._shape[index]
 
+    @property
+    def shape(self):
+        return self._shape
+
     def as_dimension(self):
         if isinstance(self._shape, Shape):
             return self._shape

@@ -1298,9 +1298,6 @@ def _versioned_attribute_factory(attribute_function, base):
         def __repr__(self):
             return repr(self.__get__())
 
-        def __bool__(self):
-            return bool(self.__get__())
-
     return VersionedAttributes()
 
 
@@ -1369,10 +1366,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                             # for conflicting ones we do nothing
                             pass
             else:
-                if not val and attrib.startswith("supported"):
-                    setattr(func, f"un{attrib}", val)
-                else:
-                    setattr(func, attrib, val)
+                setattr(func, attrib, val)
                 setattr(func, "dictionary_info", (version_dict, version))
             if "frontends" in func.__module__:
                 # it's a frontend func, no casting modes for this
@@ -1394,7 +1388,7 @@ def _leaf_has_nans(x):
         return x.has_nans()
     elif ivy.is_array(x):
         return ivy.isnan(x).any()
-    elif np.isnan(x):
+    elif x == float("nan"):
         return True
     return False
 
