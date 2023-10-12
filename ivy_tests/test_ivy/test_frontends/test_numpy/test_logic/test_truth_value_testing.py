@@ -99,27 +99,61 @@ def test_numpy_any(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.isscalar",
-    element=st.booleans() | st.floats() | st.integers() | st.complex_numbers(),
+    fn_tree="numpy.iscomplex",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex"), min_num_dims=1
+    ),
     test_with_out=st.just(False),
 )
-def test_numpy_isscalar(
+def test_numpy_iscomplex(
     *,
-    element,
+    dtype_and_x,
+    frontend,
     on_device,
     fn_tree,
-    frontend,
     test_flags,
     backend_fw,
 ):
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=ivy.all_dtypes,
+        input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        element=element,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.iscomplexobj",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_iscomplexobj(
+    *,
+    dtype_and_x,
+    frontend,
+    on_device,
+    fn_tree,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    if ivy.current_backend_str() == "paddle":
+        # mostly paddle doesn't support unsigned int
+        assume(input_dtype[0] not in ["int8", "uint8", "int16"])
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
 
 
@@ -209,59 +243,25 @@ def test_numpy_isrealobj(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.iscomplexobj",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("real_and_complex"),
-    ),
+    fn_tree="numpy.isscalar",
+    element=st.booleans() | st.floats() | st.integers() | st.complex_numbers(),
     test_with_out=st.just(False),
 )
-def test_numpy_iscomplexobj(
+def test_numpy_isscalar(
     *,
-    dtype_and_x,
-    frontend,
+    element,
     on_device,
     fn_tree,
+    frontend,
     test_flags,
     backend_fw,
 ):
-    input_dtype, x = dtype_and_x
-    if ivy.current_backend_str() == "paddle":
-        # mostly paddle doesn't support unsigned int
-        assume(input_dtype[0] not in ["int8", "uint8", "int16"])
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=ivy.all_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.iscomplex",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("real_and_complex"), min_num_dims=1
-    ),
-    test_with_out=st.just(False),
-)
-def test_numpy_iscomplex(
-    *,
-    dtype_and_x,
-    frontend,
-    on_device,
-    fn_tree,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
+        element=element,
     )

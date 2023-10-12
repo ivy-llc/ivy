@@ -44,15 +44,15 @@ def main():
         modified_files = commit._parse_diff(diff_index)
         for file in modified_files:
             try:
-                file_name = file.new_path + ",cover"
-            except:  # noqa
+                file_name = f"{file.new_path},cover"
+            except Exception:  # noqa
                 continue
             if file_name not in tests.keys():
                 continue
             tests_file = tests[file_name]
             change = file.diff_parsed
-            added = set([x - 1 for (x, _) in change["added"]])
-            deleted = set([x - 1 for (x, _) in change["deleted"]])
+            added = {x - 1 for (x, _) in change["added"]}
+            deleted = {x - 1 for (x, _) in change["deleted"]}
             updated = added.intersection(deleted)
             added = added.difference(updated)
             deleted = deleted.difference(updated)
@@ -105,7 +105,7 @@ def main():
             )
             subprocess.run(["git", "fetch", "upstream"])
             lca_sha = subprocess.check_output(
-                ["git", "merge-base", "HEAD", "upstream/master"]
+                ["git", "merge-base", "HEAD", "upstream/main"]
             )
             lca_hash = lca_sha.decode().strip()
             for commit in Repository(".", single=lca_hash).traverse_commits():
@@ -121,9 +121,8 @@ def main():
                         relevant_added_tests.append(test)
                         break
             added_tests = relevant_added_tests
-        else:
-            if len(added_tests) > 50:
-                added_tests = added_tests[:50]
+        elif len(added_tests) > 50:
+            added_tests = added_tests[:50]
         # Add these new_tests in the Mapping
         old_num_tests = len(old_tests)
         tests["index_mapping"] += added_tests
@@ -139,7 +138,7 @@ def main():
         directories_filtered = [
             x
             for x in directories
-            if not (x.endswith("__pycache__") or "hypothesis" in x)
+            if not x.endswith("__pycache__") and "hypothesis" not in x
         ]
         directories = set(directories_filtered)
         for test_backend in new_tests[old_num_tests:num_tests]:
@@ -156,7 +155,7 @@ def main():
                 for directory in directories:
                     for file_name in os.listdir(directory):
                         if file_name.endswith("cover"):
-                            file_name = directory + "/" + file_name
+                            file_name = f"{directory}/{file_name}"
                             if file_name not in tests:
                                 tests[file_name] = []
                                 with open(file_name) as f:

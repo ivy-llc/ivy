@@ -7,7 +7,11 @@ from ivy.functional.frontends.jax.numpy import (
     promote_types_of_jax_inputs as promote_jax_arrays,
 )
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
+
+
+# --- Helpers --- #
+# --------------- #
 
 
 def _packbits_nested_list_padding(arr, pad_length):
@@ -20,10 +24,29 @@ def _packbits_nested_list_padding(arr, pad_length):
         return arr.zero_pad(pad_width=[[0, pad_length]])
 
 
+# --- Main --- #
+# ------------ #
+
+
+@to_ivy_arrays_and_back
+def all(a, axis=None, out=None, keepdims=False, *, where=False):
+    return ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+
+
 @to_ivy_arrays_and_back
 def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     a, b = promote_jax_arrays(a, b)
     return ivy.allclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+@to_ivy_arrays_and_back
+def any(a, axis=None, out=None, keepdims=False, *, where=None):
+    # TODO: Out not supported
+    ret = ivy.any(a, axis=axis, keepdims=keepdims)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(None, ivy.zeros_like(ret)))
+    return ret
 
 
 @to_ivy_arrays_and_back
@@ -46,62 +69,6 @@ def array_equiv(a1, a2) -> bool:
         # shapes are not broadcastable
         return False
     return ivy.all(eq)
-
-
-@to_ivy_arrays_and_back
-def isneginf(x, /, out=None):
-    return ivy.isinf(x, detect_positive=False, out=out)
-
-
-@to_ivy_arrays_and_back
-def isposinf(x, /, out=None):
-    return ivy.isinf(x, detect_negative=False, out=out)
-
-
-@to_ivy_arrays_and_back
-def not_equal(x1, x2, /):
-    x1, x2 = promote_jax_arrays(x1, x2)
-    return ivy.not_equal(x1, x2)
-
-
-@to_ivy_arrays_and_back
-def less(x1, x2, /):
-    x1, x2 = promote_jax_arrays(x1, x2)
-    return ivy.less(x1, x2)
-
-
-@to_ivy_arrays_and_back
-def less_equal(x1, x2, /):
-    x1, x2 = promote_jax_arrays(x1, x2)
-    return ivy.less_equal(x1, x2)
-
-
-@to_ivy_arrays_and_back
-def greater(x1, x2, /):
-    x1, x2 = promote_jax_arrays(x1, x2)
-    return ivy.greater(x1, x2)
-
-
-@to_ivy_arrays_and_back
-def greater_equal(x1, x2, /):
-    x1, x2 = promote_jax_arrays(x1, x2)
-    return ivy.greater_equal(x1, x2)
-
-
-@to_ivy_arrays_and_back
-def isnan(x, /):
-    return ivy.isnan(x)
-
-
-@to_ivy_arrays_and_back
-def equal(x1, x2, /):
-    x1, x2 = promote_jax_arrays(x1, x2)
-    return ivy.equal(x1, x2)
-
-
-@to_ivy_arrays_and_back
-def all(a, axis=None, out=None, keepdims=False, *, where=False):
-    return ivy.all(a, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -128,37 +95,67 @@ def bitwise_xor(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-def any(a, axis=None, out=None, keepdims=False, *, where=None):
-    # TODO: Out not supported
-    ret = ivy.any(a, axis=axis, keepdims=keepdims)
-    if ivy.is_array(where):
-        where = ivy.array(where, dtype=ivy.bool)
-        ret = ivy.where(where, ret, ivy.default(None, ivy.zeros_like(ret)))
-    return ret
-
-
-alltrue = all
-
-sometrue = any
-from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
+def equal(x1, x2, /):
+    x1, x2 = promote_jax_arrays(x1, x2)
+    return ivy.equal(x1, x2)
 
 
 @to_ivy_arrays_and_back
-# known issue in jnp's documentation of arguments
-# https://github.com/google/jax/issues/9119
-def logical_and(x1, x2, /):
-    x1, x2 = promote_types_of_jax_inputs(x1, x2)
-    if x1.dtype == "complex128" or x2.dtype == "complex128":
-        x1 = ivy.astype(x1, ivy.complex128)
-        x2 = ivy.astype(x2, ivy.complex128)
-    else:
-        x1, x2 = promote_jax_arrays(x1, x2)
-    return ivy.logical_and(x1, x2)
+@with_unsupported_dtypes({"0.4.18 and below": ("bfloat16",)}, "jax")
+def fromfunction(function, shape, *, dtype=float, **kwargs):
+    def canonicalize_shape(shape, context="shape argument"):
+        if isinstance(shape, int):
+            return (shape,)
+        elif isinstance(shape, list):
+            return tuple(shape)
+        elif isinstance(shape, tuple):
+            return shape
+        else:
+            msg = f"{context} must be an int, list, or tuple, but got {type(shape)}."
+            raise TypeError(msg)
+
+    arr = ivy.zeros(shape, dtype=dtype)
+    shape = canonicalize_shape(shape)
+    # Iterate over the indices of the array
+    for indices in ivy.ndindex(shape):
+        f_indices = indices
+        ivy.set_nest_at_index(
+            arr, f_indices, ivy.asarray(function(*indices, **kwargs), dtype=dtype)
+        )
+    return arr
+
+
+@to_ivy_arrays_and_back
+def greater(x1, x2, /):
+    x1, x2 = promote_jax_arrays(x1, x2)
+    return ivy.greater(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def greater_equal(x1, x2, /):
+    x1, x2 = promote_jax_arrays(x1, x2)
+    return ivy.greater_equal(x1, x2)
 
 
 @to_ivy_arrays_and_back
 def invert(x, /):
     return ivy.bitwise_invert(x)
+
+
+@to_ivy_arrays_and_back
+def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
+    a, b = promote_jax_arrays(a, b)
+    return ivy.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+@to_ivy_arrays_and_back
+def iscomplex(x: any):
+    return ivy.bitwise_invert(ivy.isreal(x))
+
+
+@to_ivy_arrays_and_back
+def iscomplexobj(x):
+    return ivy.is_complex_dtype(ivy.dtype(x))
 
 
 @to_ivy_arrays_and_back
@@ -177,20 +174,28 @@ def isinf(x, /):
 
 
 @to_ivy_arrays_and_back
-def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
-    a, b = promote_jax_arrays(a, b)
-    return ivy.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+def isnan(x, /):
+    return ivy.isnan(x)
 
 
 @to_ivy_arrays_and_back
-def logical_not(x, /):
-    return ivy.logical_not(x)
+def isneginf(x, /, out=None):
+    return ivy.isinf(x, detect_positive=False, out=out)
 
 
 @to_ivy_arrays_and_back
-def logical_or(x1, x2, /):
-    x1, x2 = promote_jax_arrays(x1, x2)
-    return ivy.logical_or(x1, x2)
+def isposinf(x, /, out=None):
+    return ivy.isinf(x, detect_negative=False, out=out)
+
+
+@to_ivy_arrays_and_back
+def isreal(x, out=None):
+    return ivy.isreal(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def isrealobj(x: any):
+    return not ivy.is_complex_dtype(ivy.dtype(x))
 
 
 @to_ivy_arrays_and_back
@@ -205,8 +210,39 @@ def left_shift(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def isreal(x, out=None):
-    return ivy.isreal(x, out=out)
+def less(x1, x2, /):
+    x1, x2 = promote_jax_arrays(x1, x2)
+    return ivy.less(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def less_equal(x1, x2, /):
+    x1, x2 = promote_jax_arrays(x1, x2)
+    return ivy.less_equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+# known issue in jnp's documentation of arguments
+# https://github.com/google/jax/issues/9119
+def logical_and(x1, x2, /):
+    x1, x2 = promote_jax_arrays(x1, x2)
+    if x1.dtype == "complex128" or x2.dtype == "complex128":
+        x1 = ivy.astype(x1, ivy.complex128)
+        x2 = ivy.astype(x2, ivy.complex128)
+    else:
+        x1, x2 = promote_jax_arrays(x1, x2)
+    return ivy.logical_and(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def logical_not(x, /):
+    return ivy.logical_not(x)
+
+
+@to_ivy_arrays_and_back
+def logical_or(x1, x2, /):
+    x1, x2 = promote_jax_arrays(x1, x2)
+    return ivy.logical_or(x1, x2)
 
 
 @to_ivy_arrays_and_back
@@ -216,30 +252,40 @@ def logical_xor(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def not_equal(x1, x2, /):
+    x1, x2 = promote_jax_arrays(x1, x2)
+    return ivy.not_equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def packbits(x, /, *, axis=None, bitorder="big"):
+    x = ivy.greater(x, ivy.zeros_like(x)).astype("uint8")
+    bits = ivy.arange(8, dtype="uint8")
+    if bitorder == "big":
+        bits = bits[::-1]
+    if axis is None:
+        x = ivy.flatten(x)
+        axis = 0
+    x = ivy.swapaxes(x, axis, -1)
+
+    remainder = x.shape[-1] % 8
+    if remainder:
+        x = _packbits_nested_list_padding(x, 8 - remainder)
+        x = ivy.array(x)
+
+    x = ivy.reshape(x, list(x.shape[:-1]) + [x.shape[-1] // 8, 8])
+    bits = ivy.expand_dims(bits, axis=tuple(range(x.ndim - 1)))
+    packed = (x << bits).sum(axis=-1).astype("uint8")
+    return ivy.swapaxes(packed, axis, -1)
+
+
+@to_ivy_arrays_and_back
 def right_shift(x1, x2, /):
     return ivy.bitwise_right_shift(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def isrealobj(x: any):
-    return not ivy.is_complex_dtype(ivy.dtype(x))
-
-
-@to_ivy_arrays_and_back
-def iscomplex(x: any):
-    return ivy.bitwise_invert(ivy.isreal(x))
-
-
-@to_ivy_arrays_and_back
-def iscomplexobj(x):
-    return ivy.is_complex_dtype(ivy.dtype(x))
-
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.0.1 and below": ("int32", "int64", "float64", "float32")}, "torch"
-)
-@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.18 and below": ("bfloat16", "bool")}, "jax")
 def setxor1d(ar1, ar2, assume_unique=False):
     common_dtype = ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
     ar1 = ivy.asarray(ar1, dtype=common_dtype)
@@ -264,23 +310,5 @@ def setxor1d(ar1, ar2, assume_unique=False):
     return ret
 
 
-@to_ivy_arrays_and_back
-def packbits(x, /, *, axis=None, bitorder="big"):
-    x = ivy.greater(x, ivy.zeros_like(x)).astype("uint8")
-    bits = ivy.arange(8, dtype="uint8")
-    if bitorder == "big":
-        bits = bits[::-1]
-    if axis is None:
-        x = ivy.flatten(x)
-        axis = 0
-    x = ivy.swapaxes(x, axis, -1)
-
-    remainder = x.shape[-1] % 8
-    if remainder:
-        x = _packbits_nested_list_padding(x, 8 - remainder)
-        x = ivy.array(x)
-
-    x = ivy.reshape(x, list(x.shape[:-1]) + [x.shape[-1] // 8, 8])
-    bits = ivy.expand_dims(bits, axis=tuple(range(x.ndim - 1)))
-    packed = (x << bits).sum(axis=-1).astype("uint8")
-    return ivy.swapaxes(packed, axis, -1)
+alltrue = all
+sometrue = any

@@ -1,11 +1,18 @@
 numpy # unpinned we test with latest version now
-einops==0.6.1
-psutil==5.9.1
-termcolor==1.1.0
-colorama==0.4.5
-packaging==21.3
-nvidia-ml-py<=11.495.46 # mod_name=pynvml
+einops
+psutil
+termcolor
+colorama
+packaging
+nvidia-ml-py # mod_name=pynvml
 diskcache
 google-auth # mod_name=google.auth
+urllib3<2.0 # for version conflict with google-auth
 requests
 pyvis
+dill
+astunparse
+ml-dtypes # mod_name=ml_dtypes
+cloudpickle
+gast
+tqdm

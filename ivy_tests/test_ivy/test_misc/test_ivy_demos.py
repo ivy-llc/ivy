@@ -8,6 +8,25 @@ import ivy
 import ivy.functional.backends.numpy
 
 
+# functional api
+def test_array(on_device):
+    import jax.numpy as jnp
+
+    assert ivy.concat((jnp.ones((1,)), jnp.ones((1,))), axis=-1).shape == (2,)
+    import tensorflow as tf
+
+    assert ivy.concat((tf.ones((1,)), tf.ones((1,))), axis=-1).shape == (2,)
+    import numpy as np
+
+    assert ivy.concat((np.ones((1,)), np.ones((1,))), axis=-1).shape == (2,)
+    import torch
+
+    assert ivy.concat((torch.ones((1,)), torch.ones((1,))), axis=-1).shape == (2,)
+    import paddle
+
+    assert ivy.concat((paddle.ones((1,)), paddle.ones((1,))), axis=-1).shape == (2,)
+
+
 # Tests #
 # ------#
 
@@ -44,22 +63,3 @@ def test_training_demo(on_device, backend_fw):
         model.v = optimizer.step(model.v, grads)
 
     ivy.previous_backend()
-
-
-# functional api
-def test_array(on_device):
-    import jax.numpy as jnp
-
-    assert ivy.concat((jnp.ones((1,)), jnp.ones((1,))), axis=-1).shape == (2,)
-    import tensorflow as tf
-
-    assert ivy.concat((tf.ones((1,)), tf.ones((1,))), axis=-1).shape == (2,)
-    import numpy as np
-
-    assert ivy.concat((np.ones((1,)), np.ones((1,))), axis=-1).shape == (2,)
-    import torch
-
-    assert ivy.concat((torch.ones((1,)), torch.ones((1,))), axis=-1).shape == (2,)
-    import paddle
-
-    assert ivy.concat((paddle.ones((1,)), paddle.ones((1,))), axis=-1).shape == (2,)

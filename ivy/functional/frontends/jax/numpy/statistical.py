@@ -10,144 +10,8 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
-def einsum(
-    subscripts,
-    *operands,
-    out=None,
-    optimize="optimal",
-    precision=None,
-    preferred_element_type=None,
-    _use_xeinsum=False,
-    _dot_general=None,
-):
-    return ivy.einsum(subscripts, *operands, out=out)
-
-
-@handle_jax_dtype
-@to_ivy_arrays_and_back
-def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    if dtype is None:
-        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
-    ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
-    if ivy.is_array(where):
-        where = ivy.array(where, dtype=ivy.bool)
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
-
-
-@handle_jax_dtype
-@to_ivy_arrays_and_back
-def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    if dtype is None:
-        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
-    ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
-    if ivy.is_array(where):
-        where = ivy.array(where, dtype=ivy.bool)
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
-
-
-@to_ivy_arrays_and_back
 def argmin(a, axis=None, out=None, keepdims=None):
     return ivy.argmin(a, axis=axis, out=out, keepdims=keepdims)
-
-
-@to_ivy_arrays_and_back
-def bincount(x, weights=None, minlength=0, *, length=None):
-    x_list = [int(x[i]) for i in range(x.shape[0])]
-    max_val = int(ivy.max(ivy.array(x_list)))
-    ret = [x_list.count(i) for i in range(0, max_val + 1)]
-    ret = ivy.array(ret)
-    ret = ivy.astype(ret, ivy.as_ivy_dtype(ivy.int64))
-    return ret
-
-
-@handle_jax_dtype
-@to_ivy_arrays_and_back
-def cumprod(a, axis=None, dtype=None, out=None):
-    if dtype is None:
-        dtype = ivy.as_ivy_dtype(a.dtype)
-    return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
-
-
-@handle_jax_dtype
-@to_ivy_arrays_and_back
-def cumsum(a, axis=0, dtype=None, out=None):
-    if dtype is None:
-        dtype = ivy.uint8
-    return ivy.cumsum(a, axis, dtype=dtype, out=out)
-
-
-cumproduct = cumprod
-
-
-@handle_jax_dtype
-@to_ivy_arrays_and_back
-def sum(
-    a,
-    axis=None,
-    dtype=None,
-    out=None,
-    keepdims=False,
-    initial=None,
-    where=None,
-    promote_integers=True,
-):
-    if dtype is None:
-        dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
-
-    # TODO: promote_integers is only supported from JAX v0.4.10
-    if dtype is None and promote_integers:
-        if ivy.is_bool_dtype(dtype):
-            dtype = ivy.default_int_dtype()
-        elif ivy.is_uint_dtype(dtype):
-            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
-                dtype = ivy.default_uint_dtype()
-        elif ivy.is_int_dtype(dtype):
-            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
-                dtype = ivy.default_int_dtype()
-
-    if initial:
-        if axis is None:
-            a = ivy.reshape(a, (1, -1))
-            axis = 0
-        s = list(ivy.shape(a))
-        s[axis] = 1
-        header = ivy.full(s, initial)
-        a = ivy.concat([a, header], axis=axis)
-
-    ret = ivy.sum(a, axis=axis, keepdims=keepdims, out=out)
-
-    if ivy.is_array(where):
-        where = ivy.array(where, dtype=ivy.bool)
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ivy.astype(ret, ivy.as_ivy_dtype(dtype))
-
-
-@to_ivy_arrays_and_back
-def min(a, axis=None, out=None, keepdims=False, where=None):
-    ret = ivy.min(a, axis=axis, out=out, keepdims=keepdims)
-    if ivy.is_array(where):
-        where = ivy.array(where, dtype=ivy.bool)
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
-
-
-amin = min
-
-
-@to_ivy_arrays_and_back
-def max(a, axis=None, out=None, keepdims=False, where=None):
-    ret = ivy.max(a, axis=axis, out=out, keepdims=keepdims)
-    if ivy.is_array(where):
-        where = ivy.array(where, dtype=ivy.bool)
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
-
-
-amax = max
 
 
 @to_ivy_arrays_and_back
@@ -177,7 +41,6 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
                     fill_value *= a.shape[d]
             else:
                 fill_value = a.shape[axis]
-            fill_value = int(fill_value) if ivy.is_int_dtype(ret) else float(fill_value)
             weights_sum = ivy.full_like(ret, fill_value=fill_value)
     else:
         a = ivy.asarray(a, copy=False)
@@ -224,6 +87,145 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
 
 
 @to_ivy_arrays_and_back
+def bincount(x, weights=None, minlength=0, *, length=None):
+    x_list = [int(x[i]) for i in range(x.shape[0])]
+    max_val = int(ivy.max(ivy.array(x_list)))
+    ret = [x_list.count(i) for i in range(0, max_val + 1)]
+    ret = ivy.array(ret)
+    ret = ivy.astype(ret, ivy.as_ivy_dtype(ivy.int64))
+    return ret
+
+
+@to_ivy_arrays_and_back
+def corrcoef(x, y=None, rowvar=True):
+    return ivy.corrcoef(x, y=y, rowvar=rowvar)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.18 and below": ("float16", "bfloat16")}, "jax")
+def correlate(a, v, mode="valid", precision=None):
+    if ivy.get_num_dims(a) != 1 or ivy.get_num_dims(v) != 1:
+        raise ValueError("correlate() only support 1-dimensional inputs.")
+    if a.shape[0] == 0 or v.shape[0] == 0:
+        raise ValueError(
+            f"correlate: inputs cannot be empty, got shapes {a.shape} and {v.shape}."
+        )
+    if v.shape[0] > a.shape[0]:
+        need_flip = True
+        a, v = v, a
+    else:
+        need_flip = False
+
+    out_order = slice(None)
+
+    if mode == "valid":
+        padding = [(0, 0)]
+    elif mode == "same":
+        padding = [(v.shape[0] // 2, v.shape[0] - v.shape[0] // 2 - 1)]
+    elif mode == "full":
+        padding = [(v.shape[0] - 1, v.shape[0] - 1)]
+    else:
+        raise ValueError("mode must be one of ['full', 'same', 'valid']")
+
+    result = ivy.conv_general_dilated(
+        a[None, None, :],
+        v[:, None, None],
+        (1,),
+        padding,
+        dims=1,
+        data_format="channel_first",
+    )
+    return ivy.flip(result[0, 0, out_order]) if need_flip else result[0, 0, out_order]
+
+
+@to_ivy_arrays_and_back
+def cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=None):
+    return ivy.cov(
+        m, y, rowVar=rowvar, bias=bias, ddof=ddof, fweights=fweights, aweights=aweights
+    )
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def cumprod(a, axis=None, dtype=None, out=None):
+    if dtype is None:
+        dtype = ivy.as_ivy_dtype(a.dtype)
+    return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def cumsum(a, axis=0, dtype=None, out=None):
+    if dtype is None:
+        dtype = ivy.uint8
+    return ivy.cumsum(a, axis, dtype=dtype, out=out)
+
+
+@to_ivy_arrays_and_back
+def einsum(
+    subscripts,
+    *operands,
+    out=None,
+    optimize="optimal",
+    precision=None,
+    preferred_element_type=None,
+    _use_xeinsum=False,
+    _dot_general=None,
+):
+    return ivy.einsum(subscripts, *operands, out=out)
+
+
+@to_ivy_arrays_and_back
+def max(a, axis=None, out=None, keepdims=False, where=None):
+    ret = ivy.max(a, axis=axis, out=out, keepdims=keepdims)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    if dtype is None:
+        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
+    ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
+
+
+@to_ivy_arrays_and_back
+def median(a, axis=None, out=None, overwrite_input=False, keepdims=False):
+    return ivy.median(a, axis=axis, out=out, keepdims=keepdims)
+
+
+@to_ivy_arrays_and_back
+def min(a, axis=None, out=None, keepdims=False, where=None):
+    ret = ivy.min(a, axis=axis, out=out, keepdims=keepdims)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def nancumprod(a, axis=None, dtype=None, out=None):
+    a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
+    return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def nancumsum(a, axis=None, dtype=None, out=None):
+    a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
+    return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
+
+
+@to_ivy_arrays_and_back
 def nanmax(
     a,
     axis=None,
@@ -246,7 +248,7 @@ def nanmax(
                 ax = axis[0] % len(s)
             else:
                 ax = axis % len(s)
-            s[ax] = 1
+            s[ax] = ivy.array(1)
         header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
@@ -267,7 +269,46 @@ def nanmax(
             )
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
-    return res
+    return res.astype(ivy.dtype(a))
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    if dtype is None:
+        dtype = "float64" if ivy.is_int_dtype(a) else a.dtype
+    if ivy.is_array(where):
+        where1 = ivy.array(where, dtype=ivy.bool)
+        a = ivy.where(where1, a, ivy.full_like(a, ivy.nan))
+    nan_mask1 = ivy.isnan(a)
+    not_nan_mask1 = ~ivy.isnan(a)
+    b1 = ivy.where(ivy.logical_not(nan_mask1), a, ivy.zeros_like(a))
+    array_sum1 = ivy.sum(b1, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    not_nan_mask_count1 = ivy.sum(
+        not_nan_mask1, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+    )
+    count_zero_handel = ivy.where(
+        not_nan_mask_count1 != 0,
+        not_nan_mask_count1,
+        ivy.full_like(not_nan_mask_count1, ivy.nan),
+    )
+    return ivy.divide(array_sum1, count_zero_handel)
+
+
+@to_ivy_arrays_and_back
+def nanmedian(
+    a,
+    /,
+    *,
+    axis=None,
+    keepdims=False,
+    out=None,
+    overwrite_input=False,
+):
+    return ivy.nanmedian(
+        a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
+    ).astype(a.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -293,7 +334,8 @@ def nanmin(
                 ax = axis[0] % len(s)
             else:
                 ax = axis % len(s)
-            s[ax] = 1
+
+            s[ax] = ivy.array(1)
         header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
@@ -314,7 +356,7 @@ def nanmin(
             )
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
-    return res
+    return res.astype(ivy.dtype(a))
 
 
 @handle_jax_dtype
@@ -358,22 +400,41 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
     return ret
 
 
-@handle_jax_dtype
 @to_ivy_arrays_and_back
-def nancumsum(a, axis=None, dtype=None, out=None):
-    a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
-    return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
+def ptp(a, axis=None, out=None, keepdims=False):
+    x = ivy.max(a, axis=axis, keepdims=keepdims)
+    y = ivy.min(a, axis=axis, keepdims=keepdims)
+    return ivy.subtract(x, y)
 
 
-@handle_jax_dtype
 @to_ivy_arrays_and_back
-def nancumprod(a, axis=None, dtype=None, out=None):
-    a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
-    return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
+@with_unsupported_dtypes(
+    {"0.4.18 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
+def quantile(
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    if method == "nearest":
+        return ivy.quantile(
+            a, q, axis=axis, keepdims=keepdims, interpolation="nearest_jax", out=out
+        )
+    return ivy.quantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
+    )
 
 
 @handle_jax_dtype
-@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, "jax")
+@with_unsupported_dtypes({"0.4.18 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
 def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -388,101 +449,63 @@ def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     return ivy.astype(std_a, ivy.as_ivy_dtype(dtype), copy=False)
 
 
+@handle_jax_dtype
 @to_ivy_arrays_and_back
-def corrcoef(x, y=None, rowvar=True):
-    return ivy.corrcoef(x, y=y, rowvar=rowvar)
+def sum(
+    a,
+    axis=None,
+    dtype=None,
+    out=None,
+    keepdims=False,
+    initial=None,
+    where=None,
+    promote_integers=True,
+):
+    # TODO: promote_integers is only supported from JAX v0.4.10
+    if dtype is None and promote_integers:
+        if ivy.is_bool_dtype(a.dtype):
+            dtype = ivy.default_int_dtype()
+        elif ivy.is_uint_dtype(a.dtype):
+            dtype = "uint64"
+            a = ivy.astype(a, dtype)
+        elif ivy.is_int_dtype(a.dtype):
+            dtype = "int64"
+            a = ivy.astype(a, dtype)
+        else:
+            dtype = a.dtype
+    elif dtype is None and not promote_integers:
+        dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
 
+    if initial:
+        if axis is None:
+            a = ivy.reshape(a, (1, -1))
+            axis = 0
+        s = list(ivy.shape(a))
+        s[axis] = 1
+        header = ivy.full(s, initial)
+        a = ivy.concat([a, header], axis=axis)
 
-@to_ivy_arrays_and_back
-def median(a, axis=None, out=None, overwrite_input=False, keepdims=False):
-    return ivy.median(a, axis=axis, out=out, keepdims=keepdims)
+    ret = ivy.sum(a, axis=axis, keepdims=keepdims, out=out)
 
-
-@to_ivy_arrays_and_back
-def ptp(a, axis=None, out=None, keepdims=False):
-    x = ivy.max(a, axis=axis, keepdims=keepdims)
-    y = ivy.min(a, axis=axis, keepdims=keepdims)
-    return ivy.subtract(x, y)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype))
 
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is None:
-        dtype = "float64" if ivy.is_int_dtype(a) else a.dtype
+        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
+    ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     if ivy.is_array(where):
-        where1 = ivy.array(where, dtype=ivy.bool)
-        a = ivy.where(where1, a, ivy.full_like(a, ivy.nan))
-    nan_mask1 = ivy.isnan(a)
-    not_nan_mask1 = ~ivy.isnan(a)
-    b1 = ivy.where(ivy.logical_not(nan_mask1), a, ivy.zeros_like(a))
-    array_sum1 = ivy.sum(b1, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
-    not_nan_mask_count1 = ivy.sum(
-        not_nan_mask1, axis=axis, dtype=dtype, keepdims=keepdims, out=out
-    )
-    count_zero_handel = ivy.where(
-        not_nan_mask_count1 != 0,
-        not_nan_mask_count1,
-        ivy.full_like(not_nan_mask_count1, ivy.nan),
-    )
-    return ivy.divide(array_sum1, count_zero_handel)
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
 
-@to_ivy_arrays_and_back
-def nanmedian(
-    a,
-    /,
-    *,
-    axis=None,
-    keepdims=False,
-    out=None,
-    overwrite_input=False,
-):
-    return ivy.nanmedian(
-        a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
-    )
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.13 and below": ("float16", "bfloat16")}, "jax")
-def correlate(a, v, mode="valid", precision=None):
-    if ivy.get_num_dims(a) != 1 or ivy.get_num_dims(v) != 1:
-        raise ValueError("correlate() only support 1-dimensional inputs.")
-    if a.shape[0] == 0 or v.shape[0] == 0:
-        raise ValueError(
-            f"correlate: inputs cannot be empty, got shapes {a.shape} and {v.shape}."
-        )
-    if v.shape[0] > a.shape[0]:
-        need_flip = True
-        a, v = v, a
-    else:
-        need_flip = False
-
-    out_order = slice(None)
-
-    if mode == "valid":
-        padding = [(0, 0)]
-    elif mode == "same":
-        padding = [(v.shape[0] // 2, v.shape[0] - v.shape[0] // 2 - 1)]
-    elif mode == "full":
-        padding = [(v.shape[0] - 1, v.shape[0] - 1)]
-    else:
-        raise ValueError("mode must be one of ['full', 'same', 'valid']")
-
-    result = ivy.conv_general_dilated(
-        a[None, None, :],
-        v[:, None, None],
-        (1,),
-        padding,
-        dims=1,
-        data_format="channel_first",
-    )
-    return ivy.flip(result[0, 0, out_order]) if need_flip else result[0, 0, out_order]
-
-
-@to_ivy_arrays_and_back
-def cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=None):
-    return ivy.cov(
-        m, y, rowVar=rowvar, bias=bias, ddof=ddof, fweights=fweights, aweights=aweights
-    )
+amax = max
+amin = min
+cumproduct = cumprod
