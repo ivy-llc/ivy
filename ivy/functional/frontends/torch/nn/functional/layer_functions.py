@@ -9,6 +9,14 @@ from ivy.utils.exceptions import IvyNotImplementedException
 # --------------- #
 
 
+def _extract_h(output, batch_sizes):
+    h = []
+    for i in range(output.shape[1]):
+        h.append(output[int(batch_sizes[i] - 1), i])
+    h = ivy.expand_dims(ivy.stack(h, axis=0), axis=0)
+    return h
+
+
 def _generic_lstm(
     input,
     initial_states,
@@ -30,7 +38,7 @@ def _generic_lstm(
     ]
 
     if batch_sizes is not None:
-        input = _pad_packed_sequence(input, batch_sizes)
+        input, batch_sizes = _pad_packed_sequence(input, batch_sizes)
 
     if batch_first:
         input = ivy.swapaxes(input, 0, 1)
@@ -97,6 +105,7 @@ def _generic_lstm(
             (weight_ih, weight_hh),
             (bias_i, bias_h),
             bidirectional,
+            batch_sizes=batch_sizes,
         )
         h_outs.append(h_out)
         c_outs.append(c_out)
@@ -106,9 +115,6 @@ def _generic_lstm(
 
     h_outs = h_out if num_layers == 1 else ivy.concat(h_outs, axis=0)
     c_outs = c_out if num_layers == 1 else ivy.concat(c_outs, axis=0)
-
-    if batch_sizes is not None:
-        output = _pack_padded_sequence(output, None)
 
     return output, h_outs, c_outs
 
@@ -153,7 +159,7 @@ def _lstm_cell(x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias
         ht = ot * ivy.tanh(ct)
         ht_list.append(ht)
 
-    return ivy.concat(ht_list, axis=0), (ht, ct)
+    return ivy.concat(ht_list, axis=0), ct
 
 
 def _lstm_full(
@@ -180,11 +186,16 @@ def _lstm_full(
     )
 
 
-def _lstm_layer(x, hidden, weights, biases, bidirectional):
+def _lstm_layer(x, hidden, weights, biases, bidirectional, batch_sizes=None):
     if not bidirectional:
-        result, (h, c) = _lstm_cell(x, *hidden, *weights, *biases)
+        result, c = _lstm_cell(x, *hidden, *weights, *biases)
+        if batch_sizes is None:
+            h = result[-1]
+        else:
+            h = _extract_h(result, batch_sizes)
+            result = _pack_padded_sequence(result, batch_sizes)[0]
     else:
-        result_fw, hidden_fw = _lstm_cell(
+        result_fw, c_fw = _lstm_cell(
             x,
             hidden[0][:1],
             hidden[1][:1],
@@ -194,7 +205,7 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional):
             biases[1][0],
         )
         x_reversed = ivy.flip(x, axis=0)
-        result_bw, hidden_bw = _lstm_cell(
+        result_bw, c_bw = _lstm_cell(
             x_reversed,
             hidden[0][1:],
             hidden[1][1:],
@@ -205,8 +216,15 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional):
         )
         result_bw = ivy.flip(result_bw, axis=0)
         result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
-        h = ivy.concat([hidden_fw[0], hidden_bw[0]], axis=0)
-        c = ivy.concat([hidden_fw[1], hidden_bw[1]], axis=0)
+        c = ivy.concat([c_fw, c_bw], axis=0)
+        if batch_sizes is None:
+            h_fw, h_bw = result_fw[-1], result_bw[-1]
+            h = ivy.concat([h_fw, h_bw], axis=0)
+        else:
+            h_fw = _extract_h(result_fw, batch_sizes)
+            h_bw = _extract_h(result_bw, batch_sizes)
+            h = ivy.concat([h_fw, h_bw], axis=0)
+            result = _pack_padded_sequence(result, batch_sizes)[0]
     return result, (h, c)
 
 
@@ -237,23 +255,19 @@ def _lstm_packed(
 def _pack_padded_sequence(input, lengths):
     input = ivy.swapaxes(input, 0, 1)
     data = []
-    if lengths is not None:
-        batch_sizes = []
-        for i in range(int(max(lengths))):
-            valid_data_mask = lengths > i
-            data.append(input[valid_data_mask, i])
-            batch_sizes.append(int(sum(valid_data_mask)))
-        data = ivy.concat(data)
-        batch_sizes = ivy.array(batch_sizes, dtype=ivy.int64)
-        return data, batch_sizes
-    for i in range(input.shape[1]):
-        data.append(input[:, i])
-    return ivy.concat(data)
+    batch_sizes = []
+    for i in range(int(max(lengths))):
+        valid_data_mask = ivy.array(lengths) > i
+        data.append(input[valid_data_mask, i])
+        batch_sizes.append(int(sum(valid_data_mask)))
+    data = ivy.concat(data)
+    batch_sizes = ivy.array(batch_sizes, dtype=ivy.int64)
+    return data, batch_sizes
 
 
 def _pad_packed_sequence(data, batch_sizes):
     padded_data = ivy.full(
-        (len(batch_sizes), int(max(batch_sizes)), data.shape[-1]),
+        (len(batch_sizes), int(max(batch_sizes)), *data.shape[1:]),
         0,
         dtype=data.dtype,
         device=data.device,
@@ -263,7 +277,10 @@ def _pad_packed_sequence(data, batch_sizes):
         batch_size = int(batch_size)
         padded_data[i, :batch_size] = data[data_offset : data_offset + batch_size]
         data_offset += batch_size
-    return padded_data
+    lengths = ivy.sum(
+        ivy.arange(1, max(batch_sizes) + 1)[:, ivy.newaxis] <= batch_sizes, axis=1
+    )
+    return padded_data, lengths
 
 
 def _reform_weights(w, n, intervals):
