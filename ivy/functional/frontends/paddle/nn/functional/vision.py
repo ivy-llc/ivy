@@ -91,7 +91,7 @@ def channel_shuffle(x, groups, data_format="NCHW", name=None):
 
     if data_format not in ["NCHW", "NHWC"]:
         raise ValueError(
-            "Attr(data_format) should be 'NCHW' or 'NHWC'.But recevie"
+            "Attr(data_format) should be 'NCHW' or 'NHWC'.But receive"
             f" Attr(data_format): {data_format} "
         )
 
@@ -122,7 +122,7 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
 
     if data_format not in ["NCHW", "NHWC"]:
         raise ValueError(
-            "Attr(data_format) should be 'NCHW' or 'NHWC'.But recevie"
+            "Attr(data_format) should be 'NCHW' or 'NHWC'.But receive"
             f" Attr(data_format): {data_format} "
         )
 
@@ -179,7 +179,7 @@ def pixel_unshuffle(x, downscale_factor, data_format="NCHW"):
 
     if data_format not in ["NCHW", "NHWC"]:
         raise ValueError(
-            "Attr(data_format) should be 'NCHW' or 'NHWC'.But recevie"
+            "Attr(data_format) should be 'NCHW' or 'NHWC'.But receive"
             f" Attr(data_format): {data_format} "
         )
 

@@ -1,4 +1,5 @@
-"""Collection of Paddle gradient functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Paddle gradient functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 

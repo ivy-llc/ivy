@@ -2,7 +2,7 @@ import importlib
 
 
 versions = {
-    "torch": "2.0.1",
+    "torch": "2.1.0",
     "tensorflow": "2.14.0",
     "numpy": "1.25.2",
     "jax": "0.4.14",
@@ -10,6 +10,7 @@ versions = {
     "paddle": "2.5.1",
     "sklearn": "1.3.0",
     "xgboost": "1.7.6",
+    "torchvision": "0.15.2.",
 }
 
 

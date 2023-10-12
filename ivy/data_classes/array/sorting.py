@@ -17,10 +17,9 @@ class _ArrayWithSorting(abc.ABC):
         stable: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.argsort. This method simply wraps the
-        function, and so the docstring for ivy.argsort also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.argsort. This method simply
+        wraps the function, and so the docstring for ivy.argsort also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -76,10 +75,9 @@ class _ArrayWithSorting(abc.ABC):
         stable: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.sort. This method simply wraps the
-        function, and so the docstring for ivy.sort also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.sort. This method simply
+        wraps the function, and so the docstring for ivy.sort also applies to
+        this method with minimal changes.
 
         Examples
         --------
@@ -103,10 +101,9 @@ class _ArrayWithSorting(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.msort. This method simply wraps the
-        function, and so the docstring for ivy.msort also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.msort. This method simply
+        wraps the function, and so the docstring for ivy.msort also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -141,8 +138,7 @@ class _ArrayWithSorting(abc.ABC):
         ret_dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.searchsorted.
+        """ivy.Array instance method variant of ivy.searchsorted.
 
         This method simply wraps the function, and so the docstring for
         ivy.searchsorted also applies to this method with minimal

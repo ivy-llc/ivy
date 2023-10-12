@@ -12,7 +12,7 @@ from copy import deepcopy
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "uint8",
             "int8",
             "int16",
@@ -139,7 +139,7 @@ def histogram(
 histogram.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bool")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bool")}, backend_version)
 def median(
     input: torch.Tensor,
     /,
@@ -341,7 +341,7 @@ def _compute_quantile_wrapper(
         )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def quantile(
     a: torch.Tensor,
     q: Union[torch.Tensor, float],
@@ -422,7 +422,7 @@ def _nanmedian(input, axis, keepdims):
     return ret
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def nanmedian(
     input: torch.Tensor,
     /,
@@ -510,7 +510,7 @@ def igamma(
 igamma.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: torch.Tensor,
     x2: torch.Tensor = None,
@@ -567,7 +567,7 @@ cov.support_native_out = False
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16",)},
+    {"2.1.0 and below": ("float16", "complex")},
     backend_version,
 )
 def cummax(
@@ -580,9 +580,6 @@ def cummax(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    if x.dtype in (torch.complex64, torch.complex128):
-        x = x.real.to(dtype=torch.float64)
-
     if exclusive or reverse:
         if exclusive and reverse:
             x1, x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)
@@ -607,7 +604,7 @@ def cummax(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
+        "2.1.0 and below": ("uint8", "float16", "bfloat16"),
         "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,
