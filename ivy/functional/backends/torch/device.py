@@ -1,4 +1,5 @@
-"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and
+signature."""
 import inspect
 
 # global

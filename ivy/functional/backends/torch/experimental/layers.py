@@ -994,6 +994,26 @@ def ifftn(
     return torch.fft.ifftn(x, s=s, dim=axes, norm=norm, out=out)
 
 
+def rfft(
+    x: torch.Tensor,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x = x.real
+    if x.dtype == torch.float16:
+        x = x.to(torch.float32)
+
+    ret = torch.fft.rfft(x, n=n, dim=axis, norm=norm)
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def rfftn(
     x: torch.Tensor,
