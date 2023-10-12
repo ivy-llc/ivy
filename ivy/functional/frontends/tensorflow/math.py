@@ -309,6 +309,21 @@ def igamma(a, x, name=None):
     return ivy.igamma(a, x=x)
 
 
+#igammac
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def igammac(a, x, name=None):
+    return ivy.subtract(1, ivy.igamma(a, x=x))
+
+
 @with_supported_dtypes(
     {"2.13.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
