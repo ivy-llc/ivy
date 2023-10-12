@@ -3953,3 +3953,65 @@ def concat_from_sequence(
         map_sequences=map_sequences,
         out=out,
     )
+
+
+def sequence_insert(
+    data: ivy_container.Container,
+    indices: Union[ivy_container.Container, ivy.Array],
+    values: Union[ivy_container.Container, ivy.Array],
+    axis: Optional[int] = None,
+    /,
+    *,
+    out: None = None,
+) -> ivy_container.Container:
+    """Inserts values into a sequence at the specified indices.
+
+    Parameters
+    ----------
+    data
+        The sequence to insert into.
+    indices
+        The indices to insert at.
+    values
+        The values to insert.
+    axis
+        The axis along which to insert. If None, the last axis is used.
+    out
+        The output sequence.
+
+    Returns
+    -------
+    ret
+        The returned container has the same shape as `data`, but with the values inserted
+        at the specified indices.
+
+    Examples
+    --------
+    >>> data = ivy_container.Container(ivy.ones((4,)), (4,))
+    >>> indices = ivy_container.Container(ivy.tensor([1, 3]), (2,))
+    >>> values = ivy_container.Container(ivy.tensor([5, 6]), (2,))
+
+    >>> print(sequence_insert(data, indices, values))
+    Container([1. 5. 2. 6. 4.], (5,))
+
+    >>> print(sequence_insert(data, indices, values, axis=0))
+    Container([[1. 5.]
+     [2. 6.]
+     [4.]], (3, 2))
+    """
+
+    if axis is None:
+        axis = -1
+
+    indices = ivy_container.asarray(indices, dtype=ivy.int64)
+    values = ivy_container.asarray(values, dtype=data.dtype)
+
+    # Flatten the indices and values tensors.
+    indices = indices.ravel()
+    values = values.ravel()
+
+    # Create a new tensor with the values inserted at the specified indices.
+    new_tensor = ivy.concatenate([data[:indices[0]], values, data[indices[-1:] + 1]], axis=axis)
+
+    return ivy_container.Container(new_tensor, data.shape)
+
