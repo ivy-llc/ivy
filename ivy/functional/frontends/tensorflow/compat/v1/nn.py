@@ -5,32 +5,9 @@ from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 import ivy.functional.frontends.tensorflow.nn as tf_nn
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("float16",)}, "tensorflow")
-def depthwise_conv2d(
-    input,
-    filter,
-    strides,
-    padding,
-    rate=None,
-    name=None,
-    data_format=None,
-    dilations=None,
-):
-    if rate:
-        dilations = rate
-    return tf_nn.depthwise_conv2d(
-        input,
-        filter,
-        strides,
-        padding=padding,
-        data_format=data_format,
-        dilations=dilations,
-    )
-
-
 # should have float16 as well but sqrt doesn't support it
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.14.0 and below": ("float32",)}, "tensorflow")
+@with_supported_dtypes({"2.13.0 and below": ("float32",)}, "tensorflow")
 def fused_batch_norm(
     x,
     scale,
@@ -54,7 +31,7 @@ def fused_batch_norm(
             x = ivy.permute_dims(x, axes=(0, 2, 3, 4, 1))
         else:
             raise ivy.utils.exceptions.IvyException(
-                f"input tensor must be of 4 or 5 dimensions, got {dims}"
+                "input tensor must be of 4 or 5 dimensions, got {}".format(dims)
             )
 
     scale = scale.astype(ivy.float32)
@@ -103,28 +80,32 @@ def fused_batch_norm(
         return y, old_mean, old_var
 
 
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {"2.14.0 and below": ("float16",)},
-    "tensorflow",
-)
-def max_pool(value, ksize, strides, padding, data_format="NHWC", name=None, input=None):
-    if input is not None and value is not None:
-        raise ivy.utils.exceptions.IvyException(
-            "Cannot specify both 'value' and 'input'."
-        )
-    return tf_nn.max_pool2d(
-        input if input is not None else value,
-        ksize,
+@with_unsupported_dtypes({"2.13.0 and below": ("float16",)}, "tensorflow")
+def depthwise_conv2d(
+    input,
+    filter,
+    strides,
+    padding,
+    rate=None,
+    name=None,
+    data_format=None,
+    dilations=None,
+):
+    if rate:
+        dilations = rate
+    return tf_nn.depthwise_conv2d(
+        input,
+        filter,
         strides,
-        padding,
+        padding=padding,
         data_format=data_format,
+        dilations=dilations,
     )
 
 
 @with_unsupported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.13.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -152,4 +133,23 @@ def separable_conv2d(
         padding,
         data_format=data_format,
         dilations=dilations,
+    )
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("float16",)},
+    "tensorflow",
+)
+def max_pool(value, ksize, strides, padding, data_format="NHWC", name=None, input=None):
+    if input is not None and value is not None:
+        raise ivy.utils.exceptions.IvyException(
+            "Cannot specify both 'value' and 'input'."
+        )
+    return tf_nn.max_pool2d(
+        input if input is not None else value,
+        ksize,
+        strides,
+        padding,
+        data_format=data_format,
     )

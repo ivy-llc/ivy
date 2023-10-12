@@ -248,15 +248,15 @@ class _ContainerWithStatistical(ContainerBase):
             b: ivy.array([1.10000002])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0.1, 1.1]]), b=ivy.array([[2., 4.]]))
+        >>> x = ivy.Container(a=ivy.array([[0.1, 1.1]]), b=ivy.array([[2, 3]]))
         >>> y = x.mean(axis=1, keepdims=True)
         >>> print(y)
         {
             a: ivy.array([[0.60000002]]),
-            b: ivy.array([[3.]])
+            b: ivy.array([[2.5]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-1., 0., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))
         >>> x.mean(out=x)
         >>> print(x)
         {
@@ -371,7 +371,7 @@ class _ContainerWithStatistical(ContainerBase):
         Returns
         -------
         ret
-            a container containing different arrays depends on parameters. see below
+            a container contianing different arrays depends on parameters. see below
             for the types of arrays in the returned container if the variance was
             computed over the entire array, a zero-dimensional array containing the
             variance; otherwise, a non-zero-dimensional array containing the variances.
@@ -727,9 +727,8 @@ class _ContainerWithStatistical(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))
-        >>> y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))
-        >>> x.prod(out=y)
-        >>> print(y)
+        >>> x.prod(out=x)
+        >>> print(x)
         {
             a: ivy.array(0),
             b: ivy.array(0.30800003)
@@ -746,9 +745,8 @@ class _ContainerWithStatistical(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),
         ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
-        >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
-        >>> x.prod(axis=0, out=y)
-        >>> print(y)
+        >>> x.prod(axis=0, out=x)
+        >>> print(x)
         {
             a: ivy.array([0., 4., 10.]),
             b: ivy.array([18., 28., 40.])
@@ -924,7 +922,7 @@ class _ContainerWithStatistical(ContainerBase):
             b: ivy.array([0.81649649])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[2., 1.]]), b=ivy.array([[2., -2.]]))
+        >>> x = ivy.Container(a=ivy.array([[2, 1]]), b=ivy.array([[2, -2]]))
         >>> y = x.std(axis=1, keepdims=True)
         >>> print(y)
         {
@@ -932,7 +930,7 @@ class _ContainerWithStatistical(ContainerBase):
             b: ivy.array([[2.]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-1., 1., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
+        >>> x = ivy.Container(a=ivy.array([-1, 1, 1]), b=ivy.array([1.1, 0.2, 1.4]))
         >>> x.std(out=x)
         >>> print(x)
         {
@@ -951,11 +949,11 @@ class _ContainerWithStatistical(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[-1., 1., 2.], [2., 2., 2.]]),
         ...                   b=ivy.array([[3., 0., -3.], [4., 1., 4.]]))
-        >>> y = x.std(axis=1)
+        >>> y = ivy.std(x, axis=1)
         >>> print(y)
         {
-            a: ivy.array([1.2472192, 0.]),
-            b: ivy.array([2.44948983, 1.41421354])
+        a: ivy.array([1.2472192, 0.]),
+        b: ivy.array([2.44948983, 1.41421354])
         }
         """
         return self.cont_handle_inplace(

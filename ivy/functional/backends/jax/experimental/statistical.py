@@ -10,7 +10,7 @@ from ..statistical import _infer_dtype
 
 
 @with_unsupported_dtypes(
-    {"0.4.18 and below": ("bfloat16",)},
+    {"0.4.13 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -121,7 +121,7 @@ def histogram(
 
 
 @with_unsupported_dtypes(
-    {"0.4.18 and below": ("complex64", "complex128")}, backend_version
+    {"0.4.13 and below": ("complex64", "complex128")}, backend_version
 )
 def median(
     input: JaxArray,
@@ -162,26 +162,6 @@ def nanmean(
     return jnp.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
 
-def nanprod(
-    a: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    dtype: Optional[jnp.dtype] = None,
-    keepdims: Optional[bool] = False,
-    out: Optional[JaxArray] = None,
-    initial: Optional[Union[int, float, complex]] = None,
-    where: Optional[JaxArray] = None,
-) -> JaxArray:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(a.dtype)
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.nanprod(
-        a, axis=axis, keepdims=keepdims, dtype=dtype, out=out, initial=initial
-    )
-
-
 def quantile(
     a: JaxArray,
     q: Union[float, JaxArray],
@@ -192,8 +172,9 @@ def quantile(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    interpolation = "nearest" if interpolation == "nearest_jax" else interpolation
+    if isinstance(axis, list):
+        axis = tuple(axis)
+
     return jnp.quantile(
         a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
     )
@@ -291,7 +272,6 @@ def cov(
     )
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("bool",)}, backend_version)
 def cummax(
     x: JaxArray,
     /,
@@ -302,8 +282,12 @@ def cummax(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray, JaxArray]:
-    if x.dtype in (jnp.complex128, jnp.complex64):
-        x = x.real
+    if x.dtype in (jnp.bool_, jnp.float16):
+        x = x.astype(jnp.float64)
+    elif x.dtype in (jnp.int16, jnp.int8, jnp.uint8):
+        x = x.astype(jnp.int64)
+    elif x.dtype in (jnp.complex128, jnp.complex64):
+        x = jnp.real(x).astype(jnp.float64)
 
     if exclusive or (reverse and exclusive):
         if exclusive and reverse:
@@ -387,15 +371,7 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_unsupported_dtypes(
-    {
-        "0.4.18 and below": (
-            "bfloat16",
-            "bool",
-        )
-    },
-    backend_version,
-)
+@with_unsupported_dtypes({"0.4.13 and below": "bfloat16"}, backend_version)
 def cummin(
     x: JaxArray,
     /,
@@ -410,7 +386,10 @@ def cummin(
         axis = axis + len(x.shape)
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
+        if dtype is jnp.bool_:
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
     return jlax.cummin(x, axis, reverse=reverse).astype(dtype)
 
 

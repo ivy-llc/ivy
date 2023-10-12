@@ -1,31 +1,13 @@
 from collections import namedtuple
-from typing import (
-    Optional,
-    Union,
-    Sequence,
-    Tuple,
-    NamedTuple,
-    List,
-    Any,
-    Literal,
-    Callable,
-)
+from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
 
 
 from .. import backend_version
-from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
-    with_supported_dtypes,
-    with_unsupported_dtypes,
-)
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.functional.ivy.experimental.manipulation import (
-    _check_paddle_pad,
-    _to_paddle_padding,
-)
 
 # Code from cephes for i0
 
@@ -91,17 +73,6 @@ _i0B = [
 ]
 
 
-@with_unsupported_dtypes(
-    {
-        "2.5.1 and below": (
-            "int16",
-            "int8",
-            "uint8",
-            "bfloat16",
-        )
-    },
-    backend_version,
-)
 def moveaxis(
     a: paddle.Tensor,
     source: Union[int, Sequence[int]],
@@ -115,66 +86,14 @@ def moveaxis(
         source = list(source)
     if isinstance(destination, tuple):
         source = list(destination)
+    if a.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
+        return paddle.moveaxis(a.cast("float32"), source, destination).cast(a.dtype)
     return paddle.moveaxis(a, source, destination)
-
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
-    backend_version,
-)
-def pad(
-    input: paddle.Tensor,
-    pad_width: Union[Sequence[Sequence[int]], paddle.Tensor, int],
-    /,
-    *,
-    mode: Union[
-        Literal[
-            "constant",
-            "edge",
-            "reflect",
-            "wrap",
-        ],
-        Callable,
-    ] = "constant",
-    stat_length: Union[Sequence[paddle.Tensor], int] = 1,
-    constant_values: Number = 0,
-    end_values: Number = 0,
-    reflect_type: Literal["even", "odd"] = "even",
-    **kwargs: Optional[Any],
-) -> paddle.Tensor:
-    constant_values = (
-        float(constant_values)
-        if not isinstance(constant_values, float)
-        else constant_values
-    )
-    pad_width = _to_paddle_padding(pad_width, input.ndim)
-    mode = "replicate" if mode == "edge" else "circular" if mode == "wrap" else mode
-    data_format = "NCL" if input.ndim == 1 else "NCHW" if input.ndim == 2 else "NCDHW"
-    return (
-        paddle.nn.functional.pad(
-            input.unsqueeze(0).unsqueeze(0),
-            pad_width,
-            mode=mode,
-            value=constant_values,
-            data_format=data_format,
-        )
-        .squeeze(0)
-        .squeeze(0)
-    )
-
-
-pad.partial_mixed_handler = (
-    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
-        _check_paddle_pad(
-            mode, reflect_type, args[1], args[0].shape, constant_values, 3
-        )
-    )
-)
 
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -198,10 +117,6 @@ def heaviside(
     return paddle.heaviside(x1, x2)
 
 
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
-    backend_version,
-)
 def flipud(
     m: paddle.Tensor,
     /,
@@ -209,9 +124,17 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if copy:
+        m = m.clone()
+    if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        return paddle.flip(m.cast("float32"), axis=0).cast(m.dtype)
     return paddle.flip(m, axis=0)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("int16", "float16")}},
+    backend_version,
+)
 def vstack(
     arrays: Sequence[paddle.Tensor],
     /,
@@ -219,14 +142,12 @@ def vstack(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
-        arrays = [ivy.reshape(x, shape=(1, -1)) if x.ndim < 2 else x for x in arrays]
-        return ivy.concat(arrays, axis=0)
+        if arrays[0].ndim >= 2:
+            return ivy.concat(arrays, axis=0)
+        else:
+            return ivy.stack(arrays, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int16", "bfloat16")}},
-    backend_version,
-)
 def hstack(
     arrays: Sequence[paddle.Tensor],
     /,
@@ -240,10 +161,6 @@ def hstack(
             return ivy.concat(arrays, axis=0)
 
 
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
-    backend_version,
-)
 def rot90(
     m: paddle.Tensor,
     /,
@@ -253,11 +170,15 @@ def rot90(
     axes: Optional[Tuple[int, int]] = (0, 1),
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if copy:
+        m = m.clone()
+    if (k % 4) and m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        return paddle.rot90(m.cast("float32"), k=k, axes=axes).cast(m.dtype)
     return paddle.rot90(m, k=k, axes=axes)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -283,10 +204,6 @@ def top_k(
         return topk_res(val, indices)
 
 
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
-    backend_version,
-)
 def fliplr(
     m: paddle.Tensor,
     /,
@@ -294,6 +211,10 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if copy:
+        m = m.clone()
+    if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        return paddle.flip(m.cast("float32"), axis=1).cast(m.dtype)
     return paddle.flip(m, axis=1)
 
 
@@ -347,8 +268,10 @@ def flatten(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
+    if copy:
+        x = x.clone()
     if x.ndim == 0:
-        return x.reshape((-1,))
+        return x
 
     def _flatten(x, start_dim, end_dim):
         if x.dtype in [
@@ -452,7 +375,7 @@ def atleast_2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}},
+    {"2.5.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def atleast_3d(
@@ -476,8 +399,8 @@ def atleast_3d(
         return res
 
 
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("bfloat16", "bool", "float16", "int16", "int8", "uint8")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def take_along_axis(
@@ -529,10 +452,22 @@ def take_along_axis(
             arr = ivy.concat([arr, fill_arr], axis=axis)
             indices = ivy.where(indices < 0, arr.shape[axis] + indices, indices)
 
-    if paddle.is_complex(arr):
-        return paddle.complex(
-            paddle.take_along_axis(arr.real(), indices, axis),
-            paddle.take_along_axis(arr.imag(), indices, axis),
+    if arr.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(arr):
+            return paddle.complex(
+                paddle.take_along_axis(arr.real(), indices, axis),
+                paddle.take_along_axis(arr.imag(), indices, axis),
+            )
+        return paddle.take_along_axis(arr.cast("float32"), indices, axis).cast(
+            arr.dtype
         )
     return paddle.take_along_axis(arr, indices, axis)
 
@@ -599,7 +534,7 @@ def concat_from_sequence(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def unique_consecutive(
     x: paddle.Tensor,
@@ -662,7 +597,7 @@ def unique_consecutive(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
 )
 def fill_diagonal(
     a: paddle.Tensor,
@@ -693,52 +628,3 @@ def fill_diagonal(
     a = paddle.where(w, v, a)
     a = paddle.reshape(a, shape)
     return a
-
-
-def trim_zeros(a: paddle.Tensor, /, *, trim: Optional[str] = "bf") -> paddle.Tensor:
-    first = 0
-    trim = trim.upper()
-    if "F" in trim:
-        for i in a:
-            if i != 0.0:
-                break
-            else:
-                first = first + 1
-    last = len(a)
-    if "B" in trim:
-        for i in a[::-1]:
-            if i != 0.0:
-                break
-            else:
-                last = last - 1
-    return a[first:last]
-
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
-)
-def put_along_axis(
-    arr: paddle.Tensor,
-    indices: paddle.Tensor,
-    values: Union[int, paddle.Tensor],
-    axis: int,
-    /,
-    *,
-    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    mode_mappings = {
-        "sum": "add",
-        "mul": "mul",
-        "replace": "assign",
-    }
-    mode = mode_mappings.get(mode, mode)
-    ret = paddle.put_along_axis(arr, indices, values, axis, reduce=mode)
-    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
-
-
-put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mode in [
-    "replace",
-    "sum",
-    "mul",
-]

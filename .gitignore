@@ -18,6 +18,7 @@ with_time_logs/
 *.csv
 *.csv#
 *.ods
+*.json
 *.jpg
 *.jpeg
 *.png
@@ -28,11 +29,8 @@ internal_automation_tools/
 .vscode/*
 .idea/*
 .ivy/*
-*.so
 .DS_Store*
 fn_path_cache
-ivy/engines/XLA/rust_api/target/
-ivy/engines/XLA/rust_api/xla_extension/
 
 # Environments
 .env

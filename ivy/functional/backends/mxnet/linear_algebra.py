@@ -1,11 +1,6 @@
-# global
-
 import mxnet as mx
-from typing import Union, Optional, Tuple, Literal, List, Sequence
-from collections import namedtuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
-
-# local
 from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 
@@ -189,10 +184,8 @@ def qr(
     out: Optional[
         Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])]
     ] = None,
-) -> Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])]:
-    res = namedtuple("qr", ["Q", "R"])
-    q, r = mx.np.linalg.qr(x, mode=mode)
-    return res(q, r)
+) -> NamedTuple:
+    raise IvyNotImplementedException()
 
 
 def slogdet(

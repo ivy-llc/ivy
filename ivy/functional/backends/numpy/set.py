@@ -75,17 +75,13 @@ def unique_counts(
 def unique_inverse(
     x: np.ndarray,
     /,
-    *,
-    axis: Optional[int] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
     Results = namedtuple("Results", ["values", "inverse_indices"])
-    values, inverse_indices = np.unique(x, return_inverse=True, axis=axis)
+    values, inverse_indices = np.unique(x, return_inverse=True)
     nan_count = np.count_nonzero(np.isnan(x))
     if nan_count > 1:
-        values = np.append(values, np.full(nan_count - 1, np.nan), axis=axis).astype(
-            x.dtype
-        )
-    inverse_indices = np.reshape(inverse_indices, x.shape, axis=0)
+        values = np.append(values, np.full(nan_count - 1, np.nan)).astype(x.dtype)
+    inverse_indices = inverse_indices.reshape(x.shape)
     return Results(values, inverse_indices)
 
 

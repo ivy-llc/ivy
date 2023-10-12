@@ -16,6 +16,7 @@ from . import odr
 from . import optimize
 from . import signal
 from . import sparse
+from . import sparse
 from . import spatial
 from . import special
 from . import stats

@@ -14,16 +14,16 @@ fpaths = func_fpaths
 
 # test lists
 framework_tests_to_run = {
-    "jax": [],
-    "numpy": [],
-    "torch": [],
-    "tensorflow": [],
+    "jax": list(),
+    "numpy": list(),
+    "torch": list(),
+    "tensorflow": list(),
 }
 framework_tests_to_skip = {
-    "jax": [],
-    "numpy": [],
-    "torch": [],
-    "tensorflow": [],
+    "jax": list(),
+    "numpy": list(),
+    "torch": list(),
+    "tensorflow": list(),
 }
 # add from each filepath
 for fpath in fpaths:
@@ -33,14 +33,14 @@ for fpath in fpaths:
         # update tests to run and skip
         contents = [line.replace("__", "") for line in contents.split("\n")]
         for framework in framework_tests_to_run:
-            tests_to_run = []
-            tests_to_skip = []
+            tests_to_run = list()
+            tests_to_skip = list()
             for s in contents:
                 if s == "":
                     continue
                 if ("#" not in s) or (
                     "#" in s
-                    and (framework not in s.lower())
+                    and not (framework in s.lower())
                     and any(f in s.lower() for f in framework_tests_to_run)
                 ):
                     tests_to_run += (

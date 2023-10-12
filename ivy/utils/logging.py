@@ -1,14 +1,16 @@
 import logging
 
 logging_modes = ["DEBUG", "INFO", "WARNING", "ERROR"]
+logging_mode_stack = []
+
 # Set up the initial logging mode
 logging.basicConfig(level=logging.WARNING)
-logging_mode_stack = [logging.WARNING]
+logging_mode_stack.append(logging.WARNING)
 
 
 def set_logging_mode(mode):
     """
-    Set the current logging mode for Ivy.
+    Sets the current logging mode for Ivy.
 
     Possible modes are 'DEBUG', 'INFO', 'WARNING', 'ERROR'.
     """
@@ -22,7 +24,7 @@ def set_logging_mode(mode):
 
 
 def unset_logging_mode():
-    """Remove the most recently set logging mode, returning to the previous one."""
+    """Removes the most recently set logging mode, returning to the previous one."""
     if len(logging_mode_stack) > 1:
         # Remove the current mode
         logging_mode_stack.pop()

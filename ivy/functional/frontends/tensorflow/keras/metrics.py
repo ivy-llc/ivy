@@ -2,10 +2,6 @@ import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
-# --- Helpers --- #
-# --------------- #
-
-
 def _binary_matches(y_true, y_pred, threshold=0.5):
     threshold = ivy.astype(ivy.array(threshold), y_pred.dtype)
     y_pred = ivy.astype(ivy.greater(y_pred, threshold), y_pred.dtype)
@@ -72,8 +68,9 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
             targets_batch,
             pred_batch,
             message=(
-                f"first dim of predictions: {pred_batch} must match targets length:"
-                f" {targets_batch}"
+                "first dim of predictions: {} must match targets length: {}".format(
+                    pred_batch, targets_batch
+                )
             ),
             as_array=False,
         )
@@ -132,10 +129,6 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
     return matches
 
 
-# --- Main --- #
-# ------------ #
-
-
 @to_ivy_arrays_and_back
 def binary_accuracy(y_true, y_pred, threshold=0.5):
     return ivy.mean(_binary_matches(y_true, y_pred, threshold), axis=-1)
@@ -163,6 +156,13 @@ def binary_crossentropy(
         bce += (1 - y_true) * ivy.log(1 - y_pred + epsilon_)
         bce = -bce
     return ivy.mean(bce, axis=-1).astype(y_pred.dtype)
+
+
+@to_ivy_arrays_and_back
+def categorical_crossentropy(y_true, y_pred, from_logits=False, label_smoothing=0.0):
+    if from_logits:
+        y_pred = ivy.softmax(y_pred)
+    return ivy.mean(ivy.categorical_cross_entropy(y_true, y_pred, label_smoothing))
 
 
 @to_ivy_arrays_and_back
@@ -207,26 +207,6 @@ def categorical_accuracy(y_true, y_pred):
 
 
 @to_ivy_arrays_and_back
-def categorical_crossentropy(y_true, y_pred, from_logits=False, label_smoothing=0.0):
-    if from_logits:
-        y_pred = ivy.softmax(y_pred)
-    return ivy.mean(ivy.categorical_cross_entropy(y_true, y_pred, label_smoothing))
-
-
-@to_ivy_arrays_and_back
-def cosine_similarity(y_true, y_pred):
-    y_pred = ivy.asarray(y_pred)
-    y_true = ivy.asarray(y_true)
-
-    if len(y_pred.shape) == len(y_pred.shape) and len(y_true.shape) == 2:
-        numerator = ivy.sum(y_true * y_pred, axis=1)
-    else:
-        numerator = ivy.vecdot(y_true, y_pred)
-    denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
-    return numerator / denominator
-
-
-@to_ivy_arrays_and_back
 def hinge(y_true, y_pred):
     y_true = ivy.astype(ivy.array(y_true), y_pred.dtype, copy=False)
     y_true = _cond_convert_labels(y_true)
@@ -241,6 +221,12 @@ def kl_divergence(y_true, y_pred):
     return ivy.sum(y_true * ivy.log(y_true / y_pred), axis=-1).astype(y_true.dtype)
 
 
+kld = kl_divergence
+
+
+kullback_leibler_divergence = kl_divergence
+
+
 @to_ivy_arrays_and_back
 def log_cosh(y_true, y_pred):
     y_true = ivy.astype(y_true, y_pred.dtype)
@@ -249,9 +235,15 @@ def log_cosh(y_true, y_pred):
     return ivy.mean(diff + ivy.softplus(-2.0 * diff) - log_val, axis=-1)
 
 
+logcosh = log_cosh
+
+
 @to_ivy_arrays_and_back
 def mean_absolute_error(y_true, y_pred):
     return ivy.mean(ivy.abs(y_true - y_pred), axis=-1)
+
+
+mae = mean_absolute_error
 
 
 @to_ivy_arrays_and_back
@@ -262,9 +254,15 @@ def mean_absolute_percentage_error(y_true, y_pred):
     return 100.0 * ivy.mean(diff, axis=-1)
 
 
+mape = mean_absolute_percentage_error
+
+
 @to_ivy_arrays_and_back
 def mean_squared_error(y_true, y_pred):
     return ivy.mean(ivy.square(ivy.subtract(y_true, y_pred)), axis=-1)
+
+
+mse = mean_squared_error
 
 
 @to_ivy_arrays_and_back
@@ -273,6 +271,9 @@ def mean_squared_logarithmic_error(y_true, y_pred):
     first_log = ivy.log(ivy.maximum(y_pred, 1e-7) + 1.0)
     second_log = ivy.log(ivy.maximum(y_true, 1e-7) + 1.0)
     return ivy.mean(ivy.square(ivy.subtract(first_log, second_log)), axis=-1)
+
+
+msle = mean_squared_logarithmic_error
 
 
 @to_ivy_arrays_and_back
@@ -300,10 +301,14 @@ def squared_hinge(y_true, y_pred):
     return ivy.mean(ivy.square(ivy.maximum(1.0 - y_true * y_pred, 0.0)), axis=-1)
 
 
-kld = kl_divergence
-kullback_leibler_divergence = kl_divergence
-logcosh = log_cosh
-mae = mean_absolute_error
-mape = mean_absolute_percentage_error
-mse = mean_squared_error
-msle = mean_squared_logarithmic_error
+@to_ivy_arrays_and_back
+def cosine_similarity(y_true, y_pred):
+    y_pred = ivy.asarray(y_pred)
+    y_true = ivy.asarray(y_true)
+
+    if len(y_pred.shape) == len(y_pred.shape) and len(y_true.shape) == 2:
+        numerator = ivy.sum(y_true * y_pred, axis=1)
+    else:
+        numerator = ivy.vecdot(y_true, y_pred)
+    denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
+    return numerator / denominator

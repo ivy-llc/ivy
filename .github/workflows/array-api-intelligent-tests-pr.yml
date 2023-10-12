@@ -19,7 +19,7 @@ jobs:
 
       - name: Determine Tests
         run: |
-          git clone -b main https://github.com/unifyai/Mapping.git --depth 1
+          git clone -b master https://github.com/unifyai/Mapping.git --depth 1
           pip install pydriller
           cp Mapping/tests.pbz2 ivy/
           cd ivy

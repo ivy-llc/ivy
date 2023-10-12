@@ -101,7 +101,7 @@ class DType:
         if other is None:
             return False
 
-        if not isinstance(other, DType):
+        if type(other) != DType:  # pylint: disable=unidiomatic-typecheck
             try:
                 other = as_dtype(other)
             except ivy.utils.exceptions.IvyException:
@@ -146,4 +146,8 @@ def as_dtype(type_value):
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def cast(x, dtype, name=None):
+    if ivy.is_array(x):
+        assert ivy.can_cast(x.dtype, dtype), "Cannot cast from {} to {}".format(
+            x.dtype, dtype
+        )
     return ivy.astype(x, dtype, copy=False)

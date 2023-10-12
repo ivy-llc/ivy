@@ -18,3 +18,6 @@ RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list && 
     software-properties-common  \
     gcc  \
     nano
+
+
+

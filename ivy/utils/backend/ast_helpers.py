@@ -28,11 +28,13 @@ def _retrive_local_modules():
     # Get Ivy package root
     wd = sys.modules["ivy"].__path__[0]
     for entry in os.scandir(wd):
-        if entry.is_file() and entry.name.endswith(".py"):
-            ret.append(entry.name[:-3])
-            continue
-        if entry.is_dir() and "__init__.py" in os.listdir(f"{wd}/{entry.name}"):
-            ret.append(entry.name)
+        if entry.is_file():
+            if entry.name.endswith(".py"):
+                ret.append(entry.name[:-3])
+                continue
+        if entry.is_dir():
+            if "__init__.py" in os.listdir(wd + "/" + entry.name):
+                ret.append(entry.name)
     return ret
 
 
@@ -199,9 +201,9 @@ class ImportTransformer(ast.NodeTransformer):
             return tree
 
         # Convenient function to insert the parse the AST import statement and insert it
-        def insert_import(node):
-            return tree.body.insert(self.insert_index, _create_node(node))
-
+        insert_import = lambda node: tree.body.insert(
+            self.insert_index, _create_node(node)
+        )
         if local_ivy_id is None:
             insert_import(
                 _global_import_template.substitute(name=importlib_abs_import_fn)
@@ -242,7 +244,7 @@ class IvyPathFinder(MetaPathFinder):
                 filename = os.path.join(entry, name, "__init__.py")
                 submodule_locations = [os.path.join(entry, name)]
             else:
-                filename = os.path.join(entry, f"{name}.py")
+                filename = os.path.join(entry, name + ".py")
                 submodule_locations = None
             if not os.path.exists(filename):
                 continue

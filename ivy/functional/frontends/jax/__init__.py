@@ -4,10 +4,10 @@ import sys
 # local
 from ivy.functional.frontends import set_frontend_to_specific_version
 from . import config
-from . import array
-from .array import *
+from . import devicearray
+from .devicearray import DeviceArray
 from . import general_functions
-from .general_functions import *
+from .general_functions import ivy
 from . import lax
 from . import nn
 from . import numpy
@@ -26,4 +26,4 @@ if ivy.is_local():
 else:
     module = sys.modules[__name__]
 
-__version__ = set_frontend_to_specific_version(module)
+set_frontend_to_specific_version(module)

@@ -4,9 +4,9 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# arccos
+# cos
 @handle_frontend_test(
-    fn_tree="numpy.arccos",
+    fn_tree="numpy.cos",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
@@ -16,10 +16,107 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="arccos"
+        fn_name="cos"
     ),
 )
-def test_numpy_arccos(
+def test_numpy_cos(
+    dtypes_values_casting,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-03,
+        x=x[0],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
+    )
+
+
+# tan
+@handle_frontend_test(
+    fn_tree="numpy.tan",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+            )
+        ],
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="tan"
+    ),
+)
+def test_numpy_tan(
+    dtypes_values_casting,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-02,
+        atol=1e-02,
+        x=x[0],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
+    )
+
+
+# arcsin
+@handle_frontend_test(
+    fn_tree="numpy.arcsin",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+            )
+        ],
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="arcsin"
+    ),
+)
+def test_numpy_arcsin(
     dtypes_values_casting,
     where,
     frontend,
@@ -53,9 +150,9 @@ def test_numpy_arccos(
     )
 
 
-# arccosh
+# arccos
 @handle_frontend_test(
-    fn_tree="numpy.arccosh",
+    fn_tree="numpy.arccos",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
@@ -65,58 +162,10 @@ def test_numpy_arccos(
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="arccosh"
+        fn_name="arccos"
     ),
 )
-def test_numpy_arccosh(
-    dtypes_values_casting,
-    where,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        atol=1e-2,
-        x=x[0],
-        out=None,
-        where=where,
-        casting=casting,
-        order="K",
-        dtype=dtype,
-        subok=True,
-    )
-
-
-# arcsin
-@handle_frontend_test(
-    fn_tree="numpy.arcsin",
-    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
-        arr_func=[
-            lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
-            )
-        ],
-    ),
-    where=np_frontend_helpers.where(),
-    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="arcsin"
-    ),
-)
-def test_numpy_arcsin(
+def test_numpy_arccos(
     dtypes_values_casting,
     where,
     frontend,
@@ -198,33 +247,31 @@ def test_numpy_arctan(
     )
 
 
-# Test for arctan2
+# arccosh
 @handle_frontend_test(
-    fn_tree="numpy.arctan2",
+    fn_tree="numpy.arccosh",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
-                num_arrays=2,
             )
         ],
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="arctan2"
+        fn_name="arccosh"
     ),
 )
-def test_numpy_arctan2(
+def test_numpy_arccosh(
     dtypes_values_casting,
     where,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
-    input_dtypes, x, casting, dtype = dtypes_values_casting  # Unpack x
-
+    input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -232,14 +279,13 @@ def test_numpy_arctan2(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1e-3,
-        x1=x[0],  # Input x1
-        x2=x[1],  # Input x2
+        atol=1e-2,
+        x=x[0],
         out=None,
         where=where,
         casting=casting,
@@ -249,9 +295,9 @@ def test_numpy_arctan2(
     )
 
 
-# cos
+# rad2deg
 @handle_frontend_test(
-    fn_tree="numpy.cos",
+    fn_tree="numpy.rad2deg",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
@@ -261,10 +307,10 @@ def test_numpy_arctan2(
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="cos"
+        fn_name="rad2deg"
     ),
 )
-def test_numpy_cos(
+def test_numpy_rad2deg(
     dtypes_values_casting,
     where,
     frontend,
@@ -286,7 +332,7 @@ def test_numpy_cos(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1e-03,
+        rtol=1e-2,
         x=x[0],
         out=None,
         where=where,
@@ -385,103 +431,6 @@ def test_numpy_degrees(
         on_device=on_device,
         rtol=1e-2,
         atol=1e-2,
-        x=x[0],
-        out=None,
-        where=where,
-        casting=casting,
-        order="K",
-        dtype=dtype,
-        subok=True,
-    )
-
-
-# rad2deg
-@handle_frontend_test(
-    fn_tree="numpy.rad2deg",
-    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
-        arr_func=[
-            lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
-            )
-        ],
-    ),
-    where=np_frontend_helpers.where(),
-    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="rad2deg"
-    ),
-)
-def test_numpy_rad2deg(
-    dtypes_values_casting,
-    where,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-2,
-        x=x[0],
-        out=None,
-        where=where,
-        casting=casting,
-        order="K",
-        dtype=dtype,
-        subok=True,
-    )
-
-
-# tan
-@handle_frontend_test(
-    fn_tree="numpy.tan",
-    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
-        arr_func=[
-            lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
-            )
-        ],
-    ),
-    where=np_frontend_helpers.where(),
-    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="tan"
-    ),
-)
-def test_numpy_tan(
-    dtypes_values_casting,
-    where,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-02,
-        atol=1e-02,
         x=x[0],
         out=None,
         where=where,

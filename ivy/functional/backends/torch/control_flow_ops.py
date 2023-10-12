@@ -1,23 +1,24 @@
+# def if_exp(cond, if_true, if_false):
+#   return if_true() if cond else if_false()
+
+
 def if_else(cond, body_fn, orelse_fn, vars):
     # back-compatibility
     if isinstance(cond, bool):
         v = cond
-
-        def cond(*_):
-            return v
-
+        cond = lambda *_: v
     if callable(cond):
-        cond = cond(**vars)
+        cond = cond(*vars)
     else:
         cond = bool(cond)
     if cond:
-        return body_fn(**vars)
+        return body_fn(*vars)
     else:
-        return orelse_fn(**vars)
+        return orelse_fn(*vars)
 
 
 def while_loop(test_fn, body_fn, vars):
-    result = list(vars.values())
+    result = vars
     while test_fn(*result):
         result = body_fn(*result)
         if not isinstance(result, tuple):

@@ -24,7 +24,7 @@ def unique_counts(
 
 
 def unique_inverse(
-    x: Union[(None, mx.ndarray.NDArray)], /, *, axis: Optional[int] = None
+    x: Union[(None, mx.ndarray.NDArray)], /
 ) -> Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])]:
     raise IvyNotImplementedException()
 

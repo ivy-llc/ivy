@@ -1249,7 +1249,7 @@ class _ContainerWithManipulation(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
         ...                   b=ivy.array([[[11.], [12.]]]))
-        >>> y = x.squeeze(axis=2)
+        >>> y = x.squeeze(2)
         >>> print(y)
         {
             a: ivy.array([[10., 11.]]),
@@ -1258,13 +1258,11 @@ class _ContainerWithManipulation(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
         ...                   b=ivy.array([[[11.], [12.]]]))
-        >>> y = x.squeeze(axis=0)
+        >>> y = x.squeeze(0)
         >>> print(y)
         {
-            a: ivy.array([[10.],
-                          [11.]]),
-            b: ivy.array([[11.],
-                          [12.]])
+            a: ivy.array([[10.], [11.]]),
+            b: ivy.array([[11.], [12.]])
         }
         """
         return self._static_squeeze(
@@ -1643,8 +1641,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.tile((2,3))
         >>> print(y)
         {
-            a: (<class ivy.data_classes.array.array.Array> shape=[4, 6]),
-            b: (<class ivy.data_classes.array.array.Array> shape=[2, 6])
+            a: (<classivy.array.array.Array>shape=[4,6]),
+            b: (<classivy.array.array.Array>shape=[2,6])
         }
         """
         return self._static_tile(

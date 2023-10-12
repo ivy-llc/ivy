@@ -12,6 +12,7 @@ from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _check_shapes_broadcastable,
 )
+from ivy.functional.backends.jax.device import to_device
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 
@@ -53,10 +54,10 @@ def beta(
     _setRNG(RNG_)
     if seed is not None:
         jax.random.PRNGKey(seed)
-    return jax.random.beta(rng_input, a, b, shape, dtype)
+    return to_device(jax.random.beta(rng_input, a, b, shape, dtype), device)
 
 
-@with_unsupported_dtypes({"0.4.18 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
 def gamma(
     alpha: Union[float, JaxArray],
     beta: Union[float, JaxArray],
@@ -73,7 +74,7 @@ def gamma(
     _setRNG(RNG_)
     if seed is not None:
         jax.random.PRNGKey(seed)
-    return jax.random.gamma(rng_input, alpha, shape, dtype) / beta
+    return to_device(jax.random.gamma(rng_input, alpha, shape, dtype) / beta, device)
 
 
 def poisson(
@@ -104,7 +105,10 @@ def poisson(
         ret = jnp.where(lam < 0, fill_value, ret)
     else:
         ret = jax.random.poisson(rng_input, lam, shape=list_shape).astype(dtype)
-    return ret
+    return to_device(
+        ret,
+        device,
+    )
 
 
 def bernoulli(
@@ -124,6 +128,6 @@ def bernoulli(
         _setRNG(RNG_)
     if logits is not None:
         probs = jax.nn.softmax(logits, axis=-1)
-    if hasattr(probs, "shape") and not _check_shapes_broadcastable(shape, probs.shape):
+    if not _check_shapes_broadcastable(shape, probs.shape):
         shape = probs.shape
-    return jax.random.bernoulli(rng_input, probs, shape=shape)
+    return to_device(jax.random.bernoulli(rng_input, probs, shape=shape), device)

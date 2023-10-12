@@ -9,7 +9,6 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -19,7 +18,6 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -33,8 +31,8 @@ def all(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Test whether all input array elements evaluate to ``True`` along a specified axis.
+    """Test whether all input array elements evaluate to ``True`` along a specified
+    axis.
 
     .. note::
        Positive infinity, negative infinity, and NaN must evaluate to ``True``.
@@ -133,7 +131,6 @@ def all(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -147,8 +144,8 @@ def any(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Test whether any input array element evaluates to ``True`` along a specified axis.
+    """Test whether any input array element evaluates to ``True`` along a specified
+    axis.
 
     .. note::
        Positive infinity, negative infinity, and NaN must evaluate to ``True``.

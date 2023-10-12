@@ -8,10 +8,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 def array(object, dtype=None, *, copy=True, order="K", subok=False, ndmin=0, like=None):
-    ret = ivy.array(object, copy=copy, dtype=dtype)
-    if ivy.get_num_dims(ret) < ndmin:
-        ret = ivy.expand_dims(ret, axis=list(range(ndmin - ivy.get_num_dims(ret))))
-    return ret
+    return ivy.array(object, copy=copy, dtype=dtype)
 
 
 @handle_numpy_dtype

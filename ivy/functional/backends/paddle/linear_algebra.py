@@ -4,19 +4,15 @@ import paddle
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
+
 # local
 import ivy
 from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
-from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
-    with_unsupported_dtypes,
-    with_supported_dtypes,
-)
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .elementwise import _elementwise_helper
-
 
 # Array API Standard #
 # -------------------#
@@ -24,7 +20,7 @@ from .elementwise import _elementwise_helper
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -91,7 +87,7 @@ def cross(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -183,7 +179,7 @@ def inner(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def inv(
@@ -230,7 +226,6 @@ def matmul(
         paddle.uint8,
         paddle.float16,
         paddle.bool,
-        paddle.bfloat16,
     ]:
         x1, x2 = x1.cast("float32"), x2.cast("float32")
 
@@ -252,7 +247,7 @@ def matmul(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def matrix_norm(
@@ -334,7 +329,7 @@ def eig(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def matrix_power(
@@ -344,7 +339,7 @@ def matrix_power(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def matrix_rank(
@@ -441,7 +436,7 @@ def tensorsolve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def qr(
@@ -457,7 +452,7 @@ def qr(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def slogdet(
@@ -476,7 +471,7 @@ def slogdet(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def solve(
@@ -495,7 +490,7 @@ def solve(
         if x2.shape[-1] == x1.shape[-1]:
             expanded_last = True
             x2 = paddle.unsqueeze(x2, axis=1)
-    for i in range(len(x1.shape) - len(x2.shape)):
+    for i in range(len(x1.shape) - 2):
         x2 = paddle.unsqueeze(x2, axis=0)
     ret = paddle.linalg.solve(x1, x2)
     if expanded_last:
@@ -503,11 +498,26 @@ def solve(
     return ret
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
 def svd(
     x: paddle.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor, ...]]:
-    ret = paddle.linalg.svd(x, full_matrices=full_matrices)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        ret = paddle.linalg.svd(x.cast("float32"), full_matrices=full_matrices)
+        ret = tuple(r.cast(x.dtype) for r in ret)
+    else:
+        ret = paddle.linalg.svd(x, full_matrices=full_matrices)
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
         return results(*ret)
@@ -517,7 +527,7 @@ def svd(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def svdvals(
@@ -526,9 +536,6 @@ def svdvals(
     return paddle_backend.svd(x)[1]
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64")}, backend_version
-)
 def tensordot(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -537,13 +544,25 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = x1.dtype
+    if x1.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     ret = paddle.tensordot(x1, x2, axes=axes)
-    return ret.squeeze() if x1.ndim == axes else ret
+    return ret.squeeze().cast(ret_dtype) if x1.ndim == axes else ret.cast(ret_dtype)
 
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -618,10 +637,6 @@ def vector_norm(
 # ----- #
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
-    backend_version,
-)
 def diag(
     x: paddle.Tensor,
     /,
@@ -629,11 +644,24 @@ def diag(
     k: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            return paddle.complex(
+                paddle.diag(x.real(), offset=k), paddle.diag(x.imag(), offset=k)
+            )
+        return paddle.diag(x.cast("float32"), offset=k).cast(x.dtype)
     return paddle.diag(x, offset=k)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16", "complex64", "complex128")}},
     backend_version,
 )
 def vander(
@@ -655,7 +683,7 @@ def vander(
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("unsigned", "int8", "int16", "float16")},
+    {"2.5.0 and below": ("unsigned", "int8", "int16", "float16")},
     backend_version,
 )
 def vector_to_skew_symmetric_matrix(

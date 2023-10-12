@@ -22,10 +22,9 @@ result_config = {
 
 
 def make_clickable(url, name):
-    return (
-        f'<a href="{url}" rel="noopener noreferrer" '
-        + f'target="_blank"><img src={name}></a>'
-    )
+    return '<a href="{}" rel="noopener noreferrer" '.format(
+        url
+    ) + 'target="_blank"><img src={}></a>'.format(name)
 
 
 def update_test_results():
@@ -46,7 +45,7 @@ def update_test_results():
     res = make_clickable(action_url + run_id, result_config[result])
     collection.update_one(
         {"_id": test_configs[workflow][1]},
-        {"$set": {f"{backend}.{submodule}": res}},
+        {"$set": {backend + "." + submodule: res}},
         upsert=True,
     )
     return

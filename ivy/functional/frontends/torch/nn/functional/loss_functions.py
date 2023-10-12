@@ -2,41 +2,69 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
-# --- Helpers --- #
-# --------------- #
+def norm(input, axis):
+    return ivy.sqrt(ivy.sum(ivy.square(input), axis=axis))
 
 
-def _apply_reduction(reduction, size_average, reduce, to_reduce):
-    if size_average is not None or reduce is not None:
-        reduction = _get_reduction_string(size_average, reduce)
-    return _get_reduction_method(reduction, to_reduce)
-
-
-def _get_reduction(reduction, size_average=None, reduce=None):
-    if size_average is not None or reduce is not None:
-        return _get_reduction_func(_get_reduction_string(size_average, reduce))
+def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
+    x1, x2 = torch_frontend.promote_types_of_torch_inputs(x1, x2)
+    x1_dim = len(x1.shape)
+    x2_dim = len(x2.shape)
+    if x1_dim > x2_dim:
+        output_dim = x1_dim
     else:
-        return _get_reduction_func(reduction)
+        output_dim = x2_dim
+
+    return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
+
+
+def cosine_similarity(x1, x2):
+    axis = None
+    if len(x1.shape) == len(x2.shape) and len(x2.shape) == 2:
+        axis = 1
+    input1_norm = norm(x1, axis=axis)
+    input2_norm = norm(x2, axis=axis)
+    norm_mm = input1_norm * input2_norm
+    norm_mm, eps = torch_frontend.promote_types_of_torch_inputs(norm_mm, 1e-08)
+    return ivy.sum(x1 * x2, axis=axis) / ivy.maximum(norm_mm, eps)
 
 
 def _get_reduction_func(reduction):
     if reduction == "none":
-
-        def ret(x):
-            return x
-
+        ret = lambda x: x
     elif reduction == "mean":
         ret = ivy.mean
     elif reduction == "sum":
         ret = ivy.sum
     else:
         raise ivy.utils.exceptions.IvyException(
-            f"{reduction} is not a valid value for reduction"
+            "{} is not a valid value for reduction".format(reduction)
         )
     return ret
+
+
+def _legacy_get_string(size_average, reduce):
+    if size_average is None:
+        size_average = True
+    if reduce is None:
+        reduce = True
+    if size_average and reduce:
+        ret = "mean"
+    elif reduce:
+        ret = "sum"
+    else:
+        ret = "none"
+    return ret
+
+
+def _get_reduction(reduction, size_average=None, reduce=None):
+    if size_average is not None or reduce is not None:
+        return _get_reduction_func(_legacy_get_string(size_average, reduce))
+    else:
+        return _get_reduction_func(reduction)
 
 
 def _get_reduction_method(reduction, to_reduce):
@@ -67,22 +95,44 @@ def _get_reduction_string(size_average, reduce):
     return ret
 
 
-# --- Main --- #
-# ------------ #
+def _apply_reduction(reduction, size_average, reduce, to_reduce):
+    if size_average is not None or reduce is not None:
+        reduction = _get_reduction_string(size_average, reduce)
+        return _get_reduction_method(reduction, to_reduce)
+    else:
+        return _get_reduction_method(reduction, to_reduce)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+def cross_entropy(
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    ignore_index=-100,
+    reduce=None,
+    reduction="mean",
+    label_smoothing=0.0,
+):
+    input = ivy.softmax(input)
+    ret = ivy.cross_entropy(target, input, epsilon=label_smoothing)
+    if weight is not None:
+        ret = ivy.multiply(weight, ret)
+    ret = _apply_reduction(reduction, size_average, reduce, ret)
+    return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def binary_cross_entropy(
     input, target, weight=None, size_average=None, reduce=None, reduction="mean"
 ):
-    if size_average is not None or reduce is not None:
-        reduction = _get_reduction_string(size_average, reduce)
-    result = ivy.binary_cross_entropy(target, input, epsilon=0.0, reduction=reduction)
+    reduction = _get_reduction(reduction, size_average, reduce)
+    result = ivy.binary_cross_entropy(target, input, epsilon=0.0)
 
     if weight is not None:
         result = ivy.multiply(weight, result)
-
+    result = reduction(result)
     return result
 
 
@@ -96,24 +146,22 @@ def binary_cross_entropy_with_logits(
     reduction="mean",
     pos_weight=None,
 ):
-    if size_average is not None or reduce is not None:
-        reduction = _get_reduction_string(size_average, reduce)
     result = ivy.binary_cross_entropy(
         target,
         input,
-        reduction=reduction,
+        reduction="none",
         from_logits=True,
         pos_weight=pos_weight,
     )
-
+    reduction = _get_reduction(reduction, size_average, reduce)
     if weight is not None:
         result = ivy.multiply(weight, result)
-
+    result = reduction(result).astype(target.dtype)
     return result
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def cosine_embedding_loss(
     input1, input2, target, margin=0.0, size_average=None, reduce=None, reduction="mean"
 ):
@@ -146,8 +194,10 @@ def cosine_embedding_loss(
 
     ivy.utils.assertions.check_true(
         target.ndim + 1 == input1.ndim and target.ndim + 1 == input2.ndim,
-        f"{target.ndim}D target tensor expects {target.ndim + 1}D input tensors, but "
-        f"found inputs with sizes {list(input1.shape)} and {list(input2.shape)}.",
+        "{}D target tensor expects {}D input tensors, but "
+        "found inputs with sizes {} and {}.".format(
+            target.ndim, target.ndim + 1, list(input1.shape), list(input2.shape)
+        ),
     )
 
     ivy.utils.assertions.check_true(
@@ -159,8 +209,8 @@ def cosine_embedding_loss(
     if target.ndim == 1:
         ivy.utils.assertions.check_true(
             target.shape[0] == input1.shape[0],
-            f"The size of target tensor ({target.shape[0]}) must match the size of"
-            f" input tensor ({input1.shape[0]}) at non-singleton dimension 0 ",
+            "The size of target tensor ({}) must match the size of input tensor ({}) "
+            "at non-singleton dimension 0 ".format(target.shape[0], input1.shape[0]),
         )
 
     if target.ndim == 0:
@@ -178,19 +228,91 @@ def cosine_embedding_loss(
     return loss
 
 
-def cosine_similarity(x1, x2):
-    axis = None
-    if len(x1.shape) == len(x2.shape) and len(x2.shape) == 2:
-        axis = 1
-    input1_norm = norm(x1, axis=axis)
-    input2_norm = norm(x2, axis=axis)
-    norm_mm = input1_norm * input2_norm
-    norm_mm, eps = torch_frontend.promote_types_of_torch_inputs(norm_mm, 1e-08)
-    return ivy.sum(x1 * x2, axis=axis) / ivy.maximum(norm_mm, eps)
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
+    reduction = _get_reduction(reduction, size_average, reduce)
+    result = ivy.square(input - target)
+    result = reduction(result)
+    return result
 
 
 @to_ivy_arrays_and_back
-def cross_entropy(
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+def smooth_l1_loss(
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+    beta=1.0,
+):
+    beta = ivy.array(beta, device=input.device)
+    reduction = _get_reduction(reduction, size_average, reduce)
+
+    if beta < 1e-5:
+        # [Copied and modified from fvcore]
+        # if beta == 0, then torch.where will result in nan gradients when
+        # the chain rule is applied due to pytorch implementation details
+        # (the False branch "0.5 * _diff_abs ** 2 / 0" has an incoming
+        # gradient of zeros, rather than "no gradient"). To avoid this
+        # issue, we define small values of beta to be exactly l1 loss.
+        loss = ivy.abs(input - target)
+    else:
+        _diff_abs = ivy.abs(input - target)
+
+        loss = ivy.where(
+            _diff_abs < beta,
+            0.5 * _diff_abs**2 / beta,
+            _diff_abs - 0.5 * beta,
+        )
+
+    ret = reduction(loss)
+
+    return ret
+
+
+@to_ivy_arrays_and_back
+def huber_loss(
+    input,
+    target,
+    reduction="mean",
+    delta=1.0,
+):
+    delta = ivy.array(delta)
+    _diff_abs = ivy.abs(ivy.subtract(input, target))
+
+    loss = ivy.where(
+        _diff_abs < delta,  # If |xᵢ - yᵢ| < δ
+        0.5 * _diff_abs**2,  # lᵢ = 0.5(xᵢ - yᵢ)²
+        delta * (_diff_abs - 0.5 * delta),
+    )  # lᵢ = δ(|xᵢ - yᵢ| - 0.5 * δ)
+
+    reduction = _get_reduction(reduction)
+    ret = reduction(loss)
+
+    return ivy.astype(ret, input.dtype)
+
+
+@to_ivy_arrays_and_back
+def l1_loss(
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = ivy.abs(input - target)
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+    return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16", "int8", "int16", "int32")}, "torch"
+)
+def nll_loss(
     input,
     target,
     weight=None,
@@ -198,23 +320,27 @@ def cross_entropy(
     ignore_index=-100,
     reduce=None,
     reduction="mean",
-    label_smoothing=0.0,
 ):
-    loss = ivy.cross_entropy(target, input, epsilon=label_smoothing, reduction="none")
+    out = ivy.zeros_like(target)
 
-    if ignore_index != -100:
-        mask = ivy.not_equal(target, ignore_index)
-        loss = ivy.where(mask, loss, ivy.zeros_like(loss))
+    if len(input.shape) == 1:
+        for i in range(len(target)):
+            out[i] = input[target[i]]
+    else:
+        for i in range(len(target)):
+            out[i] = input[i][target[i]]
+    loss = -out
 
     if weight is not None:
-        result = ivy.multiply(weight, loss)
+        loss = ivy.multiply(weight, loss)
+    reduct = _get_reduction(reduction, size_average, reduce)
+    ret = reduct(loss)
 
-    reduction = _get_reduction(reduction, size_average, reduce)
-    return reduction(result).astype(target.dtype)
+    return ret
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("bool", "integer")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bool", "integer")}, "torch")
 def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"):
     input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
     target, var = torch_frontend.promote_types_of_torch_inputs(target, var)
@@ -246,73 +372,56 @@ def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
-@to_ivy_arrays_and_back
-def hinge_embedding_loss(
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+def soft_margin_loss(
     input,
     target,
-    margin=1.0,
     size_average=None,
     reduce=None,
     reduction="mean",
 ):
-    margin = ivy.array(margin)
-
-    loss = ivy.where(
-        ivy.logical_or(target == -1, target == 1),
-        ivy.where(target == 1, input, ivy.maximum(0, margin - input)),
-        ivy.maximum(margin, input),
-    )
-
+    loss = ivy.log1p(ivy.exp(-input * target))
     reduction = _get_reduction(reduction, size_average, reduce)
     ret = reduction(loss)
-
-    return ivy.astype(ret, input.dtype)
-
-
-@to_ivy_arrays_and_back
-def huber_loss(
-    input,
-    target,
-    reduction="mean",
-    delta=1.0,
-):
-    return ivy.huber_loss(target, input, delta=delta, reduction=reduction)
+    return ret
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def kl_div(
     input, target, size_average=None, reduce=None, reduction="mean", log_target=False
 ):
-    orig_red = reduction
-    if size_average is not None or reduce is not None:
-        reduction = _get_reduction_string(size_average, reduce)
+    size = ivy.shape(input)
+
+    if len(size) < 1:
+        size = [1]
+
+    def loss_fn():
+        if log_target:
+            return ivy.exp(target) * (target - input)
+        return target * (ivy.log(target) - input)
+
+    def batchmean(x):
+        if not reduce:
+            return x / size[0]
+
+        if size_average:
+            return ivy.mean(x) / size[0]
+
+        return ivy.sum(x) / size[0]
+
+    loss = ivy.nan_to_num(loss_fn())
+
+    if reduction == "batchmean":
+        reduction = batchmean
     else:
-        reduction = reduction if reduction != "batchmean" else "sum"
-    ret = ivy.kl_div(input, target, reduction=reduction, log_target=log_target)
-    if orig_red == "batchmean" and input.ndim != 0:
-        ret = ret / input.shape[0]
-    return ret
+        reduction = _get_reduction(reduction, size_average, reduce)
+
+    return reduction(loss)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.1.0 and below": ("float", "complex")}, "torch")
-def l1_loss(
-    input,
-    target,
-    size_average=None,
-    reduce=None,
-    reduction="mean",
-):
-    if size_average is not None or reduce is not None:
-        reduction = _get_reduction_string(size_average, reduce)
-    ret = ivy.l1_loss(input, target, reduction=reduction)
-    return ret
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def margin_ranking_loss(
     input1,
     input2,
@@ -331,112 +440,7 @@ def margin_ranking_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, "torch")
-def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
-    reduction = _get_reduction(reduction, size_average, reduce)
-    result = ivy.square(input - target)
-    result = reduction(result)
-    return result
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
-def multilabel_margin_loss(
-    input, target, size_average=None, reduce=None, reduction="mean"
-):
-    ivy.assertions.check_true(
-        input.shape == target.shape,
-        lambda: (
-            "Same shape is expected for both output and target, but instead got :"
-            f" output {input.shape} and target : {target.shape}"
-        ),
-    )
-    input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
-    pos = input[ivy.astype(target, bool)]
-    neg = input[ivy.astype(1 - target, bool)]
-    loss = ivy.maximum(0, 1 - (torch_frontend.unsqueeze(pos, dim=1) - neg))
-    reduct = _get_reduction(reduction, size_average, reduce)
-    return reduct(loss)
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
-def multilabel_soft_margin_loss(
-    input,
-    target,
-    weight=None,
-    size_average=None,
-    reduce=None,
-    reduction="mean",
-):
-    loss = -(
-        target * ivy.log(ivy.sigmoid(input))
-        + (1 - target) * ivy.log(1 - ivy.sigmoid(input))
-    )
-
-    if weight is not None:
-        loss = ivy.multiply(weight, loss)
-
-    class_dim = ivy.get_num_dims(input) - 1
-    C = ivy.shape(input)[class_dim]
-
-    loss = ivy.sum(loss, axis=class_dim) / C
-
-    reduction = _get_reduction(reduction, size_average, reduce)
-    ret = reduction(loss)
-
-    return ret
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {"2.1.0 and below": ("float16", "int8", "int16", "int32")}, "torch"
-)
-def nll_loss(
-    input,
-    target,
-    weight=None,
-    size_average=None,
-    ignore_index=-100,
-    reduce=None,
-    reduction="mean",
-):
-    out = ivy.zeros_like(target)
-
-    if len(input.shape) == 1:
-        for i in range(len(target)):
-            out[i] = input[target[i]]
-    else:
-        for i in range(len(target)):
-            out[i] = input[i][target[i]]
-    loss = -out
-
-    if weight is not None:
-        loss = ivy.multiply(weight, loss)
-    reduct = _get_reduction(reduction, size_average, reduce)
-    ret = reduct(loss)
-
-    return ret
-
-
-def norm(input, axis):
-    return ivy.sqrt(ivy.sum(ivy.square(input), axis=axis))
-
-
-def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
-    x1, x2 = torch_frontend.promote_types_of_torch_inputs(x1, x2)
-    x1_dim = len(x1.shape)
-    x2_dim = len(x2.shape)
-    if x1_dim > x2_dim:
-        output_dim = x1_dim
-    else:
-        output_dim = x2_dim
-
-    return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def poisson_nll_loss(
     input,
     target,
@@ -463,32 +467,32 @@ def poisson_nll_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
-def smooth_l1_loss(
-    input,
-    target,
-    size_average=None,
-    reduce=None,
-    reduction="mean",
-    beta=1.0,
-):
-    return ivy.smooth_l1_loss(input, target, beta=beta, reduction=reduction)
-
-
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
-def soft_margin_loss(
+def hinge_embedding_loss(
     input,
     target,
+    margin=1.0,
     size_average=None,
     reduce=None,
     reduction="mean",
 ):
-    return ivy.soft_margin_loss(input, target, reduction=reduction)
+    margin = ivy.array(margin)
+
+    loss = ivy.where(
+        ivy.logical_or(target == -1, target == 1),
+        ivy.where(target == 1, input, ivy.maximum(0, margin - input)),
+        ivy.maximum(margin, input),
+    )
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+
+    return ivy.astype(ret, input.dtype)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def triplet_margin_loss(
     anchor,
     positive,
@@ -543,7 +547,36 @@ def triplet_margin_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+def multilabel_soft_margin_loss(
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = -(
+        target * ivy.log(ivy.sigmoid(input))
+        + (1 - target) * ivy.log(1 - ivy.sigmoid(input))
+    )
+
+    if weight is not None:
+        loss = ivy.multiply(weight, loss)
+
+    class_dim = ivy.get_num_dims(input) - 1
+    C = ivy.shape(input)[class_dim]
+
+    loss = ivy.sum(loss, axis=class_dim) / C
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+
+    return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def triplet_margin_with_distance_loss(
     anchor,
     positive,
@@ -580,3 +613,23 @@ def triplet_margin_with_distance_loss(
     loss = ivy.maximum(dist_pos - dist_neg + ivy.array(margin), ivy.array(0.0))
 
     return reduction(loss).astype(anchor.dtype)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+def multilabel_margin_loss(
+    input, target, size_average=None, reduce=None, reduction="mean"
+):
+    ivy.assertions.check_true(
+        input.shape == target.shape,
+        lambda: (
+            "Same shape is expected for both output and target, but instead got :"
+            f" output {input.shape} and target : {target.shape}"
+        ),
+    )
+    input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
+    pos = input[ivy.astype(target, bool)]
+    neg = input[ivy.astype(1 - target, bool)]
+    loss = ivy.maximum(0, 1 - (torch_frontend.unsqueeze(pos, dim=1) - neg))
+    reduct = _get_reduction(reduction, size_average, reduce)
+    return reduct(loss)
