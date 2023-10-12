@@ -152,6 +152,18 @@ Max = to_ivy_arrays_and_back(
         )
     )
 )
+MaxPool3D = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.14.0 and below": ("float32",),
+        },
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.nn.max_pool3d,
+        )
+    )
+)
 Maximum = to_ivy_arrays_and_back(
     with_unsupported_dtypes(
         {
