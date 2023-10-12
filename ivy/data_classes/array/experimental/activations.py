@@ -358,10 +358,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         lambd: float = 0.5,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.softshrink. This method simply wraps
-        the function, and so the docstring for ivy.softshrink also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.softshrink. This method
+        simply wraps the function, and so the docstring for ivy.softshrink also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

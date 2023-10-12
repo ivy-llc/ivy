@@ -1182,10 +1182,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.softshrink. This method simply wraps
-        the function, and so the docstring for ivy.softshrink also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.softshrink. This method
+        simply wraps the function, and so the docstring for ivy.softshrink also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1240,8 +1239,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Apply the soft shrinkage function element-wise.
+        """Apply the soft shrinkage function element-wise.
 
         Parameters
         ----------

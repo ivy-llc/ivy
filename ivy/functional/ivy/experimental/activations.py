@@ -640,8 +640,7 @@ def softshrink(
     lambd: float = 0.5,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the softshrink function element-wise.
+    """Apply the softshrink function element-wise.
 
     Parameters
     ----------
