@@ -174,6 +174,11 @@ def mask_indices(n, mask_func, k=0):
 
 
 @to_ivy_arrays_and_back
+def ravel_multi_index(arr, dims, mode="raise", order="C"):
+    return ivy.ravel_multi_index(arr, dims, mode=mode, order=order)
+
+
+@to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis, mode="fill"):
     return ivy.take_along_axis(arr, indices, axis, mode=mode)
 
