@@ -493,3 +493,30 @@ def trim_zeros(a: torch.Tensor, /, *, trim: Optional[str] = "bf") -> torch.Tenso
             else:
                 last = last - 1
     return a[first:last]
+
+
+def sequence_insert(
+    arr: torch.Tensor,
+    indices: Union[torch.Tensor, int],
+    values: torch.Tensor,
+    axis: Optional[int] = None,
+    /,
+    *,
+    out: None = None,
+) -> torch.Tensor:
+
+    if axis is None:
+        axis = -1
+
+    indices = torch.as_tensor(indices, dtype=torch.long)
+    values = torch.as_tensor(values, dtype=arr.dtype)
+
+    indices = indices.view(-1)
+    values = values.view(-1)
+
+    new_tensor = torch.cat([arr[:indices[0]], values, arr[indices[-1:] + 1]], dim=axis)
+
+    if out is not None:
+        new_tensor = new_tensor.to(out)
+
+    return new_tensor
