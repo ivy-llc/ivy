@@ -7,14 +7,28 @@ import torch
 # local
 import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
+)
 from . import backend_version
 
 # Array API Standard #
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("complex", "bool")}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {
+        "2.1.0 and below": {
+            "cpu": (
+                "complex",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
 def min(
     x: torch.Tensor,
     /,
