@@ -6,7 +6,8 @@ import numpy as np
 
 import unittest
 import cProfile
-    # Implementation goes here
+
+# Implementation goes here
 
 
 import unittest
@@ -48,6 +49,8 @@ def compute_mdct_block_inverse(block):
     # where N is the block size
 
     return result
+
+
 def inverse_mdct(data, block_size):
     """
     Compute the inverse MDCT of the given data.
@@ -124,7 +127,7 @@ cProfile.run("result = inverse_mdct(real_data, block_size)")
 if __name__ == "__main__":
     unittest.main()
 
-        # Add more test cases here to cover different scenarios and edge cases
+    # Add more test cases here to cover different scenarios and edge cases
 
 
 if __name__ == "__main__":
