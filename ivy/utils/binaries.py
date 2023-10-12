@@ -93,8 +93,10 @@ def cleanup_and_fetch_binaries(clean=True):
                 search_path = f"{module}/{file_name}"
                 try:
                     response = request.urlopen(
-                        "https://github.com/unifyai/binaries/raw/"
-                        f"{version}/{search_path}",
+                        (
+                            "https://github.com/unifyai/binaries/raw/"
+                            f"{version}/{search_path}"
+                        ),
                         timeout=40,
                     )
                     os.makedirs(os.path.dirname(path), exist_ok=True)
