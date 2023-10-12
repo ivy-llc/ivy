@@ -518,3 +518,30 @@ def put_along_axis(
 put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
     "replace",
 ]
+
+
+def sequence_insert(
+    arr: np.ndarray,
+    indices: Union[np.ndarray, int],
+    values: np.ndarray,
+    axis: Optional[int] = None,
+    /,
+    *,
+    out: None = None,
+) -> np.ndarray:
+
+    if axis is None:
+        axis = -1
+
+    indices = np.asarray(indices, dtype=np.int64)
+    values = np.asarray(values, dtype=arr.dtype)
+
+    indices = indices.ravel()
+    values = values.ravel()
+
+    new_tensor = np.concatenate([arr[:indices[0]], values, arr[indices[-1:] + 1]], axis=axis)
+
+    if out is not None:
+        new_tensor = np.copyto(out, new_tensor)
+
+    return new_tensor
