@@ -192,3 +192,32 @@ def concat_from_sequence(
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
+
+
+def sequence_insert(
+    data: Union[nd.NDArray, int],
+    indices: Union[nd.NDArray, int],
+    values: Union[nd.NDArray, int],
+    axis: Optional[int] = None,
+    /,
+    *,
+    out: None = None,
+) -> nd.NDArray:
+
+    if axis is None:
+        axis = -1
+
+    indices = nd.asarray(indices, dtype=nd.int64)
+    values = nd.asarray(values, dtype=data.dtype)
+
+    indices = indices.ravel()
+    values = values.ravel()
+
+    new_tensor = nd.concatenate([data[:indices[0]], values, data[indices[-1:] + 1]], axis=axis)
+
+    if out is not None:
+        new_tensor = new_tensor.at[out].set(new_tensor)
+
+    return new_tensor
+
+
