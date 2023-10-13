@@ -266,8 +266,7 @@ def nanmin(
     initial: Optional[Union[int, float, complex]] = None,
     where: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return minimum of an array or minimum along an axis, ignoring any NaNs.
+    """Return minimum of an array or minimum along an axis, ignoring any NaNs.
 
     Parameters
     ----------
