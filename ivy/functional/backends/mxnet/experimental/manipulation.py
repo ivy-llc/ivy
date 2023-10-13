@@ -195,28 +195,28 @@ def concat_from_sequence(
 
 
 def sequence_insert(
-  data: Union[mx.ndarray.NDArray, int],
-  indices: Union[mx.ndarray.NDArray, int],
-  values: Union[mx.ndarray.NDArray, int],
-  axis: Optional[int] = None,
-  /,
-  *,
-  out: None = None,
+    data: Union[int, mx.ndarray.NDArray],
+    indices: Union[int, mx.ndarray.NDArray],
+    values: Union[int, mx.ndarray.NDArray],
+    axis: Optional[int] = None,
+    /,
+    *,
+    out: None = None,
 ) -> mx.ndarray.NDArray:
-  if axis is None:
-    axis = -1
+    if axis is None:
+        axis = -1
 
-  indices = mx.nd.asarray(indices, dtype=mx.nd.int64)
-  values = mx.nd.asarray(values, dtype=data.dtype)
+    indices = mx.nd.asarray(indices, dtype=mx.nd.int64)
+    values = mx.nd.asarray(values, dtype=data.dtype)
 
-  indices = indices.ravel()
-  values = values.ravel()
+    indices = indices.ravel()
+    values = values.ravel()
 
-  new_tensor = mx.nd.concatenate(
-    [data[: indices[0]], values, data[indices[-1:] + 1]], axis=axis
-  )
+    new_tensor = mx.nd.concatenate(
+        [data[: indices[0]], values, data[indices[-1:] + 1]], axis=axis
+    )
 
-  if out is not None:
-    new_tensor = new_tensor.at[out].set(new_tensor)
+    if out is not None:
+        new_tensor = new_tensor.at[out].set(new_tensor)
 
-  return new_tensor
+    return new_tensor
