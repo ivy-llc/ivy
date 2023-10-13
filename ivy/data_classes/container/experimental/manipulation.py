@@ -3964,7 +3964,7 @@ def sequence_insert(
     *,
     out: None = None,
 ) -> ivy.Array:
-    """Inserts values into a sequence at the specified indices.
+    """Insert values into a sequence at the specified indices.
 
     Parameters
     ----------
@@ -3999,7 +3999,6 @@ def sequence_insert(
      [2, 6],
      [4]])
     """
-
     if axis is None:
         axis = -1
 
