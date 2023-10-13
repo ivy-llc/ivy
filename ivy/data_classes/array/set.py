@@ -8,10 +8,9 @@ import ivy
 
 class _ArrayWithSet(abc.ABC):
     def unique_counts(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.unique_counts. This method simply wraps
-        the function, and so the docstring for ivy.unique_counts also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.unique_counts. This method
+        simply wraps the function, and so the docstring for ivy.unique_counts
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -108,10 +107,9 @@ class _ArrayWithSet(abc.ABC):
         axis: Optional[int] = None,
         by_value: bool = True,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.unique_all. This method simply wraps
-        the function, and so the docstring for ivy.unique_all also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.unique_all. This method
+        simply wraps the function, and so the docstring for ivy.unique_all also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -146,10 +144,9 @@ class _ArrayWithSet(abc.ABC):
         return ivy.unique_all(self._data, axis=axis, by_value=by_value)
 
     def unique_inverse(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.unique_inverse. This method simply
-        wraps the function, and so the docstring for ivy.unique_inverse also applies to
-        this method with minimal changes.
+        """ivy.Array instance method variant of ivy.unique_inverse. This method
+        simply wraps the function, and so the docstring for ivy.unique_inverse
+        also applies to this method with minimal changes.
 
         Parameters
         ----------

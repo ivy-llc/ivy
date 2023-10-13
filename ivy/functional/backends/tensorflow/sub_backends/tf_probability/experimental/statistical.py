@@ -118,9 +118,8 @@ def nanmedian(
 
 
 def _nanmedian_helper(input, axis=None, keepdims=False):
-    """
-    The approach to Handle Nans in single dimensional plus multi-dimensional inputs are
-    composed on two-parts.
+    """The approach to Handle Nans in single dimensional plus multi-dimensional
+    inputs are composed on two-parts.
 
     PART 1:  In this part, you have axis=None, it means we have to work on
     flattened data, we don't need to work on different axis.there are two cases here
