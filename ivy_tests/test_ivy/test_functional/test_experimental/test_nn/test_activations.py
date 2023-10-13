@@ -109,6 +109,40 @@ def test_hardtanh(
     )
 
 
+# leaky_relu
+@handle_test(
+    fn_tree="functional.ivy.experimental.leaky_relu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    alpha=st.one_of(
+        st.floats(min_value=1e-30, max_value=1e30),
+    ),
+)
+def test_leaky_relu(
+    *,
+    dtype_and_x,
+    alpha,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        alpha=alpha,
+    )
+
+
 # logit
 @handle_test(
     fn_tree="functional.ivy.experimental.logit",

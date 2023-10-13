@@ -799,3 +799,74 @@ def scaled_tanh(
 
 
 stanh = scaled_tanh
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def leaky_relu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    alpha: float = 0.01,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Apply the leaky rectified linear unit function element-wise.
+
+    If the input is complex, then by default each element is scaled by `alpha` if
+    either its real part is strictly negative or if its real part is zero and its
+    imaginary part is negative. This behaviour can be changed by specifying a different
+    `complex_mode`.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    alpha
+        Negative slope for ReLU.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The input array with leaky relu applied element-wise.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([0.39, -0.85])
+    >>> y = ivy.leaky_relu(x)
+    >>> print(y)
+    ivy.array([ 0.39, -0.17])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.leaky_relu(x, out=y)
+    >>> print(y)
+    ivy.array([ 1.5 ,  0.7 , -0.48])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-4.4, -5.5, -6.6]])
+    >>> ivy.leaky_relu(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
+       [-0.88, -1.1 , -1.32]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.leaky_relu(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([0., -0.24000001]),
+        b: ivy.array([0.40000001, -0.04])
+    }
+    """
+    return current_backend(x).elu(x, alpha=alpha, out=out)

@@ -135,3 +135,13 @@ def scaled_tanh(
     out: Optional[Tensor] = None,
 ) -> Tensor:
     return alpha * tf.nn.tanh(beta * x)
+
+
+@with_supported_dtypes({"2.14.0 and below": ("float",)}, backend_version)
+def leaky_relu(
+    x: Tensor, /, *, alpha: float = 0.01, out: Optional[Tensor] = None
+) -> Tensor:
+    ret = tf.nn.leaky_relu(x, alpha=alpha)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)

@@ -125,3 +125,13 @@ def scaled_tanh(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return alpha * jax.nn.tanh(beta * x)
+
+
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
+def leaky_relu(
+    x: JaxArray, /, *, alpha: float = 0.01, out: Optional[JaxArray] = None
+) -> JaxArray:
+    ret = jax.nn.leaky_relu(x, negative_slope=alpha)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret

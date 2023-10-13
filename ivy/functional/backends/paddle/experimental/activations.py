@@ -198,3 +198,25 @@ def scaled_tanh(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.stanh(x, scale_a=beta, scale_b=alpha)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def leaky_relu(
+    x: paddle.Tensor, /, *, alpha: float = 0.01, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return F.leaky_relu(x, negative_slope=alpha)
+    if paddle.is_complex(x):
+        ret = paddle.complex(
+            F.leaky_relu(x.real(), negative_slope=alpha),
+            F.leaky_relu(x.imag(), negative_slope=alpha),
+        )
+        return ret
+    return F.leaky_relu(x.cast("float32"), negative_slope=alpha).cast(x.dtype)

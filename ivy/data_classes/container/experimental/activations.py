@@ -1473,3 +1473,127 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def _static_leaky_relu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        alpha: ivy.Container = 0.01,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.leaky_relu. This method
+        simply wraps the function, and so the docstring for ivy.leaky_relu also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        alpha
+            array or scalar specifying the negative slope.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+             a container with the leaky relu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = ivy.Container.static_leaky_relu(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "leaky_relu",
+            x,
+            alpha=alpha,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def leaky_relu(
+        self: ivy.Container,
+        /,
+        *,
+        alpha: ivy.Container = 0.01,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.leaky_relu. This method
+        simply wraps the function, and so the docstring for ivy.leaky_relu also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        alpha
+            array or scalar specifying the negative slope.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+           a container with the leaky relu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = x.leaky_relu()
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
+        }
+        """
+        return self._static_leaky_relu(
+            self,
+            alpha=alpha,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

@@ -438,3 +438,38 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([0.1, 0.1, 0.1])
         """
         return ivy.scaled_tanh(self._data, alpha=alpha, beta=beta, out=out)
+
+    def leaky_relu(
+        self: ivy.Array,
+        /,
+        *,
+        alpha: float = 0.01,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.leaky_relu. This method
+        simply wraps the function, and so the docstring for ivy.leaky_relu also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        alpha
+            the slope of the negative section.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the leaky relu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([0.39, -0.85])
+        >>> y = x.leaky_relu()
+        >>> print(y)
+        ivy.array([ 0.39, -0.17])
+        """
+        return ivy.leaky_relu(self._data, alpha=alpha, out=out)

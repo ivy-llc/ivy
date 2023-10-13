@@ -158,3 +158,17 @@ def scaled_tanh(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return alpha * np.tanh(beta * x)
+
+
+@with_unsupported_dtypes({"1.26.0 and below": ("float16", "bfloat16")}, backend_version)
+@_scalar_output_to_0d_array
+def leaky_relu(
+    x: np.ndarray, /, *, alpha: float = 0.01, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    ret = np.where(x > 0, x, np.multiply(alpha, x)).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+leaky_relu.support_native_out = True
