@@ -189,7 +189,7 @@ def upsample(
     data_format="NCHW",
     name=None,
 ):
-    return interpolate(x, size, scale_factor, mode, align_corners)
+    return ivy.interpolate(x, size, scale_factor, mode, align_corners)
 
 
 @to_ivy_arrays_and_back
