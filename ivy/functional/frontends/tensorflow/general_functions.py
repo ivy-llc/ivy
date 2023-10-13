@@ -346,16 +346,8 @@ def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
 )
 @to_ivy_arrays_and_back
 def random_uniform_initializer(
-    shape, minval=None, maxval=None, dtype=ivy.float32, seed=None, name=None
+    shape, minval=0, maxval=1, dtype=ivy.float32, seed=None, name=None
 ):
-    try:
-        minval = float(minval)
-    except (ValueError, TypeError):
-        minval = 0.0
-    try:
-        maxval = float(maxval)
-    except (ValueError, TypeError):
-        maxval = 1.0
     return ivy.random_uniform(
         shape=shape, low=minval, high=maxval, dtype=dtype, seed=seed
     )
