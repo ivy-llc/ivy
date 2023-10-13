@@ -5,7 +5,7 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 from ivy.functional.backends.jax import JaxArray
 from . import backend_version
 
@@ -86,6 +86,17 @@ def std(
     return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "0.4.14 and below": {
+            "cpu": (
+                "complex64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
+)
 def sum(
     x: JaxArray,
     /,

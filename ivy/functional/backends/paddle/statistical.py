@@ -8,7 +8,6 @@ import paddle
 import ivy
 from ivy.func_wrapper import (
     with_supported_dtypes,
-    with_unsupported_dtypes,
     with_supported_device_and_dtypes,
     with_unsupported_device_and_dtypes,
 )
@@ -207,6 +206,22 @@ def _std(x, axis, correction, keepdim):
     return out
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "bfloat16",
+                "complex64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
+)
 def std(
     x: paddle.Tensor,
     /,
@@ -219,7 +234,22 @@ def std(
     return _std(x, axis, correction, keepdims).cast(x.dtype)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("int8", "uint8")}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "bfloat16",
+                "complex64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
+)
 def sum(
     x: paddle.Tensor,
     /,

@@ -9,7 +9,6 @@ import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
-    with_supported_device_and_dtypes,
     with_unsupported_device_and_dtypes,
 )
 from . import backend_version
@@ -91,15 +90,8 @@ def max(
 max.support_native_out = True
 
 
-@with_supported_device_and_dtypes(
-    {
-        "2.1.0 and below": {
-            "cpu": (
-                "complex",
-                "float",
-            )
-        }
-    },
+@with_unsupported_device_and_dtypes(
+    {"2.1.0 and below": {"cpu": ("bool",)}},
     backend_version,
 )
 def mean(
