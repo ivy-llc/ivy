@@ -77,6 +77,32 @@ def det(
     return tf.linalg.det(x)
 
 
+@with_unsupported_dtypes(
+    {"2.14.0 and below": ("complex", "float16", "bfloat16")}, backend_version
+)
+def lstsq(
+    matrix: Union[tf.Tensor, tf.Variable],
+    rhs: Union[tf.Tensor, tf.Variable],
+    l2_regularizer: float = 0.0,
+    fast: bool = True,
+    name: Optional[str] = None,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[Union[tf.Tensor, tf.Variable], ...]:
+    matrix = tf.convert_to_tensor(matrix, dtype=tf.float32)
+    rhs = tf.convert_to_tensor(rhs, dtype=tf.float32)
+
+    if len(matrix.shape) != 2:
+        raise ValueError("`matrix` must be a 2-D array.")
+
+    if len(rhs.shape) > 2:
+        raise ValueError("`rhs` must be 1-D or 2-D array.")
+
+    solution = tf.linalg.lstsq(matrix, rhs, l2_regularizer, fast, name)
+
+    return solution
+
+
 @with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def diagonal(
     x: Union[tf.Tensor, tf.Variable],
