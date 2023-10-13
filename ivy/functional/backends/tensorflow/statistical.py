@@ -213,6 +213,10 @@ def cumprod(
     return tf.math.cumprod(x, axis, exclusive, reverse)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.14.0 and below": {"cpu": ("bool",)}},
+    backend_version,
+)
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
