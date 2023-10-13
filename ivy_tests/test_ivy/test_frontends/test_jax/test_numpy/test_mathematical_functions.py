@@ -1703,6 +1703,54 @@ def test_jax_inner(
     )
 
 
+@handle_frontend_test(
+    fn_tree="jax.numpy.interp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    dtype_and_xp_fp=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    left=st.one_of(st.floats(min_value=-1e04, max_value=1e04), st.just(np.nan)),
+    right=st.one_of(st.floats(min_value=-1e04, max_value=1e04), st.just(np.nan)),
+    test_with_out=st.just(False),
+)
+def test_jax_interp(
+    *,
+    dtype_and_x,
+    dtype_and_xp_fp,
+    left,
+    right,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    input_dtype2, xp_fp = dtype_and_xp_fp
+    xp = xp_fp[0]
+    fp = xp_fp[1]
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype, input_dtype2],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        xp=xp,
+        fp=fp,
+        left=left,
+        right=right,
+    )
+
+
 # kron
 @handle_frontend_test(
     fn_tree="jax.numpy.kron",

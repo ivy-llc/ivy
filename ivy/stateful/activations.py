@@ -3,7 +3,7 @@
 # local
 import ivy
 from ivy.stateful.module import Module
-from typing import Literal
+from typing import Literal, Optional
 
 
 class GELU(Module):
@@ -13,8 +13,7 @@ class GELU(Module):
         approximate: bool = False,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """
-        Apply the GELU activation function.
+        """Apply the GELU activation function.
 
         Parameters
         ----------
@@ -29,8 +28,7 @@ class GELU(Module):
         Module.__init__(self)
 
     def _forward(self, x):
-        """
-        Perform forward pass of the GELU activation.
+        """Perform forward pass of the GELU activation.
 
         Parameters
         ----------
@@ -55,8 +53,7 @@ class GEGLU(Module):
         Module.__init__(self)
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the GEGLU activation.
+        """Perform forward pass of the GEGLU activation.
 
         Parameters
         ----------
@@ -77,8 +74,7 @@ class ReLU(Module):
         self,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """
-        Apply the RELU activation function.
+        """Apply the RELU activation function.
 
         Parameters
         ----------
@@ -111,8 +107,7 @@ class LeakyReLU(Module):
         alpha: float = 0.2,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """
-        Apply the LEAKY RELU activation function.
+        """Apply the LEAKY RELU activation function.
 
         Parameters
         ----------
@@ -147,10 +142,24 @@ class LeakyReLU(Module):
 
 
 class LogSoftmax(Module):
-    def __init__(self, axis: int = -1):
-        """Apply the LOG SOFTMAX activation function."""
+    def __init__(
+        self,
+        axis: Optional[int] = -1,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    ):
+        """Apply the LOG SOFTMAX activation function.
+
+        Parameters
+        ----------
+        axis
+            The dimension log_softmax would be performed on. The default is ``None``
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
         Module.__init__(self)
         self._axis = axis
+        self._complex_mode = complex_mode
 
     def _forward(self, x):
         """
@@ -159,14 +168,13 @@ class LogSoftmax(Module):
         ----------
         x
             Inputs to process *[batch_shape, d]*.
-        axis
-            The dimension log_softmax would be performed on. The default is ``None``
+
         Returns
         -------
          ret
             The outputs following the LOG SOFTMAX activation *[batch_shape, d]*
         """
-        return ivy.log_softmax(x, axis=self._axis)
+        return ivy.log_softmax(x, axis=self._axis, complex_mode=self._complex_mode)
 
 
 class Softmax(Module):
@@ -175,8 +183,7 @@ class Softmax(Module):
         axis: int = -1,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """
-        Apply the SOFTMAX activation function.
+        """Apply the SOFTMAX activation function.
 
         Parameters
         ----------
@@ -281,8 +288,16 @@ class SiLU(Module):
 
 
 class Sigmoid(Module):
-    def __init__(self):
-        """Apply the SIGMOID activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """Apply the SIGMOID activation function.
+
+        Parameter
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
     def _forward(self, x):
@@ -298,13 +313,12 @@ class Sigmoid(Module):
          ret
             The outputs following the SIGMOID activation *[batch_shape, d]*
         """
-        return ivy.sigmoid(x)
+        return ivy.sigmoid(x, complex_mode=self._complex_mode)
 
 
 class Tanh(Module):
     def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
-        """
-        Apply the TANH activation function.
+        """Apply the TANH activation function.
 
         Parameters
         ----------
@@ -332,8 +346,16 @@ class Tanh(Module):
 
 
 class ReLU6(Module):
-    def __init__(self):
-        """Apply the RELU6 activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """Apply the TANH activation function.
+
+        Parameters
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
     def _forward(self, x):
@@ -349,12 +371,20 @@ class ReLU6(Module):
          ret
             The outputs following the RELU6 activation *[batch_shape, d]*
         """
-        return ivy.relu6(x)
+        return ivy.relu6(x, complex_mode=self._complex_mode)
 
 
 class Hardswish(Module):
-    def __init__(self):
-        """Apply the HARDSWISH activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """Apply the HARDSWISH activation function.
+
+        Parameters
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
     def _forward(self, x):
@@ -370,7 +400,7 @@ class Hardswish(Module):
          ret
             The outputs following the HARDSWISH activation *[batch_shape, d]*
         """
-        return ivy.hardswish(x)
+        return ivy.hardswish(x, complex_mode=self._complex_mode)
 
 
 class Logit(Module):
@@ -379,8 +409,7 @@ class Logit(Module):
         eps=None,
         complex_mode="jax",
     ):
-        """
-        Apply the LOGIT activation function.
+        """Apply the LOGIT activation function.
 
         Parameters
         ----------
@@ -482,8 +511,16 @@ class ELU(Module):
 
 
 class LogSigmoid(Module):
-    def __init__(self):
-        """Apply the LogSigmoid activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """Apply the LogSigmoid activation function.
+
+        Parameter
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
     def _forward(self, x):
@@ -499,4 +536,4 @@ class LogSigmoid(Module):
         ret
             The outputs following the LogSigmoid activation *[batch_shape, d]*
         """
-        return ivy.logsigmoid(x)
+        return ivy.logsigmoid(x, complex_mode=self._complex_mode)

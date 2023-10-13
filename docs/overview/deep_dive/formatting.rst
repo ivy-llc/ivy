@@ -27,7 +27,7 @@ We use the following linters:
 * `autoflake <https://github.com/PyCQA/autoflake>`_
 * `docformatter <https://github.com/PyCQA/docformatter>`_
 * `pydocstyle <https://github.com/pycqa/pydocstyle>`_
-* `ivy-lint <https://github.com/unifyai/lint-hook>`_ (WIP 🚧)
+* `ivy-lint <https://github.com/unifyai/lint-hook>`_
 
 You can also take a look at our configuration for linting in `setup.cfg <https://github.com/unifyai/ivy/blob/main/setup.cfg>`_
 file.
@@ -76,6 +76,7 @@ You should expect to see something similar to the following output when you run 
     flake8...................................................................Passed
     docformatter.............................................................Passed
     pydocstyle...............................................................Passed
+    ivy-lint.................................................................Passed
     [INFO] Restored changes from ~/.cache/pre-commit/patch1687898304-8072.
     [formatting-docs 3516aed563] Test commit
     1 file changed, 1 insertion(+)
@@ -98,6 +99,7 @@ If something goes wrong, you will see the following output:
     flake8...................................................................Passed
     docformatter.............................................................Passed
     pydocstyle...............................................................Passed
+    ivy-lint.................................................................Passed
     [INFO] Restored changes from ~/.cache/pre-commit/patch1687898304-8072.
 
 You will notice that some files have changed if you checked ``git status``, you'll need to add them and commit again.
@@ -183,7 +185,7 @@ be applied by the ``ivy-gardener`` properly.
 On the other hand, ``ivy-gardener`` itself can fail if the bot handling it (ivy-branch) can not apply the changes
 suggested by the linters, for example, when it does not have access to edit the target branch. In this case, you
 should try to give the maintainer bot the access to your branch (which is an option shown in GitHub UI) and give it
-another try, or manually resolve the formatting errors by commiting the changes yourself.
+another try, or manually resolve the formatting errors by committing the changes yourself.
 
 **Round Up**
 

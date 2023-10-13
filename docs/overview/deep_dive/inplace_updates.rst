@@ -408,7 +408,7 @@ We'll use :func:`ivy.cross_entropy` as an example:
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])

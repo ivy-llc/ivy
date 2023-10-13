@@ -18,7 +18,7 @@ def l1_normalize(
 l1_normalize.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def l2_normalize(
     x: torch.Tensor,
     /,
@@ -32,7 +32,7 @@ def l2_normalize(
 l2_normalize.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def batch_norm(
     x: torch.Tensor,
     mean: torch.Tensor,
@@ -50,12 +50,6 @@ def batch_norm(
     xdims = x.ndim
     if data_format == "NSC":
         x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
-    mean.requires_grad = False
-    variance.requires_grad = False
-    if scale is not None:
-        scale.requires_grad = False
-    if offset is not None:
-        offset.requires_grad = False
     runningmean = mean.clone()
     runningvariance = variance.clone()
     xnormalized = torch.nn.functional.batch_norm(
@@ -84,7 +78,7 @@ batch_norm.partial_mixed_handler = (
 )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
 def instance_norm(
     x: torch.Tensor,
     mean: torch.Tensor,
@@ -99,12 +93,6 @@ def instance_norm(
     data_format: Optional[str] = "NSC",
     out: Optional[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    mean.requires_grad = False
-    variance.requires_grad = False
-    if scale is not None:
-        scale.requires_grad = False
-    if offset is not None:
-        offset.requires_grad = False
     runningmean = mean.clone()
     runningvariance = variance.clone()
     # reshape  from  N, *S, C to N, C, *S
@@ -138,7 +126,7 @@ instance_norm.partial_mixed_handler = (
 )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
 def group_norm(
     x: torch.Tensor,
     num_groups: int = 1,
@@ -163,7 +151,7 @@ def group_norm(
     return xnormalized
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def lp_normalize(
     x: torch.Tensor,
     /,

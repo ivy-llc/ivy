@@ -33,7 +33,7 @@ def _arrays_idx_n_dtypes(draw):
             size=num_arrays,
         )
     )
-    xs = list()
+    xs = []
     input_dtypes = draw(
         helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
     )
@@ -152,8 +152,9 @@ def _get_splits(
     allow_array_indices=True,
     is_mod_split=False,
 ):
-    """Generate valid splits, either by generating an integer that evenly divides the
-    axis or a list of splits that sum to the length of the axis being split."""
+    """Generate valid splits, either by generating an integer that evenly
+    divides the axis or a list of splits that sum to the length of the axis
+    being split."""
     shape = draw(
         st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
     )
@@ -632,28 +633,6 @@ def test_squeeze(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_devic
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
-        axis=axis,
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.stack",
-    dtypes_arrays=_stack_helper(),
-    axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="values_shape"),
-        force_int=True,
-    ),
-)
-def test_stack(*, dtypes_arrays, axis, test_flags, backend_fw, fn_name, on_device):
-    dtypes, arrays = dtypes_arrays
-
-    helpers.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        arrays=arrays,
         axis=axis,
     )
 

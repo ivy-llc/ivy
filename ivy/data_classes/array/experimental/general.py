@@ -16,10 +16,9 @@ class _ArrayWithGeneralExperimental(abc.ABC):
         axes: Union[int, Sequence[int]] = 0,
         keepdims: bool = False,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.reduce. This method simply wraps the
-        function, and so the docstring for ivy.reduce also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.reduce. This method simply
+        wraps the function, and so the docstring for ivy.reduce also applies to
+        this method with minimal changes.
 
         Parameters
         ----------

@@ -48,7 +48,6 @@ numpy_promotion_table = {
     (_bool, _float64): _float64,
     (_bool, _complex64): _complex64,
     (_bool, _complex128): _complex128,
-    (_bool, _bool): _bool,
     (_int8, _bool): _int8,
     (_int8, _int8): _int8,
     (_int8, _int16): _int16,
@@ -436,9 +435,8 @@ def promote_types_of_numpy_inputs(
     x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Promote the dtype of the given ivy array inputs to a common dtype based on numpy
-    type promotion rules.
+    """Promote the dtype of the given ivy array inputs to a common dtype based
+    on numpy type promotion rules.
 
     While passing float or integer values or any other non-array input
     to this function, it should be noted that the return will be an
@@ -565,6 +563,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _sin,
     _tan,
     _degrees,
+    _arctan2,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
@@ -672,6 +671,7 @@ true_divide = ufunc("_divide")
 arccos = ufunc("_arccos")
 arcsin = ufunc("_arcsin")
 arctan = ufunc("_arctan")
+arctan2 = ufunc("_arctan2")
 cos = ufunc("_cos")
 deg2rad = ufunc("_deg2rad")
 rad2deg = ufunc("_rad2deg")
@@ -735,4 +735,4 @@ if ivy.is_local():
 else:
     module = sys.modules[__name__]
 
-set_frontend_to_specific_version(module)
+__version__ = set_frontend_to_specific_version(module)

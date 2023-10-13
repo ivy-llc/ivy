@@ -1,5 +1,6 @@
 # global
 import numpy as np
+import torch
 from hypothesis import strategies as st, assume
 
 # local
@@ -84,7 +85,7 @@ def _interp_args(draw, mode=None, mode_list=None):
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
     align_corners = draw(st.one_of(st.booleans(), st.none()))
-    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
         align_corners = False
     if mode == "linear":
         num_dims = 3
@@ -161,7 +162,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         )
         recompute_scale_factor = False
         scale_factor = None
-    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
         if not recompute_scale_factor:
             recompute_scale_factor = True
 
@@ -248,6 +249,24 @@ def _valid_dct(draw):
     if norm == "ortho" and type == 1:
         norm = None
     return dtype, x, type, n, axis, norm
+
+
+@st.composite
+def _valid_stft(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            max_value=65280,
+            min_value=-65280,
+            min_num_dims=1,
+            min_dim_size=2,
+            shared_dtype=True,
+        )
+    )
+    frame_length = draw(helpers.ints(min_value=16, max_value=100))
+    frame_step = draw(helpers.ints(min_value=1, max_value=50))
+
+    return dtype, x, frame_length, frame_step
 
 
 @st.composite
@@ -367,6 +386,29 @@ def _x_and_ifftn(draw):
 
 
 @st.composite
+def _x_and_rfft(draw):
+    min_fft_points = 2
+    dtype = draw(helpers.get_dtypes("numeric"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e-10,
+            max_value=1e10,
+        )
+    )
+    axis = draw(st.integers(1 - len(list(x_dim)), len(list(x_dim)) - 1))
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    n = draw(st.integers(min_fft_points, 256))
+    return dtype, x, axis, norm, n
+
+
+@st.composite
 def _x_and_rfftn(draw):
     min_rfftn_points = 2
     dtype = draw(helpers.get_dtypes("float"))
@@ -398,6 +440,42 @@ def _x_and_rfftn(draw):
     )
     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
     return dtype, x, s, axes, norm
+
+
+@st.composite
+def max_unpool1d_helper(
+    draw,
+    **data_gen_kwargs,
+):
+    dts, values, kernel_size, strides, _ = draw(
+        helpers.arrays_for_pooling(
+            min_dims=3,
+            max_dims=3,
+            data_format="channel_first",
+            **data_gen_kwargs,
+        )
+    )
+    dts.extend(["int64"])
+    values = values[0]
+    if dts[0] in ["float16", "bfloat16"]:
+        values = values.astype(np.float32)
+        dts[0] = "float32"
+    padding = draw(helpers.ints(min_value=0, max_value=2))
+    if padding > (kernel_size[0] // 2):
+        padding = 0
+
+    values, indices = torch.nn.functional.max_pool1d(
+        torch.tensor(values.astype(np.float32)),
+        kernel_size,
+        strides,
+        padding,
+        return_indices=True,
+    )
+    indices = indices.numpy().astype(np.int64)
+    max_idx = values.shape[-1] - 1
+    indices = np.where(indices > max_idx, max_idx, indices)
+    values = values.numpy().astype(dts[0])
+    return dts, values, indices, kernel_size, strides, padding
 
 
 # --- Main --- #
@@ -1059,7 +1137,7 @@ def test_max_pool1d(
     data_format = "NCW" if data_format == "channel_first" else "NWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation
-    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+    assume(backend_fw != "paddle" or max(list(dilation)) <= 1)
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -1120,7 +1198,7 @@ def test_max_pool2d(
     data_format = "NCHW" if data_format == "channel_first" else "NHWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation
-    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+    assume(backend_fw != "paddle" or max(list(dilation)) <= 1)
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -1170,7 +1248,7 @@ def test_max_pool3d(
     data_format = "NCDHW" if data_format == "channel_first" else "NDHWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation
-    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+    assume(backend_fw != "paddle" or max(list(dilation)) <= 1)
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -1191,22 +1269,21 @@ def test_max_pool3d(
 
 
 @handle_test(
-    fn_tree="functional.ivy.experimental.layers.max_unpool1d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
-    indices=st.lists(st.integers(0, 1), min_size=1, max_size=4),
+    fn_tree="functional.ivy.experimental.max_unpool1d",
+    x_k_s_p=max_unpool1d_helper(min_side=2, max_side=5),
     ground_truth_backend="jax",
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_max_unpool1d(
     *,
     x_k_s_p,
-    indices,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, ind, kernel, stride, pad = x_k_s_p
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -1215,11 +1292,11 @@ def test_max_unpool1d(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        x=x[0],
-        kernel=kernel,
+        input=x,
+        indices=ind,
+        kernel_size=kernel,
         strides=stride,
         padding=pad,
-        indices=indices,
     )
 
 
@@ -1245,6 +1322,35 @@ def test_reduce_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
         padding=padding,
         base_dilation=others[2],
         window_dilation=None,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.rfft",
+    dtype_x_axis_norm_n=_x_and_rfft(),
+    ground_truth_backend="numpy",
+)
+def test_rfft(
+    *,
+    dtype_x_axis_norm_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, axis, norm, n = dtype_x_axis_norm_n
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x,
+        n=n,
+        axis=axis,
+        norm=norm,
     )
 
 
@@ -1275,4 +1381,59 @@ def test_rfftn(
         s=s,
         axes=axes,
         norm=norm,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.sliding_window",
+    all_args=helpers.arrays_for_pooling(3, 3, 1, 2, return_dilation=True),
+    test_with_out=st.just(False),
+    ground_truth_backend="jax",
+)
+def test_sliding_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
+    dtypes, input, k, stride, padding, dilation = all_args
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        input=input,
+        window_size=k,
+        stride=stride[0],
+        dilation=dilation[0],
+        padding=padding,
+    )
+
+
+# test_stft
+@handle_test(
+    fn_tree="functional.ivy.experimental.stft",
+    dtype_x_and_args=_valid_stft(),
+    ground_truth_backend="tensorflow",
+    test_gradients=st.just(False),
+)
+def test_stft(
+    *,
+    dtype_x_and_args,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, frame_length, frame_step = dtype_x_and_args
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        signals=x[0],
+        frame_length=frame_length,
+        frame_step=frame_step,
+        fft_length=None,
+        window_fn=None,
+        pad_end=True,
     )

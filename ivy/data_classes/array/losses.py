@@ -14,13 +14,12 @@ class _ArrayWithLosses(abc.ABC):
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.cross_entropy. This method simply wraps
-        the function, and so the docstring for ivy.cross_entropy also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.cross_entropy
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -64,15 +63,15 @@ class _ArrayWithLosses(abc.ABC):
         *,
         from_logits: bool = False,
         epsilon: float = 0.0,
-        reduction: str = "none",
+        reduction: str = "mean",
         pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.binary_cross_entropy. This method
-        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
-        also applies to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.binary_cross_entropy. This
+        method simply wraps the function, and so the docstring for
+        ivy.binary_cross_entropy also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -131,13 +130,13 @@ class _ArrayWithLosses(abc.ABC):
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.sparse_cross_entropy. This method
-        simply wraps the function, and so the docstring for ivy.sparse_cross_entropy
-        also applies to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.sparse_cross_entropy. This
+        method simply wraps the function, and so the docstring for
+        ivy.sparse_cross_entropy also applies to this method with minimal
+        changes.
 
         Parameters
         ----------

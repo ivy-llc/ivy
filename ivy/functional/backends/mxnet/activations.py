@@ -1,5 +1,4 @@
-"""
-MXNet activation functions.
+"""MXNet activation functions.
 
 Collection of MXNet activation functions, wrapped to fit Ivy syntax and
 signature.
@@ -78,7 +77,7 @@ def softsign(x: None, /, *, out: Optional[None] = None) -> None:
     return mx.nd.softsign(x)
 
 
-def log_softmax(x: None, /, *, axis: Optional[int] = None, out: Optional[None] = None):
+def log_softmax(x: None, /, *, axis: Optional[int] = -1, out: Optional[None] = None):
     raise IvyNotImplementedException()
 
 
