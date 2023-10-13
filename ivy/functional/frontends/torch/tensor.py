@@ -775,9 +775,9 @@ class Tensor:
         return "meta" in ivy.dev(self.ivy_array)
 
     @with_unsupported_dtypes(
-        {"2.1.0 and below": ("uint16", "bfloat16", "bool")}, "torch"
+        {"2.1.0 and below": ("uint16", "bool")}, "torch"
     )
-    def positive(self, *, out=None):
+    def positive(self):
         return torch_frontend.positive(self)
 
     @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, "torch")
