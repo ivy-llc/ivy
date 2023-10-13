@@ -3956,64 +3956,63 @@ def concat_from_sequence(
 
 
 def sequence_insert(
- data,
- indices: Union[ivy.Array, int],
- values: ivy.Array,
- axis: Optional[int] = None,
- /,
- *,
- out: None = None,
+    data,
+    indices: Union[ivy.Array, int],
+    values: ivy.Array,
+    axis: Optional[int] = None,
+    /,
+    *,
+    out: None = None,
 ) -> ivy.Array:
- """Inserts values into a sequence at the specified indices.
+    """Inserts values into a sequence at the specified indices.
 
- Parameters
- ----------
- data
-  The sequence to insert into.
- indices
-  The indices to insert at.
- values
-  The values to insert.
- axis
-  The axis along which to insert. If None, the last axis is used.
- out
-  The output sequence.
+    Parameters
+    ----------
+    data
+     The sequence to insert into.
+    indices
+     The indices to insert at.
+    values
+     The values to insert.
+    axis
+     The axis along which to insert. If None, the last axis is used.
+    out
+     The output sequence.
 
- Returns
- -------
- ret
-  The returned array has the same shape as `data`, but with the values inserted
-  at the specified indices.
+    Returns
+    -------
+    ret
+     The returned array has the same shape as `data`, but with the values inserted
+     at the specified indices.
 
- Examples
- --------
- >>> data = ivy.array([1, 2, 3, 4])
- >>> indices = ivy.array([1, 3])
- >>> values = ivy.array([5, 6])
+    Examples
+    --------
+    >>> data = ivy.array([1, 2, 3, 4])
+    >>> indices = ivy.array([1, 3])
+    >>> values = ivy.array([5, 6])
 
- >>> print(sequence_insert(data, indices, values))
- ivy.array([1, 5, 2, 6, 4])
+    >>> print(sequence_insert(data, indices, values))
+    ivy.array([1, 5, 2, 6, 4])
 
- >>> print(sequence_insert(data, indices, values, axis=0))
- ivy.array([[1, 5],
-  [2, 6],
-  [4]])
- """
+    >>> print(sequence_insert(data, indices, values, axis=0))
+    ivy.array([[1, 5],
+     [2, 6],
+     [4]])
+    """
 
- if axis is None:
-  axis = -1
+    if axis is None:
+        axis = -1
 
- indices = ivy.asarray(indices, dtype=ivy.int64)
- values = ivy.asarray(values, dtype=data.dtype)
+    indices = ivy.asarray(indices, dtype=ivy.int64)
+    values = ivy.asarray(values, dtype=data.dtype)
 
- # Flatten the indices and values tensors.
- indices = indices.ravel()
- values = values.ravel()
+    # Flatten the indices and values tensors.
+    indices = indices.ravel()
+    values = values.ravel()
 
- # Create a new tensor with the values inserted at the specified indices.
- new_tensor = ivy.concatenate(
-  [data[: indices[0]], values, data[indices[-1:] + 1]], axis=axis
- )
+    # Create a new tensor with the values inserted at the specified indices.
+    new_tensor = ivy.concatenate(
+        [data[: indices[0]], values, data[indices[-1:] + 1]], axis=axis
+    )
 
- return new_tensor
-
+    return new_tensor
