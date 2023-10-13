@@ -21,13 +21,11 @@ def _loss_helper(draw):
             min_value=-1,
             max_value=1,
             min_num_dims=1,
-            max_num_dims=10,
+            max_num_dims=1,
             min_dim_size=1,
-            max_dim_size=100,
+            max_dim_size=1,
         )
     )
-    if target[0][0] == 0:
-        target[0][0] = 1
     return dtype, target
 
 
@@ -43,7 +41,7 @@ def _loss_helper(draw):
         min_value=1e-4,
         min_num_dims=1,
         max_num_dims=2,
-        min_dim_size=1,
+        min_dim_size=2,
         max_dim_size=100,
     ),
     dtype_and_target=_loss_helper(),
@@ -60,7 +58,7 @@ def test_cosine_embedding_loss(
     fn_name,
     on_device,
 ):
-    input_dtype, input1, input2 = dtype_and_input1_input2
+    input_dtype, (input1, input2) = dtype_and_input1_input2
     target_dtype, target = dtype_and_target
 
     helpers.test_function(

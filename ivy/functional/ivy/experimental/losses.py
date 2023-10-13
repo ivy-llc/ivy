@@ -588,8 +588,7 @@ def cosine_embedding_loss(
     margin=0.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute cosine embedding loss.
+    """Compute cosine embedding loss.
 
     This function calculates the cosine embedding loss between
     two vector `input1` and `input2` given that `target=1` or
@@ -649,7 +648,7 @@ def cosine_embedding_loss(
             "`input1` and `input2` must have the same shape, received "
             f"({input1.shape} vs {input2.shape})."
         )
-    if len(input1.shape) == 1:
+    if input1.ndim == 1:
         dot_product = ivy.sum(input1 * input2)
         norm1 = ivy.vector_norm(input1)
         norm2 = ivy.vector_norm(input2)
