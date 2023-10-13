@@ -493,3 +493,37 @@ def trim_zeros(a: torch.Tensor, /, *, trim: Optional[str] = "bf") -> torch.Tenso
             else:
                 last = last - 1
     return a[first:last]
+
+
+def index_add(
+    x: torch.Tensor,
+    index: torch.Tensor,
+    axis: int,
+    value: torch.Tensor,
+    /,
+    *,
+    name: Optional[str] = None,
+) -> torch.Tensor:
+    x = torch.swapaxes(x, axis, 0)
+    value = torch.swapaxes(value, axis, 0)
+    _to_adds = []
+    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda i: i[0]))
+    while index:
+        _curr_idx = index[0][0]
+        while len(_to_adds) < _curr_idx:
+            _to_adds.append(torch.zeros_like(value[0]))
+        _to_add_cum = value[index[0][1]]
+        while len(index) > 1 and (index[0][0] == index[1][0]):
+            _to_add_cum = _to_add_cum + value[index.pop(1)[1]]
+        index.pop(0)
+        _to_adds.append(_to_add_cum)
+    while len(_to_adds) < x.shape[0]:
+        _to_adds.append(torch.zeros_like(value[0]))
+    _to_adds = torch.stack(_to_adds)
+    if len(x.shape) < 2:
+        # Added this line due to the paddle backend treating scalars as 1-d arrays
+        _to_adds = torch.flatten(_to_adds)
+
+    ret = torch.add(x, _to_adds)
+    ret = torch.swapaxes(ret, axis, 0)
+    return ret
