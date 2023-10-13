@@ -190,7 +190,6 @@ def get_referrers_recursive(
 ) -> ivy.Container:
     """Recursively retrieve referrers for an object.
 
-
     This function recursively fetches referrers for the specified `item`
     up to a given `max_depth`.
 
