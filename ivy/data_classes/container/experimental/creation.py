@@ -1204,7 +1204,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
     @staticmethod
     def static_unsorted_segment_mean(
         data: ivy.Container,
-        segment_ids: ivy.Container,
+        segment_ids: Union[ivy.Array, ivy.Container],
         num_segments: Union[int, ivy.Container],
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -1255,7 +1255,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
     def unsorted_segment_mean(
         self: ivy.Container,
-        segment_ids: ivy.Container,
+        segment_ids: Union[ivy.Array, ivy.Container],
         num_segments: Union[int, ivy.Container],
     ) -> ivy.Container:
         """
@@ -1279,22 +1279,29 @@ class _ContainerWithCreationExperimental(ContainerBase):
             For each segment, it computes the mean of values in 'self' where
             'segment_ids' equals the segment ID.
 
-        Examples
+        Example
         --------
-        >>> import ivy
-        >>> x = ivy.Container([1.0, 2.0, 3.0, 4.0])
-        >>> segment_ids = ivy.Container([0, 0, 0, 0])
-        >>> num_segments = 1
-        >>> result = x.unsorted_segment_mean(segment_ids, num_segments)
-        >>> result
-        ivy.Container([2.5])
+        >>> data = ivy.Container(a=ivy.array([0., 1., 2., 4.]),
+        ...                      b=ivy.array([3., 4., 5., 6.]))
+        >>> segment_ids = ivy.array([0, 0, 1, 1])
+        >>> num_segments = 2
+        >>> result = ivy.unsorted_segment_mean(data, segment_ids, num_segments)
+        >>> print(result)
+        {
+            a: ivy.array([0.5, 3.0]),
+            b: ivy.array([3.5, 5.5])
+        }
 
-        >>> y = ivy.Container([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
-        >>> segment_ids = ivy.Container([0, 0, 1, 1, 2, 2])
+        >>> data = ivy.Container(a=ivy.array([0., 1., 2., 4., 5., 6.]),
+        ...                      b=ivy.array([3., 4., 5., 6., 7., 8.]))
+        >>> segment_ids = ivy.array([0, 0, 1, 1, 2, 2])
         >>> num_segments = 3
-        >>> result = y.unsorted_segment_mean(segment_ids, num_segments)
-        >>> result
-        ivy.Container([1.5, 3.5, 5.5])
+        >>> result = ivy.unsorted_segment_mean(data, segment_ids, num_segments)
+        >>> print(result)
+        {
+            a: ivy.array([0.5, 3.0, 5.5]),
+            b: ivy.array([3.5, 5.5, 7.5])
+        }
         """
         return self.static_unsorted_segment_mean(
             self,
