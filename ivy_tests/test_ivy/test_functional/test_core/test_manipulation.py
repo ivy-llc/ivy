@@ -486,7 +486,7 @@ def test_reshape(
     test_flags,
     backend_fw,
     fn_name,
-    on_device,
+    on_device
 ):
     dtype, value = dtype_value
 
@@ -592,7 +592,7 @@ def test_split(
     test_flags,
     backend_fw,
     fn_name,
-    on_device,
+    on_device
 ):
     dtype, value = dtype_value
     if (
