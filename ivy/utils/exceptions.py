@@ -383,16 +383,20 @@ def _handle_inplace_mode(ivy_pack=None):
         and not ivy_pack.native_inplace_support
         and ivy_pack.inplace_mode == "lenient"
     ):
-        warnings.warn(
-            f"The current backend: '{current_backend}' does not support "
-            "inplace updates natively. Ivy would quietly create new arrays when "
-            "using inplace updates with this backend, leading to memory overhead "
-            "(same applies for views). If you want to control your memory "
-            "management, consider doing ivy.set_inplace_mode('strict') which "
-            "should raise an error whenever an inplace update is attempted "
-            "with this backend."
-        )
-        _inplace_warning_cache[current_backend] = True
+        try:
+            warnings.warn(
+                f"The current backend: '{current_backend}' does not support "
+                "inplace updates natively. Ivy would quietly create new arrays when "
+                "using inplace updates with this backend, leading to memory overhead "
+                "(same applies for views). If you want to control your memory "
+                "management, consider doing `ivy.set_inplace_mode('strict')` which "
+                "should raise an error whenever an inplace update is attempted "
+                "with this backend.",
+                UserWarning,
+            )
+            _inplace_warning_cache[current_backend] = True
+        except UserWarning as e:
+            print(e)
 
 
 def _check_inplace_update_support(x, ensure_in_backend):
