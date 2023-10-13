@@ -54,8 +54,6 @@ def _generic_lstm(
     h0, c0 = initial_states
     h_outs, c_outs = [], []
 
-    # pytorch is input, forget, cell, output.
-    # onnx is    input, output, forget, cell.
     reform_permutation = [(0, 1), (3, 4), (1, 3)]
 
     output = input
