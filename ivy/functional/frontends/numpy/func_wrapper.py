@@ -212,9 +212,9 @@ def _to_ivy_array(x):
 def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _from_zero_dim_arrays_to_scalar(*args, **kwargs):
-        """
-        Call the function, and then convert all 0 dimensional array instances in the
-        function to float numbers if out argument is not provided.
+        """Call the function, and then convert all 0 dimensional array
+        instances in the function to float numbers if out argument is not
+        provided.
 
         Parameters
         ----------
@@ -267,8 +267,7 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
 def handle_numpy_casting(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_numpy_casting(*args, casting="same_kind", dtype=None, **kwargs):
-        """
-        Check numpy casting type.
+        """Check numpy casting type.
 
         Parameters
         ----------
@@ -329,8 +328,8 @@ def handle_numpy_casting(fn: Callable) -> Callable:
 def handle_numpy_casting_special(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_numpy_casting_special(*args, casting="same_kind", dtype=None, **kwargs):
-        """
-        Check numpy casting type for special cases where output must be type bool.
+        """Check numpy casting type for special cases where output must be type
+        bool.
 
         Parameters
         ----------
@@ -418,10 +417,9 @@ def handle_numpy_out(fn: Callable) -> Callable:
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_np(*args, **kwargs):
-        """
-        Convert all `ndarray` instances in both the positional and keyword arguments
-        into `ivy.Array` instances, and then call the function with the updated
-        arguments.
+        """Convert all `ndarray` instances in both the positional and keyword
+        arguments into `ivy.Array` instances, and then call the function with
+        the updated arguments.
 
         Parameters
         ----------
@@ -448,9 +446,8 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays(*args, order="K", **kwargs):
-        """
-        Call the function, and then convert all `ivy.Array` instances returned by the
-        function into `ndarray` instances.
+        """Call the function, and then convert all `ivy.Array` instances
+        returned by the function into `ndarray` instances.
 
         Returns
         -------
@@ -512,8 +509,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so it receives and returns `ivy.Array` instances.
+    """Wrap `fn` so it receives and returns `ivy.Array` instances.
 
     Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
     return arrays are all converted to `ndarray` instances.
