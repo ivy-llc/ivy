@@ -1810,34 +1810,38 @@ def conv3d_transpose(
 
     Parameters
     ----------
-    x : ivy.Array
-        Input volume with shape [batch_size, depth, height, width, channels].
-    filters : ivy.Array
-        Convolution filters with shape [fd, fh, fw, d_in, d_out].
-    strides : Tuple[int, int, int]
+    x
+        Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
+    filters
+        Convolution filters *[fd,fh,fw,d_in,d_out]*.
+    strides
         The stride of the sliding window for each dimension of input.
-    padding : str
-        Either 'SAME' (padding so that the output's shape is the same as the
-        input's) or 'VALID' (padding so that the output's shape is `output_shape`).
-    output_shape : Optional[ivy.Shape], optional
-        Shape of the output, by default None.
-    data_format : str, optional
-        Ordering of the dimensions in the input, 'NDHWC' or 'NCDHW', by default 'NDHWC'.
-    dilations : Tuple[int, int, int], optional
-        The dilation factor for each dimension of input, by default (1, 1, 1).
-    bias : Optional[ivy.Array], optional
-        Bias array of shape [d_out], by default None.
-    out : Optional[ivy.Array], optional
-        Optional output array for writing the result to.
+    padding
+        Either ‘SAME’ (padding so that the output's shape is the same as the
+        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
+    output_shape
+        Shape of the output (Default value = None)
+    data_format
+        The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
+        corresponds to inputs with shape (batch_size, depth, height, width, channels),
+        while "NCDHW" corresponds to input with shape (batch_size, channels, depth,
+        height, width).
+    dilations
+        The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
-    ivy.Array
+    ret
         The result of the transpose convolution operation.
 
     Examples
     --------
-    With ivy.Array input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
@@ -1985,27 +1989,25 @@ def conv_general_dilated(
     ret
         The result of the transpose convolution operation.
     """
-    return (
-        current_backend(x).conv_general_dilated(
-            x,
-            filters,
-            strides,
-            padding,
-            dims=dims,
-            data_format=data_format,
-            filter_format=filter_format,
-            feature_group_count=feature_group_count,
-            x_dilations=x_dilations,
-            dilations=dilations,
-            bias=bias,
-            out=out,
-        )
-        @ handle_exceptions
+    return current_backend(x).conv_general_dilated(
+        x,
+        filters,
+        strides,
+        padding,
+        dims=dims,
+        data_format=data_format,
+        filter_format=filter_format,
+        feature_group_count=feature_group_count,
+        x_dilations=x_dilations,
+        dilations=dilations,
+        bias=bias,
+        out=out,
     )
 
 
 @handle_exceptions
 @handle_backend_invalid
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_native_shapes
@@ -2064,6 +2066,68 @@ def conv_general_transpose(
     -------
     ret
         The result of the transpose convolution operation.
+
+    Examples
+    --------
+    With ivy.Array input:
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
+    >>> print(y.shape)
+    ivy.Shape(1, 6, 56, 56, 6)
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    ivy.Shape(1, 7, 129, 129, 6)
+    With ivy.Container inputs:
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
+    >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
+    >>> x = ivy.Container(a=a, b=b)
+    >>> filters = ivy.Container(c=c, d=d)
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
+    >>> print(y.shape)
+    {
+        a: {
+            c: ivy.Shape(1, 6, 28, 28, 3),
+            d: ivy.Shape(1, 6, 28, 28, 3)
+        },
+        b: {
+            c: ivy.Shape(1, 6, 56, 56, 3),
+            d: ivy.Shape(1, 6, 56, 56, 3)
+        },
+        c: {
+            c: ivy.Shape(6, 6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 6, 3)
+        },
+        d: {
+            c: ivy.Shape(6, 6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 6, 3)
+        }
+    }
+    With a mix of ivy.Array and ivy.Container inputs:
+    >>> x = ivy.full((1, 6, 6, 6, 1), 2.7)
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    {
+        a: ivy.Shape(1, 8, 8, 8, 1),
+        b: ivy.Shape(1, 8, 8, 8, 1)
+    }
+    >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
+    >>> a = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> b = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    {
+        a: ivy.Shape(1, 8, 8, 8, 1),
+        b: ivy.Shape(1, 8, 8, 8, 1)
+    }
     """
     return current_backend(x).conv_general_transpose(
         x,
@@ -2104,103 +2168,53 @@ def conv(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Compute a 3-D transpose convolution given 5-D input x and filters arrays.
+    Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
-    x : ivy.Array
-        Input volume with shape [batch_size, depth, height, width, channels].
-    filters : ivy.Array
-        Convolution filters with shape [fd, fh, fw, d_in, d_out].
-    strides : Tuple[int, int, int]
+    x
+        Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
+    filters
+        Convolution filters *[fd,fh,fw,d_in/feature_group_count,d_out]*.
+    strides
         The stride of the sliding window for each dimension of input.
-    padding : str
-        Either 'SAME' (padding so that the output's shape is the same as the
-        input's) or 'VALID' (padding so that the output's shape is `output_shape`).
-    output_shape : Optional[ivy.Shape], optional
-        Shape of the output, by default None.
-    data_format : str, optional
-        Ordering of the dimensions in the input, 'NDHWC' or 'NCDHW', by default 'NDHWC'.
-    dilations : Tuple[int, int, int], optional
-        The dilation factor for each dimension of input, by default (1, 1, 1).
-    bias : Optional[ivy.Array], optional
-        Bias array of shape [d_out], by default None.
-    out : Optional[ivy.Array], optional
-        Optional output array for writing the result to.
+    padding
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
+    transpose
+        True for computing transpose convolution, and False for dilated convolution.
+        When True, `x_dilations` must be 1 (the default).
+    dims
+        Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
+    output_shape
+        Shape of the output (Default value = None)
+    data_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
+        "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
+        while "channel_last" corresponds to "NWC", "NHWC", "NDHWC" respectively.
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds to "OIW",
+        "OIHW", "OIDHW" input data formats for 1-D, 2-D, 3-D convolution respectively,
+        while "channel_last" corresponds to "WIO", "HWIO", "DHWIO" respectively.
+    feature_group_count
+         split input into groups, d_in should be divisible by the number of groups.
+         (Default value = 1)
+    x_dilations
+        The dilation factor for each dimension of input. (Default value = 1)
+    dilations
+        The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
-    ivy.Array
-        The result of the transpose convolution operation.
-
-    Examples
-    --------
-    With ivy.Array input:
-
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
-    >>> print(y.shape)
-    ivy.Shape(1, 6, 56, 56, 6)
-
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
-    >>> print(y.shape)
-    ivy.Shape(1, 7, 129, 129, 6)
-
-    With ivy.Container inputs:
-
-    >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
-    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-    >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
-    >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
-    >>> x = ivy.Container(a=a, b=b)
-    >>> filters = ivy.Container(c=c, d=d)
-    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
-    >>> print(y.shape)
-    {
-        a: {
-            c: ivy.Shape(1, 6, 28, 28, 3),
-            d: ivy.Shape(1, 6, 28, 28, 3)
-        },
-        b: {
-            c: ivy.Shape(1, 6, 56, 56, 3),
-            d: ivy.Shape(1, 6, 56, 56, 3)
-        },
-        c: {
-            c: ivy.Shape(6, 6, 6, 6, 3),
-            d: ivy.Shape(6, 6, 6, 6, 3)
-        },
-        d: {
-            c: ivy.Shape(6, 6, 6, 6, 3),
-            d: ivy.Shape(6, 6, 6, 6, 3)
-        }
-    }
-
-    With a mix of ivy.Array and ivy.Container inputs:
-
-    >>> x = ivy.full((1, 6, 6, 6, 1), 2.7)
-    >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
-    >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
-    >>> filters = ivy.Container(a=a, b=b)
-    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
-    >>> print(y.shape)
-    {
-        a: ivy.Shape(1, 8, 8, 8, 1),
-        b: ivy.Shape(1, 8, 8, 8, 1)
-    }
-
-    >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
-    >>> a = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> b = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> filters = ivy.Container(a=a, b=b)
-    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
-    >>> print(y.shape)
-    {
-        a: ivy.Shape(1, 8, 8, 8, 1),
-        b: ivy.Shape(1, 8, 8, 8, 1)
-    }
+    ret
+        The result of the transpose or dilated convolution operation.
     """
     if transpose:
         return conv_general_transpose(
