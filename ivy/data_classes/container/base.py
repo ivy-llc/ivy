@@ -1342,7 +1342,7 @@ class ContainerBase(dict, abc.ABC):
         key_chain, replacement="__", above_height=None, below_depth=None
     ):
         """Summary.
-    
+
         Parameters
         ----------
         key_chain
@@ -1356,19 +1356,19 @@ class ContainerBase(dict, abc.ABC):
         """
         # noinspection RegExpSingleCharAlternation
         flat_keys = re.split(r"[/.]", key_chain)  # noqa
-    
+
         num_keys = len(flat_keys)
         pre_keys = []
         post_keys = []
-    
+
         if above_height and num_keys > above_height:
             post_keys = flat_keys[-above_height:]
             del flat_keys[-above_height:]
-    
+
         if below_depth and num_keys > below_depth:
             pre_keys = flat_keys[0:below_depth]
             del flat_keys[0:below_depth]
-    
+
         return "/".join(
             [
                 k
@@ -1380,7 +1380,6 @@ class ContainerBase(dict, abc.ABC):
                 if k
             ]
         )
-
 
     @staticmethod
     def cont_trim_key(key, max_length):
