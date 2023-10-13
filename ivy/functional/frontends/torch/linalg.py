@@ -127,6 +127,13 @@ def inv_ex(A, *, check_errors=False, out=None):
     return inv, info
 
 
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
+def ldl_factor(A, *, hermitian=False, out=None):
+    return ivy.ldl_factor(A, hermitian=hermitian, out=out)
+
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
@@ -403,9 +410,3 @@ def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.vector_norm(
         input, axis=dim, keepdims=keepdim, ord=ord, out=out, dtype=dtype
     )
-
-@with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
-)
-def ldl_factor(A, *, hermitian=False, out=None):
-    return ivy.ldl_factor(A, hermitian=hermitian, out=out)

@@ -3126,8 +3126,8 @@ def tensorsolve(
 def ldl_factor(
     x: Union[ivy.Array, ivy.NativeArray], /, *, hermitian=False, out=None
 ) -> ivy.Array:
-    """
-    Compute the LDL factorization of the x matrix.
+    """Compute the LDL factorization of the x matrix.
+
     Parameters
     ----------
     x
@@ -3206,4 +3206,3 @@ def ldl_factor(
     """
     # Perform LDL factorization using the current_backend function
     return current_backend(x).ldl_factor(x, hermitian=hermitian, out=out)
-
