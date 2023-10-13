@@ -142,12 +142,8 @@ def lu_unpack(lu_data, lu_pivots, unpack_data=True, unpack_pivots=True, *, out=N
             "The shape of Pivots should be (*, K), but received ndim is"
             f" [{lu_pivots.ndim} < 1]"
         )
-    lu_data, lu_pivots = torch_frontend.promote_types_of_torch_inputs(
-        lu_data, lu_pivots
-    )
 
     m, n = lu_data.shape[-2:]
-    print(m, n)
     k = min(m, n)
     if unpack_pivots:
         permute = ivy.arange(m)
@@ -157,7 +153,7 @@ def lu_unpack(lu_data, lu_pivots, unpack_data=True, unpack_pivots=True, *, out=N
                     permute[lu_pivots[i] - 1],
                     permute[i],
                 )
-        permute_matrix = ivy.eye(m)[permute.argsort()]
+        permute_matrix = ivy.eye(m, dtype=lu_pivots.dtype)[permute.argsort()]
     else:
         permute_matrix = ivy.empty(0, dtype=lu_pivots.dtype)
     if unpack_data:
@@ -167,7 +163,8 @@ def lu_unpack(lu_data, lu_pivots, unpack_data=True, unpack_pivots=True, *, out=N
             lower, upper = ivy.tril(lu_data, k=-1), ivy.triu(lu_data)[:k, :k]
         else:
             lower, upper = ivy.tril(lu_data, k=-1)[:k, :k], ivy.triu(lu_data)
-        ivy.fill_diagonal(lower, 1)
+        lower = ivy.fill_diagonal(lower, 1)
+        lower = ivy.astype(lower, lu_data.dtype)
     else:
         lower, upper = ivy.empty(0, dtype=lu_data.dtype), ivy.empty(
             0, dtype=lu_data.dtype
