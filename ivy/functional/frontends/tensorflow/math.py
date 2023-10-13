@@ -104,6 +104,11 @@ def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
 
+@to_ivy_arrays_and_back
+def bessel_i0(x, name=None):
+    return ivy.i0(x)
+
+
 @with_supported_dtypes(
     {"2.13.0 and below": ("int32",)},
     "tensorflow",
