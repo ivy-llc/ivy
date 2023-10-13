@@ -431,3 +431,37 @@ def trim_zeros(a: tf.Tensor, /, *, trim: Optional[str] = "bf") -> tf.Tensor:
         last = tf.minimum(last, tf.cast(tf.shape(a)[0], tf.int64))
 
     return a[first:last]
+
+
+def index_add(
+    x: tf.Tensor,
+    index: tf.Tensor,
+    axis: int,
+    value: tf.Tensor,
+    /,
+    *,
+    name: Optional[str] = None,
+) -> tf.Tensor:
+    x = tf.experimental.numpy.swapaxes(x, axis, 0)
+    value = tf.experimental.numpy.swapaxes(value, axis, 0)
+    _to_adds = []
+    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda i: i[0]))
+    while index:
+        _curr_idx = index[0][0]
+        while len(_to_adds) < _curr_idx:
+            _to_adds.append(tf.zeros_like(value[0]))
+        _to_add_cum = value[index[0][1]]
+        while len(index) > 1 and (index[0][0] == index[1][0]):
+            _to_add_cum = _to_add_cum + value[index.pop(1)[1]]
+        index.pop(0)
+        _to_adds.append(_to_add_cum)
+    while len(_to_adds) < x.shape[0]:
+        _to_adds.append(tf.zeros_like(value[0]))
+    _to_adds = tf.stack(_to_adds)
+    if len(x.shape) < 2:
+        # Added this line due to the paddle backend treating scalars as 1-d arrays
+        _to_adds = tf.flatten(_to_adds)
+
+    ret = tf.add(x, _to_adds)
+    ret = tf.experimental.numpy.swapaxes(ret, axis, 0)
+    return ret
