@@ -458,7 +458,7 @@ def _higher_order_moment_data(draw):
     return dtype, x[0], order
 
 
-# intialize tucker
+# initialize tucker
 @st.composite
 def _initialize_tucker_data(draw):
     x_dtype, x, shape = draw(
@@ -712,6 +712,30 @@ def _partial_tucker_data(draw):
         svd_mask_repeats,
         tol,
     )
+
+
+# tensor train
+@st.composite
+def _tensor_train_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=0.1,
+            max_value=10,
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            ret_shape=True,
+        ).filter(lambda x: "float16" not in x[0] and "bfloat16" not in x[0])
+    )
+    dims = len(shape)
+    rank = [1]
+    for i in range(dims - 1):
+        rank.append(draw(helpers.ints(min_value=1, max_value=shape[i])))
+    rank.append(1)
+
+    return x_dtype, x[0], rank
 
 
 # truncated svd
@@ -1714,6 +1738,97 @@ def test_svd_flip(*, uv, u_based_decision, test_flags, backend_fw, fn_name, on_d
         V=input[1],
         u_based_decision=u_based_decision,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.tensor_train",
+    data=_tensor_train_data(),
+    # TODO: add support for more modes
+    svd=st.just("truncated_svd"),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_tensor_train(*, data, svd, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x, rank = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtype,
+        input_tensor=x,
+        rank=rank,
+        svd=svd,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    factors = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
+    )
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+# The following 3 tests have been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tt_decomposition.py
+@pytest.mark.parametrize("shape, rank", [((3, 4, 5, 6, 2, 10), (1, 3, 3, 4, 2, 2, 1))])
+def test_tensor_train_tensorly_1(shape, rank):
+    tensor = ivy.random_uniform(shape=shape)
+    tensor_shape = tensor.shape
+    factors = ivy.tensor_train(tensor, rank)
+
+    assert len(factors) == 6, "Number of factors should be 6, currently has " + str(
+        len(factors)
+    )
+
+    r_prev_iteration = 1
+    for k in range(6):
+        (r_prev_k, n_k, r_k) = factors[k].shape
+        assert tensor_shape[k] == n_k, (
+            "Mode 1 of factor "
+            + str(k)
+            + "needs "
+            + str(tensor_shape[k])
+            + " dimensions, currently has "
+            + str(n_k)
+        )
+        assert r_prev_k == r_prev_iteration, " Incorrect ranks of factors "
+        r_prev_iteration = r_k
+
+
+@pytest.mark.parametrize("shape, rank", [((3, 4, 5, 6, 2, 10), (1, 5, 4, 3, 8, 10, 1))])
+def test_tensor_train_tensorly_2(shape, rank):
+    tensor = ivy.random_uniform(shape=shape)
+    factors = ivy.tensor_train(tensor, rank)
+
+    for k in range(6):
+        (r_prev, n_k, r_k) = factors[k].shape
+
+        first_error_message = (
+            "TT rank " + str(k) + " is greater than the maximum allowed "
+        )
+        first_error_message += str(r_prev) + " > " + str(rank[k])
+        assert r_prev <= rank[k], first_error_message
+
+        first_error_message = (
+            "TT rank " + str(k + 1) + " is greater than the maximum allowed "
+        )
+        first_error_message += str(r_k) + " > " + str(rank[k + 1])
+        assert r_k <= rank[k + 1], first_error_message
+
+
+@pytest.mark.parametrize("shape, rank, tol", [((3, 3, 3), (1, 3, 3, 1), (10e-5))])
+def test_tensor_train_tensorly_3(shape, rank, tol):
+    tensor = ivy.random_uniform(shape=shape)
+    factors = ivy.tensor_train(tensor, rank)
+    reconstructed_tensor = ivy.TTTensor.tt_to_tensor(factors)
+    error = ivy.vector_norm(ivy.matrix_norm(tensor - reconstructed_tensor, ord=2))
+    error /= ivy.vector_norm(ivy.matrix_norm(tensor, ord=2))
+    np.testing.assert_(error < tol, "norm 2 of reconstruction higher than tol")
 
 
 @handle_test(

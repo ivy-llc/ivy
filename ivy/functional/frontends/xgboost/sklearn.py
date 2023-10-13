@@ -2,6 +2,7 @@ import ivy
 from ivy.functional.frontends.sklearn.base import BaseEstimator as XGBModelBase
 from ivy.functional.frontends.sklearn.base import ClassifierMixin as XGBClassifierBase
 from .training import train
+from .core import Booster
 
 
 class XGBModel(XGBModelBase):
@@ -88,6 +89,7 @@ class XGBModel(XGBModelBase):
         self.eval_metric = eval_metric
         self.early_stopping_rounds = early_stopping_rounds
         self.callbacks = callbacks
+        self.compiled = False
 
         if kwargs:
             self.kwargs = kwargs
@@ -96,9 +98,8 @@ class XGBModel(XGBModelBase):
         return hasattr(self, "_Booster")
 
     def get_booster(self):
-        """
-        Get the underlying xgboost Booster of this model. This will raise an exception
-        when fit was not called.
+        """Get the underlying xgboost Booster of this model. This will raise an
+        exception when fit was not called.
 
         Returns
         -------
@@ -149,6 +150,14 @@ class XGBModel(XGBModelBase):
         # 100 is the default number of boosting rounds
         return 100 if not self.n_estimators else self.n_estimators
 
+    def compile(self, X, y):
+        # set compiled flag
+        self.compiled = True
+
+        # instantiate Booster and compile funcs involved in calculations for training
+        params = self.get_xgb_params()
+        self._Booster = Booster(params, cache=[X, y], compile=True)
+
     def fit(
         self,
         X,
@@ -166,8 +175,7 @@ class XGBModel(XGBModelBase):
         feature_weights=None,
         callbacks=None,
     ):
-        """
-        Fit gradient boosting model.
+        """Fit gradient boosting model.
 
         Note that calling ``fit()`` multiple times will cause the model object to be
         re-fit from scratch. To resume training from a previous checkpoint, explicitly
@@ -222,9 +230,12 @@ class XGBModel(XGBModelBase):
         """
         # skip all the validation as we're interested in calculations for now
         # ToDo: add handling for custom objective
-        params = self.get_xgb_params()
-
-        self._Booster = train(params, X, y, self.get_num_boosting_rounds())
+        if self.compiled:
+            for i in range(self.get_num_boosting_rounds()):
+                self._Booster.update(X, y, i)
+        else:
+            params = self.get_xgb_params()
+            self._Booster = train(params, X, y, self.get_num_boosting_rounds())
 
         return self
 

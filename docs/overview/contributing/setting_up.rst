@@ -122,7 +122,7 @@ Using miniconda
 
    .. code-block:: none
 
-      pip install e .
+      pip install -e .
 
 #. Setup the interpreter by:
 
@@ -432,7 +432,7 @@ Ubuntu
    d. Choosing "Docker" from the left panel.
       Type python3 (with the number) in python interpreter path and press ok.
 
-**Docker Connection not Successfull**
+**Docker Connection not Successful**
 
 This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
 
@@ -762,7 +762,7 @@ If you want to setup a GPU instance on codespaces and also have access to it, ki
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/Selecting_the_GPU.png?raw=true
    :width: 420
 
-2. Refer to the ref:`Setting up Codespaces` section for the other configurations such as the "Dev conatiner configuration". Your Machine Type section will look like the following image shown below. Feel free to click on the green button to create the instance.
+2. Refer to the ref:`Setting up Codespaces` section for the other configurations such as the "Dev container configuration". Your Machine Type section will look like the following image shown below. Feel free to click on the green button to create the instance.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/Interface_after_selecting_the_GPU_1.png?raw=true
    :width: 420

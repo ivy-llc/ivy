@@ -78,8 +78,8 @@ def fftshift(x, axes=None, name=None):
 )
 @to_ivy_arrays_and_back
 def hfft(x, n=None, axes=-1, norm="backward", name=None):
-    """Compute the FFT of a signal that has Hermitian symmetry, resulting in a real
-    spectrum."""
+    """Compute the FFT of a signal that has Hermitian symmetry, resulting in a
+    real spectrum."""
     # Determine the input shape and axis length
     input_shape = x.shape
     input_len = input_shape[axes]
@@ -151,6 +151,41 @@ def ifftshift(x, axes=None, name=None):
     roll = ivy.roll(x, shifts, axis=axes)
 
     return roll
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def ihfft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
+    # check if the input array is two-dimensional and real
+    if len(ivy.array(x).shape) != 2 or ivy.is_complex_dtype(x):
+        raise ValueError("input must be a two-dimensional real array")
+
+    # cast the input to the same float64 type so that there are no backend issues
+    x_ = ivy.astype(x, ivy.float64)
+
+    ihfft2_result = 0
+    # Compute the complex conjugate of the 2-dimensional discrete Fourier Transform
+    if norm == "backward":
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="forward"))
+    if norm == "forward":
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="backward"))
+    if norm == "ortho":
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="ortho"))
+
+    if x.dtype == ivy.float32 or x.dtype == ivy.int32 or x.dtype == ivy.int64:
+        return ivy.astype(ihfft2_result, ivy.complex64)
+    if x.dtype == ivy.float64:
+        return ivy.astype(ihfft2_result, ivy.complex128)
 
 
 @with_supported_dtypes(
