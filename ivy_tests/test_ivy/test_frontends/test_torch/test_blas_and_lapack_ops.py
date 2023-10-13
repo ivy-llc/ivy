@@ -227,16 +227,17 @@ def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
 
 @st.composite
 def _get_dtype_lu_and_pivots(draw):
-    dimsize1 = draw(st.integers(min_value=2, max_value=5))
-    dimsize2 = draw(st.integers(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", full=True))
+    dimsize1 = draw(helpers.ints(min_value=2, max_value=5))
+    dimsize2 = draw(helpers.ints(min_value=2, max_value=5))
+
+    dtype = draw(helpers.get_dtypes("valid", full=True))
     dtype = [
         draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
     ]
-
+    print("dtype: ", dtype)
     mat = draw(
         helpers.array_values(
-            dtype=dtype[0], shape=(dimsize1, dimsize2), min_value=1, max_value=10
+            dtype=dtype[0], shape=(dimsize1, dimsize2), min_value=2, max_value=5
         )
     )
     pivots = draw(
@@ -244,6 +245,7 @@ def _get_dtype_lu_and_pivots(draw):
             dtype="int32", shape=(min(dimsize1, dimsize2),), min_value=1, max_value=5
         )
     )
+    print("pivots: ", pivots)
     return dtype, mat, pivots
 
 

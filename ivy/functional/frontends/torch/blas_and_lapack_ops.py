@@ -142,7 +142,7 @@ def lu_unpack(lu_data, lu_pivots, unpack_data=True, unpack_pivots=True, *, out=N
             "The shape of Pivots should be (*, K), but received ndim is"
             f" [{lu_pivots.ndim} < 1]"
         )
-
+    dtype = lu_data.dtype
     m, n = lu_data.shape[-2:]
     k = min(m, n)
     if unpack_pivots:
@@ -153,9 +153,9 @@ def lu_unpack(lu_data, lu_pivots, unpack_data=True, unpack_pivots=True, *, out=N
                     permute[lu_pivots[i] - 1],
                     permute[i],
                 )
-        permute_matrix = ivy.eye(m, dtype=lu_pivots.dtype)[permute.argsort()]
+        permute_matrix = ivy.eye(m, dtype=dtype)[permute.argsort()]
     else:
-        permute_matrix = ivy.empty(0, dtype=lu_pivots.dtype)
+        permute_matrix = ivy.empty(0, dtype=dtype)
     if unpack_data:
         if m == n:
             lower, upper = ivy.tril(lu_data, k=-1), ivy.triu(lu_data)
@@ -164,11 +164,9 @@ def lu_unpack(lu_data, lu_pivots, unpack_data=True, unpack_pivots=True, *, out=N
         else:
             lower, upper = ivy.tril(lu_data, k=-1)[:k, :k], ivy.triu(lu_data)
         lower = ivy.fill_diagonal(lower, 1)
-        lower = ivy.astype(lower, lu_data.dtype)
+        lower = ivy.astype(lower, dtype)
     else:
-        lower, upper = ivy.empty(0, dtype=lu_data.dtype), ivy.empty(
-            0, dtype=lu_data.dtype
-        )
+        lower, upper = ivy.empty(0, dtype=dtype), ivy.empty(0, dtype=dtype)
     return permute_matrix, lower, upper
 
 
