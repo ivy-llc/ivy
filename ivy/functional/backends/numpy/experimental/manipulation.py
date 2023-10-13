@@ -518,3 +518,37 @@ def put_along_axis(
 put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
     "replace",
 ]
+
+
+def index_add(
+    x: np.ndarray,
+    index: np.ndarray,
+    axis: int,
+    value: np.ndarray,
+    /,
+    *,
+    name: Optional[str] = None,
+) -> np.ndarray:
+    x = np.swapaxes(x, axis, 0)
+    value = np.swapaxes(value, axis, 0)
+    _to_adds = []
+    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda i: i[0]))
+    while index:
+        _curr_idx = index[0][0]
+        while len(_to_adds) < _curr_idx:
+            _to_adds.append(np.zeros_like(value[0]))
+        _to_add_cum = value[index[0][1]]
+        while len(index) > 1 and (index[0][0] == index[1][0]):
+            _to_add_cum = _to_add_cum + value[index.pop(1)[1]]
+        index.pop(0)
+        _to_adds.append(_to_add_cum)
+    while len(_to_adds) < x.shape[0]:
+        _to_adds.append(np.zeros_like(value[0]))
+    _to_adds = np.stack(_to_adds)
+    if len(x.shape) < 2:
+        # Added this line due to the paddle backend treating scalars as 1-d arrays
+        _to_adds = _to_adds.flatten()
+
+    ret = np.add(x, _to_adds)
+    ret = np.swapaxes(ret, axis, 0)
+    return ret
