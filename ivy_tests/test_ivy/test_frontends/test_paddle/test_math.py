@@ -237,10 +237,12 @@ def test_paddle_addmm(
         force_int_axis=True,
         min_num_dims=1,
     ),
+    keepdim=st.booleans(),
 )
 def test_paddle_all(
     *,
     dtype_and_x,
+    keepdim,
     on_device,
     fn_tree,
     frontend,
@@ -257,7 +259,7 @@ def test_paddle_all(
         backend_to_test=backend_fw,
         x=x[0],
         axis=axis,
-        keepdim=False,
+        keepdim=keepdim,
     )
 
 
