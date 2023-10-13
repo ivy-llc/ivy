@@ -39,10 +39,9 @@ def argmax(
     select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the indices of the maximum values along a specified axis. When the maximum
-    value occurs multiple times, only the indices corresponding to the first occurrence
-    are returned.
+    """Return the indices of the maximum values along a specified axis. When
+    the maximum value occurs multiple times, only the indices corresponding to
+    the first occurrence are returned.
 
     Parameters
     ----------
@@ -156,10 +155,9 @@ def argmin(
     select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the indices of the minimum values along a specified axis. When the minimum
-    value occurs multiple times, only the indices corresponding to the first occurrence
-    are returned.
+    """Return the indices of the minimum values along a specified axis. When
+    the minimum value occurs multiple times, only the indices corresponding to
+    the first occurrence are returned.
 
     Parameters
     ----------
@@ -264,8 +262,7 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[Tuple[ivy.Array], ivy.Array]:
-    """
-    Return the indices of the array elements which are non-zero.
+    """Return the indices of the array elements which are non-zero.
 
     .. note::
         If ``x`` has a complex floating-point data type, non-zero elements
@@ -401,8 +398,7 @@ def where(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return elements chosen from x or y depending on condition.
+    """Return elements chosen from x or y depending on condition.
 
     Parameters
     ----------
@@ -485,8 +481,7 @@ def argwhere(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the indices of all non-zero elements of the input array.
+    """Return the indices of all non-zero elements of the input array.
 
     Parameters
     ----------
