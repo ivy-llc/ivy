@@ -24,6 +24,19 @@ from ivy.utils.exceptions import handle_exceptions
 # ------#
 
 
+def _get_embed_dim(
+    in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query
+):
+    pre_embed_dim = query.shape[-1]
+    if ivy.exists(in_proj_weights):
+        embed_dim = in_proj_weights.shape[0] / 3
+    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+        embed_dim = q_proj_weights.shape[0]
+    else:
+        embed_dim = None
+    return pre_embed_dim, embed_dim
+
+
 def _in_projection(
     q,
     k,
@@ -31,10 +44,9 @@ def _in_projection(
     w,
     b=None,
 ):
-    """
-    Projects query, key and value effeciently, depending on whether we are doing self-
-    attention (query is key is value) or cross-attention (key is value) or an attention
-    where query, key and value are all diferrent.
+    """Projects query, key and value efficiently, depending on whether we are
+    doing self- attention (query is key is value) or cross-attention (key is
+    value) or an attention where query, key and value are all different.
 
     it is only used in
     multi_head_attention layer.
@@ -251,8 +263,7 @@ def dropout(
     noise_shape: Optional[Sequence[int]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Randomly setting a fraction of input tensor to zeroes with probability.
+    """Randomly setting a fraction of input tensor to zeroes with probability.
 
     `prob` at each update during training time to prevent possible overfitting.
     The inputs not set to 0 are scaled up `1 / (1 - prob)` by default, so that
@@ -436,8 +447,7 @@ def scaled_dot_product_attention(
     training: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply scaled dot product attention to inputs x using optional mask.
+    """Apply scaled dot product attention to inputs x using optional mask.
 
     Parameters
     ----------
@@ -460,7 +470,7 @@ def scaled_dot_product_attention(
         The mask input array. The mask to apply to the query-key values. Default is
         None. The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
     dropout_p
-        Specifies the dropout probablity, if greater than 0.0, dropout is applied
+        Specifies the dropout probability, if greater than 0.0, dropout is applied
     is_causal
         If true, assumes causal attention masking
         and errors if both `mask` and `is_causal` are set.
@@ -738,20 +748,20 @@ def multi_head_attention(
     training: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Apply multi-head attention to inputs x. This is an implementation of multi-headed
-    attention as described in the paper "Attention is all you Need" (Vaswani et al.,
-    2017). If `query`, `key`, `value` are the same, then this is self-attention. Each
-    timestep in `query` attends to the corresponding sequence in `key`, and returns a
-    fixed-width vector. This layer first projects `query`, `key` and `value`. These are
-    (effectively) a list of tensors of length `num_attention_heads`, where the
-    corresponding shapes are `(batch_size, <query dimensions>, key_dim)`, `(batch_size,
+    """Apply multi-head attention to inputs x. This is an implementation of
+    multi-headed attention as described in the paper "Attention is all you
+    Need" (Vaswani et al., 2017). If `query`, `key`, `value` are the same, then
+    this is self-attention. Each timestep in `query` attends to the
+    corresponding sequence in `key`, and returns a fixed-width vector. This
+    layer first projects `query`, `key` and `value`. These are (effectively) a
+    list of tensors of length `num_attention_heads`, where the corresponding
+    shapes are `(batch_size, <query dimensions>, key_dim)`, `(batch_size,
     <key/value dimensions>, key_dim)`, `(batch_size, <key/value dimensions>,
-    value_dim)`. Then, the query and key tensors are dot-producted and scaled. These are
-    softmaxed to obtain attention probabilities. The value tensors are then interpolated
-    by these probabilities, then concatenated back to a single tensor. Finally, the
-    result tensor with the last dimension as value_dim can take a linear projection and
-    return.
+    value_dim)`. Then, the query and key tensors are dot-producted and scaled.
+    These are softmaxed to obtain attention probabilities. The value tensors
+    are then interpolated by these probabilities, then concatenated back to a
+    single tensor. Finally, the result tensor with the last dimension as
+    value_dim can take a linear projection and return.
 
     Parameters
     ----------
@@ -1010,8 +1020,7 @@ def conv1d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D convolution given 3-D input x and filters arrays.
+    """Compute a 1-D convolution given 3-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1120,8 +1129,8 @@ def conv1d_transpose(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D transpose convolution given 3-D input x and filters arrays.
+    """Compute a 1-D transpose convolution given 3-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -1266,8 +1275,7 @@ def conv2d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D convolution given 4-D input x and filters arrays.
+    """Compute a 2-D convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1406,8 +1414,8 @@ def conv2d_transpose(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D transpose convolution given 4-D input x and filters arrays.
+    """Compute a 2-D transpose convolution given 4-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -1542,8 +1550,8 @@ def depthwise_conv2d(
     dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
+    """Compute a 2-D depthwise convolution given 4-D input ``x`` and filters
+    arrays.
 
     Parameters
     ----------
@@ -1684,8 +1692,7 @@ def conv3d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 3-D convolution given 5-D input x and filters arrays.
+    """Compute a 3-D convolution given 5-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1805,8 +1812,8 @@ def conv3d_transpose(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 3-D transpose convolution given 5-D input x and filters arrays.
+    """Compute a 3-D transpose convolution given 5-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -1946,9 +1953,8 @@ def conv_general_dilated(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x respectively
-    and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x
+    respectively and filters arrays.
 
     Parameters
     ----------
@@ -2030,9 +2036,8 @@ def conv_general_transpose(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D input x
-    respectively and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
@@ -2106,9 +2111,8 @@ def conv(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D, 4-D and 5-D
-    input x respectively and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D,
+    4-D and 5-D input x respectively and filters arrays.
 
     Parameters
     ----------
@@ -2205,8 +2209,8 @@ def lstm_update(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Perform long-short term memory update by unrolling time dimension of input array.
+    """Perform long-short term memory update by unrolling time dimension of
+    input array.
 
     Parameters
     ----------
@@ -2439,8 +2443,7 @@ def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
 
 
 def _get_num_padded_values(i, p, n, k, s):
-    """
-    Get number of padded values in a specific window.
+    """Get number of padded values in a specific window.
 
     Parameters
     ----------
@@ -2682,7 +2685,7 @@ def nms(
             yy2 = ivy.minimum(y2[i], y2[order[1:]])
 
             w = ivy.maximum(0.0, xx2 - xx1)  # maximum width
-            h = ivy.maximum(0.0, yy2 - yy1)  # maxiumum height
+            h = ivy.maximum(0.0, yy2 - yy1)  # maximum height
             inter = w * h
             ovr = inter / (areas[i] + areas[order[1:]] - inter)
             inds = ivy.nonzero(ovr <= iou_threshold)[0]

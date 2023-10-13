@@ -1,5 +1,4 @@
-"""
-Tensorflow gradient functions.
+"""Tensorflow gradient functions.
 
 Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax
 and signature.
@@ -69,8 +68,8 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    xs_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
+    ret_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_grad_idxs, xs_required, required_duplicate_index_chains, _ = (

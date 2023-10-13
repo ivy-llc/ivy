@@ -1396,6 +1396,89 @@ def _rfftn_helper(x, shape, axes, norm):
     return x
 
 
+def rfft(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    # type cast
+    if x.dtype in [tf.complex64, tf.complex128]:
+        x = tf.math.real(x)
+    if x.dtype not in [tf.float32, tf.float64]:
+        x = tf.cast(x, tf.float32)
+
+    # axis check
+    if not isinstance(axis, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(axis)}"
+        )
+
+    # axis normalization
+    naxis = axis
+    if axis < 0:
+        naxis = x.ndim + axis
+    if naxis < 0 or naxis >= x.ndim:
+        raise ivy.utils.exceptions.IvyError(
+            f"Axis {axis} is out of bounds for array of dimension {x.ndim}"
+        )
+    axis = naxis
+
+    # n checks
+    if n is None:
+        n = x.shape[axis]
+    if not isinstance(n, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
+    if n < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid number of FFT data points ({n}) specified."
+        )
+
+    # norm check & value
+    if norm == "backward":
+        inv_norm = tf.constant(1, dtype=x.dtype)
+    elif norm in ["forward", "ortho"]:
+        inv_norm = tf.cast(tf.math.reduce_prod(n), dtype=x.dtype)
+        if norm == "ortho":
+            inv_norm = tf.math.sqrt(inv_norm)
+    else:
+        raise ivy.utils.exceptions.IvyError(
+            f'Invalid norm value {norm}; should be "backward", "ortho" or "forward".'
+        )
+    fct = 1 / inv_norm
+
+    if x.shape[axis] != n:
+        s = list(x.shape)
+        if s[axis] > n:
+            index = [slice(None)] * len(s)
+            index[axis] = slice(0, n)
+            x = x[tuple(index)]
+        else:
+            s[axis] = n - s[axis]
+            z = tf.zeros(s, x.dtype)
+            x = tf.concat([x, z], axis=axis)
+
+    if axis == x.ndim - 1:
+        ret = tf.signal.rfft(x, fft_length=None, name=None)
+    else:
+        x = tf.experimental.numpy.swapaxes(x, axis, -1)
+        ret = tf.signal.rfft(x, fft_length=None, name=None)
+        ret = tf.experimental.numpy.swapaxes(ret, axis, -1)
+
+    ret *= tf.cast(fct, dtype=ret.dtype)
+
+    if x.dtype != tf.float64:
+        ret = tf.cast(ret, dtype=tf.complex64)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 @with_supported_device_and_dtypes(
     {
         "2.5.0 and above": {
