@@ -453,10 +453,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         where: Optional[Union[ivy.Array, ivy.Container]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.nanmin. This method simply wraps the
-        function, and so the docstring for ivy.nanmin also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.nanmin. This method
+        simply wraps the function, and so the docstring for ivy.nanmin also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -515,10 +514,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         initial: Optional[Union[int, float, complex, ivy.Container]] = None,
         where: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.nanmin. This method simply wraps
-        the function, and so the docstring for ivy.nanmin also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.nanmin. This method
+        simply wraps the function, and so the docstring for ivy.nanmin also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

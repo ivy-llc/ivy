@@ -187,10 +187,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.nanmin. This method simply wraps the
-        function, and so the docstring for ivy.min also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.nanmin. This method simply
+        wraps the function, and so the docstring for ivy.min also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
