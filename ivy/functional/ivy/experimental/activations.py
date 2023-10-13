@@ -53,8 +53,7 @@ def logit(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the logit of x.
+    """Compute the logit of x.
 
     logit(x) = log(x / (1 - x)).
 
@@ -107,8 +106,7 @@ def prelu(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Prelu takes input data (Array) and slope array as input,
+    """Prelu takes input data (Array) and slope array as input,
 
     and produces one output data (array) where the function
     f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
@@ -165,8 +163,7 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the rectified linear unit function with custom threshold.
+    """Apply the rectified linear unit function with custom threshold.
 
     Parameters
     ----------
@@ -250,8 +247,7 @@ def relu6(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the rectified linear unit 6 function element-wise.
+    """Apply the rectified linear unit 6 function element-wise.
 
     Parameters
     ----------
@@ -306,8 +302,7 @@ def logsigmoid(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply element-wise Log-sigmoid of x.
+    """Apply element-wise Log-sigmoid of x.
 
     logsigmoid(x) = log(1 / (1 + exp(-x)).
 
@@ -361,8 +356,7 @@ def logsigmoid(
 def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """
-    Apply the scaled exponential linear unit function element-wise.
+    """Apply the scaled exponential linear unit function element-wise.
 
     Parameters
     ----------
@@ -420,8 +414,7 @@ def selu(
 def silu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """
-    Apply the silu function element-wise.
+    """Apply the silu function element-wise.
 
     Parameters
     ----------
@@ -473,8 +466,7 @@ def elu(
     alpha: float = 1.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the elu unit function element-wise.
+    """Apply the elu unit function element-wise.
 
     Parameters
     ----------
@@ -536,8 +528,7 @@ def hardtanh(
     min_val: float = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the hardtanh unit function element-wise.
+    """Apply the hardtanh unit function element-wise.
 
     Parameters
     ----------
@@ -596,8 +587,7 @@ def hardtanh(
 def tanhshrink(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """
-    Apply the tanhshrink function element-wise.
+    """Apply the tanhshrink function element-wise.
 
     Parameters
     ----------
@@ -685,9 +675,8 @@ def celu(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the Continously Differentiable Exponential Linear Unit (CELU) activation
-    function to each element of the input.
+    """Apply the Continously Differentiable Exponential Linear Unit (CELU)
+    activation function to each element of the input.
 
     Parameters
     ----------
@@ -731,3 +720,82 @@ def celu(
 
 
 celu.jax_like = _celu_jax_like
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def scaled_tanh(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Compute the scaled hyperbolic tangent (tanh) activation.
+
+    The scaled tanh activation function is defined as:
+    out = alpha * tanh(beta * x)
+
+
+    Parameters
+    ----------
+    x
+        input array.
+    alpha
+        The scaling parameter for the output.
+        Determines the amplitude of the tanh function.
+        Default: 1.7159
+    beta
+        The scaling parameter for the input.
+        Determines the slope of the tanh function.
+        Default: 0.67
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+         The input array after applying the scaled tanh activation.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([22.])
+    >>> y = ivy.scaled_tanh(x)
+    >>> y
+    ivy.array([1.71589994]))
+
+    >>> x = ivy.array([4.0, 7.0])
+    >>> y = ivy.scaled_tanh(x, alpha=1.2, beta=5)
+    >>> y
+    ivy.array([1.20000005, 1.20000005])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.2, -1.2]), b=ivy.array([4.4, -2.2]))
+    >>> y = ivy.scaled_tanh(x)
+    >>> y
+    {
+        a: ivy.array([1.14324772, -1.14324772]),
+        b: ivy.array([1.70648694, -1.54488957])
+    }
+    >>> x = ivy.Container(a=ivy.array([1.2]), b=ivy.array([4.4]))
+    >>> y = ivy.scaled_tanh(x, alpha=0.2, beta=0.5)
+    >>> y
+    {
+    a: ivy.array([0.10740992]),
+    b: ivy.array([0.19514863])
+    }
+    """
+    return current_backend(x).scaled_tanh(x, alpha=alpha, beta=beta, out=out)
+
+
+stanh = scaled_tanh
