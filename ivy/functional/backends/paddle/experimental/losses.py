@@ -1,5 +1,6 @@
 # global
 from typing import Optional
+import ivy
 import paddle
 import paddle.nn.functional as F
 import math
@@ -289,3 +290,19 @@ def binary_cross_entropy(
         )
     else:
         return F.binary_cross_entropy(input_arr, target_arr, reduction=reduction)
+
+
+def cross_entropy(
+    input: paddle.Tensor,
+    target: paddle.Tensor,
+    /,
+    *,
+    axis: int = -1,
+    epsilon: float = 1e-7,
+    reduction: str = "none",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    input = paddle.clip(input, epsilon, 1 - epsilon)
+    loss = paddle.log(input) * target
+    return _apply_loss_reduction(loss, reduction)

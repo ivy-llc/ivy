@@ -654,3 +654,46 @@ def binary_cross_entropy(
         axis=axis,
         out=out,
     )
+
+
+def cross_entropy(
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = -1,
+    epsilon: float = 1e-7,
+    reduction: str = "sum",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the cross entropy loss using the predicted and true labels.
+
+    Parameters
+    ----------
+    true
+        an array-like attribute containing the true labels.
+    pred
+        an array-like attribute containing the predicted labels.
+    axis
+        the axis along which to compute the cross-entropy. If axis is ``-1``,
+        the cross-entropy will be computed along the last dimension. Default: ``-1``.
+    epsilon
+        a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+        the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    reduction
+        ``none`` -> no reduction will be applied to the output.
+        ``mean`` -> the output will be averaged and returned.
+        ``sum``  -> the output will be summed up and returned.
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
+
+    Returns
+    -------
+    array:
+        An array of cross entropy loss values between the true and predicted labels.
+    """
+    return ivy.current_backend(pred).cross_entropy(
+        true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
+    )

@@ -220,3 +220,19 @@ def binary_cross_entropy(
             + (1.0 - target_arr) * jnp.log(1.0 - input_arr + epsilon)
         )
     return _apply_loss_reduction(loss, reduction, axis=axis)
+
+
+def cross_entropy(
+    input: JaxArray,
+    target: JaxArray,
+    /,
+    *,
+    axis: int = -1,
+    epsilon: float = 1e-7,
+    reduction: str = "none",
+    out: Optional[ivy.Array] = None,
+) -> JaxArray:
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    input = jnp.clip(input, epsilon, 1 - epsilon)
+    loss = jnp.log(input) * target
+    return _apply_loss_reduction(loss, reduction, axis)

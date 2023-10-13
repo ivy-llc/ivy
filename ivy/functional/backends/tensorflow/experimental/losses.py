@@ -1,3 +1,4 @@
+import ivy
 import tensorflow as tf
 import math
 from typing import Optional
@@ -220,4 +221,26 @@ def binary_cross_entropy(
             target_tensor * tf.math.log(input_tensor + epsilon)
             + (1.0 - target_tensor) * tf.math.log(1.0 - input_tensor + epsilon)
         )
+    return _apply_loss_reduction(loss, reduction, axis)
+
+
+def cross_entropy(
+    input: tf.Tensor,
+    target: tf.Tensor,
+    /,
+    *,
+    axis: int = -1,
+    epsilon: float = 1e-7,
+    reduction: str = "none",
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    if not (0.0 <= epsilon <= 1.0):
+        raise ValueError("epsilon should be a float in [0, 1]")
+    if out is not None:
+        raise NotImplementedError(
+            "The 'out' argument to tf.binary_cross_entropy is not supported."
+        )
+    input = tf.clip(input, epsilon, 1 - epsilon)
+    loss = tf.log(input) * target
     return _apply_loss_reduction(loss, reduction, axis)

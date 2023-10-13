@@ -1258,3 +1258,96 @@ class _ContainerWithLossesExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def _static_cross_entropy(
+        input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: int = -1,
+        epsilon: float = 1e-7,
+        reduction: str = "sum",
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        input
+        target
+        axis
+        epsilon
+        reduction
+        out
+        key_chains
+        to_apply
+        prune_unapplied
+        map_sequences
+
+        Returns
+        -------
+        out
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "cross_entropy",
+            input,
+            target,
+            axis=axis,
+            epsilon=epsilon,
+            reduction=reduction,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def cross_entropy(
+        self,
+        target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: int = -1,
+        epsilon: float = 1e-7,
+        reduction: str = "sum",
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        target
+        axis
+        epsilon
+        reduction
+        out
+        key_chains
+        to_apply
+        prune_unapplied
+        map_sequences
+
+        Returns
+        -------
+        out
+        """
+        return self._static_cross_entropy(
+            self,
+            target,
+            axis=axis,
+            epsilon=epsilon,
+            reduction=reduction,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

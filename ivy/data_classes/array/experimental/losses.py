@@ -439,3 +439,35 @@ class _ArrayWithLossesExperimental(abc.ABC):
             axis=axis,
             out=out,
         )
+
+    def cross_entropy(
+        self: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: int = -1,
+        epsilon: float = 1e-7,
+        reduction: str = "sum",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+
+        Parameters
+        ----------
+        target
+        axis
+        epsilon
+        reduction
+        out
+
+        Returns
+        -------
+        out
+        Examples
+        --------
+        >>> input =
+
+        """
+        return ivy.cross_entropy(
+            self._data, target, axis=axis, epsilon=epsilon, reduction=reduction, out=out
+        )

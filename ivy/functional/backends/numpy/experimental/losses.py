@@ -1,3 +1,4 @@
+import ivy
 import numpy as np
 from typing import Optional
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
@@ -226,3 +227,19 @@ def binary_cross_entropy(
             + (1.0 - target_arr) * np.log(1.0 - input_arr)
         )
     return _apply_loss_reduction(loss, reduction, axis=axis, out=out)
+
+
+def cross_entropy(
+    input: np.ndarray,
+    target: np.ndarray,
+    /,
+    *,
+    axis: int = -1,
+    epsilon: float = 1e-7,
+    reduction: str = "none",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    input = np.clip(input, epsilon, 1 - epsilon)
+    loss = np.log(input) * target
+    return _apply_loss_reduction(loss, reduction, axis, out)

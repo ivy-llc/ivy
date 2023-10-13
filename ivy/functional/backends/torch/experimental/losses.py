@@ -1,3 +1,4 @@
+import ivy
 from typing import Optional
 import torch
 from ivy.func_wrapper import (
@@ -214,3 +215,30 @@ def binary_cross_entropy(
             target,
             reduction=reduction,
         )
+
+
+def cross_entropy(
+    input: torch.Tensor,
+    target: torch.Tensor,
+    /,
+    *,
+    axis: int = -1,
+    epsilon: float = 1e-7,
+    reduction: str = "none",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    if epsilon is not None:
+        raise NotImplementedError(
+            "The 'epsilon' argument to torch.binary_cross_entropy is not supported."
+        )
+    if out is not None:
+        raise NotImplementedError(
+            "The 'out' argument to torch.binary_cross_entropy is not supported."
+        )
+
+    if axis is not None:
+        raise NotImplementedError(
+            "The 'axis' argument to torch.binary_cross_entropy is not supported."
+        )
+    return torch.nn.functional.cross_entropy(input, target, reduction=reduction)
