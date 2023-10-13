@@ -2662,6 +2662,43 @@ def test_jax_rsqrt(
 
 
 @handle_frontend_test(
+    fn_tree="jax.lax.scatter",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        num_arrays=3,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_scatter(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, indices_dtype, updates_dtype = dtype_and_x
+    operand, indices, updates = x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=operand,
+        indices=indices_dtype(indices),
+        updates=updates_dtype(updates),
+    )
+
+
+@handle_frontend_test(
     fn_tree="jax.lax.select",
     dtype_pred_ontrue_on_false=_dtype_pred_ontrue_on_false(),
     test_with_out=st.just(False),

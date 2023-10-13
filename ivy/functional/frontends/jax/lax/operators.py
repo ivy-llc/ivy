@@ -612,6 +612,13 @@ def rsqrt(x):
 
 
 @to_ivy_arrays_and_back
+def scatter(operand, indices, updates):
+    output = ivy.zeros_like(operand)
+    output[indices] = updates
+    return output
+
+
+@to_ivy_arrays_and_back
 def select(pred, on_true, on_false):
     return ivy.where(pred, on_true, on_false)
 
