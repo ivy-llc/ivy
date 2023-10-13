@@ -576,7 +576,9 @@ def vector_to_skew_symmetric_matrix(
 vector_to_skew_symmetric_matrix.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, backend_version
+)
 def ldl_factor(
     A: torch.Tensor, *, hermitian: bool = False, out: Optional[torch.Tensor]
 ) -> Tuple[torch.Tensor, torch.Tensor]:
