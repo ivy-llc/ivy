@@ -337,7 +337,8 @@ def test_module_save_and_load_as_pickled(
     output_channels: int,
     on_device: str,
 ) -> None:
-    """Tests that a trainable module can be saved and loaded as a pickled object."""
+    """Tests that a trainable module can be saved and loaded as a pickled
+    object."""
 
     save_filepath = "module.pickled"
 
@@ -350,7 +351,9 @@ def test_module_save_and_load_as_pickled(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
     )
-    module: ivy.Module = TrainableModule(input_channels, output_channels, device=on_device)
+    module: ivy.Module = TrainableModule(
+        input_channels, output_channels, device=on_device
+    )
 
     def loss_fn(module_parameters: ivy.Array) -> ivy.Array:
         out: ivy.Array = module(x, v=module_parameters)
