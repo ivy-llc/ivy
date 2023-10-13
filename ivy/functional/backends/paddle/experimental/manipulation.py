@@ -742,3 +742,15 @@ put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mo
     "sum",
     "mul",
 ]
+
+
+def index_add(
+    x: paddle.Tensor,
+    index: paddle.Tensor,
+    axis: int,
+    value: paddle.Tensor,
+    /,
+    *,
+    name: Optional[str] = None,
+) -> paddle.Tensor:
+    return paddle.index_add(x, index, axis, value)
