@@ -44,7 +44,7 @@ def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
         )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def max_pool1d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int, ...]],
@@ -112,7 +112,7 @@ def max_pool1d(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -193,7 +193,7 @@ def max_pool2d(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -311,7 +311,7 @@ def _get_specific_pad(x_shape, kernel, strides, padding, dims):
     return padding, pad_specific
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def avg_pool1d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int]],
@@ -395,7 +395,7 @@ def _adjust_num_padded_values_to_ceil(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -482,7 +482,7 @@ def avg_pool2d(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -568,7 +568,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: torch.Tensor,
     /,
@@ -681,7 +681,7 @@ def idct(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -727,7 +727,7 @@ def fft(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -759,7 +759,7 @@ dropout.partial_mixed_handler = lambda x, prob, **kwargs: (
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16",)},
+    {"2.1.0 and below": ("float16",)},
     backend_version,
 )
 def dropout1d(
@@ -782,7 +782,7 @@ def dropout1d(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16",)},
+    {"2.1.0 and below": ("float16",)},
     backend_version,
 )
 def dropout2d(
@@ -807,7 +807,7 @@ def dropout2d(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -866,7 +866,7 @@ def ifft(
     return torch.fft.ifft(x, n, dim, norm, out=out).resolve_conj()
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def embedding(
     weights: torch.Tensor,
     indices: torch.Tensor,
@@ -931,24 +931,24 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode 
 ]
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_max_pool2d(
     input: torch.Tensor, output_size: Union[Sequence[int], int]
 ) -> torch.Tensor:
     return torch.nn.functional.adaptive_max_pool2d(input, output_size)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool1d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool1d(input, output_size)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool2d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool2d(input, output_size)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def fft2(
     x: torch.Tensor,
     *,
@@ -1057,6 +1057,27 @@ def stft(
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+def rfft(
+    x: torch.Tensor,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x = x.real
+    if x.dtype == torch.float16:
+        x = x.to(torch.float32)
+
+    ret = torch.fft.rfft(x, n=n, dim=axis, norm=norm)
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def rfftn(
     x: torch.Tensor,
     s: Sequence[int] = None,
@@ -1089,6 +1110,132 @@ def rfftn(
     return torch.tensor(
         torch.fft.rfftn(x, s, axes, norm=norm, out=out), dtype=torch.complex128
     )
+
+
+# stft
+@with_unsupported_dtypes(
+    {
+        "2.1.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
+def stft(
+    signals: torch.Tensor,
+    frame_length: int,
+    frame_step: int,
+    /,
+    *,
+    fft_length: Optional[int] = None,
+    window_fn: Optional[Callable] = None,
+    pad_end: Optional[bool] = False,
+    name: Optional[str] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if not isinstance(frame_length, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_length)}"
+        )
+
+    if frame_length < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if not isinstance(frame_step, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_step)}"
+        )
+
+    if frame_step < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if fft_length is not None:
+        if not isinstance(fft_length, int):
+            raise ivy.utils.exceptions.IvyError(
+                f"Expecting <class 'int'> instead of {type(fft_length)}"
+            )
+
+        if fft_length < 1:
+            raise ivy.utils.exceptions.IvyError(
+                f"Invalid data points {frame_length}, expecting frame_length larger"
+                " than or equal to 1"
+            )
+
+    input_dtype = signals.dtype
+    if input_dtype == torch.float32:
+        dtype = torch.complex64
+    elif input_dtype == torch.float64:
+        dtype = torch.complex128
+
+    def stft_1D(signals, frame_length, frame_step, fft_length, pad_end):
+        if fft_length is None:
+            fft_length = 1
+            while fft_length < frame_length:
+                fft_length *= 2
+
+        num_samples = signals.shape[-1]
+
+        if pad_end:
+            num_samples = signals.shape[-1]
+            num_frames = -(-num_samples // frame_step)
+            pad_length = max(
+                0, frame_length + frame_step * (num_frames - 1) - num_samples
+            )
+
+            signals = torch.nn.functional.pad(signals, (0, pad_length))
+        else:
+            num_frames = 1 + (num_samples - frame_length) // frame_step
+
+        stft_result = []
+
+        if window_fn is None:
+            window = 1
+        else:
+            window = window_fn(frame_length)
+
+        for i in range(num_frames):
+            start = i * frame_step
+            end = start + frame_length
+            frame = signals[..., start:end]
+            windowed_frame = frame * window
+            pad_length = fft_length - frame_length
+            windowed_frame = torch.nn.functional.pad(windowed_frame, (0, pad_length))
+            windowed_frame = torch.tensor(windowed_frame, dtype=dtype)
+
+            fft_frame = torch.fft.fft(windowed_frame, axis=-1)
+            slit = int((fft_length // 2 + 1))
+            stft_result.append(fft_frame[..., 0:slit])
+
+        stft = torch.stack(stft_result, axis=0)
+        return stft
+
+    def stft_helper(nested_list, frame_length, frame_step, fft_length):
+        nested_list = nested_list
+        if len(nested_list.shape) > 1:
+            return [
+                stft_helper(sublist, frame_length, frame_step, fft_length)
+                for sublist in nested_list
+            ]
+        else:
+            return stft_1D(nested_list, frame_length, frame_step, fft_length, pad_end)
+
+    to_return = stft_helper(signals, frame_length, frame_step, fft_length)
+    flat_list = [
+        item if isinstance(item, torch.Tensor) else torch.tensor(item)
+        for sublist in to_return
+        for item in sublist
+    ]
+    result = torch.stack(flat_list)
+    original_shape = (len(to_return), len(to_return[0]))
+    result = result.view(original_shape + result.shape[1:])
+    return result
 
 
 def sliding_window(
