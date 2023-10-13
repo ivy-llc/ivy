@@ -489,83 +489,84 @@ def put_along_axis_helper(draw):
 # ------------ #
 
 
-def sequence_insert_test():
-    """Tests the `sequence_insert` function."""
+def sequence_insert_test(self):
+  """Tests the `sequence_insert` function."""
 
-    # Test inserting values into a 1D array.
-    arr = ivy.array([1, 2, 3, 4])
-    indices = ivy.array([1, 3])
-    values = ivy.array([5, 6])
+  # Test inserting values into a 1D array.
+  arr = ivy.array([1, 2, 3, 4])
+  indices = ivy.array([1, 3])
+  values = ivy.array([5, 6])
 
-    expected = ivy.array([1, 5, 2, 6, 4])
+  expected = ivy.array([1, 5, 2, 6, 4])
 
-    actual = ivy.sequence_insert(arr, indices, values)
+  actual = ivy.sequence_insert(arr, indices, values)
 
-    ivy.test_util.array_equal(expected, actual)
+  self.ivy.test_util.array_equal(expected, actual)
 
-    # Test inserting values into a 2D array.
-    arr = ivy.array([[1, 2], [3, 4]])
-    indices = ivy.array([1])
-    values = ivy.array([[5, 6]])
+  # Test inserting values into a 2D array.
+  arr = ivy.array([[1, 2], [3, 4]])
+  indices = ivy.array([1])
+  values = ivy.array([[5, 6]])
 
-    expected = ivy.array([[1, 2], [5, 6], [3, 4]])
+  expected = ivy.array([[1, 2], [5, 6], [3, 4]])
 
-    actual = ivy.sequence_insert(arr, indices, values)
+  actual = ivy.sequence_insert(arr, indices, values)
 
-    ivy.test_util.array_equal(expected, actual)
+  self.ivy.test_util.array_equal(expected, actual)
 
-    # Test inserting values with a negative axis.
-    arr = ivy.array([[1, 2], [3, 4]])
-    indices = ivy.array([1])
-    values = ivy.array([[5, 6]])
+  # Test inserting values with a negative axis.
+  arr = ivy.array([[1, 2], [3, 4]])
+  indices = ivy.array([1])
+  values = ivy.array([[5, 6]])
 
-    expected = ivy.array([[1, 2], [5, 6], [3, 4]])
+  expected = ivy.array([[1, 2], [5, 6], [3, 4]])
 
-    actual = ivy.sequence_insert(arr, indices, values, axis=-1)
+  actual = ivy.sequence_insert(arr, indices, values, axis=-1)
 
-    ivy.test_util.array_equal(expected, actual)
+  self.ivy.test_util.array_equal(expected, actual)
 
-    # Test inserting values with the `out` argument.
-    arr = ivy.array([[1, 2], [3, 4]])
-    indices = ivy.array([1])
-    values = ivy.array([[5, 6]])
-    out = ivy.zeros((3, 2))
+  # Test inserting values with the `out` argument.
+  arr = ivy.array([[1, 2], [3, 4]])
+  indices = ivy.array([1])
+  values = ivy.array([[5, 6]])
+  out = ivy.zeros((3, 2))
 
-    expected = ivy.array([[1, 2], [5, 6], [3, 4]])
+  expected = ivy.array([[1, 2], [5, 6], [3, 4]])
 
-    ivy.sequence_insert(arr, indices, values, out=out)
+  ivy.sequence_insert(arr, indices, values, out=out)
 
-    ivy.test_util.array_equal(expected, out)
+  self.ivy.test_util.array_equal(expected, out)
 
-    # Test inserting values with NumPy arrays.
-    arr = ivy.array(np.array([1, 2, 3, 4]))
-    indices = ivy.array(np.array([1, 3]))
-    values = ivy.array(np.array([5, 6]))
+  # Test inserting values with NumPy arrays.
+  arr = ivy.array(np.array([1, 2, 3, 4]))
+  indices = ivy.array(np.array([1, 3]))
+  values = ivy.array(np.array([5, 6]))
 
-    expected = ivy.array(np.array([1, 5, 2, 6, 4]))
+  expected = ivy.array(np.array([1, 5, 2, 6, 4]))
 
-    actual = ivy.sequence_insert(arr, indices, values)
+  actual = ivy.sequence_insert(arr, indices, values)
 
-    ivy.test_util.array_equal(expected, actual)
+  self.ivy.test_util.array_equal(expected, actual)
 
-    # Test inserting values with empty values.
-    arr = ivy.array([1, 2, 3, 4])
-    indices = ivy.array([1, 3])
-    values = ivy.array([])
+  # Test inserting values with empty values.
+  arr = ivy.array([1, 2, 3, 4])
+  indices = ivy.array([1, 3])
+  values = ivy.array([])
 
-    expected = ivy.array([1, 2, 3, 4])
+  expected = ivy.array([1, 2, 3, 4])
 
-    actual = ivy.sequence_insert(arr, indices, values)
+  actual = ivy.sequence_insert(arr, indices, values)
 
-    ivy.test_util.array_equal(expected, actual)
+  self.ivy.test_util.array_equal(expected, actual)
 
-    # Test inserting values with invalid indices.
-    arr = ivy.array([1, 2, 3, 4])
-    indices = ivy.array([5])
-    values = ivy.array([5, 6])
+  # Test inserting values with invalid indices.
+  arr = ivy.array([1, 2, 3, 4])
+  indices = ivy.array([5])
+  values = ivy.array([5, 6])
 
-    with self.assertRaises(ValueError):
-        ivy.sequence_insert(arr, indices, values)
+  with self.assertRaises(ValueError):
+    ivy.sequence_insert(arr, indices, values)
+
 
 
 def st_tuples(elements, *, min_size=0, max_size=None, unique_by=None, unique=False):
