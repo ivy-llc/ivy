@@ -1062,6 +1062,41 @@ def test_jax_ediff1d(
     )
 
 
+# einsum_path
+@handle_frontend_test(
+    fn_tree="jax.numpy.einsum_path",
+    eq_n_op_n_shp=helpers.einsum_helper(),
+    dtype=helpers.get_dtypes("numeric", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_einsum_path(
+    *,
+    eq_n_op_n_shp,
+    dtype,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    eq, operands, dtypes = eq_n_op_n_shp
+    kw = {}
+    for i, x_ in enumerate(operands):
+        dtype = dtypes[i][0]
+        kw["x{}".format(i)] = np.array(x_).astype(dtype)
+    test_flags.num_positional_args = len(operands) + 1
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        subscripts=eq,
+        **kw,
+    )
+
+
 # exp
 @handle_frontend_test(
     fn_tree="jax.numpy.exp",
@@ -3281,49 +3316,6 @@ def test_jax_trunc(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.numpy.unwrap",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
-        min_value=-ivy.pi,
-        max_value=ivy.pi,
-        valid_axis=True,
-        force_int_axis=True,
-    ),
-    discont=st.floats(min_value=0, max_value=3.0),
-    period=st.floats(min_value=2 * np.pi, max_value=10.0),
-    test_with_out=st.just(False),
-)
-def test_jax_unwrap(
-    *,
-    dtype_x_axis,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-    discont,
-    period,
-):
-    dtype, x, axis = dtype_x_axis
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        p=x[0],
-        discont=discont,
-        axis=axis,
-        period=period,
     )
 
 

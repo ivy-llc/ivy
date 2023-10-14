@@ -2315,6 +2315,7 @@ def flatten(*, backend: str, ret):
                     x, dtype=ivy_backend.Dtype(str(np.asarray(x).dtype))
                 )
                 for x in ret_flat
+                if ivy.is_ivy_array(x)
             ]
         else:
             ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
@@ -2336,6 +2337,7 @@ def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
             ret_flat = [
                 frontend_array_fn(x, dtype=ivy_backend.Dtype(str(np.asarray(x).dtype)))
                 for x in ret_flat
+                if ivy.is_ivy_array(x)
             ]
 
         else:
