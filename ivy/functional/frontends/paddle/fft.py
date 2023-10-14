@@ -41,13 +41,14 @@ def fftfreq(n, d=1.0, dtype=None, name=None):
     indices = ivy.roll(indices, -neg_max)
     return ivy.multiply(indices, val)
 
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
 def fftn(x, s=None, axes=None, norm="backward", name=None):
-    """Compute the FFT of a N-Dimensional Arrau"""
+    """Compute the FFT of a N-Dimensional Arrau."""
     # Determine the input shape and axis length
     input_shape = x.shape
     input_len = input_shape[axes]
@@ -60,6 +61,7 @@ def fftn(x, s=None, axes=None, norm="backward", name=None):
     result = ivy.fftn(x, axes, n=n, norm=norm)
 
     return ivy.real(result)
+
 
 @with_supported_dtypes(
     {

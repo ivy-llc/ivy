@@ -80,6 +80,7 @@ def test_paddle_fftfreq(
         d=d,
     )
 
+
 @handle_frontend_test(
     fn_tree="paddle.fft.fftn",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -111,6 +112,7 @@ def test_paddle_fftn(
         axes=None,
         norm=norm,
     )
+
 
 @handle_frontend_test(
     fn_tree="paddle.fft.fftshift",
