@@ -142,7 +142,7 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
 # ------------ #
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -156,7 +156,7 @@ def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -170,7 +170,7 @@ def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -184,7 +184,7 @@ def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose1d(
     input,
@@ -208,7 +208,7 @@ def conv_transpose1d(
     )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose2d(
     input,
@@ -232,7 +232,7 @@ def conv_transpose2d(
     )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose3d(
     input,
@@ -311,14 +311,35 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
 
 @to_ivy_arrays_and_back
 def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
+    # TODO: refactor this function to use ivy.sliding_window, but ensure that the
+    # function is transpilable to all backends with varying batch size(see issue #25796)
     if input.ndim != 4:
         raise ivy.utils.exceptions.IvyException("only batched 4D inputs are supported")
-    float_input = ivy.astype(input, ivy.float16)
-    ret = ivy.sliding_window(
-        float_input,
-        kernel_size,
-        stride=stride,
-        dilation=dilation,
-        padding=padding,
+    stride = [stride] * 2 if isinstance(stride, int) else stride
+    dilation = [dilation] * 2 if isinstance(dilation, int) else dilation
+    padding = [padding] * 2 if isinstance(padding, int) else padding
+    kernel_size = [kernel_size] * 2 if isinstance(kernel_size, int) else kernel_size
+    output_shape = [
+        (input.shape[i + 2] + 2 * padding[i] - dilation[i] * (kernel_size[i] - 1) - 1)
+        // stride[i]
+        + 1
+        for i in range(2)
+    ]
+    ret = ivy.zeros((*input.shape[0:2], *kernel_size, *output_shape), dtype=input.dtype)
+    input_padded = ivy.zero_pad(
+        input,
+        ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2),
     )
-    return ret.astype(input.dtype)
+    for i in range(output_shape[0]):
+        for j in range(output_shape[1]):
+            i_in = i * stride[0]
+            j_in = j * stride[1]
+            ret[:, :, :, :, i, j] = input_padded[
+                :,
+                :,
+                i_in : i_in + kernel_size[0] * dilation[0] : dilation[0],
+                j_in : j_in + kernel_size[1] * dilation[1] : dilation[1],
+            ]
+    return ivy.reshape(
+        ret, (input.shape[0], input.shape[1] * math.prod(kernel_size), -1)
+    )

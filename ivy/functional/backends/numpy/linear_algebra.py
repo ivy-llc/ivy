@@ -4,7 +4,6 @@ from collections import namedtuple
 
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
-
 import numpy as np
 
 # local
@@ -238,7 +237,7 @@ def qr(
     *,
     mode: str = "reduced",
     out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
-) -> NamedTuple:
+) -> Tuple[np.ndarray, np.ndarray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
     return res(q, r)
@@ -269,14 +268,14 @@ def solve(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if adjoint:
-        x1 = np.transpose(np.conjugate(x1))
+        x1 = np.swapaxes(np.conjugate(x1), -1, -2)
     expanded_last = False
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if len(x2.shape) <= 1:
         if x2.shape[-1] == x1.shape[-1]:
             expanded_last = True
             x2 = np.expand_dims(x2, axis=1)
-    for i in range(len(x1.shape) - 2):
+    for i in range(len(x1.shape) - len(x2.shape)):
         x2 = np.expand_dims(x2, axis=0)
     ret = np.linalg.solve(x1, x2)
     if expanded_last:
@@ -314,6 +313,7 @@ def tensorsolve(
     return np.linalg.tensorsolve(x1, x2, axes=axes)
 
 
+@with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, backend_version)
 def tensordot(
     x1: np.ndarray,
     x2: np.ndarray,

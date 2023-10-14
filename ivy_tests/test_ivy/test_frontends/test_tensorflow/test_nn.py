@@ -677,6 +677,37 @@ def test_tensorflow_avg_pool1d(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.nn.avg_pool2d",
+    x_k_s_p_df=helpers.arrays_for_pooling(
+        min_dims=4, max_dims=4, min_side=1, max_side=4
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_avg_pool2d(
+    *,
+    x_k_s_p_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool3d",
     x_k_s_p_df=helpers.arrays_for_pooling(
         min_dims=5, max_dims=5, min_side=1, max_side=4
@@ -1440,6 +1471,40 @@ def test_tensorflow_max_pool1d(
     test_with_out=st.just(False),
 )
 def test_tensorflow_max_pool2d(
+    *,
+    x_k_s_p,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+    )
+
+
+# max_pool3d
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.max_pool3d",
+    data_format=st.sampled_from(["NDHWC", "NCDHW"]),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_max_pool3d(
     *,
     x_k_s_p,
     data_format,

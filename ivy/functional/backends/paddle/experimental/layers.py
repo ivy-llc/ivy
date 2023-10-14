@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 from .. import backend_version
+import ivy
 
 # local
 
@@ -50,7 +51,7 @@ def max_pool1d(
 ) -> paddle.Tensor:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NWC":
@@ -117,7 +118,7 @@ def max_pool2d(
 ) -> paddle.Tensor:
     dims = 2
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NHWC":
@@ -188,7 +189,7 @@ def max_pool3d(
 ) -> paddle.Tensor:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NDHWC":
@@ -298,6 +299,9 @@ def dct(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bfloat16", "bool", "float16")}, backend_version
+)
 def fft(
     x: paddle.Tensor,
     dim: int,
@@ -331,12 +335,11 @@ def fft(
             f" {valid_norm_modes}"
         )
 
-    if x.dtype in [paddle.int64, paddle.float64, paddle.complex128]:
-        x = x.cast(paddle.complex128)
-    else:
-        x = x.cast(paddle.complex64)
-
-    return paddle.fft.fft(x, n, dim, norm=norm)
+    ret = paddle.fft.fft(x, n, dim, norm=norm)
+    # to make it compatible with other backends
+    if x.dtype == paddle.int64:
+        ret = ret.astype("complex128")
+    return ret
 
 
 @with_supported_device_and_dtypes(
@@ -416,6 +419,19 @@ def ifft(
     raise IvyNotImplementedException()
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("int8", "float32", "float64"),
+            "gpu": ("int8", "bfloat16", "float16", "float32", "float64"),
+        },
+        "2.4.2 and below": {
+            "cpu": ("int8", "float32", "float64"),
+            "gpu": ("int8", "float16", "float32", "float64"),
+        },
+    },
+    backend_version,
+)
 def embedding(
     weights: paddle.Tensor,
     indices: paddle.Tensor,
@@ -424,7 +440,20 @@ def embedding(
     max_norm: Optional[int] = None,
     out=None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    ivy.utils.assertions.check_equal(
+        weights.ndim, 2, message="weights must be 2-d", as_array=False
+    )
+
+    embeddings = paddle.nn.functional.embedding(x=indices, weight=weights)
+    if max_norm is not None:
+        norms = paddle.linalg.norm(embeddings, axis=-1, keepdim=True)
+        embeddings = paddle.where(
+            norms > max_norm, embeddings * max_norm / norms, embeddings
+        )
+        embeddings = paddle.where(
+            norms < -max_norm, embeddings * -max_norm / norms, embeddings
+        )
+    return embeddings
 
 
 def interpolate(
@@ -460,6 +489,27 @@ def ifftn(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.fft.ifftn(x, s, axes, norm)
+
+
+def rfft(
+    x: paddle.Tensor,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        x = x.real()
+    if x.dtype == paddle.float16:
+        x = x.astype(paddle.float32)
+
+    ret = paddle.fft.rfft(x, n=n, axis=axis, norm=norm)
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @with_unsupported_dtypes(

@@ -18,10 +18,9 @@ class _ArrayWithSearching(abc.ABC):
         select_last_index: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
-        """
-        ivy.Array instance method variant of ivy.argmax. This method simply wraps the
-        function, and so the docstring for ivy.argmax also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.argmax. This method simply
+        wraps the function, and so the docstring for ivy.argmax also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -29,7 +28,7 @@ class _ArrayWithSearching(abc.ABC):
             input array. Should have a numeric data type.
         axis
             axis along which to search. If None, the function must return the index of
-            the maximum value of the flattened array. Deafult: ``None``.
+            the maximum value of the flattened array. Default: ``None``.
         keepdims
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
@@ -94,10 +93,9 @@ class _ArrayWithSearching(abc.ABC):
         select_last_index: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
-        """
-        ivy.Array instance method variant of ivy.argmin. This method simply wraps the
-        function, and so the docstring for ivy.argmin also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.argmin. This method simply
+        wraps the function, and so the docstring for ivy.argmin also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -162,10 +160,9 @@ class _ArrayWithSearching(abc.ABC):
         size: Optional[int] = None,
         fill_value: Number = 0,
     ) -> Union[Tuple[ivy.Array], ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.nonzero. This method simply wraps the
-        function, and so the docstring for ivy.nonzero also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.nonzero. This method simply
+        wraps the function, and so the docstring for ivy.nonzero also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -202,10 +199,9 @@ class _ArrayWithSearching(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.where. This method simply wraps the
-        function, and so the docstring for ivy.where also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.where. This method simply
+        wraps the function, and so the docstring for ivy.where also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -238,10 +234,9 @@ class _ArrayWithSearching(abc.ABC):
         return ivy.where(self._data, x1._data, x2._data, out=out)
 
     def argwhere(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.argwhere. This method simply wraps the
-        function, and so the docstring for ivy.argwhere also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.argwhere. This method
+        simply wraps the function, and so the docstring for ivy.argwhere also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

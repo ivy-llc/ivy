@@ -51,8 +51,7 @@ def trim(*, docstring):
 def check_docstring_examples_run(
     *, fn, from_container=False, from_array=False, num_sig_fig=2
 ):
-    """
-    Performs docstring tests for a given function.
+    """Performs docstring tests for a given function.
 
     Parameters
     ----------
@@ -159,7 +158,7 @@ def check_docstring_examples_run(
         "set_nest_at_indices",
         "layer_norm",
         "where",
-        "compile",
+        "trace",
         "eigvalsh",
         "conv2d_transpose",
         # fails due to different backend and their view types

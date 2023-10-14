@@ -511,14 +511,16 @@ Let's look at an example!
       # less_equal
       if allow_equal and ivy.any(x1 > x2):
           raise ivy.exceptions.IvyException(
-              "{} must be lesser than or equal to {}".format(x1, x2)
+              f"{x1} must be lesser than or equal to {x2}"
               if message == ""
               else message
           )
       # less
       elif not allow_equal and ivy.any(x1 >= x2):
           raise ivy.exceptions.IvyException(
-              "{} must be lesser than {}".format(x1, x2) if message == "" else message
+              f"{x1} must be lesser than {x2}"
+              if message == ""
+              else message
           )
 
 **ivy.set_split_factor**

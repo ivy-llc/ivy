@@ -21,10 +21,26 @@ def _get_dtype_and_range(draw):
     dim = draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     start = draw(
-        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=-50, max_value=0)
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(dim,),
+            min_value=-50,
+            max_value=0,
+            large_abs_safety_factor=4,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
+        )
     )
     stop = draw(
-        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=1, max_value=50)
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(dim,),
+            min_value=1,
+            max_value=50,
+            large_abs_safety_factor=4,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
+        )
     )
     return dtype * 2, start, stop
 
@@ -731,7 +747,7 @@ def test_jax_meshgrid(
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     test_flags.num_positional_args = len(arrays)
     helpers.test_frontend_function(
@@ -826,42 +842,6 @@ def test_jax_numpy_frombuffer(
         dtype=input_dtype[0],
         count=count,
         offset=offset,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.numpy.in1d",
-    dtype_and_a=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
-    dtype_and_b=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
-    assume_unique=st.booleans(),
-    invert=st.booleans(),
-)
-def test_jax_numpy_in1d(
-    *,
-    dtype_and_a,
-    dtype_and_b,
-    assume_unique,
-    invert,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype_a, a = dtype_and_a
-    input_dtype_b, b = dtype_and_b
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype_a + input_dtype_b,
-        frontend=frontend,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        ar1=a[0],
-        ar2=b[0],
-        assume_unique=assume_unique,
-        invert=invert,
     )
 
 

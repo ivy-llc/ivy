@@ -20,7 +20,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.0.1 and below": {"cpu": ("float16",)}},
+    {"2.1.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def kaiser_window(
@@ -87,7 +87,7 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def hann_window(
     size: int,
     /,
@@ -112,7 +112,7 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: torch.device,
+    device: torch.device = None,
 ) -> Tuple[torch.Tensor, ...]:
     n_cols = n_rows if n_cols is None else n_cols
 
@@ -152,7 +152,7 @@ def unsorted_segment_min(
     return res
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def blackman_window(
     size: int,
     /,
@@ -223,8 +223,11 @@ def mel_weight_matrix(
     lower_edge_hertz = torch.tensor(lower_edge_hertz)
     upper_edge_hertz = torch.tensor(upper_edge_hertz)
     zero = torch.tensor(0.0)
+
     # mel transform lambda function
-    hz_to_mel = lambda f: 2595 * torch.log10(1 + f / 700)
+    def hz_to_mel(f):
+        return 2595 * torch.log10(1 + f / 700)
+
     nyquist_hz = sample_rate / 2
     # define a range of frequencies in HZ
     linear_freqs = torch.linspace(0, nyquist_hz, dft_length)[1:]

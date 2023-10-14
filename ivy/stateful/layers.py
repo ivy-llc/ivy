@@ -27,11 +27,11 @@ class Linear(Module):
         v=None,
         dtype=None,
     ):
-        """
-        Linear layer, also referred to as dense or fully connected. The layer receives
-        tensors with input_channels last dimension and returns a new tensor with
-        output_channels last dimension, following matrix multiplication with the weight
-        matrix and addition with the bias vector.
+        """Linear layer, also referred to as dense or fully connected. The
+        layer receives tensors with input_channels last dimension and returns a
+        new tensor with output_channels last dimension, following matrix
+        multiplication with the weight matrix and addition with the bias
+        vector.
 
         Parameters
         ----------
@@ -65,8 +65,7 @@ class Linear(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
+        """Create internal variables for the layer.
 
         Parameters
         ----------
@@ -100,8 +99,7 @@ class Linear(Module):
         return v
 
     def _forward(self, x):
-        """
-        Perform forward pass of the Linear layer.
+        """Perform forward pass of the Linear layer.
 
         Parameters
         ----------
@@ -116,6 +114,12 @@ class Linear(Module):
         """
         return ivy.linear(x, self.v.w, bias=self.v.b if self._with_bias else None)
 
+    def extra_repr(self) -> str:
+        return (
+            f"in_features={self._input_channels}, out_features={self._output_channels},"
+            f" with_bias={self._with_bias is True}"
+        )
+
 
 # Dropout #
 # --------#
@@ -129,9 +133,9 @@ class Dropout(Module):
         dtype=None,
         training: bool = True,
     ):
-        """
-        Dropout layer. The layer randomly zeroes some of the elements of the input
-        tensor with probability p using samples from a Bernoull distribution.
+        """Dropout layer. The layer randomly zeroes some of the elements of the
+        input tensor with probability p using samples from a Bernoull
+        distribution.
 
         Parameters
         ----------
@@ -150,8 +154,7 @@ class Dropout(Module):
         Module.__init__(self, device=None, v=None, dtype=dtype, training=training)
 
     def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
+        """Create internal variables for the layer.
 
         Parameters
         ----------
@@ -165,8 +168,7 @@ class Dropout(Module):
         return {}
 
     def _forward(self, inputs, dtype=None):
-        """
-        Perform forward pass of the Linear layer.
+        """Perform forward pass of the Linear layer.
 
         Parameters
         ----------
@@ -185,6 +187,12 @@ class Dropout(Module):
         return ivy.dropout(
             inputs, self._prob, scale=self._scale, training=self.training, dtype=dtype
         )
+
+    def extra_repr(self) -> str:
+        s = "prob={prob}"
+        if not self._scale:
+            s += ", scale={scale}"
+        return s.format(prob=self._prob, scale=self._scale)
 
 
 # Attention #
@@ -211,8 +219,7 @@ class MultiHeadAttention(Module):
         dtype=None,
         training=True,
     ):
-        """
-        Multi Head Attention layer.
+        """Multi Head Attention layer.
 
         Parameters
         ----------
@@ -375,8 +382,7 @@ class MultiHeadAttention(Module):
         return_attention_weights=False,
         average_attention_weights=True,
     ):
-        """
-        Perform forward pass of the MultiHeadAttention layer.
+        """Perform forward pass of the MultiHeadAttention layer.
 
         Parameters
         ----------
@@ -459,8 +465,7 @@ class Conv1D(Module):
         v=None,
         dtype=None,
     ):
-        """
-        1D convolutional layer.
+        """1D convolutional layer.
 
         Parameters
         ----------
@@ -512,8 +517,7 @@ class Conv1D(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
+        """Create internal variables for the layer.
 
         Parameters
         ----------
@@ -547,8 +551,7 @@ class Conv1D(Module):
         return v
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv1D layer.
+        """Perform forward pass of the Conv1D layer.
 
         Parameters
         ----------
@@ -568,6 +571,19 @@ class Conv1D(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_size={_filter_size},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1,)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv1DTranspose(Module):
@@ -590,8 +606,7 @@ class Conv1DTranspose(Module):
         v=None,
         dtype=None,
     ):
-        """
-        1D transpose convolutional layer.
+        """1D transpose convolutional layer.
 
         Parameters
         ----------
@@ -646,8 +661,7 @@ class Conv1DTranspose(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
+        """Create internal variables for the layer.
 
         Parameters
         ----------
@@ -681,8 +695,7 @@ class Conv1DTranspose(Module):
         return v
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv1DTranspose layer.
+        """Perform forward pass of the Conv1DTranspose layer.
 
         Parameters
         ----------
@@ -704,6 +717,21 @@ class Conv1DTranspose(Module):
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
 
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_size={_filter_size},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1,)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._output_shape is not None:
+            s += ", output_shape={_output_shape}"
+        if self._data_format != "NWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class Conv2D(Module):
     def __init__(
@@ -724,8 +752,7 @@ class Conv2D(Module):
         v=None,
         dtype=None,
     ):
-        """
-        2D convolutional layer.
+        """2D convolutional layer.
 
         Parameters
         ----------
@@ -779,8 +806,7 @@ class Conv2D(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
+        """Create internal variables for the layer.
 
         Parameters
         ----------
@@ -814,8 +840,7 @@ class Conv2D(Module):
         return v
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv2D layer.
+        """Perform forward pass of the Conv2D layer.
 
         Parameters
         ----------
@@ -835,6 +860,19 @@ class Conv2D(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv2DTranspose(Module):
@@ -857,8 +895,7 @@ class Conv2DTranspose(Module):
         v=None,
         dtype=None,
     ):
-        """
-        2D convolutional transpose layer.
+        """2D convolutional transpose layer.
 
         Parameters
         ----------
@@ -915,8 +952,7 @@ class Conv2DTranspose(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
+        """Create internal variables for the layer.
 
         Parameters
         ----------
@@ -950,8 +986,7 @@ class Conv2DTranspose(Module):
         return v
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv2DTranspose layer.
+        """Perform forward pass of the Conv2DTranspose layer.
 
         Parameters
         ----------
@@ -973,6 +1008,21 @@ class Conv2DTranspose(Module):
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
 
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._output_shape is not None:
+            s += ", output_shape={_output_shape}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class DepthwiseConv2D(Module):
     def __init__(
@@ -992,8 +1042,7 @@ class DepthwiseConv2D(Module):
         v=None,
         dtype=None,
     ):
-        """
-        Depthwise 2D convolutional layer.
+        """Depthwise 2D convolutional layer.
 
         Parameters
         ----------
@@ -1044,8 +1093,7 @@ class DepthwiseConv2D(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype):
-        """
-        Create internal variables for the layer.
+        """Create internal variables for the layer.
 
         Parameters
         ----------
@@ -1079,8 +1127,7 @@ class DepthwiseConv2D(Module):
         return v
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the DepthwiseConv2D layer.
+        """Perform forward pass of the DepthwiseConv2D layer.
 
         Parameters
         ----------
@@ -1100,6 +1147,19 @@ class DepthwiseConv2D(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def extra_repr(self):
+        s = (
+            "num_channels={_num_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv3D(Module):
@@ -1121,8 +1181,7 @@ class Conv3D(Module):
         v=None,
         dtype=None,
     ):
-        """
-        3D convolutional layer.
+        """3D convolutional layer.
 
         Parameters
         ----------
@@ -1176,8 +1235,7 @@ class Conv3D(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
+        """Create internal variables for the layer.
 
         Parameters
         ----------
@@ -1211,8 +1269,7 @@ class Conv3D(Module):
         return v
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv3D layer.
+        """Perform forward pass of the Conv3D layer.
 
         Parameters
         ----------
@@ -1233,6 +1290,19 @@ class Conv3D(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv3DTranspose(Module):
@@ -1255,8 +1325,7 @@ class Conv3DTranspose(Module):
         v=None,
         dtype=None,
     ):
-        """
-        3D convolutional transpose layer.
+        """3D convolutional transpose layer.
 
         Parameters
         ----------
@@ -1314,8 +1383,7 @@ class Conv3DTranspose(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
+        """Create internal variables for the layer.
 
         Parameters
         ----------
@@ -1349,8 +1417,7 @@ class Conv3DTranspose(Module):
         return v
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Conv3DTranspose layer.
+        """Perform forward pass of the Conv3DTranspose layer.
 
         Parameters
         ----------
@@ -1373,6 +1440,21 @@ class Conv3DTranspose(Module):
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
 
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._output_shape is not None:
+            s += ", output_shape={_output_shape}"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 # LSTM #
 # -----#
@@ -1393,8 +1475,7 @@ class LSTM(Module):
         v=None,
         dtype=None,
     ):
-        """
-        LSTM layer, which is a set of stacked lstm cells.
+        """LSTM layer, which is a set of stacked lstm cells.
 
         Parameters
         ----------
@@ -1434,8 +1515,8 @@ class LSTM(Module):
     # Public #
 
     def get_initial_state(self, batch_shape, dtype=None):
-        """
-        Get the initial state of the hidden and cell states, if not provided explicitly.
+        """Get the initial state of the hidden and cell states, if not provided
+        explicitly.
 
         Parameters
         ----------
@@ -1459,8 +1540,7 @@ class LSTM(Module):
     # Overridden
 
     def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
+        """Create internal variables for the layer.
 
         Parameters
         ----------
@@ -1516,8 +1596,7 @@ class LSTM(Module):
 
     @handle_nestable
     def _forward(self, inputs, initial_state=None):
-        """
-        Perform forward pass of the LSTM layer.
+        """Perform forward pass of the LSTM layer.
 
         Parameters
         ----------
@@ -1558,6 +1637,16 @@ class LSTM(Module):
             return h_t
         return h_t, (h_n_list, c_n_list)
 
+    def extra_repr(self):
+        s = "{_input_channels}, {_output_channels}"
+        if self._num_layers != 1:
+            s += ", num_layers={_num_layers}"
+        if self._return_sequence is not True:
+            s += ", return_sequence={_return_sequence}"
+        if self._return_state is not True:
+            s += ", return_state={_return_state}"
+        return s.format(**self.__dict__)
+
 
 # Pooling #
 # --------#
@@ -1576,8 +1665,7 @@ class MaxPool2D(Module):
         v=None,
         dtype=None,
     ):
-        """
-        Class for applying Max Pooling over a mini-batch of inputs.
+        """Class for applying Max Pooling over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -1597,8 +1685,7 @@ class MaxPool2D(Module):
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -1617,6 +1704,12 @@ class MaxPool2D(Module):
             data_format=self._data_format,
         )
 
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class AvgPool2D(Module):
     def __init__(
@@ -1631,8 +1724,7 @@ class AvgPool2D(Module):
         v=None,
         dtype=None,
     ):
-        """
-        Class for applying Average Pooling over a mini-batch of inputs.
+        """Class for applying Average Pooling over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -1652,8 +1744,7 @@ class AvgPool2D(Module):
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -1672,6 +1763,12 @@ class AvgPool2D(Module):
             data_format=self._data_format,
         )
 
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class MaxPool1D(Module):
     def __init__(
@@ -1686,8 +1783,7 @@ class MaxPool1D(Module):
         v=None,
         dtype=None,
     ):
-        """
-        Class for applying Max Pooling over a mini-batch of inputs.
+        """Class for applying Max Pooling over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -1707,8 +1803,7 @@ class MaxPool1D(Module):
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -1727,6 +1822,12 @@ class MaxPool1D(Module):
             data_format=self._data_format,
         )
 
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class MaxPool3D(Module):
     def __init__(
@@ -1740,8 +1841,7 @@ class MaxPool3D(Module):
         device=None,
         dtype=None,
     ):
-        """
-        Class for applying 3D Max Pooling over 5D inputs.
+        """Class for applying 3D Max Pooling over 5D inputs.
 
         Parameters
         ----------
@@ -1759,8 +1859,7 @@ class MaxPool3D(Module):
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, x):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -1779,6 +1878,12 @@ class MaxPool3D(Module):
             data_format=self._data_format,
         )
 
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class AvgPool3D(Module):
     def __init__(
@@ -1793,8 +1898,7 @@ class AvgPool3D(Module):
         ceil_mode=False,
         divisor_override=None,
     ):
-        """
-        Class for applying Average Pooling over a mini-batch of inputs.
+        """Class for applying Average Pooling over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -1824,8 +1928,7 @@ class AvgPool3D(Module):
         Module.__init__(self)
 
     def _forward(self, x):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -1847,6 +1950,19 @@ class AvgPool3D(Module):
             divisor_override=self._divisor_override,
         )
 
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        if self._count_include_pad is not False:
+            s += ", count_include_pad={_count_include_pad}"
+        if self._ceil_mode is not False:
+            s += ", ceil_mode={_ceil_mode}"
+        if self._divisor_override is not False:
+            s += ", divisor_override={_divisor_override}"
+
+        return s.format(**self.__dict__)
+
 
 class AdaptiveAvgPool2d(Module):
     def __init__(
@@ -1855,8 +1971,8 @@ class AdaptiveAvgPool2d(Module):
         device=None,
         dtype=None,
     ):
-        """
-        Class for applying a 2D adaptive average pooling over mini-batch of inputs.
+        """Class for applying a 2D adaptive average pooling over mini-batch of
+        inputs.
 
         Parameters
         ----------
@@ -1869,8 +1985,7 @@ class AdaptiveAvgPool2d(Module):
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, x):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -1888,6 +2003,9 @@ class AdaptiveAvgPool2d(Module):
             self._output_size,
         )
 
+    def extra_repr(self):
+        return f"output_size={self._output_size}"
+
 
 class AdaptiveAvgPool1d(Module):
     def __init__(
@@ -1897,8 +2015,8 @@ class AdaptiveAvgPool1d(Module):
         dtype=None,
     ):
         # TODO: add data_format param
-        """
-        Class for applying a 1D adaptive average pooling over mini-batch of inputs.
+        """Class for applying a 1D adaptive average pooling over mini-batch of
+        inputs.
 
         Parameters
         ----------
@@ -1912,8 +2030,7 @@ class AdaptiveAvgPool1d(Module):
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, x):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -1931,6 +2048,9 @@ class AdaptiveAvgPool1d(Module):
             self._output_size,
         )
 
+    def extra_repr(self):
+        return f"output_size={self._output_size}"
+
 
 class FFT(Module):
     def __init__(
@@ -1944,8 +2064,7 @@ class FFT(Module):
         device=None,
         dtype=None,
     ):
-        """
-        Class for applying FFT to input.
+        """Class for applying FFT to input.
 
         Parameters
         ----------
@@ -1965,8 +2084,7 @@ class FFT(Module):
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -1986,6 +2104,14 @@ class FFT(Module):
             out=self._out,
         )
 
+    def extra_repr(self):
+        s = "dim={_dim}"
+        if self._norm != "backward":
+            s += ", norm={_norm}"
+        if self._n is not False:
+            s += ", n={_n}"
+        return s.format(**self.__dict__)
+
 
 class AvgPool1D(Module):
     def __init__(
@@ -1997,8 +2123,7 @@ class AvgPool1D(Module):
         *,
         data_format="NWC",
     ):
-        """
-        Class for applying Average Pooling over a mini-batch of inputs.
+        """Class for applying Average Pooling over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -2018,8 +2143,7 @@ class AvgPool1D(Module):
         Module.__init__(self)
 
     def _forward(self, inputs):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -2038,6 +2162,12 @@ class AvgPool1D(Module):
             data_format=self._data_format,
         )
 
+    def extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class Dct(Module):
     def __init__(
@@ -2050,8 +2180,8 @@ class Dct(Module):
         device=None,
         dtype=None,
     ):
-        """
-        Class for applying the Discrete Cosine Transform over mini-batch of inputs.
+        """Class for applying the Discrete Cosine Transform over mini-batch of
+        inputs.
 
         Parameters
         ----------
@@ -2060,7 +2190,7 @@ class Dct(Module):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The length of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal length,
             then x is truncated, if n is larger then x is zero-padded.
         axis
             The axis to compute the DCT along.
@@ -2076,8 +2206,7 @@ class Dct(Module):
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, x):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -2095,6 +2224,16 @@ class Dct(Module):
             axis=self.axis,
             norm=self.norm,
         )
+
+    def extra_repr(self):
+        s = "type={type}"
+        if self.n is not None:
+            s += ", n={n}"
+        if self.axis != -1:
+            s += ", axis={axis}"
+        if self.norm is not None:
+            s += ", norm={norm}"
+        return s.format(**self.__dict__)
 
 
 # EMBEDDING #
@@ -2115,10 +2254,9 @@ class Embedding(Module):
         v=None,
         dtype=None,
     ):
-        """
-        Class for embedding indices into a dense representation. The Embedding layer is
-        a simple lookup table for dense vectors. It's typically used to store word
-        embeddings and query them using indices.
+        """Class for embedding indices into a dense representation. The
+        Embedding layer is a simple lookup table for dense vectors. It's
+        typically used to store word embeddings and query them using indices.
 
         Parameters
         ----------
@@ -2149,8 +2287,7 @@ class Embedding(Module):
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
+        """Create internal variables for the layer.
 
         Parameters
         ----------
@@ -2178,8 +2315,7 @@ class Embedding(Module):
         return ivy.where(mask, mask_val, embd)
 
     def _forward(self, indices):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -2195,12 +2331,19 @@ class Embedding(Module):
             emb = self._pad_embd(indices, emb)
         return emb
 
+    def extra_repr(self):
+        s = "num_embeddings={_num_embeddings}, embedding_dim={_embedding_dim}"
+        if self._padding_idx is not None:
+            s += ", padding_idx={_padding_idx}"
+        if self._max_norm is not None:
+            s += ", max_norm={_max_norm}"
+        return s.format(**self.__dict__)
+
 
 class Identity(Module):
     def __init__(self):
-        """
-        Identity layer. The layer is argument insensitive and returns the input argument
-        as output when called.
+        """Identity layer. The layer is argument insensitive and returns the
+        input argument as output when called.
 
         It's typically used as a placeholder when no operation is to be
         performed. It doesn't have any learnable parameter.
@@ -2208,8 +2351,7 @@ class Identity(Module):
         Module.__init__(self)
 
     def _forward(self, x):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
@@ -2224,3 +2366,61 @@ class Identity(Module):
             The input array as it is.
         """
         return x
+
+
+class IFFT(Module):
+    def __init__(
+        self,
+        dim,
+        /,
+        *,
+        norm="backward",
+        n=None,
+        out=None,
+        device=None,
+        dtype=None,
+    ):
+        """Class for applying IFFT to input.
+
+        Parameters
+        ----------
+        dim : int
+            Dimension along which to take the IFFT.
+        norm : str
+            Optional argument indicating the normalization mode. Possible Values : "backward", "ortho" or "forward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+            Default: "backward"
+        n : int
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing IFFT.
+            Should be a integer greater than 1. Default: None
+        out : int
+            Size of the output. Default: None
+        """
+        self._dim = dim
+        self._norm = norm
+        self._n = n
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs : array
+            Input array to take the IFFT of.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.ifft(
+            inputs,
+            self._dim,
+            norm=self._norm,
+            n=self._n,
+            out=self._out,
+        )
