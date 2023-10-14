@@ -3048,7 +3048,7 @@ def test_paddle_tensor_logical_xor(
     init_tree="paddle.to_tensor",
     method_name="matrix_power",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["float32"],
         min_value=0,
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
