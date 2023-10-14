@@ -3363,6 +3363,47 @@ def test_tensorflow_Prod(  # NOQA
     )
 
 
+# RandomStandardNormal
+@handle_frontend_test(
+    fn_tree="tf.raw_ops.RandomStandardNormal",
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+    seed=helpers.ints(min_value=0, max_value=10),
+    seed2=helpers.ints(min_value=0, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_RandomStandardNormal(
+    frontend,
+    fn_tree,
+    on_device,
+    shape,
+    dtype,
+    seed,
+    seed2,
+    test_flags,
+    backend_fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape,
+        dtype=dtype[0],
+        seed=seed,
+        seed2=seed2,
+    )
+
+
 # Todo: Revise strategies once reimplemented in frontend
 # Real
 @handle_frontend_test(
