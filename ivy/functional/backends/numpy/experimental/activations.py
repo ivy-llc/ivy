@@ -165,6 +165,7 @@ def threshold(
 
 threshold.support_native_out = True
 
+
 def scaled_tanh(
     x: np.ndarray,
     /,

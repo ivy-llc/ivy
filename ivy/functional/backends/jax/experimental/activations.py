@@ -128,6 +128,7 @@ def threshold(
         return ivy.inplace_update(out, ret).astype(x.dtype)  # type: ignore
     return ret
 
+
 @with_unsupported_dtypes({"0.4.17 and below": ("float64",)}, backend_version)
 def scaled_tanh(
     x: JaxArray,

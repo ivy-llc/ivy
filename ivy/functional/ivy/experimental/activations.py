@@ -673,8 +673,7 @@ def threshold(
     value: float,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the threshold function element-wise.
+    """Apply the threshold function element-wise.
 
     Parameters
     ----------

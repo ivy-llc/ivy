@@ -132,6 +132,7 @@ def threshold(
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
 
+
 def scaled_tanh(
     x: torch.Tensor,
     /,
