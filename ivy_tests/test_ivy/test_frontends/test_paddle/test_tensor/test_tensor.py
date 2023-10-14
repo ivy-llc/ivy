@@ -222,6 +222,30 @@ def _reshape_helper(draw):
     return dtypes, x, reshape_shape
 
 
+# expand helper function
+@st.composite
+def dtypes_x_shape(draw):
+    dtypes, x = draw(
+        helpers.dtype_and_values(
+            dtype=["float32"],
+            shape=helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=5,
+            ),
+        )
+    )
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=6,
+        )
+    )
+
+    shape = list(shape)
+    shape[-len(np.array(x).shape) :] = np.array(x).shape
+    return dtypes, x, shape
+
+
 # --- Main --- #
 # ------------ #
 
@@ -2124,7 +2148,7 @@ def test_paddle_tensor_exp_(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="expand",
-    dtype_x_shape=_reshape_helper(),
+    dtype_x_shape=dtypes_x_shape(),
 )
 def test_paddle_tensor_expand(
     dtype_x_shape,
@@ -2136,14 +2160,8 @@ def test_paddle_tensor_expand(
     backend_fw,
 ):
     input_dtype, x, shape = dtype_x_shape
-    assume(len(shape) != 0)
-    assume(len(shape) <= 6)
-    assume(len(x.shape) <= 6)
-    assume(len(x.shape) < len(shape))
-    assume(shape.count(0) == 1)
-    shape = {
-        "shape": shape,
-    }
+    assume(len(np.array(x).shape) < len(shape))
+    # assume(any(dim >= len(np.array(x).shape) for dim in shape))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -2151,7 +2169,9 @@ def test_paddle_tensor_expand(
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np=shape,
+        method_all_as_kwargs_np={
+            "shape": shape,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
