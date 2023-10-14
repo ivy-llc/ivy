@@ -41,6 +41,40 @@ def fftfreq(n, d=1.0, dtype=None, name=None):
     indices = ivy.roll(indices, -neg_max)
     return ivy.multiply(indices, val)
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def fftn(x, s=None, axes=None, norm="backward", name=None):
+    x = ivy.array(x)
+    
+    if axes is None:
+        axes = list(range(len(x.shape)))
+
+    if s is None:
+        s = x.shape
+
+    if ivy.is_real_dtype(x.dtype):
+        x_dtype = x.dtype
+        x = ivy.astype(x, "complex64" if x_dtype == "float32" else "complex128")
+        last_axis = len(x.shape) - 1
+        if last_axis in axes:
+            size = s[axes.index(last_axis)]
+            slices = [slice(None)] * ivy.get_num_dims(x)
+            slices[-1] = slice(0, size // 2 + 1)
+            x = ivy.concat((x, ivy.zeros_like(x)[tuple(slices)]), axis=-1)
+
+    result = ivy.fftn(x, s=s, axes=axes, norm=norm)
+    
+    if ivy.is_complex_dtype(x.dtype):
+        output_dtype = "complex64" if x.dtype == "complex64" else "complex128"
+    else:
+        output_dtype = "complex64"
+    
+    result_t = ivy.astype(result, output_dtype)
+    return result_t
+
 
 @with_supported_dtypes(
     {
