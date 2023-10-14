@@ -1,7 +1,7 @@
 # global
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 
 
@@ -380,6 +380,12 @@ def max_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
 @to_ivy_arrays_and_back
 def max_pool2d(input, ksize, strides, padding, data_format="NHWC", name=None):
     return ivy.max_pool2d(input, ksize, strides, padding, data_format=data_format)
+
+
+@with_supported_dtypes({"2.14.0 and below": ("float32",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def max_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
+    return ivy.max_pool3d(input, ksize, strides, padding, data_format=data_format)
 
 
 @to_ivy_arrays_and_back

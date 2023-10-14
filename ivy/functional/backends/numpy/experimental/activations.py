@@ -6,7 +6,9 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+)
 from . import backend_version
 
 
@@ -162,3 +164,13 @@ def threshold(
 
 
 threshold.support_native_out = True
+
+def scaled_tanh(
+    x: np.ndarray,
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return alpha * np.tanh(beta * x)
