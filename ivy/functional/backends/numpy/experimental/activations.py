@@ -8,6 +8,7 @@ import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
+    with_supported_dtypes,
 )
 from . import backend_version
 
@@ -158,3 +159,17 @@ def scaled_tanh(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return alpha * np.tanh(beta * x)
+
+
+@with_supported_dtypes({"1.26.0 and below": ("float32", "float64")}, backend_version)
+@_scalar_output_to_0d_array
+def hardshrink(
+    x: np.ndarray, /, *, lambd: float = 0.5, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    ret = np.where(x > lambd, x, np.where(x < -lambd, x, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+hardshrink.support_native_out = True
