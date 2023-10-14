@@ -2481,6 +2481,7 @@ def test_paddle_tensor_imag(
         on_device=on_device,
     )
 
+
 # index_sample
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2495,13 +2496,13 @@ def test_paddle_tensor_imag(
     ),
 )
 def test_paddle_tensor_index_sample(
-        array_indices_axis,
-        frontend,
-        frontend_method_data,
-        init_flags,
-        method_flags,
-        on_device,
-        backend_fw,
+    array_indices_axis,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
 ):
     dtype, x, index = array_indices_axis
     helpers.test_frontend_method(
