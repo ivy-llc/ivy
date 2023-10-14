@@ -329,6 +329,20 @@ def ones(shape, dtype=ivy.float32, name=None):
     return ivy.ones(shape, dtype=dtype)
 
 
+# Add the suitable decorators please
+class ones_initializer():
+    # Add the suitable tests in test_general_functions.py please
+    def __call__(self, shape, dtype='float32', **kwargs):
+        if "partition_shape" in kwargs:
+            shape = kwargs["partition_shape"]
+        return ivy.ones(shape=shape, dtype=dtype)
+    def get_config(self):
+        return {}
+    def from_config(cls, config):
+        config.pop("dtype", None)
+        return cls(**config)
+
+
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def ones_like(input, dtype=None, name=None):
@@ -339,6 +353,50 @@ def ones_like(input, dtype=None, name=None):
 def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
     paddings = paddings.to_list() if ivy.is_array(paddings) else paddings
     return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
+
+
+# Add the suitable decorators please
+class random_normal_initializer():
+    # Add the suitable tests in test_general_functions.py please
+    def __init__(self, mean=0.0, stddev=0.05, seed=None):
+        self.mean = mean
+        self.stddev = stddev
+        self.seed = seed
+    def __call__(self, shape, dtype='float32', **kwargs):
+        if "partition_shape" in kwargs:
+            shape = kwargs["partition_shape"]
+        return ivy.random_normal(shape=shape, mean=self.mean, std=self.stddev, dtype=dtype, seed=self.seed)
+    def get_config(self):
+        return {
+            "mean": self.mean,
+            "stddev": self.stddev,
+            "seed": self.seed
+        }
+    def from_config(cls, config):
+        config.pop("dtype", None)
+        return cls(**config)
+
+
+# Add the suitable decorators please
+class random_uniform_initializer():
+    # Add the suitable tests in test_general_functions.py please
+    def __init__(self, minval=-0.05, maxval=0.05, seed=None):
+        self.minval = minval
+        self.maxval = maxval
+        self.seed = seed
+    def __call__(self, shape, dtype='float32', **kwargs):
+        if "partition_shape" in kwargs:
+            shape = kwargs["partition_shape"]
+        return ivy.random_uniform(shape=shape, low=self.minval, high=self.maxval, dtype=dtype, seed=self.seed)
+    def get_config(self):
+        return {
+            "minval": self.minval,
+            "maxval": self.maxval,
+            "seed": self.seed
+        }
+    def from_config(cls, config):
+        config.pop("dtype", None)
+        return cls(**config)
 
 
 @with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, "tensorflow")
@@ -712,13 +770,18 @@ def zeros(shape, dtype=ivy.float32, name=None):
     return ivy.zeros(shape=shape, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, "tensorflow")
-@to_ivy_arrays_and_back
-def zeros_initializer(shape, dtype=None, name=None):
-    # todo internal: fix behaviour
-    if dtype is None:
-        dtype = ivy.default_dtype()
-    return ivy.zeros(shape, dtype=dtype)
+# Add the suitable decorators please
+class zeros_initializer():
+    # Add the suitable tests in test_general_functions.py please
+    def __call__(self, shape, dtype='float32', **kwargs):
+        if "partition_shape" in kwargs:
+            shape = kwargs["partition_shape"]
+        return ivy.zeros(shape=shape, dtype=dtype)
+    def get_config(self):
+        return {}
+    def from_config(cls, config):
+        config.pop("dtype", None)
+        return cls(**config)
 
 
 @handle_tf_dtype
