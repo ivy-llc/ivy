@@ -269,8 +269,7 @@ def sign(
 def _determine_sqrt_dtype_cast(
     dtype: Type[paddle.Tensor],
 ) -> Tuple[Optional[str], Optional[str]]:
-    """
-    Determine the appropriate casting dtype for sqrt operations.
+    """Determine the appropriate casting dtype for sqrt operations.
 
     Returns:
         (intermediate_dtype, output_dtype)

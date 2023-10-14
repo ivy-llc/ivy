@@ -386,6 +386,29 @@ def _x_and_ifftn(draw):
 
 
 @st.composite
+def _x_and_rfft(draw):
+    min_fft_points = 2
+    dtype = draw(helpers.get_dtypes("numeric"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e-10,
+            max_value=1e10,
+        )
+    )
+    axis = draw(st.integers(1 - len(list(x_dim)), len(list(x_dim)) - 1))
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    n = draw(st.integers(min_fft_points, 256))
+    return dtype, x, axis, norm, n
+
+
+@st.composite
 def _x_and_rfftn(draw):
     min_rfftn_points = 2
     dtype = draw(helpers.get_dtypes("float"))
@@ -1299,6 +1322,35 @@ def test_reduce_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
         padding=padding,
         base_dilation=others[2],
         window_dilation=None,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.rfft",
+    dtype_x_axis_norm_n=_x_and_rfft(),
+    ground_truth_backend="numpy",
+)
+def test_rfft(
+    *,
+    dtype_x_axis_norm_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, axis, norm, n = dtype_x_axis_norm_n
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x,
+        n=n,
+        axis=axis,
+        norm=norm,
     )
 
 

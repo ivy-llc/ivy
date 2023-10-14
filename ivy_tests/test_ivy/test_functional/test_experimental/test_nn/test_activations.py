@@ -208,6 +208,36 @@ def test_relu6(
     )
 
 
+# scaled_tanh
+@handle_test(
+    fn_tree="functional.ivy.experimental.scaled_tanh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_dim_size=1,
+        min_num_dims=1,
+    ),
+    alpha=st.floats(min_value=0.1, max_value=5.0),
+    beta=st.floats(min_value=0.1, max_value=5.0),
+    ground_truth_backend="paddle",
+)
+def test_scaled_tanh(
+    *, dtype_and_x, alpha, beta, test_flags, backend_fw, fn_name, on_device
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-5,
+        atol_=1e-5,
+        x=x[0],
+        alpha=alpha,
+        beta=beta,
+    )
+
+
 # selu
 @handle_test(
     fn_tree="functional.ivy.experimental.selu",
