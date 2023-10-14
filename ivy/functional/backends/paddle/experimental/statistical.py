@@ -99,6 +99,47 @@ def _validate_quantile(q):
     return True
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "bfloat16",
+                "complex64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
+)
+def nanmin(
+    a: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[paddle.Tensor] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    nan_mask = paddle.isnan(a)
+    if where is not None:
+        nan_mask = paddle.logical_or(nan_mask, paddle.logical_not(where))
+    a_copy = a.clone()
+    a_copy = paddle.where(nan_mask, paddle.full_like(a_copy, float("inf")), a_copy)
+    if axis is None:
+        result = paddle.min(a_copy, keepdim=keepdims)
+    else:
+        result = paddle.min(a_copy, axis=axis, keepdim=keepdims)
+    if initial is not None:
+        initial = paddle.to_tensor(initial, dtype=a.dtype)
+        result = paddle.minimum(result, initial)
+    return result
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
 def nanprod(
     a: paddle.Tensor,

@@ -136,7 +136,7 @@ def check_all_or_any_fn(
     *args,
     fn,
     type="all",
-    limit=[0],
+    limit=(0,),
     message="args must exist according to type and limit given",
     as_array=True,
 ):
