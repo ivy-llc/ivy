@@ -526,8 +526,7 @@ def sigmoid(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the sigmoid unit function element-wise.
+    """Apply the sigmoid unit function element-wise.
 
     Parameters
     ----------

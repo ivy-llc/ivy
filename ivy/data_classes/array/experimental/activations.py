@@ -296,10 +296,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Ivy.Array instance method variant of ivy.sigmoid. This method simply wraps the
-        function, and so the docstring for ivy.sigmoid also applies to this method with
-        minimal.
+        """Ivy.Array instance method variant of ivy.sigmoid. This method simply
+        wraps the function, and so the docstring for ivy.sigmoid also applies
+        to this method with minimal.
 
         Parameters
         ----------
