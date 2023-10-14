@@ -70,6 +70,7 @@ def test_elu(
     )
 
 
+# hardsilu
 @handle_test(
     fn_tree="functional.ivy.experimental.hardsilu",
     dtype_and_x=helpers.dtype_and_values(
