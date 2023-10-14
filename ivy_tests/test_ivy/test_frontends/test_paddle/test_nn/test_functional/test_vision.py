@@ -68,6 +68,63 @@ def _image_shape_helper(draw, data_format):
 
     return shape
 
+
+@st.composite
+def grid_sample_helper(draw, dtype, mode, mode_3d, padding_mode):
+    dtype = draw(dtype)
+    align_corners = draw(st.booleans())
+    dims = draw(st.integers(4, 5))
+    height = draw(helpers.ints(min_value=5, max_value=10))
+    width = draw(helpers.ints(min_value=5, max_value=10))
+    channels = draw(helpers.ints(min_value=1, max_value=3))
+
+    grid_h = draw(helpers.ints(min_value=2, max_value=4))
+    grid_w = draw(helpers.ints(min_value=2, max_value=4))
+    batch = draw(helpers.ints(min_value=1, max_value=5))
+
+    padding_mode = draw(st.sampled_from(padding_mode))
+    if dims == 4:
+        mode = draw(st.sampled_from(mode))
+        x = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=[batch, channels, height, width],
+                min_value=-1,
+                max_value=1,
+            )
+        )
+
+        grid = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=[batch, grid_h, grid_w, 2],
+                min_value=-1,
+                max_value=1,
+            )
+        )
+    elif dims == 5:
+        mode = draw(st.sampled_from(mode_3d))
+        depth = draw(helpers.ints(min_value=10, max_value=15))
+        grid_d = draw(helpers.ints(min_value=5, max_value=10))
+        x = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=[batch, channels, depth, height, width],
+                min_value=-1,
+                max_value=1,
+            )
+        )
+
+        grid = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=[batch, grid_d, grid_h, grid_w, 3],
+                min_value=-1,
+                max_value=1,
+            )
+        )
+    return dtype, x, grid, mode, padding_mode, align_corners
+
 # --- Main --- #
 # ------------ #
 
@@ -216,4 +273,39 @@ def test_paddle_pixel_unshuffle(
         downscale_factor=factor,
         data_format=data_format,
         backend_to_test=backend_fw,
+    )
+
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.grid_sample",
+    dtype_x_grid_modes=grid_sample_helper(
+        dtype=helpers.get_dtypes("valid", full=False),
+        mode=["nearest", "bilinear", "bicubic"],
+        mode_3d=["nearest", "bilinear"],
+        padding_mode=["border", "zeros", "reflection"],
+    ),
+)
+def test_paddle_grid_sample(
+    *,
+    dtype_x_grid_modes,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, grid, mode, padding_mode, align_corners = dtype_x_grid_modes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        grid=grid,
+        mode=mode,
+        padding_mode=padding_mode,
+        align_corners=align_corners,
     )
