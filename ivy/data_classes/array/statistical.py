@@ -15,6 +15,8 @@ class _ArrayWithStatistical(abc.ABC):
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
+        initial: Optional[Union[int, float, complex]] = None,
+        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """Calculate the minimum value of the input array ``x``.
@@ -68,7 +70,14 @@ class _ArrayWithStatistical(abc.ABC):
         >>> print(y)
         ivy.array(0.1)
         """
-        return ivy.min(self._data, axis=axis, keepdims=keepdims, out=out)
+        return ivy.min(
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            out=out,
+        )
 
     def max(
         self: ivy.Array,
