@@ -80,6 +80,37 @@ def test_paddle_fftfreq(
         d=d,
     )
 
+@handle_frontend_test(
+    fn_tree="paddle.fft.fftn",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+)
+def test_paddle_fftn(
+    dtype_x_axis,
+    norm,
+    frontend,
+    test_flags,
+    fn_tree,
+    backward_fw,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        s=None,
+        axes=None,
+        norm=norm,
+    )
 
 @handle_frontend_test(
     fn_tree="paddle.fft.fftshift",
