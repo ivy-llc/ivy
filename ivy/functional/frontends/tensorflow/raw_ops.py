@@ -738,7 +738,9 @@ def Prod(*, input, axis, keep_dims=False, name="Prod"):
     return ivy.astype(ivy.prod(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("int8", "int16", "int32", "int64", "unsigned")}, "tensorflow")
+@with_unsupported_dtypes(
+    {"2.14.0 and below": ("int8", "int16", "int32", "int64", "unsigned")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def RandomStandardNormal(shape, dtype, seed=0, seed2=0, name=None):
     if not seed:
