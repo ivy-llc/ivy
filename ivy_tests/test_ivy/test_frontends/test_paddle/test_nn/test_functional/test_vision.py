@@ -125,6 +125,7 @@ def grid_sample_helper(draw, dtype, mode, mode_3d, padding_mode):
         )
     return dtype, x, grid, mode, padding_mode, align_corners
 
+
 # --- Main --- #
 # ------------ #
 
@@ -187,6 +188,40 @@ def test_paddle_channel_shuffle(
         x=x[0],
         groups=groups,
         data_format=data_format,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.grid_sample",
+    dtype_x_grid_modes=grid_sample_helper(
+        dtype=helpers.get_dtypes("valid", full=False),
+        mode=["nearest", "bilinear", "bicubic"],
+        mode_3d=["nearest", "bilinear"],
+        padding_mode=["border", "zeros", "reflection"],
+    ),
+)
+def test_paddle_grid_sample(
+    *,
+    dtype_x_grid_modes,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, grid, mode, padding_mode, align_corners = dtype_x_grid_modes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        grid=grid,
+        mode=mode,
+        padding_mode=padding_mode,
+        align_corners=align_corners,
     )
 
 
@@ -273,39 +308,4 @@ def test_paddle_pixel_unshuffle(
         downscale_factor=factor,
         data_format=data_format,
         backend_to_test=backend_fw,
-    )
-
-
-
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.grid_sample",
-    dtype_x_grid_modes=grid_sample_helper(
-        dtype=helpers.get_dtypes("valid", full=False),
-        mode=["nearest", "bilinear", "bicubic"],
-        mode_3d=["nearest", "bilinear"],
-        padding_mode=["border", "zeros", "reflection"],
-    ),
-)
-def test_paddle_grid_sample(
-    *,
-    dtype_x_grid_modes,
-    on_device,
-    backend_fw,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    dtype, x, grid, mode, padding_mode, align_corners = dtype_x_grid_modes
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x,
-        grid=grid,
-        mode=mode,
-        padding_mode=padding_mode,
-        align_corners=align_corners,
     )
