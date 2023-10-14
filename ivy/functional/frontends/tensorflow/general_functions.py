@@ -17,7 +17,7 @@ import functools
 
 # Add the suitable decorators please
 class ones_initializer:
-    # Add the suitable tests in test_general_functions.py please
+    # Add the suitable tests in test_general_functions.py please 
     def __call__(self, shape, dtype="float32", **kwargs):
         if "partition_shape" in kwargs:
             shape = kwargs["partition_shape"]
@@ -33,7 +33,7 @@ class ones_initializer:
 
 # Add the suitable decorators please
 class random_normal_initializer:
-    # Add the suitable tests in test_general_functions.py please
+    # Add the suitable tests in test_general_functions.py please 
     def __init__(self, mean=0.0, stddev=0.05, seed=None):
         self.mean = mean
         self.stddev = stddev
@@ -56,7 +56,7 @@ class random_normal_initializer:
 
 # Add the suitable decorators please
 class random_uniform_initializer:
-    # Add the suitable tests in test_general_functions.py please
+    # Add the suitable tests in test_general_functions.py please 
     def __init__(self, minval=-0.05, maxval=0.05, seed=None):
         self.minval = minval
         self.maxval = maxval
@@ -79,7 +79,7 @@ class random_uniform_initializer:
 
 # Add the suitable decorators please
 class zeros_initializer:
-    # Add the suitable tests in test_general_functions.py please
+    # Add the suitable tests in test_general_functions.py please 
     def __call__(self, shape, dtype="float32", **kwargs):
         if "partition_shape" in kwargs:
             shape = kwargs["partition_shape"]
