@@ -88,7 +88,7 @@ def _roi_align_helper(draw):
     boxes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.tuples(helpers.ints(min_value=1, max_value=5), st.just(4)),
-    )
+    ),
 )
 def test_torchvision_box_area(
     *,
