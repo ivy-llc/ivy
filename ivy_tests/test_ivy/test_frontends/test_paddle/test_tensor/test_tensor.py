@@ -2161,7 +2161,6 @@ def test_paddle_tensor_expand(
 ):
     input_dtype, x, shape = dtype_x_shape
     assume(len(np.array(x).shape) < len(shape))
-    # assume(any(dim >= len(np.array(x).shape) for dim in shape))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
