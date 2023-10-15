@@ -803,6 +803,9 @@ class Tensor:
     def matrix_power(self, n, *, out=None):
         return torch_frontend.linalg.matrix_power(self, n, out=out)
 
+    def lstsq(self, other, rcond=None, driver=None):
+        return torch_frontend.linalg.lstsq(self, other, rcond, driver)
+
     def argwhere(self):
         return torch_frontend.argwhere(self)
 
