@@ -118,6 +118,49 @@ def nanpercentile(
         return resultarray
 
 
+def percentile(
+    a,
+    /,
+    *,
+    q,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    a = ivy.array(a)
+    q = ivy.divide(q, 100)
+    q = ivy.array(q)
+
+    if not _quantile_is_valid(q):
+        ivy.logging.warning("percentile values must be in the range [0, 100]")
+        return []
+
+    if axis is None:
+        resultarray = []
+        for i in q:
+            resultarray.append(_cpercentile(a, i))
+        return resultarray
+    elif axis == 1:
+        resultarray = []
+        for i in q:
+            resultarray.append(_cpercentile(a, i, axis=1))
+        return resultarray
+    elif axis == 0:
+        try:
+            a = ivy.swapaxes(a, 0, 1)
+        except ivy.utils.exceptions.IvyError:
+            ivy.logging.warning("axis is 0 but couldn't swap")
+
+        finally:
+            resultarray = []
+            for i in q:
+                resultarray.append(_cpercentile(a, i, axis=0))
+            return resultarray
+
+
 @to_ivy_arrays_and_back
 @handle_numpy_out
 def ptp(a, axis=None, out=None, keepdims=False):
