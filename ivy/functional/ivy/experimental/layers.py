@@ -3213,8 +3213,8 @@ def max_unpool3d(
     padding: Union[int, Tuple[int]] = 0,
     data_format: str = "NCDHW",
 ) -> ivy.Array:
-    """
-    Compute a 3-D max unpooling given the 3-D pooled input x and its indices.
+    """Compute a 3-D max unpooling given the 3-D pooled input x and its
+    indices.
 
     Parameters
     ----------
