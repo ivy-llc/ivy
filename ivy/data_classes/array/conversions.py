@@ -16,15 +16,18 @@ import ivy
 # --------#
 
 
-def _to_native(x: Any, inplace: bool = False, to_ignore: tuple = ()) -> Any:
+def _to_native(x: Any, inplace: bool = False, to_ignore: tuple = None) -> Any:
     to_ignore = ivy.default(to_ignore, ())
     if isinstance(x, to_ignore):
         return x
     if isinstance(x, ivy.Array):
         return x.data
-    # to prevent the graph from breaking for the time being
-    elif type(x) is ivy.Shape:
+    elif isinstance(x, ivy.Shape):
         return x.shape
+    elif hasattr(x, "ivy_array"):
+        return x.ivy_array.data
+    elif hasattr(x, "ivy_shape"):
+        return x.ivy_shape.shape
     elif isinstance(x, ivy.Container):
         return x.cont_map(
             lambda x_, _: _to_native(x_, inplace=inplace, to_ignore=to_ignore),
