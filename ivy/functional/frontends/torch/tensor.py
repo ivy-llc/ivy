@@ -806,6 +806,10 @@ class Tensor:
     def lstsq(self, other, rcond=None, driver=None):
         return torch_frontend.linalg.lstsq(self, other, rcond, driver)
 
+    def lstsq_(self, other, rcond=None, driver=None):
+        self.data = self.lstsq(self, other, rcond, driver)
+        return self.data
+
     def argwhere(self):
         return torch_frontend.argwhere(self)
 

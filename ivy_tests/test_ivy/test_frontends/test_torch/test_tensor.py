@@ -9284,6 +9284,41 @@ def test_torch_tensor_matrix_lstsq(
     )
 
 
+# least squares problem, lstsq_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="lstsq_",
+    dtype_xy=_get_dtype_input_and_matrices(),
+)
+def test_torch_tensor_matrix_lstsq_(
+    dtype_xy,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, other = dtype_xy
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": other,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # matrix_power
 @handle_frontend_method(
     class_tree=CLASS_TREE,
