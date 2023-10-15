@@ -26,6 +26,8 @@ def _loss_helper(draw):
             max_dim_size=1,
         )
     )
+    if target[0][0] == 0:
+        target[0][0] = 1
     return dtype, target
 
 
