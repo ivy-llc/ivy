@@ -45,6 +45,21 @@ Atan2 = to_ivy_arrays_and_back(
     )(map_raw_ops_alias(tf_frontend.math.atan2))
 )
 ConcatV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.concat))
+Conj = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": ("complex64", "complex128", "variant"),
+        },
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.math.conj,
+            kwargs_to_update={
+                "input": "x",
+            },
+        )
+    )
+)
 Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
 Cosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cosh))
 Cumprod = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumprod))
@@ -134,6 +149,18 @@ Max = to_ivy_arrays_and_back(
                 "input": "input_tensor",
                 "keep_dims": "keepdims",
             },
+        )
+    )
+)
+MaxPool3D = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.14.0 and below": ("float32",),
+        },
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.nn.max_pool3d,
         )
     )
 )
@@ -552,6 +579,14 @@ def FFT(*, input, name="FFT"):
 @to_ivy_arrays_and_back
 def FFT2D(*, input, name="FFT2D"):
     return ivy.astype(ivy.fft2(input, dim=(-2, -1)), input.dtype)
+
+
+@to_ivy_arrays_and_back
+def FFT3D(*, input, name="FFT3D"):
+    fft_result = ivy.fft(input, -1)
+    fft_result = ivy.fft(fft_result, -2)
+    fft_result = ivy.fft(fft_result, -3)
+    return ivy.astype(fft_result, input.dtype)
 
 
 @to_ivy_arrays_and_back

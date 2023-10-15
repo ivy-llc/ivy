@@ -339,9 +339,7 @@ def expand(
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
-            shape[i] = x.shape.num_elements() / tf.reduce_prod(
-                [s for s in shape if s > 0]
-            )
+            shape[i] = x.shape[i]
     return tf.broadcast_to(x, shape)
 
 
@@ -419,3 +417,17 @@ def unique_consecutive(
         tf.cast(inverse_indices, tf.int64),
         tf.cast(counts, tf.int64),
     )
+
+
+def trim_zeros(a: tf.Tensor, /, *, trim: Optional[str] = "bf") -> tf.Tensor:
+    nonzero_indices = tf.where(a != 0)
+    first = tf.reduce_min(nonzero_indices)
+    last = tf.reduce_max(nonzero_indices) + 1
+
+    trim = trim.upper()
+    if "F" in trim:
+        first = tf.maximum(first, 0)
+    if "B" in trim:
+        last = tf.minimum(last, tf.cast(tf.shape(a)[0], tf.int64))
+
+    return a[first:last]

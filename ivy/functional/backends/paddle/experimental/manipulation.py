@@ -695,6 +695,25 @@ def fill_diagonal(
     return a
 
 
+def trim_zeros(a: paddle.Tensor, /, *, trim: Optional[str] = "bf") -> paddle.Tensor:
+    first = 0
+    trim = trim.upper()
+    if "F" in trim:
+        for i in a:
+            if i != 0.0:
+                break
+            else:
+                first = first + 1
+    last = len(a)
+    if "B" in trim:
+        for i in a[::-1]:
+            if i != 0.0:
+                break
+            else:
+                last = last - 1
+    return a[first:last]
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )

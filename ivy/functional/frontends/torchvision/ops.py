@@ -8,7 +8,7 @@ def nms(boxes, scores, iou_threshold):
     return ivy.nms(boxes, scores, iou_threshold)
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def roi_align(
     input, boxes, output_size, spatial_scale=1.0, sampling_ratio=1, aligned=False

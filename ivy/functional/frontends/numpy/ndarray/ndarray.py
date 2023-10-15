@@ -17,7 +17,7 @@ class ndarray:
         if isinstance(dtype, np_frontend.dtype):
             dtype = dtype.ivy_dtype
 
-        # in thise case shape is actually the desired array
+        # in this case shape is actually the desired array
         if _init_overload:
             self._ivy_array = (
                 ivy.array(shape) if not isinstance(shape, ivy.Array) else shape
@@ -636,6 +636,9 @@ class ndarray:
             keepdims=keepdims,
             where=where,
         )
+
+    def __irshift__(self, value, /):
+        return ivy.bitwise_right_shift(self.ivy_array, value, out=self)
 
 
 # --- Helpers --- #

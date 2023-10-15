@@ -1,6 +1,5 @@
-"""
-A state holder for testing, this is only intended to hold and store testing data to be
-used by the test helpers to prune unsupported data.
+"""A state holder for testing, this is only intended to hold and store testing
+data to be used by the test helpers to prune unsupported data.
 
 Should not be used inside any of the test functions.
 """
@@ -38,7 +37,7 @@ mod_backend = {
     "mxnet": None,
 }  # multiversion
 
-# This is used to make sure the variable is not being overriden
+# This is used to make sure the variable is not being overridden
 _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
@@ -60,10 +59,11 @@ class TestData:
 
 
 class InterruptedTest(BaseException):
-    """Indicate that a test tried to write global attributes while a test is running."""
+    """Indicate that a test tried to write global attributes while a test is
+    running."""
 
     def __init__(self, test_interruped):
-        super.__init__(f"{test_interruped} was interruped during execution.")
+        super.__init__(f"{test_interruped} was interrupted during execution.")
 
 
 # Setup

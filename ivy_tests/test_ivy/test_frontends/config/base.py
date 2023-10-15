@@ -81,8 +81,7 @@ class FrontendConfigWithBackend(FrontendConfig):
     backend_str = None
 
     def __init__(self):
-        # Todo: add feature to set backend handler
-        self.backend = ivy.set_backend(self.backend_str)
+        self.backend = ivy.with_backend(self.backend_str)
 
     @property
     def Dtype(self):

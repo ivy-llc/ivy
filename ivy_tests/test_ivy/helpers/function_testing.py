@@ -48,9 +48,8 @@ def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=Non
 
 
 def _find_instance_in_args(backend: str, args, array_indices, mask):
-    """
-    Find the first element in the arguments that is considered to be an instance of
-    Array or Container class.
+    """Find the first element in the arguments that is considered to be an
+    instance of Array or Container class.
 
     Parameters
     ----------
@@ -59,7 +58,7 @@ def _find_instance_in_args(backend: str, args, array_indices, mask):
     array_indices
         Indices of arrays that exists in the args
     mask
-        Boolean mask for whether the corrseponding element in (args) has a
+        Boolean mask for whether the corresponding element in (args) has a
         generated test_flags.native_array as False or test_flags.container as
         true
 
@@ -367,9 +366,8 @@ def test_function(
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
 ):
-    """
-    Test a function that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
+    """Test a function that consumes (or returns) arrays for the current
+    backend by comparing the result with numpy.
 
     Parameters
     ----------
@@ -643,11 +641,12 @@ def _assert_frontend_ret(ret, for_fn=True):
     if is_ret_tuple:
         non_frontend_idxs = ivy.nested_argwhere(
             ret,
-            lambda _x: _is_frontend_array(_x) if ivy.is_array(_x) else True,
+            lambda _x: not _is_frontend_array(_x),
         )
         assert not non_frontend_idxs, (
-            f"Frontend {fn_or_method} return contains non-frontend arrays at positions "
-            f"{non_frontend_idxs} (zero-based): {ret[non_frontend_idxs]}"
+            f"Frontend {fn_or_method} return contains non-frontend arrays at positions"
+            f" {non_frontend_idxs} (zero-based):"
+            f" {ivy.multi_index_nest(ret, non_frontend_idxs)}"
         )
     elif ivy.is_array(ret):
         assert _is_frontend_array(
@@ -700,9 +699,8 @@ def test_frontend_function(
     test_values: bool = True,
     **all_as_kwargs_np,
 ):
-    """
-    Test a frontend function for the current backend by comparing the result with the
-    function in the associated framework.
+    """Test a frontend function for the current backend by comparing the result
+    with the function in the associated framework.
 
     Parameters
     ----------
@@ -972,10 +970,12 @@ def test_frontend_function(
             frontend_fw_kwargs=kwargs_frontend,
         )
 
-    frontend_ret_flat = flatten_frontend(
-        ret=ret, backend=backend_to_test, frontend_array_fn=frontend_config.native_array
+    frontend_ret_np_flat = flatten_frontend_fw_to_np(
+        frontend_ret,
+        frontend_config.isscalar,
+        frontend_config.is_native_array,
+        frontend_config.to_numpy,
     )
-    frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -1536,9 +1536,8 @@ def test_method(
     on_device: str,
     return_flat_np_arrays: bool = False,
 ):
-    """
-    Test a class-method that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
+    """Test a class-method that consumes (or returns) arrays for the current
+    backend by comparing the result with numpy.
 
     Parameters
     ----------
@@ -1845,9 +1844,8 @@ def test_frontend_method(
     tolerance_dict: dict = None,
     test_values: Union[bool, str] = True,
 ):
-    """
-    Test a class-method that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
+    """Test a class-method that consumes (or returns) arrays for the current
+    backend by comparing the result with numpy.
 
     Parameters
     ----------
@@ -2055,8 +2053,8 @@ def test_frontend_method(
                 frontend_method_data.method_name
             )(*copy_args_method, **copy_kwargs_method)
             assert frontend_ret_ins is copy_ins, (
-                "Inplace method did not return the same instance of the frontend array,"
-                " expected {}, got {}".format(copy_ins, frontend_ret_ins)
+                "Inplace method did not return the same instance of the"
+                f" frontend array, expected {copy_ins}, got {frontend_ret_ins}"
             )
         ret = get_frontend_ret(
             backend_to_test,
@@ -2138,10 +2136,12 @@ def test_frontend_method(
     if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
         frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
     else:
-        frontend_ret_flat = flatten_frontend(
-            ret=ret, backend=ivy_backend, frontend_array_fn=frontend_config.native_array
+        frontend_ret_np_flat = flatten_frontend_fw_to_np(
+            frontend_ret,
+            frontend_config.isscalar,
+            frontend_config.is_native_array,
+            frontend_config.to_numpy,
         )
-        frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -2170,20 +2170,19 @@ DEFAULT_ATOL = 1e-06
 
 
 def _get_framework_rtol(rtols: dict, current_fw: str):
-    if current_fw in rtols.keys():
+    if current_fw in rtols:
         return rtols[current_fw]
     return DEFAULT_RTOL
 
 
 def _get_framework_atol(atols: dict, current_fw: str):
-    if current_fw in atols.keys():
+    if current_fw in atols:
         return atols[current_fw]
     return DEFAULT_ATOL
 
 
 def _get_nested_np_arrays(nest):
-    """
-    Search for a NumPy arrays in a nest.
+    """Search for a NumPy arrays in a nest.
 
     Parameters
     ----------
@@ -2213,8 +2212,7 @@ def create_args_kwargs(
     test_flags: Union[pf.FunctionTestFlags, pf.MethodTestFlags],
     on_device,
 ):
-    """
-    Create arguments and keyword-arguments for the function to test.
+    """Create arguments and keyword-arguments for the function to test.
 
     Parameters
     ----------
@@ -2285,8 +2283,7 @@ def wrap_frontend_function_args(argument):
 
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
-    """
-    Split the kwargs into args and kwargs.
+    """Split the kwargs into args and kwargs.
 
     The first num_positional_args ported to args.
     """
@@ -2338,6 +2335,21 @@ def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
     return ret_flat
 
 
+def flatten_frontend_fw_to_np(
+    frontend_ret, isscalar_func, is_native_array_func, to_numpy_func
+):
+    if isscalar_func(frontend_ret):
+        frontend_ret_np_flat = [np.asarray(frontend_ret)]
+    else:
+        # tuplify the frontend return
+        if not isinstance(frontend_ret, tuple):
+            frontend_ret = (frontend_ret,)
+        frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, is_native_array_func)
+        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        frontend_ret_np_flat = [to_numpy_func(x) for x in frontend_ret_flat]
+    return frontend_ret_np_flat
+
+
 def flatten_and_to_np(*, backend: str, ret):
     # flatten the return
     ret_flat = flatten(backend=backend, ret=ret)
@@ -2360,8 +2372,7 @@ def flatten_frontend_to_np(*, backend: str, ret, frontend_array_fn=None):
 def get_ret_and_flattened_np_array(
     backend_to_test: str, fn, *args, test_trace=False, precision_mode=False, **kwargs
 ):
-    """
-    Run func with args and kwargs.
+    """Run func with args and kwargs.
 
     Return the result along with its flattened version.
     """
