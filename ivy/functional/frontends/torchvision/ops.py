@@ -25,6 +25,12 @@ def nms(boxes, scores, iou_threshold):
     return ivy.nms(boxes, scores, iou_threshold)
 
 
+@to_ivy_arrays_and_back
+def remove_small_boxes(boxes, min_size):
+    w, h = boxes[..., 2] - boxes[..., 0], boxes[..., 3] - boxes[..., 1]
+    return ivy.nonzero((w >= min_size) & (h >= min_size))[0]
+
+
 @with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def roi_align(
