@@ -9,7 +9,7 @@ from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_
             "cpu": ("float16",),
         }
     },
-    "jax",
+    "torch",
 )
 @to_ivy_arrays_and_back
 def clip_boxes_to_image(boxes, size):
