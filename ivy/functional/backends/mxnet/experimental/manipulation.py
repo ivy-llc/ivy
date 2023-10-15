@@ -192,3 +192,39 @@ def concat_from_sequence(
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
+
+
+def index_add(
+    x: Union[(None, mx.ndarray.NDArray)],
+    index: Union[(None, mx.ndarray.NDArray)],
+    axis: int,
+    value: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    name: Optional[str] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    x = mx.nd.swapaxes(x, axis, 0)
+    value = mx.nd.swapaxes(value, axis, 0)
+    _to_adds = []
+    index = sorted(
+        zip(index.asnumpy().tolist(), range(len(index))), key=(lambda i: i[0])
+    )
+    while index:
+        _curr_idx = index[0][0]
+        while len(_to_adds) < _curr_idx:
+            _to_adds.append(mx.nd.zeros_like(value[0]))
+        _to_add_cum = value[index[0][1]]
+        while len(index) > 1 and (index[0][0] == index[1][0]):
+            _to_add_cum = _to_add_cum + value[index.pop(1)[1]]
+        index.pop(0)
+        _to_adds.append(_to_add_cum)
+    while len(_to_adds) < x.shape[0]:
+        _to_adds.append(mx.nd.zeros_like(value[0]))
+    _to_adds = mx.nd.stack(*_to_adds)
+    if len(x.shape) < 2:
+        # Added this line due to the paddle backend treating scalars as 1-d arrays
+        _to_adds = mx.nd.flatten(_to_adds)
+
+    ret = mx.nd.add(x, _to_adds)
+    ret = mx.nd.swapaxes(ret, axis, 0)
+    return ret
