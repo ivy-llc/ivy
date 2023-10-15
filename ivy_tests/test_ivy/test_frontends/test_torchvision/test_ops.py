@@ -82,6 +82,35 @@ def _roi_align_helper(draw):
 # ------------ #
 
 
+# box_area
+@handle_frontend_test(
+    fn_tree="torchvision.ops.box_area",
+    boxes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.tuples(helpers.ints(min_value=1, max_value=5), st.just(4)),
+    )
+)
+def test_torchvision_box_area(
+    *,
+    boxes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, boxes = boxes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        boxes=boxes[0],
+    )
+
+
 @handle_frontend_test(
     fn_tree="torchvision.ops.clip_boxes_to_image",
     boxes=helpers.dtype_and_values(

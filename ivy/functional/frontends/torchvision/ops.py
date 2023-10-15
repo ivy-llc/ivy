@@ -3,6 +3,11 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_dtypes
 
 
+@to_ivy_arrays_and_back
+def box_area(boxes):
+    return ivy.prod(boxes[..., 2:] - boxes[..., :2], axis=-1)
+
+
 @with_unsupported_device_and_dtypes(
     {
         "2.1.0 and below": {
