@@ -376,10 +376,10 @@ class _ArrayWithLossesExperimental(abc.ABC):
         margin=0.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.cosine_embedding_loss. This method
-        simply wraps the function, and so the docstring for ivy.cosine_embedding_loss
-        also applies to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.cosine_embedding_loss. This
+        method simply wraps the function, and so the docstring for
+        ivy.cosine_embedding_loss also applies to this method with minimal
+        changes.
 
         Parameters
         ----------

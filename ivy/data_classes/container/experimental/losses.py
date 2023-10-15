@@ -1105,10 +1105,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        r"""
-        ivy.Container instance method variant of ivy.cosine_embedding_loss. This method
-        simply wraps the function, and so the docstring for ivy. cosine_embedding_loss
-        also applies to this method with minimal changes.
+        r"""ivy.Container instance method variant of ivy.cosine_embedding_loss.
+        This method simply wraps the function, and so the docstring for ivy.
+        cosine_embedding_loss also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1187,10 +1186,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
-        r"""
-        ivy.Container instance method variant of ivy.cosine_embedding_loss. This method
-        simply wraps the function, and so the docstring for ivy. cosine_embedding_loss
-        also applies to this method with minimal changes.
+        r"""ivy.Container instance method variant of ivy.cosine_embedding_loss.
+        This method simply wraps the function, and so the docstring for ivy.
+        cosine_embedding_loss also applies to this method with minimal changes.
 
         Parameters
         ----------
