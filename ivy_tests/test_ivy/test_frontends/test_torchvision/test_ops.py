@@ -143,3 +143,37 @@ def test_torchvision_roi_align(
         rtol=1e-5,
         atol=1e-5,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torchvision.ops.clip_boxes_to_image",
+    boxes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.tuples(helpers.ints(min_value=1, max_value=5),
+                        st.just(4))
+    ),
+    size=st.tuples(
+        helpers.ints(min_value=1, max_value=256),
+        helpers.ints(min_value=1, max_value=256)),
+)
+def test_torchvision_clip_boxes_to_image(
+    *,
+    boxes,
+    size,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, boxes = boxes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        boxes=boxes[0],
+        size=size
+    )
