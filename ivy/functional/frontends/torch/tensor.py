@@ -271,8 +271,7 @@ class Tensor:
         return torch_frontend.atan2(self, other)
 
     def view(self, *args, size=None):
-        """
-        Reshape Tensor.
+        """Reshape Tensor.
 
         possible arguments are either:
             - size
