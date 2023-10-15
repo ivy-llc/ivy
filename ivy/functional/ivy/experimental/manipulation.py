@@ -2761,3 +2761,74 @@ trim_zeros.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device
+def index_add(
+    x: ivy.Array,
+    index: ivy.Array,
+    axis: int,
+    value: ivy.Array,
+    /,
+    *,
+    name: Optional[str] = None,
+) -> ivy.Array:
+    """Add the elements of the input tensor with value tensor by selecting the
+    indices in the order given in index.
+
+    Parameters
+    ----------
+    x : Array
+        The Destination Array.
+    index : Array
+            The 1-D array containing the indices to index.
+    axis : int
+           The dimension in which we index.
+    value : Array
+            The tensor used to add the elements along the target axis.
+    name : str, optional
+           Output array where the output is to be stored. Default value is 'none'.
+
+    Returns
+    -------
+        Array
+        Same dimention and dtype with x.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
+    >>> index1 = ivy.array([0, 2])
+    >>> value1 = ivy.array([[1, 1, 1], [1, 1, 1]])
+    >>> ret1 = ivy.index_add(x1, index1, 0, value1)
+    array([[2, 2, 2],
+           [1, 1, 1],
+           [2, 2, 2]])
+    """
+    x = ivy.swapaxes(x, axis, 0)
+    value = ivy.swapaxes(value, axis, 0)
+    _to_adds = []
+    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda i: i[0]))
+    while index:
+        _curr_idx = index[0][0]
+        while len(_to_adds) < _curr_idx:
+            _to_adds.append(ivy.zeros_like(value[0]))
+        _to_add_cum = ivy.get_item(value, index[0][1])
+        while (len(index)) > 1 and (index[0][0] == index[1][0]):
+            _to_add_cum = _to_add_cum + ivy.get_item(value, index.pop(1)[1])
+        index.pop(0)
+        _to_adds.append(_to_add_cum)
+    while len(_to_adds) < x.shape[0]:
+        _to_adds.append(ivy.zeros_like(value[0]))
+    _to_adds = ivy.stack(_to_adds)
+    if len(x.shape) < 2:
+        # Added this line due to the paddle backend treating scalars as 1-d arrays
+        _to_adds = ivy.flatten(_to_adds)
+
+    ret = ivy.add(x, _to_adds)
+    ret = ivy.swapaxes(ret, axis, 0)
+    return ret
