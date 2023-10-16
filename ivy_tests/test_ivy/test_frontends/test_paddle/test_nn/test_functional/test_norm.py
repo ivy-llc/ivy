@@ -45,5 +45,7 @@ def test_paddle_layer_norm(
         epsilon=eps,
     )
 
-def batch_norm(x, gamma, beta, moving_mean, moving_var, epsilon=1e-5):
+
+def batch_normalisation(x, gamma, beta, moving_mean, moving_var, epsilon=1e-5):
     return  ivy.batch_norm(x, gamma, beta, moving_mean, moving_var, epsilon)
+
