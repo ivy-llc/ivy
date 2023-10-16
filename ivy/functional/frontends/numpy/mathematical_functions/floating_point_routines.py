@@ -46,11 +46,12 @@ def _signbit(
     out=None,
     *,
     where=True,
-    casting="same_kind",
+    casting="safe",
     order="K",
     dtype=None,
     subok=True,
 ):
+    x = ivy.astype(x, ivy.float64)
     return ivy.logical_or(ivy.less(x, 0), ivy.atan2(0.0, x) == ivy.pi)
 
 

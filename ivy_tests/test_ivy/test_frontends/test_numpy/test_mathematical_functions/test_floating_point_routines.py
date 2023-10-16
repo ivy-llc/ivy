@@ -61,6 +61,7 @@ def test_numpy_nextafter(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("valid"),
+                shared_dtype=True,
             )
         ],
     ),
