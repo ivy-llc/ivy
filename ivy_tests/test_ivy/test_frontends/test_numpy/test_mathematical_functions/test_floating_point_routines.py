@@ -60,7 +60,7 @@ def test_numpy_nextafter(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("valid"),
             )
         ],
     ),
