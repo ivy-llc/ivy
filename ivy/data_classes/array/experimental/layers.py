@@ -1156,28 +1156,28 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
     def stft(
         self: ivy.Array,
-        n_fft: Union[int, Tuple[int]],
+        n_fft: int,
         hop_length: int,
         /,
         *,
         axis: Optional[int] = None,
         onesided: Optional[bool] = True,
         fs: Optional[float] = 1.0,
-        window: Optional[Union[ivy.Array, list, Tuple[int]]] = None,
+        window: Optional[ivy.Array] = None,
         win_length: Optional[int] = None,
         center: Optional[bool] = False,
         pad_mode: Optional[str] = "reflect",
         normalized: Optional[bool] = False,
         detrend: Optional[Union[str, callable, bool]] = False,
-        return_complex: Optional[bool] = True,
         boundary: Optional[str] = "zeros",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Compute the Short-time Fourier transform  of input.
+        """
+        Compute the Short-time Fourier transform  of input.
 
         Parameters
         ----------
-        self
+        signal
             Input tensor representing a real or complex valued signal.
             For real input, the following shape is expected: [batch_
             size][signal_length][1]. For complex input, the following
@@ -1212,7 +1212,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             will be used directly as the window and its length must be
             nperseg. Defaults to a Hann window.
         win_length
-             The size of window frame and STFT filter. Defaults to None.
+            The size of window frame and STFT filter. Defaults to None.
         center
             Whether to pad x to make that the t * hop_length at the
             center of t-th frame. Default: True.
@@ -1228,9 +1228,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
             it is a function, it takes a segment and returns a detrended
             segment. If detrend is False, no detrending is done. Defaults
             to False.
-        return_complex
-            Whether to return a complex tensor, or a real tensor with an extra
-            last dimension for the real and imaginary components.
         boundary
             Specifies whether the input signal is extended at both ends, and
             how to generate the new values, in order to center the first
@@ -1267,7 +1264,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
             pad_mode=pad_mode,
             normalized=normalized,
             detrend=detrend,
-            return_complex=return_complex,
             boundary=boundary,
             out=out,
         )
