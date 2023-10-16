@@ -3370,8 +3370,8 @@ def test_tensorflow_Prod(  # NOQA
         allow_none=False,
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    seed=helpers.ints(min_value=0, max_value=10),
-    seed2=helpers.ints(min_value=0, max_value=10),
+    seed=helpers.ints(),
+    seed2=helpers.ints(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_RandomStandardNormal(
