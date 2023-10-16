@@ -2266,7 +2266,7 @@ def svdvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    driver: Optional[str],
+    driver: Optional[str] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -2393,7 +2393,7 @@ def svdvals(
         b: ivy.array([23.16134834, 10.35037804, 4.31025076, 1.35769391])
     }
     """
-    return current_backend(x).svdvals(x, out=out)
+    return current_backend(x).svdvals(x, driver=driver, out=out)
 
 
 @handle_exceptions

@@ -371,8 +371,11 @@ def svd(
     {"0.4.18 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
-def svdvals(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.linalg.svd(x, compute_uv=False)
+def svdvals(
+    x: JaxArray, /, *, driver: Optional[str] = None, out: Optional[JaxArray] = None
+) -> JaxArray:
+    # TODO: handling the driver argument
+    return jnp.linalg.svd(x, driver=driver, compute_uv=False)
 
 
 @with_unsupported_dtypes({"0.4.18 and below": ("complex",)}, backend_version)

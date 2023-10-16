@@ -416,7 +416,11 @@ def svd(
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def svdvals(
-    x: torch.Tensor, /, *, driver: Optional[str], out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    driver: Optional[str] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.svdvals(x, driver=driver, out=out)
 
