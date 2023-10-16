@@ -2820,25 +2820,25 @@ def ifftn(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 def stft(
-    signal: Union[ivy.Array, ivy.NativeArray],
-    n_fft: Union[int, Tuple[int]],
+    signal: ivy.Array,
+    n_fft: int,
     hop_length: int,
     /,
     *,
     axis: Optional[int] = None,
     onesided: Optional[bool] = True,
     fs: Optional[float] = 1.0,
-    window: Optional[Union[ivy.Array, list, Tuple[int]]] = None,
+    window: Optional[ivy.Array] = None,
     win_length: Optional[int] = None,
     center: Optional[bool] = False,
     pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
-    return_complex: Optional[bool] = True,
-    boundary: Optional[str] = None,
+    boundary: Optional[str] = "zeros",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the Short-time Fourier transform  of input.
+    """
+    Compute the Short-time Fourier transform  of input.
 
     Parameters
     ----------
@@ -2893,9 +2893,6 @@ def stft(
         it is a function, it takes a segment and returns a detrended
         segment. If detrend is False, no detrending is done. Defaults
         to False.
-    return_complex
-        Whether to return a complex tensor, or a real tensor with an extra
-        last dimension for the real and imaginary components.
     boundary
         Specifies whether the input signal is extended at both ends, and
         how to generate the new values, in order to center the first
@@ -2931,7 +2928,6 @@ def stft(
         pad_mode=pad_mode,
         normalized=normalized,
         detrend=detrend,
-        return_complex=return_complex,
         boundary=boundary,
         out=out,
     )
@@ -2944,7 +2940,6 @@ stft.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
-
 
 @handle_exceptions
 @handle_backend_invalid
