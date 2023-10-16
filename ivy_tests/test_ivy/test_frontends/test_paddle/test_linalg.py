@@ -701,7 +701,7 @@ def test_paddle_eigvalsh(
 
 # diagonal
 @handle_frontend_test(
-    fn_tree="paddle.linalg.diagonal",
+    fn_tree="paddle.diagonal",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
