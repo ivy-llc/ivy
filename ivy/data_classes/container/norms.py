@@ -21,10 +21,9 @@ class _ContainerWithNorms(ContainerBase):
         new_std: Union[float, ivy.Container] = 1.0,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.layer_norm. This method simply
-        wraps the function, and so the docstring for ivy.layer_norm also applies to this
-        method with minimal changes.
+        """ivy.Container instance method variant of ivy.layer_norm. This method
+        simply wraps the function, and so the docstring for ivy.layer_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

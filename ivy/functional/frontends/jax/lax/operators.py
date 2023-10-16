@@ -455,6 +455,11 @@ def gt(x, y):
 
 
 @to_ivy_arrays_and_back
+def igamma(a, x):
+    return ivy.igamma(a, x=x)
+
+
+@to_ivy_arrays_and_back
 def imag(x):
     return ivy.imag(x)
 

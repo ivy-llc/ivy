@@ -146,6 +146,19 @@ def atleast_3d(
     raise IvyNotImplementedException()
 
 
+def take(
+    x: Union[int, List, Union[(None, mx.ndarray.NDArray)]],
+    indices: Union[int, List, Union[(None, mx.ndarray.NDArray)]],
+    /,
+    *,
+    axis: Optional[int] = None,
+    mode: str = "clip",
+    fill_value: Optional[Number] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def take_along_axis(
     arr: Union[(None, mx.ndarray.NDArray)],
     indices: Union[(None, mx.ndarray.NDArray)],

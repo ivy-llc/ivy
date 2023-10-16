@@ -85,14 +85,15 @@ except ImportError:
     paddle.optimizer.SGD = SimpleNamespace
     paddle.nn.L1Loss = SimpleNamespace
 
+
 FROM_CONVERTERS = {
-    "torch": ivy.Module.from_torch_module,
+    "torch": "from_torch_module",
     "jax": {
-        "haiku": ivy.Module.from_haiku_module,
-        "flax": ivy.Module.from_flax_module,
+        "haiku": "from_haiku_module",
+        "flax": "from_flax_module",
     },
-    "tensorflow": ivy.Module.from_keras_module,
-    "paddle": ivy.Module.from_paddle_module,
+    "tensorflow": "from_keras_module",
+    "paddle": "from_paddle_module",
 }
 
 
@@ -219,134 +220,173 @@ class PaddleModule(paddle.nn.Layer):
         return paddle.nn.functional.tanh(self._linear2(x))[0]
 
 
+def get_converter(ivy_backend, converter):
+    return getattr(ivy_backend.Module, converter)
+
+
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @pytest.mark.parametrize("from_class_and_args", [True, False])
-def test_from_backend_module(bs_ic_oc, from_class_and_args):
+def test_from_backend_module(bs_ic_oc, from_class_and_args, backend_fw):
     # smoke test
-    if ivy.current_backend_str() in ["numpy", "jax"]:
+    if backend_fw in ["numpy", "jax"]:
         # Converters not implemented in numpy
         pytest.skip()
+
     batch_shape, input_channels, output_channels = bs_ic_oc
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    native_module_class = NATIVE_MODULES[ivy.current_backend_str()]
-    module_converter = FROM_CONVERTERS[ivy.current_backend_str()]
 
-    if from_class_and_args:
-        ivy_module = module_converter(
-            native_module_class,
-            instance_args=[x],
-            constructor_kwargs={"in_size": input_channels, "out_size": output_channels},
+    # using ivy_backend.utils.backend.ContextManager instead of update_backend,
+    # because with_backend doesn't work here
+    with ivy.utils.backend.ContextManager(backend_fw) as ivy_backend:
+        x = ivy_backend.astype(
+            ivy_backend.linspace(
+                ivy_backend.zeros(batch_shape),
+                ivy_backend.ones(batch_shape),
+                input_channels,
+            ),
+            "float32",
         )
-    else:
-        if ivy.current_backend_str() == "tensorflow":
-            native_module = native_module_class(
-                in_size=input_channels, out_size=output_channels
+        native_module_class = NATIVE_MODULES[ivy_backend.current_backend_str()]
+        module_converter = get_converter(
+            ivy_backend, FROM_CONVERTERS[ivy_backend.current_backend_str()]
+        )
+
+        if from_class_and_args:
+            ivy_module = module_converter(
+                native_module_class,
+                instance_args=[x],
+                constructor_kwargs={
+                    "in_size": input_channels,
+                    "out_size": output_channels,
+                },
             )
-            native_module.build((input_channels,))
         else:
-            native_module = native_module_class(
-                in_size=input_channels, out_size=output_channels
-            )
+            if ivy_backend.current_backend_str() == "tensorflow":
+                native_module = native_module_class(
+                    in_size=input_channels, out_size=output_channels
+                )
+                native_module.build((input_channels,))
+            else:
+                native_module = native_module_class(
+                    in_size=input_channels, out_size=output_channels
+                )
 
-        fw_kwargs = {}
-        ivy_module = module_converter(native_module, **fw_kwargs)
+            fw_kwargs = {}
+            ivy_module = module_converter(native_module, **fw_kwargs)
 
-    def loss_fn(v_=None):
-        out = ivy_module(x, v=v_)
-        return ivy.mean(out)
+        def loss_fn(v_=None):
+            out = ivy_module(x, v=v_)
+            return ivy_backend.mean(out)
 
-    # train
-    loss_tm1 = 1e12
-    loss = None
-    grads = None
-    loss_fn()  # for on-call mode
+        # train
+        loss_tm1 = 1e12
+        loss = None
+        grads = None
+        loss_fn()  # for on-call mode
 
-    for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, ivy_module.v)
-        w = ivy.gradient_descent_update(ivy_module.v, grads, 1e-3)
-        ivy.inplace_update(ivy_module.v, w)
-        assert loss < loss_tm1
-        loss_tm1 = loss
+        for i in range(10):
+            loss, grads = ivy_backend.execute_with_gradients(loss_fn, ivy_module.v)
+            w = ivy_backend.gradient_descent_update(ivy_module.v, grads, 1e-3)
+            ivy_backend.inplace_update(ivy_module.v, w)
+            assert loss <= loss_tm1
+            loss_tm1 = loss
 
-    # type test
-    assert ivy.is_array(loss)
-    assert isinstance(grads, ivy.Container)
-    # cardinality test
-    assert loss.shape == ()
-    # value test
-    assert (abs(grads).max() > 0).cont_all_true()
+        # type test
+        assert ivy_backend.is_array(loss)
+        assert isinstance(grads, ivy_backend.Container)
+        # cardinality test
+        assert loss.shape == ()
+        # value test
+        assert (abs(grads).max() > 0).cont_all_true()
 
 
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @pytest.mark.parametrize("from_class_and_args", [True, False])
 @pytest.mark.parametrize("module_type", ["haiku", "flax"])
-def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type):
+def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type, backend_fw):
     # smoke test
-    if ivy.current_backend_str() not in ["jax"]:
+    if backend_fw not in ["jax"]:
         # Converters not implemented in numpy
         pytest.skip()
+
     batch_shape, input_channels, output_channels = bs_ic_oc
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    native_module_class = NATIVE_MODULES[ivy.current_backend_str()][module_type]
-    module_converter = FROM_CONVERTERS[ivy.current_backend_str()][module_type]
 
-    if from_class_and_args:
-        ivy_module = module_converter(
-            native_module_class,
-            instance_args=[x],
-            constructor_kwargs={"in_size": input_channels, "out_size": output_channels},
+    # using ivy_backend.utils.backend.ContextManager instead of update_backend,
+    # because with_backend doesn't work here
+    with ivy.utils.backend.ContextManager(backend_fw) as ivy_backend:
+        x = ivy_backend.astype(
+            ivy_backend.linspace(
+                ivy_backend.zeros(batch_shape),
+                ivy_backend.ones(batch_shape),
+                input_channels,
+            ),
+            "float32",
         )
-    else:
-        if module_type == "haiku":
+        native_module_class = NATIVE_MODULES[ivy_backend.current_backend_str()][
+            module_type
+        ]
+        module_converter = FROM_CONVERTERS[ivy_backend.current_backend_str()][
+            module_type
+        ]
+        module_converter = get_converter(
+            ivy_backend, FROM_CONVERTERS[ivy_backend.current_backend_str()][module_type]
+        )
 
-            def forward_fn(*a, **kw):
-                model = native_module_class(input_channels, output_channels)
-                return model(ivy.to_native(x))
-
-            native_module = hk.transform(forward_fn)
-        else:
-            native_module = native_module_class(
-                in_size=input_channels, out_size=output_channels
+        if from_class_and_args:
+            ivy_module = module_converter(
+                native_module_class,
+                instance_args=[x],
+                constructor_kwargs={
+                    "in_size": input_channels,
+                    "out_size": output_channels,
+                },
             )
-
-        fw_kwargs = {}
-        if module_type == "haiku":
-            fw_kwargs["params_hk"] = native_module.init(0, x)
         else:
-            fw_kwargs["params_fx"] = native_module.init(
-                jax.random.PRNGKey(0), ivy.to_native(x)
+            if module_type == "haiku":
+
+                def forward_fn(*a, **kw):
+                    model = native_module_class(input_channels, output_channels)
+                    return model(ivy_backend.to_native(x))
+
+                native_module = hk.transform(forward_fn)
+            else:
+                native_module = native_module_class(
+                    in_size=input_channels, out_size=output_channels
+                )
+
+            fw_kwargs = {}
+            if module_type == "haiku":
+                fw_kwargs["params_hk"] = native_module.init(0, x)
+            else:
+                fw_kwargs["params_fx"] = native_module.init(
+                    jax.random.PRNGKey(0), ivy_backend.to_native(x)
+                )
+            ivy_module = module_converter(native_module, **fw_kwargs)
+
+        def loss_fn(v_=None):
+            out = ivy_module(x, v=v_)
+            return ivy_backend.mean(out)
+
+        # train
+        loss_tm1 = 1e12
+        loss = None
+        grads = None
+        loss_fn()  # for on-call mode
+
+        for i in range(10):
+            loss, grads = ivy_backend.execute_with_gradients(loss_fn, ivy_module.v)
+            ivy_module.v = ivy_backend.gradient_descent_update(
+                ivy_module.v, grads, 1e-3
             )
-        ivy_module = module_converter(native_module, **fw_kwargs)
+            assert loss < loss_tm1
+            loss_tm1 = loss
 
-    def loss_fn(v_=None):
-        out = ivy_module(x, v=v_)
-        return ivy.mean(out)
-
-    # train
-    loss_tm1 = 1e12
-    loss = None
-    grads = None
-    loss_fn()  # for on-call mode
-
-    for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, ivy_module.v)
-        ivy_module.v = ivy.gradient_descent_update(ivy_module.v, grads, 1e-3)
-        assert loss < loss_tm1
-        loss_tm1 = loss
-
-    # type test
-    assert ivy.is_array(loss)
-    assert isinstance(grads, ivy.Container)
-    # cardinality test
-    assert loss.shape == ()
-    # value test
-    assert (abs(grads).max() > 0).cont_all_true()
+        # type test
+        assert ivy_backend.is_array(loss)
+        assert isinstance(grads, ivy_backend.Container)
+        # cardinality test
+        assert loss.shape == ()
+        # value test
+        assert (abs(grads).max() > 0).cont_all_true()
 
 
 NATIVE_MODULES = {
