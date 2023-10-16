@@ -501,12 +501,12 @@ def stft(
 ) -> paddle.Tensor:
     if axis is None:
         axis = -1
-    
-    if  hop_length <= 0:
-        hop_length = 1      
-    
+
+    if hop_length <= 0:
+        hop_length = 1
+
     if win_length is None:
-        win_length = n_fft     
+        win_length = n_fft
 
     if window is None or window is paddle.Tensor:
         window = paddle.ones([win_length], dtype=signal.dtype)
@@ -515,12 +515,12 @@ def stft(
     if window.shape[0] > len(signal):
         window = signal
         n_fft = len(signal)
-        win_length = n_fft 
-        window = paddle.ones([win_length], dtype=signal.dtype) 
+        win_length = n_fft
+        window = paddle.ones([win_length], dtype=signal.dtype)
     if n_fft > len(signal):
-        n_fft = len(signal)  
+        n_fft = len(signal)
     if window.shape[0] != win_length:
-        win_length = window.shape[0] 
+        win_length = window.shape[0]
 
     return paddle.signal.stft(
         signal,
