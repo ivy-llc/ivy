@@ -841,55 +841,50 @@ def embedding(
 
 
 def stft(
-    signal: Union[JaxArray, int, Tuple[int]],
-    n_fft: Union[int, Tuple[int]],
+    signal: JaxArray,
+    n_fft: int,
     hop_length: int,
     /,
     *,
     axis: Optional[int] = None,
     fs: Optional[float] = 1.0,
-    window: Optional[Union[str, int, JaxArray]] = None,
+    window: Optional[JaxArray] = None,
     win_length: Optional[int] = None,
-    center: Optional[bool] = True,
+    center: Optional[bool] = False,
     onesided: Optional[bool] = True,
     pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
-    return_complex: Optional[bool] = True,
     boundary: Optional[str] = "zeros",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if axis is None:
+    if axis:
         axis = -1
-
+    
     if  hop_length <= 0:
-        hop_length = 1
-
-    if len(signal) < n_fft:
-        raise ValueError("Value of n_fft must less than or equal length of the signal")
-
-    if window.shape[0] != win_length:
-        raise ValueError("Value of win_length must be equal to length of window")
+        hop_length = 1      
 
     if win_length is None:
-        win_length = n_fft
-
-    if win_length > n_fft:
-        raise ValueError("Value of win_length must be less then or equal to n_fft")
+        win_length = n_fft     
 
     if window is None or window is JaxArray:
-        window = jnp.array(jnp.hanning(win_length), dtype=signal.dtype)
-    window /= jnp.max(window)
+        window = jnp.hanning(win_length)
+    window /= jnp.max(window)            
 
     if window.shape[0] > len(signal):
         window = signal
         n_fft = len(signal)
-        win_length = n_fft
-        window = jnp.array(jnp.hanning(win_length), dtype=signal.dtype)
-
+        win_length = n_fft 
+        window = jnp.hanning(win_length)
+    if n_fft > len(signal):
+        n_fft = len(signal)        
+    if window.shape[0] != win_length:
+        win_length = window.shape[0]
+    
     detrend = False
-
-    noverlap = min(win_length - 1, hop_length)
+    
+    frame_step = hop_length + 1 
+    noverlap = win_length - frame_step
     if isinstance(noverlap, int):
         hop_length = noverlap
     else:
@@ -907,7 +902,7 @@ def stft(
         boundary,
         pad_mode,
         axis,
-    )
+    ) 
     return stft
 
 
