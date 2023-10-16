@@ -69,15 +69,13 @@ def prevent_access_locally(fn):
 
 @functools.lru_cache
 def _get_backend_for_arg(arg_module_name):
-    for backend in _backend_dict:
+    for backend, module_name in _backend_dict.items():
         if backend in arg_module_name:
-            module_name = _backend_dict[backend]
             return importlib.import_module(module_name)
 
 
 def _determine_backend_from_args(args):
-    """
-    Return the appropriate Ivy backend, given some arguments.
+    """Return the appropriate Ivy backend, given some arguments.
 
     Parameters
     ----------
@@ -122,9 +120,8 @@ def _determine_backend_from_args(args):
 
 
 def set_backend_to_specific_version(backend):
-    """
-    Update the backend dict to make the original function name point to the version
-    specific one.
+    """Update the backend dict to make the original function name point to the
+    version specific one.
 
     Parameters
     ----------
@@ -147,8 +144,8 @@ def set_backend_to_specific_version(backend):
 
 
 def current_backend(*args, **kwargs):
-    """
-    Return the current backend. Priorities: global_backend > argument's backend.
+    """Return the current backend. Priorities: global_backend > argument's
+    backend.
 
     Parameters
     ----------
@@ -284,7 +281,7 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
     ]
     array_list.extend(cont_array_vals)
 
-    # filter uninitialized arrays and arrays with other bakcends, and ensure the order
+    # filter uninitialized arrays and arrays with other backends, and ensure the order
     array_list = [
         arr
         for arr in array_list
@@ -351,8 +348,7 @@ def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
 
 @prevent_access_locally
 def set_backend(backend: str, dynamic: bool = False):
-    """
-    Set `backend` to be the global backend.
+    """Set `backend` to be the global backend.
 
     Will also convert all Array and Container objects to the new backend if `dynamic` =
     True
@@ -427,8 +423,7 @@ def set_backend(backend: str, dynamic: bool = False):
 
 
 def set_numpy_backend():
-    """
-    Set NumPy to be the global backend.
+    """Set NumPy to be the global backend.
 
     equivalent to `ivy.set_backend("numpy")`.
     """  # noqa
@@ -436,8 +431,7 @@ def set_numpy_backend():
 
 
 def set_jax_backend():
-    """
-    Set JAX to be the global backend.
+    """Set JAX to be the global backend.
 
     equivalent to `ivy.set_backend("jax")`.
     """  # noqa
@@ -445,8 +439,7 @@ def set_jax_backend():
 
 
 def set_tensorflow_backend():
-    """
-    Set TensorFlow to be the global backend.
+    """Set TensorFlow to be the global backend.
 
     equivalent to `ivy.set_backend("tensorflow")`.
     """
@@ -454,8 +447,7 @@ def set_tensorflow_backend():
 
 
 def set_torch_backend():
-    """
-    Set torch to be the global backend.
+    """Set torch to be the global backend.
 
     equivalent to `ivy.set_backend("torch")`.
     """  # noqa
@@ -463,8 +455,7 @@ def set_torch_backend():
 
 
 def set_paddle_backend():
-    """
-    Set paddle to be the global backend.
+    """Set paddle to be the global backend.
 
     equivalent to `ivy.set_backend("paddle")`.
     """  # noqa
@@ -472,8 +463,7 @@ def set_paddle_backend():
 
 
 def set_mxnet_backend():
-    """
-    Set MXNet to be the global backend.
+    """Set MXNet to be the global backend.
 
     equivalent to `ivy.set_backend("mx")`.
     """  # noqa
@@ -482,10 +472,9 @@ def set_mxnet_backend():
 
 @prevent_access_locally
 def previous_backend():
-    """
-    Unset the current global backend, and adjusts the ivy dict such that either a
-    previously set global backend is then used as the backend, otherwise we return to
-    Ivy's implementations.
+    """Unset the current global backend, and adjusts the ivy dict such that
+    either a previously set global backend is then used as the backend,
+    otherwise we return to Ivy's implementations.
 
     Returns
     -------
@@ -581,7 +570,7 @@ def choose_random_backend(excluded=None):
 @prevent_access_locally
 def with_backend(backend: str, cached: bool = True):
     # Use already compiled object
-    if cached and backend in compiled_backends.keys():
+    if cached and backend in compiled_backends:
         cached_backend = compiled_backends[backend][-1]
         return cached_backend
     with _importlib.LocalIvyImporter():

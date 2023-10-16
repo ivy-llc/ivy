@@ -79,9 +79,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         training=True,
         **kwargs,
     ):
-        """
-        Initialize Ivy layer, which is a stateful object consisting of trainable
-        variables.
+        """Initialize Ivy layer, which is a stateful object consisting of
+        trainable variables.
 
         Parameters
         ----------
@@ -223,8 +222,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return fn(*a, **kw, v=v)
 
     def _fn_with_var_arg(self, fn, v_fn, /, keychain_mappings, orig_key_chain):
-        """
-        Extract variables from `v_fn` and use it as inputs for `fn`.
+        """Extract variables from `v_fn` and use it as inputs for `fn`.
 
         Use `v_fn` to extract the variables and use the extracted
         variables as inputs to the call function fn of the module.
@@ -242,8 +240,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     def _find_variables(
         self, /, *, obj=None, _visited=None, without_initialisation=False
     ):
-        """
-        Find all internal variables in obj. Return empty Container if obj is None.
+        """Find all internal variables in obj. Return empty Container if obj is
+        None.
 
         Parameters
         ----------
@@ -327,10 +325,10 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     @staticmethod
     def _extract_v(v, keychain_mappings: dict, orig_key_chain, /):
-        """
-        Extract the variables from the variables container v using the key
-        orig_key_chain and reinstantiate the duplicate variables that were removed by
-        _remove_duplicate_variables in their correct locations using keychain_mappings.
+        """Extract the variables from the variables container v using the key
+        orig_key_chain and reinstantiate the duplicate variables that were
+        removed by _remove_duplicate_variables in their correct locations using
+        keychain_mappings.
 
         Parameters
         ----------
@@ -361,10 +359,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     def _wrap_call_methods(
         self, keychain_mappings, /, *, key="", obj=None, _visited=None
     ):
-        """
-        Wrap the call methods of the Module object by looping over all the items within
-        the module, wrapping the __call__ methods of all submodules using
-        _fn_with_var_arg.
+        """Wrap the call methods of the Module object by looping over all the
+        items within the module, wrapping the __call__ methods of all
+        submodules using _fn_with_var_arg.
 
         Parameters
         ----------
@@ -422,8 +419,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     @staticmethod
     def _remove_duplicate_variables(vs, created, /):
-        """
-        Remove duplicate variables in `vs` referring to `created`.
+        """Remove duplicate variables in `vs` referring to `created`.
 
         Parameters
         ----------
@@ -465,8 +461,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return vs, keychain_mappings
 
     def _set_buffers(self, buffers):
-        """
-        Set the buffers of the given class instance, according to the buffers passed.
+        """Set the buffers of the given class instance, according to the
+        buffers passed.
 
         Parameters
         ----------
@@ -495,9 +491,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def _create_variables(self, *, device=None, dtype=None):
-        """
-        Create internal trainable variables, and return as arbitrary nested dict.
-        Overridable.
+        """Create internal trainable variables, and return as arbitrary nested
+        dict. Overridable.
 
         Parameters
         ----------
@@ -512,8 +507,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return {}
 
     def _build(self, *args, **kwargs) -> bool:
-        """
-        Build the internal layers and variables for this module. Overridable.
+        """Build the internal layers and variables for this module.
+        Overridable.
 
         Returns
         -------
@@ -528,8 +523,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     @abc.abstractmethod
     def _forward(self, *args, **kwargs):
-        """
-        Forward pass of the layer, called after handling the optional input variables.
+        """Forward pass of the layer, called after handling the optional input
+        variables.
 
         Raises
         ------
@@ -538,8 +533,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         raise ivy.utils.exceptions.IvyNotImplementedException
 
     def _forward_with_tracking(self, *args, **kwargs):
-        """
-        Forward pass while optionally tracking submodule returns and call order.
+        """Forward pass while optionally tracking submodule returns and call
+        order.
 
         Returns
         -------
@@ -558,8 +553,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return ret
 
     def _call(self, *args, v=None, buffers=None, **kwargs):
-        """
-        Compute forward pass of the layer, treating layer instance as callable function.
+        """Compute forward pass of the layer, treating layer instance as
+        callable function.
 
         Parameters
         ----------
@@ -618,13 +613,12 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         expected_submod_rets=None,
         **kwargs,
     ):
-        """
-        Forward an input through current module.
+        """Forward an input through current module.
 
         Parameters
         ----------
         v
-            If given, use this container as internal varibles temporarily.
+            If given, use this container as internal variables temporarily.
             Default is ``None``.
         track_submod_rets
             If True, will track the returns of submodules.
@@ -674,8 +668,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return ret
 
     def save_weights(self, weights_path, /):
-        """
-        Save the weights on the Module.
+        """Save the weights on the Module.
 
         Parameters
         ----------
@@ -699,8 +692,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         buffers=None,
         **kwargs,
     ):
-        """
-        Build the internal layers and variables for this module.
+        """Build the internal layers and variables for this module.
 
         Parameters
         ----------
@@ -868,10 +860,10 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             if isinstance(getattr(self, key, None), Module):
                 mod_str = repr(getattr(self, key))
                 mod_str = _addindent(mod_str, 2)
-                child_lines.append("(" + key + "): " + mod_str)
+                child_lines.append(f"({key}): {mod_str}")
         lines = extra_lines + child_lines
 
-        main_str = self._get_name() + "("
+        main_str = f"{self._get_name()}("
         if lines:
             # simple one-liner info, which most builtin Modules will use
             if len(extra_lines) == 1 and not child_lines:
@@ -883,8 +875,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return main_str
 
     def extra_repr(self) -> str:
-        r"""
-        Set the extra representation of the module.
+        r"""Set the extra representation of the module.
 
         To print customized extra information, you should re-implement
         this method in your own modules. Both single-line and multi-line
@@ -970,9 +961,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         kwargs: Optional[Dict] = None,
         **trace_kwargs,
     ):
-        """
-        Trace the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the target
-        backend.
+        """Trace the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to
+        the target backend.
 
         Parameters
         ----------
@@ -1005,8 +995,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._lazy_traced = False
 
     def save(self, filename):
-        """
-        Save the module object to disk using pickle.
+        """Save the module object to disk using pickle.
 
         Parameters
         ----------
@@ -1022,8 +1011,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     @staticmethod
     def load(filename):
-        """
-        Load a module object from disk using pickle.
+        """Load a module object from disk using pickle.
 
         Parameters
         ----------
@@ -1078,9 +1066,8 @@ class _HaikuIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         params_hk = self._dict_to_hk_flat_map(self.v.cont_to_dict())
         ret = self._native_module.apply(params_hk, 0, *a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
     def _hk_flat_map_to_dict(self, hk_flat_map):
         from haiku._src.data_structures import FlatMapping
@@ -1142,9 +1129,8 @@ class _FlaxIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         params_fx = flax.core.freeze(self.v.cont_to_dict())
         ret = self._native_module.apply(params_fx, *a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _KerasIvyModule(Module):
@@ -1169,9 +1155,8 @@ class _KerasIvyModule(Module):
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _PaddleIvyModule(Module):
@@ -1201,9 +1186,8 @@ class _PaddleIvyModule(Module):
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _TorchIvyModule(Module):
@@ -1269,6 +1253,5 @@ class _TorchIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         self._update_v(self.v)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)

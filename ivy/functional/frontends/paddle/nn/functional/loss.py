@@ -51,7 +51,7 @@ def _pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
 @to_ivy_arrays_and_back
 def binary_cross_entropy(input, label, weight=None, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
-    result = ivy.binary_cross_entropy(label, input, epsilon=0.0)
+    result = ivy.binary_cross_entropy(label, input, epsilon=0.0, reduction="none")
     if weight is not None:
         result = ivy.multiply(weight, result)
     result = reduction(result)
@@ -415,7 +415,7 @@ def softmax_with_cross_entropy(
 ):
     input_dims = len(list(logits.shape))
     if input_dims == 0:
-        raise ValueError("The dimention of input should be larger than zero!")
+        raise ValueError("The dimension of input should be larger than zero!")
     label_dims = len(list(label.shape))
     if input_dims - 1 != label_dims and input_dims != label_dims:
         raise ValueError(

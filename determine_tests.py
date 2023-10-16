@@ -45,7 +45,7 @@ def main():
         for file in modified_files:
             try:
                 file_name = f"{file.new_path},cover"
-            except:  # noqa
+            except Exception:  # noqa
                 continue
             if file_name not in tests.keys():
                 continue
@@ -138,7 +138,7 @@ def main():
         directories_filtered = [
             x
             for x in directories
-            if not (x.endswith("__pycache__") or "hypothesis" in x)
+            if not x.endswith("__pycache__") and "hypothesis" not in x
         ]
         directories = set(directories_filtered)
         for test_backend in new_tests[old_num_tests:num_tests]:
@@ -155,7 +155,7 @@ def main():
                 for directory in directories:
                     for file_name in os.listdir(directory):
                         if file_name.endswith("cover"):
-                            file_name = directory + "/" + file_name
+                            file_name = f"{directory}/{file_name}"
                             if file_name not in tests:
                                 tests[file_name] = []
                                 with open(file_name) as f:

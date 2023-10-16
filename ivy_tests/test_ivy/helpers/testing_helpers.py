@@ -58,9 +58,8 @@ def _get_runtime_flag_value(flag):
 
 @st.composite
 def num_positional_args_method(draw, *, method):
-    """
-    Draws an integers randomly from the minimum and maximum number of positional
-    arguments a given method can take.
+    """Draws an integers randomly from the minimum and maximum number of
+    positional arguments a given method can take.
 
     Parameters
     ----------
@@ -90,9 +89,8 @@ def num_positional_args_method(draw, *, method):
 
 @st.composite
 def num_positional_args(draw, *, fn_name: str = None):
-    """
-    Draws an integers randomly from the minimum and maximum number of positional
-    arguments a given function can take.
+    """Draws an integers randomly from the minimum and maximum number of
+    positional arguments a given function can take.
 
     Parameters
     ----------
@@ -157,8 +155,7 @@ def num_positional_args_helper(fn_name, backend):
 
 
 def _import_fn(fn_tree: str):
-    """
-    Import a function from function tree string.
+    """Import a function from function tree string.
 
     Parameters
     ----------
@@ -208,8 +205,7 @@ def _get_method_supported_devices_dtypes_helper(
 def _get_method_supported_devices_dtypes(
     method_name: str, class_module: str, class_name: str
 ):
-    """
-    Get supported devices and data types for a method in Ivy API.
+    """Get supported devices and data types for a method in Ivy API.
 
     Parameters
     ----------
@@ -224,7 +220,7 @@ def _get_method_supported_devices_dtypes(
 
     Returns
     -------
-    Returns a dictonary containing supported device types and its supported data types
+    Returns a dictionary containing supported device types and its supported data types
     for the method
     """
     supported_device_dtypes = {}
@@ -277,8 +273,7 @@ def _get_supported_devices_dtypes_helper(
 
 
 def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
-    """
-    Get supported devices and data types for a function in Ivy API.
+    """Get supported devices and data types for a function in Ivy API.
 
     Parameters
     ----------
@@ -290,7 +285,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
     Returns
     -------
-    Returns a dictonary containing supported device types and its supported data types
+    Returns a dictionary containing supported device types and its supported data types
     for the function
     """
     supported_device_dtypes = {}
@@ -344,8 +339,7 @@ def handle_test(
     container_flags=BuiltContainerStrategy,
     **_given_kwargs,
 ):
-    """
-    Test wrapper for Ivy functions.
+    """Test wrapper for Ivy functions.
 
     The wrapper sets the required test globals and creates test flags strategies.
 
@@ -481,8 +475,7 @@ def handle_frontend_test(
     precision_mode=BuiltPrecisionModeStrategy,
     **_given_kwargs,
 ):
-    """
-    Test wrapper for Ivy frontend functions.
+    """Test wrapper for Ivy frontend functions.
 
     The wrapper sets the required test globals and creates test flags strategies.
 
@@ -627,8 +620,7 @@ def handle_method(
     method_container_flags=BuiltContainerStrategy,
     **_given_kwargs,
 ):
-    """
-    Test wrapper for Ivy methods.
+    """Test wrapper for Ivy methods.
 
     The wrapper sets the required test globals and creates test flags strategies.
 
@@ -746,8 +738,7 @@ def handle_frontend_method(
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
-    """
-    Test wrapper for Ivy frontends methods.
+    """Test wrapper for Ivy frontends methods.
 
     The wrapper sets the required test globals and creates
     test flags strategies.
@@ -764,7 +755,7 @@ def handle_frontend_method(
         Name of the method
 
     init_num_positional_args
-        A search startegy that generates a number of positional arguments
+        A search strategy that generates a number of positional arguments
         to be passed during instantiation of the class
 
     init_native_arrays
@@ -784,7 +775,7 @@ def handle_frontend_method(
         precision modes supported by numpy and (torch, jax) and test the function
 
     method_num_positional_args
-        A search startegy that generates a number of positional arguments
+        A search strategy that generates a number of positional arguments
         to be passed during call of the class method
 
     method_native_arrays
