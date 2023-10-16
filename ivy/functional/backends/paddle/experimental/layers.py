@@ -482,50 +482,45 @@ def adaptive_max_pool2d(
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def stft(
-    signal: Union[paddle.Tensor, int, Tuple[int]],
-    n_fft: Union[int, Tuple[int]],
+    signal: paddle.Tensor,
+    n_fft: int,
     hop_length: int,
     /,
     *,
     axis: Optional[int] = None,
     onesided: Optional[bool] = True,
     fs: Optional[float] = 1.0,
-    window: Optional[Union[paddle.Tensor, list, Tuple[int]]] = None,
+    window: Optional[paddle.Tensor] = None,
     win_length: Optional[int] = None,
-    center: Optional[bool] = True,
+    center: Optional[bool] = False,
     pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
-    return_complex: Optional[bool] = True,
     boundary: Optional[str] = "zeros",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if axis is None:
         axis = -1
-
-    if hop_length <= 0:
-        hop_length = 1
-
-    if len(signal) < n_fft:
-        raise ValueError("Value of n_fft must less than or equal length of the signal")
-
-    if window.shape[0] != win_length:
-        raise ValueError("Value of win_length must be equal to length of window")
-
+    
+    if  hop_length <= 0:
+        hop_length = 1      
+    
     if win_length is None:
-        win_length = n_fft
-
-    if win_length > n_fft:
-        raise ValueError("Value of win_length must be less then or equal to n_fft")
+        win_length = n_fft     
 
     if window is None or window is paddle.Tensor:
         window = paddle.ones([win_length], dtype=signal.dtype)
+    window /= paddle.max(window)
 
     if window.shape[0] > len(signal):
         window = signal
         n_fft = len(signal)
-        win_length = n_fft
-        window = paddle.ones([win_length], dtype=signal.dtype)
+        win_length = n_fft 
+        window = paddle.ones([win_length], dtype=signal.dtype) 
+    if n_fft > len(signal):
+        n_fft = len(signal)  
+    if window.shape[0] != win_length:
+        win_length = window.shape[0] 
 
     return paddle.signal.stft(
         signal,
