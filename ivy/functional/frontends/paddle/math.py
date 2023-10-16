@@ -51,6 +51,12 @@ def addmm(input, x, y, beta=1.0, alpha=1.0, name=None):
     return value
 
 
+@with_supported_dtypes({"2.5.0 and below": "bool"}, "paddle")
+@to_ivy_arrays_and_back
+def all(x, axis, keepdim=False, name=None):
+    return ivy.all(x, axis=axis, keepdims=keepdim)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
