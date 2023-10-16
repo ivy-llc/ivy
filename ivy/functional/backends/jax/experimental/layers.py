@@ -860,30 +860,30 @@ def stft(
 ) -> JaxArray:
     if axis:
         axis = -1
-    
+
     if  hop_length <= 0:
-        hop_length = 1      
+        hop_length = 1
 
     if win_length is None:
-        win_length = n_fft     
+        win_length = n_fft
 
     if window is None or window is JaxArray:
         window = jnp.hanning(win_length)
-    window /= jnp.max(window)            
+    window /= jnp.max(window)
 
     if window.shape[0] > len(signal):
         window = signal
         n_fft = len(signal)
-        win_length = n_fft 
+        win_length = n_fft
         window = jnp.hanning(win_length)
     if n_fft > len(signal):
-        n_fft = len(signal)        
+        n_fft = len(signal)
     if window.shape[0] != win_length:
         win_length = window.shape[0]
-    
+
     detrend = False
-    
-    frame_step = hop_length + 1 
+
+    frame_step = hop_length + 1
     noverlap = win_length - frame_step
     if isinstance(noverlap, int):
         hop_length = noverlap
@@ -902,7 +902,7 @@ def stft(
         boundary,
         pad_mode,
         axis,
-    ) 
+    )
     return stft
 
 

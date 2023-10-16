@@ -974,17 +974,17 @@ def stft(
 
     if window is None:
         window = np.hanning(win_length)
-    window = window / np.max(window)    
+    window = window / np.max(window)
 
     if window.shape[0] > len(signal):
         window = np.array([1.0] * len(signal), dtype=np.float32)
         n_fft = len(signal)
         win_length = n_fft
     if n_fft > len(signal):
-        n_fft = len(signal)  
+        n_fft = len(signal)
     if window.shape[0] != win_length:
-        win_length = window.shape[0]  
-    
+        win_length = window.shape[0]
+
     return_complex = True
     if return_complex:
         input_dtype = signal.dtype
@@ -994,7 +994,7 @@ def stft(
     else:
         output_dtype = np.complex128
 
-    frame_step = hop_length + 1 
+    frame_step = hop_length + 1
     if isinstance(frame_step, int):
         hop_length = frame_step
 
