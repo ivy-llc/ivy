@@ -482,17 +482,15 @@ def max_unpool1d_helper(
 @st.composite
 def stft_arguments(draw):
     dtype = draw(helpers.get_dtypes("float"))
-    n_fft = draw(st.integers(min_value=1, max_value=256))    
+    n_fft = draw(st.integers(min_value=1, max_value=256))
     hop_length = draw(st.integers(min_value=1, max_value=256))
     axis = draw(st.integers(min_value=0))
     onesided = draw(st.booleans())
     fs = 1.0
     window = draw(
         helpers.array_values(
-            dtype=helpers.get_dtypes('float'),
-            shape=helpers.get_shape(
-                min_num_dims=1, max_num_dims=1
-            ),
+            dtype=helpers.get_dtypes("float"),
+            shape=helpers.get_shape(min_num_dims=1, max_num_dims=1),
         )
     )
     win_length = draw(st.integers(min_value=1, max_value=n_fft))
@@ -500,7 +498,7 @@ def stft_arguments(draw):
     pad_mode = draw(st.sampled_from(["reflect", "constant"]))
     normalized = draw(st.booleans())
     detrend = draw(st.one_of([st.booleans(), st.sampled_from(["linear", "constant"])]))
-    boundary = draw(st.sampled_from(['even', 'odd', 'constant', 'zeros', None]))
+    boundary = draw(st.sampled_from(["even", "odd", "constant", "zeros", None]))
 
     return (
         dtype,
@@ -516,64 +514,6 @@ def stft_arguments(draw):
         normalized,
         detrend,
         boundary,
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.stft",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes('float'),
-        min_num_dims=1,
-        max_num_dims=2,
-    ),
-    ground_truth_backend="numpy",
-    test_gradients=st.just(False),
-    stft_args=stft_arguments(),
-)
-def test_stft(
-    *,
-    dtype_and_x,
-    on_device,
-    test_flags,
-    backend_fw,
-    fn_name,
-    stft_args,
-):      
-    dtype, x = dtype_and_x
-    (
-        dtype,
-        n_fft,
-        hop_length,
-        axis,
-        onesided,
-        fs,
-        window,
-        win_length,
-        center,
-        pad_mode,
-        normalized,
-        detrend,
-        boundary,
-    ) = stft_args
-    helpers.test_function(
-        input_dtypes=dtype,
-        on_device=on_device,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        signal=x[0],
-        n_fft=n_fft,
-        hop_length=hop_length,
-        axis=axis,
-        onesided=onesided,
-        fs=fs,
-        window=window,
-        win_length=win_length,
-        center=center,
-        pad_mode=pad_mode,
-        normalized=normalized,
-        detrend=detrend,
-        boundary=boundary,
     )
 
 
@@ -1502,6 +1442,64 @@ def test_sliding_window(*, all_args, test_flags, backend_fw, fn_name, on_device)
         stride=stride[0],
         dilation=dilation[0],
         padding=padding,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.stft",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=2,
+    ),
+    ground_truth_backend="numpy",
+    test_gradients=st.just(False),
+    stft_args=stft_arguments(),
+)
+def test_stft(
+    *,
+    dtype_and_x,
+    on_device,
+    test_flags,
+    backend_fw,
+    fn_name,
+    stft_args,
+):
+    dtype, x = dtype_and_x
+    (
+        dtype,
+        n_fft,
+        hop_length,
+        axis,
+        onesided,
+        fs,
+        window,
+        win_length,
+        center,
+        pad_mode,
+        normalized,
+        detrend,
+        boundary,
+    ) = stft_args
+    helpers.test_function(
+        input_dtypes=dtype,
+        on_device=on_device,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        signal=x[0],
+        n_fft=n_fft,
+        hop_length=hop_length,
+        axis=axis,
+        onesided=onesided,
+        fs=fs,
+        window=window,
+        win_length=win_length,
+        center=center,
+        pad_mode=pad_mode,
+        normalized=normalized,
+        detrend=detrend,
+        boundary=boundary,
     )
 
 
