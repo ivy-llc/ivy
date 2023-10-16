@@ -10,11 +10,13 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
     with_supported_device_and_dtypes,
+    with_supported_dtypes,
 )
 import ivy.functional.backends.paddle as paddle_backend
 
 # local
 from . import backend_version
+
 
 # Array API Standard #
 # -------------------#
@@ -136,6 +138,9 @@ def mean(
     return ret.astype(ret_dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, backend_version
+)
 def prod(
     x: paddle.Tensor,
     /,
