@@ -121,8 +121,9 @@ def _get_shared_dtype(draw):
 
 @st.composite
 def _get_splits(draw, as_list=False):
-    """Generate valid splits, either by generating an integer that evenly divides the
-    axis or a list of splits that sum to the length of the axis being split."""
+    """Generate valid splits, either by generating an integer that evenly
+    divides the axis or a list of splits that sum to the length of the axis
+    being split."""
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
     axis = draw(
         st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
@@ -274,6 +275,12 @@ def _squeeze_helper(draw):
     valid_axes.insert(0, None)
     axis = draw(st.sampled_from(valid_axes))
     return [axis] if axis is not None else axis
+
+
+@st.composite
+def df(draw, data_format):
+    data_format = draw(data_format)
+    return data_format
 
 
 # Reverse
@@ -2834,6 +2841,41 @@ def test_tensorflow_Max(  # NOQA
         input=x[0],
         axis=axis,
         keep_dims=keep_dims,
+    )
+
+
+# MaxPool3D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.MaxPool3D",
+    aliases=["tensorflow.nn.max_pool3d"],
+    data_format=st.sampled_from(["NDHWC", "NCDHW"]),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=5),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_MaxPool3D(
+    *,
+    x_k_s_p,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
     )
 
 

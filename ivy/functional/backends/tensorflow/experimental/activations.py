@@ -123,3 +123,15 @@ def celu(
     out: Optional[Tensor] = None,
 ) -> Tensor:
     return tf.math.maximum(0, x) + alpha * tf.math.expm1(tf.math.minimum(0, x) / alpha)
+
+
+@with_unsupported_dtypes({"2.14.0 and below": ("uint16",)}, backend_version)
+def scaled_tanh(
+    x: Tensor,
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    return alpha * tf.nn.tanh(beta * x)
