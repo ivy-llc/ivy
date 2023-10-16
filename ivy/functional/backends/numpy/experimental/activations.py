@@ -7,7 +7,6 @@ import numpy as np
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
-from ivy.func_wrapper import with_supported_dtypes
 
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
@@ -151,7 +150,6 @@ def tanhshrink(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndar
 tanhshrink.support_native_out = True
 
 
-@with_supported_dtypes({"1.26.0 and below": ("float32", "float64")}, backend_version)
 @_scalar_output_to_0d_array
 def softshrink(
     x: np.ndarray, /, *, lambd: float = 0.5, out: Optional[np.ndarray] = None

@@ -175,14 +175,10 @@ def softshrink(
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.softshrink(x, threshold=lambd)
     if paddle.is_complex(x):
-        ret = (
-            paddle_backend.where(
-                paddle_backend.greater(x, lambd),
-                x - lambd,
-                paddle_backend.where(paddle_backend.less(x, -lambd), x + lambd, 0),
-            ),
+        return paddle.complex(
+            F.softshrink(x.real(), threshold=lambd),
+            F.softshrink(x.img(), threshold=lambd),
         )
-        return ret
     return F.softshrink(x.cast("float32"), threshold=lambd).cast(x.dtype)
 
 
