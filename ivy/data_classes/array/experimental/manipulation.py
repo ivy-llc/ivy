@@ -1062,8 +1062,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         fill_value: Optional[Number] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.take.
+        """ivy.Array instance method variant of ivy.take.
 
         This method simply wraps the function, and so the docstring for
         ivy.take also applies to this method with minimal changes.

@@ -2729,8 +2729,7 @@ def take(
     fill_value: Optional[Number] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return elements of an array along an axis.
+    """Return elements of an array along an axis.
 
     .. note::
         Conceptually, take(x, indices, axis=3) is equivalent to x[:,:,:,indices,...];
