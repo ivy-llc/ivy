@@ -2161,7 +2161,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         pad_mode: Optional[str] = "reflect",
         normalized: Optional[bool] = False,
         detrend: Optional[Union[str, callable, bool]] = False,
-        return_complex: Optional[bool] = True,
         boundary: Optional[str] = "zeros",
         out: Optional[ivy.Container] = None,
     ):
@@ -2224,9 +2223,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             it is a function, it takes a segment and returns a detrended
             segment. If detrend is False, no detrending is done. Defaults
             to False.
-        return_complex
-            Whether to return a complex tensor, or a real tensor with an extra
-            last dimension for the real and imaginary components.
         boundary
             Specifies whether the input signal is extended at both ends, and
             how to generate the new values, in order to center the first
@@ -2263,7 +2259,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             pad_mode=pad_mode,
             normalized=normalized,
             detrend=detrend,
-            return_complex=return_complex,
             boundary=boundary,
             out=out,
         )
@@ -2283,7 +2278,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         pad_mode: Optional[str] = "reflect",
         normalized: Optional[bool] = False,
         detrend: Optional[Union[str, callable, bool]] = False,
-        return_complex: Optional[bool] = True,
         boundary: Optional[str] = "zeros",
         out: Optional[ivy.Container] = None,
     ):
@@ -2329,13 +2323,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         win_length
             The size of window frame and STFT filter. Defaults to None.
             The size of window frame and STFT filter. Defaults to None.
-        noverlap
-            Number of points to overlap between segments. If None,
-            noverlap = nperseg // 2. Defaults to None.
-            The size of window frame and STFT filter. Defaults to None.
-        noverlap
-            Number of points to overlap between segments. If None,
-            noverlap = nperseg // 2. Defaults to None.
         center
             Whether to pad x to make that the t * hop_length at the
             center of t-th frame. Default: True.
@@ -2351,9 +2338,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             it is a function, it takes a segment and returns a detrended
             segment. If detrend is False, no detrending is done. Defaults
             to False.
-        return_complex
-            Whether to return a complex tensor, or a real tensor with an extra
-            last dimension for the real and imaginary components.
         boundary
             Specifies whether the input signal is extended at both ends, and
             how to generate the new values, in order to center the first
@@ -2389,7 +2373,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             pad_mode=pad_mode,
             normalized=normalized,
             detrend=detrend,
-            return_complex=return_complex,
             boundary=boundary,
             out=out,
 
