@@ -846,10 +846,7 @@ def test_frontend_function(
                 is_ret_tuple = issubclass(ret.__class__, tuple)
             else:
                 is_ret_tuple = issubclass(ret, tuple)
-            out = ret
-            # pass return value to out argument
-            # check if passed reference is correctly updated
-            kwargs["out"] = out
+            out = kwargs["out"]
             if is_ret_tuple:
                 flatten_ret = flatten_frontend(
                     ret=ret,
