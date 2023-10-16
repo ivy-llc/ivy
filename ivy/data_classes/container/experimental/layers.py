@@ -2164,8 +2164,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         boundary: Optional[str] = "zeros",
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container static method variant of ivy.stft.
+        """ivy.Container static method variant of ivy.stft.
 
         This method simply wraps the function, and so the docstring for
         ivy.stft  also applies to this method with minimal changes.
@@ -2281,8 +2280,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         boundary: Optional[str] = "zeros",
         out: Optional[ivy.Container] = None,
     ):
-        """
-        Compute the Short-time Fourier transform  of input.
+        """Compute the Short-time Fourier transform  of input.
 
         Parameters
         ----------
@@ -2551,7 +2549,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-
         )
 
     @staticmethod
@@ -2786,7 +2783,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         )
 
     @staticmethod
-
     def _static_sliding_window(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         window_size: Union[int, Tuple[int, int], Tuple[int, int, int], ivy.Container],

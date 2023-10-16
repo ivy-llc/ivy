@@ -861,7 +861,7 @@ def stft(
     if axis:
         axis = -1
 
-    if  hop_length <= 0:
+    if hop_length <= 0:
         hop_length = 1
 
     if win_length is None:
