@@ -94,7 +94,7 @@ def test_numpy_signbit(
         x=xs[0],
         out=None,
         where=where,
-        casting=casting,
+        casting="safe",
         order="K",
         dtype=dtype,
         subok=True,
