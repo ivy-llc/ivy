@@ -3369,7 +3369,7 @@ def test_tensorflow_Prod(  # NOQA
     shape=helpers.get_shape(
         allow_none=False,
     ),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     seed=helpers.ints(),
     seed2=helpers.ints(),
     test_with_out=st.just(False),
