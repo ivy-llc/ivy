@@ -16,6 +16,61 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_
 
 
 @st.composite
+def _arrays_dim_idx_n_dtypes(draw):
+    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_arrays = 2
+    common_shape = draw(
+        helpers.lists(
+            x=helpers.ints(min_value=2, max_value=3),
+            min_size=num_dims - 1,
+            max_size=num_dims - 1,
+        )
+    )
+    _dim = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
+    unique_dims = draw(
+        helpers.lists(
+            x=helpers.ints(min_value=2, max_value=3),
+            min_size=num_arrays,
+            max_size=num_arrays,
+        )
+    )
+
+    min_dim = min(unique_dims)
+    max_dim = max(unique_dims)
+    _idx = draw(
+        helpers.array_values(
+            shape=min_dim,
+            dtype="int64",
+            min_value=0,
+            max_value=max_dim,
+            exclude_min=False,
+        )
+    )
+
+    xs = []
+    available_input_types = ["int32", "int64", "float32", "float64"]
+    input_dtypes = draw(
+        helpers.array_dtypes(
+            available_dtypes=available_input_types,
+            num_arrays=num_arrays,
+            shared_dtype=True,
+        )
+    )
+    for ud, dt in zip(unique_dims, input_dtypes):
+        x = draw(
+            helpers.array_values(
+                shape=common_shape[:_dim] + [ud] + common_shape[_dim:],
+                dtype=dt,
+                large_abs_safety_factor=2.5,
+                small_abs_safety_factor=2.5,
+                safety_factor_scale="log",
+            )
+        )
+        xs.append(x)
+    return xs, input_dtypes, _dim, _idx
+
+
+@st.composite
 def _as_strided_helper(draw):
     dtype, x = draw(helpers.dtype_and_values(min_num_dims=1, max_num_dims=5))
     x = x[0]
@@ -1025,6 +1080,37 @@ def test_i0(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.index_add",
+    xs_dtypes_dim_idx=_arrays_dim_idx_n_dtypes(),
+)
+def test_index_add(
+    *,
+    xs_dtypes_dim_idx,
+    on_device,
+    fn_name,
+    test_flags,
+    backend_fw,
+):
+    xs, input_dtypes, axis, indices = xs_dtypes_dim_idx
+    axis = 0
+    if xs[0].shape[axis] < xs[1].shape[axis]:
+        source, x = xs
+    else:
+        x, source = xs
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x,
+        index=indices,
+        axis=axis,
+        value=source,
     )
 
 

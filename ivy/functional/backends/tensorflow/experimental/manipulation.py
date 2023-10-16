@@ -460,7 +460,7 @@ def index_add(
     _to_adds = tf.stack(_to_adds)
     if len(x.shape) < 2:
         # Added this line due to the paddle backend treating scalars as 1-d arrays
-        _to_adds = tf.flatten(_to_adds)
+        _to_adds = tf.nest.flatten(_to_adds)
 
     ret = tf.add(x, _to_adds)
     ret = tf.experimental.numpy.swapaxes(ret, axis, 0)
