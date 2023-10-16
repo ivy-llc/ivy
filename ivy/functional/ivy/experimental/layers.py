@@ -2837,8 +2837,7 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Short-time Fourier transform  of input.
+    """Compute the Short-time Fourier transform  of input.
 
     Parameters
     ----------
@@ -2940,6 +2939,7 @@ stft.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
+
 
 @handle_exceptions
 @handle_backend_invalid
