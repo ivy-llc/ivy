@@ -995,53 +995,46 @@ def ifftn(
 
 
 def stft(
-    signal: Union[torch.Tensor, int, Tuple[int]],
-    n_fft: Union[int, Tuple[int]],
+    signal: torch.Tensor,
+    n_fft: int,
     hop_length: int,
     /,
     *,
     axis: Optional[int] = None,
     onesided: Optional[bool] = True,
     fs: Optional[float] = 1.0,
-    window: Optional[Union[torch.Tensor, list, Tuple[int]]] = None,
+    window: Optional[torch.Tensor] = None,
     win_length: Optional[int] = None,
     center: Optional[bool] = False,
-    pad_mode: Optional[str] = None,
+    pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
-    return_complex: Optional[bool] = True,
     boundary: Optional[str] = "zeros",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if axis is None:
+    if axis:
         axis = -1
-
+    
     if hop_length <= 0:
-        hop_length = 1
-
-    if len(signal) < n_fft:
-        raise ValueError("Value of n_fft must less than or equal length of the signal")
-
-    if window.shape[0] != win_length:
-        raise ValueError("Value of win_length must be equal to length of window")
+        hop_length = 1      
 
     if win_length is None:
         win_length = n_fft
 
-    if win_length > n_fft:
-        raise ValueError("Value of win_length must be less then or equal to n_fft")
-
     if window is None or window is torch.Tensor:
-        window = torch.hann_window(n_fft, dtype=torch.float32)
+        window = torch.hann_window(n_fft, periodic=True, dtype=signal.dtype)
+    window = window / torch.max(window)
 
     if window.shape[0] > len(signal):
-        window = signal
+        window = torch.hann_window(len(signal), periodic=True, dtype=torch.float32)
         n_fft = len(signal)
         win_length = n_fft
-        window = torch.hann_window(n_fft, dtype=torch.float32)
-
+    if n_fft > len(signal):
+        n_fft = len(signal)       
+    if window.shape[0] != win_length:
+        win_length = window.shape[0]
+     
     return_complex = True
-
     return torch.stft(
         signal,
         n_fft,
