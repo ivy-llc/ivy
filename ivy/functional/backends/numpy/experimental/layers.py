@@ -946,99 +946,71 @@ def ifft(
 
 
 def stft(
-    signal: Union[np.ndarray, int, Tuple[int]],
-    n_fft: Union[int, Tuple[int]],
+    signal: np.ndarray,
+    n_fft: int,
     hop_length: int,
     /,
     *,
     axis: Optional[int] = None,
     onesided: Optional[bool] = True,
     fs: Optional[float] = 1.0,
-    window: Optional[Union[np.ndarray, list, Tuple[int]]] = None,
+    window: Optional[np.ndarray] = None,
     win_length: Optional[int] = None,
-    center: Optional[bool] = True,
+    center: Optional[bool] = False,
     pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
-    return_complex: Optional[bool] = True,
     boundary: Optional[str] = "zeros",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if axis is None:
+    if axis:
         axis = -1
 
     if hop_length <= 0:
         hop_length = 1
 
-    if len(signal) < n_fft:
-        raise ValueError("Value of n_fft must less than or equal length of the signal")
-
-    if window.shape[0] != win_length:
-        raise ValueError("Value of win_length must be equal to length of window")
-
     if win_length is None:
         win_length = n_fft
 
-    if win_length > n_fft:
-        raise ValueError("Value of win_length must be less then or equal to n_fft")
-
-    if window is None or window is np.ndarray:
+    if window is None:
         window = np.hanning(win_length)
+    window = window / np.max(window)    
 
     if window.shape[0] > len(signal):
-        window = signal
+        window = np.array([1.0] * len(signal), dtype=np.float32)
         n_fft = len(signal)
         win_length = n_fft
-        window = np.hanning(win_length)
-
-    num_frames = 1 + (signal.shape[-1] - n_fft) // hop_length
-
-    return_complex = False
-
+    if n_fft > len(signal):
+        n_fft = len(signal)  
+    if window.shape[0] != win_length:
+        win_length = window.shape[0]  
+    
+    return_complex = True
     if return_complex:
-        input_dtype = np.result_type(signal, np.complex64)
-    else:
-        input_dtype = np.result_type(signal)
+        input_dtype = signal.dtype
 
-    if input_dtype == np.float16 or input_dtype == np.float32:
+    if input_dtype in (np.float16, np.float32):
         output_dtype = np.complex64
     else:
         output_dtype = np.complex128
 
-    stft_result = np.empty(
-        signal.shape[:-1] + (num_frames, n_fft // 2 + 1), dtype=output_dtype
-    )
+    frame_step = hop_length + 1 
+    if isinstance(frame_step, int):
+        hop_length = frame_step
 
-    for i in range(num_frames):
+    n_frames = (len(signal) - win_length) // hop_length + 1
+    freqs = np.fft.rfftfreq(n_fft, 1.0 / fs)
+
+    stft = np.empty((len(freqs), n_frames), dtype=output_dtype)
+
+    for i in range(n_frames):
         start = i * hop_length
-        end = start + n_fft
-        frame = signal[..., start:end]
+        end = start + win_length
+        frame = signal[start:end]
+        frame = frame * window
+        stft[:, i] = np.fft.rfft(frame, n=n_fft)
 
-        if win_length is not None:
-            win_len = min(win_length, frame.shape[-1])
-            frame = frame * window[:win_len]
-        else:
-            frame = frame * window
-
-        stft_frame = np.fft.fft(frame, n=n_fft, axis=-1)
-
-        if onesided:
-            stft_frame = stft_frame[..., : n_fft // 2 + 1]
-
-        if detrend is bool:
-            detrend = False
-            detrend_func = np.poly1d if isinstance(detrend, bool) else detrend
-            detrended = detrend_func(np.arange(len(frame)))(frame)
-            stft_frame = np.fft.fft(detrended, n=n_fft, axis=axis)
-            if onesided:
-                stft_frame = stft_frame[..., : n_fft // 2 + 1]
-
-        stft_result[..., i, : n_fft // 2 + 1] = stft_frame
-
-    if len(signal) > 1:
-        stft_result = stft_result.transpose(1, 0)
-
-    return stft_result
+    return stft
 
 
 def fft2(
