@@ -911,7 +911,6 @@ class Tensor:
 
     def _fill_diagonal_tensor_impl(self, x, y, offset=0, dim1=0, dim2=1, inplace=False):
         inshape = x.shape
-        print(inshape)
         assert dim1 < len(inshape) and dim1 >= -len(
             inshape
         ), "dim1 should be between [-rank, rank) in fill_diagonal_tensor_"
