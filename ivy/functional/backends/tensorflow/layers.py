@@ -98,6 +98,7 @@ def conv1d(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # some random comment
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
     x, filters = _ff_xd_before_conv(x, filters, 1, filter_format, x_dilations)

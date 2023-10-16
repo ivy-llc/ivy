@@ -251,6 +251,7 @@ def conv1d(
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    # some random comment
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     x, filters = _ff_xd_before_conv(x, filters, 1, filter_format, x_dilations)

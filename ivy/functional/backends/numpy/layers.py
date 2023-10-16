@@ -128,6 +128,7 @@ def conv1d(
     bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    # some random comment
     strides = [strides] if isinstance(strides, int) else strides
     dilations = [dilations] if isinstance(dilations, int) else dilations
     if data_format == "NCW":
