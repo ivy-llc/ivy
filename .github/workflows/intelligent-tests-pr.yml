@@ -97,7 +97,7 @@ jobs:
         id: tests
         run: |
           git clone -b master${{ matrix.branch }} https://github.com/unifyai/Mapping.git --depth 200
-          pip install pydriller GitPython==3.1.31
+          pip install pydriller GitPython
           python ivy/run_tests_CLI/clone-mapping.py
           cp Mapping/tests.pbz2 ivy/
           cd ivy
