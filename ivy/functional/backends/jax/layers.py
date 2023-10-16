@@ -109,7 +109,7 @@ def conv1d(
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    # some random comment
+    # some random comment here
     data_format = "channel_last" if data_format == "NWC" else "channel_first"
     return conv_general_dilated(
         x,
