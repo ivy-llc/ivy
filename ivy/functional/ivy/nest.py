@@ -243,14 +243,27 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
     >>> print(nest)
     [[1, 2], [3, 99, 4]]
     """
-    if len(index) == 1:
-        idx = index[0]
-        if isinstance(nest, list):
-            nest.insert(idx, value)
+    if isinstance(nest, dict) or isinstance(nest, ivy.Container):
+        if len(index) == 1:
+            key = index[0]
+            if isinstance(nest, dict):
+                nest[key] = value
         else:
-            nest[index[0]] = value
+            key = index[0]
+            if key in nest:
+                insert_into_nest_at_index(nest[key], index[1:], value)
+            else:
+                nest[key] = {}
+                insert_into_nest_at_index(nest[key], index[1:], value)
     else:
-        insert_into_nest_at_index(nest[index[0]], index[1:], value)
+        if len(index) == 1:
+            idx = index[0]
+            if isinstance(nest, list):
+                nest.insert(idx, value)
+            else:
+                nest[index[0]] = value
+        else:
+            insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
 @handle_exceptions

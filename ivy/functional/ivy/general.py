@@ -1043,6 +1043,18 @@ def clip_vector_norm(
         a: ivy.array([0., 0.894, 1.79]),
         b: ivy.array([0.849, 1.13, 1.41])
     }
+
+    With multiple :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
+    >>> max_norm = ivy.Container(a=2, b=3)
+    >>> y = ivy.clip_vector_norm(x, max_norm)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.894, 1.79]),
+        b: ivy.array([2.449, 2.65, 2.83])
+    }
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
@@ -2137,18 +2149,28 @@ def set_min_base(val: float) -> None:
 
     Examples
     --------
+    Retrieve the minimum base
     >>> x = ivy.min_base
     >>> print(x)
     1e-05
 
+    Set the minimum base to 1e-04:
     >>> ivy.set_min_base(1e-04)
+
+    Retrieve the minimum base:
     >>> y = ivy.min_base
     >>> print(y)
     1e-04
     """
     global min_base_stack
+
+    # Ensure val is an instance of 'float' or 'int'
     ivy.utils.assertions.check_isinstance(val, (int, float))
+
+    # Access and modify min_base_stack
     min_base_stack.append(val)
+
+    # Set the min_base attribute
     ivy.__setattr__("min_base", val, True)
 
 
@@ -3900,6 +3922,26 @@ def _dnd_dict_union(a, b):
     return res
 
 
+# allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+def _expand_typesets(dtypes):
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+    dtypes = list(dtypes)
+    typeset_list = []
+    for i, dtype in reversed(list(enumerate(dtypes))):
+        if dtype in typesets:
+            typeset_list.extend(typesets[dtype])
+            dtypes.pop(i)
+    dtypes += typeset_list
+    return dtypes
+
+
 def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
     supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
@@ -3937,6 +3979,9 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
                 list(fn_supported_dnd.values())[0], tuple
             )
 
+        for device, dtypes in fn_supported_dnd.items():
+            fn_supported_dnd[device] = _expand_typesets(dtypes)
+
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
@@ -3950,6 +3995,10 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
             ivy.utils.assertions.check_isinstance(
                 list(fn_unsupported_dnd.values())[0], tuple
             )
+
+        for device, dtypes in fn_unsupported_dnd.items():
+            fn_unsupported_dnd[device] = tuple(_expand_typesets(dtypes))
+
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
