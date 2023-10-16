@@ -228,6 +228,42 @@ def test_paddle_addmm(
     )
 
 
+# all
+@handle_frontend_test(
+    fn_tree="paddle.all",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=["bool"],
+        valid_axis=True,
+        allow_neg_axes=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+    keepdim=st.booleans(),
+)
+def test_paddle_all(
+    *,
+    dtype_and_x,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        x=x[0],
+        axis=axis,
+        keepdim=keepdim,
+    )
+
+
 # amax
 @handle_frontend_test(
     fn_tree="paddle.amax",
@@ -705,6 +741,41 @@ def test_paddle_cumprod(
         on_device=on_device,
         x=x[0],
         dim=axis,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.cumsum",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+)
+def test_paddle_cumsum(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        # rtol=1e-04,
+        # atol=1e-04,
     )
 
 

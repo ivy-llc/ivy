@@ -26,7 +26,7 @@ from . import backend_version
 
 @with_unsupported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.14.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -121,7 +121,7 @@ def empty_like(
     return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("uint16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -251,7 +251,7 @@ def linspace(
     return tf.cast(ans, dtype)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
 def meshgrid(
     *arrays: Union[tf.Tensor, tf.Variable],
     sparse: bool = False,
@@ -295,7 +295,7 @@ def ones_like(
     return tf.ones_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
 def tril(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -308,7 +308,7 @@ def tril(
     return tf.experimental.numpy.tril(x, k)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
 def triu(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -375,7 +375,7 @@ def one_hot(
     )
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("uint32", "uint64")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("uint32", "uint64")}, backend_version)
 def frombuffer(
     buffer: bytes,
     dtype: Optional[tf.DType] = float,

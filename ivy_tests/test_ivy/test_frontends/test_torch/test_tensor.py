@@ -36,6 +36,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # 
 )
 from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (  # noqa
     dtype_value1_value2_axis,
+    _get_dtype_value1_value2_cov,
 )
 from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (  # noqa
     _get_dtype_and_matrix,
@@ -706,11 +707,8 @@ def test_torch___getitem__(
     init_tree="torch.tensor",
     method_name="__gt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
     ),
 )
 def test_torch___gt__(
@@ -746,10 +744,7 @@ def test_torch___gt__(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="__invert__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=1,
-    ),
+    dtype_and_x=helpers.dtype_and_values(),
 )
 def test_torch___invert__(
     dtype_and_x,
@@ -3796,16 +3791,9 @@ def test_torch_tensor_arctanh_(
     init_tree="torch.tensor",
     method_name="argmax",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         force_int_axis=True,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
-        min_value=1,
-        max_value=5,
         valid_axis=True,
-        allow_neg_axes=True,
     ),
     keepdim=st.booleans(),
 )
@@ -4822,7 +4810,7 @@ def test_torch_tensor_bitwise_right_shift(
 ):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
-    # shifts >= dtype witdth produce backend-defined behavior
+    # shifts >= dtype width produce backend-defined behavior
     x[1] = np.asarray(
         np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
     )
@@ -4866,7 +4854,7 @@ def test_torch_tensor_bitwise_right_shift_(
 ):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
-    # shifts >= dtype witdth produce backend-defined behavior
+    # shifts >= dtype width produce backend-defined behavior
     x[1] = np.asarray(
         np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
     )
@@ -5774,6 +5762,56 @@ def test_torch_tensor_count_nonzero(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+    )
+
+
+# cov
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="cov",
+    dtype_and_x=_get_dtype_value1_value2_cov(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=5,
+        min_value=1,
+        max_value=1e10,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+)
+def test_torch_tensor_cov(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, correction, fweights, aweights = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=["float64", "int64", "float64"],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", "float64"],
+        method_all_as_kwargs_np={
+            "correction": correction,
+            "fweights": fweights,
+            "aweights": aweights,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
 
 
@@ -8175,6 +8213,39 @@ def test_torch_tensor_is_cuda(
         x.is_cuda, "gpu" in ivy.dev(ivy.array(data[0])), as_array=False
     )
     ivy.previous_backend()
+
+
+# is_floating_point
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="is_floating_point",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_tensor_is_floating_point(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
 
 
 @given(
@@ -10814,6 +10885,41 @@ def test_torch_tensor_quantile(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# rad2deg
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="rad2deg",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_tensor_rad2deg(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
         on_device=on_device,
     )
 

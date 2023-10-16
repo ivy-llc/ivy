@@ -191,8 +191,8 @@ def promote_types_torch(
     type2: Union[ivy.Dtype, ivy.NativeDtype],
     /,
 ) -> ivy.Dtype:
-    """
-    Promote the datatypes type1 and type2, returning the data type they promote to.
+    """Promote the datatypes type1 and type2, returning the data type they
+    promote to.
 
     Parameters
     ----------
@@ -207,7 +207,9 @@ def promote_types_torch(
         The type that both input types promote to
     """
     try:
-        ret = torch_promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
+        ret = torch_frontend.torch_promotion_table[
+            (ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))
+        ]
     except KeyError:
         raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
     return ret
@@ -219,9 +221,8 @@ def promote_types_of_torch_inputs(
     x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Promote the dtype of the given native array inputs to a common dtype based on type
-    promotion rules.
+    """Promote the dtype of the given native array inputs to a common dtype
+    based on type promotion rules.
 
     While passing float or integer values or any other non-array input
     to this function, it should be noted that the return will be an
@@ -230,8 +231,16 @@ def promote_types_of_torch_inputs(
     tensor-like objects, otherwise it might give unexpected results.
     """
     # Ignore type of 0-dim arrays to mimic torch
+    x1_copy = x1
+    x2_copy = x2
     x1 = ivy.asarray(x1)
     x2 = ivy.asarray(x2)
+    if x1.shape == () and ivy.isscalar(x1_copy):
+        if ivy.is_int_dtype(x1):
+            x1 = ivy.astype(x1, "int64")
+    if x2.shape == () and ivy.isscalar(x2_copy):
+        if ivy.is_int_dtype(x2):
+            x2 = ivy.astype(x2, "int64")
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
     if not x1.shape == () and x2.shape == () and type1 == type2:
@@ -250,7 +259,7 @@ def promote_types_of_torch_inputs(
 
 
 from . import nn
-from .nn.functional import softmax, relu
+from .nn.functional import softmax, relu, lstm
 from . import tensor
 from .tensor import *
 from . import blas_and_lapack_ops

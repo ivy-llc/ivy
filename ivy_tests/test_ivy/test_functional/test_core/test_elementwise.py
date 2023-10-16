@@ -465,7 +465,7 @@ def test_bitwise_invert(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devi
 def test_bitwise_left_shift(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
-    # shifts >= dtype witdth produce backend-defined behavior
+    # shifts >= dtype width produce backend-defined behavior
     dtype = np.promote_types(input_dtype[0], input_dtype[1])
     bit_cap = (
         np.iinfo(dtype).bits
@@ -532,7 +532,7 @@ def test_bitwise_right_shift(
     input_dtype, x = dtype_and_x
 
     # negative shifts will throw an exception
-    # shifts >= dtype witdth produce backend-defined behavior
+    # shifts >= dtype width produce backend-defined behavior
     x[1] = np.asarray(
         np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
     )
