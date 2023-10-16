@@ -14,10 +14,10 @@ def main():
     func_fnames = os.listdir(func_folder)
     func_fnames.sort()
     framework_tests_to_run = {
-        "jax": list(),
-        "numpy": list(),
-        "torch": list(),
-        "tensorflow": list(),
+        "jax": [],
+        "numpy": [],
+        "torch": [],
+        "tensorflow": [],
     }
 
     # add from each filepath
@@ -27,7 +27,7 @@ def main():
             contents = file.read()
             contents = [line.replace("__", "") for line in contents.split("\n")]
             for framework in framework_tests_to_run:
-                tests_to_run = list()
+                tests_to_run = []
                 for s in contents:
                     if s == "":
                         continue

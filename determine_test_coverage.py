@@ -39,7 +39,7 @@ if __name__ == "__main__":
         test_name, backend = test_backend.split(",")
         command = (
             f'docker run -v "$(pwd)":/ivy unifyai/ivy:latest timeout 30m /bin/bash -c "coverage run --source=ivy,'  # noqa
-            f"ivy_tests -m pytest {test_name} --backend {backend} --disable-warnings > coverage_output;coverage "  # noqa
+            f"ivy_tests -m pytest {test_name}  --num-examples 5 --backend {backend} --disable-warnings > coverage_output;coverage "  # noqa
             f'annotate > coverage_output" '
         )
         os.system(command)

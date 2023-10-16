@@ -60,7 +60,7 @@ SHELL ["/bin/bash", "-c"]
 
 
 RUN python3 multicuda_framework_directory.py $fw &&\
-    jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings_gpu.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2' sh {}
+    jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings_gpu.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2 --extra-index-url https://download.pytorch.org/whl/cu118' sh {}
 
 
 
@@ -73,10 +73,7 @@ RUN sed -i '/numpy/d' requirements.txt &&\
 
 
 # add all the directories to environment path so that python knows where to find them
-ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/jax:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
-
-
-
+ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/torch:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
 
 
 COPY run_tests_CLI/test_dependencies.py .

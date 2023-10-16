@@ -38,33 +38,22 @@ def _to_ivy_array(x):
 
 def handle_mxnet_out(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _handle_mxnet_out(*args, out=None, **kwargs):
-        if len(args) > (out_pos + 1):
-            out = args[out_pos]
+    def _handle_mxnet_out(*args, **kwargs):
+        if "out" not in kwargs:
+            keys = list(inspect.signature(fn).parameters.keys())
+            out_pos = keys.index("out")
             kwargs = {
                 **dict(
                     zip(
-                        list(inspect.signature(fn).parameters.keys())[
-                            out_pos + 1 : len(args)
-                        ],
-                        args[out_pos + 1 :],
+                        keys[keys.index("out") :],
+                        args[out_pos:],
                     )
                 ),
                 **kwargs,
             }
             args = args[:out_pos]
-        elif len(args) == (out_pos + 1):
-            out = args[out_pos]
-            args = args[:-1]
-        if ivy.exists(out):
-            if not isinstance(out, ndarray):
-                raise ivy.utils.exceptions.IvyException(
-                    "Out argument must be an ivy.frontends.mxnet.numpy.ndarray object"
-                )
-            return fn(*args, out=out.ivy_array, **kwargs)
         return fn(*args, **kwargs)
 
-    out_pos = list(inspect.signature(fn).parameters).index("out")
     _handle_mxnet_out.handle_numpy_out = True
     return _handle_mxnet_out
 
@@ -72,8 +61,7 @@ def handle_mxnet_out(fn: Callable) -> Callable:
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_mxnet(*args, **kwargs):
-        """
-        Convert `ndarray.NDArray` into `ivy.Array` instances.
+        """Convert `ndarray.NDArray` into `ivy.Array` instances.
 
         Convert all `ndarray.NDArray` instances in both the positional
         and keyword arguments into `ivy.Array` instances, and then calls
@@ -95,8 +83,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays_mxnet(*args, **kwargs):
-        """
-        Convert `ivy.Array` into `ndarray.NDArray` instances.
+        """Convert `ivy.Array` into `ndarray.NDArray` instances.
 
         Call the function, and then converts all `ivy.Array` instances
         in the function return into `ndarray.NDArray` instances.
@@ -112,8 +99,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so it receives and returns `ivy.Array` instances.
+    """Wrap `fn` so it receives and returns `ivy.Array` instances.
 
     Wrap `fn` so that input arrays are all converted to `ivy.Array`
     instances and return arrays are all converted to `ndarray.NDArray`

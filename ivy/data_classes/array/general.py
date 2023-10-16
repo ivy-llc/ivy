@@ -17,10 +17,9 @@ class _ArrayWithGeneral(abc.ABC):
         *,
         exclusive: bool = False,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.is_native_array. This method simply
-        wraps the function, and so the docstring for ivy.is_native_array also applies to
-        this method with minimal changes.
+        """ivy.Array instance method variant of ivy.is_native_array. This
+        method simply wraps the function, and so the docstring for
+        ivy.is_native_array also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -45,10 +44,9 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.is_native_array(self, exclusive=exclusive)
 
     def is_ivy_array(self: ivy.Array, /, *, exclusive: bool = False) -> bool:
-        """
-        ivy.Array instance method variant of ivy.is_ivy_array. This method simply wraps
-        the function, and so the docstring for ivy.is_ivy_array also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.is_ivy_array. This method
+        simply wraps the function, and so the docstring for ivy.is_ivy_array
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -73,10 +71,9 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.is_ivy_array(self, exclusive=exclusive)
 
     def is_array(self: ivy.Array, /, *, exclusive: bool = False) -> bool:
-        """
-        ivy.Array instance method variant of ivy.is_array. This method simply wraps the
-        function, and so the docstring for ivy.is_array also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.is_array. This method
+        simply wraps the function, and so the docstring for ivy.is_array also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -100,10 +97,9 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.is_array(self, exclusive=exclusive)
 
     def is_ivy_container(self: ivy.Array) -> bool:
-        """
-        ivy.Array instance method variant of ivy.is_ivy_container. This method simply
-        wraps the function, and so the docstring for ivy.is_ivy_container also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.is_ivy_container. This
+        method simply wraps the function, and so the docstring for
+        ivy.is_ivy_container also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -126,10 +122,9 @@ class _ArrayWithGeneral(abc.ABC):
     def all_equal(
         self: ivy.Array, *x2: Iterable[Any], equality_matrix: bool = False
     ) -> Union[bool, ivy.Array, ivy.NativeArray]:
-        """
-        ivy.Array instance method variant of ivy.all_equal. This method simply wraps the
-        function, and so the docstring for ivy.all_equal also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.all_equal. This method
+        simply wraps the function, and so the docstring for ivy.all_equal also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -168,10 +163,9 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.all_equal(*arrays, equality_matrix=equality_matrix)
 
     def has_nans(self: ivy.Array, /, *, include_infs: bool = True):
-        """
-        ivy.Array instance method variant of ivy.has_nans. This method simply wraps the
-        function, and so the docstring for ivy.has_nans also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.has_nans. This method
+        simply wraps the function, and so the docstring for ivy.has_nans also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -204,10 +198,9 @@ class _ArrayWithGeneral(abc.ABC):
         batch_dims: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.gather. This method simply wraps the
-        function, and so the docstring for ivy.gather also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.gather. This method simply
+        wraps the function, and so the docstring for ivy.gather also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -249,8 +242,7 @@ class _ArrayWithGeneral(abc.ABC):
         reduction: str = "sum",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Scatter updates into an array according to indices.
+        """Scatter updates into an array according to indices.
 
         Parameters
         ----------
@@ -303,10 +295,9 @@ class _ArrayWithGeneral(abc.ABC):
         batch_dims: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
-        function, and so the docstring for ivy.gather_nd also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.gather_nd. This method
+        simply wraps the function, and so the docstring for ivy.gather_nd also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -343,10 +334,9 @@ class _ArrayWithGeneral(abc.ABC):
         out: Optional[ivy.Array] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.einops_rearrange. This method simply
-        wraps the function, and so the docstring for ivy.einops_rearrange also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.einops_rearrange. This
+        method simply wraps the function, and so the docstring for
+        ivy.einops_rearrange also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -405,10 +395,9 @@ class _ArrayWithGeneral(abc.ABC):
         out: Optional[ivy.Array] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.einops_reduce. This method simply wraps
-        the function, and so the docstring for ivy.einops_reduce also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.einops_reduce. This method
+        simply wraps the function, and so the docstring for ivy.einops_reduce
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -467,10 +456,9 @@ class _ArrayWithGeneral(abc.ABC):
         out: Optional[ivy.Array] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.einops_repeat. This method simply wraps
-        the function, and so the docstring for ivy.einops_repeat also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.einops_repeat. This method
+        simply wraps the function, and so the docstring for ivy.einops_repeat
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -512,10 +500,9 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
 
     def to_numpy(self: ivy.Array, /, *, copy: bool = True) -> np.ndarray:
-        """
-        ivy.Array instance method variant of ivy.to_numpy. This method simply wraps the
-        function, and so the docstring for ivy.to_numpy also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.to_numpy. This method
+        simply wraps the function, and so the docstring for ivy.to_numpy also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -548,10 +535,9 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.to_numpy(self, copy=copy)
 
     def to_list(self: ivy.Array, /) -> List:
-        """
-        ivy.Array instance method variant of ivy.to_list. This method simply wraps the
-        function, and so the docstring for ivy.to_list also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.to_list. This method simply
+        wraps the function, and so the docstring for ivy.to_list also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -577,9 +563,8 @@ class _ArrayWithGeneral(abc.ABC):
     def to_file(
         self: ivy.Array, fid: Union[str, bytes, int], sep: str = "", format_: str = "%s"
     ) -> None:
-        """
-        ivy.Array instance method variant of to_file. Write array to a file as text or
-        binary. The data is always written in 'C' order.
+        """ivy.Array instance method variant of to_file. Write array to a file
+        as text or binary. The data is always written in 'C' order.
 
         Parameters
         ----------
@@ -612,10 +597,10 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.to_file(self, fid, sep, format_)
 
     def supports_inplace_updates(self: ivy.Array, /) -> bool:
-        """
-        ivy.Array instance method variant of ivy.supports_inplace_updates. This method
-        simply wraps the function, and so the docstring for ivy.supports_inplace_updates
-        also applies to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.supports_inplace_updates.
+        This method simply wraps the function, and so the docstring for
+        ivy.supports_inplace_updates also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -649,10 +634,9 @@ class _ArrayWithGeneral(abc.ABC):
     def inplace_decrement(
         self: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.inplace_decrement. This method simply
-        wraps the function, and so the docstring for ivy.inplace_decrement also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.inplace_decrement. This
+        method simply wraps the function, and so the docstring for
+        ivy.inplace_decrement also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -691,10 +675,9 @@ class _ArrayWithGeneral(abc.ABC):
             Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.stable_divide. This method simply wraps
-        the function, and so the docstring for ivy.stable_divide also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.stable_divide. This method
+        simply wraps the function, and so the docstring for ivy.stable_divide
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -742,10 +725,9 @@ class _ArrayWithGeneral(abc.ABC):
         p: float = 2.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.clip_vector_norm. This method simply
-        wraps the function, and so the docstring for ivy.clip_vector_norm also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.clip_vector_norm. This
+        method simply wraps the function, and so the docstring for
+        ivy.clip_vector_norm also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -777,10 +759,9 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.clip_vector_norm(self, max_norm, p=p, out=out)
 
     def array_equal(self: ivy.Array, x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
-        """
-        ivy.Array instance method variant of ivy.array_equal. This method simply wraps
-        the function, and so the docstring for ivy.array_equal also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.array_equal. This method
+        simply wraps the function, and so the docstring for ivy.array_equal
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -817,10 +798,10 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.array_equal(self, x)
 
     def assert_supports_inplace(self: ivy.Array, /) -> bool:
-        """
-        ivy.Array instance method variant of ivy.assert_supports_inplace. This method
-        simply wraps the function, and so the docstring for ivy.assert_supports_inplace
-        also applies to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.assert_supports_inplace.
+        This method simply wraps the function, and so the docstring for
+        ivy.assert_supports_inplace also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -851,10 +832,9 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.assert_supports_inplace(self)
 
     def to_scalar(self: ivy.Array) -> Number:
-        """
-        ivy.Array instance method variant of ivy.to_scalar. This method simply wraps the
-        function, and so the docstring for ivy.to_scalar also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.to_scalar. This method
+        simply wraps the function, and so the docstring for ivy.to_scalar also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -887,10 +867,9 @@ class _ArrayWithGeneral(abc.ABC):
         concat: bool = True,
         flatten: bool = False,
     ) -> Union[ivy.Array, ivy.NativeArray, Tuple]:
-        """
-        ivy.Array instance method variant of ivy.fourier_encode. This method simply
-        wraps the function, and so the docstring for ivy.fourier_encode also applies to
-        this method with minimal changes.
+        """ivy.Array instance method variant of ivy.fourier_encode. This method
+        simply wraps the function, and so the docstring for ivy.fourier_encode
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -905,7 +884,7 @@ class _ArrayWithGeneral(abc.ABC):
             Default is ``False``.
         concat
             Whether to concatenate the position, sin and cos values, or return
-            seperately. Default is ``True``.
+            separately. Default is ``True``.
         flatten
             Whether to flatten the position dimension into the batch dimension.
             Default is ``False``.
@@ -951,10 +930,9 @@ class _ArrayWithGeneral(abc.ABC):
         )
 
     def value_is_nan(self: ivy.Array, /, *, include_infs: bool = True) -> bool:
-        """
-        ivy.Array instance method variant of ivy.value_is_nan. This method simply wraps
-        the function, and so the docstring for ivy.value_is_nan also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.value_is_nan. This method
+        simply wraps the function, and so the docstring for ivy.value_is_nan
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -995,10 +973,9 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.value_is_nan(self, include_infs=include_infs)
 
     def exists(self: ivy.Array, /) -> bool:
-        """
-        ivy.Array instance method variant of ivy.exists. This method simply wraps the
-        function, and so the docstring for ivy.exists also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.exists. This method simply
+        wraps the function, and so the docstring for ivy.exists also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1033,10 +1010,9 @@ class _ArrayWithGeneral(abc.ABC):
         rev: bool = False,
         with_callable: bool = False,
     ) -> Any:
-        """
-        ivy.Array instance method variant of ivy.default. This method simply wraps the
-        function, and so the docstring for ivy.default also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.default. This method simply
+        wraps the function, and so the docstring for ivy.default also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -1079,10 +1055,9 @@ class _ArrayWithGeneral(abc.ABC):
         *,
         min_base: Optional[float] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.stable_pow. This method simply wraps
-        the function, and so the docstring for ivy.stable_pow also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.stable_pow. This method
+        simply wraps the function, and so the docstring for ivy.stable_pow also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1124,10 +1099,9 @@ class _ArrayWithGeneral(abc.ABC):
         ensure_in_backend: bool = False,
         keep_input_dtype: bool = False,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.inplace_update. This method simply
-        wraps the function, and so the docstring for ivy.inplace_update also applies to
-        this method with minimal changes.
+        """ivy.Array instance method variant of ivy.inplace_update. This method
+        simply wraps the function, and so the docstring for ivy.inplace_update
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1192,10 +1166,9 @@ class _ArrayWithGeneral(abc.ABC):
     def inplace_increment(
         self: ivy.Array, val: Union[ivy.Array, ivy.NativeArray]
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.inplace_increment. This method wraps
-        the function, and so the docstring for ivy.inplace_increment also applies to
-        this method with minimal changes.
+        """ivy.Array instance method variant of ivy.inplace_increment. This
+        method wraps the function, and so the docstring for
+        ivy.inplace_increment also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1233,10 +1206,9 @@ class _ArrayWithGeneral(abc.ABC):
         p: float = 2.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.clip_matrix_norm. This method simply
-        wraps the function, and so the docstring for ivy.clip_matrix_norm also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.clip_matrix_norm. This
+        method simply wraps the function, and so the docstring for
+        ivy.clip_matrix_norm also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1275,10 +1247,9 @@ class _ArrayWithGeneral(abc.ABC):
         reduction: str = "sum",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.scatter_flat. This method simply wraps
-        the function, and so the docstring for ivy.scatter_flat also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.scatter_flat. This method
+        simply wraps the function, and so the docstring for ivy.scatter_flat
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1323,10 +1294,9 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.scatter_flat(self, updates, size=size, reduction=reduction, out=out)
 
     def get_num_dims(self: ivy.Array, /, *, as_array: bool = False) -> int:
-        """
-        ivy.Array instance method variant of ivy.shape. This method simply wraps the
-        function, and so the docstring for ivy.shape also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.shape. This method simply
+        wraps the function, and so the docstring for ivy.shape also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1368,10 +1338,9 @@ class _ArrayWithGeneral(abc.ABC):
         assume_unique: bool = False,
         invert: bool = False,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.isin. This method simply wraps the
-        function, and so the docstring for ivy.isin also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.isin. This method simply
+        wraps the function, and so the docstring for ivy.isin also applies to
+        this method with minimal changes.
 
         Parameters
         ----------

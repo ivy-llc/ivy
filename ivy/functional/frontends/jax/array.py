@@ -36,7 +36,7 @@ class Array:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return tuple(self.ivy_array.shape.shape)
 
     @property
     def at(self):
@@ -105,6 +105,9 @@ class Array:
             out=out,
             keepdims=keepdims,
         )
+
+    def squeeze(self, axis=None):
+        return jax_frontend.numpy.squeeze(self, axis=axis)
 
     def conj(self, /):
         return jax_frontend.numpy.conj(self._ivy_array)
@@ -379,6 +382,19 @@ class Array:
     ):
         return jax_frontend.numpy.min(
             self, axis=axis, out=out, keepdims=keepdims, where=where
+        )
+
+    def std(
+        self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None
+    ):
+        return jax_frontend.numpy.std(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=ddof,
+            keepdims=keepdims,
+            where=where,
         )
 
     def var(

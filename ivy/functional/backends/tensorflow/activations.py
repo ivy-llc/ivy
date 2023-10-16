@@ -1,5 +1,4 @@
-"""
-TensorFlow activation functions.
+"""TensorFlow activation functions.
 
 Collection of TensorFlow activation functions, wrapped to fit Ivy syntax
 and signature.
@@ -71,7 +70,7 @@ def softmax(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.14.0 and below": (
             "float16",
             "bfloat16",
             "float32",
@@ -105,7 +104,7 @@ def softplus(
 # Softsign
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.14.0 and below": (
             "float16",
             "bfloat16",
             "float32",
@@ -151,7 +150,7 @@ def mish(
     return tf.multiply(x, tf.math.tanh(x_norm))
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def hardswish(
     x: Tensor,
     /,

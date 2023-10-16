@@ -174,6 +174,36 @@ def normalize(img, mean, std, data_format="CHW", to_rgb=False):
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
+def pad(img, padding, fill=0, padding_mode="constant"):
+    dim_size = img.ndim
+    if not hasattr(padding, "__len__"):
+        if dim_size == 2:
+            trans_padding = ((padding, padding), (padding, padding))
+        elif dim_size == 3:
+            trans_padding = ((0, 0), (padding, padding), (padding, padding))
+    elif len(padding) == 2:
+        if dim_size == 2:
+            trans_padding = ((padding[1], padding[1]), (padding[0], padding[0]))
+        elif dim_size == 3:
+            trans_padding = ((0, 0), (padding[1], padding[1]), (padding[0], padding[0]))
+    elif len(padding) == 4:
+        if dim_size == 2:
+            trans_padding = ((padding[1], padding[3]), (padding[0], padding[2]))
+        elif dim_size == 3:
+            trans_padding = ((0, 0), (padding[1], padding[3]), (padding[0], padding[2]))
+    else:
+        raise "padding can only be 1D with size 1, 2, 4 only"
+
+    if padding_mode in ["constant", "edge", "reflect", "symmetric"]:
+        return ivy.pad(img, trans_padding, mode=padding_mode, constant_values=fill)
+    else:
+        raise "Unsupported padding_mode"
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
 def to_tensor(pic, data_format="CHW"):
     array = ivy.array(pic)
     return Tensor(array)

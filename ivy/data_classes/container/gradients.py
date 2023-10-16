@@ -19,10 +19,9 @@ class _ContainerWithGradients(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.stop_gradient. This method simply
-        wraps the function, and so the docstring for ivy.stop_gradient also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.stop_gradient. This
+        method simply wraps the function, and so the docstring for
+        ivy.stop_gradient also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -97,10 +96,9 @@ class _ContainerWithGradients(ContainerBase):
         preserve_type: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.stop_gradient. This method simply
-        wraps the function, and so the docstring for ivy.stop_gradient also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.stop_gradient. This
+        method simply wraps the function, and so the docstring for
+        ivy.stop_gradient also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -175,10 +173,9 @@ class _ContainerWithGradients(ContainerBase):
         epsilon: Union[float, ivy.Container] = 1e-7,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.adam_step. This method simply wraps
-        the function, and so the docstring for ivy.adam_step also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.adam_step. This method
+        simply wraps the function, and so the docstring for ivy.adam_step also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -271,9 +268,8 @@ class _ContainerWithGradients(ContainerBase):
         stop_gradients: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Update weights ws of some function, given the true or effective derivatives of
-        some cost c with respect to ws, [dc/dw for w in ws].
+        """Update weights ws of some function, given the true or effective
+        derivatives of some cost c with respect to ws, [dc/dw for w in ws].
 
         Parameters
         ----------
@@ -351,10 +347,10 @@ class _ContainerWithGradients(ContainerBase):
         stop_gradients: Union[bool, ivy.Container] = True,
         out: ivy.Container = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.gradient_descent_update. This
-        method simply wraps the function, and so the docstring for
-        ivy.gradient_descent_update also applies to this method with minimal changes.
+        """ivy.Container instance method variant of
+        ivy.gradient_descent_update. This method simply wraps the function, and
+        so the docstring for ivy.gradient_descent_update also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -435,10 +431,9 @@ class _ContainerWithGradients(ContainerBase):
         stop_gradients: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        Update weights ws of some function, given the derivatives of some cost c with
-        respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive Rate Scaling
-        (LARS) method.
+        """Update weights ws of some function, given the derivatives of some
+        cost c with respect to ws, [dc/dw for w in ws], by applying Layerwise
+        Adaptive Rate Scaling (LARS) method.
 
         Parameters
         ----------
@@ -462,6 +457,35 @@ class _ContainerWithGradients(ContainerBase):
         -------
         ret
             The new function weights ws_new, following the LARS updates.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` inputs:
+
+        >>> w = ivy.Container(a=ivy.array([3.2, 2.6, 1.3]),
+        ...                    b=ivy.array([1.4, 3.1, 5.1]))
+        >>> dcdw = ivy.array([0.2, 0.4, 0.1])
+        >>> lr = ivy.array(0.1)
+        >>> new_weights = w.lars_update(dcdw, lr)
+        >>> print(new_weights)
+        {
+            a: ivy.array([3.01132035, 2.22264051, 1.2056601]),
+            b: ivy.array([1.1324538, 2.56490755, 4.96622658])
+        }
+
+        With multiple :class:`ivy.Container` inputs:
+
+        >>> w = ivy.Container(a=ivy.array([3.2, 2.6, 1.3]),
+        ...                    b=ivy.array([1.4, 3.1, 5.1]))
+        >>> dcdw = ivy.Container(a=ivy.array([0.2, 0.4, 0.1]),
+        ...                       b=ivy.array([0.3,0.1,0.2]))
+        >>> lr = ivy.array(0.1)
+        >>> new_weights = w.lars_update(dcdw, lr)
+        >>> print(new_weights)
+        {
+            a: ivy.array([3.01132035, 2.22264051, 1.2056601]),
+            b: ivy.array([0.90848625, 2.93616199, 4.77232409])
+        }
         """
         return ivy.lars_update(
             self,
@@ -487,9 +511,8 @@ class _ContainerWithGradients(ContainerBase):
         stop_gradients: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Update weights ws of some function, given the derivatives of some cost c with
-        respect to ws, using ADAM update. `[reference]
+        """Update weights ws of some function, given the derivatives of some
+        cost c with respect to ws, using ADAM update. `[reference]
 
         <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
 
@@ -608,9 +631,9 @@ class _ContainerWithGradients(ContainerBase):
         stop_gradients: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Update weights ws of some function, given the derivatives of some cost c with
-        respect to ws, [dc/dw for w in ws], by applying LAMB method.
+        """Update weights ws of some function, given the derivatives of some
+        cost c with respect to ws, [dc/dw for w in ws], by applying LAMB
+        method.
 
         Parameters
         ----------

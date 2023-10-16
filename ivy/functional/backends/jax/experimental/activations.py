@@ -6,6 +6,8 @@ import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 from jax import lax
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def logit(
@@ -78,3 +80,58 @@ def elu(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret
+
+
+def celu(
+    x: JaxArray,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jax.nn.celu(x, alpha=alpha)
+
+
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
+def hardtanh(
+    x: JaxArray,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    ret = jnp.where(x > max_val, max_val, jnp.where(x < min_val, min_val, x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+def tanhshrink(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jnp.subtract(x, jax.nn.tanh(x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
+def softshrink(
+    x: JaxArray, /, *, lambd: float = 0.5, out: Optional[JaxArray] = None
+) -> JaxArray:
+    ret = jnp.where(x > lambd, x - lambd, jnp.where(x < -lambd, x + lambd, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+@with_unsupported_dtypes({"0.4.17 and below": ("float64",)}, backend_version)
+def scaled_tanh(
+    x: JaxArray,
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return alpha * jax.nn.tanh(beta * x)
