@@ -1172,8 +1172,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         boundary: Optional[str] = "zeros",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Compute the Short-time Fourier transform  of input.
+        """Compute the Short-time Fourier transform  of input.
 
         Parameters
         ----------
