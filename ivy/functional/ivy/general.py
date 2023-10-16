@@ -2149,7 +2149,6 @@ def set_min_base(val: float) -> None:
 
     Examples
     --------
-
     Retrieve the minimum base
     >>> x = ivy.min_base
     >>> print(x)
@@ -3924,6 +3923,8 @@ def _dnd_dict_union(a, b):
 
 
 def _get_devices_and_dtypes(fn, recurse=False, complement=True):
+    from ivy.functional.ivy.data_type import _expand_typesets
+
     supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
     supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
 
@@ -3960,6 +3961,9 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
                 list(fn_supported_dnd.values())[0], tuple
             )
 
+        for device, dtypes in fn_supported_dnd.items():
+            fn_supported_dnd[device] = _expand_typesets(dtypes)
+
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
@@ -3973,6 +3977,10 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
             ivy.utils.assertions.check_isinstance(
                 list(fn_unsupported_dnd.values())[0], tuple
             )
+
+        for device, dtypes in fn_unsupported_dnd.items():
+            fn_unsupported_dnd[device] = tuple(_expand_typesets(dtypes))
+
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
