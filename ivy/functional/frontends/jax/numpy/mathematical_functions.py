@@ -4,7 +4,6 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
 
@@ -586,9 +585,6 @@ def power(x1, x2, /):
     return ivy.pow(x1, x2)
 
 
-@with_supported_dtypes(
-    {"0.4.14 and below": ("float32", "float64", "int32", "int64")}, "jax"
-)
 @to_ivy_arrays_and_back
 def prod(
     a,

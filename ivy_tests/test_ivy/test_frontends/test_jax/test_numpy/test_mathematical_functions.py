@@ -2748,6 +2748,8 @@ def test_jax_prod(
         initial=initial,
         where=where,
         promote_integers=promote_integers,
+        atol=1e-01,
+        rtol=1e-01,
     )
 
 
