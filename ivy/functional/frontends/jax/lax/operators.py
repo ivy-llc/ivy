@@ -336,8 +336,9 @@ def cumsum(operand, axis=None, reverse=False):
 )
 @to_ivy_arrays_and_back
 def digamma(x, name=None):
-    digamma_fun = ivy.digamma
+    ivy.digamma
     return ivy.astype(ivy.digamma(x), x.dtype)
+
 
 @to_ivy_arrays_and_back
 def div(x, y):
