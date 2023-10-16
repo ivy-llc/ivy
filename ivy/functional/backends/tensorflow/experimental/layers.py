@@ -1327,9 +1327,7 @@ def ifftn(
         return result
 
 
-@with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float16")}, backend_version
-)
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "float16")}, backend_version)
 def stft(
     signal: tf.Tensor,
     n_fft: int,
@@ -1353,32 +1351,32 @@ def stft(
 
     if hop_length <= 0:
         hop_length = 1
-    
+
     signal_length = signal.shape[0]
-    
+
     window_length = window.shape[0]
-    
+
     if win_length is None:
-        win_length = n_fft     
-    
+        win_length = n_fft
+
     if window is None or window is tf.Tensor:
         window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
 
     if window_length > signal_length:
         window = signal
         n_fft = signal_length
-        win_length = n_fft 
-        window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype) 
+        win_length = n_fft
+        window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
     if n_fft > signal_length:
-        n_fft = signal_length 
+        n_fft = signal_length
     if window_length != win_length:
-        win_length = window.shape[0]           
+        win_length = window.shape[0]
 
     window = window / tf.reduce_max(window)
 
-    window_fn = lambda *args, **kwargs: window  
+    window_fn = lambda *args, **kwargs: window
 
-    frame_step = hop_length + 1 
+    frame_step = hop_length + 1
     if isinstance(frame_step, int):
         hop_length = frame_step
 
