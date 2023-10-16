@@ -2149,7 +2149,6 @@ def set_min_base(val: float) -> None:
 
     Examples
     --------
-
     Retrieve the minimum base
     >>> x = ivy.min_base
     >>> print(x)
@@ -3923,6 +3922,26 @@ def _dnd_dict_union(a, b):
     return res
 
 
+# allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+def _expand_typesets(dtypes):
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+    dtypes = list(dtypes)
+    typeset_list = []
+    for i, dtype in reversed(list(enumerate(dtypes))):
+        if dtype in typesets:
+            typeset_list.extend(typesets[dtype])
+            dtypes.pop(i)
+    dtypes += typeset_list
+    return dtypes
+
+
 def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
     supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
@@ -3960,6 +3979,9 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
                 list(fn_supported_dnd.values())[0], tuple
             )
 
+        for device, dtypes in fn_supported_dnd.items():
+            fn_supported_dnd[device] = _expand_typesets(dtypes)
+
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
@@ -3973,6 +3995,10 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
             ivy.utils.assertions.check_isinstance(
                 list(fn_unsupported_dnd.values())[0], tuple
             )
+
+        for device, dtypes in fn_unsupported_dnd.items():
+            fn_unsupported_dnd[device] = tuple(_expand_typesets(dtypes))
+
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
