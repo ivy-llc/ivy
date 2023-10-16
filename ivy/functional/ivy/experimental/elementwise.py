@@ -32,8 +32,7 @@ def amax(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the maximum value of the input array ``x``.
+    """Calculate the maximum value of the input array ``x``.
 
     .. note::
        ``amax`` is an alias of ``max`` and both function
@@ -149,8 +148,7 @@ def amin(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the minimum value of the input array ``x``.
+    """Calculate the minimum value of the input array ``x``.
 
     .. note::
        ``amin`` is an alias of ``min`` and both function
@@ -265,8 +263,8 @@ def lgamma(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the natural logarithm of the absolute value of the gamma function on x.
+    """Compute the natural logarithm of the absolute value of the gamma
+    function on x.
 
     Parameters
     ----------
@@ -316,11 +314,11 @@ def sinc(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate an implementation-dependent approximation of the principal value of the
-    normalized sinc function, having domain ``(-infinity, +infinity)`` and codomain
-    ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``. Each element
-    ``x_i`` is assumed to be expressed in radians.
+    """Calculate an implementation-dependent approximation of the principal
+    value of the normalized sinc function, having domain ``(-infinity,
+    +infinity)`` and codomain ``[-0.217234, 1]``, for each element ``x_i`` of
+    the input array ``x``. Each element ``x_i`` is assumed to be expressed in
+    radians.
 
     **Special cases**
 
@@ -393,10 +391,9 @@ def fmax(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Compute the element-wise maximums of two arrays. Differs from ivy.maximum in the
-    case where one of the elements is NaN. ivy.maximum returns the NaN element while
-    ivy.fmax returns the non-NaN element.
+    """Compute the element-wise maximums of two arrays. Differs from
+    ivy.maximum in the case where one of the elements is NaN. ivy.maximum
+    returns the NaN element while ivy.fmax returns the non-NaN element.
 
     Parameters
     ----------
@@ -439,11 +436,10 @@ def float_power(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Raise each base in x1 to the positionally-corresponding power in x2. x1 and x2 must
-    be broadcastable to the same shape. This differs from the power function in that
-    integers, float16, and float32 are promoted to floats with a minimum precision of
-    float64 so that the result is always inexact.
+    """Raise each base in x1 to the positionally-corresponding power in x2. x1
+    and x2 must be broadcastable to the same shape. This differs from the power
+    function in that integers, float16, and float32 are promoted to floats with
+    a minimum precision of float64 so that the result is always inexact.
 
     Parameters
     ----------
@@ -488,9 +484,8 @@ def copysign(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Change the signs of x1 to match x2 x1 and x2 must be broadcastable to a common
-    shape.
+    """Change the signs of x1 to match x2 x1 and x2 must be broadcastable to a
+    common shape.
 
     Parameters
     ----------
@@ -538,8 +533,7 @@ def count_nonzero(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Count the number of non-zero values in the array a.
+    """Count the number of non-zero values in the array a.
 
     Parameters
     ----------
@@ -598,9 +592,8 @@ def nansum(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the sum of array elements over a given axis treating Not a Numbers (NaNs) as
-    zero.
+    """Return the sum of array elements over a given axis treating Not a
+    Numbers (NaNs) as zero.
 
     Parameters
     ----------
@@ -657,8 +650,8 @@ def isclose(
     equal_nan: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a boolean array where two arrays are element-wise equal within a tolerance.
+    """Return a boolean array where two arrays are element-wise equal within a
+    tolerance.
 
     The tolerance values are positive, typically very small numbers.
     The relative difference (rtol * abs(b)) and the absolute difference
@@ -718,8 +711,7 @@ def signbit(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return element-wise True where signbit is set (less than zero).
+    """Return element-wise True where signbit is set (less than zero).
 
     Parameters
     ----------
@@ -755,8 +747,7 @@ def hypot(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Return the hypotenuse given the two sides of a right angle triangle.
+    """Return the hypotenuse given the two sides of a right angle triangle.
 
     Parameters
     ----------
@@ -796,8 +787,7 @@ def diff(
     append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the n-th discrete difference along the given axis.
+    """Return the n-th discrete difference along the given axis.
 
     Parameters
     ----------
@@ -852,9 +842,8 @@ def allclose(
     equal_nan: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> bool:
-    """
-    Return a True if the two arrays are element-wise equal within given tolerance;
-    otherwise False.
+    """Return a True if the two arrays are element-wise equal within given
+    tolerance; otherwise False.
 
     The tolerance values are positive, typically very small numbers.
     The relative difference (rtol * abs(x2)) and the absolute difference
@@ -923,9 +912,8 @@ def fix(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Round an array of floats element-wise to nearest integer towards zero. The rounded
-    values are returned as floats.
+    """Round an array of floats element-wise to nearest integer towards zero.
+    The rounded values are returned as floats.
 
     Parameters
     ----------
@@ -963,8 +951,7 @@ def nextafter(
     *,
     out: Optional[ivy.Array] = None,
 ) -> bool:
-    """
-    Return the next floating-point value after x1 towards x2, element-wise.
+    """Return the next floating-point value after x1 towards x2, element-wise.
 
     Parameters
     ----------
@@ -1005,9 +992,8 @@ def zeta(
     *,
     out: Optional[ivy.Array] = None,
 ) -> bool:
-    """
-    Compute the Hurwitz zeta function elementwisely with each pair of floats in two
-    arrays.
+    """Compute the Hurwitz zeta function elementwisely with each pair of floats
+    in two arrays.
 
     Parameters
     ----------
@@ -1049,8 +1035,7 @@ def gradient(
     edge_order: int = 1,
     axis: Optional[Union[int, list, tuple]] = None,
 ) -> Union[ivy.Array, List[ivy.Array]]:
-    """
-    Calculate gradient of x with respect to (w.r.t.) spacing.
+    """Calculate gradient of x with respect to (w.r.t.) spacing.
 
     Parameters
     ----------
@@ -1128,8 +1113,7 @@ def xlogy(
     *,
     out: Optional[ivy.Array] = None,
 ) -> bool:
-    """
-    Compute x*log(y) element-wise so that the result is 0 if x = 0.
+    """Compute x*log(y) element-wise so that the result is 0 if x = 0.
 
     Parameters
     ----------
@@ -1173,9 +1157,8 @@ def binarizer(
     threshold: float = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Map the values of the input tensor to either 0 or 1, element-wise, based on the
-    outcome of a comparison against a threshold value.
+    """Map the values of the input tensor to either 0 or 1, element-wise, based
+    on the outcome of a comparison against a threshold value.
 
     Parameters
     ----------
@@ -1215,8 +1198,8 @@ def conj(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the complex conjugate for each element ``x_i`` of the input array ``x``.
+    """Return the complex conjugate for each element ``x_i`` of the input array
+    ``x``.
 
     For complex number of the form
 
@@ -1299,8 +1282,7 @@ def ldexp(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return x1 * (2**x2), element-wise.
+    """Return x1 * (2**x2), element-wise.
 
     Parameters
     ----------
@@ -1342,8 +1324,8 @@ def lerp(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a linear interpolation of two arrays start (given by input) and end.
+    """Return a linear interpolation of two arrays start (given by input) and
+    end.
 
     based on a scalar or array weight.
         input + weight * (end - input),  element-wise.
@@ -1469,8 +1451,7 @@ def frexp(
     *,
     out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Decompose the elements of x into mantissa and twos exponent.
+    """Decompose the elements of x into mantissa and twos exponent.
 
     Parameters
     ----------
@@ -1506,8 +1487,7 @@ def modf(
     *,
     out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Decompose the elements of x into fractional and integral parts.
+    """Decompose the elements of x into fractional and integral parts.
 
     Parameters
     ----------
@@ -1541,8 +1521,7 @@ def digamma(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the logarithmic derivative of the gamma function at x.
+    """Compute the logarithmic derivative of the gamma function at x.
 
     Note
     ----
@@ -1582,9 +1561,8 @@ def sparsify_tensor(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Zeros out all elements in the tensor except `card` elements with maximum absolute
-    values.
+    """Zeros out all elements in the tensor except `card` elements with maximum
+    absolute values.
 
     Parameters
     ----------
