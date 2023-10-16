@@ -13,10 +13,9 @@ def if_else(
     orelse_fn: Callable,
     vars: Dict[str, Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
-    """
-    Take a condition function and two functions as input. If the condition is True, the
-    first function is executed and its result is returned. Otherwise, the second
-    function is executed and its result is returned.
+    """Take a condition function and two functions as input. If the condition
+    is True, the first function is executed and its result is returned.
+    Otherwise, the second function is executed and its result is returned.
 
     Parameters
     ----------
@@ -67,9 +66,9 @@ def while_loop(
     body_fn: Callable,
     vars: Dict[str, Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
-    """
-    Take a test function, a body function and a set of variables as input. The body
-    function is executed repeatedly while the test function returns True.
+    """Take a test function, a body function and a set of variables as input.
+    The body function is executed repeatedly while the test function returns
+    True.
 
     Parameters
     ----------
@@ -119,9 +118,8 @@ def for_loop(
     body_fn: Callable,
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ):
-    """
-    Loops over an iterable, passing the current iteration along with a tuple of
-    variables into the provided body function.
+    """Loops over an iterable, passing the current iteration along with a tuple
+    of variables into the provided body function.
 
     Parameters
     ----------
