@@ -1016,6 +1016,26 @@ def embedding(
     return embeddings
 
 
+def rfft(
+    x: np.ndarray,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x = x.real
+
+    ret = np.fft.rfft(x, n=n, axis=axis, norm=norm)
+
+    if x.dtype != np.float64:
+        ret = ret.astype(np.complex64)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 def rfftn(
     x: np.ndarray,
     s: Sequence[int] = None,
