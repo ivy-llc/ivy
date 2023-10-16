@@ -3807,8 +3807,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.take.
+        """ivy.Container static method variant of ivy.take.
 
         This method simply wraps the function, and so the docstring for
         ivy.take also applies to this method with minimal changes.
@@ -3908,8 +3907,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.take.
+        """ivy.Container instance method variant of ivy.take.
 
         This method simply wraps the function, and so the docstring for
         ivy.take also applies to this method with minimal changes.
