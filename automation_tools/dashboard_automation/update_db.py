@@ -1,7 +1,7 @@
 import sys
 from pymongo import MongoClient
 
-action_url = "https://github.com/unifyai/ivy/actions/runs/"
+action_url = "https://github.com/unifyai/ivy/actions/"
 
 test_configs = {
     "test-array-api": ["array_api", 0],
