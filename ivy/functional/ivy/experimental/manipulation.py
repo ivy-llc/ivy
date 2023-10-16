@@ -2712,6 +2712,121 @@ column_stack.mixed_backend_wrappers = {
 }
 
 
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def take(
+    x: Union[int, ivy.Array, ivy.NativeArray],
+    indices: Union[int, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+    mode: str = "fill",
+    fill_value: Optional[Number] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Return elements of an array along an axis.
+
+    .. note::
+        Conceptually, take(x, indices, axis=3) is equivalent to x[:,:,:,indices,...];
+        however, explicit indexing via arrays of indices is not currently supported
+        in this specification due to concerns regarding __setitem__
+        and array mutation semantics.
+
+    Parameters
+    ----------
+    x
+        input array
+    indices
+        array indices. Must have an integer data type.
+    axis
+        axis over which to select values. If `axis` is negative,
+        the function must determine the axis along which to select values
+        by counting from the last dimension.
+        By default, the flattened input array is used.
+    mode
+        specifies how out-of-bounds `indices` will behave.
+        -   ‘raise’ – raise an error
+        -   ‘wrap’ – wrap around
+        -   ‘clip’ – clip to the range (all indices that are too large are
+        replaced by the index that addresses the last element along that axis.
+        Note that this disables indexing with negative numbers.)
+        -   'fill' (default) = returns invalid values (e.g. NaN)
+        for out-of bounds indices (see also fill_value below)
+    fill_value
+        fill value to return for out-of-bounds slices
+        (Defaults to NaN for inexact types,
+        the largest negative value for signed types,
+        the largest positive value for unsigned types, and True for booleans.)
+    out
+        optional output array, for writing the result to. It must
+        have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+        ret
+            an array having the same data type as `x`.
+            The output array must have the same rank (i.e., number of dimensions) as `x`
+            and must have the same shape as `x`, except for the axis specified by `axis`
+            whose size must equal the number of elements in `indices`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.max.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With `ivy.Array` input:
+
+    >>> x = ivy.array([4,5,6])
+    >>> indices = ivy.array([2,1,0])
+    >>> y = ivy.take(x, indices)
+    >>> print(y)
+    ivy.array([6, 5, 4])
+
+    >>> x = ivy.array([4.7,5.2,6.5])
+    >>> indices = ivy.array([[0,1]])
+    >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+    >>> ivy.take(x, indices, out=y)
+    >>> print(y)
+    ivy.array([[4.7, 5.2]])
+
+    >>> x = ivy.array([False, False, True])
+    >>> indices = ivy.array([[4,3,2]])
+    >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+    >>> ivy.take(x, indices, out=y, mode="wrap")
+    >>> print(y)
+    ivy.array([[False, False, True]])
+
+    With `ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([True,False,False]),
+    ...                     b=ivy.array([2.3,4.5,6.7]),
+    ...                     c=ivy.array([1,2,3]))
+    >>> indices = ivy.array([[1,9,2]])
+    >>> y = ivy.take(x, indices)
+    >>> print(y)
+    {
+        a: ivy.array([[False, True, False]]),
+        b: ivy.array([[4.5, nan, 6.69999981]]),
+        c: ivy.array([[2, -2147483648, 3]])
+    }
+    """
+    return ivy.current_backend().take(
+        x, indices, axis=axis, mode=mode, fill_value=fill_value, out=out
+    )
+
+
 @inputs_to_ivy_arrays
 @handle_exceptions
 @handle_device
