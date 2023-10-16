@@ -841,7 +841,7 @@ def test_frontend_function(
         # test if return is frontend
         _assert_frontend_ret(ret)
 
-        if test_flags.with_out:
+        if test_flags.with_out and "out" in kwargs and kwargs["out"] is not None:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
             else:
