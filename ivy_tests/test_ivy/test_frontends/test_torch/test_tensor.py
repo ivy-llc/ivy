@@ -5601,11 +5601,11 @@ def test_torch_tensor_corrcoef(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"],
+        init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=[],
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
@@ -5715,7 +5715,7 @@ def test_torch_tensor_cosh(
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=[],
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
