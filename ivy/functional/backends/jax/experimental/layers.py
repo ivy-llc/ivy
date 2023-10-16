@@ -906,9 +906,6 @@ def stft(
     return stft
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("float16", "complex")}, backend_version)
-@with_unsupported_dtypes({"0.4.14 and below": ("float16", "complex")}, backend_version
-@with_unsupported_dtypes({"0.4.16 and below": ("float16", "complex")}, backend_version)
 @with_unsupported_dtypes({"0.4.17 and below": ("float16", "complex")}, backend_version)
 def rfft(
     x: JaxArray,
