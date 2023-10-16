@@ -74,13 +74,13 @@ def test_elu(
 @handle_test(
     fn_tree="functional.ivy.experimental.hardshrink",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
     threshold=st.one_of(
-        st.floats(min_value=0.0, max_value=100),
+        st.floats(min_value=0.0, max_value=1e30),
     ),
 )
 def test_hardshrink(

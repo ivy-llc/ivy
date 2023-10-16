@@ -470,7 +470,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([-1., 0., 1.])
         >>> y = x.hardshrink()
         >>> print(y)
-        ivy.array([-0.5,  0. ,  0.5])
+        ivy.array([-1.,  0.,  1.])
         >>> x = ivy.array([-1., 0., 1.])
         >>> y = x.hardshrink(lambd=1.0)
         >>> print(y)

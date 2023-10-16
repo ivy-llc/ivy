@@ -838,7 +838,7 @@ def hardshrink(
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = ivy.hardshrink(x)
     >>> print(y)
-    ivy.array([-0.5,  0.5,  1.5])
+    ivy.array([-1.,  1.,  2.])
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = x.hardshrink()
     >>> print(y)
@@ -846,7 +846,7 @@ def hardshrink(
     >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
     >>> y = ivy.hardshrink(x)
     >>> print(y)
-    ivy.array([[-0.79999995,  3.29999995,  1.59999991],
-       [ 1.20000005,  3.69999981, -6.0999999 ]])
+    ivy.array([[-1.29999995,  3.79999995,  2.0999999 ],
+       [ 1.70000005,  4.19999981, -6.5999999 ]])
     """
     return current_backend(x).hardshrink(x, lambd=lambd, out=out)

@@ -137,7 +137,7 @@ def scaled_tanh(
     return alpha * tf.nn.tanh(beta * x)
 
 
-@with_supported_dtypes({"2.14.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("float",)}, backend_version)
 def hardshrink(
     x: Tensor,
     /,

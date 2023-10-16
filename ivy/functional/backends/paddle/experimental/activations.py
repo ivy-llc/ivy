@@ -200,8 +200,9 @@ def scaled_tanh(
     return paddle.stanh(x, scale_a=beta, scale_b=alpha)
 
 
-@with_supported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float32", "float64")}}, backend_version
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}},
+    backend_version,
 )
 def hardshrink(
     x: paddle.Tensor, /, *, lambd: float = 0.5, out: Optional[paddle.Tensor] = None
@@ -209,12 +210,8 @@ def hardshrink(
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.hardshrink(x, threshold=lambd)
     if paddle.is_complex(x):
-        ret = (
-            paddle_backend.where(
-                paddle_backend.greater(x, lambd),
-                x,
-                paddle_backend.where(paddle_backend.less(x, -lambd), x, 0),
-            ),
+        return paddle.complex(
+            F.hardshrink(x.real(), threshold=lambd),
+            F.hardshrink(x.img(), threshold=lambd),
         )
-        return ret
     return F.hardshrink(x.cast("float32"), threshold=lambd).cast(x.dtype)

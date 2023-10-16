@@ -1517,7 +1517,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> y = ivy.Container._static_hardshrink(x)
         >>> print(y)
         {
-            a: ivy.array([0.5, -1.5]),
+            a: ivy.array([1., -2.]),
             b: ivy.array([0., 0.])
         }
         """
@@ -1576,7 +1576,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> y = ivy.Container.hardshrink(x)
         >>> print(y)
         {
-            a: ivy.array([0.5, -1.5]),
+            a: ivy.array([1., -2.]),
             b: ivy.array([0., 0.])
         }
         """
