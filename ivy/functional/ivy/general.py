@@ -3922,8 +3922,27 @@ def _dnd_dict_union(a, b):
     return res
 
 
+# allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+def _expand_typesets(dtypes):
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+    dtypes = list(dtypes)
+    typeset_list = []
+    for i, dtype in reversed(list(enumerate(dtypes))):
+        if dtype in typesets:
+            typeset_list.extend(typesets[dtype])
+            dtypes.pop(i)
+    dtypes += typeset_list
+    return dtypes
+
+
 def _get_devices_and_dtypes(fn, recurse=False, complement=True):
-    from ivy.functional.ivy.data_type import _expand_typesets
 
     supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
     supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
