@@ -3368,10 +3368,6 @@ def test_tensorflow_Prod(  # NOQA
     fn_tree="tf.raw_ops.RandomStandardNormal",
     shape=helpers.get_shape(
         allow_none=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
     ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=10),
