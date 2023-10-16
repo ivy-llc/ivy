@@ -3943,7 +3943,6 @@ def _expand_typesets(dtypes):
 
 
 def _get_devices_and_dtypes(fn, recurse=False, complement=True):
-
     supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
     supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
 
