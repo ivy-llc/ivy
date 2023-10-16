@@ -1327,58 +1327,60 @@ def ifftn(
         return result
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("bfloat16", "float16")}, backend_version
+)
 def stft(
-    signal: Union[tf.Tensor, int, Tuple[int]],
-    n_fft: Union[int, Tuple[int]],
+    signal: tf.Tensor,
+    n_fft: int,
     hop_length: int,
     /,
     *,
     axis: Optional[int] = None,
     onesided: Optional[bool] = True,
     fs: Optional[float] = 1.0,
-    window: Optional[Union[tf.Tensor, list, Tuple[int]]] = None,
+    window: Optional[tf.Tensor] = None,
     win_length: Optional[int] = None,
-    center: Optional[bool] = True,
+    center: Optional[bool] = False,
     pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
-    return_complex: Optional[bool] = True,
     boundary: Optional[str] = "zeros",
     out: Optional[tf.Tensor] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> tf.Tensor:
     if axis is None:
         axis = -1
 
     if hop_length <= 0:
         hop_length = 1
-
-    signal_length = len(signal)
-    if signal_length < n_fft:
-        raise ValueError("Value of n_fft must less than or equal length of the signal")
-
+    
+    signal_length = signal.shape[0]
+    
     window_length = window.shape[0]
-    if window_length != win_length:
-        raise ValueError("Value of win_length must be equal to length of window")
-
+    
     if win_length is None:
-        win_length = n_fft
-
-    if win_length > n_fft:
-        raise ValueError("Value of win_length must be less then or equal to n_fft")
-
+        win_length = n_fft     
+    
     if window is None or window is tf.Tensor:
         window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
 
     if window_length > signal_length:
         window = signal
         n_fft = signal_length
-        win_length = n_fft
-        window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
+        win_length = n_fft 
+        window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype) 
+    if n_fft > signal_length:
+        n_fft = signal_length 
+    if window_length != win_length:
+        win_length = window.shape[0]           
 
     window = window / tf.reduce_max(window)
 
-    window_fn = lambda *args, **kwargs: window
+    window_fn = lambda *args, **kwargs: window  
+
+    frame_step = hop_length + 1 
+    if isinstance(frame_step, int):
+        hop_length = frame_step
 
     stft = tf.signal.stft(
         signal,
