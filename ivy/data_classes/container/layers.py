@@ -26,10 +26,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.linear. This method simply wraps the
-        function, and so the docstring for ivy.linear also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.linear. This method
+        simply wraps the function, and so the docstring for ivy.linear also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -120,10 +119,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.linear. This method simply wraps
-        the function, and so the docstring for ivy.linear also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.linear. This method
+        simply wraps the function, and so the docstring for ivy.linear also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -203,10 +201,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.dropout. This method simply wraps the
-        function, and so the docstring for ivy.dropout also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.dropout. This method
+        simply wraps the function, and so the docstring for ivy.dropout also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -291,10 +288,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.dropout. This method simply wraps
-        the function, and so the docstring for ivy.dropout also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.dropout. This method
+        simply wraps the function, and so the docstring for ivy.dropout also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -376,10 +372,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.dropout1d. This method simply wraps
-        the function, and so the docstring for ivy.dropout1d also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.dropout1d. This method
+        simply wraps the function, and so the docstring for ivy.dropout1d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -448,10 +443,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.dropout1d. This method simply wraps
-        the function, and so the docstring for ivy.dropout1d also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.dropout1d. This method
+        simply wraps the function, and so the docstring for ivy.dropout1d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -520,10 +514,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.dropout2d. This method simply wraps
-        the function, and so the docstring for ivy.dropout2d also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.dropout2d. This method
+        simply wraps the function, and so the docstring for ivy.dropout2d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -581,10 +574,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.dropout2d. This method simply wraps
-        the function, and so the docstring for ivy.dropout2d also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.dropout2d. This method
+        simply wraps the function, and so the docstring for ivy.dropout2d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -653,10 +645,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.dropout3d. This method simply wraps
-        the function, and so the docstring for ivy.dropout3d also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.dropout3d. This method
+        simply wraps the function, and so the docstring for ivy.dropout3d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -714,10 +705,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.dropout3d. This method simply wraps
-        the function, and so the docstring for ivy.dropout3d also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.dropout3d. This method
+        simply wraps the function, and so the docstring for ivy.dropout3d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -779,11 +769,10 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.scaled_dot_product_attention. This
-        method simply wraps the function, and so the docstring for
-        ivy.scaled_dot_product_attention also applies to this method with minimal
-        changes.
+        """ivy.Container static method variant of
+        ivy.scaled_dot_product_attention. This method simply wraps the
+        function, and so the docstring for ivy.scaled_dot_product_attention
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -902,11 +891,10 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.scaled_dot_product_attention. This
-        method simply wraps the function, and so the docstring for
-        ivy.scaled_dot_product_attention also applies to this method with minimal
-        changes.
+        """ivy.Container instance method variant of
+        ivy.scaled_dot_product_attention. This method simply wraps the
+        function, and so the docstring for ivy.scaled_dot_product_attention
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1206,10 +1194,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.conv1d. This method simply wraps the
-        function, and so the docstring for ivy.conv1d also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.conv1d. This method
+        simply wraps the function, and so the docstring for ivy.conv1d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1302,10 +1289,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.conv1d. This method simply wraps
-        the function, and so the docstring for ivy.conv1d also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.conv1d. This method
+        simply wraps the function, and so the docstring for ivy.conv1d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1398,10 +1384,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.conv2d. This method simply wraps the
-        function, and so the docstring for ivy.conv2d also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.conv2d. This method
+        simply wraps the function, and so the docstring for ivy.conv2d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1488,10 +1473,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of `ivy.conv2d`. This method simply wraps
-        the function, and so the docstring for `ivy.conv2d` also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of `ivy.conv2d`. This method
+        simply wraps the function, and so the docstring for `ivy.conv2d` also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1577,10 +1561,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.conv1d_transpose. This method simply
-        wraps the function, and so the docstring for ivy.conv1d_transpose also applies
-        to this method with minimal changes.
+        """ivy.Container static method variant of ivy.conv1d_transpose. This
+        method simply wraps the function, and so the docstring for
+        ivy.conv1d_transpose also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1670,10 +1653,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        """
-        ivy.Container instance method variant of ivy.conv1d_transpose. This method
-        simply wraps the function, and so the docstring for ivy.conv1d_transpose also
-        applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.conv1d_transpose. This
+        method simply wraps the function, and so the docstring for
+        ivy.conv1d_transpose also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1763,10 +1745,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.conv2d_transpose. This method simply
-        wraps the function, and so the docstring for ivy.conv2d also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.conv2d_transpose. This
+        method simply wraps the function, and so the docstring for ivy.conv2d
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1862,10 +1843,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.conv2d_transpose. This method
-        simply wraps the function, and so the docstring for ivy.conv2d also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.conv2d_transpose. This
+        method simply wraps the function, and so the docstring for ivy.conv2d
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1967,10 +1947,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.depthwise_conv2d. This method simply
-        wraps the function, and so the docstring for ivy.depthwise_conv2d also applies
-        to this method with minimal changes.
+        """ivy.Container static method variant of ivy.depthwise_conv2d. This
+        method simply wraps the function, and so the docstring for
+        ivy.depthwise_conv2d also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2040,10 +2019,9 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.depthwise_conv2d. This method
-        simply wraps the function, and so the docstring for ivy.depthwise_conv2d also
-        applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.depthwise_conv2d. This
+        method simply wraps the function, and so the docstring for
+        ivy.depthwise_conv2d also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2112,10 +2090,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.conv3d. This method simply wraps the
-        function, and so the docstring for ivy.conv3d also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.conv3d. This method
+        simply wraps the function, and so the docstring for ivy.conv3d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2197,10 +2174,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.conv3d. This method simply wraps
-        the function, and so the docstring for ivy.conv3d also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.conv3d. This method
+        simply wraps the function, and so the docstring for ivy.conv3d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2283,10 +2259,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.conv3d_transpose. This method simply
-        wraps the function, and so the docstring for ivy.conv3d_transpose also applies
-        to this method with minimal changes.
+        """ivy.Container static method variant of ivy.conv3d_transpose. This
+        method simply wraps the function, and so the docstring for
+        ivy.conv3d_transpose also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2376,10 +2351,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.conv3d_transpose. This method
-        simply wraps the function, and so the docstring for ivy.conv3d_transpose also
-        applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.conv3d_transpose. This
+        method simply wraps the function, and so the docstring for
+        ivy.conv3d_transpose also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2497,10 +2471,9 @@ class _ContainerWithLayers(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        """
-        ivy.Container instance method variant of ivy.lstm_update. This method simply
-        wraps the function, and so the docstring for ivy.lstm_update also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.lstm_update. This
+        method simply wraps the function, and so the docstring for
+        ivy.lstm_update also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2603,10 +2576,9 @@ class _ContainerWithLayers(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.reduce_window. This method simply
-        wraps the function, and so the docstring for ivy.reduce_window also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.reduce_window. This
+        method simply wraps the function, and so the docstring for
+        ivy.reduce_window also applies to this method with minimal changes.
 
         Parameters
         ----------
