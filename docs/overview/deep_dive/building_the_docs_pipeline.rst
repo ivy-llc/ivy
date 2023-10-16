@@ -6,6 +6,21 @@ Building the Docs Pipeline
 .. _autosummary: https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html
 .. _doc-builder repository: https://github.com/unifyai/doc-builder
 
+.. warning::
+
+    Be aware that the doc-builder was developed originally for Linux, although, in theory, you can run
+    it on any platform (supporting either docker or windows), it's only tested it on
+    Linux. If you find any windows related issues, feel free to open an issue for that to review it.
+
+.. note::
+
+    Recommendation:
+    You can use the convenience script if you build the docs regularly,
+    as it will not re-download the dependencies.
+
+    If you have a slow internet connection, you can use GitHub Codespaces since it will help you to build the
+    docs faster since our script downloads large dependency files.
+
 To build our docs, we use `Sphinx`_. Sphinx is an extendable documentation generator
 for Python. As our building pipeline is complex, we heavily customize Sphinx using
 custom and third party extensions. As well as having a convenience script to build
@@ -348,8 +363,8 @@ This is a custom documenter for ``autodoc`` that documents Ivy data attributes t
 in ``ivy.functional.ivy``, it will replace the module to ``ivy.`` instead of
 ``ivy.functional.ivy.<submodule>``.
 
-It's used instead of simply using ``ivy.<data atribute>`` because data attributes have
-no ``__doc__`` atribute, instead docs are discovered by parsing the source code itself.
+It's used instead of simply using ``ivy.<data attribute>`` because data attributes have
+no ``__doc__`` attribute, instead docs are discovered by parsing the source code itself.
 So for Sphinx to find the required docs, it needs to be supplied the full module name,
 then using the ``autoivydata`` directive will replace the module name to ``ivy.``.
 

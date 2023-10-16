@@ -10,7 +10,7 @@ from ..statistical import _infer_dtype
 
 
 @with_unsupported_dtypes(
-    {"0.4.16 and below": ("bfloat16",)},
+    {"0.4.18 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -121,7 +121,7 @@ def histogram(
 
 
 @with_unsupported_dtypes(
-    {"0.4.16 and below": ("complex64", "complex128")}, backend_version
+    {"0.4.18 and below": ("complex64", "complex128")}, backend_version
 )
 def median(
     input: JaxArray,
@@ -160,6 +160,23 @@ def nanmean(
     if isinstance(axis, list):
         axis = tuple(axis)
     return jnp.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+
+
+def nanmin(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[JaxArray] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    return jnp.nanmin(
+        x, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+    )
 
 
 def nanprod(
@@ -389,7 +406,7 @@ def __get_index(lst, indices=None, prefix=None):
 
 @with_unsupported_dtypes(
     {
-        "0.4.16 and below": (
+        "0.4.18 and below": (
             "bfloat16",
             "bool",
         )

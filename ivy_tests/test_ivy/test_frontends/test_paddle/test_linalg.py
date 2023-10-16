@@ -742,6 +742,43 @@ def test_paddle_linalg_diagonal(
     )
 
 
+@handle_frontend_test(
+    fn_tree="paddle.lu_unpack",
+    dtype_x=_get_dtype_and_square_matrix(real_and_complex_only=True),
+    p=st.lists(st.floats(1, 5), max_size=5),
+    unpack_datas=st.booleans(),
+    unpack_pivots=st.booleans(),
+)
+def test_paddle_lu_unpack(
+    *,
+    dtype_x,
+    p,
+    unpack_datas,
+    unpack_pivots,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x = dtype_x
+    x = np.array(x[0], dtype=dtype[0])
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lu_data=x,
+        lu_pivots=p,
+        unpack_datas=unpack_datas,
+        unpack_pivots=unpack_pivots,
+        rtol=1e-03,
+        atol=1e-03,
+    )
+
+
 # matmul
 @handle_frontend_test(
     fn_tree="paddle.matmul",

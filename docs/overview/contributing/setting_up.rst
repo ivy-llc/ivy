@@ -10,6 +10,8 @@ Setting Up
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
 .. _`ivy/run_tests_CLI`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI
+.. _`platform compatibility tags`: https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
+.. _`logging level`: https://docs.python.org/3/library/logging.html#logging.Logger.setLevel
 
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
@@ -120,7 +122,7 @@ Using miniconda
 
    .. code-block:: none
 
-      pip install e .
+      pip install -e .
 
 #. Setup the interpreter by:
 
@@ -430,7 +432,7 @@ Ubuntu
    d. Choosing "Docker" from the left panel.
       Type python3 (with the number) in python interpreter path and press ok.
 
-**Docker Connection not Successfull**
+**Docker Connection not Successful**
 
 This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
 
@@ -760,7 +762,7 @@ If you want to setup a GPU instance on codespaces and also have access to it, ki
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/Selecting_the_GPU.png?raw=true
    :width: 420
 
-2. Refer to the ref:`Setting up Codespaces` section for the other configurations such as the "Dev conatiner configuration". Your Machine Type section will look like the following image shown below. Feel free to click on the green button to create the instance.
+2. Refer to the ref:`Setting up Codespaces` section for the other configurations such as the "Dev container configuration". Your Machine Type section will look like the following image shown below. Feel free to click on the green button to create the instance.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/Interface_after_selecting_the_GPU_1.png?raw=true
    :width: 420
@@ -834,6 +836,49 @@ The steps are as following to setup testing on VS Code when using a new Codespac
       }
 
 Note: Currently you do not need to comment out the :code:`conftest.py` file in the :code:`array_api_tests` directory.
+
+
+The Binaries
+------------
+
+Some features in :code:`ivy` are served as compiled binaries, such as the transpiler.
+These binaries aren't maintained in the :code:`ivy` repository directly, but on a separate :code:`binaries` repository.
+All the binaries that are required to make use of the full potential of :code:`ivy` are recorded in the :code:`binaries.json`.
+The supported configurations (Python version - OS - Architecture) are recorded in the :code:`available_configs.json`.
+
+The format of representing a configuration is based on PyPI's `platform compatibility tags`_,
+meaning :code:`cp310-none-manylinux_2_17_x86_64` represents a configuration that can be used in a Python 3.10 environment on a linux system with x86-64.
+We continue to add support to many more supported configurations to our binaries to work with various python versions, OS and architecture.
+
+On installing :code:`ivy` with :code:`pip install -e .` all the required binaries with a supported configuration to your system get downloaded.
+Just to have another check on whether all binaries are present, there's a warning that gets thrown when you :code:`import ivy` if any binaries are missing of the form,
+
+.. code-block:: none
+
+   WARNING:root:   Some binaries seem to be missing in your system. This could be either because we don't have compatible binaries for your system or that newer binaries were available.
+                   In the latter case, calling ivy.utils.cleanup_and_fetch_binaries() should fetch the binaries binaries. Feel free to create an issue on https://github.com/unifyai/ivy.git in case of the former
+
+   WARNING:root:
+   Following are the supported configurations :
+   compiler : cp38-none-manylinux_2_17_x86_64, cp310-none-manylinux_2_17_x86_64
+   engines : cp310-none-manylinux_2_17_x86_64
+
+   WARNING:root:   /workspaces/ivy/ivy/compiler/_compiler.so not found.
+
+In case there are no supported binaries for your configuration, then feel free to create an issue on the :code:`ivy` repo asking for adding support to the same.
+Feel free to ignore the warning in the meantime, set a `logging level`_ to avoid receiving the warning.
+In case the you are using a supported configuration and still receiving this warning, it indicates that you are yet to do a :code:`pip install -e .` as mentioned in the previous sections.
+Running a :code:`pip install -e .` is sufficient to download the binaries if they're supported but the :func:`ivy.utils.cleanup_and_fetch_binaries` function is provided just in case you want to download the binaries without a local installation.
+
+.. code-block:: python
+
+   import ivy
+
+   ivy.utils.cleanup_and_fetch_binaries()
+
+
+.. note:: Bear in mind that the binaries are **not** required for working on the open tasks for the most part, so it's totally fine to not have the binaries downloaded on your system for working on any of the open tasks.
+
 
 **Video**
 
