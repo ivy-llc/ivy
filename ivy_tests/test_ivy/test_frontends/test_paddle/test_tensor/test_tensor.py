@@ -227,6 +227,8 @@ def _reshape_helper(draw):
 def dtypes_x_shape(draw):
     dtypes, x = draw(
         helpers.dtype_and_values(
+            min_dim_size=1,
+            min_num_dims=1,
             available_dtypes=["float32"],
             shape=st.shared(
                 helpers.get_shape(
