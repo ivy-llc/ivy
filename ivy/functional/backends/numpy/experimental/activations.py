@@ -6,8 +6,6 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-
-
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
 )
