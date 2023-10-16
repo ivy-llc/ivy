@@ -38,8 +38,7 @@ def cholesky(
     upper: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the cholesky decomposition of the x matrix.
+    """Compute the cholesky decomposition of the x matrix.
 
     Parameters
     ----------
@@ -182,8 +181,7 @@ def cross(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return cross product of 3-element vectors.
+    """Return cross product of 3-element vectors.
 
     If x1 and x2 are multi- dimensional arrays (i.e., both have a rank greater than 1),
     then the cross- product of each pair of corresponding 3-element vectors is
@@ -282,8 +280,8 @@ def cross(
 def det(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """
-    Return the determinant of a square matrix (or a stack of square matrices)``x``.
+    """Return the determinant of a square matrix (or a stack of square
+    matrices)``x``.
 
     Parameters
     ----------
@@ -362,8 +360,8 @@ def diagonal(
     axis2: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the specified diagonals of a matrix (or a stack of matrices) ``x``.
+    """Return the specified diagonals of a matrix (or a stack of matrices)
+    ``x``.
 
     Parameters
     ----------
@@ -539,10 +537,9 @@ def eig(
     *,
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    """
-    Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of symmetric
-    matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of matrices) and
-    ``L`` is a vector (or a stack of vectors).
+    """Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack
+    of symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a
+    stack of matrices) and ``L`` is a vector (or a stack of vectors).
 
     .. note::
        The function ``eig`` currently behaves like ``eigh``, as
@@ -593,10 +590,9 @@ def eigh(
     UPLO: str = "L",
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    r"""
-    Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of symmetric
-    matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of matrices) and
-    ``L`` is a vector (or a stack of vectors).
+    r"""Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack
+    of symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a
+    stack of matrices) and ``L`` is a vector (or a stack of vectors).
 
     .. note::
        The function ``eig`` will be added in a future version of the specification, as
@@ -706,8 +702,8 @@ def eigvalsh(
     UPLO: str = "L",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
+    """Return the eigenvalues of a symmetric matrix (or a stack of symmetric
+    matrices) x.
 
     .. note::
        The function ``eig`` will be added in a future version of the specification, as
@@ -814,8 +810,7 @@ def inner(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the inner product of two vectors ``x1`` and ``x2``.
+    """Return the inner product of two vectors ``x1`` and ``x2``.
 
     Parameters
     ----------
@@ -893,9 +888,8 @@ def inv(
     adjoint: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the multiplicative inverse of a square matrix (or a stack of square matrices)
-    ``x``.
+    """Return the multiplicative inverse of a square matrix (or a stack of
+    square matrices) ``x``.
 
     Parameters
     ----------
@@ -991,8 +985,7 @@ def matmul(
     adjoint_b: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the matrix product.
+    """Compute the matrix product.
 
     Parameters
     ----------
@@ -1152,8 +1145,7 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the matrix p-norm.
+    """Compute the matrix p-norm.
 
     Parameters
     ----------
@@ -1308,8 +1300,8 @@ def matrix_norm(
 def matrix_power(
     x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """
-    Raise a square matrix (or a stack of square matrices) x to an integer power n.
+    """Raise a square matrix (or a stack of square matrices) x to an integer
+    power n.
 
     Parameters
     ----------
@@ -1415,9 +1407,8 @@ def matrix_rank(
     hermitian: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the rank (i.e., number of non-zero singular values) of a matrix (or a stack
-    of matrices).
+    """Return the rank (i.e., number of non-zero singular values) of a matrix
+    (or a stack of matrices).
 
     Parameters
     ----------
@@ -1529,8 +1520,7 @@ def matrix_transpose(
     conjugate: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Transposes a matrix (or a stack of matrices) ``x``.
+    """Transposes a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -1619,8 +1609,7 @@ def outer(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the outer product of two vectors ``x1`` and ``x2``.
+    """Return the outer product of two vectors ``x1`` and ``x2``.
 
     Parameters
     ----------
@@ -1710,9 +1699,8 @@ def pinv(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
-    ``x``.
+    """Return the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of
+    matrices) ``x``.
 
     Parameters
     ----------
@@ -1786,10 +1774,9 @@ def qr(
     mode: str = "reduced",
     out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Return the qr decomposition x = QR of a full column rank matrix (or a stack of
-    matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
-    upper-triangular matrix (or a stack of matrices).
+    """Return the qr decomposition x = QR of a full column rank matrix (or a
+    stack of matrices), where Q is an orthonormal matrix (or a stack of
+    matrices) and R is an upper-triangular matrix (or a stack of matrices).
 
     Parameters
     ----------
@@ -2007,9 +1994,8 @@ def solve(
     adjoint: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the solution x to the system of linear equations represented by the well-
-    determined (i.e., full rank) linear matrix equation Ax = B.
+    """Return the solution x to the system of linear equations represented by
+    the well- determined (i.e., full rank) linear matrix equation Ax = B.
 
     Parameters
     ----------
@@ -2137,11 +2123,11 @@ def svd(
     compute_uv: bool = True,
     full_matrices: bool = True,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-    """
-    Return a singular value decomposition A = USVh of a matrix (or a stack of matrices)
-    ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal columns,
-    ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh`` is a
-    matrix (or a stack of matrices) with orthonormal rows.
+    """Return a singular value decomposition A = USVh of a matrix (or a stack
+    of matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with
+    orthonormal columns, ``S`` is a vector of non-negative numbers (or stack of
+    vectors), and ``Vh`` is a matrix (or a stack of matrices) with orthonormal
+    rows.
 
     Parameters
     ----------
@@ -2265,8 +2251,7 @@ def svd(
 def svdvals(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """
-    Return the singular values of a matrix (or a stack of matrices) ``x``.
+    """Return the singular values of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -2404,8 +2389,7 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a tensor contraction of x1 and x2 over specific axes.
+    """Return a tensor contraction of x1 and x2 over specific axes.
 
     .. note::
         If either ``x1`` or ``x2`` has a complex floating-point data type, neither
@@ -2505,9 +2489,8 @@ def trace(
     axis2: int = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the sum along the specified diagonals of a matrix (or a stack of matrices)
-    ``x``.
+    """Return the sum along the specified diagonals of a matrix (or a stack of
+    matrices) ``x``.
 
     **Special cases**
 
@@ -2631,8 +2614,7 @@ def vecdot(
     axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the (vector) dot product of two arrays.
+    """Compute the (vector) dot product of two arrays.
 
     Parameters
     ----------
@@ -2730,8 +2712,7 @@ def vector_norm(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""
-    Compute the vector norm of a vector (or batch of vectors) ``x``.
+    r"""Compute the vector norm of a vector (or batch of vectors) ``x``.
 
     Parameters
     ----------
@@ -2876,9 +2857,8 @@ def diag(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the specified diagonals of the input array, or an array with the input
-    array's elements as diagonals.
+    """Return the specified diagonals of the input array, or an array with the
+    input array's elements as diagonals.
 
     Parameters
     ----------
@@ -2961,11 +2941,11 @@ def vander(
     increasing: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Generate a Vandermonde matrix. The columns of the output matrix are elementwise
-    powers of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x. If increasing is True,
-    the order of the columns is reversed x^0, x^1, ..., x^{(N-1)}. Such a matrix with a
-    geometric progression in each row is named for Alexandre-Theophile Vandermonde.
+    """Generate a Vandermonde matrix. The columns of the output matrix are
+    elementwise powers of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x. If
+    increasing is True, the order of the columns is reversed x^0, x^1, ...,
+    x^{(N-1)}. Such a matrix with a geometric progression in each row is named
+    for Alexandre-Theophile Vandermonde.
 
     Parameters
     ----------

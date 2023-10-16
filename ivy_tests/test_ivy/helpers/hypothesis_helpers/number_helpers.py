@@ -31,9 +31,8 @@ def floats(
     safety_factor_scale="linear",
     mixed_fn_compos=True,
 ):
-    """
-    Draws an arbitrarily sized list of floats with a safety factor applied to avoid
-    values being generated at the edge of a dtype limit.
+    """Draws an arbitrarily sized list of floats with a safety factor applied
+    to avoid values being generated at the edge of a dtype limit.
 
     Parameters
     ----------
@@ -156,8 +155,7 @@ def ints(
     safety_factor_scale=None,
     mixed_fn_compos=True,
 ):
-    """
-    Draws an integer with a safety factor if specified.
+    """Draws an integer with a safety factor if specified.
 
     Parameters
     ----------
@@ -221,8 +219,7 @@ def number(
     safety_factor_scale="linear",
     mixed_fn_compos=True,
 ):
-    """
-    Draws integers or floats with a safety factor applied to values.
+    """Draws integers or floats with a safety factor applied to values.
 
     Parameters
     ----------
