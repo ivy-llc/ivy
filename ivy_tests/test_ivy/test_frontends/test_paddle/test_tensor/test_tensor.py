@@ -227,22 +227,26 @@ def _reshape_helper(draw):
 def dtypes_x_shape(draw):
     dtypes, x = draw(
         helpers.dtype_and_values(
-            dtype=["float32"],
-            shape=helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=5,
+            allow_nan=True,
+            available_dtypes=["float32"],
+            shape=st.shared(
+                helpers.get_shape(
+                    min_num_dims=1,
+                    max_num_dims=6,
+                ),
+                key="shape",
             ),
         )
     )
     shape = draw(
-        helpers.get_shape(
-            min_num_dims=1,
-            max_num_dims=6,
+        st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=6,
+            ),
+            key="shape",
         )
     )
-
-    shape = list(shape)
-    shape[-len(np.array(x).shape) :] = np.array(x).shape
     return dtypes, x, shape
 
 
@@ -2160,7 +2164,6 @@ def test_paddle_tensor_expand(
     backend_fw,
 ):
     input_dtype, x, shape = dtype_x_shape
-    assume(len(np.array(x).shape) < len(shape))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
