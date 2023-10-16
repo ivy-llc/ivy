@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple, Literal, Sequence
+from typing import Callable, Optional, Union, List, Dict, Tuple, Literal, Sequence
 
 # local
 import ivy
@@ -2375,6 +2375,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             detrend=detrend,
             boundary=boundary,
             out=out,
+        )
 
     def static_rfft(
         x: ivy.Container,
