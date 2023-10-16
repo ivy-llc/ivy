@@ -22,8 +22,7 @@ def bind_custom_gradient_function(func, custom_grad_func):
 
 
 def vjp(func, *primals):
-    """
-    Compute a (reverse-mode) vector-Jacobian product of `func`.
+    """Compute a (reverse-mode) vector-Jacobian product of `func`.
 
     Parameters
     ----------
@@ -42,8 +41,7 @@ def vjp(func, *primals):
 
 
 def jvp(func, primals, tangents):
-    """
-    Compute a (forward-mode) Jacobian-vector product of `func`.
+    """Compute a (forward-mode) Jacobian-vector product of `func`.
 
     Parameters
     ----------

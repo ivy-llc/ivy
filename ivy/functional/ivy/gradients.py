@@ -274,8 +274,7 @@ def _non_finite_to_zero(xs):
 
 
 def _flatten_containers(inputs):
-    """
-    Flatten containers into a single tuple of arrays.
+    """Flatten containers into a single tuple of arrays.
 
     Returns a flattened tuple of arrays and the indices of the arrays in
     the original containers.
