@@ -2313,19 +2313,12 @@ def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
     """Return a flattened version of the frontend arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
-
     with BackendHandler.update_backend(backend) as ivy_backend:
         ret_idxs = ivy_backend.nested_argwhere(ret, _is_frontend_array)
-
-        # handle scalars
-        if len(ret_idxs) == 0:
+        if len(ret_idxs) == 0:  # handle scalars
             ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.isscalar)
             ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
-            ret_flat = [
-                frontend_array_fn(x, dtype=ivy_backend.Dtype(str(np.asarray(x).dtype)))
-                for x in ret_flat
-            ]
-
+            ret_flat = [frontend_array_fn(x) for x in ret_flat]
         else:
             ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
     return ret_flat
@@ -2334,16 +2327,15 @@ def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
 def flatten_frontend_fw_to_np(
     frontend_ret, isscalar_func, is_native_array_func, to_numpy_func
 ):
-    if isscalar_func(frontend_ret):
-        frontend_ret_np_flat = [np.asarray(frontend_ret)]
-    else:
-        # tuplify the frontend return
-        if not isinstance(frontend_ret, tuple):
-            frontend_ret = (frontend_ret,)
-        frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, is_native_array_func)
+    if not isinstance(frontend_ret, tuple):
+        frontend_ret = (frontend_ret,)
+    frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, is_native_array_func)
+    if len(frontend_ret_idxs) == 0:  # handle scalars
+        frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, isscalar_func)
         frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-        frontend_ret_np_flat = [to_numpy_func(x) for x in frontend_ret_flat]
-    return frontend_ret_np_flat
+    else:
+        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+    return [to_numpy_func(x) for x in frontend_ret_flat]
 
 
 def flatten_and_to_np(*, backend: str, ret):
@@ -2356,7 +2348,6 @@ def flatten_and_to_np(*, backend: str, ret):
 
 def flatten_frontend_to_np(*, backend: str, ret, frontend_array_fn=None):
     # flatten the return
-
     ret_flat = flatten_frontend(
         ret=ret, backend=backend, frontend_array_fn=frontend_array_fn
     )
