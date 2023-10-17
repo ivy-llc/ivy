@@ -39,6 +39,7 @@ jobs:
 
       - name: Install ivy and fetch binaries
         run: |
+          ls
           cd ivy
           pip3 install -e .
           mkdir .ivy
