@@ -5,7 +5,7 @@ from pymongo import MongoClient
 import requests
 import json
 import old_run_test_helpers as old_helpers
-from run_tests_CLI.get_all_tests import BACKENDS
+from scripts.setup_tests.get_all_tests import BACKENDS
 
 
 def get_latest_package_version(package_name):
