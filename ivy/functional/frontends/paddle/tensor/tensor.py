@@ -140,6 +140,23 @@ class Tensor:
     def cosh(self, name=None):
         return paddle_frontend.cosh(self)
 
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "int32",
+                "int64",
+                "float64",
+                "complex128",
+                "float32",
+                "complex64",
+                "bool",
+            )
+        },
+        "paddle",
+    )
+    def diagonal(self, offset, axis1=0, axis2=1, name=None):
+        return paddle_frontend.diagonal(self, offset=offset, axis1=axis1, axis2=axis2)
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def log(self, name=None):
         return paddle_frontend.log(self)

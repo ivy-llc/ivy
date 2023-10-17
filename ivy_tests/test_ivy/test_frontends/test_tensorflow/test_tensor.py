@@ -1595,7 +1595,7 @@ def test_tensorflow__xor__(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_tensorflow_tensor_device(
+def test_tensorflow_device(
     dtype_x,
     backend_fw,
 ):
@@ -1612,7 +1612,7 @@ def test_tensorflow_tensor_device(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
     ),
 )
-def test_tensorflow_tensor_dtype(
+def test_tensorflow_dtype(
     dtype_x,
     backend_fw,
 ):
@@ -1633,7 +1633,7 @@ def test_tensorflow_tensor_dtype(
         min_dim_size=1,
     ),
 )
-def test_tensorflow_tensor_get_shape(
+def test_tensorflow_get_shape(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1664,7 +1664,7 @@ def test_tensorflow_tensor_get_shape(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_tensorflow_tensor_ivy_array(
+def test_tensorflow_ivy_array(
     dtype_x,
     backend_fw,
 ):
@@ -1690,7 +1690,7 @@ def test_tensorflow_tensor_ivy_array(
         max_num_dims=5,
     ),
 )
-def test_tensorflow_tensor_set_shape(
+def test_tensorflow_set_shape(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1720,7 +1720,7 @@ def test_tensorflow_tensor_set_shape(
         ret_shape=True,
     ),
 )
-def test_tensorflow_tensor_shape(
+def test_tensorflow_shape(
     dtype_x,
     backend_fw,
 ):

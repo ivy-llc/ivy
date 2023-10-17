@@ -1,4 +1,5 @@
-"""TensorFlow activation functions.
+"""
+TensorFlow activation functions.
 
 Collection of TensorFlow activation functions, wrapped to fit Ivy syntax
 and signature.
@@ -11,7 +12,6 @@ import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
 # local
-import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 import ivy.functional.backends.tensorflow as tf_backend
@@ -48,9 +48,7 @@ def relu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> T
 def sigmoid(
     x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
 ) -> Tensor:
-    if not ivy.is_array(x):
-        x = float(x)
-    return tf.nn.sigmoid(x)
+    return 1 / (1 + tf.exp(-x))
 
 
 def softmax(
