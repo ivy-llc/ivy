@@ -5,7 +5,7 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 @with_supported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float32",
             "float64",
         )
@@ -26,7 +26,7 @@ def manual_seed(seed: int):
 
 @with_supported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float32",
             "float64",
         )
@@ -49,7 +49,7 @@ def multinomial(input, num_samples, replacement=False, *, generator=None, out=No
 
 @with_supported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float32",
             "float64",
         )
@@ -64,7 +64,7 @@ def normal(mean, std, *, generator=None, out=None):
 
 @with_supported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float32",
             "float64",
         )

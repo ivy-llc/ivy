@@ -1,0 +1,94 @@
+{
+    "ivy": {
+        "compiler": [
+            "_compiler.so",
+            {
+                "utils": [
+                    "CC.so",
+                    "CD.so",
+                    "CI.so",
+                    "CL.so",
+                    "CM.so",
+                    "CV.so",
+                    "CX.so",
+                    "C.so",
+
+                    "DC.so",
+                    "DD.so",
+                    "DI.so",
+                    "DL.so",
+                    "DM.so",
+                    "DV.so",
+                    "DX.so",
+                    "D.so",
+
+                    "IC.so",
+                    "ID.so",
+                    "II.so",
+                    "IL.so",
+                    "IM.so",
+                    "IV.so",
+                    "IX.so",
+                    "I.so",
+
+                    "LC.so",
+                    "LD.so",
+                    "LI.so",
+                    "LL.so",
+                    "LM.so",
+                    "LV.so",
+                    "LX.so",
+                    "L.so",
+
+                    "MI.so",
+                    "ML.so",
+                    "MV.so",
+                    "MX.so",
+                    "M.so",
+
+                    "VC.so",
+                    "VD.so",
+                    "VI.so",
+                    "VL.so",
+                    "VM.so",
+                    "VV.so",
+                    "VX.so",
+                    "V.so",
+
+                    "XC.so",
+                    "XD.so",
+                    "XI.so",
+                    "XL.so",
+                    "XM.so",
+                    "XV.so",
+                    "XX.so",
+                    "X.so"
+                ]
+            }
+        ],
+        "engines": [
+            "ivy2xla.so",
+            {
+                "XLA": {
+                    "rust_api": {
+                        "python_frontend": [
+                            "activations.so",
+                            "creation.so",
+                            "elementwise.so",
+                            "general.so",
+                            "layers.so",
+                            "linear_algebra.so",
+                            "manipulation.so",
+                            "norms.so",
+                            "stateful_activations.so",
+                            "stateful_layers.so",
+                            "stateful_norms.so",
+                            "statistical.so",
+                            "xla_core.so"
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}

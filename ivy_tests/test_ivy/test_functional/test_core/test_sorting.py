@@ -123,7 +123,7 @@ def test_msort(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtypes_and_xs=st.one_of(_searchsorted_case1(), _searchsorted_case2()),
     side=st.sampled_from(["left", "right"]),
     use_sorter=st.booleans(),
-    ret_dtype=helpers.get_dtypes("integer", full=False),
+    ret_dtype=helpers.get_dtypes("valid", full=False),
     test_gradients=st.just(False),
 )
 def test_searchsorted(

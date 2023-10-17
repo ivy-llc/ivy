@@ -150,6 +150,61 @@ def _start_stop_step(draw):
 # ------------ #
 
 
+# complex
+@handle_frontend_test(
+    fn_tree="torch.complex",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
+def test_complex(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        real=input[0],
+        imag=input[0],
+    )
+
+
+# polar
+@handle_frontend_test(
+    fn_tree="torch.polar",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_polar(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        abs=input[0],
+        angle=input[0],
+    )
+
+
 # arange
 @handle_frontend_test(
     fn_tree="torch.arange",
@@ -360,6 +415,33 @@ def test_torch_empty_like(
         input=inputs[0],
         dtype=dtype[0],
         device=on_device,
+        test_values=False,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.empty_strided",
+    dtype_x_and_other=_as_strided_helper(),
+)
+def test_torch_empty_strided(
+    *,
+    dtype_x_and_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    x_dtype, x, size, stride, offset = dtype_x_and_other
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        size=size,
+        stride=stride,
         test_values=False,
     )
 

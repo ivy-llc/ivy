@@ -11,7 +11,10 @@ from ivy.utils import _importlib, verbosity
 
 # local
 from ivy.func_wrapper import _wrap_function
-from ivy.utils.backend.sub_backend_handler import _clear_current_sub_backends
+from ivy.utils.backend.sub_backend_handler import (
+    _clear_current_sub_backends,
+    fn_name_from_version_specific_fn_name,
+)
 from ivy.utils.exceptions import _handle_inplace_mode
 
 backend_stack = []
@@ -66,9 +69,8 @@ def prevent_access_locally(fn):
 
 @functools.lru_cache
 def _get_backend_for_arg(arg_module_name):
-    for backend in _backend_dict:
+    for backend, module_name in _backend_dict.items():
         if backend in arg_module_name:
-            module_name = _backend_dict[backend]
             return importlib.import_module(module_name)
 
 
@@ -116,53 +118,6 @@ def _determine_backend_from_args(args):
     else:
         # check if the class module of the arg is in _array_types
         return _get_backend_for_arg(args.__class__.__module__)
-
-
-def fn_name_from_version_specific_fn_name(name, version):
-    """
-    Parameters
-    ----------
-    name
-        the version specific name of the function for which the version support
-        is to be provided.
-    version
-        the version of the current framework for which the support is to be
-        provided, the version is inferred by importing the framework
-    Returns
-    -------
-        the name of the original function which will then point to the version
-        specific function
-
-    """
-    # TODO: add tests
-    version = str(version)
-    if "+" in version:
-        version = tuple(map(int, version[: version.index("+")].split(".")))
-    else:
-        version = tuple(map(int, version.split(".")))
-    if "_to_" in name:
-        i = name.index("_v_")
-        e = name.index("_to_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        version_end = name[e + 4 :]
-        version_end = tuple(map(int, version_end.split("p")))
-        if version_start <= version <= version_end:
-            return name[0:i]
-    elif "_and_above" in name:
-        i = name.index("_v_")
-        e = name.index("_and_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        if version >= version_start:
-            return name[0:i]
-    else:
-        i = name.index("_v_")
-        e = name.index("_and_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        if version <= version_start:
-            return name[0:i]
 
 
 def set_backend_to_specific_version(backend):
@@ -243,7 +198,7 @@ def current_backend(*args, **kwargs):
     return importlib.import_module(_backend_dict[implicit_backend])
 
 
-def _set_backend_as_ivy(
+def _set_module_backend(
     original_dict, target, backend, invalid_dtypes=None, backend_str=None
 ):
     invalid_dtypes = (
@@ -252,7 +207,7 @@ def _set_backend_as_ivy(
     backend_str = backend.current_backend_str() if backend_str is None else backend_str
     for k, v in original_dict.items():
         compositional = k not in backend.__dict__
-        if k not in backend.__dict__:
+        if compositional:
             if k in invalid_dtypes and k in target.__dict__:
                 del target.__dict__[k]
                 continue
@@ -265,7 +220,7 @@ def _set_backend_as_ivy(
             and "ivy.functional." in v.__name__
             and os.path.join("{}", "__init__.py").format(backend_str) not in v.__file__
         ):
-            _set_backend_as_ivy(
+            _set_module_backend(
                 v.__dict__,
                 target.__dict__[k],
                 backend.__dict__[k],
@@ -328,7 +283,7 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
     ]
     array_list.extend(cont_array_vals)
 
-    # filter uninitialized arrays and arrays with other bakcends, and ensure the order
+    # filter uninitialized arrays and arrays with other backends, and ensure the order
     array_list = [
         arr
         for arr in array_list
@@ -453,7 +408,7 @@ def set_backend(backend: str, dynamic: bool = False):
             ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
         backend_stack.append(backend)
         set_backend_to_specific_version(backend)
-        _set_backend_as_ivy(ivy_original_dict, ivy, backend)
+        _set_module_backend(ivy_original_dict, ivy, backend)
         # following snippet is required to update the ivy.functional namespace with
         # backend-specific functions
         for key, _ in ivy.__dict__.items():
@@ -462,7 +417,8 @@ def set_backend(backend: str, dynamic: bool = False):
 
         if dynamic:
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
-
+        for sub_backend in ivy.available_sub_backends:
+            ivy.set_sub_backend(sub_backend)
         if verbosity.level > 0:
             verbosity.cprint(f"backend stack: {backend_stack}")
     _handle_inplace_mode()
@@ -624,7 +580,7 @@ def choose_random_backend(excluded=None):
 @prevent_access_locally
 def with_backend(backend: str, cached: bool = True):
     # Use already compiled object
-    if cached and backend in compiled_backends.keys():
+    if cached and backend in compiled_backends:
         cached_backend = compiled_backends[backend][-1]
         return cached_backend
     with _importlib.LocalIvyImporter():
@@ -638,7 +594,7 @@ def with_backend(backend: str, cached: bool = True):
         set_backend_to_specific_version(backend_module)
         # We know for sure that the backend stack is empty
         # no need to do backend unsetting
-        ivy_pack.utils.backend.handler._set_backend_as_ivy(
+        ivy_pack.utils.backend.handler._set_module_backend(
             ivy_pack.__dict__.copy(), ivy_pack, backend_module
         )
         # TODO use a refactored code from ivy.set_backend

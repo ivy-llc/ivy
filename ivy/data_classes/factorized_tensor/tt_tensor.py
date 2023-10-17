@@ -69,7 +69,7 @@ class TTTensor(FactorizedTensor):
         for index, factor in enumerate(factors):
             current_rank, current_shape, next_rank = ivy.shape(factor)
 
-            if not len(ivy.shape(factor)) == 3:
+            if len(ivy.shape(factor)) != 3:
                 raise ValueError(
                     "TT expresses a tensor as third order factors"
                     f" (tt-cores).\nHowever, len(ivy.shape(factors[{index}])) ="
@@ -139,7 +139,7 @@ class TTTensor(FactorizedTensor):
     @staticmethod
     def tt_to_unfolded(factors, mode):
         """
-        Return the unfolding matrix of a tensor given in TT (or Tensor-Train) format.
+        Return the unfolding matrix of a tensor given in TT (or Tensor- Train) format.
 
         Reassembles a full tensor from 'factors' and returns its unfolding matrix
         with mode given by 'mode'
@@ -291,9 +291,7 @@ class TTTensor(FactorizedTensor):
             delta = ivy.sqrt(b**2 - 4 * a * c)
 
             fraction_param = (-b + delta) / (2 * a)
-            rank = tuple(
-                [max(int(rounding_fn(d * fraction_param)), 1) for d in avg_dim]
-            )
+            rank = tuple(max(int(rounding_fn(d * fraction_param)), 1) for d in avg_dim)
             rank = (1,) + rank + (1,)
 
         else:
@@ -310,14 +308,14 @@ class TTTensor(FactorizedTensor):
 
             if rank[0] != 1:
                 message = (
-                    "Provided rank[0] == {} but boundary conditions dictate rank[0] =="
-                    " rank[-1] == 1.".format(rank[0])
+                    f"Provided rank[0] == {rank[0]} but boundary conditions dictate"
+                    " rank[0] == rank[-1] == 1."
                 )
                 raise ValueError(message)
             if rank[-1] != 1:
                 message = (
-                    "Provided rank[-1] == {} but boundary conditions dictate rank[0] =="
-                    " rank[-1] == 1.".format(rank[-1])
+                    f"Provided rank[-1] == {rank[-1]} but boundary conditions dictate"
+                    " rank[0] == rank[-1] == 1."
                 )
                 raise ValueError(message)
 

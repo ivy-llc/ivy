@@ -9,8 +9,10 @@ import multiprocessing as _multiprocessing
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.general import _broadcast_to
 from ivy.utils.exceptions import _check_inplace_update_support
+from . import backend_version
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -45,6 +47,9 @@ def _check_query(query):
     )
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("float16", "int16", "int8")}, backend_version
+)
 def get_item(
     x: paddle.Tensor,
     /,
@@ -52,17 +57,7 @@ def get_item(
     *,
     copy: bool = None,
 ) -> paddle.Tensor:
-    dtype = x.dtype
-    if dtype in [paddle.int8, paddle.int16, paddle.float16, paddle.bfloat16]:
-        ret = x.cast("float32").__getitem__(query).cast(dtype)
-    elif dtype in [paddle.complex64, paddle.complex128]:
-        ret = paddle.complex(
-            x.real().__getitem__(query),
-            x.imag().__getitem__(query),
-        )
-    else:
-        ret = x.__getitem__(query)
-    return ret
+    return x.__getitem__(query)
 
 
 get_item.partial_mixed_handler = (
@@ -81,10 +76,13 @@ def to_numpy(
         else:
             return x
     elif paddle.is_tensor(x):
+        dtype = ivy.as_ivy_dtype(x.dtype)
+        if dtype == "bfloat16":
+            x = x.astype("float32")
         if copy:
-            return np.array(x)
+            return np.array(x).astype(dtype)
         else:
-            return np.asarray(x)
+            return np.asarray(x).astype(dtype)
     elif isinstance(x, list):
         return [ivy.to_numpy(u) for u in x]
     raise ivy.utils.exceptions.IvyException("Expected a Paddle Tensor.")
@@ -446,8 +444,8 @@ def scatter_nd(
         )
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
         )
     if reduction == "min":
         updates = ivy.minimum(ivy.gather_nd(target, indices), updates).data
@@ -564,7 +562,7 @@ def vmap(
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
-            none_axis_index = list()
+            none_axis_index = []
             for index, axis in enumerate(in_axes):
                 if axis is None:
                     none_axis_index.append(index)

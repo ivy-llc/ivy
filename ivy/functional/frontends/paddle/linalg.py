@@ -59,6 +59,26 @@ def cross(x, y, /, *, axis=9, name=None):
     return ivy.cross(x, y, axis=axis)
 
 
+# diagonal
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+            "bool",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def diagonal(x, offset=0, axis1=0, axis2=1, name=None):
+    return ivy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+
+
 @with_supported_dtypes({"2.4.1 and above": ("float64", "float32")}, "paddle")
 @to_ivy_arrays_and_back
 def dist(x, y, p=2):
@@ -99,6 +119,37 @@ def eigvalsh(x, UPLO="L", name=None):
     return ivy.eigvalsh(x, UPLO=UPLO)
 
 
+@to_ivy_arrays_and_back
+def lu_unpack(lu_data, lu_pivots, unpack_datas=True, unpack_pivots=True, *, out=None):
+    A = lu_data
+    n = A.shape
+    m = len(lu_pivots)
+    pivot_matrix = ivy.eye(m)
+    L = ivy.tril(A)
+    L.fill_diagonal(1.000)
+    U = ivy.triu(A)
+    for i in range(m):
+        if i != lu_pivots[i] - 1:
+            pivot_matrix[[i, lu_pivots[i] - 1]] = pivot_matrix[[lu_pivots[i] - 1, i]]
+        P = pivot_matrix
+    if not unpack_datas:
+        L = ivy.zeros(n)
+        U = ivy.zeros(n)
+        if not unpack_pivots:
+            P = ivy.zeros(n)
+        else:
+            P = pivot_matrix
+        result = f"P={P}\n" + f"L={L}\n" + f"U={U}"
+        return result
+    elif not unpack_pivots:
+        P = ivy.zeros(n)
+        result = f"P={P}\n" + f"L={L}\n" + f"U={U}"
+        return result
+    else:
+        result = f"P={P}\n" + f"L={L}\n" + f"U={U}"
+        return result
+
+
 # matmul
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
@@ -112,6 +163,13 @@ def matmul(x, y, transpose_x=False, transpose_y=False, name=None):
 @to_ivy_arrays_and_back
 def matrix_power(x, n, name=None):
     return ivy.matrix_power(x, n)
+
+
+# mv
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def mv(x, vec, name=None):
+    return ivy.dot(x, vec)
 
 
 # norm

@@ -44,7 +44,7 @@ def max_pool1d(
 ) -> Union[tf.Tensor, tf.Variable]:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCW":
@@ -76,13 +76,12 @@ def max_pool1d(
             )
         padding = [(0, 0)] + list(padding) + [(0, 0)]
         x = tf.pad(x, padding, constant_values=-math.inf)
-    else:
-        if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
-        ):
-            raise NotImplementedError(
-                "Nonzero explicit padding is not supported for depthwise max pooling"
-            )
+    elif isinstance(padding, list) and any(
+        item != 0 for sublist in padding for item in sublist
+    ):
+        raise NotImplementedError(
+            "Nonzero explicit padding is not supported for depthwise max pooling"
+        )
 
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
@@ -109,7 +108,7 @@ def max_pool2d(
 ) -> Union[tf.Tensor, tf.Variable]:
     dims = 2
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCHW":
@@ -145,22 +144,21 @@ def max_pool2d(
                 (pad_w // 2, pad_w - pad_w // 2),
             ]
 
-        x_shape = x.shape[1:-1]
-
         if ceil_mode:
+            x_shape = x.shape[1:-1]
+
             for i in range(dims):
                 padding[i] = _padding_ceil_mode(
                     x_shape[i], new_kernel[i], padding[i], strides[i]
                 )
         padding = [(0, 0)] + list(padding) + [(0, 0)]
         x = tf.pad(x, padding, constant_values=-math.inf)
-    else:
-        if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
-        ):
-            raise NotImplementedError(
-                "Nonzero explicit padding is not supported for depthwise max pooling"
-            )
+    elif isinstance(padding, list) and any(
+        item != 0 for sublist in padding for item in sublist
+    ):
+        raise NotImplementedError(
+            "Nonzero explicit padding is not supported for depthwise max pooling"
+        )
 
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
@@ -174,7 +172,7 @@ def max_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -190,7 +188,7 @@ def max_pool3d(
 ) -> Union[tf.Tensor, tf.Variable]:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCDHW":
@@ -217,8 +215,8 @@ def max_pool3d(
     )
 
     if not depth_pooling:
-        x_shape = x.shape[1:-1]
         new_kernel = [dilation[i] * (kernel[i] - 1) + 1 for i in range(dims)]
+        x_shape = x.shape[1:-1]
         if isinstance(padding, str):
             pad_d = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
             pad_h = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
@@ -236,13 +234,12 @@ def max_pool3d(
                 )
         padding = [(0, 0)] + list(padding) + [(0, 0)]
         x = tf.pad(x, padding, constant_values=-math.inf)
-    else:
-        if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
-        ):
-            raise NotImplementedError(
-                "Nonzero explicit padding is not supported for depthwise max pooling"
-            )
+    elif isinstance(padding, list) and any(
+        item != 0 for sublist in padding for item in sublist
+    ):
+        raise NotImplementedError(
+            "Nonzero explicit padding is not supported for depthwise max pooling"
+        )
 
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
@@ -280,7 +277,7 @@ def _handle_manual_pad_avg_pool(x, kernel, strides, padding, ceil_mode, dims):
     return padding, pad_specific, c
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "float64")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],
@@ -351,7 +348,7 @@ def avg_pool1d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool2d(
     x: Union[tf.Tensor, tf.Variable],
@@ -443,7 +440,7 @@ def avg_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -548,7 +545,7 @@ def avg_pool3d(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.14.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def pool(
     x: Union[tf.Tensor, tf.Variable],
@@ -574,7 +571,7 @@ def pool(
     )
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -648,7 +645,9 @@ def _ifft_norm(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
-@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes(
+    {"2.14.0 and below": ("complex", "float32", "float64")}, backend_version
+)
 def fft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
@@ -658,6 +657,11 @@ def fft(
     n: Union[int, Tuple[int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # ToDo: Remove conversion from float to complex when casting mode is working
+    if x.dtype == "float32":
+        x = tf.cast(x, tf.complex64)
+    elif x.dtype == "float64":
+        x = tf.cast(x, tf.complex128)
     if not isinstance(dim, int):
         raise ivy.utils.exceptions.IvyError(
             f"Expecting <class 'int'> instead of {type(dim)}"
@@ -677,7 +681,7 @@ def fft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in ["backward", "ortho", "forward"]:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     if x.shape[dim] != n:
         s = list(x.shape)
@@ -705,6 +709,7 @@ def fft(
     return ret
 
 
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def dropout(
     x: Union[tf.Tensor, tf.Variable],
     prob: float,
@@ -719,7 +724,7 @@ def dropout(
 ) -> Union[tf.Tensor, tf.Variable]:
     x = ivy.astype(x, dtype) if dtype else x
     res = tf.nn.dropout(x, prob, noise_shape=noise_shape, seed=seed) if training else x
-    res = tf.multiply(res, (1.0 - prob)) if not scale else res
+    res = res if scale else tf.multiply(res, (1.0 - prob))
     return res
 
 
@@ -818,7 +823,7 @@ def ifft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in ["backward", "ortho", "forward"]:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     if x.shape[dim] != n:
         s = list(x.shape)
@@ -846,7 +851,7 @@ def ifft(
     return ret
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def embedding(
     weights: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
@@ -919,8 +924,9 @@ def interpolate(
     return ret
 
 
-interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-    (not align_corners and (len(x.shape) - 2) < 2)
+interpolate.partial_mixed_handler = (
+    lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: not align_corners  # noqa: E501
+    and len(x.shape) < 4
     and mode not in ["nearest", "area", "bicubic", "nd"]
 )
 
@@ -948,10 +954,10 @@ def trans_x_to_s(
     dim: Sequence[int] = (-2, -1),
 ) -> Union[tf.Tensor, tf.Variable]:
     """Change the shape of the input array x to the desired output shape s."""
-    if x.dtype != tf.complex128 and x.dtype != tf.complex64:
+    if x.dtype not in [tf.complex128, tf.complex64]:
         x = tf.cast(x, tf.float32)
     x_shape = x.shape
-    if dim == (-1, -2) or dim == (1, 0):
+    if dim in [(-1, -2), (1, 0)]:
         s = (s[1], s[0])
     if s[0] >= x_shape[0] and s[1] >= x_shape[1]:
         paddings = tf.constant([[0, s[0] - x_shape[0]], [0, s[1] - x_shape[1]]])
@@ -1032,7 +1038,7 @@ def _fft2_helper(x, shape, axes):
     return x
 
 
-@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def fft2(
     x: Union[tf.Tensor, tf.Variable],
     *,
@@ -1060,9 +1066,7 @@ def fft2(
 def fft_input_validation(x):
     if not x.dtype.is_complex:
         raise TypeError(
-            "Invalid FFT input: `x` must be of a complex dtype. Received: {}".format(
-                x.dtype
-            )
+            f"Invalid FFT input: `x` must be of a complex dtype. Received: {x.dtype}"
         )
     return x
 
@@ -1075,9 +1079,9 @@ def shape_and_axes_validation(shape, axes, input_rank_tensor):
                 tf.size(shape),
                 input_rank_tensor,
                 message=(
-                    "Argument `shape` cannot have length greater than the rank of `x`. "
-                    "Received: {}"
-                ).format(shape),
+                    "Argument `shape` cannot have length greater than the rank of `x`."
+                    f" Received: {shape}"
+                ),
             )
         ]
         with tf.control_dependencies(checks_shape):
@@ -1090,23 +1094,19 @@ def shape_and_axes_validation(shape, axes, input_rank_tensor):
                 tf.size(axes),
                 input_rank_tensor,
                 message=(
-                    "Argument `axes` cannot have length greater than the rank of `x`. "
-                    "Received: {}"
-                ).format(axes),
+                    "Argument `axes` cannot have length greater than the rank of `x`."
+                    f" Received: {axes}"
+                ),
             ),
             tf.debugging.assert_less(
                 axes,
                 input_rank_tensor,
-                message=(
-                    "Argument `axes` contains invalid indices. Received: {}"
-                ).format(axes),
+                message=f"Argument `axes` contains invalid indices. Received: {axes}",
             ),
             tf.debugging.assert_greater_equal(
                 axes,
                 -input_rank_tensor,
-                message=(
-                    "Argument `axes` contains invalid indices. Received: {}"
-                ).format(axes),
+                message=f"Argument `axes` contains invalid indices. Received: {axes}",
             ),
         ]
         with tf.control_dependencies(checks_axes):
@@ -1118,9 +1118,9 @@ def shape_and_axes_validation(shape, axes, input_rank_tensor):
                 tf.size(shape),
                 tf.size(axes),
                 message=(
-                    "Arguments `shape` and `axes` must have equal length. "
-                    "Received: {}, {}"
-                ).format(shape, axes),
+                    "Arguments `shape` and `axes` must have equal length. Received:"
+                    f" {shape}, {axes}"
+                ),
             )
         ]
         with tf.control_dependencies(checks_shape_axes):
@@ -1175,7 +1175,7 @@ def rank_initialization(axes):
 def norm_initialization(norm, shape, x):
     if norm == "backward":
         norm_factor = tf.constant(1, x.dtype)
-    elif norm == "forward" or norm == "ortho":
+    elif norm in ["forward", "ortho"]:
         norm_factor = tf.cast(tf.math.reduce_prod(shape), x.dtype)
         if norm == "ortho":
             norm_factor = tf.math.sqrt(norm_factor)
@@ -1335,9 +1335,7 @@ RFFTN Function
 def rfft_input_validation(x):
     if not x.dtype.is_floating:
         raise TypeError(
-            "Invalid FFT input: `x` must be of a real dtype. Received: {}".format(
-                x.dtype
-            )
+            f"Invalid FFT input: `x` must be of a real dtype. Received: {x.dtype}"
         )
     return x
 
@@ -1398,6 +1396,89 @@ def _rfftn_helper(x, shape, axes, norm):
     return x
 
 
+def rfft(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    # type cast
+    if x.dtype in [tf.complex64, tf.complex128]:
+        x = tf.math.real(x)
+    if x.dtype not in [tf.float32, tf.float64]:
+        x = tf.cast(x, tf.float32)
+
+    # axis check
+    if not isinstance(axis, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(axis)}"
+        )
+
+    # axis normalization
+    naxis = axis
+    if axis < 0:
+        naxis = x.ndim + axis
+    if naxis < 0 or naxis >= x.ndim:
+        raise ivy.utils.exceptions.IvyError(
+            f"Axis {axis} is out of bounds for array of dimension {x.ndim}"
+        )
+    axis = naxis
+
+    # n checks
+    if n is None:
+        n = x.shape[axis]
+    if not isinstance(n, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
+    if n < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid number of FFT data points ({n}) specified."
+        )
+
+    # norm check & value
+    if norm == "backward":
+        inv_norm = tf.constant(1, dtype=x.dtype)
+    elif norm in ["forward", "ortho"]:
+        inv_norm = tf.cast(tf.math.reduce_prod(n), dtype=x.dtype)
+        if norm == "ortho":
+            inv_norm = tf.math.sqrt(inv_norm)
+    else:
+        raise ivy.utils.exceptions.IvyError(
+            f'Invalid norm value {norm}; should be "backward", "ortho" or "forward".'
+        )
+    fct = 1 / inv_norm
+
+    if x.shape[axis] != n:
+        s = list(x.shape)
+        if s[axis] > n:
+            index = [slice(None)] * len(s)
+            index[axis] = slice(0, n)
+            x = x[tuple(index)]
+        else:
+            s[axis] = n - s[axis]
+            z = tf.zeros(s, x.dtype)
+            x = tf.concat([x, z], axis=axis)
+
+    if axis == x.ndim - 1:
+        ret = tf.signal.rfft(x, fft_length=None, name=None)
+    else:
+        x = tf.experimental.numpy.swapaxes(x, axis, -1)
+        ret = tf.signal.rfft(x, fft_length=None, name=None)
+        ret = tf.experimental.numpy.swapaxes(ret, axis, -1)
+
+    ret *= tf.cast(fct, dtype=ret.dtype)
+
+    if x.dtype != tf.float64:
+        ret = tf.cast(ret, dtype=tf.complex64)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 @with_supported_device_and_dtypes(
     {
         "2.5.0 and above": {
@@ -1430,7 +1511,7 @@ def rfftn(
 
 
 # stft
-@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def stft(
     signals: Union[tf.Tensor, tf.Variable],
     frame_length: int,
@@ -1492,3 +1573,61 @@ def stft(
 
     else:
         return result
+
+
+def _to_4d(x):
+    t = x  # Start with the original tensor
+    while len(t.shape) < 4:  # Continue expanding dimensions until 4D
+        t = tf.expand_dims(t, axis=0)
+    return t
+
+
+def sliding_window(
+    input: Union[tf.Tensor, tf.Variable],
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    stride: Union[int, Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = "VALID",
+) -> Union[tf.Tensor, tf.Variable]:
+    if len(input.shape) != 4:
+        input = _to_4d(input)
+
+    input = tf.transpose(input, (0, 2, 3, 1))
+
+    kernel_size = (
+        [1]
+        + ([kernel_size] * 2 if isinstance(kernel_size, int) else list(kernel_size))
+        + [1]
+    )
+    if len(kernel_size) < 4:
+        kernel_size.append(1)
+
+    stride = [1] + ([stride] * 2 if isinstance(stride, int) else list(stride)) + [1]
+    if len(stride) < 4:
+        stride.append(1)
+
+    dilation = (
+        [1] + ([dilation] * 2 if isinstance(dilation, int) else list(dilation)) + [1]
+    )
+    if len(dilation) < 4:
+        dilation.append(1)
+
+    padding = [padding] * 2 if isinstance(padding, int) else padding
+
+    if isinstance(padding, str) and padding.upper() in ["VALID", "SAME"]:
+        padding = padding
+
+    elif padding[0] == padding[1] == 0:
+        padding = "VALID"
+    elif padding[0] == padding[1] != 0:
+        padding = "SAME"
+    else:
+        raise ivy.utils.exceptions.IvyError(
+            f"Cannot convert padding sequence {padding} to TensorFlow padding mode"
+        )
+
+    return tf.image.extract_patches(
+        images=input, sizes=kernel_size, strides=stride, rates=dilation, padding=padding
+    )

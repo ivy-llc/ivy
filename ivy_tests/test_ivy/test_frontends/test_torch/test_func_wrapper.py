@@ -18,7 +18,7 @@ import ivy.functional.frontends.torch as torch_frontend
 # --------------- #
 
 
-def _fn(*args, dtype=None, check_default=False):
+def _fn(*args, dtype=None, check_default=False, inplace=False):
     if (
         check_default
         and all([not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args])
@@ -107,26 +107,42 @@ def test_torch_numpy_to_torch_style_args(dim, keepdim, input, other):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
     dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
+    generate_frontend=st.booleans(),
+    inplace=st.booleans(),
 )
-def test_torch_outputs_to_frontend_arrays(dtype_and_x, dtype, backend_fw):
+def test_torch_outputs_to_frontend_arrays(
+    dtype_and_x,
+    dtype,
+    generate_frontend,
+    inplace,
+    backend_fw,
+):
     x_dtype, x = dtype_and_x
 
     ivy.set_backend(backend_fw)
 
-    # check for ivy array
-    input_ivy = ivy.array(x[0], dtype=x_dtype[0])
-    if not len(input_ivy.shape):
-        scalar_input_ivy = ivy.to_scalar(input_ivy)
+    x = ivy.array(x[0], dtype=x_dtype[0])
+    if generate_frontend:
+        x = Tensor(x)
+
+    if not len(x.shape):
+        scalar_x = ivy.to_scalar(x.ivy_array if isinstance(x, Tensor) else x)
         outputs_to_frontend_arrays(_fn)(
-            scalar_input_ivy, scalar_input_ivy, check_default=True, dtype=dtype
+            scalar_x, scalar_x, check_default=True, dtype=dtype
         )
-        outputs_to_frontend_arrays(_fn)(
-            scalar_input_ivy, input_ivy, check_default=True, dtype=dtype
-        )
-    output = outputs_to_frontend_arrays(_fn)(input_ivy, check_default=True, dtype=dtype)
+        outputs_to_frontend_arrays(_fn)(scalar_x, x, check_default=True, dtype=dtype)
+    output = outputs_to_frontend_arrays(_fn)(
+        x, check_default=True, dtype=dtype, inplace=inplace
+    )
     assert isinstance(output, Tensor)
-    assert str(input_ivy.dtype) == str(output.dtype)
-    assert ivy.all(input_ivy == output.ivy_array)
+    if inplace:
+        if generate_frontend:
+            assert x is output
+        else:
+            assert x is output.ivy_array
+    else:
+        assert str(x.dtype) == str(output.dtype)
+        assert ivy.all((x.ivy_array if generate_frontend else x) == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
 

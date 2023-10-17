@@ -217,6 +217,41 @@ def test_numpy_dirichlet(
     )
 
 
+# exponential
+@handle_frontend_test(
+    fn_tree="numpy.random.exponential",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    scale=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
+    ),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_exponential(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+    scale,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        scale=scale,
+        size=size,
+    )
+
+
 @handle_frontend_test(
     fn_tree="numpy.random.f",
     input_dtypes=helpers.get_dtypes("float"),
@@ -637,6 +672,47 @@ def test_numpy_negative_binomial(
     )
 
 
+# noncentral_chisquare
+@handle_frontend_test(
+    fn_tree="numpy.random.noncentral_chisquare",
+    dtype_and_df=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        exclude_min=True,
+    ),
+    dtype_and_nonc=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_noncentral_chisquare(
+    dtype_and_df,
+    dtype_and_nonc,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype_df, df = dtype_and_df
+    dtype_nonc, nonc = dtype_and_nonc
+    helpers.test_frontend_function(
+        input_dtypes=dtype_df + dtype_nonc,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        df=df[0],
+        nonc=nonc[0],
+        size=size,
+    )
+
+
 # normal
 @handle_frontend_test(
     fn_tree="numpy.random.normal",
@@ -896,6 +972,33 @@ def test_numpy_standard_cauchy(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.random.standard_exponential",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_standard_exponential(
+    input_dtypes,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        size=size,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.random.standard_gamma",
     shape_dtypes=helpers.get_dtypes("float", full=False),
     shape=st.floats(
@@ -1080,6 +1183,52 @@ def test_numpy_uniform(
         test_values=False,
         low=low,
         high=high,
+        size=size,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.vonmises",
+    input_dtypes=helpers.get_dtypes("float"),
+    mu=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=1,
+        exclude_min=True,
+    ),
+    kappa=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=10,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+)
+def test_numpy_vonmises(
+    input_dtypes,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    mu,
+    kappa,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        mu=mu,
+        kappa=kappa,
         size=size,
     )
 

@@ -25,7 +25,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltContainerStrategy,
     BuiltWithOutStrategy,
     BuiltInplaceStrategy,
-    BuiltCompileStrategy,
+    BuiltTraceStrategy,
     BuiltFrontendArrayStrategy,
     BuiltTranspileStrategy,
     BuiltPrecisionModeStrategy,
@@ -36,13 +36,13 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
-from ivy_tests.test_ivy.conftest import mod_backend
+from .globals import mod_backend
 
 cmd_line_args = (
     "with_out",
     "instance_method",
     "test_gradients",
-    "test_compile",
+    "test_trace",
     "precision_mode",
 )
 cmd_line_args_lists = (
@@ -224,7 +224,7 @@ def _get_method_supported_devices_dtypes(
 
     Returns
     -------
-    Returns a dictonary containing supported device types and its supported data types
+    Returns a dictionary containing supported device types and its supported data types
     for the method
     """
     supported_device_dtypes = {}
@@ -290,7 +290,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
     Returns
     -------
-    Returns a dictonary containing supported device types and its supported data types
+    Returns a dictionary containing supported device types and its supported data types
     for the function
     """
     supported_device_dtypes = {}
@@ -336,7 +336,8 @@ def handle_test(
     test_instance_method=BuiltInstanceStrategy,
     test_with_out=BuiltWithOutStrategy,
     test_gradients=BuiltGradientStrategy,
-    test_compile=BuiltCompileStrategy,
+    test_trace=BuiltTraceStrategy,
+    transpile=BuiltTranspileStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
@@ -371,8 +372,8 @@ def handle_test(
         A search strategy that generates a boolean to test the function with arrays as
         gradients
 
-    test_compile
-        A search strategy that generates a boolean to graph compile and test the
+    test_trace
+        A search strategy that generates a boolean to trace and test the
         function
 
     precision_mode
@@ -408,7 +409,8 @@ def handle_test(
             instance_method=_get_runtime_flag_value(test_instance_method),
             with_out=_get_runtime_flag_value(test_with_out),
             test_gradients=_get_runtime_flag_value(test_gradients),
-            test_compile=_get_runtime_flag_value(test_compile),
+            test_trace=_get_runtime_flag_value(test_trace),
+            transpile=_get_runtime_flag_value(transpile),
             as_variable=_get_runtime_flag_value(as_variable_flags),
             native_arrays=_get_runtime_flag_value(native_array_flags),
             container_flags=_get_runtime_flag_value(container_flags),
@@ -473,7 +475,7 @@ def handle_frontend_test(
     test_inplace=BuiltInplaceStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
-    test_compile=BuiltCompileStrategy,
+    test_trace=BuiltTraceStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     transpile=BuiltTranspileStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
@@ -515,8 +517,8 @@ def handle_frontend_test(
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a native array
 
-    test_compile
-        A search strategy that generates a boolean to graph compile and test the
+    test_trace
+        A search strategy that generates a boolean to trace and test the
         function
 
     generate_frontend_arrays
@@ -540,7 +542,7 @@ def handle_frontend_test(
             inplace=_get_runtime_flag_value(test_inplace),
             as_variable=_get_runtime_flag_value(as_variable_flags),
             native_arrays=_get_runtime_flag_value(native_array_flags),
-            test_compile=_get_runtime_flag_value(test_compile),
+            test_trace=_get_runtime_flag_value(test_trace),
             generate_frontend_arrays=_get_runtime_flag_value(generate_frontend_arrays),
             transpile=_get_runtime_flag_value(transpile),
             precision_mode=_get_runtime_flag_value(precision_mode),
@@ -614,7 +616,7 @@ def handle_method(
     method_tree: str = None,
     ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
-    test_compile=BuiltCompileStrategy,
+    test_trace=BuiltTraceStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
@@ -646,7 +648,7 @@ def handle_method(
     possible_arguments = {
         "ground_truth_backend": st.just(ground_truth_backend),
         "test_gradients": _get_runtime_flag_value(test_gradients),
-        "test_compile": _get_runtime_flag_value(test_compile),
+        "test_trace": _get_runtime_flag_value(test_trace),
         "precision_mode": _get_runtime_flag_value(precision_mode),
     }
 
@@ -735,11 +737,12 @@ def handle_frontend_method(
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
-    test_compile=BuiltCompileStrategy,
+    test_trace=BuiltTraceStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
+    test_inplace=BuiltInplaceStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
@@ -759,6 +762,42 @@ def handle_frontend_method(
 
     method_name
         Name of the method
+
+    init_num_positional_args
+        A search strategy that generates a number of positional arguments
+        to be passed during instantiation of the class
+
+    init_native_arrays
+        A search strategy that generates a boolean to test the method with native
+        arrays
+
+    init_as_variable_flags
+        A search strategy that generates a list of boolean flags for array inputs to be
+        passed as a Variable array
+
+    test_compile
+        A search strategy that generates a boolean to graph compile and test the
+        function
+
+    precision_mode
+        A search strategy that generates a boolean to switch between two different
+        precision modes supported by numpy and (torch, jax) and test the function
+
+    method_num_positional_args
+        A search strategy that generates a number of positional arguments
+        to be passed during call of the class method
+
+    method_native_arrays
+        A search strategy that generates a boolean to test the method with native
+        arrays
+
+    method_as_variable_flags
+        A search strategy that generates a list of boolean flags for array inputs to be
+        passed as a Variable array
+
+    test_inplace
+        A search strategy that generates a boolean to test the method with `inplace`
+        update
     """
     split_index = init_tree.rfind(".")
     framework_init_module = init_tree[:split_index]
@@ -800,9 +839,10 @@ def handle_frontend_method(
 
             method_flags = pf.frontend_method_flags(
                 num_positional_args=method_num_positional_args,
+                inplace=_get_runtime_flag_value(test_inplace),
                 as_variable=_get_runtime_flag_value(method_as_variable_flags),
                 native_arrays=_get_runtime_flag_value(method_native_arrays),
-                test_compile=_get_runtime_flag_value(test_compile),
+                test_trace=_get_runtime_flag_value(test_trace),
                 precision_mode=_get_runtime_flag_value(precision_mode),
                 generate_frontend_arrays=_get_runtime_flag_value(
                     generate_frontend_arrays
@@ -863,16 +903,32 @@ def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
 
 
-def _create_transpile_report(data: dict, file_name: str, path: str = "root"):
-    json_object = json.dumps(data, indent=6)
-    if path == "root":
-        path = "../../../../"
-    full_path = os.path.join(path, file_name)
-    if os.path.isfile(full_path):
-        with open(full_path, "r") as outfile:
+def _create_transpile_report(
+    data: dict, backend: str, file_name: str, is_backend: bool = False
+):
+    backend_specific_data = ["nodes", "time", "args", "kwargs"]
+    # json report exists already
+    if os.path.isfile(file_name):
+        with open(file_name, "r") as outfile:
             # Load the file's existing data
-            data = json.load(outfile)
-            if data["backend_nodes"] > data["backend_nodes"]:
+            file_data = json.load(outfile)
+            if file_data["nodes"].get(backend, 0) > data["nodes"]:
                 return
-    with open(full_path, "w") as outfile:
+
+            # that are backend specific
+            for key in backend_specific_data:
+                file_data[key][backend] = data[key]
+            if not is_backend:
+                # not backend specific
+                for key in ["ivy_nodes", "fw_time"]:
+                    file_data[key] = data[key]
+            json_object = json.dumps(file_data, indent=6)
+            with open(file_name, "w") as outfile:
+                outfile.write(json_object)
+            return
+    # create new json report
+    for key in backend_specific_data:
+        data[key] = {backend: data[key]}
+    json_object = json.dumps(data, indent=6)
+    with open(file_name, "w") as outfile:
         outfile.write(json_object)
