@@ -5,7 +5,7 @@ import pickle  # noqa
 from tqdm import tqdm
 import bz2
 import _pickle as cPickle
-from run_tests_CLI.get_all_tests import get_all_tests
+from scripts.setup_tests.get_all_tests import get_all_tests
 
 
 # Shared Map

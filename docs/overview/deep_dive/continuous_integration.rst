@@ -152,7 +152,7 @@ Once the Mapping has been updated, the “Determine & Run Tests” Logic works a
        tests_to_run = determine_tests_line(tests_file, line, tests_to_run)
 
 4. Further, All the new tests added in a commit are collected (up to a max limit of 10, any more tests added are taken up in subsequent commits).
-5. Finally, All the collected tests are triggered by the run_tests.py script, and the corresponding entry in the MongoDB Database is updated with the Test Result (Details on this in the Dashboard Section below).
+5. Finally, All the collected tests are triggered by the scripts/run_tests/run_tests.py script, and the corresponding entry in the MongoDB Database is updated with the Test Result (Details on this in the Dashboard Section below).
 
 Storing (and retrieving) the Mapping
 ------------------------------------
@@ -174,7 +174,7 @@ For Push triggered testing (intelligent-tests.yml Workflow), we use the SSH Clon
 
 .. code-block::
 
-    source ./ivy/clone_mapping.sh master
+    source ./ivy/scripts/shell/clone_mapping.sh master
     Determine and Run Tests, and Update the Mapping ...
     git add .
     git commit -m "Update Mapping"
