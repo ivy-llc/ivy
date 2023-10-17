@@ -163,7 +163,7 @@ def _generate_data_batch_norm(
 def test_batch_norm(
     *, values_tuple, test_flags, backend_fw, fn_name, on_device
 ):
-    dtype, x, gamma, beta, moving_mean, moving_var, epsilon = values_tuple
+    (dtype, x, gamma, beta, moving_mean, moving_var, epsilon) = values_tuple
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,

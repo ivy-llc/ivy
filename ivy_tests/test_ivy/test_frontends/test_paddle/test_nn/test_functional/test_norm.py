@@ -1,4 +1,5 @@
 # global
+from typing import Literal
 from hypothesis import strategies as st
 
 # local
@@ -27,7 +28,7 @@ def test_paddle_layer_norm(
     normalized_shape,
     eps,
     test_flags,
-    frontend,
+    frontend: Literal['paddle'],
     on_device,
     fn_tree,
 ):
@@ -44,7 +45,6 @@ def test_paddle_layer_norm(
         bias=offset[0],
         epsilon=eps,
     )
-
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.batch_norm",
     values_tuple=_generate_data_batch_norm(
@@ -53,24 +53,15 @@ def test_paddle_layer_norm(
     eps=st.floats(min_value=0.01, max_value=0.1),
 )
 def test_batch_norm(
-    x,
-    gamma,
-    beta,
-    moving_mean,
-    moving_var,
-    epsilon=1e-5,
-    test_flags=None,
-    frontend=None,
-    on_device=True,
-    fn_tree=None,
+    *, values_tuple, test_flags, backend_fw, fn_name, on_device
 ):
-    ()
-    helpers.test_frontend_function(
-        input_dtypes=x.dtype,
-        frontend=frontend,
+    (dtype, x, gamma, beta, moving_mean, moving_var, epsilon) = values_tuple
+    helpers.test_function(
+        input_dtypes=dtype,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
         on_device=on_device,
-        fn_tree=fn_tree,
         x=x,
         gamma=gamma,
         beta=beta,
