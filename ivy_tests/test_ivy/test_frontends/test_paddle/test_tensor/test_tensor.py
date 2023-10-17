@@ -335,7 +335,7 @@ def test_paddle__reshape(
     init_tree="paddle.to_tensor",
     method_name="fill_diagonal_tensor_",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
     ),

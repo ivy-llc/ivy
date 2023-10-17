@@ -910,48 +910,15 @@ class Tensor:
         return ivy.inplace_update(self, res)
 
     def _fill_diagonal_tensor_impl(self, x, y, offset=0, dim1=0, dim2=1, inplace=False):
-        inshape = x.shape
-        assert dim1 < len(inshape) and dim1 >= -len(
-            inshape
-        ), "dim1 should be between [-rank, rank) in fill_diagonal_tensor_"
-        assert dim2 < len(inshape) and dim2 >= -len(
-            inshape
-        ), "dim2 should be between [-rank, rank) in fill_diagonal_tensor_"
-        assert len(inshape) >= 2, "Tensor dims should be >= 2 in fill_diagonal_tensor_"
-        dim1 %= len(inshape)
-        dim2 %= len(inshape)
+        if not inplace:
+            x = Tensor(self._ivy_array, dtype=self.dtype, place=self.place,_stop_gradient = self._stop_gradient)          
+        min_size = min(x._ivy_array.shape[0], x._ivy_array.shape[1], y._ivy_array.shape[0])
+        mask = ivy.eye(min_size, dtype=self.dtype, device=self.place)
+        x._ivy_array = x._ivy_array * (1 - mask) + y._ivy_array * mask
+        return x._ivy_array
 
-        predshape = []
-        for i in range(len(inshape)):
-            if i != dim1 and i != dim2:
-                predshape.append(inshape[i])
-        diaglen = min(
-            min(inshape[dim1], inshape[dim1] + offset),
-            min(inshape[dim2], inshape[dim2] - offset),
-        )
-        predshape.append(diaglen)
-        assert tuple(predshape) == tuple(y.shape), "the y shape should be {}".format(
-            predshape
-        )
-        if len(y.shape) == 1:
-            y = y.reshape([1, -1])
-
-        diag_start = max(0, offset)
-        diag_end = diag_start + diaglen
-        # should use ivy.inplace_update(self, res) instead
-        if inplace:
-            # Modify the input tensor 'x' directly
-            x[:diaglen, diag_start:diag_end] = y
-            return x
-        else:
-            # Create a copy of 'x' and apply the modification to the copy
-            result = x.clone()
-            result[:diaglen, diag_start:diag_end] = y
-            return result
-
-    # Paddle source code implementation
     def fill_diagonal_tensor_(self, y, offset=0, dim1=0, dim2=1, name=None):
-        self = self.fill_diagonal_tensor_impl(
+        self._ivy_array = self.fill_diagonal_tensor_impl(
             self, y, offset=offset, dim1=dim1, dim2=dim2, inplace=True
         )
-        return self
+        return self._ivy_array
