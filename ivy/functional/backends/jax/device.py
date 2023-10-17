@@ -1,5 +1,4 @@
-"""Collection of Jax device functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Jax device functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import os
@@ -138,7 +137,7 @@ def tpu_is_available() -> bool:
 # noinspection PyMethodMayBeStatic
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
-        super(Profiler, self).__init__(save_dir)
+        super().__init__(save_dir)
         self._save_dir = os.path.join(self._save_dir, "profile")
 
     def start(self):

@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @st.composite
-def _nms_helper(draw):
+def _nms_helper(draw, batched=False):
     img_width = draw(st.integers(250, 1250))
     img_height = draw(st.integers(250, 1250))
     num_boxes = draw(st.integers(5, 50))
@@ -25,11 +25,18 @@ def _nms_helper(draw):
         h = draw(st.integers(5, img_height - y1))
         bbox[(x1, y1, x1 + w, y1 + h)] = draw(st.floats(0.1, 0.7))
     iou_threshold = draw(st.floats(0.2, 0.5))
+    idxs = None
+    if batched:
+        bbox_len = len(bbox)
+        num_of_categories = draw(st.integers(1, max(bbox_len // 2, 2)))
+        idxs = np.arange(num_of_categories)
+        idxs = np.random.choice(idxs, size=bbox_len)
     return (
         ["float32", "float32"],
         np.array(list(bbox.keys()), dtype=np.float32),
         np.array(list(bbox.values()), dtype=np.float32),
         iou_threshold,
+        idxs,
     )
 
 
@@ -80,6 +87,36 @@ def _roi_align_helper(draw):
 
 # --- Main --- #
 # ------------ #
+
+
+# batched_nms
+@handle_frontend_test(
+    fn_tree="torchvision.ops.batched_nms",
+    dts_boxes_scores_iou_idxs=_nms_helper(batched=True),
+    test_with_out=st.just(False),
+)
+def test_torchvision_batched_nms(
+    *,
+    dts_boxes_scores_iou_idxs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dts, boxes, scores, iou, idxs = dts_boxes_scores_iou_idxs
+    helpers.test_frontend_function(
+        input_dtypes=dts,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        boxes=boxes,
+        scores=scores,
+        idxs=idxs,
+        iou_threshold=iou,
+    )
 
 
 # box_area
@@ -160,7 +197,7 @@ def test_torchvision_nms(
     test_flags,
     backend_fw,
 ):
-    dts, boxes, scores, iou = dts_boxes_scores_iou
+    dts, boxes, scores, iou, _ = dts_boxes_scores_iou
     helpers.test_frontend_function(
         input_dtypes=dts,
         backend_to_test=backend_fw,
