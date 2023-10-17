@@ -326,7 +326,7 @@ def test_jax_numpy_indices(
     )
 
 
-@handle_frontend_test(fn_tree="jax.numpy.add", inputs=_helper_r_())  # dummy fn_tree
+@handle_frontend_test(fn_tree="jax.numpy.r_", inputs=_helper_r_())  # dummy fn_tree
 def test_jax_numpy_r_(inputs, backend_fw):
     inputs, *_ = inputs
     ret_gt = r_.__getitem__(tuple(inputs))
