@@ -497,7 +497,7 @@ There are a number of such shell scripts in `ivy/scripts/shell`_:
     run_ivy_nn_test.py
     run_ivy_stateful_test.py
     run_tests.sh
-    test_array_api.sh
+    scripts/shell/test_array_api.sh
     test_dependencies.py
     scripts/shell/test_dependencies.sh
     test_ivy_core.sh
@@ -508,7 +508,7 @@ There are a number of such shell scripts in `ivy/scripts/shell`_:
 
 * :code:`run_tests.sh` is run by typing :code:`./scripts/shell/run_tests.sh` in the :code:`/ivy` directory.
   This runs all tests in :code:`ivy/ivy_tests`.
-* :code:`test_array_api.sh` is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`.
+* :code:`scripts/shell/test_array_api.sh` is run by typing :code:`./scripts/shell/test_array_api.sh [backend] test_[submodule]`.
   This runs all array-api tests for a certain submodule in a certain backend.
 * :code:`test_ivy_core.sh` is run by typing :code:`./scripts/shell/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
   This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
@@ -526,7 +526,7 @@ For Windows users, you may need to specify that the shell scripts should be run 
 
 * To run :code:`run_tests.sh` on Windows, type :code:`sh ./scripts/shell/run_tests.sh` in the :code:`/ivy` directory.
   This runs all tests in :code:`ivy/ivy_tests`.
-* To run :code:`test_array_api.sh` on Windows, type :code:`sh ./test_array_api.sh [backend] test_[submodule]`.
+* To run :code:`scripts/shell/test_array_api.sh` on Windows, type :code:`sh ./scripts/shell/test_array_api.sh [backend] test_[submodule]`.
   This runs all array-api tests for a certain submodule in a certain backend.
 * To run :code:`test_ivy_core.sh` on Windows, type :code:`sh ./scripts/shell/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
   This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.

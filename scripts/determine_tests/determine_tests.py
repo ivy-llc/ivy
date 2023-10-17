@@ -6,7 +6,7 @@ import os  # noqa
 import bz2
 import _pickle as cPickle
 import sys
-from run_tests_CLI.get_all_tests import get_all_tests
+from scripts.setup_tests.get_all_tests import get_all_tests
 
 MAX_TESTS = 10
 

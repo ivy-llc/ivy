@@ -30,7 +30,7 @@ jobs:
         id: tests
         run: |
           cd ivy
-          python scripts/run_tests/array_api_scripts/run_tests/run_tests_pr.py
+          python scripts/run_tests/array_api_run_tests_pr.py
         continue-on-error: true
 
       - name: Check on failures
