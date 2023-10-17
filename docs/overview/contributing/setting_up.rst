@@ -506,7 +506,7 @@ There are a number of such shell scripts in `ivy/scripts/shell`_:
 
 **For Unix-based systems (Linux and macOS):**
 
-* :code:`run_tests.sh` is run by typing :code:`./scripts/shell/run_tests.sh` in the :code:`/ivy` directory.
+* :code:`scripts/shell/run_tests.sh` is run by typing :code:`./scripts/shell/run_tests.sh` in the :code:`/ivy` directory.
   This runs all tests in :code:`ivy/ivy_tests`.
 * :code:`scripts/shell/test_array_api.sh` is run by typing :code:`./scripts/shell/test_array_api.sh [backend] test_[submodule]`.
   This runs all array-api tests for a certain submodule in a certain backend.
@@ -524,7 +524,7 @@ There are a number of such shell scripts in `ivy/scripts/shell`_:
 For Windows users, you may need to specify that the shell scripts should be run by :code:`sh`, which comes with Git. In the Terminal, prepend sh to the script commands like so:
 
 
-* To run :code:`run_tests.sh` on Windows, type :code:`sh ./scripts/shell/run_tests.sh` in the :code:`/ivy` directory.
+* To run :code:`scripts/shell/run_tests.sh` on Windows, type :code:`sh ./scripts/shell/run_tests.sh` in the :code:`/ivy` directory.
   This runs all tests in :code:`ivy/ivy_tests`.
 * To run :code:`scripts/shell/test_array_api.sh` on Windows, type :code:`sh ./scripts/shell/test_array_api.sh [backend] test_[submodule]`.
   This runs all array-api tests for a certain submodule in a certain backend.
