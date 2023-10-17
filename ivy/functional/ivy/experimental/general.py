@@ -39,8 +39,8 @@ def reduce(
     axes: Union[int, Sequence[int]] = 0,
     keepdims: bool = False,
 ) -> ivy.Array:
-    """
-    Reduces the input array's dimensions by applying a function along one or more axes.
+    """Reduces the input array's dimensions by applying a function along one or
+    more axes.
 
     Parameters
     ----------
@@ -88,9 +88,10 @@ def reduce(
 
 reduce.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }

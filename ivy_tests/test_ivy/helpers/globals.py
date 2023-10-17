@@ -1,6 +1,5 @@
-"""
-A state holder for testing, this is only intended to hold and store testing data to be
-used by the test helpers to prune unsupported data.
+"""A state holder for testing, this is only intended to hold and store testing
+data to be used by the test helpers to prune unsupported data.
 
 Should not be used inside any of the test functions.
 """
@@ -10,9 +9,35 @@ from dataclasses import dataclass
 from .pipeline_helper import get_frontend_config
 
 # needed for multiversion
-available_frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle", "mxnet"]
+available_frameworks = [
+    "numpy",
+    "jax",
+    "tensorflow",
+    "torch",
+    "paddle",
+    "mxnet",
+    "scipy",
+]
 
-# This is used to make sure the variable is not being overriden
+mod_frontend = {
+    "tensorflow": None,
+    "numpy": None,
+    "jax": None,
+    "torch": None,
+    "mindspore": None,
+    "scipy": None,
+    "paddle": None,
+}  # multiversion
+mod_backend = {
+    "numpy": None,
+    "jax": None,
+    "tensorflow": None,
+    "torch": None,
+    "paddle": None,
+    "mxnet": None,
+}  # multiversion
+
+# This is used to make sure the variable is not being overridden
 _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
@@ -34,10 +59,11 @@ class TestData:
 
 
 class InterruptedTest(BaseException):
-    """Indicate that a test tried to write global attributes while a test is running."""
+    """Indicate that a test tried to write global attributes while a test is
+    running."""
 
-    def __init__(self, test_interruped):
-        super.__init__(f"{test_interruped} was interruped during execution.")
+    def __init__(self, test_interrupted):
+        super.__init__(f"{test_interrupted} was interrupted during execution.")
 
 
 # Setup

@@ -33,7 +33,7 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: str,
+    device: str = None,
 ) -> Tuple[np.ndarray, ...]:
     return tuple(
         _to_device(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)), device=device)
@@ -111,3 +111,96 @@ def unsorted_segment_min(
             res[i] = np.min(data[mask_index], axis=0)
 
     return res
+
+
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: bool = True,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if size < 2:
+        return np.ones([size], dtype=dtype)
+    if periodic:
+        count = np.arange(size) / size
+    else:
+        count = np.linspace(start=0, stop=size, num=size)
+
+    return (
+        (0.42 - 0.5 * np.cos(2 * np.pi * count))
+        + (0.08 * np.cos(2 * np.pi * 2 * count))
+    ).astype(dtype)
+
+
+blackman_window.support_native_out = False
+
+
+def unsorted_segment_sum(
+    data: np.ndarray,
+    segment_ids: np.ndarray,
+    num_segments: int,
+) -> np.ndarray:
+    # Used the same check which is used for unsorted_segment_min as the
+    # check should be same
+    # Might require to change the assertion function name to
+    # check_unsorted_segment_valid_params
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    res = np.zeros((num_segments,) + data.shape[1:], dtype=data.dtype)
+
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if np.any(mask_index):
+            res[i] = np.sum(data[mask_index], axis=0)
+
+    return res
+
+
+def trilu(
+    x: np.ndarray,
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if upper:
+        return np.triu(x, k)
+    return np.tril(x, k)
+
+
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 125.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    lower_edge_hertz = np.array(lower_edge_hertz)
+    upper_edge_hertz = np.array(upper_edge_hertz)
+    zero = np.array(0.0)
+
+    def hz_to_mel(f):
+        return 2595 * np.log10(1 + f / 700)
+
+    nyquist_hz = sample_rate / 2
+    linear_freqs = np.linspace(0, nyquist_hz, dft_length, dtype=np.float32)[1:]
+    spec_bin_mels = hz_to_mel(linear_freqs)[..., None]
+    mel_edges = np.linspace(
+        hz_to_mel(lower_edge_hertz),
+        hz_to_mel(upper_edge_hertz),
+        num_mel_bins + 2,
+        dtype=np.float32,
+    )
+    mel_edges = np.stack([mel_edges[i : i + 3] for i in range(num_mel_bins)])
+    lower_edge_mel, center_mel, upper_edge_mel = [
+        t.reshape((1, num_mel_bins)) for t in np.split(mel_edges, 3, axis=1)
+    ]
+    lower_slopes = (spec_bin_mels - lower_edge_mel) / (center_mel - lower_edge_mel)
+    upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
+    mel_weights = np.maximum(zero, np.minimum(lower_slopes, upper_slopes))
+    return np.pad(mel_weights, [[1, 0], [0, 0]])

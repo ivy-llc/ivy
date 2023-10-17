@@ -1,14 +1,22 @@
 import abc
 from hypothesis import strategies as st
 from . import globals as test_globals
-from .pipeline_helper import update_backend
+from .pipeline_helper import BackendHandler
+
+from dataclasses import dataclass
+from hypothesis.strategies import SearchStrategy
+
+
+@dataclass
+class DynamicFlag:
+    strategy: SearchStrategy
 
 
 @st.composite
 def _gradient_strategy(draw):
     if test_globals.CURRENT_BACKEND == "numpy":
-        draw(st.just(False))
-    draw(st.booleans())
+        return draw(st.just(False))
+    return draw(st.booleans())
 
 
 @st.composite
@@ -27,22 +35,17 @@ def _as_varaible_strategy(draw):
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
 
 
-@st.composite
-def _compile_strategy(draw):  # TODO remove later when paddle is supported
-    if test_globals.CURRENT_BACKEND == "paddle":
-        draw(st.just(False))
-    draw(st.booleans())
-
-
-BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
-BuiltAsVariableStrategy = _as_varaible_strategy()
-BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
-BuiltInstanceStrategy = st.booleans()
-BuiltInplaceStrategy = st.just(False)
-BuiltGradientStrategy = _gradient_strategy()
-BuiltWithOutStrategy = st.booleans()
-BuiltCompileStrategy = _compile_strategy()
-BuiltFrontendArrayStrategy = st.booleans()
+BuiltNativeArrayStrategy = DynamicFlag(st.lists(st.booleans(), min_size=1, max_size=1))
+BuiltAsVariableStrategy = DynamicFlag(_as_varaible_strategy())
+BuiltContainerStrategy = DynamicFlag(st.lists(st.booleans(), min_size=1, max_size=1))
+BuiltInstanceStrategy = DynamicFlag(st.booleans())
+BuiltInplaceStrategy = DynamicFlag(st.just(False))
+BuiltGradientStrategy = DynamicFlag(_gradient_strategy())
+BuiltWithOutStrategy = DynamicFlag(st.booleans())
+BuiltTraceStrategy = DynamicFlag(st.just(False))
+BuiltFrontendArrayStrategy = DynamicFlag(st.booleans())
+BuiltTranspileStrategy = DynamicFlag(st.just(False))
+BuiltPrecisionModeStrategy = DynamicFlag(st.booleans())
 
 
 flags_mapping = {
@@ -53,7 +56,9 @@ flags_mapping = {
     "test_gradients": "BuiltGradientStrategy",
     "with_out": "BuiltWithOutStrategy",
     "inplace": "BuiltInplace",
-    "test_compile": "BuiltCompileStrategy",
+    "test_trace": "BuiltTraceStrategy",
+    "transpile": "BuiltTranspileStrategy",
+    "precision_mode": "BuiltPrecisionModeStrategy",
 }
 
 
@@ -62,9 +67,9 @@ def build_flag(key: str, value: bool):
         value = st.just(value)
     # Prevent silently passing if variables names were changed
     assert (
-        flags_mapping[key] in globals().keys()
+        flags_mapping[key] in globals()
     ), f"{flags_mapping[key]} is not a valid flag variable."
-    globals()[flags_mapping[key]] = value
+    globals()[flags_mapping[key]].strategy = value
 
 
 # Strategy Helpers #
@@ -86,7 +91,9 @@ class FunctionTestFlags(TestFlags):
         native_arrays,
         container,
         test_gradients,
-        test_compile,
+        test_trace,
+        transpile,
+        precision_mode,
     ):
         self.ground_truth_backend = ground_truth_backend
         self.num_positional_args = num_positional_args
@@ -96,11 +103,13 @@ class FunctionTestFlags(TestFlags):
         self.container = container
         self.as_variable = as_variable
         self.test_gradients = test_gradients
-        self.test_compile = test_compile
+        self.test_trace = test_trace
+        self.transpile = transpile
+        self.precision_mode = precision_mode
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with update_backend(backend) as backend:
+        with BackendHandler.update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -122,7 +131,9 @@ class FunctionTestFlags(TestFlags):
             f"container={self.container}. "
             f"as_variable={self.as_variable}. "
             f"test_gradients={self.test_gradients}. "
-            f"test_compile={self.test_compile}. "
+            f"test_trace={self.test_trace}. "
+            f"transpile={self.transpile}. "
+            f"precision_mode={self.precision_mode}. "
         )
 
     def __repr__(self):
@@ -138,10 +149,12 @@ def function_flags(
     instance_method,
     with_out,
     test_gradients,
-    test_compile,
+    test_trace,
+    transpile,
     as_variable,
     native_arrays,
     container_flags,
+    precision_mode,
 ):
     return draw(
         st.builds(
@@ -151,10 +164,12 @@ def function_flags(
             with_out=with_out,
             instance_method=instance_method,
             test_gradients=test_gradients,
-            test_compile=test_compile,
+            test_trace=test_trace,
+            transpile=transpile,
             as_variable=as_variable,
             native_arrays=native_arrays,
             container=container_flags,
+            precision_mode=precision_mode,
         )
     )
 
@@ -167,18 +182,24 @@ class FrontendFunctionTestFlags(TestFlags):
         inplace,
         as_variable,
         native_arrays,
+        test_trace,
         generate_frontend_arrays,
+        transpile,
+        precision_mode,
     ):
         self.num_positional_args = num_positional_args
         self.with_out = with_out
         self.inplace = inplace
         self.native_arrays = native_arrays
         self.as_variable = as_variable
+        self.test_trace = test_trace
         self.generate_frontend_arrays = generate_frontend_arrays
+        self.transpile = transpile
+        self.precision_mode = precision_mode
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with update_backend(backend) as backend:
+        with BackendHandler.update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -195,7 +216,10 @@ class FrontendFunctionTestFlags(TestFlags):
             f"inplace={self.inplace}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
+            f"test_trace={self.test_trace}. "
             f"generate_frontend_arrays={self.generate_frontend_arrays}. "
+            f"transpile={self.transpile}."
+            f"precision_mode={self.precision_mode}. "
         )
 
     def __repr__(self):
@@ -211,7 +235,10 @@ def frontend_function_flags(
     inplace,
     as_variable,
     native_arrays,
+    test_trace,
     generate_frontend_arrays,
+    transpile,
+    precision_mode,
 ):
     return draw(
         st.builds(
@@ -221,7 +248,10 @@ def frontend_function_flags(
             inplace=inplace,
             as_variable=as_variable,
             native_arrays=native_arrays,
+            test_trace=test_trace,
             generate_frontend_arrays=generate_frontend_arrays,
+            transpile=transpile,
+            precision_mode=precision_mode,
         )
     )
 
@@ -232,14 +262,16 @@ class InitMethodTestFlags(TestFlags):
         num_positional_args,
         as_variable,
         native_arrays,
+        precision_mode,
     ):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
+        self.precision_mode = precision_mode
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with update_backend(backend) as backend:
+        with BackendHandler.update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -254,6 +286,7 @@ class InitMethodTestFlags(TestFlags):
             f"num_positional_args={self.num_positional_args}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
+            f"precision_mode={self.precision_mode}. "
         )
 
     def __repr__(self):
@@ -267,6 +300,7 @@ def init_method_flags(
     num_positional_args,
     as_variable,
     native_arrays,
+    precision_mode,
 ):
     return draw(
         st.builds(
@@ -274,6 +308,7 @@ def init_method_flags(
             num_positional_args=num_positional_args,
             as_variable=as_variable,
             native_arrays=native_arrays,
+            precision_mode=precision_mode,
         )
     )
 
@@ -285,15 +320,17 @@ class MethodTestFlags(TestFlags):
         as_variable,
         native_arrays,
         container_flags,
+        precision_mode,
     ):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
         self.container = container_flags
+        self.precision_mode = precision_mode
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with update_backend(backend) as backend:
+        with BackendHandler.update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -311,6 +348,7 @@ class MethodTestFlags(TestFlags):
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
             f"container_flags={self.container}. "
+            f"precision_mode={self.precision_mode}. "
         )
 
     def __repr__(self):
@@ -325,6 +363,7 @@ def method_flags(
     as_variable,
     native_arrays,
     container_flags,
+    precision_mode,
 ):
     return draw(
         st.builds(
@@ -333,11 +372,12 @@ def method_flags(
             as_variable=as_variable,
             native_arrays=native_arrays,
             container_flags=container_flags,
+            precision_mode=precision_mode,
         )
     )
 
 
-class FrontendMethodTestFlags(TestFlags):
+class FrontendInitTestFlags(TestFlags):
     def __init__(
         self,
         num_positional_args,
@@ -350,7 +390,7 @@ class FrontendMethodTestFlags(TestFlags):
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with update_backend(backend) as backend:
+        with BackendHandler.update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -372,7 +412,7 @@ class FrontendMethodTestFlags(TestFlags):
 
 
 @st.composite
-def frontend_method_flags(
+def frontend_init_flags(
     draw,
     *,
     num_positional_args,
@@ -381,9 +421,81 @@ def frontend_method_flags(
 ):
     return draw(
         st.builds(
+            FrontendInitTestFlags,
+            num_positional_args=num_positional_args,
+            as_variable=as_variable,
+            native_arrays=native_arrays,
+        )
+    )
+
+
+class FrontendMethodTestFlags(TestFlags):
+    def __init__(
+        self,
+        num_positional_args,
+        as_variable,
+        native_arrays,
+        precision_mode,
+        inplace,
+        test_trace,
+        generate_frontend_arrays,
+    ):
+        self.num_positional_args = num_positional_args
+        self.native_arrays = native_arrays
+        self.as_variable = as_variable
+        self.precision_mode = precision_mode
+        self.inplace = inplace
+        self.test_trace = test_trace
+        self.generate_frontend_arrays = generate_frontend_arrays
+
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
+        ret = []
+        with BackendHandler.update_backend(backend) as backend:
+            for i, entry in enumerate(args_to_iterate, start=offset):
+                x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
+                if self.as_variable[i]:
+                    x = backend.gradients._variable(x)
+                if self.native_arrays[i]:
+                    x = backend.to_native(x)
+                ret.append(x)
+        return ret
+
+    def __str__(self):
+        return (
+            f"num_positional_args={self.num_positional_args}. "
+            f"native_arrays={self.native_arrays}. "
+            f"as_variable={self.as_variable}. "
+            f"precision_mode={self.precision_mode}. "
+            f"inplace={self.inplace}. "
+            f"test_trace={self.test_trace}."
+            f"generate_frontend_arrays={self.generate_frontend_arrays}."
+        )
+
+    def __repr__(self):
+        return self.__str__()
+
+
+@st.composite
+def frontend_method_flags(
+    draw,
+    *,
+    num_positional_args,
+    as_variable,
+    native_arrays,
+    precision_mode,
+    inplace,
+    test_trace,
+    generate_frontend_arrays,
+):
+    return draw(
+        st.builds(
             FrontendMethodTestFlags,
             num_positional_args=num_positional_args,
             as_variable=as_variable,
             native_arrays=native_arrays,
+            precision_mode=precision_mode,
+            inplace=inplace,
+            test_trace=test_trace,
+            generate_frontend_arrays=generate_frontend_arrays,
         )
     )

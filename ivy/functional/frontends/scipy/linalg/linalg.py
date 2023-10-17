@@ -1,12 +1,10 @@
 # global
 import ivy
-from ivy.functional.frontends.scipy.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
+from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
-# Helpers #
-# ------- #
+# --- Helpers --- #
+# --------------- #
 
 
 def _check_finite(a):
@@ -14,20 +12,35 @@ def _check_finite(a):
         raise ValueError("Array must not contain infs or NaNs")
 
 
-# Functions #
-# --------- #
+# --- Main --- #
+# ------------ #
 
 
-# tril
+# eigh_tridiagonal
 @to_ivy_arrays_and_back
-def tril(m, /, *, k=0):
-    return ivy.tril(m, k=k)
+def eigh_tridiagonal(
+    d,
+    e,
+    /,
+    *,
+    eigvals_only=False,
+    select="a",
+    select_range=None,
+    check_finite=True,
+    tol=0.0,
+):
+    if check_finite:
+        _check_finite(d)
+        _check_finite(e)
 
-
-# triu
-@to_ivy_arrays_and_back
-def triu(m, /, *, k=0):
-    return ivy.triu(m, k=k)
+    return ivy.eigh_tridiagonal(
+        d,
+        e,
+        eigvals_only=eigvals_only,
+        select=select,
+        select_range=select_range,
+        tol=tol,
+    )
 
 
 # inv
@@ -40,6 +53,44 @@ def inv(a, /, *, overwrite_a=False, check_finite=True):
         raise ValueError("Expected a square matrix")
 
     return ivy.inv(a)
+
+
+# kron
+@to_ivy_arrays_and_back
+def kron(a, b):
+    return ivy.kron(a, b)
+
+
+# lu_factor
+@to_ivy_arrays_and_back
+def lu_factor(a, /, *, overwrite_a=False, check_finite=True):
+    if check_finite:
+        _check_finite(a)
+    return ivy.lu_factor(a)
+
+
+# norm
+@to_ivy_arrays_and_back
+def norm(a, /, *, ord=None, axis=None, keepdims=False, check_finite=True):
+    if check_finite:
+        _check_finite(a)
+
+    if axis is None and ord is not None:
+        if a.ndim not in (1, 2):
+            raise ValueError("Improper number of dimensions to norm.")
+        else:
+            if a.ndim == 1:
+                ret = ivy.vector_norm(a, axis=axis, keepdims=keepdims, ord=ord)
+            else:
+                ret = ivy.matrix_norm(a, keepdims=keepdims, ord=ord)
+    elif axis is None and ord is None:
+        a = ivy.flatten(a)
+        ret = ivy.vector_norm(a, axis=0, keepdims=keepdims, ord=2)
+    if isinstance(axis, int):
+        ret = ivy.vector_norm(a, axis=axis, keepdims=keepdims, ord=ord)
+    elif isinstance(axis, tuple):
+        ret = ivy.matrix_norm(a, axis=axis, keepdims=keepdims, ord=ord)
+    return ret
 
 
 # pinv
@@ -71,63 +122,6 @@ def pinv(
     return inverse
 
 
-# kron
-@to_ivy_arrays_and_back
-def kron(a, b):
-    return ivy.kron(a, b)
-
-
-# eigh_tridiagonal
-@to_ivy_arrays_and_back
-def eigh_tridiagonal(
-    d,
-    e,
-    /,
-    *,
-    eigvals_only=False,
-    select="a",
-    select_range=None,
-    check_finite=True,
-    tol=0.0,
-):
-    if check_finite:
-        _check_finite(d)
-        _check_finite(e)
-
-    return ivy.eigh_tridiagonal(
-        d,
-        e,
-        eigvals_only=eigvals_only,
-        select=select,
-        select_range=select_range,
-        tol=tol,
-    )
-
-
-# norm
-@to_ivy_arrays_and_back
-def norm(a, /, *, ord=None, axis=None, keepdims=False, check_finite=True):
-    if check_finite:
-        _check_finite(a)
-
-    if axis is None and not (ord is None):
-        if a.ndim not in (1, 2):
-            raise ValueError("Improper number of dimensions to norm.")
-        else:
-            if a.ndim == 1:
-                ret = ivy.vector_norm(a, axis=axis, keepdims=keepdims, ord=ord)
-            else:
-                ret = ivy.matrix_norm(a, keepdims=keepdims, ord=ord)
-    elif axis is None and ord is None:
-        a = ivy.flatten(a)
-        ret = ivy.vector_norm(a, axis=0, keepdims=keepdims, ord=2)
-    if isinstance(axis, int):
-        ret = ivy.vector_norm(a, axis=axis, keepdims=keepdims, ord=ord)
-    elif isinstance(axis, tuple):
-        ret = ivy.matrix_norm(a, axis=axis, keepdims=keepdims, ord=ord)
-    return ret
-
-
 # svd
 @to_ivy_arrays_and_back
 def svd(
@@ -146,9 +140,17 @@ def svdvals(a, /, *, overwrite_a=False, check_finite=True):
     return ivy.svdvals(a)
 
 
-# lu_factor
+# Functions #
+# --------- #
+
+
+# tril
 @to_ivy_arrays_and_back
-def lu_factor(a, /, *, overwrite_a=False, check_finite=True):
-    if check_finite:
-        _check_finite(a)
-    return ivy.lu_factor(a)
+def tril(m, /, *, k=0):
+    return ivy.tril(m, k=k)
+
+
+# triu
+@to_ivy_arrays_and_back
+def triu(m, /, *, k=0):
+    return ivy.triu(m, k=k)

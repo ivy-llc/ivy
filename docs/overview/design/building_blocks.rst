@@ -1,12 +1,10 @@
 Building Blocks
 ===============
 
-.. _`out argument`: https://unify.ai/docs/ivy/overview/deep_dive/inplace_updates.html#out-argument
- 
 Here we explain the components of Ivy which are fundamental to its usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
 These are the 4 parts labelled as (a) in the image below:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 
@@ -17,7 +15,7 @@ The first important point to make is that, Ivy does not implement it’s own C++
 Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment.
 Let’s take the function :func:`ivy.stack` as an example.
 
-There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and so we implement the :code:`stack` method once for each backend, each in separate backend files like so:
+There are separate backend modules for JAX, TensorFlow, PyTorch, and NumPy, and so we implement the :code:`stack` method once for each backend, each in separate backend files like so:
 
 .. code-block:: python
 
@@ -73,11 +71,11 @@ There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and s
 
     stack.support_native_out = True
 
-There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the `out argument`_ natively.
+There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the :ref:`overview/deep_dive/inplace_updates:out argument` natively.
 
 For more complicated functions, we need to do more than simply wrap and maybe change the name.
 For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API.
-For example, the APIs of JAX, PyTorch and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing.
+For example, the APIs of JAX, PyTorch, and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing.
 Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
 
 .. code-block:: python
@@ -101,7 +99,7 @@ Ivy Functional API ✅
 
 Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend.
 Instead, we allow these backends to be bound to the single shared namespace ivy.
-The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
+The backend can then be changed by calling :code:`ivy.set_backend('torch')` for example.
 
 :mod:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API.
 For example, the function :func:`prod`  is shown below:
@@ -200,31 +198,31 @@ This implicit backend selection, and the use of a shared global ivy namespace fo
 Backend Handler ✅
 ------------------
 
-All code for setting and unsetting backend resides in the submodule at :mod:`ivy/backend_handler.py`, and the front facing function is :func:`ivy.current_backend`.
+All code for setting and unsetting the backend resides in the submodule at :mod:`ivy/utils/backend/handler.py`, and the front facing function is :func:`ivy.current_backend`.
 The contents of this function are as follows:
 
 .. code-block:: python
 
-   # ivy/backend_handler.py
+   # ivy/utils/backend/handler.py
     def current_backend(*args, **kwargs):
         global implicit_backend
         # if a global backend has been set with set_backend then this will be returned
         if backend_stack:
             f = backend_stack[-1]
             if verbosity.level > 0:
-                verbosity.cprint("Using backend from stack: {}".format(f))
+                verbosity.cprint(f"Using backend from stack: {f}")
             return f
 
         # if no global backend exists, we try to infer the backend from the arguments
         f = _determine_backend_from_args(list(args) + list(kwargs.values()))
         if f is not None:
+            if verbosity.level > 0:
+                verbosity.cprint(f"Using backend from type: {f}")
             implicit_backend = f.current_backend_str()
             return f
-        if verbosity.level > 0:
-            verbosity.cprint("Using backend from type: {}".format(f))
         return importlib.import_module(_backend_dict[implicit_backend])
 
-If a global backend framework has been previously set using for example :code:`ivy.set_backend(‘tensorflow’)`, then this globally set backend is returned.
+If a global backend framework has been previously set using for example :code:`ivy.set_backend('tensorflow')`, then this globally set backend is returned.
 Otherwise, the input arguments are type-checked to infer the backend, and this is returned from the function as a callable module with all bound functions adhering to the specific backend.
 
 The functions in this returned module are populated by iterating through the global :attr:`ivy.__dict__` (or a non-global copy of :attr:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace.
@@ -232,7 +230,7 @@ The following is a slightly simplified version of this code for illustration, wh
 
 .. code-block:: python
 
-   # ivy/backend_handler.py
+   # ivy/utils/backend/handler.py
    def set_backend(backend: str):
 
        # un-modified ivy.__dict__
@@ -240,7 +238,7 @@ The following is a slightly simplified version of this code for illustration, wh
        if not backend_stack:
            ivy_original_dict = ivy.__dict__.copy()
 
-       # add the input backend to global stack
+       # add the input backend to the global stack
        backend_stack.append(backend)
 
        # iterate through original ivy.__dict__
@@ -253,10 +251,11 @@ The following is a slightly simplified version of this code for illustration, wh
            # update global ivy.__dict__ with this method
            ivy.__dict__[k] = backend.__dict__[k]
 
-       # maybe log to terminal
+       # maybe log to the terminal
        if verbosity.level > 0:
            verbosity.cprint(
-               'Backend stack: {}'.format(backend_stack))
+               f'Backend stack: {backend_stack}'
+            )
 
 The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API.
 This is because many higher level functions are written as a composition of lower level Ivy functions.
@@ -277,7 +276,7 @@ A good example is :func:`ivy.lstm_update`, as shown:
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> Tuple[ivy.Array, ivy.Array]:
-        """Perform long-short term memory update by unrolling time dimension of input array.
+        """Perform long-short term memory update by unrolling time dimension of the input array.
         Parameters
         ----------
         x
@@ -323,7 +322,7 @@ A good example is :func:`ivy.lstm_update`, as shown:
         ct = init_c
 
         # lstm outputs
-        hts_list = list()
+        hts_list = []
 
         # unrolled time dimension with lstm steps
         for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
@@ -356,26 +355,26 @@ A good example is :func:`ivy.lstm_update`, as shown:
 We *could* find and wrap the functional LSTM update methods for each backend framework which might bring a small performance improvement, but in this case there are no functional LSTM methods exposed in the official functional APIs of the backend frameworks, and therefore the functional LSTM code which does exist for the backends is much less stable and less reliable for wrapping into Ivy.
 Generally, we have made decisions so that Ivy is as stable and scalable as possible, minimizing dependencies to backend framework code where possible with minimal sacrifices in performance.
 
-Graph Compiler 🚧
+Tracer 🚧
 -----------------
 
 “What about performance?” I hear you ask.
 This is a great point to raise!
 
 With the design as currently presented, there would be a small performance hit every time we call an Ivy function by virtue of the added Python wrapping.
-One reason we created the graph compiler was to address this issue.
+One reason we created the tracer was to address this issue.
 
-The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only.
+The tracer takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only.
 The dependency graph for this process looks like this:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiler_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiler_dependency_graph.png?raw=true
    :align: center
    :width: 75%
 
-Let's look at a few examples, and observe the compiled graph of the Ivy code against the native backend code.
+Let's look at a few examples, and observe the traced graph of the Ivy code against the native backend code.
 First, let's set our desired backend as PyTorch.
-When we compile the three functions below, despite the fact that each
-has a different mix of Ivy and PyTorch code, they all compile to the same graph:
+When we trace the three functions below, despite the fact that each
+has a different mix of Ivy and PyTorch code, they all trace to the same graph:
 
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 |.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
@@ -394,22 +393,22 @@ has a different mix of Ivy and PyTorch code, they all compile to the same graph:
 | x = ivy.array([[1., 2., 3.]])          | x = torch.tensor([[1., 2., 3.]])        | x = ivy.array([[1., 2., 3.]])           |
 |                                        |                                         |                                         |
 | # create graph                         | # create graph                          | # create graph                          |
-| graph = ivy.compile_graph(             | graph = ivy.compile_graph(              | graph = ivy.compile_graph(              |
+| graph = ivy.trace_graph(               | graph = ivy.trace_graph(                | graph = ivy.trace_graph(                |
 |     pure_ivy, x)                       |     pure_torch, x)                      |     mix, x)                             |
 |                                        |                                         |                                         |
 | # call graph                           | # call graph                            | # call graph                            |
 | ret = graph(x)                         | ret = graph(x)                          | ret = graph(x)                          |
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_a.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_a.png?raw=true
    :align: center
    :width: 75%
 
-For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes.
+For all existing ML frameworks, the functional API is the backbone that underpins all higher level functions and classes.
 This means that under the hood, any code can be expressed as a composition of ops in the functional API.
 The same is true for Ivy.
 Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded.
-For example, the following 3 pieces of code all compile to the exact same computation graph as shown:
+For example, the following 3 pieces of code all result in the exact same computation graph when traced as shown:
 
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 |.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
@@ -428,20 +427,20 @@ For example, the following 3 pieces of code all compile to the exact same comput
 |                                        |     -1, 1, (3, 3))                      |     -1, 1, (3, 3))                      |
 | # input                                | b = ivy.zeros((3,))                     | b = ivy.zeros((3,))                     |
 | x = ivy.array([1., 2., 3.])            |                                         |                                         |
-|                                        | # compile graph                         | # compile graph                         |
-| # compile graph                        | graph = ivy.compile_graph(              | graph = ivy.compile_graph(              |
-| net.compile_graph(x)                   |     clean, x, w, b)                     |     unclean, x, w, b)                   |
+|                                        | # trace graph                           | # trace graph                           |
+| # trace graph                          | graph = ivy.trace_graph(                | graph = ivy.trace_graph(                |
+| net.trace_graph(x)                     |     clean, x, w, b)                     |     unclean, x, w, b)                   |
 |                                        |                                         |                                         |
 | # execute graph                        | # execute graph                         | # execute graph                         |
 | net(x)                                 | graph(x, w, b)                          | graph(x, w, b)                          |
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_b.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_b.png?raw=true
    :align: center
    :width: 75%
 
-This compilation is not restricted to just PyTorch.
-Let's take another example, but compile to Tensorflow, NumPy and JAX:
+This tracing is not restricted to just PyTorch.
+Let's take another example, but trace to Tensorflow, NumPy, and JAX:
 
 +------------------------------------+
 |.. code-block:: python              |
@@ -455,7 +454,7 @@ Let's take another example, but compile to Tensorflow, NumPy and JAX:
 | x = ivy.array([[1., 2., 3.]])      |
 | y = ivy.array([[2., 3., 4.]])      |
 | # create graph                     |
-| graph = ivy.compile_graph(         |
+| graph = ivy.trace_graph(           |
 |     ivy_func, x, y)                |
 |                                    |
 | # call graph                       |
@@ -466,7 +465,7 @@ Converting this code to a graph, we get a slightly different graph for each back
 
 Tensorflow:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_tf.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_tf.png?raw=true
    :align: center
    :width: 75%
 
@@ -474,7 +473,7 @@ Tensorflow:
 
 Numpy:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_numpy.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_numpy.png?raw=true
    :align: center
    :width: 75%
 
@@ -482,18 +481,18 @@ Numpy:
 
 Jax:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_jax.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_jax.png?raw=true
    :align: center
    :width: 75%
 |
 
-The example above further emphasizes that the graph compiler creates a computation graph consisting of backend functions, not Ivy functions.
-Specifically, the same Ivy code compiles to different graphs depending on the selected backend.
-However, when compiling native framework code, we are only able to compile a graph for that same framework.
-For example, we cannot take torch code and compile this into tensorflow code.
-However, we can transpile torch code into tensorflow code (see :ref:`Ivy as a Transpiler` for more details).
+The example above further emphasizes that the tracer creates a computation graph consisting of backend functions, not Ivy functions.
+Specifically, the same Ivy code is traced to different graphs depending on the selected backend.
+However, when compiling native framework code, we are only able to trace a graph for that same framework.
+For example, we cannot take torch code and trace this into tensorflow code.
+However, we can transpile torch code into tensorflow code (see `Ivy as a Transpiler <ivy_as_a_transpiler.rst>`_ for more details).
 
-The graph compiler does not compile to C++, CUDA or any other lower level language.
+The tracer is not a compiler and does not compile to C++, CUDA, or any other lower level language.
 It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python.
 Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
 
@@ -525,6 +524,6 @@ Therefore, the backend code can always be run with maximal efficiency by compili
 
 **Round Up**
 
-Hopefully this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, backend handler and graph compiler 🙂
+Hopefully, this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the Backend functional APIs, Ivy functional API, Backend handler, and Tracer 😄
 
 Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

@@ -4,16 +4,16 @@ import numpy as np
 from numbers import Number
 from typing import Union, List, Optional, Sequence, Tuple
 
-# lcoal
+# local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.creation import (
-    asarray_to_native_arrays_and_back,
-    asarray_infer_device,
-    asarray_handle_nestable,
+    _asarray_to_native_arrays_and_back,
+    _asarray_infer_device,
+    _asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
-    asarray_inputs_to_native_shapes,
+    _asarray_inputs_to_native_shapes,
 )
 
 
@@ -30,10 +30,10 @@ def arange(
     raise IvyNotImplementedException()
 
 
-@asarray_to_native_arrays_and_back
-@asarray_infer_device
-@asarray_handle_nestable
-@asarray_inputs_to_native_shapes
+@_asarray_to_native_arrays_and_back
+@_asarray_infer_device
+@_asarray_handle_nestable
+@_asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         (
@@ -95,6 +95,15 @@ def eye(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def to_dlpack(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+):
     raise IvyNotImplementedException()
 
 

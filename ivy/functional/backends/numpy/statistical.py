@@ -7,6 +7,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from . import backend_version
+from ivy.utils.einsum_parser import legalise_einsum_expr
 
 
 # Array API Standard #
@@ -170,7 +171,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.25.1 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("bfloat16",)}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,
@@ -182,10 +183,7 @@ def cumprod(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        if x.dtype == "bool":
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
+        dtype = _infer_dtype(x.dtype)
     if not (exclusive or reverse):
         return np.cumprod(x, axis, dtype=dtype, out=out)
     elif exclusive and reverse:
@@ -217,10 +215,6 @@ def cumsum(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        if x.dtype == "bool":
-            dtype = ivy.default_int_dtype(as_native=True)
-        if ivy.is_int_dtype(x.dtype):
-            dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
         dtype = _infer_dtype(x.dtype)
 
     if exclusive or reverse:
@@ -249,6 +243,7 @@ cumsum.support_native_out = True
 def einsum(
     equation: str, *operands: np.ndarray, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    equation = legalise_einsum_expr(*[equation, *operands])
     return np.einsum(equation, *operands, out=out)
 
 

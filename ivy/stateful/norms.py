@@ -19,8 +19,7 @@ class LayerNorm(Module):
         v=None,
         dtype=None,
     ):
-        """
-        Class for applying Layer Normalization over a mini-batch of inputs.
+        """Class for applying Layer Normalization over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -66,8 +65,7 @@ class LayerNorm(Module):
         return {}
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the LayerNorm layer.
+        """Perform forward pass of the LayerNorm layer.
 
         Parameters
         ----------
@@ -103,9 +101,9 @@ class BatchNorm2D(Module):
         device=None,
         v=None,
         dtype=None,
+        training=True,
     ):
-        """
-        Class for applying Layer Normalization over a mini-batch of inputs.
+        """Class for applying Layer Normalization over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -151,7 +149,7 @@ class BatchNorm2D(Module):
         self._bias_init = Zeros()
         self._running_mean_init = Zeros()
         self._running_var_init = Ones()
-        Module.__init__(self, device=device, v=v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype, training=training)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer."""
@@ -172,20 +170,13 @@ class BatchNorm2D(Module):
             }
         return {}
 
-    def _forward(
-        self,
-        inputs,
-        training: bool = False,
-    ):
-        """
-        Perform forward pass of the BatchNorm layer.
+    def _forward(self, inputs):
+        """Perform forward pass of the BatchNorm layer.
 
         Parameters
         ----------
         inputs
             Inputs to process of shape N,C,*.
-        training
-            Determine the current phase (training/inference)
 
         Returns
         -------
@@ -199,11 +190,11 @@ class BatchNorm2D(Module):
             eps=self._epsilon,
             momentum=self._momentum,
             data_format=self.data_format,
-            training=training,
+            training=self.training,
             scale=self.v.w if self._affine else None,
             offset=self.v.b if self._affine else None,
         )
-        if self._track_running_stats and training:
+        if self._track_running_stats and self.training:
             self.v.running_mean = running_mean
             self.v.running_var = running_var
 

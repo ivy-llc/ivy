@@ -16,10 +16,9 @@ class _ArrayWithGradients(abc.ABC):
         preserve_type: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.stop_gradient. This method simply wraps
-        the function, and so the docstring for ivy.stop_gradient also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.stop_gradient. This method
+        simply wraps the function, and so the docstring for ivy.stop_gradient
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -58,10 +57,9 @@ class _ArrayWithGradients(abc.ABC):
         epsilon: float = 1e-7,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.adam_step. This method simply wraps the
-        function, and so the docstring for ivy.adam_step also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.adam_step. This method
+        simply wraps the function, and so the docstring for ivy.adam_step also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -116,10 +114,9 @@ class _ArrayWithGradients(abc.ABC):
         stop_gradients: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.optimizer_update. This method simply
-        wraps the function, and so the docstring for ivy.optimizer_update also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.optimizer_update. This
+        method simply wraps the function, and so the docstring for
+        ivy.optimizer_update also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -165,10 +162,10 @@ class _ArrayWithGradients(abc.ABC):
         stop_gradients: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.gradient_descent_update. This method
-        simply wraps the function, and so the docstring for ivy.gradient_descent_update
-        also applies to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.gradient_descent_update.
+        This method simply wraps the function, and so the docstring for
+        ivy.gradient_descent_update also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -222,10 +219,9 @@ class _ArrayWithGradients(abc.ABC):
         stop_gradients: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.lars_update. This method simply wraps
-        the function, and so the docstring for ivy.lars_update also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.lars_update. This method
+        simply wraps the function, and so the docstring for ivy.lars_update
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -249,6 +245,20 @@ class _ArrayWithGradients(abc.ABC):
         -------
         ret
             The new function weights ws_new, following the LARS updates.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> w = ivy.array([[3., 1, 5],
+        ...                [7, 2, 9]])
+        >>> dcdw = ivy.array([[0.3, 0.1, 0.2],
+        ...                   [0.1, 0.2, 0.4]])
+        >>> lr = ivy.array(0.1)
+        >>> new_weights = w.lars_update(dcdw, lr, stop_gradients = True)
+        >>> print(new_weights)
+        ivy.array([[2.34077978, 0.78025991, 4.56051969],
+        ...        [6.78026009, 1.56051981, 8.12103939]])
         """
         return ivy.lars_update(
             self,
@@ -274,10 +284,9 @@ class _ArrayWithGradients(abc.ABC):
         stop_gradients: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.adam_update. This method simply wraps
-        the function, and so the docstring for ivy.adam_update also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.adam_update. This method
+        simply wraps the function, and so the docstring for ivy.adam_update
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -362,10 +371,9 @@ class _ArrayWithGradients(abc.ABC):
         stop_gradients: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.lamb_update. This method simply wraps
-        the function, and so the docstring for ivy.lamb_update also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.lamb_update. This method
+        simply wraps the function, and so the docstring for ivy.lamb_update
+        also applies to this method with minimal changes.
 
         Parameters
         ----------

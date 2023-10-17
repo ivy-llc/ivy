@@ -82,6 +82,25 @@ def adjoint(
     raise IvyNotImplementedException()
 
 
+def solve_triangular(
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    # Multiplying with a mask matrix can stop gradients on the diagonal.
+    if unit_diagonal:
+        w = mx.eye(x1.shape[-2], batch_shape=x1.shape[:-2], dtype=x1.dtype)
+        x1 = w + (1 - w) * x1
+    # MXNet does not support complex tensors for this operation,
+    # so adjoint always equals transpose.
+    return mx.nd.linalg.trsm(x1, x2, lower=not upper, transpose=adjoint)
+
+
 def multi_dot(
     x: Sequence[Union[(None, mx.ndarray.NDArray)]],
     /,
@@ -99,3 +118,16 @@ def cond(
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
+
+
+def dot(
+    a: mx.ndarray.NDArray,
+    b: mx.ndarray.NDArray,
+    /,
+    *,
+    out: Optional[mx.ndarray.NDArray] = None,
+) -> mx.ndarray.NDArray:
+    return mx.symbol.dot(a, b, out=out)
+
+
+dot.support_native_out = True

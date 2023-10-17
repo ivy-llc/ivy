@@ -1,4 +1,5 @@
-"""Collection of Jax random functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Jax random functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import jax
@@ -14,7 +15,6 @@ from ivy.functional.ivy.random import (
     _check_valid_scale,
 )
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.backends.jax.device import to_device
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
@@ -45,7 +45,7 @@ def random_uniform(
     low: Union[float, JaxArray] = 0.0,
     high: Union[float, JaxArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device = None,
     dtype: jnp.dtype,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
@@ -57,11 +57,8 @@ def random_uniform(
     else:
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
-    return to_device(
-        jax.random.uniform(
-            rng_input, shape, minval=low, maxval=high, dtype=jnp.float32
-        ),
-        device,
+    return jax.random.uniform(
+        rng_input, shape, minval=low, maxval=high, dtype=jnp.float32
     ).astype(dtype)
 
 
@@ -70,7 +67,7 @@ def random_normal(
     mean: Union[float, JaxArray] = 0.0,
     std: Union[float, JaxArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device = None,
     dtype: jnp.dtype,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
@@ -83,17 +80,10 @@ def random_normal(
     else:
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
-    return (
-        to_device(
-            jax.random.normal(rng_input, shape, dtype=dtype),
-            device,
-        )
-        * std
-        + mean
-    )
+    return jax.random.normal(rng_input, shape, dtype=dtype) * std + mean
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.18 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -102,7 +92,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[JaxArray] = None,
     replace: bool = True,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device = None,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -134,10 +124,7 @@ def multinomial(
         for prob in probs_stack
     ]
     samples_flat = jnp.stack(samples_stack)
-    return to_device(
-        jnp.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]),
-        device,
-    )
+    return jnp.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples])
 
 
 def randint(
@@ -146,7 +133,7 @@ def randint(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device = None,
     dtype: Optional[Union[jnp.dtype, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
@@ -163,7 +150,7 @@ def randint(
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
 
-    return to_device(jax.random.randint(rng_input, shape, low, high, dtype), device)
+    return jax.random.randint(rng_input, shape, low, high, dtype)
 
 
 def seed(*, seed_value: int = 0) -> None:

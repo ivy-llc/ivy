@@ -1,17 +1,16 @@
 # TODO: uncomment after frontend is not required
 # global
-import ivy
 import sys
 from hypothesis import strategies as st
 import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 
 
-# Helpers #
-# ------- #
+# --- Helpers --- #
+# --------------- #
 
 
 @st.composite
@@ -113,6 +112,289 @@ def _norm_helper(draw):
     return _matrix_norm_example()
 
 
+# --- Main --- #
+# ------------ #
+
+
+# eigh_tridiagonal
+@handle_frontend_test(
+    fn_tree="scipy.linalg.eigh_tridiagonal",
+    all_args=_generate_eigh_tridiagonal_args(),
+    test_with_out=st.just(False),
+)
+def test_scipy_eigh_tridiagonal(
+    all_args,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, alpha, beta, eigvals_only, select, select_range, tol = all_args
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        alpha=alpha[0],
+        beta=beta[0],
+        eigvals_only=eigvals_only,
+        select=select,
+        select_range=select_range,
+        tol=tol,
+    )
+
+
+# inv
+@handle_frontend_test(
+    fn_tree="scipy.linalg.inv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    test_with_out=st.just(False),
+)
+def test_scipy_inv(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+    )
+
+
+# kron
+@handle_frontend_test(
+    fn_tree="scipy.linalg.kron",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=10,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_scipy_kron(dtype_and_x, frontend, test_flags, fn_tree, on_device, backend_fw):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        b=x[1],
+    )
+
+
+# lu_factor
+@handle_frontend_test(
+    fn_tree="scipy.linalg.lu_factor",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=50,
+        min_num_dims=2,
+    ),
+    overwrite_a=st.booleans(),
+    check_finite=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_scipy_lu_factor(
+    dtype_and_x,
+    overwrite_a,
+    check_finite,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        test_values=False,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        overwrite_a=overwrite_a,
+        check_finite=check_finite,
+    )
+
+
+# norm
+@handle_frontend_test(
+    fn_tree="scipy.linalg.norm",
+    dtype_values=_norm_helper(),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_scipy_norm(
+    dtype_values,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x, axis, ord, _ = dtype_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        ord=ord,
+        axis=axis,
+        keepdims=keepdims,
+    )
+
+
+# pinv
+@handle_frontend_test(
+    fn_tree="scipy.linalg.pinv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_scipy_pinv(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+    )
+
+
+# svd
+@handle_frontend_test(
+    fn_tree="scipy.linalg.svd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0.1,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+    full_matrices=st.booleans(),
+    compute_uv=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_scipy_svd(
+    dtype_and_x,
+    full_matrices,
+    compute_uv,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    x = x[0]
+    x = (
+        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    )  # make symmetric positive-definite
+    ret, ret_gt = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        test_values=False,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x,
+        full_matrices=full_matrices,
+        compute_uv=compute_uv,
+    )
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        for u, v in zip(ret, ret_gt):
+            u = ivy_backend.to_numpy(ivy_backend.abs(u))
+            v = ivy_backend.to_numpy(ivy_backend.abs(v))
+            helpers.value_test(
+                ret_np_flat=u,
+                ret_np_from_gt_flat=v,
+                rtol=1e-04,
+                atol=1e-04,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
+
+
+# svdvals
+@handle_frontend_test(
+    fn_tree="scipy.linalg.svdvals",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0.1,
+        max_value=50,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+    check_finite=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_scipy_svdvals(
+    dtype_and_x,
+    check_finite,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    x = x[0]
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        test_values=False,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x,
+        check_finite=check_finite,
+    )
+
+
 # Tests #
 # ----- #
 
@@ -138,10 +420,12 @@ def test_scipy_tril(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -153,7 +437,7 @@ def test_scipy_tril(
 
 # triu
 @handle_frontend_test(
-    fn_tree="jax.scipy.triu",
+    fn_tree="scipy.linalg.triu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
@@ -172,270 +456,16 @@ def test_scipy_triu(
     frontend,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         m=x[0],
         k=k,
-    )
-
-
-# inv
-@handle_frontend_test(
-    fn_tree="jax.scipy.inv",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
-    test_with_out=st.just(False),
-)
-def test_scipy_inv(
-    dtype_and_x,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-    )
-
-
-# pinv
-@handle_frontend_test(
-    fn_tree="scipy.linalg.pinv",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=2,
-    ),
-    test_with_out=st.just(False),
-)
-def test_scipy_pinv(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-    )
-
-
-# kron
-@handle_frontend_test(
-    fn_tree="scipy.linalg.kron",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=1,
-        max_dim_size=10,
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_scipy_kron(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        b=x[1],
-    )
-
-
-# eigh_tridiagonal
-@handle_frontend_test(
-    fn_tree="scipy.linalg.eigh_tridiagonal",
-    all_args=_generate_eigh_tridiagonal_args(),
-    test_with_out=st.just(False),
-)
-def test_scipy_eigh_tridiagonal(
-    all_args,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, alpha, beta, eigvals_only, select, select_range, tol = all_args
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        alpha=alpha[0],
-        beta=beta[0],
-        eigvals_only=eigvals_only,
-        select=select,
-        select_range=select_range,
-        tol=tol,
-    )
-
-
-# norm
-@handle_frontend_test(
-    fn_tree="scipy.linalg.norm",
-    dtype_values=_norm_helper(),
-    keepdims=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_scipy_norm(
-    dtype_values,
-    keepdims,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, x, axis, ord, _ = dtype_values
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        ord=ord,
-        axis=axis,
-        keepdims=keepdims,
-    )
-
-
-# svd
-@handle_frontend_test(
-    fn_tree="scipy.linalg.svd",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0.1,
-        max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-    ),
-    full_matrices=st.booleans(),
-    compute_uv=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_scipy_svd(
-    dtype_and_x,
-    full_matrices,
-    compute_uv,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    x = np.asarray(x[0], dtype=dtype[0])
-    # make symmetric positive-definite beforehand
-    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    ret, ret_gt = helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        test_values=False,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        full_matrices=full_matrices,
-        compute_uv=compute_uv,
-    )
-    for u, v in zip(ret, ret_gt):
-        u = ivy.to_numpy(ivy.abs(u))
-        v = ivy.to_numpy(ivy.abs(v))
-        helpers.value_test(ret_np_flat=u, ret_np_from_gt_flat=v, rtol=1e-04, atol=1e-04)
-
-
-# svdvals
-@handle_frontend_test(
-    fn_tree="scipy.linalg.svdvals",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
-        min_num_dims=2,
-    ),
-    test_with_out=st.just(False),
-)
-def test_scipy_svdvals(
-    dtype_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, x = dtype_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-    )
-
-
-# lu_factor
-@handle_frontend_test(
-    fn_tree="scipy.linalg.lu_factor",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
-        min_num_dims=2,
-    ),
-    overwrite_a=st.booleans(),
-    check_finite=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_scipy_lu_factor(
-    dtype_and_x,
-    overwrite_a,
-    check_finite,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        test_values=False,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        overwrite_a=overwrite_a,
-        check_finite=check_finite,
     )

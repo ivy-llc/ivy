@@ -23,13 +23,21 @@ class matrix:
                 dtype = data.dtype
             data = ivy.array(data, dtype=dtype, copy=copy)
             self._data = data
+        elif ivy.isscalar(data):
+            self._data = ivy.asarray(data, dtype=dtype)
         else:
             raise ivy.utils.exceptions.IvyException(
-                "data must be an array, list, or str"
+                "data must be an array, list, or scalar"
             )
-        ivy.utils.assertions.check_equal(
-            len(ivy.shape(self._data)), 2, message="data must be 2D", as_array=False
-        )
+        if self._data.ndim < 2:
+            self._data = self._data.reshape((1, -1))
+        elif self._data.ndim > 2:
+            newshape = tuple([x for x in self._data.shape if x > 1])
+            ndim = len(newshape)
+            if ndim == 2:
+                self._data = self._data.reshape(newshape)
+            else:
+                raise ValueError("shape too large to be a matrix.")
         self._dtype = self._data.dtype
         self._shape = ivy.shape(self._data)
 

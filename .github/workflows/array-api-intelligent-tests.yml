@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'master'
+      - 'main'
 permissions:
   actions: read
 jobs:
@@ -29,24 +29,24 @@ jobs:
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
-          source ./ivy/clone_mapping.sh master
-          pip install pydriller pymongo 
+          source ./ivy/scripts/shell/clone_mapping.sh main
+          pip install pydriller pymongo
           cp Mapping/tests.pbz2 ivy/
           cd ivy
-          python run_tests_CLI/array_api_determine_tests.py
+          python scripts/determine_tests/array_api_determine_tests.py
           cd ..
           cp ivy/tests.pbz2 Mapping/
           cd Mapping
           git add .
           git commit -m "Update Mapping"
-          git push origin master
+          git push origin main
         continue-on-error: true
 
       - name: Run Tests
         id: tests
         run: |
           cd ivy
-          python run_tests_CLI/array_api_run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
+          python scripts/run_tests/array_api_run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
       - name: Check on failures
