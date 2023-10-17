@@ -129,9 +129,9 @@ This can be done using:
 The main branch then simply has the role of being kept up to date with upstream.
 You *can* create PRs based on the main branch of your fork, but this will make things more complicated if you would then like to create additional PRs in the future.
 
-For keeping any branch on your fork up to date, there is a script in the root folder of the repo `merge_with_upstream.sh <https://github.com/unifyai/ivy/blob/2994da4f7347b0b3fdd81b91c83bcbaa5580e7fb/merge_with_upstream.sh>`_.
-To update your fork's branch to the upstream main branch, simply run :code:`./merge_with_upstream.sh name_of_your_branch`.
-To update the main branch, this would then be: :code:`./merge_with_upstream.sh main`.
+For keeping any branch on your fork up to date, there is a script in the root folder of the repo `scripts/shell/merge_with_upstream.sh <https://github.com/unifyai/ivy/blob/2994da4f7347b0b3fdd81b91c83bcbaa5580e7fb/scripts/shell/merge_with_upstream.sh>`_.
+To update your fork's branch to the upstream main branch, simply run :code:`./scripts/shell/merge_with_upstream.sh name_of_your_branch`.
+To update the main branch, this would then be: :code:`./scripts/shell/merge_with_upstream.sh main`.
 
 When making a PR (explained in the next sub-section), sometimes you will see that changes to upstream have caused conflicts with your PR.
 In this case, you will need to either resolve these conflicts in the browser, or clone your fork and make changes locally in the terminal and push once resolved.

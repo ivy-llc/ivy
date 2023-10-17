@@ -67,7 +67,7 @@ Using the terminal, you can run all array-api tests in a given file for a certai
 .. code-block:: none
 
         # /ivy
-        /bin/bash -e ./run_tests_CLI/test_array_api.sh jax test_linalg
+        /bin/bash -e ./scripts/shell/test_array_api.sh jax test_linalg
 
 You can change the argument with any of our supported frameworks - tensorflow, numpy, torch, or jax - and the individual test function categories in :code:`ivy/ivy_tests/array_api_testing/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
 

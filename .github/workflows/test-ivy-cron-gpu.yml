@@ -42,8 +42,8 @@ jobs:
         run: |
           pip3 install pymongo
           cd ivy
-          python3 run_tests_CLI/cron_tests.py ${{ github.run_number }}
-          python3 run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'true' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }}
+          python3 scripts/setup_tests/cron_tests.py ${{ github.run_number }}
+          python3 scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'true' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
       - name: Check on failures
