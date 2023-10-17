@@ -55,7 +55,7 @@ jobs:
         id: tests
         run: |
           cd ivy
-          ./run_tests_CLI/test_array_api.sh ${{matrix.backends}} test_${{matrix.submodules}} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
+          ./scripts/shell/test_array_api.sh ${{matrix.backends}} test_${{matrix.submodules}} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
         continue-on-error: true
 
       - name: Zip Hypothesis Examples

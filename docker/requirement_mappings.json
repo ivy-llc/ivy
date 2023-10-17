@@ -4,5 +4,5 @@
   "numpy": ["numpy"],
   "paddle": ["paddlepaddle"],
   "mxnet": ["mxnet"],
-  "torch": ["torchvision","xformers"]
+  "torch": ["torchvision"]
 }
