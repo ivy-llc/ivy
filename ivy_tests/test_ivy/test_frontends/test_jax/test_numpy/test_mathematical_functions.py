@@ -1068,6 +1068,7 @@ def test_jax_ediff1d(
     eq_n_op_n_shp=helpers.einsum_helper(),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),
+    optimize=st.sampled_from(["greedy", "optimal"]),
 )
 def test_jax_einsum_path(
     *,
@@ -1078,6 +1079,7 @@ def test_jax_einsum_path(
     backend_fw,
     frontend,
     test_flags,
+    optimize,
 ):
     eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
@@ -1094,6 +1096,7 @@ def test_jax_einsum_path(
         on_device=on_device,
         subscripts=eq,
         **kw,
+        optimize=optimize,
     )
 
 
