@@ -3,8 +3,9 @@ import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.functional.frontends.jax.lax import slice_in_dim
+from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs, concatenate
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
 
 
@@ -721,6 +722,39 @@ def trapz(y, x=None, dx=1.0, axis=-1, out=None):
 @to_ivy_arrays_and_back
 def trunc(x):
     return ivy.trunc(x)
+
+
+@with_supported_dtypes(
+    {"0.4.14 and below": ("float32", "float64", "int32", "int64")}, "jax"
+)
+@to_ivy_arrays_and_back
+def unwrap(p, discont=None, axis=-1, period=2 * ivy.pi):
+    p = ivy.asarray(p)
+    _dtype_to_inexact = {
+        "int32": "float64",
+        "int64": "float64",
+        "float32": "float32",
+        "float64": "float64",
+    }
+    dtype = _dtype_to_inexact[p.dtype]
+    p = p.astype(dtype)
+    if discont is None:
+        discont = period / 2
+    interval = period / 2
+    dd = ivy.diff(p, axis=axis)
+    ddmod = ivy.remainder(dd + interval, period) - interval
+    ddmod = ivy.where((ddmod == -interval) & (dd > 0), interval, ddmod)
+    ph_correct = ivy.where(ivy.abs(dd) < discont, 0, ddmod - dd)
+    up = concatenate(
+        (
+            slice_in_dim(p, 0, 1, axis=axis),
+            slice_in_dim(p, 1, None, axis=axis) + ivy.cumsum(ph_correct, axis=axis),
+        ),
+        axis=axis,
+        dtype=dtype,
+    )
+
+    return up
 
 
 @to_ivy_arrays_and_back
