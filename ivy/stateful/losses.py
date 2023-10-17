@@ -21,8 +21,7 @@ class LogPoissonLoss(Module):
     def _forward(
         self, true, pred, *, compute_full_loss=None, axis=None, reduction=None
     ):
-        """
-        Perform forward pass of the Log Poisson Loss.
+        """Perform forward pass of the Log Poisson Loss.
 
         true
             input array containing true labels.
@@ -68,8 +67,7 @@ class CrossEntropyLoss(Module):
         Module.__init__(self)
 
     def _forward(self, true, pred, *, axis=None, epsilon=None, reduction=None):
-        """
-        Perform forward pass of the Cross Entropy Loss.
+        """Perform forward pass of the Cross Entropy Loss.
 
         true
             input array containing true labels.

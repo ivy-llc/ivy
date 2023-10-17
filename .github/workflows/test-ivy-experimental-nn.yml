@@ -24,6 +24,15 @@ jobs:
           submodules: "recursive"
           fetch-depth: 2
 
+      - name: Install ivy and fetch binaries
+        run: |
+          cd ivy
+          pip3 install -e .
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          cd ..
+
       - name: Check Files Changed
         shell: pwsh
         id: check_file_changed
@@ -71,9 +80,6 @@ jobs:
         id: tests
         run: |
           cd ivy
-          mkdir .ivy
-          touch .ivy/key.pem
-          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           ./run_tests_CLI/test_experimental_nn.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
         continue-on-error: true
 
