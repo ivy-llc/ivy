@@ -91,7 +91,7 @@ def test_paddle_normalize(
     p,
     negative_axis,
     test_flags,
-    frontend,
+    frontend: Literal["paddle"],
     backend_fw,
     on_device,
     fn_tree,
