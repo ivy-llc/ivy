@@ -1,4 +1,5 @@
 # global
+from typing import Literal
 from hypothesis import strategies as st
 
 # local
@@ -8,6 +9,8 @@ from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_nn.test_norms import (
     _generate_data_layer_norm,
 )
+
+from ivy import ivy
 
 
 # layer_norm
@@ -24,7 +27,7 @@ def test_paddle_layer_norm(
     normalized_shape,
     eps,
     test_flags,
-    frontend,
+    frontend: Literal['paddle'],
     on_device,
     fn_tree,
 ):
@@ -41,3 +44,8 @@ def test_paddle_layer_norm(
         bias=offset[0],
         epsilon=eps,
     )
+
+
+def batch_normalisation(x, gamma, beta, moving_mean, moving_var, epsilon=1e-5):
+    return  ivy.batch_normalisation(x, gamma, beta, moving_mean, moving_var, epsilon)
+

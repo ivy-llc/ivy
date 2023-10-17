@@ -1593,3 +1593,29 @@ def test_torch_select(
         dim=axis,
         index=idx,
     )
+
+
+def tensor_ops(tensor, operation_type, *args):
+    if operation_type == "index":
+        if len(args) != 1:
+            raise ValueError
+        index = args[0]
+        return tensor[index]
+    elif operation_type == "slice":
+        if len(args) != 2:
+            raise ValueError
+        start, end = args
+        return tensor[start:end]
+    elif operation_type == "join":
+        if len(args) != 1:
+            raise ValueError
+        other_tensor = args[0]
+        return tensor.cat((tensor, other_tensor), dim=0)
+    elif operation_type == "mutate":
+        if len(args) != 1:
+            raise ValueError
+        factor = args[0]
+        tensor.mul_(factor)
+        return tensor
+    else:
+        raise ValueError

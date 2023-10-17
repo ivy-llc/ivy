@@ -366,3 +366,48 @@ def select(input, dim, index):
     slices = [slice(None)] * num_dims
     slices[dim] = index
     return input[tuple(slices)]
+
+
+@to_ivy_arrays_and_back
+<<<<<<< HEAD
+def tensor_ops(tensor, operations_type, *args):
+    if operations_type == "index":
+
+def tensor_ops(tensor, operation_type, *args):
+    if operation_type == "index":
+
+        if len(args) != 1:
+            raise ValueError
+        index = args[0]
+        return tensor[index]
+
+    elif operations_type == "slice":
+=======
+    elif operation_type == "slice":
+>>>>>>> 7337c7f069c0fa2cb036917de0ad022411616d0d
+        if len(args) != 2:
+            raise ValueError
+        start, end = args
+        return tensor[start:end]
+<<<<<<< HEAD
+    elif operations_type == "mutate":
+=======
+    elif operation_type == "join":
+        if len(args) != 1:
+            raise ValueError
+        other_tensor = args[0]
+        return ivy.cat((tensor, other_tensor), dim=0)
+    elif operation_type == "mutate":
+>>>>>>> 7337c7f069c0fa2cb036917de0ad022411616d0d
+        if len(args) != 1:
+            raise ValueError
+        factor = args[0]
+        tensor.mul_(factor)
+    elif operations_type == "join":
+        if len(args) != 1:
+            raise ValueError
+        other_tensor = args[0]
+        return ivy.cat((tensor, other_tensor), dim=0)
+        return tensor
+    else:
+        raise ValueError
