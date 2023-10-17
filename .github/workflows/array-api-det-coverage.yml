@@ -32,6 +32,6 @@ jobs:
           source-directory: tests/
           destination-github-username: 'unifyai'
           destination-repository-name: 'Mapping'
-          user-email: rashul.chutani@gmail.com
+          user-email: ivy.branch@lets-unify.ai
           commit-message: Update Array API Tests Mapping
           target-branch: main

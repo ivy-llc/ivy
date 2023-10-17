@@ -1,5 +1,5 @@
-USER_EMAIL="rashul.chutani@gmail.com"
-USER_NAME="Rashul Chutani"
+USER_EMAIL="ivy.branch@lets-unify.ai"
+USER_NAME="ivy-branch"
 TARGET_BRANCH=$1
 CLONE_DIR=$(mktemp -d)
 GITHUB_SERVER="github.com"
