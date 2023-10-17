@@ -1281,6 +1281,53 @@ def tensor_train(
     return ivy.TTTensor(factors)
 
 
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def tensor_train_matrix(
+    input_tensor: Union[ivy.Array, ivy.NativeArray],
+    rank: Union[int, Sequence[int]],
+    /,
+    *,
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    verbose: Optional[bool] = False,
+):
+    order = ivy.get_num_dims(input_tensor)
+    n_input = order // 2
+
+    if ivy.get_num_dims(input_tensor) != 2 * n_input:
+        msg = "The tensor should have as many dimensions for inputs and outputs, "
+        msg += "i.e the order should be even. "
+        msg += f"but got a tensor of order ivy.get_num_dims(input_tensor)={order}"
+        raise ValueError(msg)
+    
+    in_shape = ivy.shape(input_tensor)[:n_input]
+    out_shape = ivy.shape(input_tensor)[n_input:]
+
+    if n_input == 1:
+        return ivy.TTMatrix([input_tensor.reshape((1, in_shape[0], out_shape[0], 1))])
+
+    new_idx = list(
+        [
+            idx
+            for tuple_ in zip(range(n_input), range(n_input, 2 * n_input))
+            for idx in tuple_
+        ]
+    )
+    new_shape = list([a * b for (a, b) in zip(in_shape, out_shape)])
+    tensor = ivy.permute_dims(input_tensor, new_idx).reshape(new_shape)
+
+    factors = ivy.tensor_train(tensor, rank, svd=svd, verbose=verbose).factors
+    for i in range(len(factors)):
+        factors[i] = ivy.reshape(
+            factors[i], (factors[i].shape[0], in_shape[i], out_shape[i], -1)
+        )
+
+    return ivy.TTMatrix(factors)
+
+
 # TODO uncomment the code below when these svd
 # methods have been added
 def _svd_interface(
