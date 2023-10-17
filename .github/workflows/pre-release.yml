@@ -7,10 +7,6 @@ permissions:
 jobs:
   run_tests:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        file: [ivy.txt, torch.txt]
     steps:
       - name: Checkout Ivy 🛎
         uses: actions/checkout@v3
