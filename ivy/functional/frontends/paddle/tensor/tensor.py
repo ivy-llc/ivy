@@ -925,7 +925,7 @@ class Tensor:
         return x._ivy_array
 
     def fill_diagonal_tensor_(self, y, offset=0, dim1=0, dim2=1, name=None):
-        self._ivy_array = self.fill_diagonal_tensor_impl(
+        self._ivy_array = self._fill_diagonal_tensor_impl(
             self, y, offset=offset, dim1=dim1, dim2=dim2, inplace=True
         )
         return self._ivy_array
