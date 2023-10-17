@@ -361,8 +361,8 @@ def interpolate(
 
 
 def kl_div(logits, labels, reduction="mean"):
-    """Computes the Kullback-Leibler (KL) Divergence between the logits and the
-    labels.
+    """
+    Computes the Kullback-Leibler (KL) Divergence between the logits and the labels.
 
     Parameters
     ----------

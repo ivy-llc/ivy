@@ -17,9 +17,10 @@ class _ArrayWithLosses(abc.ABC):
         reduction: str = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.cross_entropy. This method
-        simply wraps the function, and so the docstring for ivy.cross_entropy
-        also applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.cross_entropy. This method simply wraps
+        the function, and so the docstring for ivy.cross_entropy also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -68,10 +69,10 @@ class _ArrayWithLosses(abc.ABC):
         axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.binary_cross_entropy. This
-        method simply wraps the function, and so the docstring for
-        ivy.binary_cross_entropy also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of ivy.binary_cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -133,10 +134,10 @@ class _ArrayWithLosses(abc.ABC):
         reduction: str = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.sparse_cross_entropy. This
-        method simply wraps the function, and so the docstring for
-        ivy.sparse_cross_entropy also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of ivy.sparse_cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.sparse_cross_entropy
+        also applies to this method with minimal changes.
 
         Parameters
         ----------

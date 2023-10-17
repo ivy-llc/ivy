@@ -16,9 +16,10 @@ class _ArrayWithCreationExperimental(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.eye_like. This method
-        simply wraps the function, and so the docstring for ivy.eye_like also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.eye_like. This method simply wraps the
+        function, and so the docstring for ivy.eye_like also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -59,10 +60,10 @@ class _ArrayWithCreationExperimental(abc.ABC):
         segment_ids: ivy.Array,
         num_segments: Union[int, ivy.Array],
     ) -> ivy.Array:
-        r"""ivy.Array instance method variant of ivy.unsorted_segment_min. This
-        method simply wraps the function, and so the docstring for
-        ivy.unsorted_segment_min also applies to this method with minimal
-        changes.
+        r"""
+        ivy.Array instance method variant of ivy.unsorted_segment_min. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_min
+        also applies to this method with minimal changes.
 
         Note
         ----
@@ -96,10 +97,10 @@ class _ArrayWithCreationExperimental(abc.ABC):
         segment_ids: ivy.Array,
         num_segments: Union[int, ivy.Array],
     ) -> ivy.Array:
-        r"""ivy.Array instance method variant of ivy.unsorted_segment_sum. This
-        method simply wraps the function, and so the docstring for
-        ivy.unsorted_segment_sum also applies to this method with minimal
-        changes.
+        r"""
+        ivy.Array instance method variant of ivy.unsorted_segment_sum. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_sum
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -132,9 +133,10 @@ class _ArrayWithCreationExperimental(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.blackman_window. This
-        method simply wraps the function, and so the docstring for
-        ivy.blackman_window also applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.blackman_window. This method simply
+        wraps the function, and so the docstring for ivy.blackman_window also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -179,9 +181,10 @@ class _ArrayWithCreationExperimental(abc.ABC):
         upper: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.trilu. This method simply
-        wraps the function, and so the docstring for ivy.trilu also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.trilu. This method simply wraps the
+        function, and so the docstring for ivy.trilu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -217,10 +220,10 @@ class _ArrayWithCreationExperimental(abc.ABC):
         lower_edge_hertz: Optional[Union[float, ivy.Array]] = 0.0,
         upper_edge_hertz: Optional[Union[float, ivy.Array]] = 3000.0,
     ):
-        """Generate a MelWeightMatrix that can be used to re-weight a Tensor
-        containing a linearly sampled frequency spectra (from DFT or STFT) into
-        num_mel_bins frequency information based on the [lower_edge_hertz,
-        upper_edge_hertz]
+        """
+        Generate a MelWeightMatrix that can be used to re-weight a Tensor containing a
+        linearly sampled frequency spectra (from DFT or STFT) into num_mel_bins
+        frequency information based on the [lower_edge_hertz, upper_edge_hertz]
 
         range on the mel scale. This function defines the mel scale
         in terms of a frequency in hertz according to the following

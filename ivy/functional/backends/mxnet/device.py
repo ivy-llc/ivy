@@ -1,4 +1,5 @@
-"""MXNet device functions.
+"""
+MXNet device functions.
 
 Collection of MXNet general functions, wrapped to fit Ivy syntax and
 signature.

@@ -128,6 +128,24 @@ def threshold(
     return ivy.astype(ret, x.dtype)
 
 
+@with_supported_dtypes({"2.14.0 and below": ("float",)}, backend_version)
+def softshrink(
+    x: Tensor,
+    /,
+    *,
+    lambd: float = 0.5,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    ret = tf.where(
+        tf.math.greater(x, lambd),
+        x - lambd,
+        tf.where(tf.math.less(x, -lambd), x + lambd, 0),
+    )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
 @with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def celu(
     x: Tensor,
