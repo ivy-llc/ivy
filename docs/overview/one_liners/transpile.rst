@@ -1,9 +1,9 @@
 ``ivy.transpile()``
-=================
+===================
 
 ..
 
-   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this doc won't work as expected as of now!
+   ⚠️ **Warning**: The tracer and the transpiler are not publicly available yet, so certain parts of this doc won't work as expected as of now!
 
 
 Ivy's Transpiler converts a function written in any framework into your framework of
@@ -24,10 +24,10 @@ want to use to research, develop, or deploy systems. So if you want to:
 
 Ivy's Transpiler is definitely the tool for the job 🔧
 
-To convert the code, it traces a computational graph using the Graph Compiler and
+To convert the code, it traces a computational graph using the Tracer and
 leverages Ivy's frontends and backends to link one framework to another. After swapping
 each function node in the computational graph with their equivalent Ivy frontend
-functions, the compiler removes all the wrapping in the frontends and replaces them with the native
+functions, the tracer removes all the wrapping in the frontends and replaces them with the native
 functions of the target framework.
 
 
@@ -61,7 +61,7 @@ Transpiler API
 Using the transpiler
 --------------------
 
-Similar to the ``ivy.compile`` function, ``ivy.unify`` and ``ivy.transpile`` can be used
+Similar to the ``ivy.trace`` function, ``ivy.unify`` and ``ivy.transpile`` can be used
 eagerly and lazily. If you pass the necessary arguments, the function will be called
 instantly, otherwise, transpilation will happen the first time you invoke the function
 with the proper arguments.
@@ -178,7 +178,7 @@ another, at the moment we support ``torch.nn.Module`` when ``to="torch"``,
 Sharp bits
 ----------
 
-In a similar fashion to the compiler, the transpiler is under development and we are
+In a similar fashion to the trace, the transpiler is under development and we are
 still working on some rough edges. These include:
 
 1. **Keras model subclassing**: If a model is transpiled to keras, the resulting
@@ -195,15 +195,15 @@ still working on some rough edges. These include:
 3. **Haiku transform with state**: As of now, we only support the transpilation of
    transformed Haiku modules, this means that ``transformed_with_state`` objects will
    not be correctly transpiled.
-4. **Array format between frameworks**: As the compiler outputs a 1-to-1 mapping of the
-   compiled function, the format of the tensors is preserved when transpiling from a
+4. **Array format between frameworks**: As the tracer outputs a 1-to-1 mapping of the
+   traced function, the format of the tensors is preserved when transpiling from a
    framework to another. As an example, if you transpile a convolutional block from
    PyTorch (which uses ``N, C, H, W``) to TensorFlow (which uses ``N, H, W, C``) and want
    to use it as part of a bigger (TensorFlow) model, you'll need to include a permute statement for
    the inference to be correct.
 
-Keep in mind that the transpiler uses the graph compiler under the hood, so the
-:ref:`sharp bits of the compiler <overview/one_liners/compile:Sharp bits>`
+Keep in mind that the transpiler uses the Tracer under the hood, so the
+:ref:`sharp bits of the tracer <overview/one_liners/trace:Sharp bits>`
 apply here as well!
 
 Examples

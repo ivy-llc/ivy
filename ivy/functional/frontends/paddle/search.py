@@ -34,6 +34,37 @@ def argsort(x, /, *, axis=-1, descending=False, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def index_sample(x, index):
+    return x[ivy.arange(x.shape[0])[:, None], index]
+
+
+# kthvalue
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def kthvalue(x, k, axis=None, keepdim=False, name=None):
+    if axis is None:
+        axis = -1
+    sorted_input = ivy.sort(x, axis=axis)
+    sort_indices = ivy.argsort(x, axis=axis)
+
+    values = ivy.gather(sorted_input, ivy.array(k - 1), axis=axis)
+    indices = ivy.gather(sort_indices, ivy.array(k - 1), axis=axis)
+
+    if keepdim:
+        values = ivy.expand_dims(values, axis=axis)
+        indices = ivy.expand_dims(indices, axis=axis)
+
+    ret = (values, indices)
+    return ret
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )

@@ -1,6 +1,10 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    with_supported_device_and_dtypes,
+)
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -47,6 +51,12 @@ def addmm(input, x, y, beta=1.0, alpha=1.0, name=None):
     return value
 
 
+@with_supported_dtypes({"2.5.0 and below": "bool"}, "paddle")
+@to_ivy_arrays_and_back
+def all(x, axis, keepdim=False, name=None):
+    return ivy.all(x, axis=axis, keepdims=keepdim)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -61,7 +71,7 @@ def amax(x, axis=None, keepdims=False):
             axis[i] += x.ndim
     for i in axis:
         if i < 0 or i >= x.ndim:
-            raise ValueError("axis {} is out of range [-{}:{}]".format(i, 0, x.ndim))
+            raise ValueError(f"axis {i} is out of range [-0:{x.ndim}]")
     return ivy.max(x, axis=axis, keepdims=keepdims)
 
 
@@ -118,6 +128,12 @@ def atanh(x, name=None):
     return ivy.atanh(x)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def broadcast_shape(x_shape, y_shape):
+    return ivy.broadcast_shapes(x_shape, y_shape)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def ceil(x, name=None):
@@ -169,10 +185,37 @@ def cumprod(x, dim=None, dtype=None, name=None):
     return ivy.cumprod(x, axis=dim, dtype=dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def cumsum(x, axis=None, dtype=None, name=None):
+    return ivy.cumsum(x, axis=axis, dtype=dtype)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def deg2rad(x, name=None):
     return ivy.deg2rad(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+            "bool",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def diagonal(x, offset=0, axis1=0, axis2=1, name=None):
+    return ivy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
 @with_supported_dtypes(
@@ -226,6 +269,14 @@ def floor(x, name=None):
 @to_ivy_arrays_and_back
 def floor_divide(x, y, name=None):
     return ivy.floor_divide(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def floor_mod(x, y, name=None):
+    return ivy.remainder(x, y)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": "bfloat16"}, "paddle")
@@ -328,6 +379,12 @@ def lgamma(x, name=None):
 @to_ivy_arrays_and_back
 def log(x, name=None):
     return ivy.log(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def log10(x, name=None):
+    return ivy.log10(x)
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
@@ -454,7 +511,15 @@ def remainder(x, y, name=None):
     return ivy.remainder(x, y)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("float16", "float32", "float64"),
+        }
+    },
+    "paddle",
+)
 @to_ivy_arrays_and_back
 def remainder_(x, y, name=None):
     return ivy.inplace_update(x, remainder(x, y))
@@ -463,7 +528,9 @@ def remainder_(x, y, name=None):
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def round(x, name=None):
-    return ivy.round(x)
+    sign = ivy.sign(x)
+    x = sign * ivy.floor(ivy.abs(x) + 0.5)
+    return x
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
@@ -557,8 +624,7 @@ def take(
 ):
     if mode not in ["raise", "wrap", "clip"]:
         raise ValueError(
-            "'mode' in 'take' should be 'raise', 'wrap', 'clip', but received {}."
-            .format(mode)
+            f"'mode' in 'take' should be 'raise', 'wrap', 'clip', but received {mode}."
         )
     x = ivy.reshape(x, (-1,))
     if mode == "clip":

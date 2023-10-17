@@ -20,8 +20,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Build and push base image
+        run: |
+          docker build --progress=plain --no-cache -t unifyai/multicuda:base -f docker/DockerfileGPUMultiCuda-base .
+          docker push unifyai/multicuda:base
 
-      - name: Build and push Dockerfile
+      - name: Build and push base_and_requirements image
         run: |
           docker build --progress=plain --no-cache -t unifyai/multicuda:base_and_requirements -f docker/DockerfileGPUMultiCuda .
           docker push unifyai/multicuda:base_and_requirements

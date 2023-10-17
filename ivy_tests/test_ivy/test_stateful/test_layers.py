@@ -1580,7 +1580,7 @@ def test_sequential_layer(
     dtype,
     method_flags,
     on_device,
-    compile_graph,
+    trace_graph,
     method_name,
     class_name,
 ):

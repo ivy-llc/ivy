@@ -4,7 +4,7 @@ You can pick an open issue to contribute from our [ToDo list issues](https://git
 
 Please, follow the next process when you work on your subtask:
 
-## Steps:
+## Steps
 
 1. **Choosing a Task:**
 
@@ -37,7 +37,7 @@ Please, follow the next process when you work on your subtask:
    - Every time you respond to our requested changes you must re-request a review in order for us to re-engage with the PR.
    - Once the PR is in good shape, we will merge into main, and then you become an Ivy contributor!
 
-### Important Notes:
+### Important Notes
 
 - if your PR is not created within 7 days of creating the issue, then a warning message will appear on the issue, we do this in order to keep our ToDo lists moving quickly,
 - Please don't take it personally if your issue or PR gets closed because of this 7-day inactivity time limit.

@@ -1,17 +1,7 @@
-from typing import Callable, Optional, List, Union, Iterable, Tuple
+from typing import Callable, Optional, List, Union, Iterable, Tuple, Mapping
 
 
-# TODO: create meaningful types for Graph and LazyGraph,
-# will probably need a seperate file for that
-class Graph:
-    pass
-
-
-class LazyGraph:
-    pass
-
-
-def compile(
+def trace_graph(
     *objs: Callable,
     stateful: Optional[List] = None,
     arg_stateful_idxs: Optional[List] = None,
@@ -26,27 +16,29 @@ def compile(
     mode: Optional[str] = None,
     graph_caching: bool = False,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None,
-) -> Union[Graph, LazyGraph]:
-    """
-    Takes `fn` and compiles it into a more efficient composition of backend operations.
+    kwargs: Optional[Mapping] = None,
+    params_v=None,
+    v=None
+):
+    """Takes `fn` and traces it into a more efficient composition of backend
+    operations.
 
     Parameters
     ----------
     objs
-        callable(s) to compile and create a graph of
+        callable(s) to trace and create a graph of
     stateful
-        list of instances to be considered stateful during the graph compilation
+        list of instances to be considered stateful during the graph tracing
     arg_stateful_idxs
-        positional arguments to be considered stateful during the graph compilation
+        positional arguments to be considered stateful during the graph tracing
     kwarg_stateful_idxs
-        keyword arguments to be considered stateful during the graph compilation
+        keyword arguments to be considered stateful during the graph tracing
     include_generators
         include array creation/generation functions as part of the graph
     array_caching
         cache the constant arrays that appear as arguments to the functions in the graph
     backend_compile
-        whether to apply the native compilers, i.e. tf.function, after ivy's compilation
+        whether to apply the native compilers, i.e. tf.function, after ivy's tracing
     static_argnums
         for jax's jit compilation
     static_argnames
@@ -54,7 +46,7 @@ def compile(
     mode
         for torch's compilation
     graph_caching
-        whether to cache the compiled graph
+        whether to cache the traced graph
     args
         positional arguments for `obj`
     kwargs
@@ -62,12 +54,12 @@ def compile(
 
     Returns
     -------
-    the compiled `Graph` object.
+    the traced `Graph` object.
 
     Examples
     --------
     >>> import ivy, time
-    >>> from ivy import compile
+    >>> from ivy import trace_graph
     >>> ivy.set_backend("torch")
     >>> x = ivy.array([1.])
 
@@ -83,9 +75,9 @@ def compile(
     ...     return i, j, k
 
 
-    >>> graph = compile(fn, args=(x,))
+    >>> graph = trace_graph(fn, args=(x,))
 
-    Notice how the time taken to execute the compiled function is lower than
+    Notice how the time taken to execute the traced function is lower than
     the original function. A typical run:
 
     >>> start = time.time()
@@ -99,9 +91,9 @@ def compile(
     0.0001785755157470703
     """
 
-    from ._compiler import compile as _compile
+    from ._compiler import trace_graph as _trace_graph
 
-    return _compile(
+    return _trace_graph(
         *objs,
         stateful=stateful,
         arg_stateful_idxs=arg_stateful_idxs,
@@ -117,6 +109,8 @@ def compile(
         graph_caching=graph_caching,
         args=args,
         kwargs=kwargs,
+        params_v=params_v,
+        v=v,
     )
 
 
@@ -134,13 +128,13 @@ def transpile(
     arg_stateful_idxs: Optional[List] = None,
     kwarg_stateful_idxs: Optional[List] = None,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None,
+    kwargs: Optional[Mapping] = None,
     params_v=None,
-    v=None,  # Make this cleaner
-) -> Union[Graph, LazyGraph]:
-    """
-    Transpiles Callable objects passed as arguments. If args and kwargs are specified,
-    transpilation is performed eagerly, otherwise, transpilation will happen lazily.
+    v=None
+):
+    """Transpiles Callable objects passed as arguments. If args and kwargs are
+    specified, transpilation is performed eagerly, otherwise, transpilation
+    will happen lazily.
 
     Parameters
     ----------
@@ -187,10 +181,10 @@ def unify(
     source: Optional[str] = None,
     graph_caching: bool = False,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None,
+    kwargs: Optional[Mapping] = None,
     with_numpy: bool = True,
-    **transpile_kwargs,
-) -> Callable:
+    **transpile_kwargs
+):
     from ._compiler import unify as _unify
 
     return _unify(

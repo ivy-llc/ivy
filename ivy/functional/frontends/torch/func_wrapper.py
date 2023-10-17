@@ -43,7 +43,10 @@ class GradFn:
         assert len(inputs) <= 2
         if len(inputs) == 1 and isinstance(inputs[0], torch_frontend.Tensor):
             self._inputs.append(inputs[0].detach())
-            d_fn = lambda x: fn(x)
+
+            def d_fn(x):
+                return fn(x)
+
             self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
             if inputs[0].grad_fn is not None:
                 self.next_functions.append(inputs[0].grad_fn)
@@ -54,7 +57,10 @@ class GradFn:
         elif len(inputs) == 2:
             if isinstance(inputs[0], torch_frontend.Tensor):
                 self._inputs.append(inputs[0].detach())
-                d_fn = lambda x: fn(x, inputs[1])
+
+                def d_fn(x):
+                    return fn(x, inputs[1])
+
                 self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
                 if inputs[0].grad_fn is not None:
                     self.next_functions.append(inputs[0].grad_fn)
@@ -64,7 +70,10 @@ class GradFn:
                     self.next_functions.append(acc_grad)
             if isinstance(inputs[1], torch_frontend.Tensor):
                 self._inputs.append(inputs[1].detach())
-                d_fn = lambda x: fn(inputs[0], x)
+
+                def d_fn(x):
+                    return fn(inputs[0], x)
+
                 self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
                 if inputs[1].grad_fn is not None:
                     self.next_functions.append(inputs[1].grad_fn)
@@ -117,7 +126,6 @@ def _to_ivy_array(x):
     # else if x is a frontend torch Tensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
     elif hasattr(x, "ivy_array"):
         return x.ivy_array
-
     # else just return x
     return x
 
@@ -129,8 +137,7 @@ def _to_ivy_array(x):
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_torch(*args, **kwargs):
-        """
-        Convert `Tensor` into `ivy.Array` instances.
+        """Convert `Tensor` into `ivy.Array` instances.
 
         Convert all `Tensor` instances in both the positional and keyword arguments
         into `ivy.Array` instances, and then call the function with the updated
@@ -167,8 +174,7 @@ def numpy_to_torch_style_args(func):  # noqa
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def outputs_to_frontend_arrays_torch(*args, **kwargs):
-        """
-        Convert `ivy.Array` into `Tensor` instances.
+        """Convert `ivy.Array` into `Tensor` instances.
 
         Call the function, and then convert all `ivy.Array` instances returned by the
         function into `Tensor` instances.
@@ -208,18 +214,22 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 ),
             ),
         )
-        array_fn = lambda x: ivy.is_array(x) or hasattr(x, "ivy_array")
+
+        def array_fn(x):
+            return ivy.is_array(x) or hasattr(x, "ivy_array")
+
         if "inplace" in kwargs and kwargs["inplace"]:
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
-            # ivy.inplace_update with ensure_in_backend=True fails in jax and tf
-            # so update ._data directly
-            if ivy.is_array(first_array):
-                first_array._data = ret.ivy_array._data
+            native_ret_data = ret.ivy_array.data
+            if ivy.is_ivy_array(first_array):
+                first_array.data = native_ret_data
+            elif ivy.is_native_array(first_array):
+                ivy.inplace_update(first_array, native_ret_data)
             else:
-                first_array.ivy_array._data = ret.ivy_array._data
-            ret = first_array
+                first_array.ivy_array.data = native_ret_data
+                ret = first_array
 
         # logic for setting is_leaf
         if ret is not None and isinstance(ret, torch_frontend.Tensor):
@@ -263,8 +273,7 @@ def outputs_to_native_arrays(fn: Callable):
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so it receives and returns `ivy.Array` instances.
+    """Wrap `fn` so it receives and returns `ivy.Array` instances.
 
     Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
     return arrays are all converted to `Tensor` instances.
@@ -273,8 +282,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 
 def to_ivy_shape(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so it receives `ivy.Shape` instances.
+    """Wrap `fn` so it receives `ivy.Shape` instances.
 
     Wrap `fn` so that any `torch_frontend.Size` arguments are converted to
     `ivy.Shape` instances.

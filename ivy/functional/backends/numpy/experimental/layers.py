@@ -44,7 +44,7 @@ def max_pool1d(
 ) -> np.ndarray:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCW":
@@ -146,7 +146,7 @@ def max_pool2d(
 ) -> np.ndarray:
     dims = 2
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCHW":
@@ -256,7 +256,7 @@ def max_pool3d(
 ) -> np.ndarray:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCDHW":
@@ -1014,6 +1014,26 @@ def embedding(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
     return embeddings
+
+
+def rfft(
+    x: np.ndarray,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x = x.real
+
+    ret = np.fft.rfft(x, n=n, axis=axis, norm=norm)
+
+    if x.dtype != np.float64:
+        ret = ret.astype(np.complex64)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def rfftn(

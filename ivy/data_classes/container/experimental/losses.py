@@ -20,10 +20,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.l1_loss. This method simply wraps the
-        function, and so the docstring for ivy.l1_loss also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.l1_loss. This method
+        simply wraps the function, and so the docstring for ivy.l1_loss also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -103,10 +102,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.l1_loss. This method simply wraps
-        the function, and so the docstring for ivy.l1_loss also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.l1_loss. This method
+        simply wraps the function, and so the docstring for ivy.l1_loss also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -175,10 +173,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.log_poisson_loss. This method simply
-        wraps the function, and so the docstring for ivy.log_poisson_loss also applies
-        to this method with minimal changes.
+        """ivy.Container static method variant of ivy.log_poisson_loss. This
+        method simply wraps the function, and so the docstring for
+        ivy.log_poisson_loss also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -269,10 +266,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.log_poisson_loss. This method
-        simply wraps the function, and so the docstring for ivy.log_poisson_loss also
-        applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.log_poisson_loss. This
+        method simply wraps the function, and so the docstring for
+        ivy.log_poisson_loss also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -349,10 +345,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.smooth_l1_loss. This method simply
-        wraps the function, and so the docstring for ivy. smooth_l1_loss also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.smooth_l1_loss. This
+        method simply wraps the function, and so the docstring for ivy.
+        smooth_l1_loss also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -439,10 +434,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.smooth_l1_loss. This method simply
-        wraps the function, and so the docstring for ivy. smooth_l1_loss also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.smooth_l1_loss. This
+        method simply wraps the function, and so the docstring for ivy.
+        smooth_l1_loss also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -518,10 +512,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of huber_loss. This method simply wraps the
-        function, and so the docstring for huber_loss also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of huber_loss. This method
+        simply wraps the function, and so the docstring for huber_loss also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -608,10 +601,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of huber_loss. This method simply wraps
-        the function, and so the docstring for huber_loss also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of huber_loss. This method
+        simply wraps the function, and so the docstring for huber_loss also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -683,10 +675,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.soft_margin_loss. This method simply
-        wraps the function, and so the docstring for ivy.soft_margin_loss also applies
-        to this method with minimal changes.
+        """ivy.Container static method variant of ivy.soft_margin_loss. This
+        method simply wraps the function, and so the docstring for
+        ivy.soft_margin_loss also applies to this method with minimal changes.
 
         # Insert the docstring here
 
@@ -742,10 +733,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.soft_margin_loss. This method
-        simply wraps the function, and so the docstring for ivy.soft_margin_loss also
-        applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.soft_margin_loss. This
+        method simply wraps the function, and so the docstring for
+        ivy.soft_margin_loss also applies to this method with minimal changes.
 
         # Insert the docstring here
 
@@ -795,16 +785,16 @@ class _ContainerWithLossesExperimental(ContainerBase):
         /,
         *,
         reduction: Optional[Union[str, ivy.Container]] = "mean",
+        log_target=False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.kl_div. This method simply wraps the
-        function, and so the docstring for ivy.kl_div also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.kl_div. This method
+        simply wraps the function, and so the docstring for ivy.kl_div also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -839,6 +829,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             input,
             target,
             reduction=reduction,
+            log_target=log_target,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -852,16 +843,16 @@ class _ContainerWithLossesExperimental(ContainerBase):
         /,
         *,
         reduction: Optional[Union[str, ivy.Container]] = "mean",
+        log_target=False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.kl_div. This method simply wraps
-        the function, and so the docstring for ivy.kl_div also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.kl_div. This method
+        simply wraps the function, and so the docstring for ivy.kl_div also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -895,6 +886,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             self,
             target,
             reduction=reduction,
+            log_target=log_target,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -916,10 +908,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""
-        ivy.Container static method variant of ivy.poisson_nll_loss. This method
-        simplywraps the function, and so the docstring for ivy.poisson_nll_loss also
-        applies to this method with minimal changes.
+        r"""ivy.Container static method variant of ivy.poisson_nll_loss. This
+        method simplywraps the function, and so the docstring for
+        ivy.poisson_nll_loss also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1022,10 +1013,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""
-        ivy.Container instance method variant of ivy.poisson_nll_loss. This method
-        simply wraps the function, and so the docstring for ivy. poisson_nll_loss also
-        applies to this method with minimal changes.
+        r"""ivy.Container instance method variant of ivy.poisson_nll_loss. This
+        method simply wraps the function, and so the docstring for ivy.
+        poisson_nll_loss also applies to this method with minimal changes.
 
         Parameters
         ----------

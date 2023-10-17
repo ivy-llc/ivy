@@ -96,10 +96,10 @@ def flatten(
     order: Optional[str] = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Flattens input by reshaping it into a one-dimensional tensor. If start_dim or
-    end_dim are passed, only dimensions starting with start_dim and ending with end_dim
-    are flattened. The order of elements in input is unchanged.
+    """Flattens input by reshaping it into a one-dimensional tensor. If
+    start_dim or end_dim are passed, only dimensions starting with start_dim
+    and ending with end_dim are flattened. The order of elements in input is
+    unchanged.
 
     Parameters
     ----------
@@ -253,8 +253,7 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Move axes of an array to new positions..
+    """Move axes of an array to new positions..
 
     Parameters
     ----------
@@ -303,8 +302,7 @@ def heaviside(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Heaviside step function for each element in x1.
+    """Compute the Heaviside step function for each element in x1.
 
     Parameters
     ----------
@@ -352,9 +350,9 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Flip array in the up/down direction. Flip the entries in each column in the up/down
-    direction. Rows are preserved, but appear in a different order than before.
+    """Flip array in the up/down direction. Flip the entries in each column in
+    the up/down direction. Rows are preserved, but appear in a different order
+    than before.
 
     Parameters
     ----------
@@ -396,8 +394,7 @@ def vstack(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Stack arrays in sequence vertically (row wise).
+    """Stack arrays in sequence vertically (row wise).
 
     Parameters
     ----------
@@ -441,8 +438,7 @@ def hstack(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Stack arrays in sequence horizotally (column wise).
+    """Stack arrays in sequence horizotally (column wise).
 
     Parameters
     ----------
@@ -488,9 +484,8 @@ def rot90(
     axes: Tuple[int, int] = (0, 1),
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Rotate an array by 90 degrees in the plane specified by axes. Rotation direction is
-    from the first towards the second axis.
+    """Rotate an array by 90 degrees in the plane specified by axes. Rotation
+    direction is from the first towards the second axis.
 
     Parameters
     ----------
@@ -576,15 +571,15 @@ def top_k(
     sorted: bool = True,
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
-    """
-    Return the `k` largest elements of the given input array along a given axis.
+    """Return the `k` largest elements of the given input array along a given
+    axis.
 
     Parameters
     ----------
     x
         The array to compute top_k for.
     k
-        Number of top elements to retun must not exceed the array size.
+        Number of top elements to return must not exceed the array size.
     axis
         The axis along which we must return the top elements default value is 1.
     largest
@@ -655,10 +650,9 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Flip array in the left/right direction. Flip the entries in each column in the
-    left/right direction. Columns are preserved, but appear in a different order than
-    before.
+    """Flip array in the left/right direction. Flip the entries in each column
+    in the left/right direction. Columns are preserved, but appear in a
+    different order than before.
 
     Parameters
     ----------
@@ -701,8 +695,7 @@ def i0(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Bessel i0 function of x element-wise.
+    """Compute the Bessel i0 function of x element-wise.
 
     Parameters
     ----------
@@ -897,16 +890,13 @@ def _set_wrap_both(padded, axis, width_pair):
 
 def _pad_simple(array, pad_width, fill_value=None):
     new_shape = tuple(
-        [left + size + right for size, (left, right) in zip(array.shape, pad_width)]
+        left + size + right for size, (left, right) in zip(array.shape, pad_width)
     )
     padded = ivy.zeros(new_shape, dtype=array.dtype)
     if fill_value is not None:
         padded = ivy.ones_like(padded) * fill_value
     original_area_slice = tuple(
-        [
-            slice(left, left + size)
-            for size, (left, right) in zip(array.shape, pad_width)
-        ]
+        slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
     )
     padded[original_area_slice] = array
     return padded, original_area_slice
@@ -951,7 +941,7 @@ def _to_dilated(x, n):
 
 
 def _check_tuple_arg(arg, name, force_integer=True):
-    is_scalar = ivy.isscalar if not force_integer else ivy.is_int_dtype
+    is_scalar = ivy.is_int_dtype if force_integer else ivy.isscalar
     flag_assert = False
     if isinstance(arg, (tuple, list)):
         for nested in arg:
@@ -965,13 +955,13 @@ def _check_tuple_arg(arg, name, force_integer=True):
     elif not is_scalar(arg):
         flag_assert = True
     if flag_assert:
-        if not force_integer:
+        if force_integer:
             raise ivy.utils.exceptions.IvyException(
-                name + " should be scalar, tuple of scalars or tuple of scalar tuples"
+                f"{name} should be int, tuple of ints or tuple of int tuples"
             )
         else:
             raise ivy.utils.exceptions.IvyException(
-                name + " should be int, tuple of ints or tuple of int tuples"
+                f"{name} should be scalar, tuple of scalars or tuple of scalar tuples"
             )
 
 
@@ -1058,8 +1048,7 @@ def pad(
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> ivy.Array:
-    """
-    Pad an array.
+    """Pad an array.
 
     Parameters
     ----------
@@ -1302,8 +1291,7 @@ def vsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Split an array vertically into multiple sub-arrays.
+    """Split an array vertically into multiple sub-arrays.
 
     Parameters
     ----------
@@ -1353,8 +1341,7 @@ def dsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Split an array into multiple sub-arrays along the 3rd axis.
+    """Split an array into multiple sub-arrays along the 3rd axis.
 
     Parameters
     ----------
@@ -1404,9 +1391,9 @@ def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Convert inputs to arrays with at least one dimension. Scalar inputs are converted to
-    1-dimensional arrays, whilst higher-dimensional inputs are preserved.
+    """Convert inputs to arrays with at least one dimension. Scalar inputs are
+    converted to 1-dimensional arrays, whilst higher-dimensional inputs are
+    preserved.
 
     Parameters
     ----------
@@ -1421,7 +1408,7 @@ def atleast_1d(
     Returns
     -------
     ret
-        An array, or list of arrays, each with atleast 1D.
+        An array, or list of arrays, each with at least 1D.
         Copies are made only if necessary.
 
     Examples
@@ -1449,8 +1436,7 @@ def dstack(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Stack arrays in sequence depth wise (along third axis).
+    """Stack arrays in sequence depth wise (along third axis).
 
     Parameters
     ----------
@@ -1490,9 +1476,9 @@ def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Convert inputs to arrays with at least two dimension. Scalar inputs are converted to
-    2-dimensional arrays, whilst higher-dimensional inputs are preserved.
+    """Convert inputs to arrays with at least two dimension. Scalar inputs are
+    converted to 2-dimensional arrays, whilst higher-dimensional inputs are
+    preserved.
 
     Parameters
     ----------
@@ -1509,7 +1495,7 @@ def atleast_2d(
     Returns
     -------
     ret
-        An array, or list of arrays, each with atleast 2D.
+        An array, or list of arrays, each with at least 2D.
         Copies are made only if necessary.
 
     Examples
@@ -1536,9 +1522,9 @@ def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Convert inputs to arrays with at least three dimension. Scalar inputs are converted
-    to 3-dimensional arrays, whilst higher-dimensional inputs are preserved.
+    """Convert inputs to arrays with at least three dimension. Scalar inputs
+    are converted to 3-dimensional arrays, whilst higher-dimensional inputs are
+    preserved.
 
     Parameters
     ----------
@@ -1597,8 +1583,7 @@ def take_along_axis(
     mode: str = "fill",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Take values from the input array by matching 1d index and data slices.
+    """Take values from the input array by matching 1d index and data slices.
 
     Parameters
     ----------
@@ -1648,8 +1633,7 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Split an array into multiple sub-arrays horizontally.
+    """Split an array into multiple sub-arrays horizontally.
 
     Parameters
     ----------
@@ -1695,8 +1679,7 @@ def hsplit(
 @handle_exceptions
 @inputs_to_native_shapes
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
-    """
-    Broadcasts shapes.
+    """Broadcasts shapes.
 
     Parameters
     ----------
@@ -1737,8 +1720,8 @@ def expand(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Broadcast the input Array following the given shape and the broadcast rule.
+    """Broadcast the input Array following the given shape and the broadcast
+    rule.
 
     Parameters
     ----------
@@ -1779,9 +1762,8 @@ def put_along_axis(
     mode: Literal["sum", "min", "max", "mul", "mean", "replace"] = "replace",
     out: Optional[ivy.Array] = None,
 ) -> None:
-    """
-    Put values into the input array by matching 1d index and data slices along a
-    specified axis.
+    """Put values into the input array by matching 1d index and data slices
+    along a specified axis.
 
     Parameters
     ----------
@@ -1874,8 +1856,7 @@ def as_strided(
     strides: Sequence[int],
     /,
 ) -> ivy.Array:
-    """
-    Create a copy of the input array with the given shape and strides.
+    """Create a copy of the input array with the given shape and strides.
 
     Parameters
     ----------
@@ -1956,8 +1937,7 @@ def concat_from_sequence(
     axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Concatenate a sequence of arrays along a new or an existing axis.
+    """Concatenate a sequence of arrays along a new or an existing axis.
 
     Parameters
     ----------
@@ -2032,16 +2012,16 @@ def _interior_pad(operand, padding_value, padding_config):
     for axis, (low, high, _) in enumerate(padding_config):
         if low > 0 and high > 0:
             pad_width[axis] = (low, high)
-        elif low > 0 and not high > 0:
+        elif low > 0:
             pad_width[axis] = (low, 0)
-        elif high > 0 and not low > 0:
+        elif high > 0:
             pad_width[axis] = (0, high)
     padded = ivy.constant_pad(padded, pad_width, value=padding_value)
     return padded
 
 
 def _interleave(a, b, axis):
-    assert a.shape[axis] == b.shape[axis] or a.shape[axis] == b.shape[axis] + 1
+    assert a.shape[axis] in [b.shape[axis], b.shape[axis] + 1]
     a_pad = [(0, 0, 0)] * a.ndim
     b_pad = [(0, 0, 0)] * b.ndim
     a_pad[axis] = (0, 1 if a.shape[axis] == b.shape[axis] else 0, 1)
@@ -2063,8 +2043,7 @@ def associative_scan(
     reverse: bool = False,
     axis: int = 0,
 ) -> ivy.Array:
-    """
-    Perform an associative scan over the given array.
+    """Perform an associative scan over the given array.
 
     Parameters
     ----------
@@ -2149,9 +2128,8 @@ def unique_consecutive(
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """
-    Eliminates all but the first element from every consecutive group of equivalent
-    elements in ``x``.
+    """Eliminates all but the first element from every consecutive group of
+    equivalent elements in ``x``.
 
     Parameters
     ----------
@@ -2197,8 +2175,7 @@ def fill_diagonal(
     *,
     wrap: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Fill the main diagonal of the given array of any dimensionality..
+    """Fill the main diagonal of the given array of any dimensionality..
 
     Parameters
     ----------
@@ -2227,10 +2204,10 @@ def fill_diagonal(
             end = shape[1] * shape[1]
     else:
         step = int(1 + (ivy.cumprod(ivy.array(shape[:-1]), axis=0)).sum())
-    end = int(max_end if end > max_end else end)
+    end = int(min(end, max_end))
     a = ivy.reshape(a, (-1,))
     steps = ivy.arange(0, end, step)
-    if isinstance(v, ivy.Array) or isinstance(v, ivy.NativeArray):
+    if isinstance(v, (ivy.Array, ivy.NativeArray)):
         v = ivy.reshape(v, (-1,)).astype(a.dtype)
         v = ivy.tile(v, int(ivy.ceil(len(steps) / v.shape[0])))[: len(steps)]
     else:
@@ -2264,8 +2241,7 @@ def unfold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the mode-`mode` unfolding of `tensor` with modes starting at `0`.
+    """Return the mode-`mode` unfolding of `tensor` with modes starting at `0`.
 
     Parameters
     ----------
@@ -2298,9 +2274,9 @@ def fold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Refolds the mode-`mode` unfolding into a tensor of shape `shape` In other words,
-    refolds the n-mode unfolded tensor into the original tensor of the specified shape.
+    """Refolds the mode-`mode` unfolding into a tensor of shape `shape` In
+    other words, refolds the n-mode unfolded tensor into the original tensor of
+    the specified shape.
 
     Parameters
     ----------
@@ -2340,11 +2316,11 @@ def partial_unfold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Partial unfolding of a tensor while ignoring the specified number of dimensions at
-    the beginning and the end. For instance, if the first dimension of the tensor is the
-    number of samples, to unfold each sample, set skip_begin=1. This would, for each i
-    in ``range(tensor.shape[0])``, unfold ``tensor[i, ...]``.
+    """Partial unfolding of a tensor while ignoring the specified number of
+    dimensions at the beginning and the end. For instance, if the first
+    dimension of the tensor is the number of samples, to unfold each sample,
+    set skip_begin=1. This would, for each i in ``range(tensor.shape[0])``,
+    unfold ``tensor[i, ...]``.
 
     Parameters
     ----------
@@ -2397,8 +2373,7 @@ def partial_fold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Re-folds a partially unfolded tensor.
+    """Re-folds a partially unfolded tensor.
 
     Parameters
     ----------
@@ -2440,9 +2415,8 @@ def partial_tensor_to_vec(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Partial vectorization of a tensor while ignoring the specified dimension at the
-    beginning and the end.
+    """Partial vectorization of a tensor while ignoring the specified dimension
+    at the beginning and the end.
 
     Parameters
     ----------
@@ -2485,8 +2459,7 @@ def partial_vec_to_tensor(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Refolds a partially vectorised tensor into a full one.
+    """Refolds a partially vectorised tensor into a full one.
 
     Parameters
     ----------
@@ -2521,8 +2494,7 @@ def matricize(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Matricizes the given tensor.
+    """Matricizes the given tensor.
 
     Parameters
     ----------
@@ -2579,8 +2551,7 @@ def soft_thresholding(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Soft-thresholding operator.
+    """Soft-thresholding operator.
 
         sign(tensor) * max[abs(tensor) - threshold, 0]
 
@@ -2640,8 +2611,7 @@ def choose(
     out: None = None,
     mode: Union[str, None] = None,
 ) -> ivy.Array:
-    """
-    Take values from the input array by matching 1d index and data slices.
+    """Take values from the input array by matching 1d index and data slices.
 
     Parameters
     ----------
@@ -2687,8 +2657,7 @@ def column_stack(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Create a new array by horizontally stacking the arrays in arrays.
+    """Create a new array by horizontally stacking the arrays in arrays.
 
     Equivalent to `ivy.hstack(arrays)`, except each zero or one dimensional
     array `x` in arrays is first reshaped into a `(x.size(), 1)` column
@@ -2738,6 +2707,172 @@ column_stack.mixed_backend_wrappers = {
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_out_argument",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def take(
+    x: Union[int, ivy.Array, ivy.NativeArray],
+    indices: Union[int, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+    mode: str = "fill",
+    fill_value: Optional[Number] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Return elements of an array along an axis.
+
+    .. note::
+        Conceptually, take(x, indices, axis=3) is equivalent to x[:,:,:,indices,...];
+        however, explicit indexing via arrays of indices is not currently supported
+        in this specification due to concerns regarding __setitem__
+        and array mutation semantics.
+
+    Parameters
+    ----------
+    x
+        input array
+    indices
+        array indices. Must have an integer data type.
+    axis
+        axis over which to select values. If `axis` is negative,
+        the function must determine the axis along which to select values
+        by counting from the last dimension.
+        By default, the flattened input array is used.
+    mode
+        specifies how out-of-bounds `indices` will behave.
+        -   ‘raise’ – raise an error
+        -   ‘wrap’ – wrap around
+        -   ‘clip’ – clip to the range (all indices that are too large are
+        replaced by the index that addresses the last element along that axis.
+        Note that this disables indexing with negative numbers.)
+        -   'fill' (default) = returns invalid values (e.g. NaN)
+        for out-of bounds indices (see also fill_value below)
+    fill_value
+        fill value to return for out-of-bounds slices
+        (Defaults to NaN for inexact types,
+        the largest negative value for signed types,
+        the largest positive value for unsigned types, and True for booleans.)
+    out
+        optional output array, for writing the result to. It must
+        have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+        ret
+            an array having the same data type as `x`.
+            The output array must have the same rank (i.e., number of dimensions) as `x`
+            and must have the same shape as `x`, except for the axis specified by `axis`
+            whose size must equal the number of elements in `indices`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.max.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With `ivy.Array` input:
+
+    >>> x = ivy.array([4,5,6])
+    >>> indices = ivy.array([2,1,0])
+    >>> y = ivy.take(x, indices)
+    >>> print(y)
+    ivy.array([6, 5, 4])
+
+    >>> x = ivy.array([4.7,5.2,6.5])
+    >>> indices = ivy.array([[0,1]])
+    >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+    >>> ivy.take(x, indices, out=y)
+    >>> print(y)
+    ivy.array([[4.7, 5.2]])
+
+    >>> x = ivy.array([False, False, True])
+    >>> indices = ivy.array([[4,3,2]])
+    >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+    >>> ivy.take(x, indices, out=y, mode="wrap")
+    >>> print(y)
+    ivy.array([[False, False, True]])
+
+    With `ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([True,False,False]),
+    ...                     b=ivy.array([2.3,4.5,6.7]),
+    ...                     c=ivy.array([1,2,3]))
+    >>> indices = ivy.array([[1,9,2]])
+    >>> y = ivy.take(x, indices)
+    >>> print(y)
+    {
+        a: ivy.array([[False, True, False]]),
+        b: ivy.array([[4.5, nan, 6.69999981]]),
+        c: ivy.array([[2, -2147483648, 3]])
+    }
+    """
+    return ivy.current_backend().take(
+        x, indices, axis=axis, mode=mode, fill_value=fill_value, out=out
+    )
+
+
+@inputs_to_ivy_arrays
+@handle_exceptions
+@handle_device
+def trim_zeros(
+    a: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    trim: Optional[str] = "fb",
+) -> ivy.Array:
+    """ivy.Container instance method variant of ivy.trim_zeros. This method
+    simply wraps the function, and so the docstring for ivy.trim_zeros also
+    applies to this method with minimal changes.
+
+    Parameters
+    ----------
+    a : 1-D array
+        Input array.
+    trim : str, optional
+        A string with 'f' representing trim from front and 'b' to trim from
+        back. Default is 'fb', trim zeros from both front and back of the
+        array.
+
+    Returns
+    -------
+        1-D array
+        The result of trimming the input. The input data type is preserved.
+
+    Examples
+    --------
+    >>> a = ivy.array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1, 0])
+    >>> ivy.trim_zeros(a)
+    array([8, 3, 0, 0, 7, 1])
+    >>> ivy.trim_zeros(a, 'b')
+    array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1])
+    >>> ivy.trim_zeros([0, 8, 3, 0, 0])
+    [8, 3]
+    """
+    return ivy.current_backend(a).trim_zeros(a, trim=trim)
+
+
+trim_zeros.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }

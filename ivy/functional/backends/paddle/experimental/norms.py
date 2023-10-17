@@ -57,8 +57,8 @@ def batch_norm(
         )
     except IndexError:
         raise IndexError(
-            "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', "
-            "'NLC', 'NHWC', 'NDHWC' but receive {}".format(data_format)
+            "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', 'NLC', 'NHWC',"
+            f" 'NDHWC' but receive {data_format}"
         )
 
     with ivy.ArrayMode(False):
