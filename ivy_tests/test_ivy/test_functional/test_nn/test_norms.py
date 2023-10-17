@@ -113,7 +113,8 @@ def test_layer_norm(
         new_std=new_std,
     )
 
-# created function for batch normalization 
+
+# created function for batch normalization
 def _generate_data_batch_norm(
     draw,
     *,
@@ -153,15 +154,14 @@ def _generate_data_batch_norm(
 
     return dtype, x, gamma, beta, moving_mean, moving_var, epsilon
 
+
 @handle_test(
     fn_tree="functional.batch_norm",
     values_tuple=_generate_data_batch_norm(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_batch_norm(
-    *, values_tuple, test_flags, backend_fw, fn_name, on_device
-):
+def test_batch_norm(*, values_tuple, test_flags, backend_fw, fn_name, on_device):
     (dtype, x, gamma, beta, moving_mean, moving_var, epsilon) = values_tuple
     helpers.test_function(
         input_dtypes=dtype,
