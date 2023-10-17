@@ -156,7 +156,7 @@ def prod(
         return x.type(dtype)
     if axis is None:
         return torch.prod(input=x, dtype=dtype)
-    if isinstance(axis, tuple) or isinstance(axis, list):
+    if isinstance(axis, (tuple, list)):
         for i in axis:
             x = torch.prod(x, i, keepdim=keepdims, dtype=dtype)
         return x
