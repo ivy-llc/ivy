@@ -180,6 +180,26 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
     return out
 
 
+# allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+def _expand_typesets(dtypes):
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+    dtypes = list(dtypes)
+    typeset_list = []
+    for i, dtype in reversed(list(enumerate(dtypes))):
+        if dtype in typesets:
+            typeset_list.extend(typesets[dtype])
+            dtypes.pop(i)
+    dtypes += typeset_list
+    return dtypes
+
+
 # Get the list of dtypes supported by the function
 # by default returns the supported dtypes
 def _get_dtypes(fn, complement=True):
@@ -204,16 +224,6 @@ def _get_dtypes(fn, complement=True):
         ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
     ]
 
-    # allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
-    typesets = {
-        "valid": ivy.valid_dtypes,
-        "numeric": ivy.valid_numeric_dtypes,
-        "float": ivy.valid_float_dtypes,
-        "integer": ivy.valid_int_dtypes,
-        "unsigned": ivy.valid_uint_dtypes,
-        "complex": ivy.valid_complex_dtypes,
-    }
-
     for key, merge_fn, base in basic:
         if hasattr(fn, key):
             dtypes = getattr(fn, key)
@@ -221,15 +231,9 @@ def _get_dtypes(fn, complement=True):
             if isinstance(dtypes, dict):
                 dtypes = dtypes.get(ivy.current_backend_str(), base)
             ivy.utils.assertions.check_isinstance(dtypes, tuple)
-            if dtypes == ():
+            if not dtypes:
                 dtypes = base
-            dtypes = list(dtypes)
-            typeset_list = []
-            for i, dtype in reversed(list(enumerate(dtypes))):
-                if dtype in typesets:
-                    typeset_list.extend(typesets[dtype])
-                    dtypes.pop(i)
-            dtypes += typeset_list
+            dtypes = _expand_typesets(dtypes)
             supported = merge_fn(supported, set(dtypes))
 
     if complement:
