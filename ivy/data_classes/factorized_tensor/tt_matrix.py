@@ -131,9 +131,8 @@ class TTMatrix(FactorizedTensor):
 
     @staticmethod
     def tt_matrix_to_matrix(tt_matrix):
-        """
-        Reconstruct the original matrix that was tensorized and compressed in the TT-
-        Matrix format.
+        """Reconstruct the original matrix that was tensorized and compressed
+        in the TT- Matrix format.
 
         Re-assembles 'factors', which represent a tensor in TT-Matrix format
         into the corresponding matrix
@@ -156,8 +155,8 @@ class TTMatrix(FactorizedTensor):
 
     @staticmethod
     def tt_matrix_to_tensor(tt_matrix):
-        """
-        Return the full tensor whose TT-Matrix decomposition is given by 'factors'.
+        """Return the full tensor whose TT-Matrix decomposition is given by
+        'factors'.
 
         Re-assembles 'factors', which represent a tensor in TT-Matrix format
         into the corresponding full tensor
@@ -190,9 +189,8 @@ class TTMatrix(FactorizedTensor):
 
     @staticmethod
     def tt_matrix_to_vec(tt_matrix):
-        """
-        Return the tensor defined by its TT-Matrix format ('factors') into its
-        vectorized format.
+        """Return the tensor defined by its TT-Matrix format ('factors') into
+        its vectorized format.
 
         Parameters
         ----------
@@ -208,8 +206,7 @@ class TTMatrix(FactorizedTensor):
 
     @staticmethod
     def tt_matrix_to_unfolded(tt_matrix, mode):
-        """
-        Return the unfolding matrix of a tensor given in TT-Matrix format.
+        """Return the unfolding matrix of a tensor given in TT-Matrix format.
 
         Reassembles a full tensor from 'factors' and returns its unfolding matrix
         with mode given by 'mode'
@@ -230,8 +227,7 @@ class TTMatrix(FactorizedTensor):
 
     @staticmethod
     def validate_tt_matrix_rank(tensorized_shape, rank="same"):
-        """
-        Return the rank of a TT-Matrix Decomposition.
+        """Return the rank of a TT-Matrix Decomposition.
 
         Parameters
         ----------
