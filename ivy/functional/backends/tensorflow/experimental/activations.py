@@ -113,7 +113,7 @@ def tanhshrink(
     return ivy.astype(ret, x.dtype)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("float",)}, backend_version)
 def threshold(
     x: Tensor,
     /,

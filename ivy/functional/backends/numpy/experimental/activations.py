@@ -179,6 +179,7 @@ def softshrink(
 softshrink.support_native_out = True
 
 
+@_scalar_output_to_0d_array
 def scaled_tanh(
     x: np.ndarray,
     /,

@@ -118,7 +118,7 @@ def tanhshrink(
     return ivy.astype(ret, x.dtype)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
 def threshold(
     x: torch.Tensor,
     /,
