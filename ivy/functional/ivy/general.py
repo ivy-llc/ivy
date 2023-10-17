@@ -4043,7 +4043,7 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
             )
 
         for device, dtypes in fn_supported_dnd.items():
-            fn_supported_dnd[device] = _expand_typesets(dtypes)
+            fn_supported_dnd[device] = tuple(_expand_typesets(dtypes))
 
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
