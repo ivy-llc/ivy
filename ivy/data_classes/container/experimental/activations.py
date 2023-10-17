@@ -1518,12 +1518,12 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
-        >>> y = ivy.Container.static_leaky_relu(x)
+        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = ivy.Container._static_leaky_relu(x)
         >>> print(y)
         {
-            a: ivy.array([0.38999999, -0.17]),
-            b: ivy.array([1., -0.04])
+            a: ivy.array([0.38999999, -0.0085  ]),
+            b: ivy.array([1., -0.002])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1584,8 +1584,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> y = x.leaky_relu()
         >>> print(y)
         {
-            a: ivy.array([0.38999999, -0.17]),
-            b: ivy.array([1., -0.04])
+            a: ivy.array([0.38999999, -0.0085  ]),
+            b: ivy.array([1., -0.002])
         }
         """
         return self._static_leaky_relu(

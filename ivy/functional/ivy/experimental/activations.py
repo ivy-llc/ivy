@@ -815,12 +815,7 @@ def leaky_relu(
     alpha: float = 0.01,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the leaky rectified linear unit function element-wise.
-
-    If the input is complex, then by default each element is scaled by `alpha` if
-    either its real part is strictly negative or if its real part is zero and its
-    imaginary part is negative. This behaviour can be changed by specifying a different
-    `complex_mode`.
+    """Apply the Leaky_relu activation function to each element of the input.
 
     Parameters
     ----------
@@ -844,20 +839,20 @@ def leaky_relu(
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.leaky_relu(x)
     >>> print(y)
-    ivy.array([ 0.39, -0.17])
+    ivy.array([ 0.39, -0.0085])
 
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.leaky_relu(x, out=y)
     >>> print(y)
-    ivy.array([ 1.5 ,  0.7 , -0.48])
+    ivy.array([ 1.5 ,  0.7 , -0.024])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
     >>> ivy.leaky_relu(x, out=x)
     >>> print(x)
     ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
-       [-0.88, -1.1 , -1.32]])
+       [-0.044, -0.055 , -0.066]])
 
     With :class:`ivy.Container` input:
 
@@ -865,8 +860,8 @@ def leaky_relu(
     >>> x = ivy.leaky_relu(x, out=x)
     >>> print(x)
     {
-        a: ivy.array([0., -0.24000001]),
-        b: ivy.array([0.40000001, -0.04])
+        a: ivy.array([0., -0.012000001]),
+        b: ivy.array([0.040000001, -0.02])
     }
     """
-    return current_backend(x).elu(x, alpha=alpha, out=out)
+    return current_backend(x).leaky_relu(x, alpha=alpha, out=out)

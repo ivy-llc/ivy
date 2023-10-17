@@ -129,9 +129,9 @@ def scaled_tanh(
     return alpha * torch.nn.functional.tanh(beta * x)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def leaky_relu(
-    x: torch.Tensor, /, *, alpha: float = 1.0, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, alpha: float = 0.01, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     ret = torch.nn.functional.leaky_relu(x, negative_slope=alpha)
     if ivy.exists(out):

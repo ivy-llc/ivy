@@ -160,7 +160,6 @@ def scaled_tanh(
     return alpha * np.tanh(beta * x)
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("float16", "bfloat16")}, backend_version)
 @_scalar_output_to_0d_array
 def leaky_relu(
     x: np.ndarray, /, *, alpha: float = 0.01, out: Optional[np.ndarray] = None

@@ -470,6 +470,6 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([0.39, -0.85])
         >>> y = x.leaky_relu()
         >>> print(y)
-        ivy.array([ 0.39, -0.17])
+        ivy.array([ 0.38999999, -0.0085    ])
         """
         return ivy.leaky_relu(self._data, alpha=alpha, out=out)

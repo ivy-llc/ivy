@@ -200,10 +200,10 @@ def scaled_tanh(
     return paddle.stanh(x, scale_a=beta, scale_b=alpha)
 
 
-@with_supported_device_and_dtypes(
+@with_unsupported_device_and_dtypes(
     {
         "2.5.1 and below": {
-            "cpu": ("float32", "float64"),
+            "cpu": ("float16", "bfloat16"),
         }
     },
     backend_version,
