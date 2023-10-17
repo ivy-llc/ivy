@@ -338,6 +338,41 @@ def _dtypes_input_mask(draw):
     return _dtype, _x, _mask
 
 
+@st.composite
+def _select_scatter_test_data_prep(draw):
+    shape = random.randint(2, 4)
+    available_input_types = draw(helpers.get_dtypes("float"))
+    available_input_types = helpers.array_dtypes(available_dtypes=available_input_types)
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            min_num_dims=shape,
+            max_num_dims=shape,
+            min_dim_size=shape,
+            max_dim_size=shape,
+            num_arrays=1,
+            available_dtypes=available_input_types,
+        ),
+    )
+    dim = random.randint(-shape, shape - 1)
+    src_shape = draw(
+        helpers.get_shape(
+            min_num_dims=shape - 1,
+            max_num_dims=shape - 1,
+            min_dim_size=shape,
+            max_dim_size=shape,
+        ),
+    )
+    src = draw(
+        helpers.array_values(
+            shape=src_shape,
+            dtype=available_input_types,
+            exclude_min=False,
+        )
+    )
+    index = random.randint(-shape, shape - 1)
+    return dtype, x, dim, src, index
+
+
 # reshape
 @st.composite
 def dtypes_x_reshape(draw):
@@ -1242,6 +1277,34 @@ def test_torch_select(
         input=x,
         dim=axis,
         index=idx,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.select_scatter", dtype_and_values=_select_scatter_test_data_prep()
+)
+def test_torch_select_scatter(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, dim, src, index = dtype_and_values
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        src=src,
+        index=index,
+        dim=dim,
     )
 
 

@@ -374,6 +374,47 @@ def select(input, dim, index):
     return input[tuple(slices)]
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def select_scatter(input, src, dim, index):
+    input = ivy.copy_array(input)
+    if dim >= input.ndim or dim < -input.ndim:
+        raise ivy.utils.exceptions.IvyValueError("Invalid dimension")
+
+    # Normalize negative dimensions
+    if dim < 0:
+        dim += input.ndim
+
+    # Check if the indices are within bounds
+    if index < -input.shape[dim] or index >= input.shape[dim]:
+        raise ivy.utils.exceptions.IvyIndexError("Index out of bounds")
+
+    if index < 0:
+        index += input.shape[dim]
+
+    # Create a tuple to slice the tensor
+    slices = [slice(None)] * input.ndim
+    slices[dim] = index
+
+    if src.shape != input[tuple(slices)].shape:
+        raise ivy.utils.exceptions.IvyException(
+            "src must have shape equal to specified diagonal of input. src size ="
+            f" {src.shape}, diagonal size = {input[tuple(slices)].shape}"
+        )
+    else:
+        input[tuple(slices)] = src
+
+    return input
+
+
 @to_ivy_arrays_and_back
 def split(tensor, split_size_or_sections, dim=0):
     if isinstance(split_size_or_sections, int):
