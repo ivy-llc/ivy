@@ -7,6 +7,60 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# hinge_embedding_loss
+@handle_test(
+    fn_tree="functional.ivy.experimental.hinge_embedding_loss",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-10,
+        max_value=10,
+        allow_inf=False,
+        min_num_dims=1,
+        min_dim_size=1,
+        max_num_dims=5,
+    ),
+    dtype_and_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        min_dim_size=1,
+        max_num_dims=5,
+    ),
+    margin=st.floats(min_value=1, max_value=5),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_hinge_embedding_loss(
+    dtype_and_input,
+    dtype_and_target,
+    margin,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, input = dtype_and_input
+    target_dtype, target = dtype_and_target
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        input=input[0],
+        target=target[0],
+        margin=margin,
+        reduction=reduction,
+        rtol_=1e-05,
+        atol_=1e-05,
+    )
+
+
 # huber_loss
 @handle_test(
     fn_tree="functional.ivy.experimental.huber_loss",

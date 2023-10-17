@@ -114,7 +114,7 @@ def _validate_poisson_nll_params(
 
 @with_supported_device_and_dtypes(
     {
-        "0.4.14 and below": {
+        "0.4.18 and below": {
             "cpu": ("float16", "float32", "float64"),
         }
     },
@@ -152,4 +152,30 @@ def poisson_nll_loss(
         ones = jnp.ones_like(target_arr, dtype=target_arr.dtype)
         cond = jnp.logical_and(target_arr >= zeroes, target_arr <= ones)
         loss = loss + jnp.where(cond, zeroes, striling_approx_term)
+    return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "0.4.18 and below": {
+            "cpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def hinge_embedding_loss(
+    input: JaxArray,
+    target: JaxArray,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+) -> JaxArray:
+    zero_ = jnp.zeros([1], dtype=input.dtype)
+
+    relu_part = jnp.maximum(margin - input, 0)
+
+    loss = jnp.where(target == 1.0, input, zero_) + jnp.where(
+        target == -1.0, relu_part, zero_
+    )
+
     return _apply_loss_reduction(loss, reduction)
