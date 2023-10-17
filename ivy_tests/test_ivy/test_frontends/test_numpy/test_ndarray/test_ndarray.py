@@ -1077,6 +1077,56 @@ def test_numpy___ipow__(
     )
 
 
+# __irshift__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__irshift__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+    ),
+)
+def test_numpy___irshift__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    backend_fw,
+    on_device,
+):
+    input_dtypes, x = dtype_and_x
+    max_bits = np.iinfo(input_dtypes[0]).bits
+    max_shift = max_bits - 1
+    x[1] = np.asarray(np.clip(x[1], 0, max_shift), dtype=input_dtypes[1])
+    max_value_before_shift = 2 ** (max_bits - x[1]) - 1
+    overflow_threshold = 2 ** (max_bits - 1)
+    x[0] = np.asarray(
+        np.clip(x[0], None, max_value_before_shift), dtype=input_dtypes[0]
+    )
+    if np.any(x[0] > overflow_threshold):
+        x[0] = np.clip(x[0], None, overflow_threshold)
+    if np.any(x[0] < 0):
+        x[0] = np.abs(x[0])
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        method_all_as_kwargs_np={
+            "value": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",

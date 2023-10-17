@@ -24,6 +24,19 @@ from ivy.utils.exceptions import handle_exceptions
 # ------#
 
 
+def _get_embed_dim(
+    in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query
+):
+    pre_embed_dim = query.shape[-1]
+    if ivy.exists(in_proj_weights):
+        embed_dim = in_proj_weights.shape[0] / 3
+    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+        embed_dim = q_proj_weights.shape[0]
+    else:
+        embed_dim = None
+    return pre_embed_dim, embed_dim
+
+
 def _in_projection(
     q,
     k,
