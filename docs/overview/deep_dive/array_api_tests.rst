@@ -8,7 +8,7 @@ Array API Tests
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`array api tests channel`: https://discord.com/channels/799879767196958751/982738404611592256
-.. _`scripts/shell/test_array_api.sh`: https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/scripts/shell/test_array_api.sh
+.. _`scripts/shell/test_array_api.sh`: https://github.com/unifyai/ivy/blob/bcddc79978afe447958dfa3ea660716845c85846/scripts/shell/test_array_api.sh
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
 .. _`ivy_tests/array_api_testing/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
