@@ -749,7 +749,7 @@ def tanh(
     complex_mode="jax",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.tanh(x)
+    return tf.math.tanh(x)
 
 
 def trapz(
