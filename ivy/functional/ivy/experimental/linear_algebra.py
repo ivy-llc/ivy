@@ -1302,7 +1302,7 @@ def tensor_train_matrix(
         msg += "i.e the order should be even. "
         msg += f"but got a tensor of order ivy.get_num_dims(input_tensor)={order}"
         raise ValueError(msg)
-    
+
     in_shape = ivy.shape(input_tensor)[:n_input]
     out_shape = ivy.shape(input_tensor)[n_input:]
 
