@@ -1116,10 +1116,10 @@ class _ContainerWithLossesExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""ivy.Container static method variant of ivy.hinge_embedding_loss.
-        This method simplywraps the function, and so the docstring for
-        ivy.hinge_embedding_loss also applies to this method with minimal
-        changes.
+        r"""
+        ivy.Container static method variant of ivy.hinge_embedding_loss. This method
+        simplywraps the function, and so the docstring for ivy.hinge_embedding_loss also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1214,10 +1214,10 @@ class _ContainerWithLossesExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""ivy.Container instance method variant of ivy.hinge_embedding_loss.
-        This method simply wraps the function, and so the docstring for
-        ivy.hinge_embedding_loss also applies to this method with minimal
-        changes.
+        r"""
+        ivy.Container instance method variant of ivy.hinge_embedding_loss. This method
+        simply wraps the function, and so the docstring for ivy.hinge_embedding_loss
+        also applies to this method with minimal changes.
 
         Parameters
         ----------

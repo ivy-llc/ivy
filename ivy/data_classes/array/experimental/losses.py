@@ -380,9 +380,10 @@ class _ArrayWithLossesExperimental(abc.ABC):
         margin: float = 1.0,
         reduction: str = "mean",
     ) -> ivy.Array:
-        r"""Measures loss from input `x` and label `y` with values 1 or -1. It
-        evaluates if two inputs are similar or not, often used for embedding or
-        semi-supervised learning.
+        r"""
+        Measures loss from input `x` and label `y` with values 1 or -1. It evaluates if
+        two inputs are similar or not, often used for embedding or semi-supervised
+        learning.
 
         Loss for the `n`-th sample:
             .. math::
