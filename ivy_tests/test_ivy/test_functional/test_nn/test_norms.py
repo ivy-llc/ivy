@@ -114,7 +114,6 @@ def test_layer_norm(
     )
 
 
-
 def _generate_data_batch_norm(
     draw,
     *,

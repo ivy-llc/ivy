@@ -10,8 +10,7 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_norms import (
     _generate_data_layer_norm,
 )
 
-from ivy_tests.test_ivy.test_functional.test_nn.test_norms import (
-    _generate_data_batch_norm)
+from ivy_tests.test_ivy.test_functional.test_nn.test_norms import (_generate_data_batch_norm,)
 
 
 # layer_norm
