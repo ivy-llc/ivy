@@ -186,8 +186,8 @@ Now, that the SSH key of the Runner has permissions to push and clone the Mappin
 
 .. code-block::
 
-    USER_EMAIL="rashul.chutani@gmail.com"
-    USER_NAME="Rashul Chutani"
+    USER_EMAIL="ivy.branch@lets-unify.ai"
+    USER_NAME="ivy-branch"
     TARGET_BRANCH=$1
     GITHUB_SERVER="github.com"
     mkdir --parents "$HOME/.ssh"
@@ -314,8 +314,7 @@ follow the following steps:
 Manual Tests are also available for PRs.
 You can also run the Manual Tests Workflow on a Fork Repository (while reviewing PRs), as follows:
 
-1. Visit https://github.com/RashulChutani/ivy/actions/workflows/manual-tests-pr.yml by going to the
-“Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
+1. Visit the “Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
 2. Trigger the Workflow by following Steps 2-4 described above.
 
 This might take some time to run as the Fork may have limited runners.
