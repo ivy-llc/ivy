@@ -24,9 +24,10 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
-        """ivy.Container static method variant of ivy.min. This method simply
-        wraps the function, and so the docstring for ivy.min also applies to
-        this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.min. This method simply wraps the
+        function, and so the docstring for ivy.min also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
