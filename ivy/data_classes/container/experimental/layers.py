@@ -2191,7 +2191,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         boundary: Optional[str] = "zeros",
         out: Optional[ivy.Container] = None,
     ):
-        """ivy.Container static method variant of ivy.stft.
+        """
+        ivy.Container static method variant of ivy.stft.
 
         This method simply wraps the function, and so the docstring for
         ivy.stft  also applies to this method with minimal changes.
@@ -2307,7 +2308,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         boundary: Optional[str] = "zeros",
         out: Optional[ivy.Container] = None,
     ):
-        """Compute the Short-time Fourier transform  of input.
+        """
+        Compute the Short-time Fourier transform  of input.
 
         Parameters
         ----------
