@@ -936,40 +936,32 @@ class Tensor:
             )
         x_shape = x._ivy_array.shape
         y_shape = y._ivy_array.shape
-        min_size = min(x_shape[dim1], 
-                       x_shape[dim2],
-                       y_shape[0])
+        min_size = min(x_shape[dim1], x_shape[dim2], y_shape[0])
 
         # Create masks to select the diagonal elements in the specified dimensions
-        dim1_mask = ivy.eye(x_shape[dim1], 
-                            dtype=self.dtype, 
-                            device=self.place)
-        dim2_mask = ivy.eye(x_shape[dim2], 
-                            dtype=self.dtype, 
-                            device=self.place)
+        dim1_mask = ivy.eye(x_shape[dim1], dtype=self.dtype, device=self.place)
+        dim2_mask = ivy.eye(x_shape[dim2], dtype=self.dtype, device=self.place)
         if offset > 0:
             # Offset > 0: Fill diagonal above the main diagonal
-            dim1_mask = ivy.pad(dim1_mask,
-                                ((0, 0), (offset, 0)), 
-                                mode='constant',
-                                constant_values=0)[:min_size, :min_size]
-            dim2_mask = ivy.pad(dim2_mask,
-                                ((0, 0), (offset, 0)), 
-                                mode='constant', 
-                                constant_values=0)[:min_size, :min_size]
+            dim1_mask = ivy.pad(
+                dim1_mask, ((0, 0), (offset, 0)), mode="constant", constant_values=0
+            )[:min_size, :min_size]
+            dim2_mask = ivy.pad(
+                dim2_mask, ((0, 0), (offset, 0)), mode="constant", constant_values=0
+            )[:min_size, :min_size]
         elif offset < 0:
             # Offset < 0: Fill diagonal below the main diagonal
-            dim1_mask = ivy.pad(dim1_mask,
-                                ((-offset, 0), (0, 0)),
-                                mode='constant',
-                                constant_values=0)[:min_size, :min_size]
-            dim2_mask = ivy.pad(dim2_mask, 
-                                ((-offset, 0), (0, 0)), 
-                                mode='constant', 
-                                constant_values=0)[:min_size, :min_size]
+            dim1_mask = ivy.pad(
+                dim1_mask, ((-offset, 0), (0, 0)), mode="constant", constant_values=0
+            )[:min_size, :min_size]
+            dim2_mask = ivy.pad(
+                dim2_mask, ((-offset, 0), (0, 0)), mode="constant", constant_values=0
+            )[:min_size, :min_size]
 
-        x._ivy_array = x._ivy_array.multiply(1 - dim1_mask).multiply(1 - dim2_mask) + y._ivy_array.multiply(dim1_mask).multiply(dim2_mask)
-        
+        x._ivy_array = x._ivy_array.multiply(1 - dim1_mask).multiply(
+            1 - dim2_mask
+        ) + y._ivy_array.multiply(dim1_mask).multiply(dim2_mask)
+
         return x._ivy_array
 
     def fill_diagonal_tensor_(self, y, offset=0, dim1=0, dim2=1, name=None):
