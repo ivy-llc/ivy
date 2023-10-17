@@ -30,16 +30,15 @@ jobs:
           sudo rm -fr $GITHUB_WORKSPACE && mkdir $GITHUB_WORKSPACE
 
       - name: Checkout Ivy 🛎
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ivy
           persist-credentials: false
           submodules: "recursive"
-          set-safe-directory: false
+          fetch-depth: 100
 
       - name: Install ivy and fetch binaries
         run: |
-          ls
           cd ivy
           pip3 install -e .
           mkdir .ivy
