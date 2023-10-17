@@ -92,9 +92,7 @@ def test_numpy_fft(
         available_dtypes=helpers.get_dtypes("float"), shape=(4,), array_api_dtypes=True
     ),
 )
-def fttshift(
-    dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device
-):
+def fttshift(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device):
     input_dtype, arr = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
