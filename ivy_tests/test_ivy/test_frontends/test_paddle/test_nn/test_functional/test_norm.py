@@ -7,9 +7,9 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
 
 from ivy_tests.test_ivy.test_functional.test_nn.test_norms import (
-    _generate_data_layer_norm, _generate_data_batch_norm
+    _generate_data_layer_norm,
+    _generate_data_batch_norm,
 )
-
 
 
 # layer_norm
