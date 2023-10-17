@@ -498,9 +498,10 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         alpha: float = 0.01,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.leaky_relu. This method
-        simply wraps the function, and so the docstring for ivy.leaky_relu also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps
+        the function, and so the docstring for ivy.leaky_relu also applies to this
+        method with minimal changes.
 
         Parameters
         ----------

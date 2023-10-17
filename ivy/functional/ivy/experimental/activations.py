@@ -882,7 +882,8 @@ def leaky_relu(
     alpha: float = 0.01,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the leaky rectified linear unit function element-wise.
+    """
+    Apply the leaky rectified linear unit function element-wise.
 
     If the input is complex, then by default each element is scaled by `alpha` if
     either its real part is strictly negative or if its real part is zero and its
