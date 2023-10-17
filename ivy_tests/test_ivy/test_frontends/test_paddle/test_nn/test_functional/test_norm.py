@@ -72,7 +72,6 @@ def test_batch_norm(*, values_tuple, test_flags, backend_fw, fn_name, on_device)
         moving_mean=moving_mean,
         moving_var=moving_var,
         epsilon=epsilon,
-=======
 # normalize
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.normalize",
