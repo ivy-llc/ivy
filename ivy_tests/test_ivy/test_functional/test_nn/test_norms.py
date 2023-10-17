@@ -12,6 +12,46 @@ from ivy_tests.test_ivy.helpers import handle_test
 # --------------- #
 
 
+def _generate_data_batch_norm(
+    draw,
+    *,
+    available_dtypes,
+    min_value,
+    max_value,
+    min_gamma=0.1,
+    max_gamma=2.0,
+    min_beta=-1.0,
+    max_beta=1.0,
+    min_moving_mean=0.0,
+    max_moving_mean=1.0,
+    min_moving_var=0.1,
+    max_moving_var=1.0,
+    epsilon=1e-5,
+    min_num_dims=1,
+    max_num_dims=5,
+    ret_shape=True,
+):
+    results = draw(
+        helpers.dtype_values(
+            available_dtypes=available_dtypes,
+            min_value=min_value,
+            max_value=max_value,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            ret_shape=ret_shape,
+        )
+    )
+
+    dtype, x, shape = results
+
+    gamma = draw(st.floats(min_value=min_gamma, max_value=max_gamma))
+    beta = draw(st.floats(min_value=min_beta, max_value=max_beta))
+    moving_mean = draw(st.floats(min_value=min_moving_mean, max_value=max_moving_mean))
+    moving_var = draw(st.floats(min_value=min_moving_var, max_value=max_moving_var))
+
+    return dtype, x, gamma, beta, moving_mean, moving_var, epsilon
+
+
 @st.composite
 def _generate_data_layer_norm(
     draw,
@@ -93,6 +133,29 @@ def _generate_data_layer_norm(
 
 
 @handle_test(
+    fn_tree="functional.batch_norm",
+    values_tuple=_generate_data_batch_norm(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_batch_norm(*, values_tuple, test_flags, backend_fw, fn_name, on_device):
+    (dtype, x, gamma, beta, moving_mean, moving_var, epsilon) = values_tuple
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x,
+        gamma=gamma,
+        beta=beta,
+        moving_mean=moving_mean,
+        moving_var=moving_var,
+        epsilon=epsilon,
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.layer_norm",
     values_tuple=_generate_data_layer_norm(
         available_dtypes=helpers.get_dtypes("float"),
@@ -119,67 +182,4 @@ def test_layer_norm(
         scale=scale[0],
         offset=offset[0],
         new_std=new_std,
-    )
-
-
-def _generate_data_batch_norm(
-    draw,
-    *,
-    available_dtypes,
-    min_value,
-    max_value,
-    min_gamma=0.1,
-    max_gamma=2.0,
-    min_beta=-1.0,
-    max_beta=1.0,
-    min_moving_mean=0.0,
-    max_moving_mean=1.0,
-    min_moving_var=0.1,
-    max_moving_var=1.0,
-    epsilon=1e-5,
-    min_num_dims=1,
-    max_num_dims=5,
-    ret_shape=True,
-):
-    results = draw(
-        helpers.dtype_values(
-            available_dtypes=available_dtypes,
-            min_value=min_value,
-            max_value=max_value,
-            min_num_dims=min_num_dims,
-            max_num_dims=max_num_dims,
-            ret_shape=ret_shape,
-        )
-    )
-
-    dtype, x, shape = results
-
-    gamma = draw(st.floats(min_value=min_gamma, max_value=max_gamma))
-    beta = draw(st.floats(min_value=min_beta, max_value=max_beta))
-    moving_mean = draw(st.floats(min_value=min_moving_mean, max_value=max_moving_mean))
-    moving_var = draw(st.floats(min_value=min_moving_var, max_value=max_moving_var))
-
-    return dtype, x, gamma, beta, moving_mean, moving_var, epsilon
-
-
-@handle_test(
-    fn_tree="functional.batch_norm",
-    values_tuple=_generate_data_batch_norm(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_batch_norm(*, values_tuple, test_flags, backend_fw, fn_name, on_device):
-    (dtype, x, gamma, beta, moving_mean, moving_var, epsilon) = values_tuple
-    helpers.test_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x,
-        gamma=gamma,
-        beta=beta,
-        moving_mean=moving_mean,
-        moving_var=moving_var,
-        epsilon=epsilon,
     )
