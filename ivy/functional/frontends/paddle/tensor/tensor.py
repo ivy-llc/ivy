@@ -911,8 +911,15 @@ class Tensor:
 
     def _fill_diagonal_tensor_impl(self, x, y, offset=0, dim1=0, dim2=1, inplace=False):
         if not inplace:
-            x = Tensor(self._ivy_array, dtype=self.dtype, place=self.place,_stop_gradient = self._stop_gradient)          
-        min_size = min(x._ivy_array.shape[0], x._ivy_array.shape[1], y._ivy_array.shape[0])
+            x = Tensor(
+                self._ivy_array,
+                dtype=self.dtype,
+                place=self.place,
+                _stop_gradient=self._stop_gradient,
+            )
+        min_size = min(
+            x._ivy_array.shape[0], x._ivy_array.shape[1], y._ivy_array.shape[0]
+        )
         mask = ivy.eye(min_size, dtype=self.dtype, device=self.place)
         x._ivy_array = x._ivy_array * (1 - mask) + y._ivy_array * mask
         return x._ivy_array
