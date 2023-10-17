@@ -2622,6 +2622,7 @@ def test_paddle_is_floating_point(
         on_device=on_device,
     )
 
+
 # is_tensor
 @handle_frontend_method(
     class_tree=CLASS_TREE,
