@@ -131,6 +131,45 @@ def logdet(input):
 
 
 @to_ivy_arrays_and_back
+def lu_unpack(LU_data, LU_pivots, unpack_data=True, unpack_pivots=True, *, out=None):
+    if LU_data.ndim < 2:
+        raise ValueError(
+            "The shape of x should be (*, M, N), but received ndim is"
+            f" [{LU_data.ndim} < 2]"
+        )
+    if LU_pivots.ndim < 1:
+        raise ValueError(
+            "The shape of Pivots should be (*, K), but received ndim is"
+            f" [{LU_pivots.ndim} < 1]"
+        )
+    dtype = LU_data.dtype
+    m, n = LU_data.shape[-2:]
+    k = min(m, n)
+    if unpack_pivots:
+        permute_matrix = ivy.eye(m, dtype=dtype)
+        for index in range(LU_pivots.shape[-1]):
+            if index != LU_pivots[index] - 1:
+                permute_matrix[:, index], permute_matrix[:, LU_pivots[index] - 1] = (
+                    permute_matrix[:, LU_pivots[index] - 1],
+                    permute_matrix[:, index],
+                )
+    else:
+        permute_matrix = ivy.empty(0, dtype=dtype)
+    if unpack_data:
+        if m == n:
+            lower, upper = ivy.tril(LU_data, k=-1), ivy.triu(LU_data)
+        elif m > n:
+            lower, upper = ivy.tril(LU_data, k=-1), ivy.triu(LU_data)[:k, :k]
+        else:
+            lower, upper = ivy.tril(LU_data, k=-1)[:k, :k], ivy.triu(LU_data)
+        lower = ivy.fill_diagonal(lower, 1.0)
+        lower = ivy.astype(lower, dtype)
+    else:
+        lower, upper = ivy.empty(0, dtype=dtype), ivy.empty(0, dtype=dtype)
+    return permute_matrix, lower, upper
+
+
+@to_ivy_arrays_and_back
 def matmul(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.matmul(input, other, out=out)

@@ -225,6 +225,30 @@ def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
     return dtype, vec1, vec2
 
 
+@st.composite
+def _get_dtype_lu_and_pivots(draw):
+    dimsize1 = draw(helpers.ints(min_value=2, max_value=5))
+    dimsize2 = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float"))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    mat = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dimsize1, dimsize2), min_value=2, max_value=5
+        )
+    )
+    pivots = draw(
+        helpers.array_values(
+            dtype="int32",
+            shape=(min(dimsize1, dimsize2),),
+            min_value=1,
+            max_value=dimsize2,
+        )
+    )
+    return dtype, mat, pivots
+
+
 # --- Main --- #
 # ------------ #
 
@@ -660,6 +684,40 @@ def test_torch_logdet(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
+    )
+
+
+# lu_unpack
+@handle_frontend_test(
+    fn_tree="torch.lu_unpack",
+    dtype_and_matrices=_get_dtype_lu_and_pivots(),
+    unpack_lu=st.booleans(),
+    unpack_piv=st.booleans(),
+)
+def test_torch_lu_unpack(
+    dtype_and_matrices,
+    unpack_lu,
+    unpack_piv,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, mat, pivots = dtype_and_matrices
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        LU_data=mat,
+        LU_pivots=pivots,
+        unpack_data=unpack_lu,
+        unpack_pivots=unpack_piv,
+        rtol=1e-03,
+        atol=1e-03,
     )
 
 
