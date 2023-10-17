@@ -3365,7 +3365,7 @@ def test_tensorflow_Prod(  # NOQA
 
 # RandomStandardNormal
 @handle_frontend_test(
-    fn_tree="tf.raw_ops.RandomStandardNormal",
+    fn_tree="tensorflow.raw_ops.RandomStandardNormal",
     shape=helpers.get_shape(
         allow_none=False,
     ),
