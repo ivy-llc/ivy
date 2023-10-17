@@ -938,7 +938,9 @@ class Tensor:
             x._ivy_array.shape[0], x._ivy_array.shape[1], y._ivy_array.shape[0]
         )
         mask = ivy.eye(min_size, dtype=self.dtype, device=self.place)
-        x._ivy_array[:min_size, :min_size] = x._ivy_array[:min_size, :min_size].multiply(1 - mask) + y._ivy_array.multiply(mask)
+        x._ivy_array[:min_size, :min_size] = x._ivy_array[
+            :min_size, :min_size
+        ].multiply(1 - mask) + y._ivy_array.multiply(mask)
         return x.ivy_array
 
     def fill_diagonal_tensor_(self, y, offset=0, dim1=0, dim2=1, name=None):
