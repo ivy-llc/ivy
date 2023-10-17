@@ -445,7 +445,7 @@ def index_add(
     x = tf.experimental.numpy.swapaxes(x, axis, 0)
     value = tf.experimental.numpy.swapaxes(value, axis, 0)
     _to_adds = []
-    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda i: i[0]))
+    index = sorted(zip(index.numpy().tolist(), range(len(index))), key=(lambda i: i[0]))
     while index:
         _curr_idx = index[0][0]
         while len(_to_adds) < _curr_idx:
