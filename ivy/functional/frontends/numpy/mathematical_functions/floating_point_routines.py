@@ -52,7 +52,7 @@ def _signbit(
     subok=True,
 ):
     x = ivy.astype(x, ivy.float64)
-    return ivy.logical_or(ivy.less(x, 0), ivy.atan2(0.0, x) == ivy.pi)
+    return ivy.logical_or(ivy.less(x, 0), ivy.atan2(0.0, x) == ivy.pi, out=out)
 
 
 @handle_numpy_out
