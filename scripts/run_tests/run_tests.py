@@ -283,4 +283,4 @@ if __name__ == "__main__":
 
     # if any tests fail, the workflow fails
     if failed:
-        exit(1)
+        sys.exit(1)
