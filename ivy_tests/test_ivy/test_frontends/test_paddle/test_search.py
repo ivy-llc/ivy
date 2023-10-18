@@ -173,7 +173,6 @@ def test_paddle_bucketize(
     test_flags,
 ):
     dtype, input = dtype_and_values
-    input[0] = np.sort(input[0])
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,

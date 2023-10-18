@@ -841,9 +841,9 @@ class Tensor:
         {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
         "paddle",
     )
-    def bucketize(self, y, right=False, name=None):
+    def bucketize(self, sorted_sequence, right=False, name=None):
         return paddle_frontend.bucketize(
-            self.ivy_array, sorted_sequence=y, right=right, name=name
+            self.ivy_array, sorted_sequence=sorted_sequence, right=right, name=name
         )
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
