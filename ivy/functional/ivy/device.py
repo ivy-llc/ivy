@@ -1,6 +1,5 @@
 """Collection of device Ivy functions."""
 
-
 # global
 import os
 import gc
