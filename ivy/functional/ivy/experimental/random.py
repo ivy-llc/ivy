@@ -277,7 +277,7 @@ def bernoulli(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Draws samples from Bernoulli distrubution paramterized by probs or logits (but not
+    Draws samples from Bernoulli distribution parameterized by probs or logits (but not
     both)
 
     Parameters

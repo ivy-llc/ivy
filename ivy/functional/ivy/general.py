@@ -1,5 +1,6 @@
 """Collection of general Ivy functions."""
 
+
 # global
 import gc
 import inspect
@@ -45,25 +46,26 @@ from ivy.func_wrapper import (
 )
 from ivy.functional.ivy.device import dev
 
-FN_CACHE = dict()
+FN_CACHE = {}
 INF = float("inf")
 
-precise_mode_stack = list()
-queue_timeout_stack = list()
-array_mode_stack = list()
-shape_array_mode_stack = list()
-nestable_mode_stack = list()
-exception_trace_mode_stack = list()
-inplace_mode_stack = list()
-trace_mode_dict = dict()
-trace_mode_dict["frontend"] = "ivy/functional/frontends"
-trace_mode_dict["ivy"] = "ivy/"
-trace_mode_dict["full"] = ""
-trace_mode_dict["none"] = ""
-show_func_wrapper_trace_mode_stack = list()
-min_denominator_stack = list()
-min_base_stack = list()
-tmp_dir_stack = list()
+precise_mode_stack = []
+queue_timeout_stack = []
+array_mode_stack = []
+shape_array_mode_stack = []
+nestable_mode_stack = []
+exception_trace_mode_stack = []
+inplace_mode_stack = []
+trace_mode_dict = {
+    "frontend": "ivy/functional/frontends",
+    "ivy": "ivy/",
+    "full": "",
+    "none": "",
+}
+show_func_wrapper_trace_mode_stack = []
+min_denominator_stack = []
+min_base_stack = []
+tmp_dir_stack = []
 
 
 # Extra #
@@ -95,12 +97,12 @@ ivy.precise_mode = precise_mode_stack[-1] if precise_mode_stack else True
 def set_precise_mode(mode: bool) -> None:
     """
     Set the mode of whether to use a promotion table that avoids any precision loss or a
-    compute effecient table that avoids most wider-than-necessary promotions.
+    compute efficient table that avoids most wider-than- necessary promotions.
 
     Parameter
     ---------
     mode
-        boolean whether to use high precision promtion table
+        boolean whether to use high precision promotion table
 
     Examples
     --------
@@ -123,7 +125,7 @@ def set_precise_mode(mode: bool) -> None:
 def unset_precise_mode() -> None:
     """
     Reset the mode of whether to use a promotion table that avoids any precision loss or
-    a compute effecient table that avoids most wider-than-necessary promotions.
+    a compute efficient table that avoids most wider-than- necessary promotions.
 
     Examples
     --------
@@ -180,6 +182,7 @@ class ArrayMode:
 
 def get_referrers_recursive(
     item: object,
+    *,
     depth: int = 0,
     max_depth: int = None,
     seen_set: set = None,
@@ -193,20 +196,20 @@ def get_referrers_recursive(
 
     Parameters
     ----------
-    item : object
+    item
         The object for which referrers should be retrieved.
-    depth : int, optional
+    depth
         Current depth in the recursion. (default is 0)
-    max_depth : int, optional
+    max_depth
         Maximum depth of recursion. If `None`, there's no depth limit. (default is None)
-    seen_set : set, optional
+    seen_set
         Set of seen referrer IDs to prevent duplicates. (default is None)
-    local_set : set, optional
+    local_set
         Set of local referrer IDs to avoid redundancy. (default is None)
 
     Returns
     -------
-    ivy.Container
+    ret
         A container representing referrers and their sub-referrers, respecting the
         `max_depth`.
 
@@ -238,7 +241,7 @@ def get_referrers_recursive(
         for ref in gc.get_referrers(item)
         if not (
             isinstance(ref, dict)
-            and min([k in ref for k in ["depth", "max_depth", "seen_set", "local_set"]])
+            and min(k in ref for k in ["depth", "max_depth", "seen_set", "local_set"])
         )
     ]
 
@@ -533,7 +536,7 @@ def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
     Parameter
     ---------
     mode
-        str exeption trace mode, one of `ivy`, `full` or `frontend`
+        str exception trace mode, one of `ivy`, `full` or `frontend`
 
     Examples
     --------
@@ -548,7 +551,7 @@ def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
     global exception_trace_mode_stack
     trace_modes = list(trace_mode_dict.keys())
     ivy.utils.assertions.check_elem_in_list(
-        mode, trace_modes, False, "trace mode must be one of {}".format(trace_modes)
+        mode, trace_modes, False, f"trace mode must be one of {trace_modes}"
     )
     exception_trace_mode_stack.append(mode)
     ivy.__setattr__("exception_trace_mode", mode, True)
@@ -1057,6 +1060,18 @@ def clip_vector_norm(
         a: ivy.array([0., 0.894, 1.79]),
         b: ivy.array([0.849, 1.13, 1.41])
     }
+
+    With multiple :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
+    >>> max_norm = ivy.Container(a=2, b=3)
+    >>> y = ivy.clip_vector_norm(x, max_norm)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.894, 1.79]),
+        b: ivy.array([2.449, 2.65, 2.83])
+    }
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
@@ -1181,7 +1196,7 @@ def fourier_encode(
         Whether to space the frequency bands linearly as opposed to geometrically.
         Default is ``False``.
     concat
-        Whether to concatenate the position, sin and cos values, or return seperately.
+        Whether to concatenate the position, sin and cos values, or return separately.
         Default is ``True``.
     flatten
         Whether to flatten the position dimension into the batch dimension.
@@ -1225,23 +1240,22 @@ def fourier_encode(
     orig_x = x
     if linear:
         scales = ivy.linspace(1.0, max_freq / 2, num_bands, device=dev(x))
+    elif ivy.backend == "torch" and isinstance(max_freq, float):
+        scales = ivy.logspace(
+            0.0,
+            ivy.log(ivy.array(max_freq / 2)) / math.log(10),
+            num_bands,
+            base=10,
+            device=dev(x),
+        )
     else:
-        if ivy.backend == "torch" and isinstance(max_freq, float):
-            scales = ivy.logspace(
-                0.0,
-                ivy.log(ivy.array(max_freq / 2)) / math.log(10),
-                num_bands,
-                base=10,
-                device=dev(x),
-            )
-        else:
-            scales = ivy.logspace(
-                0.0,
-                ivy.log(max_freq / 2) / math.log(10),
-                num_bands,
-                base=10,
-                device=dev(x),
-            )
+        scales = ivy.logspace(
+            0.0,
+            ivy.log(max_freq / 2) / math.log(10),
+            num_bands,
+            base=10,
+            device=dev(x),
+        )
     scales = ivy.astype(scales, ivy.dtype(x))
     scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
     x = x * scales * math.pi
@@ -1311,7 +1325,7 @@ def value_is_nan(
     False
     """
     x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
-    if not x_scalar == x:
+    if x_scalar != x:
         return True
     if include_infs and (x_scalar == INF or x_scalar == -INF):
         return True
@@ -1541,9 +1555,7 @@ def default(
     """
     with_callable = catch_exceptions or with_callable
     if rev:
-        tmp = x
-        x = default_val
-        default_val = tmp
+        x, default_val = default_val, x
     if with_callable:
         x_callable = callable(x)
         default_callable = callable(default_val)
@@ -1639,7 +1651,7 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
     args
         list of arguments.
     kwargs
-        dictionay of keyword arguments
+        dictionary of keyword arguments
 
     Returns
     -------
@@ -1736,12 +1748,12 @@ def match_kwargs(
     >>> print(x)
     [{'out': ivy.array([0., 0., 0.]), 'bias': ivy.array([0, 1, 2])}, {}]
     """
-    split_kwargs = list()
+    split_kwargs = []
     for receiver in receivers:
         expected_kwargs = arg_names(receiver)
         found_kwargs = {k: v for k, v in kwargs.items() if k in expected_kwargs}
         if not allow_duplicates:
-            for k in found_kwargs.keys():
+            for k in found_kwargs:
                 del kwargs[k]
         split_kwargs.append(found_kwargs)
     if len(split_kwargs) == 1:
@@ -1785,14 +1797,13 @@ def cache_fn(func: Callable) -> Callable:
     """
     global FN_CACHE
     if func not in FN_CACHE:
-        FN_CACHE[func] = dict()
+        FN_CACHE[func] = {}
 
     @wraps(func)
     def cached_fn(*args, **kwargs):
         key = "".join(
-            [str(i) + ", " for i in args]
-            + [" kw, "]
-            + [str(i) + ", " for i in sorted(kwargs.items())]
+            ([f"{str(i)}, " for i in args] + [" kw, "])
+            + [f"{str(i)}, " for i in sorted(kwargs.items())]
         )
         cache = FN_CACHE[func]
         if key in cache:
@@ -2172,18 +2183,28 @@ def set_min_base(val: float) -> None:
 
     Examples
     --------
+    Retrieve the minimum base
     >>> x = ivy.min_base
     >>> print(x)
     1e-05
 
+    Set the minimum base to 1e-04:
     >>> ivy.set_min_base(1e-04)
+
+    Retrieve the minimum base:
     >>> y = ivy.min_base
     >>> print(y)
     1e-04
     """
     global min_base_stack
+
+    # Ensure val is an instance of 'float' or 'int'
     ivy.utils.assertions.check_isinstance(val, (int, float))
+
+    # Access and modify min_base_stack
     min_base_stack.append(val)
+
+    # Set the min_base attribute
     ivy.__setattr__("min_base", val, True)
 
 
@@ -2432,7 +2453,7 @@ def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
     >>> x
     [ivy.array([0, 1, 2])]
     """
-    all_arrays = list()
+    all_arrays = []
     for obj in gc.get_objects():
         try:
             if ivy.current_backend_str() in ["", "numpy"]:
@@ -2766,9 +2787,8 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
     ivy.utils.assertions.check_true(
         ivy.supports_inplace_updates(x),
-        "Inplace operations are not supported {} types with {} backend".format(
-            type(x), ivy.current_backend_str()
-        ),
+        f"Inplace operations are not supported {type(x)} types with"
+        f" {ivy.current_backend_str()} backend",
     )
     return True
 
@@ -2925,8 +2945,8 @@ set_item.mixed_backend_wrappers = {
 
 
 def _parse_query(query, x_shape):
-    query = (query,) if not isinstance(query, tuple) else query
-    query_ = tuple([q.to_numpy() if ivy.is_array(q) else q for q in query])
+    query = query if isinstance(query, tuple) else (query,)
+    query_ = tuple(q.to_numpy() if ivy.is_array(q) else q for q in query)
 
     # array containing all of x's flat indices
     x_ = ivy.arange(0, _numel(x_shape)).reshape(x_shape)
@@ -2956,7 +2976,7 @@ def _broadcast_to(input, target_shape):
     if _numel(tuple(input.shape)) == _numel(tuple(target_shape)):
         return ivy.reshape(input, target_shape)
     else:
-        input = ivy.expand_dims(input, axis=0) if not len(input.shape) else input
+        input = input if len(input.shape) else ivy.expand_dims(input, axis=0)
         new_dims = ()
         i_i = len(input.shape) - 1
         for i_t in range(len(target_shape) - 1, -1, -1):
@@ -3382,7 +3402,7 @@ def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
     /,
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    shape: Optional[Union[tuple, list, ivy.Array, ivy.Shape, ivy.NativeShape]] = None,
     *,
     reduction: str = "sum",
     out: Optional[ivy.Array] = None,
@@ -3412,24 +3432,46 @@ def scatter_nd(
 
     Examples
     --------
-    scatter values into an empty array, With :class:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
-    >>> indices = ivy.array([[4], [3], [1], [7]])
-    >>> updates = ivy.array([9, 10, 11, 12])
+    >>> indices = ivy.array([[4], [3], [7], [7]])
+    >>> updates = ivy.array([9, 12, 11, 10])
     >>> shape = ivy.array([8])
     >>> scatter = ivy.scatter_nd(indices, updates, shape)
     >>> print(scatter)
-    ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
+    ivy.array([ 0,  0,  0, 12,  9,  0,  0, 21])
 
-    With scatter into an empty array, With :class:`ivy.Container` input:
+    >>> indices = ivy.array([[0, 1], [1, 0], [1, 1], [1, 1]])
+    >>> updates = ivy.array([9, 11, 12, 10])
+    >>> shape = (2, 2)
+    >>> scatter = ivy.scatter_nd(indices, updates, shape, reduction="max")
+    >>> print(scatter)
+    ivy.array([[ 0,  9], [11, 12]])
+
+    >>> indices = ivy.array([[[0], [1]], [[2], [1]]])
+    >>> updates = ivy.array([[9, 12], [11, 10]])
+    >>> shape = [4]
+    >>> scatter = ivy.scatter_nd(indices, updates, shape, reduction="replace")
+    >>> print(scatter)
+    ivy.array([ 9, 10, 11,  0])
+
+    >>> indices = ivy.array([[[1, 1], [0, 0]], [[1, 1], [0, 0]]])
+    >>> updates = ivy.array([[-1, 12], [11, 10]])
+    >>> shape = ivy.Shape([2, 2])
+    >>> result = ivy.zeros([2, 2])
+    >>> scatter = ivy.scatter_nd(indices, updates, shape, reduction="min", out=result)
+    >>> print(result)
+    ivy.array([[ 0.,  0.], [ 0., -1.]])
+
+    With :class:`ivy.Container` input:
 
     >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
     ...                         b=ivy.array([[5],[1],[2]]))
     >>> updates = ivy.Container(a=ivy.array([100, 200, 200]),
     ...                         b=ivy.array([20, 30, 40]))
     >>> shape = ivy.Container(a=ivy.array([10]),
-    ...                       b = ivy.array([10]))
-    >>> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
+    ...                       b=ivy.array([10]))
+    >>> z = ivy.scatter_nd(indices, updates, shape=shape)
     >>> print(z)
     {
         a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
@@ -3443,7 +3485,7 @@ def scatter_nd(
     ...                         b=ivy.array([200, 300, 400]))
     >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
     ...                   b=ivy.array([10, 20, 30, 40, 50]))
-    >>> ivy.scatter_nd(indices, updates, reduction='replace', out=z)
+    >>> ivy.scatter_nd(indices, updates, reduction="replace", out=z)
     >>> print(z)
     {
         a: ivy.array([1, 30, 3, 20, 10]),
@@ -3875,12 +3917,16 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
         # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_unsupported_dnd.__get__().values())[0], dict):
+        if fn_unsupported_dnd and isinstance(
+            list(fn_unsupported_dnd.__get__().values())[0], dict
+        ):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
         # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_supported_dnd.__get__().values())[0], dict):
+        if fn_supported_dnd and isinstance(
+            list(fn_supported_dnd.__get__().values())[0], dict
+        ):
             fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
     ivy.utils.assertions.check_false(
@@ -3939,6 +3985,26 @@ def _dnd_dict_union(a, b):
     return res
 
 
+# allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+def _expand_typesets(dtypes):
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+    dtypes = list(dtypes)
+    typeset_list = []
+    for i, dtype in reversed(list(enumerate(dtypes))):
+        if dtype in typesets:
+            typeset_list.extend(typesets[dtype])
+            dtypes.pop(i)
+    dtypes += typeset_list
+    return dtypes
+
+
 def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
     supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
@@ -3971,7 +4037,14 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
         if "einops" in fn.__name__ and isinstance(fn_supported_dnd, dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, supported)
 
-        ivy.utils.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
+        if fn_supported_dnd:
+            ivy.utils.assertions.check_isinstance(
+                list(fn_supported_dnd.values())[0], tuple
+            )
+
+        for device, dtypes in fn_supported_dnd.items():
+            fn_supported_dnd[device] = tuple(_expand_typesets(dtypes))
+
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
@@ -3981,9 +4054,14 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
         if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
-        ivy.utils.assertions.check_isinstance(
-            list(fn_unsupported_dnd.values())[0], tuple
-        )
+        if fn_unsupported_dnd:
+            ivy.utils.assertions.check_isinstance(
+                list(fn_unsupported_dnd.values())[0], tuple
+            )
+
+        for device, dtypes in fn_unsupported_dnd.items():
+            fn_unsupported_dnd[device] = tuple(_expand_typesets(dtypes))
+
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
@@ -4000,7 +4078,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
     """
     Return the supported combination of devices and dtypes of the current backend's
     function. The function returns a dict containing the supported combination of
-    devices and dtypes of the primary and compositional implementations incase of
+    devices and dtypes of the primary and compositional implementations in case of
     partial mixed functions.
 
     Parameters
@@ -4049,7 +4127,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
     """
     Return the unsupported combination of devices and dtypes of the current backend's
     function. The function returns a dict containing the unsupported combination of
-    devices and dtypes of the primary and compositional implementations incase of
+    devices and dtypes of the primary and compositional implementations in case of
     partial mixed functions.
 
     Parameters

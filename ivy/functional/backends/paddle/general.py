@@ -76,10 +76,13 @@ def to_numpy(
         else:
             return x
     elif paddle.is_tensor(x):
+        dtype = ivy.as_ivy_dtype(x.dtype)
+        if dtype == "bfloat16":
+            x = x.astype("float32")
         if copy:
-            return np.array(x)
+            return np.array(x).astype(dtype)
         else:
-            return np.asarray(x)
+            return np.asarray(x).astype(dtype)
     elif isinstance(x, list):
         return [ivy.to_numpy(u) for u in x]
     raise ivy.utils.exceptions.IvyException("Expected a Paddle Tensor.")
@@ -441,8 +444,8 @@ def scatter_nd(
         )
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
         )
     if reduction == "min":
         updates = ivy.minimum(ivy.gather_nd(target, indices), updates).data
@@ -559,7 +562,7 @@ def vmap(
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
-            none_axis_index = list()
+            none_axis_index = []
             for index, axis in enumerate(in_axes):
                 if axis is None:
                     none_axis_index.append(index)

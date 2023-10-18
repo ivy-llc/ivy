@@ -111,6 +111,11 @@ class Tensor:
         return paddle_frontend.acosh(self)
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def add_n(self, inputs, name=None):
+        inputs = ivy.array(inputs)
+        return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def ceil(self):
         return paddle_frontend.ceil(self)
 
@@ -134,6 +139,23 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def cosh(self, name=None):
         return paddle_frontend.cosh(self)
+
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "int32",
+                "int64",
+                "float64",
+                "complex128",
+                "float32",
+                "complex64",
+                "bool",
+            )
+        },
+        "paddle",
+    )
+    def diagonal(self, offset, axis1=0, axis2=1, name=None):
+        return paddle_frontend.diagonal(self, offset=offset, axis1=axis1, axis2=axis2)
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def log(self, name=None):
@@ -263,6 +285,10 @@ class Tensor:
     def add_(self, y, name=None):
         self.ivy_array = paddle_frontend.add(self, y).ivy_array
         return self
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def addmm(self, x, y, beta=1.0, alpha=1.0, name=None):
+        return paddle_frontend.addmm(self, x, y, beta, alpha)
 
     @with_supported_dtypes(
         {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
@@ -611,6 +637,10 @@ class Tensor:
     def floor_divide(self, y, name=None):
         return paddle_frontend.floor_divide(self, y)
 
+    @with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
+    def mod(self, y, name=None):
+        return paddle_frontend.Tensor(ivy.fmod(self._ivy_array, _to_ivy_array(y)))
+
     # cond
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def cond(self, p=None, name=None):
@@ -745,6 +775,11 @@ class Tensor:
         return paddle_frontend.is_floating_point(self)
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def tanh_(self, name=None):
+        y = self.tanh(self)
+        return ivy.inplace_update(self, y)
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def reciprocal_(self, name=None):
         y = self.reciprocal(self)
         return ivy.inplace_update(self, y)
@@ -767,6 +802,26 @@ class Tensor:
     def mean(self, axis=None, keepdim=False, name=None):
         return paddle_frontend.mean(self, axis=axis, keepdim=keepdim)
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def as_complex(self, name=None):
+        if self.ivy_array.shape[-1] != 2:
+            raise ivy.exceptions.IvyError(
+                "The size of the last dimension of tensor does not equals 2"
+            )
+        dtype = (
+            ivy.complex64 if ivy.dtype(self.ivy_array) == "float32" else ivy.complex128
+        )
+        re_part = self.ivy_array[..., 0]
+        im_part = ivy.multiply(1j, self.ivy_array[..., 1])
+        value = paddle_frontend.Tensor(ivy.add(re_part, im_part).astype(dtype))
+        return value
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("int32", "int64", "float32", "float64", "bool")}, "paddle"
+    )
+    def not_equal(self, y, name=None):
+        return paddle_frontend.not_equal(self._ivy_array, y)
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
@@ -776,6 +831,11 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("complex64", "complex128")}, "paddle")
     def real(self, name=None):
         return paddle_frontend.real(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def t(self, name=None):
+        axes = list(range(len(self.ivy_array.shape)))[::-1]
+        return ivy.permute_dims(self.ivy_array, axes=axes)
 
     @with_supported_dtypes(
         {
@@ -793,3 +853,75 @@ class Tensor:
     )
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def bmm(self, y, transpose_x=False, transpose_y=False, name=None):
+        return paddle_frontend.bmm(self, y, transpose_x, transpose_y)
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def fill_(self, value):
+        filled_tensor = paddle_frontend.full_like(self, value)
+        return ivy.inplace_update(self, filled_tensor)
+
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "bool",
+                "int32",
+                "int64",
+                "float16",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def unbind(self, axis=0):
+        return paddle_frontend.unbind(self._ivy_array, axis=axis)
+
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "bool",
+                "int32",
+                "int64",
+                "float16",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def unique_consecutive(self, axis=0):
+        return paddle_frontend.unique_consecutive(self._ivy_array, axis=axis)
+
+    def cpu(self):
+        self.ivy_array = ivy.to_device(self.ivy_array, ivy.as_ivy_dev("cpu"))
+        return self
+
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("int16", "complex64", "complex128")},
+        "paddle",
+    )
+    def split(self, num_or_sections, axis=0, name=None):
+        return paddle_frontend.split(self._ivy_array, num_or_sections, axis, name)
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def frac(self, name=None):
+        return paddle_frontend.frac(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def gather(self, y, name=None):
+        return paddle_frontend.gather(self, y)
+
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("float16", "uint8", "int8", "bool")}, "paddle"
+    )
+    def gather_(self, y, name=None):
+        res = self.gather(self, y)
+        return ivy.inplace_update(self, res)

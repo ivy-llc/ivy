@@ -126,7 +126,7 @@ def squeeze(
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+            f"tried to squeeze a zero-dimensional input by axis {axis}"
         )
     else:
         ret = jnp.squeeze(x, axis=axis)
@@ -162,9 +162,8 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
         return [x]
     if isinstance(num_or_size_splits, jnp.ndarray):
@@ -227,7 +226,7 @@ def clip(
     return x
 
 
-@with_unsupported_dtypes({"0.4.16 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"0.4.18 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,

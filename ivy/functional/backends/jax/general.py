@@ -101,7 +101,7 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-@with_unsupported_dtypes({"0.4.16 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.18 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -129,8 +129,8 @@ def gather(
     batch_dims: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    axis = axis % len(params.shape)
-    batch_dims = batch_dims % len(params.shape)
+    axis %= len(params.shape)
+    batch_dims %= len(params.shape)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
@@ -334,8 +334,8 @@ def scatter_flat(
         target = target.at[indices].max(updates)
     else:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
         )
     if target_given:
         return ivy.inplace_update(out, target)
@@ -386,8 +386,8 @@ def scatter_nd(
         target = target.at[indices_tuple].mul(updates)
     else:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max", "mul" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max",'
+            ' "mul" or "replace"'
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, target)
@@ -420,7 +420,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.18 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,

@@ -12,6 +12,16 @@ from ivy.functional.frontends.paddle.func_wrapper import (
     "paddle",
 )
 @to_ivy_arrays_and_back
+def multinomial(x, num_samples=1, replacement=False, name=None):
+    n = num_samples + 1
+    return ivy.multinomial(n, num_samples, probs=x, replace=replacement)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
 def normal(mean=0.0, std=1.0, shape=None, name=None):
     return ivy.random_normal(mean=mean, std=std, shape=shape)
 

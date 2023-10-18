@@ -27,7 +27,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float", "int32", "int64")}, backend_version
+    {"2.14.0 and below": ("float", "int32", "int64")}, backend_version
 )
 def random_uniform(
     *,
@@ -66,7 +66,7 @@ def random_normal(
     return tf.random.normal(shape, mean, std, dtype=dtype, seed=seed)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,

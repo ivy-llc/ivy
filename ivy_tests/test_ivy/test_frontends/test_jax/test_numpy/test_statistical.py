@@ -526,7 +526,7 @@ def test_jax_einsum(
     kw = {}
     i = 0
     for x_ in eq_n_op:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     test_flags.num_positional_args = i
     helpers.test_frontend_function(

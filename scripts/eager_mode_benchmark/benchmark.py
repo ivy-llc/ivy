@@ -58,7 +58,10 @@ class _AvoidGPUPreallocation:
 def _move_to_device(args=None, kwargs=None, device="cpu"):
     args_idxs = ivy.nested_argwhere(args, ivy.is_array)
     kwargs_idxs = ivy.nested_argwhere(kwargs, ivy.is_array)
-    func = lambda x: ivy.to_device(x, device, out=x)
+
+    def func(x):
+        return ivy.to_device(x, device, out=x)
+
     if args is not None:
         args = ivy.map_nest_at_indices(args, args_idxs, func)
     if kwargs is not None:

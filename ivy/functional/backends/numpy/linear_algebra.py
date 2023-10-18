@@ -237,7 +237,7 @@ def qr(
     *,
     mode: str = "reduced",
     out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
-) -> NamedTuple:
+) -> Tuple[np.ndarray, np.ndarray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
     return res(q, r)

@@ -225,7 +225,7 @@ def _get_method_supported_devices_dtypes(
 
     Returns
     -------
-    Returns a dictonary containing supported device types and its supported data types
+    Returns a dictionary containing supported device types and its supported data types
     for the method
     """
     supported_device_dtypes = {}
@@ -291,7 +291,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
     Returns
     -------
-    Returns a dictonary containing supported device types and its supported data types
+    Returns a dictionary containing supported device types and its supported data types
     for the function
     """
     supported_device_dtypes = {}
@@ -339,6 +339,7 @@ def handle_test(
     test_with_copy=BuiltWithCopyStrategy,
     test_gradients=BuiltGradientStrategy,
     test_trace=BuiltTraceStrategy,
+    transpile=BuiltTranspileStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
@@ -416,6 +417,7 @@ def handle_test(
             with_copy=_get_runtime_flag_value(test_with_copy),
             test_gradients=_get_runtime_flag_value(test_gradients),
             test_trace=_get_runtime_flag_value(test_trace),
+            transpile=_get_runtime_flag_value(transpile),
             as_variable=_get_runtime_flag_value(as_variable_flags),
             native_arrays=_get_runtime_flag_value(native_array_flags),
             container_flags=_get_runtime_flag_value(container_flags),
@@ -775,7 +777,7 @@ def handle_frontend_method(
         Name of the method
 
     init_num_positional_args
-        A search startegy that generates a number of positional arguments
+        A search strategy that generates a number of positional arguments
         to be passed during instantiation of the class
 
     init_native_arrays
@@ -795,7 +797,7 @@ def handle_frontend_method(
         precision modes supported by numpy and (torch, jax) and test the function
 
     method_num_positional_args
-        A search startegy that generates a number of positional arguments
+        A search strategy that generates a number of positional arguments
         to be passed during call of the class method
 
     method_native_arrays
@@ -914,13 +916,32 @@ def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
 
 
-def _create_transpile_report(data: dict, file_name: str):
-    json_object = json.dumps(data, indent=6)
+def _create_transpile_report(
+    data: dict, backend: str, file_name: str, is_backend: bool = False
+):
+    backend_specific_data = ["nodes", "time", "args", "kwargs"]
+    # json report exists already
     if os.path.isfile(file_name):
         with open(file_name, "r") as outfile:
             # Load the file's existing data
-            data = json.load(outfile)
-            if data["backend_nodes"] > data["backend_nodes"]:
+            file_data = json.load(outfile)
+            if file_data["nodes"].get(backend, 0) > data["nodes"]:
                 return
+
+            # that are backend specific
+            for key in backend_specific_data:
+                file_data[key][backend] = data[key]
+            if not is_backend:
+                # not backend specific
+                for key in ["ivy_nodes", "fw_time"]:
+                    file_data[key] = data[key]
+            json_object = json.dumps(file_data, indent=6)
+            with open(file_name, "w") as outfile:
+                outfile.write(json_object)
+            return
+    # create new json report
+    for key in backend_specific_data:
+        data[key] = {backend: data[key]}
+    json_object = json.dumps(data, indent=6)
     with open(file_name, "w") as outfile:
         outfile.write(json_object)
