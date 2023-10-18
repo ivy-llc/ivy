@@ -219,9 +219,10 @@ class _ArrayWithGeneral(abc.ABC):
         axis
             The axis from which the indices will be gathered. Default is ``-1``.
         batch_dims
-            optional int, lets you gather different items from each element of a batch.
+            Optional int, lets you gather different items from each element of a batch.
+            Default is ``0``.
         out
-            optional array, for writing the result to. It must have a shape
+            Optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
@@ -237,6 +238,33 @@ class _ArrayWithGeneral(abc.ABC):
         >>> gather = x.gather(y)
         >>> print(gather)
         ivy.array([0., 1.])
+
+        >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
+        >>> y = ivy.array([[0, 1],[1, 2]])
+        >>> z = ivy.zeros((2, 2, 2))
+        >>> gather = x.gather(y, out=z)
+        >>> print(z)
+        ivy.array([[[0., 1.],[1., 2.]],[[3., 4.],[4., 5.]]])
+
+        >>> x = ivy.array([[[0., 1.], [2., 3.]],
+        ...                [[8., 9.], [10., 11.]]])
+        >>> y = ivy.array([[0, 1]])
+        >>> z = ivy.zeros((1, 2, 2, 2))
+        >>> gather = x.gather(y, axis=0, out=z)
+        >>> print(z)
+        ivy.array(
+            [[[[ 0.,  1.],
+            [ 2.,  3.]],
+            [[ 8.,  9.],
+            [10., 11.]]]])
+
+        >>> x = ivy.array([[0, 10, 20, 0, 0],
+        ...                [0, 0, 0, 30, 40],
+        ...                [0, 10, 0, 0, 40]])
+        >>> y = ivy.array([[1, 2],[3, 4],[1, 4]])
+        >>> gather = x.gather(y, batch_dims=1)
+        >>> print(gather)
+        ivy.array([[10, 20], [30, 40],[10, 40]])
         """
         return ivy.gather(self, indices, axis=axis, batch_dims=batch_dims, out=out)
 

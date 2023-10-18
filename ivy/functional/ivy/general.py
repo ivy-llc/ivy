@@ -3484,13 +3484,13 @@ def gather(
         The array which indicates the indices that will be gathered along
         the specified axis.
     axis
-        optional int, the axis from which to gather from.
+        Optional int, the axis from which to gather from.
         Default is ``-1``.
     batch_dims
-        optional int, lets you gather different items from each element of a batch.
+        Optional int, lets you gather different items from each element of a batch.
         Default is ``0``.
     out
-        optional array, for writing the result to. It must have a shape
+        Optional array, for writing the result to. It must have a shape
         that the inputs broadcast to.
 
     Returns
