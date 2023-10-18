@@ -17,7 +17,8 @@ class _ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Calculate the minimum value of the input array ``x``.
+        """
+        Calculate the minimum value of the input array ``x``.
 
         Parameters
         ----------
@@ -78,9 +79,10 @@ class _ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.max. This method simply
-        wraps the function, and so the docstring for ivy.max also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.max. This method simply wraps the
+        function, and so the docstring for ivy.max also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -140,9 +142,10 @@ class _ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.mean. This method simply
-        wraps the function, and so the docstring for ivy.mean also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.mean. This method simply wraps the
+        function, and so the docstring for ivy.mean also applies to this method with
+        minimal changes.
 
         **Special Cases**
 
@@ -227,9 +230,10 @@ class _ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.var. This method simply
-        wraps the function, and so the docstring for ivy.var also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.var. This method simply wraps the
+        function, and so the docstring for ivy.var also applies to this method with
+        minimal changes.
 
         **Special Cases**
 
@@ -312,9 +316,10 @@ class _ArrayWithStatistical(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.array instance method variant of ivy.prod. This method simply
-        wraps the function, and so the docstring for ivy.prod also applies to
-        this method with minimal changes.
+        """
+        ivy.array instance method variant of ivy.prod. This method simply wraps the
+        function, and so the docstring for ivy.prod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -397,9 +402,10 @@ class _ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.array instance method variant of ivy.std. This method simply
-        wraps the function, and so the docstring for ivy.std also applies to
-        this method with minimal changes.
+        """
+        ivy.array instance method variant of ivy.std. This method simply wraps the
+        function, and so the docstring for ivy.std also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -491,9 +497,10 @@ class _ArrayWithStatistical(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.cumsum. This method simply
-        wraps the function, and so the docstring for ivy.cumsum also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.cumsum. This method simply wraps the
+        function, and so the docstring for ivy.cumsum also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -565,9 +572,10 @@ class _ArrayWithStatistical(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.cumprod. This method simply
-        wraps the function, and so the docstring for ivy.cumprod also applies
-        to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.cumprod. This method simply wraps the
+        function, and so the docstring for ivy.cumprod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -635,9 +643,10 @@ class _ArrayWithStatistical(abc.ABC):
         *operands: Union[ivy.Array, ivy.NativeArray],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.einsum. This method simply
-        wraps the function, and so the docstring for ivy.einsum also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.einsum. This method simply wraps the
+        function, and so the docstring for ivy.einsum also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
