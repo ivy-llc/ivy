@@ -153,11 +153,6 @@ def test_function_backend_computation(
         on_device=on_device,
     )
 
-    inplace_updates = [test_flags.with_out, test_flags.with_copy]
-    assert (
-        inplace_updates.count(True) <= 1
-    ), "only at most one of with_out or with_copy can be set as True"
-
     # If function doesn't have an out argument but an out argument is given
     # or a test with out flag is True
 
@@ -472,6 +467,10 @@ def test_function(
     """
     _switch_backend_context(test_flags.test_trace or test_flags.transpile)
     ground_truth_backend = test_flags.ground_truth_backend
+
+    if test_flags.with_copy is True:
+        test_flags.with_out = False
+
     if mod_backend[backend_to_test]:
         # multiprocessing
         proc, input_queue, output_queue = mod_backend[backend_to_test]
@@ -760,10 +759,13 @@ def test_frontend_function(
     # ToDo add with_backend refactor in GC
     _switch_backend_context(test_flags.test_trace or test_flags.transpile)
 
-    inplace_updates = [test_flags.with_out, test_flags.with_copy, test_flags.inplace]
     assert (
-        inplace_updates.count(True) <= 1
-    ), "only at most one of with_out or with_copy or with_inplace can be set as True"
+        not test_flags.with_out or not test_flags.inplace
+    ), "only one of with_out or with_inplace can be set as True"
+
+    if test_flags.with_copy is True:
+        test_flags.with_out = False
+        test_flags.inplace = False
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
