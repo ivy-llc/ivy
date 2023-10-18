@@ -275,7 +275,8 @@ def test_function_backend_computation(
                 fw,
                 target_fn,
                 *args,
-                test_compile=test_flags.test_compile,
+                test_trace=test_flags.test_trace,
+                precision_mode=test_flags.precision_mode,
                 **kwargs,
             )
             assert not np.may_share_memory(first_array, ret_)
