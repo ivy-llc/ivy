@@ -1,5 +1,4 @@
 # global
-from typing import Literal
 from hypothesis import strategies as st
 
 # local
