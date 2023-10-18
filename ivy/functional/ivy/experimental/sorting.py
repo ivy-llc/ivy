@@ -7,7 +7,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -17,7 +17,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def invert_permutation(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -54,7 +54,7 @@ def invert_permutation(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def lexsort(
     keys: Union[ivy.Array, ivy.NativeArray],
     /,

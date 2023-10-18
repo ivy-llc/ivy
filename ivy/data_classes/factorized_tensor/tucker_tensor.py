@@ -299,12 +299,14 @@ class TuckerTensor(FactorizedTensor):
             #  those factors are accounted for in fixed_params
             squared_dims = ivy.sum([s**2 for s in tensor_shape])
 
-            fun = (
-                lambda x: n_param_tensor * x**n_modes_compressed
-                + squared_dims * x
-                + n_fixed_params * x
-                - rank * n_param_tensor
-            )
+            def fun(x):
+                return (
+                    n_param_tensor * x**n_modes_compressed
+                    + squared_dims * x
+                    + n_fixed_params * x
+                    - rank * n_param_tensor
+                )
+
             # fraction_param = brentq(fun, 0.0, max(rank, 1.0))
             fraction_param = _bisection_root_finder(fun, 0.0, max(rank, 1.0))
             rank = [max(int(rounding_fun(s * fraction_param)), 1) for s in tensor_shape]

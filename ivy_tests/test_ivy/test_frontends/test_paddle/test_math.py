@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import hypothesis.extra.numpy as nph
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -12,6 +13,33 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops impor
 
 # --- Helpers --- #
 # --------------- #
+
+
+@st.composite
+def _draw_paddle_diagonal(draw):
+    _dtype, _x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=2,
+            max_num_dims=10,
+            min_dim_size=1,
+            max_dim_size=50,
+        )
+    )
+
+    offset = (draw(helpers.ints(min_value=-10, max_value=50)),)
+    axes = (
+        draw(
+            st.lists(
+                helpers.ints(min_value=-(len(_x)), max_value=len(_x)),
+                min_size=len(_x) + 1,
+                max_size=len(_x) + 1,
+                unique=True,
+            ).filter(lambda axes: axes[0] % 2 != axes[1] % 2)
+        ),
+    )
+
+    return _dtype, _x[0], offset[0], axes[0]
 
 
 @st.composite
@@ -197,6 +225,42 @@ def test_paddle_addmm(
         y=y[0],
         beta=beta,
         alpha=alpha,
+    )
+
+
+# all
+@handle_frontend_test(
+    fn_tree="paddle.all",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=["bool"],
+        valid_axis=True,
+        allow_neg_axes=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+    keepdim=st.booleans(),
+)
+def test_paddle_all(
+    *,
+    dtype_and_x,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        x=x[0],
+        axis=axis,
+        keepdim=keepdim,
     )
 
 
@@ -473,6 +537,34 @@ def test_paddle_atanh(
     )
 
 
+# broadcast_shape
+@handle_frontend_test(
+    fn_tree="paddle.broadcast_shape",
+    input_shapes_x=nph.mutually_broadcastable_shapes(
+        num_shapes=2, min_dims=1, max_dims=5, min_side=1, max_side=5
+    ),
+)
+def test_paddle_broadcast_shape(
+    *,
+    input_shapes_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int32", "int64"],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x_shape=input_shapes_x[0][0],
+        y_shape=input_shapes_x[0][1],
+    )
+
+
 # ceil
 @handle_frontend_test(
     fn_tree="paddle.ceil",
@@ -586,6 +678,38 @@ def test_paddle_cosh(
     )
 
 
+# count_nonzero
+@handle_frontend_test(
+    fn_tree="paddle.count_nonzero",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes(kind="integer"),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+)
+def test_paddle_count_nonzero(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        frontend=frontend,
+        x=x[0],
+        axis=axis,
+    )
+
+
 # cumprod
 @handle_frontend_test(
     fn_tree="paddle.cumprod",
@@ -620,6 +744,41 @@ def test_paddle_cumprod(
     )
 
 
+@handle_frontend_test(
+    fn_tree="paddle.cumsum",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+)
+def test_paddle_cumsum(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        # rtol=1e-04,
+        # atol=1e-04,
+    )
+
+
 # deg2rad
 @handle_frontend_test(
     fn_tree="paddle.deg2rad",
@@ -645,6 +804,32 @@ def test_paddle_deg2rad(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# diagonal
+@handle_frontend_test(fn_tree="paddle.diagonal", data=_draw_paddle_diagonal())
+def test_paddle_diagonal(
+    *,
+    data,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    _dtype, _x, offset, axes = data
+    helpers.test_frontend_function(
+        input_dtypes=_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=_x,
+        offset=offset,
+        axis1=axes[0],
+        axis2=axes[1],
     )
 
 
@@ -908,6 +1093,42 @@ def test_paddle_floor_divide(
         x=x[0],
         y=x[1],
         atol=1e-5,
+    )
+
+
+# floor_mod
+@handle_frontend_test(
+    fn_tree="paddle.floor_mod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shared_dtype=True,
+        min_value=1,
+    ),
+)
+def test_paddle_floor_mod(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -1338,6 +1559,33 @@ def test_paddle_log(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.log10",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_log10(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -2210,6 +2458,39 @@ def test_paddle_subtract(
     )
 
 
+@handle_frontend_test(
+    fn_tree="paddle.sum",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shared_dtype=True,
+    ),
+)
+def test_paddle_sum(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # take
 @handle_frontend_test(
     fn_tree="paddle.take", dtype_and_values=_test_paddle_take_helper()
@@ -2292,6 +2573,48 @@ def test_paddle_tanh(
         on_device=on_device,
         atol=1e-2,
         x=x[0],
+    )
+
+
+# trace
+@handle_frontend_test(
+    fn_tree="paddle.trace",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_num_dims=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+    offset=st.integers(min_value=-1e04, max_value=1e04),
+    axis1=st.integers(min_value=0, max_value=0),
+    axis2=st.integers(min_value=1, max_value=1),
+)
+def test_paddle_trace(
+    *,
+    dtype_and_x,
+    offset,
+    axis1,
+    axis2,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        offset=offset,
+        axis1=axis1,
+        axis2=axis2,
     )
 
 

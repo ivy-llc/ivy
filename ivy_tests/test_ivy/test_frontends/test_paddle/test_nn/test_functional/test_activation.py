@@ -35,9 +35,9 @@ def _generate_prelu_arrays(draw):
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.celu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
-    alpha=helpers.ints(min_value=1, max_value=10),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0),
 )
 def test_paddle_celu(
     *,
@@ -125,6 +125,47 @@ def test_paddle_gelu(
         atol=1e-2,
         x=x[0],
         approximate=approximate,
+    )
+
+
+# glu
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.glu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
+        min_value=-2,
+        min_num_dims=1,
+        min_dim_size=4,
+        max_dim_size=4,
+    ),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    test_with_out=st.just(False),
+)
+def test_paddle_glu(
+    *,
+    dtype_and_x,
+    axis,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        atol=1e-01,
+        x=x[0],
+        axis=axis,
     )
 
 

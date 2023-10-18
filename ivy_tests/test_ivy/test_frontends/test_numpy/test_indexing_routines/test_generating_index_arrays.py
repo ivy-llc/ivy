@@ -124,6 +124,44 @@ def test_numpy_tril_indices(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.tril_indices_from",
+    dtype_and_values=helpers.dtype_and_values(
+        dtype=["float32"],
+        min_dim_size=3,
+        max_dim_size=3,
+        min_num_dims=2,
+        max_num_dims=2,
+        array_api_dtypes=True,
+    ),
+    k=st.integers(min_value=-10, max_value=10),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_numpy_tril_indices_from(
+    *,
+    dtype_and_values,
+    k,
+    dtype,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, values = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=values[0],
+        k=k,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.unravel_index",
     dtype_x_shape=max_value_as_shape_prod(),
     test_with_out=st.just(False),

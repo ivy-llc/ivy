@@ -1,4 +1,5 @@
 # global
+
 import abc
 from typing import Union, Optional, Literal, Tuple, List, Sequence
 
@@ -759,6 +760,19 @@ class _ArrayWithLinearAlgebra(abc.ABC):
             is 'complete', the array must have shape (..., M, N). If mode is 'reduced',
             the array must have shape (..., K, N), where K = min(M, N). The first
             x.ndim-2 dimensions must have the same size as those of the input x.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1.,2.,3.],[4.,5.,6.],[7.,8.,9.]])
+        >>> q, r = x.qr(mode='reduced')
+        >>> print(q)
+        ivy.array([[-0.12309149,  0.90453403,  0.40824829],
+            [-0.49236596,  0.30151134, -0.81649658],
+            [-0.86164044, -0.30151134,  0.40824829]])
+        >>> print(r)
+        ivy.array([[-8.12403841e+00,-9.60113630e+00, -1.10782342e+01],
+            [ 0.00000000e+00,  9.04534034e-01,  1.80906807e+00],
+            [ 0.00000000e+00,  0.00000000e+00, -8.88178420e-16]])
         """
         return ivy.qr(self._data, mode=mode, out=out)
 
@@ -922,6 +936,14 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         offset
             Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
+        axis1
+            axis to be used as the first axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``0.`` .
+        axis2
+            axis to be used as the second axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``1.`` .
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.

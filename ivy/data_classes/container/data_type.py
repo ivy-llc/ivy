@@ -23,7 +23,7 @@ class _ContainerWithDataTypes(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Copy an array to a specified data type irrespective of :ref:`type-promotion`
+        Copy an array to a specified data type irrespective of :ref:`type- promotion`
         rules.
 
         .. note::
@@ -94,7 +94,7 @@ class _ContainerWithDataTypes(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Copy an array to a specified data type irrespective of :ref:`type-promotion`
+        Copy an array to a specified data type irrespective of :ref:`type- promotion`
         rules.
 
         .. note::
@@ -123,7 +123,7 @@ class _ContainerWithDataTypes(ContainerBase):
             otherwise, a newly allocated must be returned. Default: ``True``.
         out
             optional output array, for writing the result to. It must have a shape
-             that the inputs broadcast to.
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -702,9 +702,9 @@ class _ContainerWithDataTypes(ContainerBase):
         >>> print(y)
         {
             x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04,\
-                     dtype=float16),
+                    dtype=float16),
             y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
-               max=1.7976931348623157e+308, dtype=float64)
+                max=1.7976931348623157e+308, dtype=float64)
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -747,9 +747,9 @@ class _ContainerWithDataTypes(ContainerBase):
         >>> print(c.finfo())
         {
             x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04,\
-                     dtype=float16),
+                    dtype=float16),
             y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
-               max=1.7976931348623157e+308, dtype=float64)
+                max=1.7976931348623157e+308, dtype=float64)
         }
         """
         return self._static_finfo(
@@ -809,10 +809,10 @@ class _ContainerWithDataTypes(ContainerBase):
         ...                   y=ivy.array([-40000,99,1], dtype=ivy.int32))
         >>> y = ivy.Container.static_iinfo(c)
         >>> print(y)
-         {
+        {
             x: iinfo(min=-32768, max=32767, dtype=int16),
             y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
-         }
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "iinfo",

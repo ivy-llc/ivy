@@ -1,7 +1,6 @@
 # global
 from typing import Optional, Union, Sequence
 import paddle
-from ivy.functional.backends.paddle.device import to_device
 from ivy import with_unsupported_device_and_dtypes
 from ivy.functional.backends.paddle import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -71,7 +70,7 @@ def beta(
     dist = paddle.distribution.Beta(alpha, beta)
     sample = dist.sample(shape)
     sample = paddle.cast(sample, dtype)
-    return to_device(sample, device) if device is not None else sample
+    return sample
 
 
 def gamma(
@@ -123,7 +122,7 @@ def bernoulli(
     *,
     logits: Union[float, paddle.Tensor] = None,
     shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-    device: core.Place,
+    device: core.Place = None,
     dtype: paddle.dtype,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
@@ -138,4 +137,4 @@ def bernoulli(
     probs = paddle.unsqueeze(probs, 0) if len(probs.shape) == 0 else probs
     probs = paddle.maximum(probs, paddle.full_like(probs, 1e-6))
     sample = paddle.bernoulli(probs)
-    return to_device(sample, device)
+    return sample

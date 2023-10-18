@@ -109,28 +109,6 @@ def _get_dtype_and_sequence_of_arrays(draw):
     return array_dtype, values
 
 
-# solve
-@st.composite
-def _get_first_matrix(draw):
-    input_dtype_strategy = st.shared(
-        st.sampled_from(draw(helpers.get_dtypes("float"))),
-        key="shared_dtype",
-    )
-    input_dtype = draw(input_dtype_strategy)
-    shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
-    )
-    matrix = draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
-            min_value=2,
-            max_value=5,
-        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
-    )
-    return input_dtype, matrix
-
-
 # logdet
 @st.composite
 def _get_hermitian_pos_def_matrix(draw):
@@ -177,52 +155,6 @@ def _get_second_matrix(draw):
 
 # --- Main --- #
 # ------------ #
-
-
-# qr
-@handle_frontend_test(
-    fn_tree="tensorflow.linalg.qr",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-    ),
-)
-def test_qr(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    backend_fw,
-):
-    dtype, x = dtype_and_x
-    x = np.asarray(x[0], dtype=dtype[0])
-    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        atol=1e-03,
-        rtol=1e-05,
-        input=x,
-    )
-    ret = [ivy.to_numpy(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
-
-    assert_all_close(
-        ret_np=ret[0],
-        ret_from_gt_np=frontend_ret[0],
-        rtol=1e-2,
-        atol=1e-2,
-        ground_truth_backend=frontend,
-    )
 
 
 # adjoint
@@ -708,7 +640,7 @@ def test_tensorflow_linalg_einsum(
     kw = {}
     for i, x_ in enumerate(operands):
         dtype = dtypes[i][0]
-        kw["x{}".format(i)] = np.array(x_).astype(dtype)
+        kw[f"x{i}"] = np.array(x_).astype(dtype)
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -959,6 +891,52 @@ def test_tensorflow_pinv(
     )
 
 
+# qr
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.qr",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+)
+def test_tensorflow_qr(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=dtype[0])
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        atol=1e-03,
+        rtol=1e-05,
+        input=x,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    assert_all_close(
+        ret_np=ret[0],
+        ret_from_gt_np=frontend_ret[0],
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )
+
+
 # Tests for tensorflow.linalg.set_diag function's frontend
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.set_diag",
@@ -1024,8 +1002,8 @@ def test_tensorflow_slogdet(
 # solve
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.solve",
-    x=_get_first_matrix(),
-    y=_get_second_matrix(),
+    x=helpers.get_first_solve_batch_matrix(choose_adjoint=True),
+    y=helpers.get_second_solve_batch_matrix(allow_simplified=False),
     test_with_out=st.just(False),
 )
 def test_tensorflow_solve(
@@ -1038,8 +1016,8 @@ def test_tensorflow_solve(
     fn_tree,
     on_device,
 ):
-    input_dtype1, x1 = x
-    input_dtype2, x2 = y
+    input_dtype1, x1, adjoint = x
+    input_dtype2, x2, _ = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
         backend_to_test=backend_fw,
@@ -1051,6 +1029,7 @@ def test_tensorflow_solve(
         atol=1e-3,
         matrix=x1,
         rhs=x2,
+        adjoint=adjoint,
     )
 
 
