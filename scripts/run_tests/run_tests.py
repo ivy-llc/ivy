@@ -219,7 +219,8 @@ if __name__ == "__main__":
                 print(f"\n{'*' * 100}")
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
-                print(f"command {command}")
+                print(f"command: {command} --num-examples 5 --with-transpile")
+                sys.stdout.flush()
                 os.system(f"{command} --num-examples 5 --with-transpile")
 
             # load data from report if generated
