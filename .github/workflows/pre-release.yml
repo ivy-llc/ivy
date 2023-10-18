@@ -33,6 +33,7 @@ jobs:
           python scripts/setup_tests/setup_priority_tests.py
 
       - name: Run CPU Tests
+        run: |
           cd ivy
           python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'true' ${{ steps.jobs.outputs.html_url }}
 
