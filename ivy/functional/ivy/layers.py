@@ -2069,7 +2069,7 @@ def conv_general_transpose(
 
     Examples
     --------
-    With ivy.Array input:
+    With :class:`ivy.Array` input:
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
     >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
