@@ -1916,10 +1916,9 @@ def test_tanh(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-1,
-        atol_=1e-2,
         x=x[0],
         complex_mode=complex_mode,
+        atol_=1e-02,  # for `test_flags.test_gradients and 'bfloat16' in input_dtype`
     )
 
 
