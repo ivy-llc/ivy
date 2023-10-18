@@ -5,7 +5,7 @@ from pymongo import MongoClient
 import requests
 import json
 import old_run_test_helpers as old_helpers
-from run_tests_CLI.get_all_tests import BACKENDS
+from get_all_tests import BACKENDS
 
 
 def get_latest_package_version(package_name):
@@ -219,7 +219,8 @@ if __name__ == "__main__":
                 print(f"\n{'*' * 100}")
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
-                os.system(f"{command} --num-examples 1 --with-transpile")
+                sys.stdout.flush()
+                os.system(f"{command} --num-examples 5 --with-transpile")
 
             # load data from report if generated
             report_path = os.path.join(
