@@ -4146,8 +4146,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         *,
         name: Optional[str] = None,
     ) -> ivy.Array:
-        """Add the elements of the input tensor with value tensor by selecting
-        the indices in the order given in index.
+        """
+        Add the elements of the input tensor with value tensor by selecting the indices
+        in the order given in index.
 
         Parameters
         ----------
