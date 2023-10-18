@@ -26,7 +26,7 @@ def test_paddle_layer_norm(
     normalized_shape,
     eps,
     test_flags,
-    frontend: Literal["paddle"],
+    frontend,
     on_device,
     fn_tree,
 ):
