@@ -1,4 +1,5 @@
-"""Ivy wrapping functions for conversions.
+"""
+Ivy wrapping functions for conversions.
 
 Collection of Ivy functions for wrapping functions to accept and return
 ivy.Array instances.
@@ -25,7 +26,8 @@ class _ContainerWithConversions(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.to_native.
+        """
+        ivy.Container static method variant of ivy.to_native.
 
         This method simply wraps the function, and so the docstring for ivy.to_native
         also applies to this method with minimal changes.
@@ -84,7 +86,8 @@ class _ContainerWithConversions(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.to_native.
+        """
+        ivy.Container instance method variant of ivy.to_native.
 
         This method simply wraps the function, and so the docstring for ivy.to_native
         also applies to this method with minimal changes.
@@ -143,7 +146,8 @@ class _ContainerWithConversions(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.to_ivy.
+        """
+        ivy.Container static method variant of ivy.to_ivy.
 
         This method simply wraps the function, and so the docstring for ivy.to_ivy also
         applies to this method with minimal changes.
@@ -203,7 +207,8 @@ class _ContainerWithConversions(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.to_ivy.
+        """
+        ivy.Container instance method variant of ivy.to_ivy.
 
         This method simply wraps the function, and so the docstring for ivy.to_ivy also
         applies to this method with minimal changes.

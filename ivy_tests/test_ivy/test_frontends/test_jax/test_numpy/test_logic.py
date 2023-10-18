@@ -382,6 +382,36 @@ def test_jax_equal(
     )
 
 
+# fromfunction
+@handle_frontend_test(
+    fn_tree="jax.numpy.fromfunction",
+    input_dtype=helpers.get_dtypes("valid"),
+    function_and_shape_and_dtype=_func_and_shape_dtype_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_fromfunction(
+    input_dtype,
+    function_and_shape_and_dtype,
+    backend_fw,
+    frontend,
+    on_device,
+    fn_tree,
+    test_flags,
+):
+    function, shape, dtype = function_and_shape_and_dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        function=function,
+        shape=shape,
+        dtype=dtype,
+    )
+
+
 # greater
 @handle_frontend_test(
     fn_tree="jax.numpy.greater",
@@ -1078,36 +1108,6 @@ def test_jax_not_equal(
     )
 
 
-# fromfunction
-@handle_frontend_test(
-    fn_tree="jax.numpy.fromfunction",
-    input_dtype=helpers.get_dtypes("valid"),
-    function_and_shape_and_dtype=_func_and_shape_dtype_helper(),
-    test_with_out=st.just(False),
-)
-def test_jax_numpy_fromfunction(
-    input_dtype,
-    function_and_shape_and_dtype,
-    backend_fw,
-    frontend,
-    on_device,
-    fn_tree,
-    test_flags,
-):
-    function, shape, dtype = function_and_shape_and_dtype
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        function=function,
-        shape=shape,
-        dtype=dtype,
-    )
-
-
 # packbits
 @handle_frontend_test(
     fn_tree="jax.numpy.packbits",
@@ -1122,7 +1122,7 @@ def test_jax_numpy_fromfunction(
     test_with_out=st.just(False),
     bitorder=st.sampled_from(["big", "little"]),
 )
-def test_jax_numpy_packbits(
+def test_jax_packbits(
     dtype_x_axis,
     bitorder,
     frontend,
@@ -1143,38 +1143,6 @@ def test_jax_numpy_packbits(
         axis=axis,
         bitorder=bitorder,
         backend_to_test=backend_fw,
-    )
-
-
-# setxor1d
-@handle_frontend_test(
-    fn_tree="jax.numpy.setxor1d",
-    dtypes_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
-    ),
-    assume_unique=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_jax_numpy_setxor1d(
-    dtypes_values,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    assume_unique,
-    backend_fw,
-):
-    x_dtypes, x = dtypes_values
-    helpers.test_frontend_function(
-        input_dtypes=x_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        ar1=x[0],
-        ar2=x[1],
-        assume_unique=assume_unique,
     )
 
 
@@ -1209,4 +1177,36 @@ def test_jax_right_shift(
         on_device=on_device,
         x1=xs[0],
         x2=xs[1],
+    )
+
+
+# setxor1d
+@handle_frontend_test(
+    fn_tree="jax.numpy.setxor1d",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
+    assume_unique=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_setxor1d(
+    dtypes_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    assume_unique,
+    backend_fw,
+):
+    x_dtypes, x = dtypes_values
+    helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ar1=x[0],
+        ar2=x[1],
+        assume_unique=assume_unique,
     )

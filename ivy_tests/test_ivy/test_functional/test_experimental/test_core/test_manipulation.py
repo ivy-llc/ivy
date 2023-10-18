@@ -1402,6 +1402,44 @@ def test_soft_thresholding(*, data, test_flags, backend_fw, fn_name, on_device):
     )
 
 
+@handle_test(
+    fn_tree="functional.ivy.experimental.take",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=5,
+        indices_same_dims=False,
+        valid_bounds=False,
+    ),
+    mode=st.sampled_from(["clip", "wrap", "fill"]),
+    ground_truth_backend="jax",
+)
+def test_take(
+    *,
+    dtype_x_indices_axis,
+    mode,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x,
+        indices=indices,
+        axis=axis,
+        mode=mode,
+    )
+
+
 # take_along_axis
 @handle_test(
     fn_tree="functional.ivy.experimental.take_along_axis",

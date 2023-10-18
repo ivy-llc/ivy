@@ -300,11 +300,14 @@ def test_default_complex_dtype(
             complex_dtype=complex_dtype[0],
             as_native=as_native,
         )
-        assert (
-            isinstance(res, ivy_backend.Dtype)
-            or isinstance(res, typing.get_args(ivy_backend.NativeDtype))
-            or isinstance(res, ivy_backend.NativeDtype)
-            or isinstance(res, str)
+        assert isinstance(
+            res,
+            (
+                ivy_backend.Dtype,
+                typing.get_args(ivy_backend.NativeDtype),
+                ivy_backend.NativeDtype,
+                str,
+            ),
         )
         assert (
             ivy_backend.default_complex_dtype(
@@ -362,11 +365,14 @@ def test_default_float_dtype(
             float_dtype=float_dtype[0],
             as_native=as_native,
         )
-        assert (
-            isinstance(res, ivy_backend.Dtype)
-            or isinstance(res, typing.get_args(ivy_backend.NativeDtype))
-            or isinstance(res, ivy_backend.NativeDtype)
-            or isinstance(res, str)
+        assert isinstance(
+            res,
+            (
+                ivy_backend.Dtype,
+                typing.get_args(ivy_backend.NativeDtype),
+                ivy_backend.NativeDtype,
+                str,
+            ),
         )
         assert (
             ivy_backend.default_float_dtype(
@@ -401,11 +407,14 @@ def test_default_int_dtype(
             int_dtype=int_dtype[0],
             as_native=as_native,
         )
-        assert (
-            isinstance(res, ivy_backend.Dtype)
-            or isinstance(res, typing.get_args(ivy_backend.NativeDtype))
-            or isinstance(res, ivy_backend.NativeDtype)
-            or isinstance(res, str)
+        assert isinstance(
+            res,
+            (
+                ivy_backend.Dtype,
+                typing.get_args(ivy_backend.NativeDtype),
+                ivy_backend.NativeDtype,
+                str,
+            ),
         )
         assert (
             ivy_backend.default_int_dtype(input=None, int_dtype=None, as_native=False)
