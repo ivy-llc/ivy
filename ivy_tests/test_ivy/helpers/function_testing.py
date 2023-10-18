@@ -897,29 +897,33 @@ def test_frontend_function(
                     assert ret.ivy_array.data is out.ivy_array.data
                 assert ret is out
         elif test_flags.with_copy:
-            assert not isinstance(ret, tuple)
+            assert _is_frontend_array(ret)
 
-            if test_flags.generate_frontend_arrays:
-                assert _is_frontend_array(ret)
-            else:
-                assert ivy_backend.is_array(ret)
-
-            if test_flags.generate_frontend_arrays:
-                array_fn = _is_frontend_array
-            else:
-                array_fn = ivy_backend.is_array
             if "copy" in list(inspect.signature(frontend_fn).parameters.keys()):
                 copy_kwargs["copy"] = True
             first_array = ivy_backend.func_wrapper._get_first_array(
-                *copy_args, array_fn=array_fn, **copy_kwargs
+                *copy_args,
+                array_fn=(
+                    _is_frontend_array
+                    if test_flags.generate_frontend_arrays
+                    else ivy_backend.is_array
+                ),
+                **copy_kwargs,
             )
             ret_ = get_frontend_ret(
-                backend_to_test, frontend_fn, *copy_args, **copy_kwargs
+                backend_to_test,
+                frontend_fn,
+                *copy_args,
+                test_trace=test_flags.test_trace,
+                frontend_array_function=(
+                    create_frontend_array if test_flags.test_trace else None
+                ),
+                precision_mode=test_flags.precision_mode,
+                **copy_kwargs,
             )
             if _is_frontend_array(first_array):
                 first_array = first_array.ivy_array
-            if _is_frontend_array(ret_):
-                ret_ = ret_.ivy_array
+            ret_ = ret_.ivy_array
             assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
             assert not isinstance(ret, tuple)
