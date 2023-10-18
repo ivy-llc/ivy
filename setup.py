@@ -50,8 +50,11 @@ binaries_paths = _get_paths_from_binaries(binaries_dict)
 version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
 terminate = False
 fixed_tag = os.environ["TAG"] if "TAG" in os.environ else None
-all_tags = [fixed_tag] if fixed_tag else list(tags.sys_tags())
-python_tag, _, plat_name = fixed_tag.split("-")
+all_tags = list(tags.sys_tags())
+python_tag, plat_name = None, None
+if fixed_tag:
+    python_tag, _, plat_name = str(fixed_tag).split("-")
+    all_tags = [fixed_tag]
 
 # download binaries for the tag with highest precedence
 for tag in all_tags:
@@ -128,6 +131,5 @@ setup(
         "License :: OSI Approved :: Apache Software License",
     ],
     license="Apache 2.0",
-    has_ext_modules=lambda: True,
     options={"bdist_wheel": {"python_tag": python_tag, "plat_name": plat_name}},
 )
