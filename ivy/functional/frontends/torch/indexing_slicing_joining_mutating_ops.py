@@ -406,8 +406,8 @@ def select_scatter(input, src, dim, index):
 
     if src.shape != input[tuple(slices)].shape:
         raise ivy.utils.exceptions.IvyException(
-            "src must have shape equal to specified diagonal of input. src size ="
-            f" {src.shape}, diagonal size = {input[tuple(slices)].shape}"
+            "expected src to have a size equal to the slice of self. src size ="
+            f" {src.shape}, slice size = {input[tuple(slices)].shape}"
         )
     else:
         input[tuple(slices)] = src
