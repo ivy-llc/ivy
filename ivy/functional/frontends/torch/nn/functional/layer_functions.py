@@ -275,7 +275,7 @@ def _pad_packed_sequence(data, batch_sizes):
         padded_data[i, :batch_size] = data[data_offset : data_offset + batch_size]
         data_offset += batch_size
     lengths = ivy.sum(
-        ivy.arange(1, max(batch_sizes) + 1)[:, ivy.newaxis] <= batch_sizes, axis=1
+        ivy.arange(1, int(max(batch_sizes)) + 1)[:, ivy.newaxis] <= batch_sizes, axis=1
     )
     return padded_data, lengths
 
