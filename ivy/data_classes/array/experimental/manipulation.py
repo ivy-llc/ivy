@@ -1397,9 +1397,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.put_along_axis(self._data, indices, values, axis, mode=mode, out=out)
 
-    @handle_view
     def index_add(
-        x: ivy.Array,
+        self: ivy.Array,
         index: ivy.Array,
         axis: int,
         value: ivy.Array,
@@ -1438,7 +1437,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
                [1, 1, 1],
                [2, 2, 2]])
         """
-        x = ivy.swapaxes(x, axis, 0)
+        x = ivy.swapaxes(self, axis, 0)
         value = ivy.swapaxes(value, axis, 0)
         _to_adds = []
         index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda i: i[0]))

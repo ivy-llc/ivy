@@ -3866,7 +3866,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return self._static_trim_zeros(self, trim=trim)
 
     def index_add(
-        x: ivy.Array,
+        self: ivy.Array,
         index: ivy.Array,
         axis: int,
         value: ivy.Array,
@@ -3905,7 +3905,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                [1, 1, 1],
                [2, 2, 2]])
         """
-        x = ivy.swapaxes(x, axis, 0)
+        x = ivy.swapaxes(self, axis, 0)
         value = ivy.swapaxes(value, axis, 0)
         _to_adds = []
         index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda i: i[0]))

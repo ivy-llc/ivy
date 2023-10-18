@@ -1096,7 +1096,6 @@ def test_index_add(
     backend_fw,
 ):
     xs, input_dtypes, axis, indices = xs_dtypes_dim_idx
-    axis = 0
     if xs[0].shape[axis] < xs[1].shape[axis]:
         source, x = xs
     else:
