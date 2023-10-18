@@ -4,6 +4,21 @@ from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_
 
 
 @to_ivy_arrays_and_back
+def batched_nms(boxes, scores, idxs, iou_threshold):
+    if boxes.size == 0:
+        return ivy.array([], dtype=ivy.int64)
+    else:
+        max_coordinate = boxes.max()
+        boxes_dtype = boxes.dtype
+        offsets = idxs.astype(boxes_dtype) * (
+            max_coordinate + ivy.array(1, dtype=boxes_dtype)
+        )
+        boxes_for_nms = boxes + offsets[:, None]
+        keep = nms(boxes_for_nms, scores, iou_threshold)
+        return keep
+
+
+@to_ivy_arrays_and_back
 def box_area(boxes):
     return ivy.prod(boxes[..., 2:] - boxes[..., :2], axis=-1)
 

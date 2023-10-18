@@ -70,12 +70,12 @@ for i in range(1, total_jobs + 1):
     print("          touch .ivy/key.pem")
     print("          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem")
     if i == 1:
-        print("          python determine_tests.py extra")
+        print("          python scripts/determine_tests/determine_tests.py extra")
     else:
-        print("          python determine_tests.py")
+        print("          python scripts/determine_tests/determine_tests.py")
     print("          set -o pipefail")
     print(
-        f"          python run_tests_pr.py new_failures_{i}.txt | tee"
+        f"          python scripts/run_tests/run_tests_pr.py new_failures_{i}.txt | tee"
         f" test_results_{i}.txt"
     )
     print("        continue-on-error: true")
