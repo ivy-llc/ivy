@@ -271,22 +271,29 @@ def lstsq(
     b: tf.Tensor,
     /,
     *,
-    rcond: Optional[tf.float32] = None,
+    rcond: Optional[float] = None,
     out: Optional[tf.Tensor] = None,
 ) -> Tuple[tf.Tensor]:
     X = tf.linalg.lstsq(a, b, l2_regularizer=0.0, fast=False)
 
     s = tf.linalg.svd(a, full_matrices=False, compute_uv=False)
     rank = tf.reduce_sum(
-        tf.cast(s > rcond * tf.math.reduce_max(s), dtype=tf.int32), axis=(-1)
-    )
-    ret_residuals = (a.shape[-2] > a.shape[-1]) and tf.reduce_all(
-        tf.equal(rank, a.shape[-1])
-    )
-    residuals = (
-        tf.reduce_sum(tf.square(tf.matmul(a, X) - b), axis=[-2])
-        if ret_residuals
-        else tf.constant([], dtype=tf.float32)
+        tf.cast(s > rcond * tf.math.reduce_max(s), dtype=tf.int64), axis=(-1)
     )
 
-    return X, residuals, rank, s
+    m, n = a.shape[-2], a.shape[-1]
+
+    ret_residuals = (m > n) and tf.reduce_all(tf.equal(rank, n))
+
+    if ret_residuals:
+        residuals = tf.reduce_sum(tf.square(b - tf.linalg.matmul(a, X)), axis=[-2])
+    else:
+        residuals = tf.constant(
+            [],
+            dtype=tf.float64,
+            shape=[
+                0,
+            ],
+        )
+
+    return tf.cast(X, a.dtype), residuals, rank, s

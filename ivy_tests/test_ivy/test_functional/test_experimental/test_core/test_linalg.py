@@ -271,6 +271,39 @@ def _generate_general_inner_product_args(draw):
     return x_dtype, x, n_modes
 
 
+# lstsq
+@st.composite
+def _generate_lstsq_dtype_and_arrays(draw):
+    shape_arr_1 = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=5, min_num_dims=3, max_num_dims=5
+        )
+    )
+
+    shape_a = list(shape_arr_1)
+    shape_b = list(shape_arr_1)
+    shape_b[-1] = draw(helpers.ints(min_value=1, max_value=5))
+
+    dtype_1, a = draw(
+        helpers.dtype_and_values(
+            shape=shape_a,
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    dtype_2, b = draw(
+        helpers.dtype_and_values(
+            shape=shape_b,
+            dtype=dtype_1,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    return [dtype_1[0], dtype_2[0]], [a[0], b[0]]
+
+
 # multi_dot
 @st.composite
 def _generate_multi_dot_dtype_and_arrays(draw):
@@ -1377,6 +1410,30 @@ def test_kronecker(*, data, test_flags, backend_fw, fn_name, on_device):
         x=input,
         skip_matrix=skip_matrix,
         reverse=reverse,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.lstsq",
+    data=_generate_lstsq_dtype_and_arrays(),
+    # rcond=st.one_of(st.just(None), helpers.floats(max_value=0.1)),
+    rcond=helpers.floats(min_value=0, max_value=0.1),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_lstsq(data, rcond, test_flags, backend_fw, fn_name, on_device):
+    (input_dtypes, x) = data
+    return helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x[0],
+        b=x[1],
+        input_dtypes=input_dtypes,
+        rcond=rcond,
+        # rtol_=0.5,
+        # atol_=0.5,
     )
 
 

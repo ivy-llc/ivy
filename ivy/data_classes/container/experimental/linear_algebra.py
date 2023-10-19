@@ -2450,3 +2450,131 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_lstsq(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        b: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        rcond: Optional[Union[float, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array], ivy.Container]:
+        """
+        ivy.Container static method variant of ivy.lstsq. This method simply wraps the
+        function, and so the docstring for ivy.lstsq also applies to this method with
+        minimal changes.
+
+        Compute a solution to the least squares problem of a system of linear equations.
+
+        Parameters
+        ----------
+        self
+            First input array of shape (*, M, N)
+        b
+            Second input array of shape (*, M, K)
+        rcond
+            Used to determine the effective rank of A. If rcond= None,
+            rcond is set to the machine precision of the dtype of A times max(m, n).
+            Default: None.
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        X
+            Least squares solution
+        residuals
+            Squared residuals of the solutions - Array of shape (*, K)
+            Computed when M > N and every matrix in A is full rank.
+            Returns empty array otherwise
+        rank
+            Ranks of matrices in A
+            Array of shape (*)
+        s
+            Singular values of matrices in A
+            (*, min(M, N))
+
+        Examples
+        --------
+        >>>
+        >>>
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "lstsq",
+            a,
+            b,
+            rcond=rcond,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def lstsq(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        b: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        rcond: Optional[Union[float, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array], ivy.Container]:
+        """
+        ivy.Container instance method variant of ivy.lstsq. This method simply wraps the
+        function, and so the docstring for ivy.lstsq also applies to this method with
+        minimal changes.
+
+        Compute a solution to the least squares problem of a system of linear equations.
+
+        Parameters
+        ----------
+        self
+            First input array of shape (*, M, N)
+        b
+            Second input array of shape (*, M, K)
+        rcond
+            Used to determine the effective rank of A. If rcond= None,
+            rcond is set to the machine precision of the dtype of A times max(m, n).
+            Default: None.
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        X
+            Least squares solution
+        residuals
+            Squared residuals of the solutions - Array of shape (*, K)
+            Computed when M > N and every matrix in A is full rank.
+            Returns empty array otherwise
+        rank
+            Ranks of matrices in A
+            Array of shape (*)
+        s
+            Singular values of matrices in A
+            (*, min(M, N))
+
+        Examples
+        --------
+        >>>
+        >>>
+        """
+        return self.static_lstsq(
+            self,
+            b,
+            rcond=rcond,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

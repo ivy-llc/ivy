@@ -2105,3 +2105,60 @@ def _check_same_batch_size(i, n_samples, result_shape):
             f" batch-size of {result_shape[0]}, all tensors should have the"
             " same batch-size."
         )
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+# @handle_device_shifting
+def lstsq(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    rcond: Optional[float] = None,
+    out: Optional[ivy.Array] = None,
+) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
+    """
+    Compute a solution to the least squares problem of a system of linear equations.
+
+    Parameters
+    ----------
+    a
+        First input array of shape (*, M, N)
+    b
+        Second input array of shape (*, M, K)
+    rcond
+        Used to determine the effective rank of A. If rcond= None,
+        rcond is set to the machine precision of the dtype of A times max(m, n).
+        Default: None.
+    out
+        Optional output array. If provided, the output array to store the result.
+
+    Returns
+    -------
+    X
+        Least squares solution
+    residuals
+        Squared residuals of the solutions, computed when M > N
+        and every matrix in A is full rank.
+        Array of shape (*, K)
+        Returns empty array otherwise
+    rank
+        Ranks of matrices in A
+        Array of shape (*)
+    s
+        Singular values of matrices in A
+        (*, min(M, N))
+
+    Examples
+    --------
+    >>>
+    >>>
+    """
+    if rcond is None:
+        rcond = ivy.finfo(a.dtype).eps * max(a.shape[-2], a.shape[-1])
+    return current_backend(a, b).lstsq(a, b, rcond=rcond, out=out)

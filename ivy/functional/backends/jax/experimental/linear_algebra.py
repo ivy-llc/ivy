@@ -223,8 +223,8 @@ def lstsq(
 
     X_arr, residuals_arr, rank_arr, s_arr = [], [], [], []
 
-    a_new = a.reshape(-1, M, N)
-    b_new = b.reshape(-1, M, K)
+    a_new = a.reshape((-1, M, N))
+    b_new = b.reshape((-1, M, K))
 
     for id in range(a_new.shape[0]):
         slice_a = a_new[id]

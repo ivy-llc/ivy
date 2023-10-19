@@ -956,3 +956,53 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
               [5.5999999 , 6.4000001 ]]]]])
         """
         return ivy.batched_outer((self._data, *tensors), out=out)
+
+    def lstsq(
+        self: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        rcond: Optional[float] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.lstsq. This method simply wraps the
+        function, and so the docstring for ivy.lstsq also applies to this method with
+        minimal changes.
+
+        Compute a solution to the least squares problem of a system of linear equations.
+
+        Parameters
+        ----------
+        self
+            First input array of shape (*, M, N)
+        b
+            Second input array of shape (*, M, K)
+        rcond
+            Used to determine the effective rank of A. If rcond= None,
+            rcond is set to the machine precision of the dtype of A times max(m, n).
+            Default: None.
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        X
+            Least squares solution
+        residuals
+            Squared residuals of the solutions - Array of shape (*, K)
+            Computed when M > N and every matrix in A is full rank.
+            Returns empty array otherwise
+        rank
+            Ranks of matrices in A
+            Array of shape (*)
+        s
+            Singular values of matrices in A
+            (*, min(M, N))
+
+        Examples
+        --------
+        >>>
+        >>>
+        """
+        return ivy.lstsq(self._data, b, rcond=rcond, out=out)
