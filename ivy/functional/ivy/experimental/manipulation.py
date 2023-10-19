@@ -2955,26 +2955,4 @@ def index_add(
            [1, 1, 1],
            [2, 2, 2]])
     """
-    x = ivy.swapaxes(x, axis, 0)
-    value = ivy.swapaxes(value, axis, 0)
-    _to_adds = []
-    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda i: i[0]))
-    while index:
-        _curr_idx = index[0][0]
-        while len(_to_adds) < _curr_idx:
-            _to_adds.append(ivy.zeros_like(value[0]))
-        _to_add_cum = ivy.get_item(value, index[0][1])
-        while (len(index)) > 1 and (index[0][0] == index[1][0]):
-            _to_add_cum = _to_add_cum + ivy.get_item(value, index.pop(1)[1])
-        index.pop(0)
-        _to_adds.append(_to_add_cum)
-    while len(_to_adds) < x.shape[0]:
-        _to_adds.append(ivy.zeros_like(value[0]))
-    _to_adds = ivy.stack(_to_adds)
-    if len(x.shape) < 2:
-        # Added this line due to the paddle backend treating scalars as 1-d arrays
-        _to_adds = ivy.flatten(_to_adds)
-
-    ret = ivy.add(x, _to_adds)
-    ret = ivy.swapaxes(ret, axis, 0)
-    return ret
+    return ivy.current_backend().index_add(x, index, axis, value)

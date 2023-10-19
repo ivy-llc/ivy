@@ -4137,15 +4137,44 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         """
         return self._static_trim_zeros(self, trim=trim)
 
-    def index_add(
-        self: ivy.Array,
+    @staticmethod
+    def static_index_add(
+        x: ivy.Array,
         index: ivy.Array,
         axis: int,
         value: ivy.Array,
         /,
         *,
         name: Optional[str] = None,
-    ) -> ivy.Array:
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "index_add",
+            x,
+            index,
+            axis,
+            value,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def index_add(
+        self: ivy.Container,
+        index: ivy.Container,
+        axis: Union[int, ivy.Container],
+        value: ivy.Container,
+        /,
+        *,
+        name: Optional[str] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
         """
         Add the elements of the input tensor with value tensor by selecting the indices
         in the order given in index.
@@ -4178,29 +4207,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                [1, 1, 1],
                [2, 2, 2]])
         """
-        x = ivy.swapaxes(self, axis, 0)
-        value = ivy.swapaxes(value, axis, 0)
-        _to_adds = []
-        index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda i: i[0]))
-        while index:
-            _curr_idx = index[0][0]
-            while len(_to_adds) < _curr_idx:
-                _to_adds.append(ivy.zeros_like(value[0]))
-            _to_add_cum = ivy.get_item(value, index[0][1])
-            while (len(index)) > 1 and (index[0][0] == index[1][0]):
-                _to_add_cum = _to_add_cum + ivy.get_item(value, index.pop(1)[1])
-            index.pop(0)
-            _to_adds.append(_to_add_cum)
-        while len(_to_adds) < x.shape[0]:
-            _to_adds.append(ivy.zeros_like(value[0]))
-        _to_adds = ivy.stack(_to_adds)
-        if len(x.shape) < 2:
-            # Added this line due to the paddle backend treating scalars as 1-d arrays
-            _to_adds = ivy.flatten(_to_adds)
-
-        ret = ivy.add(x, _to_adds)
-        ret = ivy.swapaxes(ret, axis, 0)
-        return ret
+        return self.static_index_add(self, index, axis, value, out=out)
 
 
 def concat_from_sequence(
