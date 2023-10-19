@@ -1172,7 +1172,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         ...             b=ivy.array([[-1, 1, 1]], dtype=ivy.float32))
         >>> y = ivy.Container(a=ivy.array([[0.6, 0.2, 0.3]], dtype=ivy.float32),
         ...            b=ivy.array([[1, 1, 1]], dtype=ivy.float32))
-        >>> z = ivy.Container._hinge_embedding_loss(x, y, reduction="none")
+        >>> z = ivy.Container._static_hinge_embedding_loss(x, y, reduction="none")
         >>> z
         {
             a: ivy.array([[0., 0., 0.]]),
