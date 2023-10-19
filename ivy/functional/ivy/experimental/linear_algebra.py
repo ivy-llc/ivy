@@ -2156,6 +2156,7 @@ def lstsq(
 
     Examples
     --------
+    ### TODO: add examples
     >>>
     >>>
     """
