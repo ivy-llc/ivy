@@ -23,7 +23,7 @@ class _ContainerWithDataTypes(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Copy an array to a specified data type irrespective of :ref:`type-promotion`
+        Copy an array to a specified data type irrespective of :ref:`type- promotion`
         rules.
 
         .. note::
@@ -94,7 +94,7 @@ class _ContainerWithDataTypes(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Copy an array to a specified data type irrespective of :ref:`type-promotion`
+        Copy an array to a specified data type irrespective of :ref:`type- promotion`
         rules.
 
         .. note::

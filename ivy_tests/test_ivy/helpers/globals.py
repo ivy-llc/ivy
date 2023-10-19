@@ -5,7 +5,6 @@ used by the test helpers to prune unsupported data.
 Should not be used inside any of the test functions.
 """
 
-
 from dataclasses import dataclass
 from .pipeline_helper import get_frontend_config
 
@@ -62,8 +61,8 @@ class TestData:
 class InterruptedTest(BaseException):
     """Indicate that a test tried to write global attributes while a test is running."""
 
-    def __init__(self, test_interruped):
-        super().__init__(f"{test_interruped} was interrupted during execution.")
+    def __init__(self, test_interrupted):
+        super().__init__(f"{test_interrupted} was interrupted during execution.")
 
 
 # Setup
