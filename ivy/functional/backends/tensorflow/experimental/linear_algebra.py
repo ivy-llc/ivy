@@ -264,3 +264,29 @@ def dot(
 ) -> tf.Tensor:
     a, b = ivy.promote_types_of_inputs(a, b)
     return tf.experimental.numpy.dot(a, b)
+
+
+def lstsq(
+    a: tf.Tensor,
+    b: tf.Tensor,
+    /,
+    *,
+    rcond: Optional[tf.float32] = None,
+    out: Optional[tf.Tensor] = None,
+) -> Tuple[tf.Tensor]:
+    X = tf.linalg.lstsq(a, b, l2_regularizer=0.0, fast=False)
+
+    s = tf.linalg.svd(a, full_matrices=False, compute_uv=False)
+    rank = tf.reduce_sum(
+        tf.cast(s > rcond * tf.math.reduce_max(s), dtype=tf.int32), axis=(-1)
+    )
+    ret_residuals = (a.shape[-2] > a.shape[-1]) and tf.reduce_all(
+        tf.equal(rank, a.shape[-1])
+    )
+    residuals = (
+        tf.reduce_sum(tf.square(tf.matmul(a, X) - b), axis=[-2])
+        if ret_residuals
+        else tf.constant([], dtype=tf.float32)
+    )
+
+    return X, residuals, rank, s

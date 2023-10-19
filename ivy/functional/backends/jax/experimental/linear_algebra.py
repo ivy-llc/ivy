@@ -195,3 +195,63 @@ def dot(
 
 
 dot.support_native_out = True
+
+
+def lstsq(
+    a: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    rcond: Optional[float] = None,
+    out: Optional[JaxArray] = None,
+) -> Tuple[JaxArray]:
+    if len(a.shape) <= 2 and len(b.shape) <= 2:
+        X, residuals, rank, s = jnp.linalg.lstsq(a, b, rcond=rcond)
+        return X, residuals, rank, s
+
+    if not (a.shape[:-2] == b.shape[:-2] or a.shape[-2] != b.shape[-2]):
+        raise ValueError("Input shapes are not compatible.")
+
+    M, N = a.shape[-2:]
+    K = b.shape[-1]
+    ret_residuals = M > N
+
+    X_shape = a.shape[:-2] + (N, K)
+    rank_shape = a.shape[:-2]
+    residuals_shape = a.shape[:-2] + (K,)
+    s_shape = a.shape[:-2] + (min(M, N),)
+
+    X_arr, residuals_arr, rank_arr, s_arr = [], [], [], []
+
+    a_new = a.reshape(-1, M, N)
+    b_new = b.reshape(-1, M, K)
+
+    for id in range(a_new.shape[0]):
+        slice_a = a_new[id]
+        slice_b = b_new[id]
+
+        X_slice, residuals_slice, rank_slice, s_slice = jnp.linalg.lstsq(
+            slice_a, slice_b, rcond=rcond
+        )
+
+        if ret_residuals:
+            if rank_slice >= a.shape[-1]:
+                residuals_arr.append(residuals_slice)
+            else:
+                residuals = jnp.array([])
+                ret_residuals = False
+
+        X_arr.append(X_slice)
+        rank_arr.append(rank_slice)
+        s_arr.append(s_slice)
+
+    X = (jnp.stack(X_arr)).reshape(X_shape)
+    residuals = (
+        (jnp.stack(residuals_arr)).reshape(residuals_shape)
+        if ret_residuals
+        else jnp.array([])
+    )
+    rank = (jnp.stack(rank_arr)).reshape(rank_shape)
+    s = (jnp.stack(s_arr)).reshape(s_shape)
+
+    return X, residuals, rank, s

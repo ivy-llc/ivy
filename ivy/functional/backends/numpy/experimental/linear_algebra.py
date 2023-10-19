@@ -228,3 +228,55 @@ def dot(
 
 
 dot.support_native_out = True
+
+
+@with_unsupported_dtypes(
+    {"1.26 and below": ("float16", "bfloat16")},
+    backend_version,
+)
+def lstsq(
+    a: np.ndarray,
+    b: np.ndarray,
+    /,
+    *,
+    rcond: Optional[float] = None,
+    out: Optional[np.ndarray] = None,
+) -> Tuple[np.ndarray]:
+    if len(a.shape) <= 2 and len(b.shape) <= 2:
+        X, residuals, rank, s = np.linalg.lstsq(a, b, rcond=rcond)
+        return X, residuals, rank, s
+
+    if not (a.shape[:-2] == b.shape[:-2] or a.shape[-2] != b.shape[-2]):
+        raise ValueError("Input shapes are not compatible.")
+
+    X_shape = a.shape[:-2] + (a.shape[-1], b.shape[-1])
+    rank_shape = a.shape[:-2]
+    residuals_shape = a.shape[:-2] + (b.shape[-1],)
+    s_shape = a.shape[:-2] + (min(a.shape[-2], a.shape[-1]),)
+
+    X = np.empty(X_shape, dtype=a.dtype)
+    rank = np.empty(rank_shape, dtype=int)
+    ret_residuals = a.shape[-2] > a.shape[-1]
+    residuals = (
+        np.empty(residuals_shape, dtype=b.dtype) if ret_residuals else np.array([])
+    )
+    s = np.empty(s_shape, dtype=b.dtype)
+
+    for indices in np.ndindex(a.shape[:-2]):
+        slice_a = a[indices]
+        slice_b = b[indices]
+        x, residuals_slice, rank_slice, s_slice = np.linalg.lstsq(
+            slice_a, slice_b, rcond=rcond
+        )
+
+        X[indices] = x
+        if ret_residuals:
+            if residuals_slice.size > 0:
+                residuals[indices] = residuals_slice
+            else:
+                residuals = np.array([])
+                ret_residuals = False
+        rank[indices] = rank_slice
+        s[indices] = s_slice
+
+    return X, residuals, rank, s

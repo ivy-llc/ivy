@@ -188,3 +188,26 @@ def multi_dot(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.linalg.multi_dot(x)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            ),
+        }
+    },
+    backend_version,
+)
+def lstsq(
+    a: paddle.Tensor,
+    b: paddle.Tensor,
+    /,
+    *,
+    rcond: Optional[float] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> Tuple[paddle.Tensor]:
+    X, residuals, rank, s = paddle.linalg.lstsq(a, b, rcond=rcond, driver="gelss")
+    return X, residuals, paddle.cast(rank, "int64"), s

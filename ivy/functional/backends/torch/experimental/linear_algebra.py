@@ -230,3 +230,15 @@ def dot(
 
 
 dot.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+def lstsq(
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    rcond: Optional[float] = None,
+    out: Optional[torch.Tensor] = None,
+) -> Tuple[torch.Tensor]:
+    return torch.linalg.lstsq(a, b, rcond=rcond, driver="gelss", out=out)
