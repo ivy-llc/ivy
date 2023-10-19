@@ -99,6 +99,7 @@ def test_jax_arange(
     copy=st.booleans(),
     ndmin=helpers.ints(min_value=0, max_value=9),
     test_with_out=st.just(True),
+    test_with_copy=st.just(True),
 )
 def test_jax_array(
     *,
@@ -276,6 +277,7 @@ def test_jax_compress(
         max_dim_size=5,
     ),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_jax_copy(
     dtype_and_a,
@@ -825,6 +827,7 @@ def test_jax_logspace(
     sparse=st.booleans(),
     indexing=st.sampled_from(["xy", "ij"]),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_jax_meshgrid(
     dtype_and_arrays,

@@ -4,6 +4,7 @@ PyTorch activation functions.
 Collection of PyTorch activation functions, wrapped to fit Ivy syntax
 and signature.
 """
+
 from typing import Optional, Union, Literal
 
 # global
@@ -47,9 +48,7 @@ def gelu(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if approximate:
-        return (
-            0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
-        )
+        return 0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
     return torch.nn.functional.gelu(x)
 
 

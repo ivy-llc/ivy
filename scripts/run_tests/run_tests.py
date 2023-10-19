@@ -219,7 +219,6 @@ if __name__ == "__main__":
                 print(f"\n{'*' * 100}")
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
-                print(f"command: {command} --num-examples 5 --with-transpile")
                 sys.stdout.flush()
                 os.system(f"{command} --num-examples 5 --with-transpile")
 
@@ -284,4 +283,4 @@ if __name__ == "__main__":
 
     # if any tests fail, the workflow fails
     if failed:
-        exit(1)
+        sys.exit(1)
