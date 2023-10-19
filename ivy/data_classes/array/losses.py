@@ -14,7 +14,7 @@ class _ArrayWithLosses(abc.ABC):
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "none",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -36,6 +36,10 @@ class _ArrayWithLosses(abc.ABC):
             a float in [0.0, 1.0] specifying the amount of smoothing when calculating
             the loss. If epsilon is ``0``, no smoothing will be applied.
             Default: ``1e-7``.
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -52,6 +56,16 @@ class _ArrayWithLosses(abc.ABC):
         >>> z = x.cross_entropy(y)
         >>> print(z)
         ivy.array(1.3862944)
+
+        >>> x = ivy.array([0, 0, 1, 0])
+        >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
+        >>> z = x.cross_entropy(y,reduction="sum")
+        >>> print(z)
+
+        >>> x = ivy.array([0, 0, 1, 0])
+        >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
+        >>> z = x.cross_entropy(y,reduction="mean")
+        >>> print(z)
         """
         return ivy.cross_entropy(
             self._data, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out

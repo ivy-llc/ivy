@@ -52,6 +52,50 @@ def test_binary_cross_entropy(
     )
 
 
+@handle_test(
+    fn_tree="functional.ivy.experimental.cross_entropy",
+    dtype_input_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        num_arrays=2,
+        shared_dtype=True,
+        shape=(5,),
+    ),
+    reduction=st.sampled_from(["sum", "mean", "none"]),
+    test_with_out=st.just(False),
+    test_gradients=st.just(
+        False
+    ),  # value_test are failing if this is set to `True` # noqa
+    ground_truth_backend="torch",
+)
+def test_cross_entropy_loss(
+    dtype_input_target,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, inputs = dtype_input_target
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        atol_=1e-02,
+        rtol_=1e-05,
+        true=inputs[0],
+        pred=inputs[1],
+        reduction=reduction,
+    )
+
+
 # huber_loss
 @handle_test(
     fn_tree="functional.ivy.experimental.huber_loss",

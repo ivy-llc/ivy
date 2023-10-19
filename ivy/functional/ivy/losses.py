@@ -42,7 +42,7 @@ def cross_entropy(
     *,
     axis: int = -1,
     epsilon: float = 1e-7,
-    reduction: str = "sum",
+    reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -60,6 +60,10 @@ def cross_entropy(
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating
         the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    reduction
+        ``'none'``: No reduction will be applied to the output.
+        ``'mean'``: The output will be averaged.
+        ``'sum'``: The output will be summed. Default: ``'none'``.
     out
         optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
@@ -77,8 +81,11 @@ def cross_entropy(
     ivy.array(1.3862944)
 
     >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >>> print(ivy.cross_entropy(x, z))
+    >>> print(ivy.cross_entropy(x, z, reduction="sum"))
     ivy.array(0.35667497)
+
+    >>> t = ivy.array([0.2, 0.5, 0.6, 0.3])
+    >>> print(ivy.cross_entropy(x, t, reduction="mean"))
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)

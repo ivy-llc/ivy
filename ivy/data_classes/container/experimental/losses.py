@@ -1261,13 +1261,13 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
     @staticmethod
     def _static_cross_entropy(
-        input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        target: Union[ivy.Array, ivy.NativeArray],
+        true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "none",
         out: Optional[ivy.Array] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -1275,28 +1275,53 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
+        ivy.Container instance method variant of ivy.cross_entropy. This method simply
+        wraps the function, and so the docstring for ivy.cross_entropy also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
-        input
-        target
+        true
+            An array or container of arbitrary shape containing probabilities.
+        pred
+            An array or container same shape as input with values between 0 and 1.
         axis
+            the axis along which to compute the cross-entropy. If axis is ``-1``,
+            the cross-entropy will be computed along the
+            last dimension. Default: ``-1``.
         epsilon
+            a float in [0.0, 1.0] specifying the
+            amount of smoothing when calculating
+            the loss. If epsilon is ``0.0``,
+            no smoothing will be applied. Default: ``1e-7``.
         reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
         out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
         key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
+            If input, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``input``.
         prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
         map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
-        out
+        ret : array
+            The cross entropy loss between the true labels and predicted labels.
         """
         return ContainerBase.cont_multi_map_in_function(
             "cross_entropy",
             input,
-            target,
+            pred,
             axis=axis,
             epsilon=epsilon,
             reduction=reduction,
@@ -1309,12 +1334,12 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
     def cross_entropy(
         self,
-        target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "none",
         out: Optional[ivy.Array] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -1322,26 +1347,66 @@ class _ContainerWithLossesExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
+        ivy.Container instance method variant of ivy.cross_entropy. This method simply
+        wraps the function, and so the docstring for ivy.cross_entropy also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
-        target
+        pred
+            An array or container same shape as input with values between 0 and 1.
         axis
+            the axis along which to compute the cross-entropy.
+            If axis is ``-1``, the cross-entropy will be computed
+            along the last dimension. Default: ``-1``.
         epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0.0``,
+            no smoothing will be applied. Default: ``1e-7``.
         reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
         out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
         key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
+            If input, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``input``.
         prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
         map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
-        out
+        ret : array
+            The cross entropy loss between the true labels and predicted labels.
+
+        Examples
+        --------
+        >>> x = ivy.Container([0, 0, 1, 0])
+        >>> y = ivy.Container([0.25, 0.25, 0.25, 0.25])
+        >>> z = x.cross_entropy(y)
+        >>> print(z)
+
+        >>> x = ivy.Container([0, 0, 1, 0])
+        >>> y = ivy.Container([0.25, 0.25, 0.25, 0.25])
+        >>> z = x.cross_entropy(y,reduction="sum")
+        >>> print(z)
+
+        >>> x = ivy.Container([0, 0, 1, 0])
+        >>> y = ivy.Container([0.25, 0.25, 0.25, 0.25])
+        >>> z = x.cross_entropy(y,reduction="mean")
+        >>> print(z)
         """
         return self._static_cross_entropy(
             self,
-            target,
+            pred,
             axis=axis,
             epsilon=epsilon,
             reduction=reduction,

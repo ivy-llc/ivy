@@ -663,7 +663,7 @@ def cross_entropy(
     *,
     axis: int = -1,
     epsilon: float = 1e-7,
-    reduction: str = "sum",
+    reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -684,7 +684,7 @@ def cross_entropy(
     reduction
         ``none`` -> no reduction will be applied to the output.
         ``mean`` -> the output will be averaged and returned.
-        ``sum``  -> the output will be summed up and returned.
+        ``sum``  -> the output will be summed up and returned. Default: ``none``.
     out
         optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
@@ -693,6 +693,20 @@ def cross_entropy(
     -------
     array:
         An array of cross entropy loss values between the true and predicted labels.
+
+    Examples
+    --------
+    >>> x = ivy.array([0.8, 0.2, 0.6, 0.4])
+    >>> y = ivy.array([1, 0, 1, 0])
+    >>> print(ivy.cross_entropy(x, y))
+
+    >>> x = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> y = ivy.array([1, 1, 0, 0])
+    >>> print(ivy.cross_entropy(x, y, reduction='sum'))
+
+    >>> x = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> y = ivy.array([1, 1, 0, 0])
+    >>> print(ivy.cross_entropy(x, y, reduction='mean'))
     """
     return ivy.current_backend(pred).cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
