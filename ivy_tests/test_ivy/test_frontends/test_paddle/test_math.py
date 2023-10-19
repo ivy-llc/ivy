@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import hypothesis.extra.numpy as nph
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -533,6 +534,34 @@ def test_paddle_atanh(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# broadcast_shape
+@handle_frontend_test(
+    fn_tree="paddle.broadcast_shape",
+    input_shapes_x=nph.mutually_broadcastable_shapes(
+        num_shapes=2, min_dims=1, max_dims=5, min_side=1, max_side=5
+    ),
+)
+def test_paddle_broadcast_shape(
+    *,
+    input_shapes_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int32", "int64"],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x_shape=input_shapes_x[0][0],
+        y_shape=input_shapes_x[0][1],
     )
 
 

@@ -37,7 +37,8 @@ def _to_ivy_array(x):
 
 # update kwargs dictionary keys helper
 def _update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
-    """Update the key-word only arguments dictionary.
+    """
+    Update the key-word only arguments dictionary.
 
     Parameters
     ----------
@@ -99,9 +100,10 @@ def handle_tf_dtype(fn: Callable) -> Callable:
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_tf(*args, **kwargs):
-        """Convert all `TensorFlow.Tensor` instances in both the positional and
-        keyword arguments into `ivy.Array` instances, and then call the
-        function with the updated arguments.
+        """
+        Convert all `TensorFlow.Tensor` instances in both the positional and keyword
+        arguments into `ivy.Array` instances, and then call the function with the
+        updated arguments.
 
         Parameters
         ----------
@@ -138,10 +140,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
 
 def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callable:
-    """Map the raw_ops function with its respective frontend alias function, as
-    the implementations of raw_ops is way similar to that of frontend
-    functions, except that only arguments are passed as key-word only in
-    raw_ops functions.
+    """
+    Map the raw_ops function with its respective frontend alias function, as the
+    implementations of raw_ops is way similar to that of frontend functions, except that
+    only arguments are passed as key-word only in raw_ops functions.
 
     Parameters
     ----------
@@ -195,8 +197,9 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays_tf(*args, **kwargs):
-        """Call the function, and then convert all `tensorflow.Tensor`
-        instances in the function return into `ivy.Array` instances.
+        """
+        Call the function, and then convert all `tensorflow.Tensor` instances in the
+        function return into `ivy.Array` instances.
 
         Parameters
         ----------
