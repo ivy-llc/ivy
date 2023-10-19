@@ -1502,6 +1502,7 @@ def test_multiply(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     posinf=st.floats(min_value=5e100, max_value=5e100),
     neginf=st.floats(min_value=-5e100, max_value=-5e100),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_nan_to_num(
     *,
@@ -1918,6 +1919,7 @@ def test_tanh(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_
         on_device=on_device,
         x=x[0],
         complex_mode=complex_mode,
+        atol_=1e-02,  # for `test_flags.test_gradients and 'bfloat16' in input_dtype`
     )
 
 

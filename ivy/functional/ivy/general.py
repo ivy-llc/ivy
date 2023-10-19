@@ -1,6 +1,5 @@
 """Collection of general Ivy functions."""
 
-
 # global
 import gc
 import inspect
