@@ -275,6 +275,8 @@ def lstsq(
     out: Optional[tf.Tensor] = None,
 ) -> Tuple[tf.Tensor]:
     X = tf.linalg.lstsq(a, b, l2_regularizer=0.0, fast=False)
+    # todo: Use SVD to solve
+    # https://www2.math.uconn.edu/~leykekhman/courses/MATH3795/Lectures/Lecture_9_Linear_least_squares_SVD.pdf
 
     s = tf.linalg.svd(a, full_matrices=False, compute_uv=False)
     rank = tf.reduce_sum(
