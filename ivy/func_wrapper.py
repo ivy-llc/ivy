@@ -95,18 +95,11 @@ def cast_helper(arg, dtype, intersect, is_upcast=True):
     step = 1 if is_upcast else -1
     index = casting_modes_dict[arg]().index(dtype) + step
     result = ""
-    if is_upcast:
-        while index < len(casting_modes_dict[arg]()):
-            if casting_modes_dict[arg]()[index] not in intersect:
-                result = casting_modes_dict[arg]()[index]
-                break
-            index += step
-    else:
-        while index >= 0:
-            if casting_modes_dict[arg]()[index] not in intersect:
-                result = casting_modes_dict[arg]()[index]
-                break
-            index += step
+    while 0 <= index < len(casting_modes_dict[arg]()):
+        if casting_modes_dict[arg]()[index] not in intersect:
+            result = casting_modes_dict[arg]()[index]
+            break
+        index += step
 
     return result
 
