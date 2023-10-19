@@ -882,7 +882,8 @@ def hardshrink(
     lambd: float = 0.5,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the hardshrink function element-wise.
+    """
+    Apply the hardshrink function element-wise.
 
     Parameters
     ----------
