@@ -576,16 +576,6 @@ def poisson_nll_loss(
     )
 
 
-# @handle_exceptions
-# @handle_nestable
-# @handle_array_like_without_promotion
-# @to_native_arrays_and_back
-# @handle_exceptions
-# @handle_backend_invalid
-# @handle_nestable
-# @to_native_arrays_and_back
-# @handle_array_function
-# @handle_device
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -597,9 +587,9 @@ def hinge_embedding_loss(
     margin: float = 1.0,
     reduction: str = "mean",
 ) -> ivy.Array:
-    r"""Measures loss from input `x` and label `y` with values 1 or -1. It
-    evaluates if two inputs are similar or not, often used for embedding or
-    semi-supervised learning.
+    r"""
+    Measures loss from input `x` and label `y` with values 1 or -1. It evaluates if two
+    inputs are similar or not, often used for embedding or semi-supervised learning.
 
     Loss for the `n`-th sample:
         .. math::
@@ -615,7 +605,7 @@ def hinge_embedding_loss(
                 \operatorname{sum}(L),  & \text{if reduction} = \text{`sum'.}
             \end{cases}
 
-    where :math:`L = \{l_1,\dots,l_N\}^\top`.
+    where :math:`L = \{l_1,\dots,l_N\}^\top` .
 
     Parameters
     ----------
@@ -655,10 +645,17 @@ def hinge_embedding_loss(
     Examples
     --------
     >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
-    >>> target_tensor = ivy.array([2, 2, 2, 2], dtype=ivy.float64)
-    >>> loss = poisson_nll_loss(input_tensor, target_tensor, log_input=True)
-    >>> print(loss)
-    ivy.array(16.1978)
+    >>> target_tensor = ivy.array([1, 1, 1, 1], dtype=ivy.float64)
+    >>> loss = ivy.hinge_embedding_loss(input_tensor, target_tensor, reduction="none")
+    >>> loss
+    ivy.array([1., 2., 3., 4.])
+
+    >>> input_tensor = ivy.array([21, 22], dtype=ivy.float32)
+    >>> target_tensor = ivy.array([-1, 1], dtype=ivy.float32)
+    >>> loss = ivy.hinge_embedding_loss(input_tensor,target_tensor,
+    ...                                 margin=2.0, reduction="sum")
+    >>> loss
+    ivy.array(22.)
     """
     return ivy.current_backend().hinge_embedding_loss(
         input,

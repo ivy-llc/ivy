@@ -380,9 +380,10 @@ class _ArrayWithLossesExperimental(abc.ABC):
         margin: float = 1.0,
         reduction: str = "mean",
     ) -> ivy.Array:
-        r"""Measures loss from input `x` and label `y` with values 1 or -1. It
-        evaluates if two inputs are similar or not, often used for embedding or
-        semi-supervised learning.
+        r"""
+        Measures loss from input `x` and label `y` with values 1 or -1. It evaluates if
+        two inputs are similar or not, often used for embedding or semi-supervised
+        learning.
 
         Loss for the `n`-th sample:
             .. math::
@@ -398,7 +399,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
                     \operatorname{sum}(L),  & \text{if reduction} = \text{`sum'.}
                 \end{cases}
 
-        where :math:`L = \{l_1,\dots,l_N\}^\top`.
+        where :math:`L = \{l_1,\dots,l_N\}^\top`
 
         Parameters
         ----------
@@ -438,10 +439,14 @@ class _ArrayWithLossesExperimental(abc.ABC):
         Examples
         --------
         >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
-        >>> target_tensor = ivy.array([2, 2, 2, 2], dtype=ivy.float64)
-        >>> loss = poisson_nll_loss(input_tensor, target_tensor, log_input=True)
-        >>> print(loss)
-        ivy.array(16.1978)
+        >>> target_tensor = ivy.array([1, 1, 1, 1], dtype=ivy.float64)
+        >>> input_tensor.hinge_embedding_loss(target_tensor,reduction="sum")
+        ivy.array(10.)
+
+        >>> input_tensor = ivy.array([1, 2, 3], dtype=ivy.float64)
+        >>> target_tensor = ivy.array([1, -1, -1], dtype=ivy.float64)
+        >>> input_tensor.hinge_embedding_loss(target_tensor, margin=2.0)
+        ivy.array(0.33333333)
         """
         return ivy.hinge_embedding_loss(
             self._data,

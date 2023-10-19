@@ -64,11 +64,11 @@ def soft_margin_loss(
         return loss
 
 
-def _apply_loss_reduction(loss: JaxArray, reduction: str, axis=None) -> JaxArray:
+def _apply_loss_reduction(loss: JaxArray, reduction: str) -> JaxArray:
     if reduction == "sum":
-        return jnp.sum(loss, axis=axis)
+        return jnp.sum(loss)
     elif reduction == "mean":
-        return jnp.mean(loss, axis=axis)
+        return jnp.mean(loss)
     else:  # reduction == "none"
         return loss
 
@@ -177,5 +177,4 @@ def hinge_embedding_loss(
     loss = jnp.where(target == 1.0, input, zero_) + jnp.where(
         target == -1.0, relu_part, zero_
     )
-
     return _apply_loss_reduction(loss, reduction)

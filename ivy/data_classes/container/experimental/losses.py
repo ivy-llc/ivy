@@ -1116,10 +1116,10 @@ class _ContainerWithLossesExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""ivy.Container static method variant of ivy.hinge_embedding_loss.
-        This method simplywraps the function, and so the docstring for
-        ivy.hinge_embedding_loss also applies to this method with minimal
-        changes.
+        r"""
+        ivy.Container static method variant of ivy.hinge_embedding_loss. This method
+        simplywraps the function, and so the docstring for ivy.hinge_embedding_loss also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1168,27 +1168,28 @@ class _ContainerWithLossesExperimental(ContainerBase):
         --------
         With :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([[0.6, 0.2, 0.3]], dtype=ivy.float32),
-        ...                   b=ivy.array([[0.8, 0.2, 0.2]], dtype=ivy.float32))
-        >>> y = ivy.Container(a=ivy.array([[1, 0, 2]], dtype=ivy.float32),
-        ...                   b=ivy.array([[3, 2, 1]], dtype=ivy.float32))
-        >>> z = ivy.Container._static_poisson_nll_loss(x,y)
-        >>> print(z)
+        >>> x = ivy.Container(a=ivy.array([[1, 0, 2]], dtype=ivy.float32),
+        ...             b=ivy.array([[-1, 1, 1]], dtype=ivy.float32))
+        >>> y = ivy.Container(a=ivy.array([[0.6, 0.2, 0.3]], dtype=ivy.float32),
+        ...            b=ivy.array([[1, 1, 1]], dtype=ivy.float32))
+        >>> z = ivy.Container._hinge_embedding_loss(x, y, reduction="none")
+        >>> z
         {
-            a: ivy.array(1.06446016),
-            b: ivy.array(0.55611551)
+            a: ivy.array([[0., 0., 0.]]),
+            b: ivy.array([[-1., 1., 1.]])
         }
 
         With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
-        >>> x = ivy.array([[1, 0, 2]], dtype=ivy.float32)
-        >>> y = ivy.Container(a=ivy.array([[0.6, 0.2, 0.3]], dtype=ivy.float32),
-        ...             b=ivy.array([[0.8, 0.2, 0.2]], dtype=ivy.float32))
-        >>> z = ivy.Container._static_poisson_nll_loss(x, y)
-        >>> print(z)
+        >>> x = ivy.array([[10, 20, 32]], dtype=ivy.float32)
+        >>> y = ivy.Container(a=ivy.array([[-1, -1, -1]], dtype=ivy.float32),
+        ...           b=ivy.array([[1, 1, 1]], dtype=ivy.float32))
+        >>> z = ivy.Container._static_hinge_embedding_loss(x, y,
+        ...                             reduction="sum", margin=2.0)
+        >>> z
         {
-            a: ivy.array(3.30244565),
-            b: ivy.array(3.30244565)
+            a: ivy.array(0.),
+            b: ivy.array(62.)
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1214,10 +1215,10 @@ class _ContainerWithLossesExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""ivy.Container instance method variant of ivy.hinge_embedding_loss.
-        This method simply wraps the function, and so the docstring for
-        ivy.hinge_embedding_loss also applies to this method with minimal
-        changes.
+        r"""
+        ivy.Container instance method variant of ivy.hinge_embedding_loss. This method
+        simply wraps the function, and so the docstring for ivy.hinge_embedding_loss
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1267,13 +1268,12 @@ class _ContainerWithLossesExperimental(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([[1, 0, 2]], dtype=ivy.float32),
         ...              b=ivy.array([[3, 2, 1]], dtype=ivy.float32))
-        >>> y = ivy.Container(a=ivy.array([[0.6, 0.2, 0.3]], dtype=ivy.float32),
-        ...              b=ivy.array([[0.8, 0.2, 0.2]], dtype=ivy.float32))
-        >>> z = x.poisson_nll_loss(y)
-        >>> print(z)
+        >>> y = ivy.Container(a=ivy.array([[-1, -1, -1]], dtype=ivy.float32),
+        ...              b=ivy.array([[1, 1, 1]], dtype=ivy.float32))
+        >>> x.hinge_embedding_loss(y, reduction="none", margin=0.5)
         {
-            a: ivy.array(3.30244565),
-            b: ivy.array(9.06429195)
+            a: ivy.array([[0., 0.5, 0.]]),
+            b: ivy.array([[3., 2., 1.]])
         }
         """
         return self._static_hinge_embedding_loss(

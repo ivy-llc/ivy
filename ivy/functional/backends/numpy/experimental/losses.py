@@ -96,15 +96,12 @@ def soft_margin_loss(
         return loss
 
 
-def _apply_loss_reduction(loss: np.ndarray, reduction: str, axis, out) -> np.ndarray:
+def _apply_loss_reduction(loss: np.ndarray, reduction: str) -> np.ndarray:
     if reduction == "sum":
-        return np.sum(loss, axis=axis, out=out)
+        return np.sum(loss)
     elif reduction == "mean":
-        return np.mean(loss, axis=axis, out=out)
+        return np.mean(loss)
     else:  # reduction == "none"
-        if out is not None:
-            out[...] = loss
-            return out
         return loss
 
 
