@@ -226,3 +226,85 @@ def binary_cross_entropy(
             + (1.0 - target_arr) * np.log(1.0 - input_arr)
         )
     return _apply_loss_reduction(loss, reduction, axis=axis, out=out)
+
+def _validate_nll_params(
+        input,
+        target,
+        weight,
+        reduction,
+        allowed_dtypes=[np.float32, np.float64]
+    ):
+    # Validate dtypes
+    for parameter, name in zip([input, target], ["input", "label"]):
+        if parameter.dtype not in allowed_dtypes:
+            raise ValueError(
+                "The dtype of '%s' in poisson_nll_loss should be one of %s, but"
+                " received %s." % (name, allowed_dtypes, parameter.dtype)
+            )
+
+    # Validate reduction
+    if reduction not in ["sum", "mean", "none"]:
+        raise ValueError(
+            "The value of 'reduction' in poisson_nll_loss should be 'sum', 'mean' or"
+            " 'none', but received %s, which is not allowed." % reduction
+        )
+
+    # Validate shape
+    if input.shape != target.shape:
+        raise ValueError(
+            "The shape of 'input' (%s) must be the same as the shape of 'label' (%s)."
+            % (input.shape, target.shape)
+        )
+
+    return True
+
+def nn_loss(
+        input: np.ndarray,
+        target: np.ndarray,
+        weight: Optional[np.ndarray] = None,
+        ignore_index=-100,
+        reduction="mean",
+    ):
+    _validate_nll_params(input, target, weight, reduction)
+
+    flat_target = target.flatten()
+    ignore_classes_mask = flat_target == ignore_index
+
+    ignore_class_weight = 0
+
+    if input.ndim == 1:
+        current_weight = np.where(
+            ignore_classes_mask,
+            ignore_class_weight,
+            weight[flat_target] if weight is not None else 1
+        )
+        loss = -input * current_weight
+    elif input.ndim == 2:
+        current_weight = np.where(
+            ignore_classes_mask,
+            ignore_class_weight,
+            weight[target]
+        )
+        loss = -input[np.arange(input.shape[0]), target] * current_weight
+    else:
+        print(input)
+        batch_size = input.shape[0]
+        extent = input.shape[1]
+        indices = np.arange(batch_size * extent)
+        bdx = indices // extent
+        kdx = indices % extent
+        current_weight = np.where(
+            ignore_classes_mask,
+            ignore_class_weight,
+            weight[flat_target] if weight is not None else 1
+        )
+        loss = -input[bdx, flat_target, kdx] * current_weight
+        loss = loss.reshape(target.shape)
+
+    if reduction == 'mean':
+        return np.sum(loss) / np.sum(current_weight)
+    elif reduction == 'sum':
+        return np.sum(loss)
+    else:
+        return loss
+

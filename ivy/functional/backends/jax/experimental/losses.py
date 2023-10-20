@@ -220,3 +220,78 @@ def binary_cross_entropy(
             + (1.0 - target_arr) * jnp.log(1.0 - input_arr + epsilon)
         )
     return _apply_loss_reduction(loss, reduction, axis=axis)
+
+def _validate_nll_params(input, label, weight, reduction, allowed_dtypes=(jnp.float32, jnp.float64)):
+    # Validate dtypes
+    for parameter, name in zip([input, label], ["input", "label"]):
+        if parameter.dtype not in allowed_dtypes:
+            raise ValueError(
+                f"The dtype of '{name}' in poisson_nll_loss should be one of {allowed_dtypes}, but"
+                f" received {parameter.dtype}."
+            )
+
+    # Validate reduction
+    if reduction not in ["sum", "mean", "none"]:
+        raise ValueError(
+            f"The value of 'reduction' in poisson_nll_loss should be 'sum', 'mean' or"
+            f" 'none', but received {reduction}, which is not allowed."
+        )
+
+    # Validate shape
+    if input.shape != label.shape:
+        raise ValueError(
+            f"The shape of 'input' ({input.shape}) must be the same as the shape of 'label' ({label.shape})."
+        )
+
+    return True
+
+def _apply_loss_reduction(loss, reduction):
+    if reduction == "sum":
+        return jnp.sum(loss)
+    elif reduction == "mean":
+        return jnp.mean(loss)
+    else:  # reduction == "none"
+        return loss
+
+def nn_loss(input, target, weight=None, ignore_index=-100, reduction="mean"):
+    _validate_nll_params(input, target, weight, reduction)
+
+    flat_target = target.flatten()
+    ignore_classes_mask = jnp.equal(flat_target, ignore_index)
+
+    ignore_class_weight = jnp.array(0, dtype=input.dtype)
+
+    if input.ndim == 1:
+        current_weight = jnp.where(
+            ignore_classes_mask,
+            ignore_class_weight,
+            weight[flat_target] if weight is not None else jnp.array(1, dtype=input.dtype)
+        )
+        loss = -input * current_weight
+    elif input.ndim == 2:
+        current_weight = jnp.where(
+            ignore_classes_mask,
+            ignore_class_weight,
+            jnp.take(weight, target)
+        )
+        loss = -jnp.take(input, jnp.stack((jnp.arange(input.shape[0]), target), axis=-1)) * current_weight
+    else:
+        batch_size = input.shape[0]
+        extent = input.shape[1]
+        indices = jnp.arange(batch_size * extent)
+        bdx = indices // extent
+        kdx = indices % extent
+        current_weight = jnp.where(
+            ignore_classes_mask,
+            ignore_class_weight,
+            weight[flat_target] if weight is not None else jnp.array(1, dtype=input.dtype)
+        )
+        loss = -jnp.take(input, jnp.stack([bdx, flat_target, kdx], axis=-1)) * current_weight
+        loss = jnp.reshape(loss, target.shape)
+
+    if reduction == 'mean':
+        return jnp.sum(loss) / jnp.sum(current_weight)
+    elif reduction == 'sum':
+        return jnp.sum(loss)
+    else:
+        return loss

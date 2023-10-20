@@ -67,6 +67,99 @@ def soft_margin_loss(
     else:
         return loss
 
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+
+
+def _validate_nll_params(
+    input,
+    label,
+    weight,
+    reduction,
+    allowed_dtypes=[tf.float32, tf.float64],
+):
+    # Validate dtypes
+    for parameter, name in zip([input, label], ["input", "label"]):
+        if parameter.dtype not in allowed_dtypes:
+            raise ValueError(
+                "The dtype of '%s' in poisson_nll_loss should be one of %s, but"
+                " received %s." % (name, allowed_dtypes, parameter.dtype)
+            )
+
+    # Validate reduction
+    if reduction not in ["sum", "mean", "none"]:
+        raise ValueError(
+            "The value of 'reduction' in poisson_nll_loss should be 'sum', 'mean' or"
+            " 'none', but received %s, which is not allowed." % reduction
+        )
+
+    # Validate shape
+    if input.shape != label.shape:
+        raise ValueError(
+            "The shape of 'input' (%s) must be the same as the shape of 'label' (%s)."
+            % (input.shape, label.shape)
+        )
+
+    return True
+
+def nn_loss(
+        input: tf.Tensor,
+        target: tf.Tensor,
+        *,
+        weight: Optional[tf.Tensor] = None,
+        ignore_index: int = -100,
+        reduction: str = "mean",
+):
+
+    _validate_nll_params(input, target, weight, reduction)
+
+    flat_target = tf.reshape(target, [-1])
+    ignore_classes_mask = tf.equal(flat_target, ignore_index)
+
+    ignore_class_weight = tf.constant(0, dtype=input.dtype)
+
+    if tf.rank(input) == 1:
+        current_weight = tf.where(
+            ignore_classes_mask,
+            ignore_class_weight,
+            weight[flat_target] if weight is not None else tf.constant(1, dtype=input.dtype)
+        )
+        loss = -input * current_weight
+    elif tf.rank(input) == 2:
+        current_weight = tf.where(
+            ignore_classes_mask,
+            ignore_class_weight,
+            tf.gather(weight, target)
+        )
+        loss = -tf.gather_nd(input, tf.stack((tf.range(tf.shape(input)[0]), target), axis=-1)) * current_weight
+    else:
+        print(input)
+        batch_size = tf.shape(input)[0]
+        extent = tf.shape(input)[1]
+        indices = tf.range(batch_size * extent)
+        bdx = indices // extent
+        kdx = indices % extent
+        current_weight = tf.where(
+            ignore_classes_mask,
+            ignore_class_weight,
+            weight[flat_target] if weight is not None else tf.constant(1, dtype=input.dtype)
+        )
+        loss = -tf.gather_nd(input, tf.stack([bdx, flat_target, kdx], axis=-1)) * current_weight
+        loss = tf.reshape(loss, tf.shape(target))
+
+    if reduction == 'mean':
+        return tf.reduce_sum(loss) / tf.reduce_sum(current_weight)
+    elif reduction == 'sum':
+        return tf.reduce_sum(loss)
+    else:
+        return loss
 
 def _apply_loss_reduction(loss: tf.Tensor, reduction: str, axis) -> tf.Tensor:
     if reduction == "sum":

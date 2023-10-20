@@ -299,6 +299,50 @@ class _ArrayWithLossesExperimental(abc.ABC):
             self._data, target, reduction=reduction, log_target=log_target, out=out
         )
 
+    def nll_loss(
+        self: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        *,
+        weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        ignore_index: int = -100,
+        reduction: str = "mean",
+    ) -> ivy.Array:
+        r"""
+            The negative log likelihood loss.
+
+            Parameters
+            ----------
+            input : torch.Tensor
+            A tensor of shape (N, C) where C is the number of classes, or (N, C, H, W) in the case of 2D loss, or (N, C, d1, d2, ..., dK) where K >= 1 in the case of K-dimensional loss. `input` is expected to be log-probabilities.
+            target : torch.Tensor
+            A tensor of shape (N) where each value satisfies 0 <= target[i] <= C - 1, or (N, d1, d2, ..., dK) where K >= 1 for K-dimensional loss.
+            weight : torch.Tensor, optional
+            A manual rescaling weight given to each class. If provided, it must be a tensor of size C.
+            ignore_index : int, optional
+            Specifies a target value that is ignored and does not contribute to the input gradient. When reduction is 'mean', the loss is averaged over non-ignored targets. Default: -100.
+            reduction : str, optional
+            Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none' means no reduction will be applied. 'mean' means the sum of the output will be divided by the number of elements in the output. 'sum' means the output will be summed. Default: 'mean'.
+
+            Returns
+            -------
+            torch.Tensor
+            The negative log likelihood loss.
+
+            Examples
+            --------
+            >>> input_tensor = torch.randn(5, 2, requires_grad=True)
+            >>> target_tensor = torch.tensor([1, 0, 1, 0, 1])
+            >>> loss = nll_loss(input_tensor, target_tensor, weight=None, ignore_index=-100, reduction='mean')
+            >>> print(loss)
+            """
+        return ivy.current_backend().nll_loss(
+            input,
+            target,
+            weight=weight,
+            ignore_index=ignore_index,
+            reduction=reduction,
+        )
+
     def poisson_nll_loss(
         self: Union[ivy.Array, ivy.NativeArray],
         target: Union[ivy.Array, ivy.NativeArray],

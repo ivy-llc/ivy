@@ -400,3 +400,53 @@ def test_soft_margin_loss(
         target=target[0],
         reduction=reduction,
     )
+
+# nl_loss
+@handle_test(
+    fn_tree="functional.ivy.experimental.nll_loss",
+    dtype_input_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_dim_size=1,
+        min_num_dims=1,
+        min_value=0,
+        max_value=100,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    weight = helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_dim_size=1,
+        min_num_dims=1,
+        min_value=0,
+        max_value=100,
+        num_arrays=1,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+    test_gradients=st.just(
+        False
+    ),
+    ground_truth_backend="torch",
+)
+def test_nll_loss(
+    dtype_input_target,
+    weight,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, inputs = dtype_input_target
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        input=inputs[0],
+        target=inputs[1],
+        weight=weight,
+        reduction=reduction,
+    )
