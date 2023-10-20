@@ -408,7 +408,7 @@ def group_norm(
         x = ivy.permute_dims(x, axes=(0, xdims - 1, *range(1, xdims - 1)))
     N = x.shape[0]
     C = x.shape[1]
-    S = ivy.to_scalar(ivy.prod(x.shape[2:])) if xdims > 2 else 1
+    S = int(ivy.to_scalar(ivy.prod(x.shape[2:])) if xdims > 2 else 1)
     assert C % num_groups == 0
     x_ = ivy.reshape(x, [N, num_groups, C // num_groups, S])
     mean = ivy.mean(x_, axis=(2, 3), keepdims=True)
