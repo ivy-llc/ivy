@@ -1,6 +1,4 @@
-"""Collection of Jax network layers, wrapped to fit Ivy syntax and
-signature."""
-
+"""Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
 import jax.lax as jlax
@@ -456,3 +454,74 @@ def conv_general_transpose(
     if data_format == "channel_first":
         return jnp.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+def nms(
+    boxes,
+    scores=None,
+    iou_threshold=0.5,
+    max_output_size=None,
+    score_threshold=float("-inf"),
+):
+    change_id = False
+    if score_threshold is not float("-inf") and scores is not None:
+        keep_idx = scores > score_threshold
+        boxes = boxes[keep_idx]
+        scores = scores[keep_idx]
+        change_id = True
+        nonzero = jnp.nonzero(keep_idx)[0].flatten()
+    if scores is None:
+        scores = jnp.ones((boxes.shape[0],), dtype=boxes.dtype)
+
+    if len(boxes) < 2:
+        if len(boxes) == 1:
+            ret = jnp.array([0], dtype=ivy.int64)
+        else:
+            ret = jnp.array([], dtype=ivy.int64)
+    else:
+        areas = jnp.prod(boxes[:, 2:4] - boxes[:, :2], axis=1)
+        order = jnp.argsort((-1 * scores))  # get boxes with more ious first
+        boxes = boxes[order]
+        areas = areas[order]
+        size = order.size
+        pad_width = 1 if size == 0 else 2 ** (size - 1).bit_length()
+
+        order = jnp.pad(order, [0, pad_width - size], constant_values=pad_width)
+        boxes = jnp.pad(boxes, [[0, pad_width - size], [0, 0]])
+        areas = jnp.pad(areas, [0, pad_width - size])
+        keep = jnp.zeros((size,), dtype=jnp.int64)
+        keep_idx = 0
+
+        while jnp.unique(order).size > 1:
+            max_iou_idx = order[0]
+            keep = keep.at[keep_idx].set(max_iou_idx)
+            keep_idx += 1
+            boxes1 = jnp.maximum(boxes[0, :2], boxes[1:, :2])
+            boxes2 = jnp.minimum(boxes[0, 2:4], boxes[1:, 2:4])
+            boxes_intersection = jnp.maximum(0.0, boxes2 - boxes1)
+            intersection = jnp.prod(
+                jnp.where(boxes_intersection != 0, boxes_intersection, 1), axis=1
+            )
+            iou = intersection / (areas[0] + areas[1:] - intersection)
+            condition = jnp.pad(iou <= iou_threshold, [1, 0], constant_values=False)
+            order = jnp.where(condition, order, pad_width)
+            boxes = jnp.where(jnp.expand_dims(condition, axis=1), boxes, 0)
+            areas = jnp.where(condition, areas, 0)
+            first = jnp.argwhere(order < pad_width, size=pad_width)[0][0]
+            forward = jnp.array([0, first])
+            order = order.at[forward].set(order[forward[::-1]])
+            boxes = boxes.at[forward].set(boxes[forward[::-1]])
+            areas = areas.at[forward].set(areas[forward[::-1]])
+
+        ret = jnp.array(keep[:keep_idx], dtype=jnp.int64)
+
+    if len(ret) > 1 and scores is not None:
+        ret = sorted(
+            ret.flatten().tolist(), reverse=True, key=lambda x: (scores[x], -x)
+        )
+        ret = jnp.array(ret, dtype=jnp.int64).flatten()
+
+    if change_id and len(ret) > 0:
+        ret = jnp.array(nonzero[ret], dtype=jnp.int64).flatten()
+
+    return ret.flatten()[:max_output_size]
