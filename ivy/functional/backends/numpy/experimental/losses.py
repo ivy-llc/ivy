@@ -227,13 +227,10 @@ def binary_cross_entropy(
         )
     return _apply_loss_reduction(loss, reduction, axis=axis, out=out)
 
+
 def _validate_nll_params(
-        input,
-        target,
-        weight,
-        reduction,
-        allowed_dtypes=[np.float32, np.float64]
-    ):
+    input, target, weight, reduction, allowed_dtypes=[np.float32, np.float64]
+):
     # Validate dtypes
     for parameter, name in zip([input, target], ["input", "label"]):
         if parameter.dtype not in allowed_dtypes:
@@ -258,13 +255,14 @@ def _validate_nll_params(
 
     return True
 
+
 def nn_loss(
-        input: np.ndarray,
-        target: np.ndarray,
-        weight: Optional[np.ndarray] = None,
-        ignore_index=-100,
-        reduction="mean",
-    ):
+    input: np.ndarray,
+    target: np.ndarray,
+    weight: Optional[np.ndarray] = None,
+    ignore_index=-100,
+    reduction="mean",
+):
     _validate_nll_params(input, target, weight, reduction)
 
     flat_target = target.flatten()
@@ -276,14 +274,12 @@ def nn_loss(
         current_weight = np.where(
             ignore_classes_mask,
             ignore_class_weight,
-            weight[flat_target] if weight is not None else 1
+            weight[flat_target] if weight is not None else 1,
         )
         loss = -input * current_weight
     elif input.ndim == 2:
         current_weight = np.where(
-            ignore_classes_mask,
-            ignore_class_weight,
-            weight[target]
+            ignore_classes_mask, ignore_class_weight, weight[target]
         )
         loss = -input[np.arange(input.shape[0]), target] * current_weight
     else:
@@ -296,15 +292,14 @@ def nn_loss(
         current_weight = np.where(
             ignore_classes_mask,
             ignore_class_weight,
-            weight[flat_target] if weight is not None else 1
+            weight[flat_target] if weight is not None else 1,
         )
         loss = -input[bdx, flat_target, kdx] * current_weight
         loss = loss.reshape(target.shape)
 
-    if reduction == 'mean':
+    if reduction == "mean":
         return np.sum(loss) / np.sum(current_weight)
-    elif reduction == 'sum':
+    elif reduction == "sum":
         return np.sum(loss)
     else:
         return loss
-

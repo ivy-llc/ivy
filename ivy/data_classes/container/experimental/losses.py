@@ -911,19 +911,18 @@ class _ContainerWithLossesExperimental(ContainerBase):
         input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *,
-        weight : Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
+        weight: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
         reduction: [Union[str, ivy.Container]] = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-
         return ContainerBase.cont_multi_map_in_function(
             "poisson_nll_loss",
             input,
             target,
-            weight = weight,
+            weight=weight,
             reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,

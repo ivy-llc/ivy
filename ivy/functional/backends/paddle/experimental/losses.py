@@ -290,6 +290,7 @@ def binary_cross_entropy(
     else:
         return F.binary_cross_entropy(input_arr, target_arr, reduction=reduction)
 
+
 @with_supported_device_and_dtypes(
     {
         "2.14.0 and below": {

@@ -67,6 +67,7 @@ def soft_margin_loss(
     else:
         return loss
 
+
 @with_supported_device_and_dtypes(
     {
         "2.13.0 and below": {
@@ -76,8 +77,6 @@ def soft_margin_loss(
     },
     backend_version,
 )
-
-
 def _validate_nll_params(
     input,
     label,
@@ -109,15 +108,15 @@ def _validate_nll_params(
 
     return True
 
-def nn_loss(
-        input: tf.Tensor,
-        target: tf.Tensor,
-        *,
-        weight: Optional[tf.Tensor] = None,
-        ignore_index: int = -100,
-        reduction: str = "mean",
-):
 
+def nn_loss(
+    input: tf.Tensor,
+    target: tf.Tensor,
+    *,
+    weight: Optional[tf.Tensor] = None,
+    ignore_index: int = -100,
+    reduction: str = "mean",
+):
     _validate_nll_params(input, target, weight, reduction)
 
     flat_target = tf.reshape(target, [-1])
@@ -129,16 +128,23 @@ def nn_loss(
         current_weight = tf.where(
             ignore_classes_mask,
             ignore_class_weight,
-            weight[flat_target] if weight is not None else tf.constant(1, dtype=input.dtype)
+            (
+                weight[flat_target]
+                if weight is not None
+                else tf.constant(1, dtype=input.dtype)
+            ),
         )
         loss = -input * current_weight
     elif tf.rank(input) == 2:
         current_weight = tf.where(
-            ignore_classes_mask,
-            ignore_class_weight,
-            tf.gather(weight, target)
+            ignore_classes_mask, ignore_class_weight, tf.gather(weight, target)
         )
-        loss = -tf.gather_nd(input, tf.stack((tf.range(tf.shape(input)[0]), target), axis=-1)) * current_weight
+        loss = (
+            -tf.gather_nd(
+                input, tf.stack((tf.range(tf.shape(input)[0]), target), axis=-1)
+            )
+            * current_weight
+        )
     else:
         print(input)
         batch_size = tf.shape(input)[0]
@@ -149,17 +155,25 @@ def nn_loss(
         current_weight = tf.where(
             ignore_classes_mask,
             ignore_class_weight,
-            weight[flat_target] if weight is not None else tf.constant(1, dtype=input.dtype)
+            (
+                weight[flat_target]
+                if weight is not None
+                else tf.constant(1, dtype=input.dtype)
+            ),
         )
-        loss = -tf.gather_nd(input, tf.stack([bdx, flat_target, kdx], axis=-1)) * current_weight
+        loss = (
+            -tf.gather_nd(input, tf.stack([bdx, flat_target, kdx], axis=-1))
+            * current_weight
+        )
         loss = tf.reshape(loss, tf.shape(target))
 
-    if reduction == 'mean':
+    if reduction == "mean":
         return tf.reduce_sum(loss) / tf.reduce_sum(current_weight)
-    elif reduction == 'sum':
+    elif reduction == "sum":
         return tf.reduce_sum(loss)
     else:
         return loss
+
 
 def _apply_loss_reduction(loss: tf.Tensor, reduction: str, axis) -> tf.Tensor:
     if reduction == "sum":
