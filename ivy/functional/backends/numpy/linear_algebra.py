@@ -297,10 +297,9 @@ def svd(
         return results(D)
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.1 and below": ("float16",)}, backend_version)
 def svdvals(
-    x: np.ndarray, /, *, driver: Optional[str] = None, out: Optional[np.ndarray] = None
-) -> np.ndarray:
+    x: np.ndarray, /, *, driver: Optional[str] = None, out: Optional[np.ndarray] = None) -> np.ndarray:
     # TODO: handling the driver argument
     return np.linalg.svd(x, compute_uv=False)
 
