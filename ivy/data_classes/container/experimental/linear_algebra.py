@@ -1404,8 +1404,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
-        """
-        ivy.Container instance method variant of ivy.tensor_train_matrix.
+        """ivy.Container instance method variant of ivy.tensor_train_matrix.
         This method simply wraps the function, and so the docstring for
         ivy.tensor_train_matrix also applies to this method with minimal
         changes.

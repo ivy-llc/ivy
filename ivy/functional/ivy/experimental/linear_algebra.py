@@ -1294,8 +1294,7 @@ def tensor_train_matrix(
     svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
     verbose: Optional[bool] = False,
 ):
-    """
-    Decomposes a tensor into a matrix in TT format.
+    """Decomposes a tensor into a matrix in TT format.
 
     Parameters
     ----------
@@ -1306,7 +1305,7 @@ def tensor_train_matrix(
     rank
         Maximum allowable TT rank of the factors
         if 'same', creates a decomposition with the same number of parameters as `tensor`
-        if float, creates a decomposition with `rank` x the number of parameters 
+        if float, creates a decomposition with `rank` x the number of parameters
         of `input_tensor`
         otherwise, the actual rank to be used
     svd
