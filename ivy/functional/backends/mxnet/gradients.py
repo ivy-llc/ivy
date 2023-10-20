@@ -1,5 +1,4 @@
-"""Collection of MXNet gradient functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of MXNet gradient functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 from typing import Sequence, Union
