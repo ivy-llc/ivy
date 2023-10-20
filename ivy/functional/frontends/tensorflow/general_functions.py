@@ -267,7 +267,7 @@ def gather_nd(params, indices, batch_dims=0, name=None):
 
 @to_ivy_arrays_and_back
 def group(*inputs, **kwargs):
-    return ivy.to_list(inputs)
+    return no_op(inputs)
 
 
 @to_ivy_arrays_and_back
@@ -621,14 +621,6 @@ def truncatemod(x, y):
     x = ivy.broadcast_to(x, ivy.shape(y))
     y = ivy.broadcast_to(y, ivy.shape(x))
     return ivy.trunc(x / y) * y + (x % y)
-
-
-@to_ivy_arrays_and_back
-def tuple(tensors, control_inputs=None, name=None):
-    tpl = []
-    for t in tensors:
-        tpl.append(t)
-    return tpl
 
 
 @to_ivy_arrays_and_back

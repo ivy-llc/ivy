@@ -2192,29 +2192,6 @@ def test_tensorflow_truncatemod(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.tuple",
-    dtype_and_values=helpers.dtype_and_values(),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_tuple(
-    dtype_and_values,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-):
-    input_dtypes, values = dtype_and_values
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        backend_to_test=backend_fw,
-        tensors=dtype_and_values,
-    )
-
-
-@handle_frontend_test(
     fn_tree="tensorflow.unique",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=["int64", "int32"],
