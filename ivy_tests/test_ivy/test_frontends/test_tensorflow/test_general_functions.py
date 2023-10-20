@@ -1041,6 +1041,36 @@ def test_tensorflow_gather_nd(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.group",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=1, max_value=4),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_group(
+    *,
+    dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        inputs=x,
+    )
+
+
 # identity
 @handle_frontend_test(
     fn_tree="tensorflow.identity",
@@ -2163,29 +2193,24 @@ def test_tensorflow_truncatemod(
 
 @handle_frontend_test(
     fn_tree="tensorflow.tuple",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-    ),
+    dtype_and_values=helpers.dtype_and_values(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_tuple(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
+    dtype_and_values,
     frontend,
     backend_fw,
     test_flags,
+    fn_tree,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtypes, values = dtype_and_values
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
+        input_dtypes=input_dtypes,
         test_flags=test_flags,
+        frontend=frontend,
         fn_tree=fn_tree,
-        on_device=on_device,
-        tensors=x,
+        backend_to_test=backend_fw,
+        tensors=dtype_and_values,
     )
 
 
@@ -2512,28 +2537,4 @@ def test_tensorflow_zeros_like(
         on_device=on_device,
         input=x[0],
         dtype=dtype[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree='tensorflow.tuple',
-    dtype_and_x=helpers.dtype_and_values,
-)
-def test_tensorflow_tuple(
-        dtype_and_x,
-        frontend,
-        backend_fw,
-        test_flags,
-        fn_tree,
-        on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        tensors=x,
     )

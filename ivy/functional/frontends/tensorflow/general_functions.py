@@ -266,6 +266,11 @@ def gather_nd(params, indices, batch_dims=0, name=None):
 
 
 @to_ivy_arrays_and_back
+def group(*inputs, **kwargs):
+    return ivy.to_list(inputs)
+
+
+@to_ivy_arrays_and_back
 def identity(input, name=None):
     return ivy.copy_array(input)
 
@@ -726,10 +731,3 @@ def zeros_initializer(shape, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def zeros_like(input, dtype=None, name=None):
     return ivy.zeros_like(input, dtype=dtype)
-
-@to_ivy_arrays_and_back
-def tuple(tensors, control_inputs=None, name=None):
-    tuple = []
-    for t in tensors:
-        tuple.append(t)
-    return tuple
