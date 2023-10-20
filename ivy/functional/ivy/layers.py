@@ -1855,7 +1855,7 @@ def conv3d_transpose(
     >>> print(y.shape)
     ivy.Shape(1, 7, 129, 129, 6)
 
-    With :class: 'ivy.Container' inputs:
+    With :class:`ivy.Container` inputs:
 
     >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
     >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
