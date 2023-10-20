@@ -929,7 +929,7 @@ def test_frontend_function(
             ret_ = ret_.ivy_array
             assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
-            assert not isinstance(ret, tuple)
+            assert _is_frontend_array(ret)
 
             if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
                 # the function provides optional inplace update
@@ -958,7 +958,12 @@ def test_frontend_function(
             )
             if test_flags.generate_frontend_arrays:
                 assert first_array is ret_
-            else:
+            elif (
+                ivy_backend.is_native_array(first_array)
+                and ivy_backend.inplace_arrays_supported()
+            ):
+                assert first_array is ret_.ivy_array.data
+            elif ivy_backend.is_ivy_array(first_array):
                 assert first_array.data is ret_.ivy_array.data
 
         # create NumPy args
