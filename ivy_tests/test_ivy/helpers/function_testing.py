@@ -929,7 +929,7 @@ def test_frontend_function(
             ret_ = ret_.ivy_array
             assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
-            assert not isinstance(ret, tuple)
+            assert _is_frontend_array(ret)
 
             if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
                 # the function provides optional inplace update
@@ -958,13 +958,17 @@ def test_frontend_function(
             )
             if test_flags.generate_frontend_arrays:
                 assert first_array is ret_
-            else:
+            elif (
+                ivy_backend.is_native_array(first_array)
+                and ivy_backend.inplace_arrays_supported()
+            ):
+                assert first_array is ret_.ivy_array.data
+            elif ivy_backend.is_ivy_array(first_array):
                 assert first_array.data is ret_.ivy_array.data
 
         # create NumPy args
         ret_np_flat = flatten_frontend_to_np(
             ret=ret,
-            frontend_array_fn=create_frontend_array,
             backend=backend_to_test,
         )
 
@@ -2130,7 +2134,6 @@ def test_frontend_method(
 
         ret_np_flat = flatten_frontend_to_np(
             ret=ret,
-            frontend_array_fn=create_frontend_array,
             backend=backend_to_test,
         )
 
@@ -2410,14 +2413,19 @@ def flatten_and_to_np(*, backend: str, ret):
     return ret
 
 
-def flatten_frontend_to_np(*, backend: str, ret, frontend_array_fn=None):
+def flatten_frontend_to_np(*, backend: str, ret):
     # flatten the return
-    ret_flat = flatten_frontend(
-        ret=ret, backend=backend, frontend_array_fn=frontend_array_fn
-    )
-
+    if not isinstance(ret, tuple):
+        ret = (ret,)
     with BackendHandler.update_backend(backend) as ivy_backend:
-        return [ivy_backend.to_numpy(x.ivy_array) for x in ret_flat]
+        ret_idxs = ivy_backend.nested_argwhere(ret, _is_frontend_array)
+        if len(ret_idxs) == 0:  # handle scalars
+            ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.isscalar)
+            ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
+            return [ivy_backend.to_numpy(x) for x in ret_flat]
+        else:
+            ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
+            return [ivy_backend.to_numpy(x.ivy_array) for x in ret_flat]
 
 
 def get_ret_and_flattened_np_array(
