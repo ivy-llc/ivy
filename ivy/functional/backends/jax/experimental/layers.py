@@ -441,7 +441,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.18 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.19 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -814,7 +814,7 @@ def ifftn(
 
 
 @with_unsupported_dtypes(
-    {"0.4.18 and below": ("bfloat16", "float16", "complex")}, backend_version
+    {"0.4.19 and below": ("bfloat16", "float16", "complex")}, backend_version
 )
 def embedding(
     weights: JaxArray,
@@ -862,7 +862,7 @@ def rfft(
     return ret
 
 
-@with_unsupported_dtypes({"0.4.18 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"0.4.19 and below": ("float16", "complex")}, backend_version)
 def rfftn(
     x: JaxArray,
     s: Sequence[int] = None,

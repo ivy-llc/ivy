@@ -1835,12 +1835,12 @@ def is_bool_dtype(
     elif isinstance(dtype_in, np.ndarray):
         return "bool" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return isinstance(dtype_in, (bool, np.bool)) and not isinstance(dtype_in, bool)
+        return isinstance(dtype_in, (bool, np.bool_)) and not isinstance(dtype_in, bool)
     elif isinstance(dtype_in, (list, tuple, dict)):
         return bool(
             ivy.nested_argwhere(
                 dtype_in,
-                lambda x: isinstance(x, (bool, np.bool)) and x is not int,
+                lambda x: isinstance(x, (bool, np.bool_)) and x is not int,
             )
         )
     return "bool" in ivy.as_ivy_dtype(dtype_in)
