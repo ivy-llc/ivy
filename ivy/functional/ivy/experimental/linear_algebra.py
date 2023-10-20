@@ -1294,6 +1294,30 @@ def tensor_train_matrix(
     svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
     verbose: Optional[bool] = False,
 ):
+    """
+    Decomposes a tensor into a matrix in TT format.
+
+    Parameters
+    ----------
+    input_tensor
+        Tensor to decompose
+        If the input tensor is of size (4, 9) and the tensorized_shape is (2, 2, 3, 3)
+        then tensor should be ivy.reshape(input_tensor, (2, 2, 3, 3))
+    rank
+        Maximum allowable TT rank of the factors
+        if 'same', creates a decomposition with the same number of parameters as `tensor`
+        if float, creates a decomposition with `rank` x the number of parameters 
+        of `input_tensor`
+        otherwise, the actual rank to be used
+    svd
+        function to use to compute the SVD
+    verbose
+        level of verbosity
+
+    Returns
+    -------
+    tt matrix
+    """
     order = ivy.get_num_dims(input_tensor)
     n_input = order // 2
 

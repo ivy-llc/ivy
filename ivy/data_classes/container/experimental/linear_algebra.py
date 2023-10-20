@@ -1352,6 +1352,87 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_tensor_train_matrix(
+        input_tensor: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], str, ivy.Container],
+        /,
+        *,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """ivy.Container static method variant of ivy.tensor_train_matrix. This
+        method simply wraps the function, and so the docstring for
+        ivy.tensor_train_matrix also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        input_tensor
+            tensor to be decomposed.
+        rank
+            maximum allowable TT-ranks of the decomposition.
+        svd
+            SVD method to use.
+        verbose
+            level of verbosity.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "tensor_train_matrix",
+            input_tensor,
+            rank,
+            svd=svd,
+            verbose=verbose,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def tensor_train_matrix(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], str, ivy.Container],
+        /,
+        *,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """
+        ivy.Container instance method variant of ivy.tensor_train_matrix.
+        This method simply wraps the function, and so the docstring for
+        ivy.tensor_train_matrix also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        input_tensor
+            tensor to be decomposed.
+        rank
+            maximum allowable TT-ranks of the decomposition.
+        svd
+            SVD method to use.
+        verbose
+            level of verbosity.
+        """
+        return self.static_tensor_train_matrix(
+            self,
+            rank,
+            svd=svd,
+            verbose=verbose,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_truncated_svd(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,

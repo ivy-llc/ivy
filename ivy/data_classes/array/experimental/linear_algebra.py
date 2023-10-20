@@ -429,6 +429,36 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         """
         return ivy.tensor_train(self._data, rank, svd=svd, verbose=verbose)
 
+    def tensor_train_matrix(
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Union[int, Sequence[int]],
+        /,
+        *,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        verbose: Optional[bool] = False,
+    ) -> ivy.TTTensor:
+        """ivy.Array instance method variant of ivy.tensor_train_matrix. This
+        method simply wraps the function, and so the docstring for
+        ivy.tensor_train_matrix also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            input tensor
+        rank
+            maximum allowable TT rank of the factors
+        svd
+            function to use to compute the SVD
+        verbose
+            level of verbosity
+
+        Returns
+        -------
+        ivy.TTTensor
+        """
+        return ivy.tensor_train_matrix(self._data, rank, svd=svd, verbose=verbose)
+
     def truncated_svd(
         self: Union[ivy.Array, ivy.NativeArray],
         /,

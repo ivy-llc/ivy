@@ -1773,6 +1773,38 @@ def test_tensor_train(*, data, svd, test_flags, backend_fw, fn_name, on_device):
         assert np.prod(f.shape) == np.prod(f_gt.shape)
 
 
+@handle_test(
+    fn_tree="functional.ivy.experimental.tensor_train_matrix",
+    data=_tensor_train_data(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    svd=st.just("truncated_svd"),
+)
+def test_tensor_train_matrix(*, data, svd, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x, rank = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtype,
+        input_tensor=x,
+        rank=rank,
+        svd=svd,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    factors = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
+    )
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
 # The following 3 tests have been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tt_decomposition.py
 @pytest.mark.parametrize("shape, rank", [((3, 4, 5, 6, 2, 10), (1, 3, 3, 4, 2, 2, 1))])
