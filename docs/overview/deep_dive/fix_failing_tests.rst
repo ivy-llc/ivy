@@ -8,7 +8,7 @@ Fix Failing Tests:
 .. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
-.. _`ivy/run_tests_CLI`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI
+.. _`ivy/scripts/shell`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/scripts/shell
 .. _`platform compatibility tags`: https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
 .. _`logging level`: https://docs.python.org/3/library/logging.html#logging.Logger.setLevel
 .. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
