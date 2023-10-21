@@ -1024,6 +1024,45 @@ def test_paddle_solve(
 
 
 @handle_frontend_test(
+    fn_tree="paddle.linalg.svd",
+    dtype_and_matrix=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    full_matrix=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_paddle_svd(
+    *,
+    dtype_and_matrix,
+    full_matrix,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_matrix
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        atol=1e-03,
+        x=x[0],
+        full_matrices=full_matrix,
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.transpose",
     dtype_and_x_perm=_transpose_helper(),
     test_with_out=st.just(False),

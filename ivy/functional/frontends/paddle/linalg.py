@@ -247,6 +247,12 @@ def solve(x, y, name=None):
     return ivy.solve(x, y)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def svd(x, full_matrices=False, name=None):
+    return ivy.svd(x, full_matrices=full_matrices, compute_uv=True)
+
+
 # transpose
 @with_unsupported_dtypes({"2.5.1 and below": ("uint8", "int8", "int16")}, "paddle")
 @to_ivy_arrays_and_back
