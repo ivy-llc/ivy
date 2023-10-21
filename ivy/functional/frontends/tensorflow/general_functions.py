@@ -267,7 +267,8 @@ def gather_nd(params, indices, batch_dims=0, name=None):
 
 @to_ivy_arrays_and_back
 def group(*inputs, **kwargs):
-    return no_op(inputs)
+    name = kwargs.pop("name", None)
+    return no_op(name=name)
 
 
 @to_ivy_arrays_and_back
