@@ -764,7 +764,7 @@ def _is_scalar(x):
     Returns:
     - bool: True if the tensor is a scalar, False otherwise.
     """
-    return x.size == 1 and x.dim() == 0 and not tuple(x.shape)
+    return x.size == 1 and x.dim() == 0 and tuple(x.shape) == ()
 
 
 # TODO: Repalce once native function becomes available.
