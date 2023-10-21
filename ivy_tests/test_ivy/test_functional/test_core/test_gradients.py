@@ -239,9 +239,7 @@ def test_execute_with_gradients(
 @pytest.mark.parametrize("nth", [1, 2, 3])
 def test_grad(x, dtype, func, backend_fw, nth):
     # ToDo: Remove skipping for paddle and jax for nth > 1
-    if backend_fw == "numpy" or (
-        (backend_fw == "paddle" or backend_fw == "jax") and nth > 1
-    ):
+    if backend_fw == "numpy" or backend_fw in ["paddle", "jax"] and nth > 1:
         return
 
     with BackendHandler.update_backend(backend_fw) as ivy_backend:

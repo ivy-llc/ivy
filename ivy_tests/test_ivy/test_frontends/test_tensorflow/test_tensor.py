@@ -916,7 +916,7 @@ def test_tensorflow__pow__(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    if x[1].dtype == "int32" or x[1].dtype == "int64":
+    if x[1].dtype in ["int32", "int64"]:
         if x[1].ndim == 0:
             if x[1] < 0:
                 x[1] *= -1
