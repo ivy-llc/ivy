@@ -1,5 +1,4 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import os
@@ -93,7 +92,7 @@ def handle_soft_device_variable(*args, fn, **kwargs):
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
         # ToDO: add proper numpy profiler
-        super(Profiler, self).__init__(save_dir)
+        super().__init__(save_dir)
         os.makedirs(save_dir, exist_ok=True)
         self._start_time = None
 
