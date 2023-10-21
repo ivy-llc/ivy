@@ -116,7 +116,7 @@ def _generic_lstm(
 def _lstm_cell(
     x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias, batch_sizes=None
 ):
-    x_shape = list(x.shape)
+    x_shape = x.shape
     batch_shape = x_shape[1:-1]
     timesteps = x_shape[0]
     input_channels = x_shape[-1]
