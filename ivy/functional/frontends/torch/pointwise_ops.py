@@ -182,6 +182,7 @@ def div(input, other, *, rounding_mode=None, out=None):
 
 
 @with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, "torch")
+@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16",)}, "paddle")
 @to_ivy_arrays_and_back
 def erf(input, *, out=None):
     return ivy.erf(input, out=out)
@@ -302,6 +303,7 @@ def lgamma(input, *, out=None):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16",)}, "paddle")
 def log(input, *, out=None):
     return ivy.log(input, out=out)
 
