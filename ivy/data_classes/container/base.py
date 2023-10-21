@@ -2249,7 +2249,7 @@ class ContainerBase(dict, abc.ABC):
         ret
             Container as flat list.
         """
-        return list([item for key, item in self.cont_to_iterator()])
+        return list(item for key, item in self.cont_to_iterator())
 
     def cont_from_flat_list(self, flat_list):
         """
@@ -3803,7 +3803,7 @@ class ContainerBase(dict, abc.ABC):
                             s[0].isnumeric()
                             or s[0] == "-"
                             or s[0:3] == "..."
-                            or max([ss in s[0:6] for ss in ["nan, ", "inf, "]])
+                            or max(ss in s[0:6] for ss in ["nan, ", "inf, "])
                         )
                         else (
                             indent_str + indented_key_str + s
@@ -4279,7 +4279,7 @@ class ContainerBase(dict, abc.ABC):
         kcs = [kc for kc in self.cont_to_iterator_keys(include_empty=True)]
         if not kcs:
             return 0
-        return max([len(kc.split("/")) for kc in kcs])
+        return max(len(kc.split("/")) for kc in kcs)
 
     @property
     def dynamic_backend(self):

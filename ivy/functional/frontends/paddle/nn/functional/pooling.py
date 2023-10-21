@@ -45,7 +45,7 @@ def avg_pool1d(
     padding = _broadcast_pooling_helper(padding, "1d", name="padding")
     # Figure out padding string
     if all(
-        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+        pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)
     ):
         padding = "SAME"
     else:
@@ -81,7 +81,7 @@ def avg_pool2d(
     padding = _broadcast_pooling_helper(padding, "2d", name="padding")
     # Figure out padding string
     if all(
-        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+        pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)
     ):
         padding = "SAME"
     else:

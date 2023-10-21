@@ -17,13 +17,13 @@ def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
     dims = {"1d": 1, "2d": 2, "3d": 3}
 
     if isinstance(x, int):
-        return tuple([x for _ in range(dims[pool_dims])])
+        return tuple(x for _ in range(dims[pool_dims]))
 
     if len(x) == 1:
-        return tuple([x[0] for _ in range(dims[pool_dims])])
+        return tuple(x[0] for _ in range(dims[pool_dims]))
     elif len(x) == dims[pool_dims]:
         return tuple(x)
-    elif len(x) != dims[pool_dims]:
+    else:
         raise ValueError(
             f"`{name}` must either be a single int, "
             f"or a tuple of {dims[pool_dims]} ints. "
@@ -98,7 +98,7 @@ def avg_pool1d(
     kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
     padding = _broadcast_pooling_helper(padding, "1d", name="padding")
     if all(
-        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+        pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)
     ):
         padding = "SAME"
     else:
@@ -132,7 +132,7 @@ def avg_pool2d(
     kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
     padding = _broadcast_pooling_helper(padding, "2d", name="padding")
     if all(
-        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+        pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)
     ):
         padding = "SAME"
     else:
@@ -166,7 +166,7 @@ def avg_pool3d(
     kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
     padding = _broadcast_pooling_helper(padding, "3d", name="padding")
     if all(
-        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+        pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)
     ):
         padding = "SAME"
     else:

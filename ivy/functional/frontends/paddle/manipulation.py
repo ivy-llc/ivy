@@ -194,7 +194,7 @@ def unbind(input, axis=0):
     shape = list(input.shape)
     num_splits = shape[axis]
     shape.pop(axis)
-    return tuple([x.reshape(tuple(shape)) for x in split(input, num_splits, axis=axis)])
+    return tuple(x.reshape(tuple(shape)) for x in split(input, num_splits, axis=axis))
 
 
 @with_supported_dtypes(

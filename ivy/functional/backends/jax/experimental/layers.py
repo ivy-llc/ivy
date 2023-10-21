@@ -138,7 +138,7 @@ def general_pool(
             pad_list = [(0, 0)] * len(pad_list)
     else:
         if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
+            item != 0 for sublist in padding for item in sublist
         ):
             raise NotImplementedError(
                 "Nonzero explicit padding is not supported for depthwise max pooling"
@@ -558,7 +558,7 @@ def fft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.fft(x, n, dim, norm)
 
@@ -670,7 +670,7 @@ def ifft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.ifft(x, n, dim, norm)
 
@@ -890,7 +890,7 @@ def rfftn(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.rfftn(x, s, axes, norm).astype(jnp.complex128)
 

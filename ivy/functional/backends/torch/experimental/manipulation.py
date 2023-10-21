@@ -339,7 +339,7 @@ def take_along_axis(
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = torch.clamp(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
+    elif mode in {"fill", "drop"}:
         if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = float("nan")
         elif "uint" in str(arr.dtype):

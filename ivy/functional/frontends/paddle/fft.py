@@ -182,7 +182,7 @@ def ihfft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
     if norm == "ortho":
         ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="ortho"))
 
-    if x.dtype == ivy.float32 or x.dtype == ivy.int32 or x.dtype == ivy.int64:
+    if x.dtype in [ivy.float32, ivy.int32, ivy.int64]:
         return ivy.astype(ihfft2_result, ivy.complex64)
     if x.dtype == ivy.float64:
         return ivy.astype(ihfft2_result, ivy.complex128)

@@ -205,7 +205,7 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
             raise ValueError
         elif p == 1:
             ret = ivy.sum(ivy.abs(x), axis=axis, keepdims=keepdim)
-        elif p == 2 or p == "fro":
+        elif p in [2, "fro"]:
             ret = ivy.matrix_norm(x, ord="fro", axis=axis, keepdims=keepdim)
         elif p == ivy.inf:
             ret = ivy.max(ivy.abs(x), axis=axis, keepdims=keepdim)
