@@ -2102,6 +2102,7 @@ def test_torch_masked_fill(
     *, x_mask_val, on_device, fn_tree, frontend, test_flags, backend_fw
 ):
     dtype, x, mask, val = x_mask_val
+    mask = mask.astype(np.bool_)
     helpers.test_frontend_function(
         input_dtypes=[dtype],
         backend_to_test=backend_fw,
