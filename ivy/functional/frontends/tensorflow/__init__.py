@@ -89,6 +89,7 @@ from . import ragged
 from .ragged import *
 from . import tensor
 from .tensor import EagerTensor, Tensor
+from .tensorarray import TensorArray
 from . import variable
 from .variable import Variable, IndexedSlices
 from . import keras

@@ -1,4 +1,5 @@
 """Collection of tests for statistical functions."""
+
 # global
 import numpy as np
 from hypothesis import strategies as st, assume

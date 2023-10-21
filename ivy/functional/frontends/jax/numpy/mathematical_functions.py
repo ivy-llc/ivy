@@ -67,7 +67,7 @@ def around(a, decimals=0, out=None):
 
 
 @with_unsupported_dtypes(
-    {"0.4.17 and below": ("bfloat16",)},
+    {"0.4.19 and below": ("bfloat16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -220,7 +220,7 @@ def expm1(
 
 
 @with_unsupported_dtypes(
-    {"0.4.17 and below": ("uint16",)},
+    {"0.4.19 and below": ("uint16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -323,6 +323,11 @@ def inner(a, b):
 
 
 @to_ivy_arrays_and_back
+def interp(x, xp, fp, left=None, right=None, period=None):
+    return ivy.interp(x, xp, fp, left=left, right=right, period=period)
+
+
+@to_ivy_arrays_and_back
 def kron(a, b):
     a, b = promote_types_of_jax_inputs(a, b)
     return ivy.kron(a, b)
@@ -390,7 +395,7 @@ def minimum(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.17 and below": ("complex",)}, "jax")
+@with_unsupported_dtypes({"0.4.19 and below": ("complex",)}, "jax")
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
@@ -432,7 +437,7 @@ def negative(
 
 @with_unsupported_dtypes(
     {
-        "0.4.17 and below": (
+        "0.4.19 and below": (
             "bfloat16",
             "float16",
         )
@@ -477,7 +482,7 @@ def polyadd(a1, a2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.17 and below": ("float16",)},
+    {"0.4.19 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -519,7 +524,7 @@ def polydiv(u, v, *, trim_leading_zeros=False):
 
 
 @with_unsupported_dtypes(
-    {"0.4.17 and below": ("float16",)},
+    {"0.4.19 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
