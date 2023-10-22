@@ -176,6 +176,7 @@ def _get_dtype_and_values_for_lerp(draw):
 
 
 # histogram
+@st.composite
 def _histogram_helper(draw):
     dtype_input = draw(st.sampled_from(draw(helpers.get_dtypes("float"))))
     bins = draw(
