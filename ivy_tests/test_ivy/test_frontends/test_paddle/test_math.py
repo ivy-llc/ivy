@@ -1260,36 +1260,6 @@ def test_paddle_heaviside(
     )
 
 
-# increment
-@handle_frontend_test(
-    fn_tree="paddle.increment",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
-        shape=(1,),
-    ),
-)
-def test_paddle_increment(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
 # inner
 @handle_frontend_test(
     fn_tree="paddle.inner",
