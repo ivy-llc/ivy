@@ -168,6 +168,7 @@ def test_as_native_dtype(
     fn_tree="functional.ivy.astype",
     dtype_and_x_and_cast_dtype=astype_helper(),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_astype(
     *, dtype_and_x_and_cast_dtype, test_flags, backend_fw, fn_name, on_device
