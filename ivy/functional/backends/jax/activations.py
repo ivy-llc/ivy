@@ -1,6 +1,5 @@
 """Collection of Jax activation functions, wrapped to fit Ivy syntax and signature."""
 
-
 # global
 
 

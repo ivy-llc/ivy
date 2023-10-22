@@ -264,6 +264,23 @@ def test_function_backend_computation(
                     "the array in out argument does not contain same value as the"
                     " returned"
                 )
+        if test_flags.with_copy:
+            array_fn = ivy_backend.is_array
+            if "copy" in list(inspect.signature(target_fn).parameters.keys()):
+                kwargs["copy"] = True
+            first_array = ivy_backend.func_wrapper._get_first_array(
+                *args, array_fn=array_fn, **kwargs
+            )
+            ret_, ret_np_flat_ = get_ret_and_flattened_np_array(
+                fw,
+                target_fn,
+                *args,
+                test_trace=test_flags.test_trace,
+                precision_mode=test_flags.precision_mode,
+                **kwargs,
+            )
+            assert not np.may_share_memory(first_array, ret_)
+
     ret_device = None
     if isinstance(ret_from_target, ivy_backend.Array):  # TODO use str for now
         ret_device = ivy_backend.dev(ret_from_target)
@@ -451,6 +468,10 @@ def test_function(
     """
     _switch_backend_context(test_flags.test_trace or test_flags.transpile)
     ground_truth_backend = test_flags.ground_truth_backend
+
+    if test_flags.with_copy is True:
+        test_flags.with_out = False
+
     if mod_backend[backend_to_test]:
         # multiprocessing
         proc, input_queue, output_queue = mod_backend[backend_to_test]
@@ -743,6 +764,10 @@ def test_frontend_function(
         not test_flags.with_out or not test_flags.inplace
     ), "only one of with_out or with_inplace can be set as True"
 
+    if test_flags.with_copy is True:
+        test_flags.with_out = False
+        test_flags.inplace = False
+
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
@@ -843,12 +868,14 @@ def test_frontend_function(
         # test if return is frontend
         _assert_frontend_ret(ret)
 
-        if test_flags.with_out and "out" in kwargs and kwargs["out"] is not None:
+        if test_flags.with_out and "out" in list(
+            inspect.signature(frontend_fn).parameters.keys()
+        ):
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
             else:
                 is_ret_tuple = issubclass(ret, tuple)
-            out = kwargs["out"]
+            out = ret
             if is_ret_tuple:
                 flatten_ret = flatten_frontend(
                     ret=ret,
@@ -872,8 +899,37 @@ def test_frontend_function(
                 ):
                     assert ret.ivy_array.data is out.ivy_array.data
                 assert ret is out
+        elif test_flags.with_copy:
+            assert _is_frontend_array(ret)
+
+            if "copy" in list(inspect.signature(frontend_fn).parameters.keys()):
+                copy_kwargs["copy"] = True
+            first_array = ivy_backend.func_wrapper._get_first_array(
+                *copy_args,
+                array_fn=(
+                    _is_frontend_array
+                    if test_flags.generate_frontend_arrays
+                    else ivy_backend.is_array
+                ),
+                **copy_kwargs,
+            )
+            ret_ = get_frontend_ret(
+                backend_to_test,
+                frontend_fn,
+                *copy_args,
+                test_trace=test_flags.test_trace,
+                frontend_array_function=(
+                    create_frontend_array if test_flags.test_trace else None
+                ),
+                precision_mode=test_flags.precision_mode,
+                **copy_kwargs,
+            )
+            if _is_frontend_array(first_array):
+                first_array = first_array.ivy_array
+            ret_ = ret_.ivy_array
+            assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
-            assert not isinstance(ret, tuple)
+            assert _is_frontend_array(ret)
 
             if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
                 # the function provides optional inplace update
@@ -902,16 +958,20 @@ def test_frontend_function(
             )
             if test_flags.generate_frontend_arrays:
                 assert first_array is ret_
-            else:
+            elif (
+                ivy_backend.is_native_array(first_array)
+                and ivy_backend.inplace_arrays_supported()
+            ):
+                assert first_array is ret_.ivy_array.data
+            elif ivy_backend.is_ivy_array(first_array):
                 assert first_array.data is ret_.ivy_array.data
 
         # create NumPy args
         if test_values:
             ret_np_flat = flatten_frontend_to_np(
-                ret=ret,
-                frontend_array_fn=create_frontend_array,
-                backend=backend_to_test,
-            )
+            ret=ret,
+            backend=backend_to_test,
+        )
 
         if not test_values:
             ret = ivy_backend.nested_map(
@@ -2076,7 +2136,6 @@ def test_frontend_method(
 
         ret_np_flat = flatten_frontend_to_np(
             ret=ret,
-            frontend_array_fn=create_frontend_array,
             backend=backend_to_test,
         )
 
@@ -2357,14 +2416,19 @@ def flatten_and_to_np(*, backend: str, ret):
     return ret
 
 
-def flatten_frontend_to_np(*, backend: str, ret, frontend_array_fn=None):
+def flatten_frontend_to_np(*, backend: str, ret):
     # flatten the return
-    ret_flat = flatten_frontend(
-        ret=ret, backend=backend, frontend_array_fn=frontend_array_fn
-    )
-
+    if not isinstance(ret, tuple):
+        ret = (ret,)
     with BackendHandler.update_backend(backend) as ivy_backend:
-        return [ivy_backend.to_numpy(x.ivy_array) for x in ret_flat]
+        ret_idxs = ivy_backend.nested_argwhere(ret, _is_frontend_array)
+        if len(ret_idxs) == 0:  # handle scalars
+            ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.isscalar)
+            ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
+            return [ivy_backend.to_numpy(x) for x in ret_flat]
+        else:
+            ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
+            return [ivy_backend.to_numpy(x.ivy_array) for x in ret_flat]
 
 
 def get_ret_and_flattened_np_array(

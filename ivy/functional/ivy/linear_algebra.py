@@ -1,4 +1,5 @@
 # global
+
 from typing import Union, Optional, Tuple, Literal, List, Sequence
 
 # local
@@ -2531,6 +2532,14 @@ def trace(
         -   ``offset < 0``: off-diagonal below the main diagonal.
 
         Default: ``0``.
+    axis1
+        axis to be used as the first axis of the 2-D sub-arrays from which the
+        diagonals should be taken.
+        Defaults to ``0.`` .
+    axis2
+        axis to be used as the second axis of the 2-D sub-arrays from which the
+        diagonals should be taken.
+        Defaults to ``1.`` .
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2567,6 +2576,14 @@ def trace(
     >>> print(y)
     ivy.array([3., 4.])
 
+    >>> x = ivy.array([[1., 2., 3.],
+    ...                [4., 5., 6.],
+    ...                [7., 8., 9.]])
+    >>> y = ivy.zeros(1)
+    >>> ivy.trace(x, offset=1,out=y)
+    >>> print(y)
+    ivy.array(8.)
+
     With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[2., 0., 3.],[3., 5., 6.]])
@@ -2577,9 +2594,9 @@ def trace(
     >>> x = ivy.native_array([[0, 1, 2],
     ...                       [3, 4, 5],
     ...                       [6, 7, 8]])
-    >>> y = ivy.trace(x, offset=0)
+    >>> y = ivy.trace(x, offset=1)
     >>> print(y)
-    ivy.array(12)
+    ivy.array(6)
 
     With :class:`ivy.Container` inputs:
 
@@ -2611,6 +2628,49 @@ def trace(
     {
         a: ivy.array(6),
         b: ivy.array(8)
+    }
+
+    With multiple ivy.Container inputs:
+
+    >>> x = ivy.Container(
+    ...        a = ivy.array([[7, 1, 3],
+    ...                       [8, 6, 5],
+    ...                       [9, 7, 2]]),
+    ...        b = ivy.array([[4, 3, 2],
+    ...                       [1, 9, 5],
+    ...                       [7, 0, 6]])
+    ...    )
+    >>> offset = ivy.Container(a=1, b=0)
+    >>> y = ivy.trace(x, offset)
+    >>> print(y)
+    {
+        a: ivy.array(6),
+        b: ivy.array(19)
+    }
+
+    With Array instance method example:
+
+    >>> x = ivy.array([[2., 0., 11.],
+    ...                [3., 5., 12.],
+    ...                [1., 6., 13.],
+    ...                [8., 9., 14.]])
+    >>> y = x.trace(offset=1)
+    >>> print(y)
+    ivy.array(12.)
+
+    With Container instance method example:
+
+    >>> x = ivy.Container(
+    ...        a=ivy.array([[2., 0., 11.],
+    ...                     [3., 5., 12.]]),
+    ...        b=ivy.array([[1., 6., 13.],
+    ...                     [8., 9., 14.]])
+    ...    )
+    >>> y = x.trace(offset=0)
+    >>> print(y)
+    {
+        a: ivy.array(7.),
+        b: ivy.array(10.)
     }
     """
     return current_backend(x).trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
