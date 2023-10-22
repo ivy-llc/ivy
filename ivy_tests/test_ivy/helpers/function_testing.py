@@ -906,11 +906,12 @@ def test_frontend_function(
                 assert first_array.data is ret_.ivy_array.data
 
         # create NumPy args
-        ret_np_flat = flatten_frontend_to_np(
-            ret=ret,
-            frontend_array_fn=create_frontend_array,
-            backend=backend_to_test,
-        )
+        if test_values:
+            ret_np_flat = flatten_frontend_to_np(
+                ret=ret,
+                frontend_array_fn=create_frontend_array,
+                backend=backend_to_test,
+            )
 
         if not test_values:
             ret = ivy_backend.nested_map(
@@ -969,12 +970,13 @@ def test_frontend_function(
             frontend_fw_kwargs=kwargs_frontend,
         )
 
-    frontend_ret_np_flat = flatten_frontend_fw_to_np(
-        frontend_ret,
-        frontend_config.isscalar,
-        frontend_config.is_native_array,
-        frontend_config.to_numpy,
-    )
+    if test_values:
+        frontend_ret_np_flat = flatten_frontend_fw_to_np(
+            frontend_ret,
+            frontend_config.isscalar,
+            frontend_config.is_native_array,
+            frontend_config.to_numpy,
+        )
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -2311,7 +2313,6 @@ def flatten(*, backend: str, ret):
                     x, dtype=ivy_backend.Dtype(str(np.asarray(x).dtype))
                 )
                 for x in ret_flat
-                if ivy.is_ivy_array(x)
             ]
         else:
             ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
@@ -2327,7 +2328,7 @@ def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
         if len(ret_idxs) == 0:  # handle scalars
             ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.isscalar)
             ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
-            ret_flat = [frontend_array_fn(x) for x in ret_flat if ivy.is_ivy_array(x)]
+            ret_flat = [frontend_array_fn(x) for x in ret_flat]
 
         else:
             ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
