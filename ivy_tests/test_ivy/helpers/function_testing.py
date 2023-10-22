@@ -969,9 +969,9 @@ def test_frontend_function(
         # create NumPy args
         if test_values:
             ret_np_flat = flatten_frontend_to_np(
-            ret=ret,
-            backend=backend_to_test,
-        )
+                ret=ret,
+                backend=backend_to_test,
+            )
 
         if not test_values:
             ret = ivy_backend.nested_map(
