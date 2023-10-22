@@ -123,6 +123,13 @@ def frombuffer(buffer, dtype="float", count=-1, offset=0):
     return ivy.frombuffer(buffer, dtype, count, offset)
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def fromstring(string: str, dtype: float, count: int = -1, *, sep: Any):
+    """fromstring."""
+    return None
+
+
 @to_ivy_arrays_and_back
 def full(shape, fill_value, dtype=None):
     return ivy.full(shape, fill_value, dtype=dtype)
@@ -311,10 +318,3 @@ def zeros_like(a, dtype=None, shape=None):
     if shape:
         return ivy.zeros(shape, dtype=dtype)
     return ivy.zeros_like(a, dtype=dtype)
-
-
-@handle_jax_dtype
-@to_ivy_arrays_and_back
-def fromstring(string: str, dtype: float, count: int = -1, *, sep: Any):
-    """fromstring"""
-    return None
