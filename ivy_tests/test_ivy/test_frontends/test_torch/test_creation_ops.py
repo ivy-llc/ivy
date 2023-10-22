@@ -263,6 +263,7 @@ def test_torch_as_tensor(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
+    test_with_copy=st.just(True),
 )
 def test_torch_asarray(
     *,

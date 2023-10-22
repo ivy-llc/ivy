@@ -2271,6 +2271,7 @@ def test_jax_multiply(
     posinf=st.floats(min_value=5e100, max_value=5e100),
     neginf=st.floats(min_value=-5e100, max_value=-5e100),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_jax_nan_to_num(
     *,
