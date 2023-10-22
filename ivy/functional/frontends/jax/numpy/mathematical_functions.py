@@ -394,7 +394,7 @@ def einsum_path(subscripts, *operands, optimize="greedy"):
         path_run = (scale_list[n], einsum_str, remaining_str)
         path_print += "\n%4d    %24s %40s" % path_run
 
-    ret = path, path_print
+    ret = (path, path_print)
     return ret
 
 
