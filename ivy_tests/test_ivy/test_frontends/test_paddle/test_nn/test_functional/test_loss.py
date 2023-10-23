@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # --- Helpers --- #
 # --------------- #
 
+
 # cosine embedding loss
 @st.composite
 def _cos_embd_loss_helper(draw):
