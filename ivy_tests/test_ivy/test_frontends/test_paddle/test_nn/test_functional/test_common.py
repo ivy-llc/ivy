@@ -217,37 +217,6 @@ def paddle_unfold_handler(draw, dtype):
 # ------------ #
 
 
-# linear
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.common.linear",
-    dtype_x_weight_bias=_x_and_linear(
-        dtypes=helpers.get_dtypes("valid", full=False),
-    ),
-)
-def test_linear(
-    *,
-    dtype_x_weight_bias,
-    on_device,
-    fn_tree,
-    backend_fw,
-    frontend,
-    test_flags,
-):
-    dtype, x, weight, bias = dtype_x_weight_bias
-    weight = ivy.swapaxes(weight, -1, -2)
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x,
-        weight=weight,
-        bias=bias,
-    )
-
-
 # Cosine Similarity
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.cosine_similarity",
@@ -458,6 +427,66 @@ def test_paddle_interpolate(
     )
 
 
+# linear
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.linear",
+    dtype_x_weight_bias=_x_and_linear(
+        dtypes=helpers.get_dtypes("valid", full=False),
+    ),
+)
+def test_paddle_linear(
+    *,
+    dtype_x_weight_bias,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    dtype, x, weight, bias = dtype_x_weight_bias
+    weight = ivy.swapaxes(weight, -1, -2)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        weight=weight,
+        bias=bias,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.unfold",
+    dtype_inputs=paddle_unfold_handler(dtype=helpers.get_dtypes("valid", full=False)),
+)
+def test_paddle_unfold(
+    *,
+    dtype_inputs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x, kernel_sizes, strides, paddings, dilations = dtype_inputs
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        kernel_sizes=kernel_sizes,
+        strides=strides,
+        paddings=paddings,
+        dilations=dilations,
+    )
+
+
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.zeropad2d",
     d_type_and_x_paddings=_zero2pad(),
@@ -484,33 +513,4 @@ def test_paddle_zeropad2d(
         x=x[0],
         padding=padding,
         data_format=dataformat,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.common.unfold",
-    dtype_inputs=paddle_unfold_handler(dtype=helpers.get_dtypes("valid", full=False)),
-)
-def test_unfold(
-    *,
-    dtype_inputs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtype, x, kernel_sizes, strides, paddings, dilations = dtype_inputs
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x,
-        kernel_sizes=kernel_sizes,
-        strides=strides,
-        paddings=paddings,
-        dilations=dilations,
     )

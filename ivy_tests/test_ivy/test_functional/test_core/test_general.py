@@ -389,7 +389,7 @@ def test_all_equal(
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     test_flags.num_positional_args = len(arrays)
     helpers.test_function(
@@ -1068,6 +1068,7 @@ def test_get_all_arrays_in_memory():
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_with_copy=st.just(True),
 )
 def test_get_item(
     dtypes_x_query,
@@ -1640,6 +1641,7 @@ def test_set_inplace_mode(mode):
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_with_copy=st.just(True),
 )
 def test_set_item(
     dtypes_x_query_val,
@@ -1848,6 +1850,7 @@ def test_to_list(x0_n_x1_n_res, test_flags, backend_fw, fn_name, on_device):
     copy=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_to_numpy(*, dtype_x, copy, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
@@ -1878,6 +1881,7 @@ def test_to_numpy(*, dtype_x, copy, test_flags, backend_fw, fn_name, on_device):
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_to_scalar(x0_n_x1_n_res, test_flags, backend_fw, fn_name, on_device):
     dtype, x = x0_n_x1_n_res

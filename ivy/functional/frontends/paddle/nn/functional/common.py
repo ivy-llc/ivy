@@ -28,7 +28,7 @@ def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=None):
-    if axis > 1:
+    if axis is not None and axis > 1:
         raise ValueError("Axis value can only be 0 or 1 or None.")
     elif axis is None or (isinstance(axis, list) and len(axis) == 2):
         mask = get_mask(shape=x.shape, device=ivy.dev(x), prob=p, seed=None)
@@ -103,7 +103,7 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
     # Input checking
     if isinstance(kernel_sizes, int):
         kernel_sizes = [kernel_sizes, kernel_sizes]
-    elif not (isinstance(kernel_sizes, list) or isinstance(kernel_sizes, tuple)):
+    elif not (isinstance(kernel_sizes, (list, tuple))):
         raise ivy.exceptions.IvyError(
             "Expected kernel size input as type int, tuple or list but got"
             f" {type(kernel_sizes)}"
@@ -111,14 +111,14 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
 
     if isinstance(strides, int):
         strides = [strides, strides]
-    elif not (isinstance(strides, list) or isinstance(strides, tuple)):
+    elif not (isinstance(strides, (list, tuple))):
         raise ivy.exceptions.IvyError(
             f"Expected strides input as type int, tuple or list but got {type(strides)}"
         )
 
     if isinstance(dilations, int):
         dilations = [dilations, dilations]
-    elif not (isinstance(dilations, list) or isinstance(dilations, tuple)):
+    elif not (isinstance(dilations, (list, tuple))):
         raise ivy.exceptions.IvyError(
             "Expected dilations input as type int, tuple or list but got"
             f" {type(dilations)}"
@@ -126,7 +126,7 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
 
     if isinstance(paddings, int):
         paddings = [paddings, paddings]
-    elif not (isinstance(paddings, list) or isinstance(paddings, tuple)):
+    elif not (isinstance(paddings, (list, tuple))):
         raise ivy.exceptions.IvyError(
             "Expected paddings, input as type int, tuple or list but got"
             f" {type(paddings)}"
@@ -193,5 +193,5 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
     elif data_format == "NHWC":
         padding = ((0, 0), (padding[2], padding[3]), (padding[0], padding[1]), (0, 0))
     else:
-        raise ValueError("Unknown data_format: {}".format(data_format))
+        raise ValueError(f"Unknown data_format: {data_format}")
     return ivy.pad(x, padding, mode="constant", constant_values=0.0)

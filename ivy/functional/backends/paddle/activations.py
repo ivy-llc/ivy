@@ -4,7 +4,8 @@ Paddle activation functions.
 Collection of Paddle activation functions, wrapped to fit Ivy syntax and
 signature.
 """
-from typing import Optional, Union
+
+from typing import Optional, Union, Literal
 
 # global
 import paddle
@@ -86,18 +87,21 @@ def gelu(
     return F.gelu(x, approximate=approximate)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+)
 def sigmoid(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return 1.0 / (1.0 + paddle_backend.exp(-x))
     if x.dtype in unsupported_dtypes:
-        if paddle.is_complex(x):
-            return 1 / (1 + paddle_backend.exp(-x))
         return F.sigmoid(x.cast("float32")).cast(x.dtype)
     return F.sigmoid(x)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def softmax(
     x: paddle.Tensor,
@@ -108,12 +112,13 @@ def softmax(
 ) -> paddle.Tensor:
     if axis is None:
         axis = -1
-    exp_x = paddle_backend.exp(
-        paddle_backend.subtract(x, paddle_backend.max(x, axis=axis, keepdims=True))
-    )
-    return paddle_backend.divide(
-        exp_x, paddle_backend.sum(exp_x, axis=axis, keepdims=True)
-    )
+
+    if paddle.is_complex(x):
+        amax = paddle_backend.max(x, axis=axis, keepdims=True)
+    else:
+        amax = paddle.max(x, axis, keepdim=True)
+    exp_x = paddle_backend.exp(paddle.subtract(x, amax))
+    return paddle.divide(exp_x, paddle.sum(exp_x, axis=axis, keepdim=True))
 
 
 def softplus(
@@ -160,32 +165,34 @@ softsign.support_native_out = True
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def log_softmax(
     x: paddle.Tensor,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[paddle.Tensor] = None,
 ):
-    if axis is None:
-        axis = -1
     x_max = paddle_backend.max(x, axis=axis, keepdims=True)
-    x_max = paddle_backend.where(
-        paddle_backend.isfinite(x_max),
-        x_max,
-        paddle.zeros(shape=x_max.shape).astype(x_max.dtype),
-    )
-    exp_tmp = paddle_backend.exp(paddle_backend.subtract(x, x_max))
-
-    s = paddle_backend.sum(exp_tmp, axis=axis, keepdims=True)
-    ret = paddle_backend.log(s)
-    ret = paddle_backend.subtract(paddle_backend.subtract(x, x_max), ret)
+    sub_tmp = paddle_backend.subtract(x, x_max)
+    ret = paddle_backend.sum(paddle_backend.exp(sub_tmp), axis=axis, keepdims=True)
+    ret = paddle_backend.log(ret)
+    ret = paddle_backend.subtract(sub_tmp, ret)
     return ret
 
 
-def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+)
+def mish(
+    x: paddle.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
         if paddle.is_complex(x):
             return x * paddle_backend.tanh(paddle_backend.log1p(paddle_backend.exp(x)))
@@ -197,6 +204,10 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def hardswish(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return F.hardswish(x)

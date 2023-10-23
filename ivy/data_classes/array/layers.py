@@ -80,7 +80,7 @@ class _ArrayWithLayers(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.dropout. This method simply wraps the
-        function, and so the docstring for ivy.droput also applies to this method with
+        function, and so the docstring for ivy.dropout also applies to this method with
         minimal changes.
 
         Parameters
@@ -327,7 +327,7 @@ class _ArrayWithLayers(abc.ABC):
             Default is None. The shape of mask input should be in
             *[batch_shape,num_queries,num_keys]*.
         dropout_p
-            Specifies the dropout probablity, if greater than 0.0, dropout is applied
+            Specifies the dropout probability, if greater than 0.0, dropout is applied
         is_causal
             If true, assumes causal attention masking and errors if both `mask` and
             `is_causal` are set.
@@ -409,6 +409,12 @@ class _ArrayWithLayers(abc.ABC):
         in_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         out_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         is_causal: bool = False,
+        key_padding_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        bias_k: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        bias_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        static_k: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        static_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        add_zero_attn: bool = False,
         return_attention_weights: bool = False,
         average_attention_weights: bool = True,
         dropout: float = 0.0,
@@ -430,6 +436,12 @@ class _ArrayWithLayers(abc.ABC):
             in_proj_bias=in_proj_bias,
             out_proj_bias=out_proj_bias,
             is_causal=is_causal,
+            key_padding_mask=key_padding_mask,
+            bias_k=bias_k,
+            bias_v=bias_v,
+            static_k=static_k,
+            static_v=static_v,
+            add_zero_attn=add_zero_attn,
             return_attention_weights=return_attention_weights,
             average_attention_weights=average_attention_weights,
             dropout=dropout,

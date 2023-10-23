@@ -30,12 +30,9 @@ The contributor guide is split into the sections below, it's best to go from sta
 | (e) `Open Tasks <contributing/open_tasks.rst>`_
 | See where you can help us out! 🙋
 |
-| (f) `Applied Libraries <contributing/applied_libraries.rst>`_
-| Getting started with our applied libraries! 📚
-| 
-| (g) `Helpful Resources <contributing/helpful_resources.rst>`_
+| (f) `Helpful Resources <contributing/helpful_resources.rst>`_
 | Resources you would find useful when learning Ivy 📖
-| 
+|
 | (g) `Error Handling <contributing/error_handling.rst>`_
 | Common errors you will be facing contributing to Ivy ❌
 
@@ -49,7 +46,6 @@ The contributor guide is split into the sections below, it's best to go from sta
    contributing/building_the_docs.rst
    Deep Dive <https://unify.ai/docs/ivy/overview/deep_dive.html>
    contributing/open_tasks.rst
-   contributing/applied_libraries.rst
    contributing/helpful_resources.rst
    contributing/error_handling.rst
 

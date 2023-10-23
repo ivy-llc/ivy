@@ -61,7 +61,7 @@ Frontend Test Examples
 -----------------------
 
 Before you begin writing a frontend test, make sure you are placing it in the correct location.
-See the 'Where to place a frontend function' sub-section of the frontend APIs `open task`_ for more details.
+See the :ref:`/overview/contributing/open_tasks:Where to place a frontend function` sub-section of the frontend APIs `open task`_ for more details.
 
 ivy.tan()
 ^^^^^^^^^
@@ -167,7 +167,7 @@ ivy.tan()
 **TensorFlow**
 
 .. code-block:: python
-        
+
     # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py
     @handle_frontend_test(
         fn_tree="tensorflow.math.tan",
@@ -619,19 +619,19 @@ Frontend Instance Method Tests
 
 The frontend instance method tests are similar to the frontend function test, but instead of testing the function directly we test the instance method of the frontend class.
 major difference is that we have more flags to pass now, most initialization functions take an array as an input. also some methods may take an array as input,
-for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate seperate flags for each.
+for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate separate flags for each.
 
 **Important Helper Functions**
 
 :func:`@handle_frontend_method` requires 3 keyword only parameters:
-    - :code:`class_tree` A full path to the array class in **Ivy** namespace. 
+    - :code:`class_tree` A full path to the array class in **Ivy** namespace.
     - :code:`init_tree` A full path to initialization function.
-    - :code:`method_name` The name of the method to test. 
+    - :code:`method_name` The name of the method to test.
 
 :func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`. A few important arguments for this function are following:
   - :code:`init_input_dtypes` Input dtypes of the arguments on which we are initializing the array on.
-  - :code:`init_all_as_kwargs_np` The data to be passed when intializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
-  - :code:`method_input_dtypes` The input dtypes of the argument which are to be passed to the instance method after the intialization of the array.
+  - :code:`init_all_as_kwargs_np` The data to be passed when initializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
+  - :code:`method_input_dtypes` The input dtypes of the argument which are to be passed to the instance method after the initialization of the array.
   - :code:`method_all_as_kwargs_np` All the arguments which are to be passed to the instance method.
 
 

@@ -7,7 +7,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_nestable,
     infer_dtype,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -23,7 +23,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -156,7 +156,7 @@ def histogram(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def median(
     input: ivy.Array,
     /,
@@ -203,7 +203,7 @@ def median(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def nanmean(
     a: ivy.Array,
     /,
@@ -253,13 +253,75 @@ def nanmean(
     )
 
 
+@handle_out_argument
+@handle_nestable
+@handle_backend_invalid
+@handle_exceptions
+@to_native_arrays_and_back
+@handle_device
+def nanmin(
+    x: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return minimum of an array or minimum along an axis, ignoring any NaNs.
+
+    Parameters
+    ----------
+    a
+        Input array.
+    axis
+        Axis or axes along which the minimum is computed.
+        The default is to compute the minimum of the flattened array.
+    out
+        optional output array, for writing the result to.
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original a.
+    initial
+        The maximum value of an output element.
+    where
+        Elements to compare for the minimum
+
+    Returns
+    -------
+    ret
+        Return minimum of an array or minimum along an axis, ignoring any NaNs
+
+    Functional Examples
+    -------------------
+    >>> a = ivy.array([[1, ivy.nan], [3, 4]])
+    >>> ivy.nanmin(a)
+    1.0
+    >>> ivy.nanmin(a, axis=1)
+    [1. 3.]
+    >>> ivy.nanmin(a, axis=0, keepdims=True)
+    [[1. 2.]]
+    """
+    return ivy.current_backend(x).nanmin(
+        x,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+        initial=initial,
+        where=where,
+    )
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def nanprod(
     a: ivy.Array,
     /,
@@ -326,7 +388,7 @@ def nanprod(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],
@@ -413,7 +475,7 @@ def quantile(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def corrcoef(
     x: ivy.Array,
     /,
@@ -430,7 +492,7 @@ def corrcoef(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def nanmedian(
     input: ivy.Array,
     /,
@@ -503,7 +565,7 @@ def nanmedian(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def bincount(
     x: ivy.Array,
     /,
@@ -547,7 +609,7 @@ def bincount(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def igamma(
     a: Union[ivy.Array, ivy.NativeArray],
     /,

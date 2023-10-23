@@ -155,7 +155,7 @@ doesn't care about this, it moves all the tensors to the same device before perf
 
 **Controlling Device Handling Behaviour**
 
-In Ivy, users can control the device on which the operation is to be executed using `ivy.set_soft_device_mode`_ flag. There are two cases for this, 
+In Ivy, users can control the device on which the operation is to be executed using `ivy.set_soft_device_mode`_ flag. There are two cases for this,
 either the soft device mode is set to :code:`True` or :code:`False`.
 
 **When ivy.set_soft_device_mode(True)**:
@@ -167,7 +167,7 @@ In the example below, even though the input arrays :code:`x` and :code:`y` are c
 are moved to :code:`ivy.default_device()` while performing :code:`ivy.add` operation, and the output array will be on this device.
 
 .. code-block:: python
-    
+
     ivy.set_backend("torch")
     ivy.set_soft_device_mode(True)
     x = ivy.array([1], device="cpu")
@@ -214,7 +214,7 @@ This is the exception you will get while running the code above:
     File "/content/ivy/ivy/func_wrapper.py", line 863, in _handle_device_shifting
         raise ivy.utils.exceptions.IvyException(
     During the handling of the above exception, another exception occurred:
-    Expected all input arrays to be on the same device, but found atleast two devices - ('cpu', 'gpu:0'), 
+    Expected all input arrays to be on the same device, but found at least two devices - ('cpu', 'gpu:0'),
     set `ivy.set_soft_device_mode(True)` to handle this problem.
 
 b. If all the input arrays are on the same device, the operation is executed without raising any device exceptions.
@@ -278,5 +278,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `d
 .. raw:: html
 
     <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/-Y1Ofk72TLY" class="video">
+    src="https://www.youtube.com/embed/RZmTUwTYhKI" class="video">
     </iframe>

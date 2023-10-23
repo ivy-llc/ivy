@@ -19,7 +19,7 @@ Function Wrapping
 .. _`outputs_to_ivy_shapes`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L501
 .. _`to_native_shapes_and_back`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L514
 .. _`handle_view`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L627
-.. _`handle_view_indexing`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L659 
+.. _`handle_view_indexing`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L659
 .. _`handle_array_function`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L299
 .. _`handle_complex_input`: https://github.com/unifyai/ivy/blob/bd9b5b1080d33004e821a48c486b3a879b9d6616/ivy/func_wrapper.py#L1393
 .. _`repo`: https://github.com/unifyai/ivy
@@ -129,12 +129,12 @@ View Handling
 #.  `handle_view`_ : This wrapping function performs view handling based on our :ref:`overview/deep_dive/inplace_updates:Views` policy.
 #.  `handle_view_indexing`_ : This wrapping function is aimed at handling views for indexing.
 
-Exception Handling 
+Exception Handling
 ^^^^^^^^^^^^^^^^^^
 
 #. `handle_exceptions`_ : This wrapping function helps in catching native exceptions and unifying them into `IvyException` or the relevant subclasses. More information can be found in the :ref:`overview/deep_dive/function_wrapping:Exception Handling` section.
 
-Miscellaneous Wrappers 
+Miscellaneous Wrappers
 ^^^^^^^^^^^^^^^^^^^^^^
 
 #.  `handle_array_function`_ : This wrapping function enables :ref:`overview/deep_dive/arrays:Integrating custom classes with Ivy`

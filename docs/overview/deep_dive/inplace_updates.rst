@@ -303,7 +303,7 @@ The implementations of :func:`ivy.tan` for each backend are as follows.
 **PyTorch** (includes :code:`support_native_out` attribute):
 
 .. code-block:: python
-    
+
     def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
         x = _cast_for_unary_op(x)
         return torch.tan(x, out=out)
@@ -351,7 +351,7 @@ This is why we need to call :func:`ivy.inplace_update` explicitly here, to ensur
 Another case where we need to use :func:`ivy.inplace_update` with a function that has :attr:`support_native_out` is for the example of the :code:`torch` backend implementation of the :func:`ivy.remainder` function
 
 .. code-block:: python
- 
+
     def remainder(
         x1: Union[float, torch.Tensor],
         x2: Union[float, torch.Tensor],
@@ -408,7 +408,7 @@ We'll use :func:`ivy.cross_entropy` as an example:
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
@@ -481,7 +481,7 @@ Here's a brief description of the additional attributes added to :class:`ivy.Arr
 #. PyTorch reference stack (:code:`._torch_view_refs`): Functional views referencing this array in its PyTorch base, only populated for original arrays or functional views.
 #. PyTorch manipulation cache (:code:`._torch_manipulation`): Tuple storing array or view and function which made the functional view, only populated for functional views
 
-.. note:: 
+.. note::
     Parts of an arrays metadata like :code:`stride` are attributed to the low-level memory layout of arrays while views in :code:`ivy` operate at a higher level of abstraction.
     As a result, :func:`ivy.strides` isn't guaranteed to produce an output reflective of the underlying memory layout if the :class:`ivy.Array` passed in is a view (or in other words has a :code:`_base`).
 

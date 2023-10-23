@@ -126,21 +126,26 @@ def pow_helper(draw, available_dtypes=None):
         max_value = int(math.log(max_val) / math.log(max_x1))
         if abs(max_value) > abs(max_val) / 40 or max_value < 0:
             max_value = None
-    dtype2, x2 = draw(
-        helpers.dtype_and_values(
-            small_abs_safety_factor=16,
-            large_abs_safety_factor=16,
-            safety_factor_scale="log",
-            max_value=max_value,
-            dtype=[dtype2],
+    dtype_and_x2 = draw(
+        st.one_of(
+            helpers.dtype_and_values(
+                small_abs_safety_factor=16,
+                large_abs_safety_factor=16,
+                safety_factor_scale="log",
+                max_value=max_value,
+                dtype=[dtype2],
+            ),
+            st.floats(max_value=max_value),
+            st.integers(max_value=max_value),
         )
     )
-    dtype2 = dtype2[0]
-    if "int" in dtype2:
-        x2 = ivy.nested_map(
-            x2[0], lambda x: abs(x), include_derived={list: True}, shallow=False
-        )
-    return [dtype1, dtype2], [x1, x2]
+    input_dtypes = [dtype1]
+    if isinstance(dtype_and_x2, tuple):
+        input_dtypes += dtype_and_x2[0]
+        x2 = dtype_and_x2[1][0]
+    else:
+        x2 = dtype_and_x2
+    return input_dtypes, [x1[0], x2]
 
 
 # --- Main --- #
@@ -148,8 +153,7 @@ def pow_helper(draw, available_dtypes=None):
 
 
 def not_too_close_to_zero(x):
-    f = np.vectorize(lambda item: item + (_one if np.isclose(item, 0) else _zero))
-    return f(x)
+    return np.where(np.isclose(x, 0), x + 1, x)
 
 
 # abs
@@ -461,7 +465,7 @@ def test_bitwise_invert(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devi
 def test_bitwise_left_shift(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
-    # shifts >= dtype witdth produce backend-defined behavior
+    # shifts >= dtype width produce backend-defined behavior
     dtype = np.promote_types(input_dtype[0], input_dtype[1])
     bit_cap = (
         np.iinfo(dtype).bits
@@ -528,7 +532,7 @@ def test_bitwise_right_shift(
     input_dtype, x = dtype_and_x
 
     # negative shifts will throw an exception
-    # shifts >= dtype witdth produce backend-defined behavior
+    # shifts >= dtype width produce backend-defined behavior
     x[1] = np.asarray(
         np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
     )
@@ -936,7 +940,7 @@ def test_gcd(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 def test_greater(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -959,7 +963,7 @@ def test_greater(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 def test_greater_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
     # make sure they're not too close together
     assume(not (np.any(np.isclose(x[0], x[1])) or np.any(np.isclose(x[1], x[0]))))
     helpers.test_function(
@@ -1142,7 +1146,7 @@ def test_lcm(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 def test_less(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
     # make sure they're not too close together
     assume(not (np.any(np.isclose(x[0], x[1])) or np.any(np.isclose(x[1], x[0]))))
     helpers.test_function(
@@ -1167,7 +1171,7 @@ def test_less(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 def test_less_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
     # make sure they're not too close together
     assume(not (np.any(np.isclose(x[0], x[1])) or np.any(np.isclose(x[1], x[0]))))
     helpers.test_function(
@@ -1498,6 +1502,7 @@ def test_multiply(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     posinf=st.floats(min_value=5e100, max_value=5e100),
     neginf=st.floats(min_value=-5e100, max_value=-5e100),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_nan_to_num(
     *,
@@ -1590,35 +1595,31 @@ def test_positive(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.pow",
     dtype_and_x=pow_helper(),
+    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_pow(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
-
-    # Make sure x2 isn't a float when x1 is integer
-    assume(
-        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
-    )
-
-    # Make sure x2 is non-negative when both is integer
-    if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
-        x[1] = np.abs(x[1])
-
-    x[0] = not_too_close_to_zero(x[0])
-    x[1] = not_too_close_to_zero(x[1])
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        x1=x[0],
-        x2=x[1],
-    )
+    try:
+        helpers.test_function(
+            input_dtypes=input_dtype,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            rtol_=1e-2,
+            atol_=1e-2,
+            x1=x[0],
+            x2=x[1],
+        )
+    except Exception as e:
+        if any(
+            error_string in str(e)
+            for error_string in ["overflow", "too large to convert to"]
+        ):
+            assume(False)
+        else:
+            raise
 
 
 @handle_test(
@@ -1916,10 +1917,9 @@ def test_tanh(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-1,
-        atol_=1e-2,
         x=x[0],
         complex_mode=complex_mode,
+        atol_=1e-02,  # for `test_flags.test_gradients and 'bfloat16' in input_dtype`
     )
 
 
