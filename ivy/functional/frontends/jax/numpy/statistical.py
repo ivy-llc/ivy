@@ -359,6 +359,85 @@ def nanmin(
     return res.astype(ivy.dtype(a))
 
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.18 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
+def nanpercentile(
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    def _nanpercentile_1d(arr1d, q, interpolation="linear"):
+        nan_mask = ivy.isnan(arr1d)
+
+        if ivy.all(nan_mask):
+            return arr1d[:0], True
+        elif not ivy.any(nan_mask):
+            return arr1d, overwrite_input
+        else:
+            if not overwrite_input:
+                arr1d = arr1d.copy()
+
+        non_nan_values = arr1d[~nan_mask]
+        nan_indices = ivy.nonzero(nan_mask)[0]
+
+        arr1d[nan_indices[: non_nan_values.size]] = non_nan_values
+
+        return arr1d[: -nan_indices.size], True
+
+    def _apply_along_axis(func1d, axis, arr, *args, **kwargs):
+        ndim = ivy.get_num_dims(arr)
+        if axis is None or not isinstance(axis, int):
+            raise ValueError("Axis must be an integer.")
+        if not -ndim <= axis < ndim:
+            raise ValueError(
+                f"axis {axis} is out of bounds for array of dimension {ndim}"
+            )
+        if axis < 0:
+            axis = axis + ndim
+
+        def apply_func(elem):
+            return func1d(elem, *args, **kwargs)
+
+        for i in range(1, ndim - axis):
+            apply_func = ivy.vmap(apply_func, in_axes=i, out_axes=-1)
+        for i in range(axis):
+            apply_func = ivy.vmap(apply_func, in_axes=0, out_axes=0)
+
+        return ivy.asarray(apply_func(arr))
+
+    def _ureduce(a, q, axis=None, out=None, overwrite_input=False):
+        if axis is None or a.ndim == 1:
+            part = a.ravel()
+            return _nanpercentile_1d(part, q, interpolation=interpolation)
+        else:
+            return _apply_along_axis(_nanpercentile_1d, axis, a, q, interpolation)
+
+    a = ivy.asarray(a)
+    q = ivy.divide(q, 100.0)
+    q = ivy.asarray(q)
+
+    if q.ndim == 1 and q.size < 10:
+        if not ivy.all((0.0 <= q) & (q <= 1.0)):
+            raise ValueError("Percentiles must be in the range [0, 100]")
+    else:
+        if not ivy.all((0 <= q) & (q <= 1)):
+            raise ValueError("Percentiles must be in the range [0, 100]")
+
+    return ivy.reduce(
+        a, q, axis=axis, keepdims=False, out=out, overwrite_input=overwrite_input
+    )
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def nanstd(
