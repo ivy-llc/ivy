@@ -1,6 +1,5 @@
 """Collection of device Ivy functions."""
 
-
 # global
 import os
 import gc
@@ -1199,7 +1198,7 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
             supported = set(all_devices).difference(supported)
         return supported
 
-    # Their values are formated like either
+    # Their values are formatted like either
     # 1. fn.supported_devices = ("cpu",)
     # Could also have the "all" value for the framework
     basic = [

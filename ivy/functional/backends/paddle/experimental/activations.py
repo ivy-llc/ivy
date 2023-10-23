@@ -5,7 +5,11 @@ import paddle.nn.functional as F
 
 # local
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_dtypes,
+    with_supported_device_and_dtypes,
+)
 from . import backend_version
 
 
@@ -160,3 +164,53 @@ def tanhshrink(
     if paddle.is_complex(x):
         return paddle.complex(F.tanhshrink(x.real()), F.tanhshrink(x.imag()))
     return F.tanhshrink(x.cast("float32")).cast(x.dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+)
+def softshrink(
+    x: paddle.Tensor, /, *, lambd: float = 0.5, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return F.softshrink(x, threshold=lambd)
+    if paddle.is_complex(x):
+        return paddle.complex(
+            F.softshrink(x.real(), threshold=lambd),
+            F.softshrink(x.img(), threshold=lambd),
+        )
+    return F.softshrink(x.cast("float32"), threshold=lambd).cast(x.dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+)
+def celu(
+    x: paddle.Tensor,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return F.celu(x, alpha=alpha)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("uint16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def scaled_tanh(
+    x: paddle.Tensor,
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.stanh(x, scale_a=beta, scale_b=alpha)

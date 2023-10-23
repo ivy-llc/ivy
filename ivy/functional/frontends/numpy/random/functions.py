@@ -291,6 +291,15 @@ def standard_cauchy(size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def standard_exponential(size=None):
+    if size is None:
+        size = 1
+    U = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return -ivy.log(U)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def standard_gamma(shape, size=None):
     return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
 

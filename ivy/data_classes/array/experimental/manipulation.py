@@ -294,7 +294,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self
             The array to compute top_k for.
         k
-            Number of top elements to retun must not exceed the array size.
+            Number of top elements to return must not exceed the array size.
         axis
             The axis along which we must return the top elements default value is 1.
         largest
@@ -1076,6 +1076,129 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.fill_diagonal(self._data, v, wrap=wrap)
 
+    def take(
+        self: ivy.Array,
+        indices: Union[int, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: Optional[int] = None,
+        mode: str = "fill",
+        fill_value: Optional[Number] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.take.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.take also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        indices
+            array indices. Must have an integer data type.
+        axis
+            axis over which to select values. If `axis` is negative,
+            the function must determine the axis along which to select values
+            by counting from the last dimension.
+            By default, the flattened input array is used.
+        mode
+            specifies how out-of-bounds `indices` will behave.
+            -   ‘raise’ – raise an error
+            -   ‘wrap’ – wrap around
+            -   ‘clip’ – clip to the range (all indices that are too large are
+            replaced by the index that addresses the last element along that axis.
+            Note that this disables indexing with negative numbers.)
+            -   'fill' (default) = returns invalid values (e.g. NaN)
+            for out-of bounds indices (see also fill_value below)
+        fill_value
+            fill value to return for out-of-bounds slices
+            (Defaults to NaN for inexact types,
+            the largest negative value for signed types,
+            the largest positive value for unsigned types, and True for booleans.)
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+            ret
+                an array having the same data type as `x`.
+                The output array must have the same rank
+                (i.e., number of dimensions) as `x` and
+                must have the same shape as `x`, except
+                for the axis specified by `axis`
+                whose size must equal the number of elements in `indices`.
+
+        Examples
+        --------
+        With `ivy.Array` input:
+
+        >>> x = ivy.array([4,5,6])
+        >>> indices = ivy.array([2,1,0])
+        >>> y = x.take(indices)
+        >>> print(y)
+        ivy.array([6, 5, 4])
+
+        >>> x = ivy.array([4.7,5.2,6.5])
+        >>> indices = ivy.array([[0,1]])
+        >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+        >>> x.take(indices, out=y)
+        >>> print(y)
+        ivy.array([[4.7, 5.2]])
+
+        >>> x = ivy.array([False, False, True])
+        >>> indices = ivy.array([[4,3,2]])
+        >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+        >>> x.take(indices, out=y, mode="wrap")
+        >>> print(y)
+        ivy.array([[False, False, True]])
+        """
+        return ivy.take(
+            self, indices, axis=axis, mode=mode, fill_value=fill_value, out=out
+        )
+
+    def trim_zeros(
+        self: ivy.Array,
+        /,
+        *,
+        trim: Optional[str] = "fb",
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.trim_zeros.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.trim_zeros also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self : 1-D array
+            Input array.
+        trim : str, optional
+            A string with 'f' representing trim from front and 'b' to trim from
+            back. Default is 'fb', trim zeros from both front and back of the
+            array.
+
+        Returns
+        -------
+            1-D array
+            The result of trimming the input. The input data type is preserved.
+
+        Examples
+        --------
+        >>> a = ivy.array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1, 0])
+        >>> ivy.trim_zeros(a)
+        array([8, 3, 0, 0, 7, 1])
+
+        >>> ivy.trim_zeros(a, 'b')
+        array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1])
+
+        >>> ivy.trim_zeros([0, 8, 3, 0, 0])
+        [8, 3]
+        """
+        return ivy.trim_zeros(self, trim)
+
     def unfold(
         self: Union[ivy.Array, ivy.NativeArray],
         /,
@@ -1352,7 +1475,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         Parameters
         ----------
         self
-            Array that will be stacked at the begining of the provided array iterable.
+            Array that will be stacked at the beginning of the provided array iterable.
         arrays
             Arrays to be stacked.
         out

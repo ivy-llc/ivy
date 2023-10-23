@@ -15,6 +15,7 @@ from numbers import Number
 
 from .. import backend_version
 from ivy.func_wrapper import (
+    with_supported_device_and_dtypes,
     with_unsupported_device_and_dtypes,
     with_supported_dtypes,
     with_unsupported_dtypes,
@@ -165,8 +166,11 @@ def pad(
 
 pad.partial_mixed_handler = (
     lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
-        _check_paddle_pad(
-            mode, reflect_type, args[1], args[0].shape, constant_values, 3
+        len(args[0].shape) <= 3
+        and (
+            _check_paddle_pad(
+                mode, reflect_type, args[1], args[0].shape, constant_values, 3
+            )
         )
     )
 )
@@ -693,6 +697,174 @@ def fill_diagonal(
     a = paddle.where(w, v, a)
     a = paddle.reshape(a, shape)
     return a
+
+
+def _take_with_axis(
+    x: paddle.Tensor, indices: paddle.Tensor, /, *, axis: int, mode: str
+) -> paddle.Tensor:
+    # has no checks
+    # default behaviour is 'raise' like ON CPU
+    # additional check is recommended
+
+    x_shape = x.shape[axis]
+    if not ivy.exists(axis):
+        x = x.flatten()
+        x_shape = paddle.prod(paddle.to_tensor(x_shape))
+    else:
+        x_shape = x.shape[axis]
+
+    # wrap
+    if mode == "wrap":
+        indices = ((indices % x_shape) + x_shape) % x_shape
+    # clip
+    else:
+        indices = paddle.clip(indices, 0, x_shape - 1)
+
+    rank = len(x.shape)
+    axis = ((axis % rank) + rank) % rank
+    slicer = ([slice(None)] * axis) + [indices.tolist()]
+    ret = ivy.array(x)[tuple(slicer)]
+    if len(indices.shape) == 0 and ret.shape == [1]:
+        ret = ret[0]
+    return ret
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("int64", "float64", "int32", "uint8", "float32", "bool")
+        }
+    },
+    backend_version,
+)
+def take(
+    x: Union[int, List, paddle.Tensor],
+    indices: Union[int, List, paddle.Tensor],
+    /,
+    *,
+    axis: Optional[int] = None,
+    mode: str = "clip",
+    fill_value: Optional[Number] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if mode not in ["raise", "wrap", "clip", "fill"]:
+        raise ValueError("mode must be one of 'clip', 'raise', 'wrap', or 'fill'")
+    if not isinstance(x, paddle.Tensor):
+        x = paddle.to_tensor(x)
+    if len(x.shape) == 0:
+        x = paddle.to_tensor([x])
+    if not isinstance(indices, paddle.Tensor):
+        indices = paddle.to_tensor(indices)
+    if paddle.is_floating_point(indices):
+        indices = indices.astype(paddle.int64)
+
+    # raise
+    if mode == "raise":
+        mode = "clip"
+        if ivy.exists(axis):
+            try:
+                x_shape = x.shape[axis]
+            except Exception:
+                rank = len(x.shape)
+                raise IndexError(
+                    "(OutOfRange) Attr(axis) is out of range, "
+                    "It's expected to be in range of "
+                    f"[-{rank}, {rank-1}]. But received Attr(axis) = {axis}."
+                    "[Hint: Expected axis < input_dim.size() && axis >= "
+                    "(0 - input_dim.size()) == true, "
+                    "but received axis < input_dim.size() && axis >= "
+                    "(0 - input_dim.size()):0 != true:1.]"
+                )
+        else:
+            x_shape = paddle.prod(paddle.to_tensor(x.shape))
+
+        bound_check = (indices < -x_shape) | (indices >= x_shape)
+        if paddle.any(bound_check):
+            if len(indices.shape) != 0:
+                indices = indices[bound_check].flatten()[0]
+            raise ValueError(
+                "(InvalidArgument) Variable value (indices) of OP(take) "
+                f"expected >= -{x_shape} and < {x_shape}, but got {indices}. "
+                "Please check input value. "
+                "[Hint: Expected index_data[i] < input_dim[axis], "
+                f"but received index_data[i]:{indices} >= input_dim[axis]:2.]"
+            )
+
+    # clip, wrap
+    if mode != "fill":
+        ret = _take_with_axis(x, indices, axis=axis, mode=mode)
+        if ivy.exists(out):
+            ivy.inplace_update(out, ret)
+        return ret
+
+    # fill
+    x_dtype = x.dtype
+    if fill_value is None:
+        # set according to jax behaviour
+        # https://tinyurl.com/66jn68uj
+        if paddle.is_floating_point(x) or paddle.is_complex(x):
+            # NaN for inexact types
+            fill_value = float("NaN")
+        else:
+            if x_dtype == paddle.bool:
+                # True for booleans
+                fill_value = True
+            elif str(x_dtype).split(".")[-1].startswith("u"):
+                # the largest positive value for unsigned types
+                fill_value = paddle.iinfo(x_dtype).max
+            else:
+                # the largest negative value for signed types
+                fill_value = paddle.iinfo(x_dtype).min
+
+    fill_value = paddle.to_tensor(fill_value, dtype=x_dtype)
+    x_shape = x.shape
+    ret = _take_with_axis(x, indices, axis=axis, mode="wrap")
+
+    if len(ret.shape) == 0:
+        # if scalar (paddle scalar), scalar fill (replace)
+        if paddle.any(indices != 0):
+            ret = fill_value
+    else:
+        if ivy.exists(axis):
+            rank = len(x.shape)
+            axis = ((axis % rank) + rank) % rank
+            x_shape = x_shape[axis]
+        else:
+            axis = 0
+            x_shape = paddle.prod(x_shape)
+
+        bound_check = paddle.to_tensor((indices < -x_shape) | (indices >= x_shape))
+
+        if paddle.any(bound_check):
+            if axis > 0:
+                bound_check = paddle.broadcast_to(
+                    bound_check, (*x.shape[:axis], *bound_check.shape)
+                )
+            ret[bound_check] = fill_value
+
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+
+    return ret
+
+
+def trim_zeros(a: paddle.Tensor, /, *, trim: Optional[str] = "bf") -> paddle.Tensor:
+    first = 0
+    trim = trim.upper()
+    if "F" in trim:
+        for i in a:
+            if i != 0.0:
+                break
+            else:
+                first = first + 1
+    last = len(a)
+    if "B" in trim:
+        for i in a[::-1]:
+            if i != 0.0:
+                break
+            else:
+                last = last - 1
+    return a[first:last]
 
 
 @with_supported_dtypes(

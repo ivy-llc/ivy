@@ -280,7 +280,7 @@ def test_unfolding_dot_khatri_rao(shape, rank):
     weights, factors = ivy.random_cp(shape, rank, full=False, normalise_factors=True)
 
     for mode in range(4):
-        # Version forming explicitely the khatri-rao product
+        # Version forming explicitly the khatri-rao product
         unfolded = ivy.unfold(tensor, mode)
         kr_factors = ivy.khatri_rao(factors, weights=weights, skip_matrix=mode)
         true_res = ivy.matmul(unfolded, kr_factors)

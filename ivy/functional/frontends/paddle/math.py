@@ -1,6 +1,10 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    with_supported_device_and_dtypes,
+)
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -45,6 +49,12 @@ def add_(x, y, name=None):
 def addmm(input, x, y, beta=1.0, alpha=1.0, name=None):
     value = alpha * ivy.matmul(x, y) + (beta * input)
     return value
+
+
+@with_supported_dtypes({"2.5.0 and below": "bool"}, "paddle")
+@to_ivy_arrays_and_back
+def all(x, axis, keepdim=False, name=None):
+    return ivy.all(x, axis=axis, keepdims=keepdim)
 
 
 @with_supported_dtypes(
@@ -116,6 +126,12 @@ def atan2(x, y, name=None):
 @to_ivy_arrays_and_back
 def atanh(x, name=None):
     return ivy.atanh(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def broadcast_shape(x_shape, y_shape):
+    return ivy.broadcast_shapes(x_shape, y_shape)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
@@ -495,7 +511,15 @@ def remainder(x, y, name=None):
     return ivy.remainder(x, y)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("float16", "float32", "float64"),
+        }
+    },
+    "paddle",
+)
 @to_ivy_arrays_and_back
 def remainder_(x, y, name=None):
     return ivy.inplace_update(x, remainder(x, y))
@@ -504,7 +528,9 @@ def remainder_(x, y, name=None):
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def round(x, name=None):
-    return ivy.round(x)
+    sign = ivy.sign(x)
+    x = sign * ivy.floor(ivy.abs(x) + 0.5)
+    return x
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
