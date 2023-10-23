@@ -37,7 +37,22 @@ def max(
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
-@with_unsupported_dtypes({"0.4.19 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "0.4.19 and below": (
+            "bfloat16",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    backend_version,
+)
 def mean(
     x: JaxArray,
     /,
