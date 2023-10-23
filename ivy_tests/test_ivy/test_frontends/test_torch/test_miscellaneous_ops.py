@@ -517,7 +517,7 @@ def test_torch_cartesian_prod(
         shared_dtype=True,
         num_arrays=2,
         allow_inf=False,
-        dtype=["float32", "float32", "float64", "float64"],
+        available_dtypes=["float32", "float64"],
     ),
     p=st.integers(min_value=0, max_value=1000000),
     compute_mode=st.sampled_from(
