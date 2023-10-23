@@ -1861,7 +1861,7 @@ def interpolate(
         scale_factor = (
             [scale_factor[0]] * dims
             if isinstance(scale_factor, (list, tuple)) and len(scale_factor) != dims
-            else [scale_factor] * dims
+            else scale_factor
         )
     scale = [ivy.divide(size[i], input_shape[i + 2]) for i in range(dims)]
     if mode in [
@@ -3050,7 +3050,7 @@ def stft(
     /,
     *,
     fft_length: Optional[int] = None,
-    window_fn: Optional = None,
+    window_fn: Optional[Callable] = None,
     pad_end: bool = False,
     name: Optional[str] = None,
     out: Optional[ivy.Array] = None,

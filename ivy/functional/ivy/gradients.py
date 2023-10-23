@@ -109,7 +109,7 @@ def _get_required_float_variables(xs, xs_grad_idxs):
     Also, returns a list of duplicate index chains for the nested
     structure.
     """
-    if (ivy.is_ivy_container(xs) or ivy.is_array(xs)) and xs_grad_idxs == [[0]]:
+    if (ivy.is_ivy_container(xs) or ivy.is_array(xs)) and xs_grad_idxs == ((0,),):
         xs_grad_idxs = None
     duplicate_index_chains = _get_duplicate_index_chains(xs)
     xs = _to_ivy(xs)
