@@ -36,7 +36,3 @@ repos:
     rev: 2ea80bc854c7f74b09620151028579083ff92ec2
     hooks:
       - id: ivy-lint
-  - repo: https://github.com/unifyai/lint-hook
-    rev: main
-    hooks:
-      - id: ivy-lint
