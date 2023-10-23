@@ -516,6 +516,7 @@ def test_torch_cartesian_prod(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_clone(
     *,
@@ -1024,6 +1025,7 @@ def test_torch_flatten(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         force_tuple=True,
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_flip(
     *,
@@ -1055,6 +1057,7 @@ def test_torch_flip(
         available_dtypes=helpers.get_dtypes("float"),
         shape=helpers.get_shape(min_num_dims=2),
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_fliplr(
     *,
@@ -1084,6 +1087,7 @@ def test_torch_fliplr(
         available_dtypes=helpers.get_dtypes("float"),
         shape=helpers.get_shape(min_num_dims=1),
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_flipud(
     *,
