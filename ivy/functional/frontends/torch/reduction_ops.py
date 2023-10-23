@@ -160,6 +160,7 @@ def median(input, dim=None, keepdim=False, *, out=None):
     return result
 
 
+@with_unsupported_dtypes({"1.26.1 and below": ("complex",)}, "numpy")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def min(*input, dim=None, keepdim=False, out=None):
