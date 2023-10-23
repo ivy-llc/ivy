@@ -1,3 +1,4 @@
+from typing import Any
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.array import Array
@@ -137,6 +138,13 @@ def from_dlpack(x):
 @to_ivy_arrays_and_back
 def frombuffer(buffer, dtype="float", count=-1, offset=0):
     return ivy.frombuffer(buffer, dtype, count, offset)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def fromstring(string: str, dtype: float, count: int = -1, *, sep: Any):
+    """fromstring."""
+    return None
 
 
 @to_ivy_arrays_and_back
