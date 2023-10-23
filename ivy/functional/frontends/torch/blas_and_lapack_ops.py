@@ -94,7 +94,7 @@ def cholesky(input, upper=False, *, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bool", "float16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("bool", "float16")}, "torch")
 @to_ivy_arrays_and_back
 def cumulative_trapezoid(y, x=None, *, dx=None, dim=-1):
     # this implementation is based on scipy.integrate.cumulative_trapezoid
