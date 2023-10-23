@@ -9,7 +9,7 @@ import ivy
 from . import array_helpers, number_helpers, dtype_helpers
 from ..pipeline_helper import WithBackendContext
 from ivy.functional.ivy.layers import _deconv_length
-from ...conftest import mod_backend
+from ..globals import mod_backend
 
 
 def matrix_is_stable(x, cond_limit=30):
@@ -517,7 +517,7 @@ def x_and_filters(
         filter_shape = filter_shape + (input_channels, output_channels)
     else:
         filter_shape = filter_shape + (input_channels,)
-    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+    if data_format in ["NHWC", "NWC", "NDHWC"]:
         x_shape = (batch_size,) + x_dim + (input_channels,)
     else:
         x_shape = (batch_size, input_channels) + x_dim

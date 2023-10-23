@@ -17,7 +17,7 @@ class ndarray:
         if isinstance(dtype, np_frontend.dtype):
             dtype = dtype.ivy_dtype
 
-        # in thise case shape is actually the desired array
+        # in this case shape is actually the desired array
         if _init_overload:
             self._ivy_array = (
                 ivy.array(shape) if not isinstance(shape, ivy.Array) else shape
@@ -53,7 +53,7 @@ class ndarray:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return tuple(self.ivy_array.shape.shape)
 
     @property
     def size(self):
@@ -165,7 +165,7 @@ class ndarray:
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self, axis=axis, kind=kind, order=order)
 
-    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
+    def mean(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return np_frontend.mean(
             self,
             axis=axis,
@@ -578,12 +578,12 @@ class ndarray:
         return np_frontend.array(array)
 
     def __getitem__(self, key, /):
-        ivy_args = ivy.nested_map([self, key], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, key])
         ret = ivy.get_item(*ivy_args)
         return np_frontend.ndarray(ret, _init_overload=True)
 
     def __setitem__(self, key, value, /):
-        key, value = ivy.nested_map([key, value], _to_ivy_array)
+        key, value = ivy.nested_map(_to_ivy_array, [key, value])
         self.ivy_array[key] = value
 
     def __iter__(self):
@@ -618,8 +618,27 @@ class ndarray:
     def __lshift__(self, value, /):
         return ivy.bitwise_left_shift(self.ivy_array, value)
 
+    def __ilshift__(self, value, /):
+        return ivy.bitwise_left_shift(self.ivy_array, value, out=self)
+
     def round(self, decimals=0, out=None):
         return np_frontend.round(self, decimals=decimals, out=out)
+
+    def var(
+        self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True
+    ):
+        return np_frontend.var(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=ddof,
+            keepdims=keepdims,
+            where=where,
+        )
+
+    def __irshift__(self, value, /):
+        return ivy.bitwise_right_shift(self.ivy_array, value, out=self)
 
 
 # --- Helpers --- #

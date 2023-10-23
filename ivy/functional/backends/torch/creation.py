@@ -47,7 +47,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def arange(
     start: float,
     /,
@@ -55,7 +55,7 @@ def arange(
     step: float = 1,
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if stop is None:
@@ -95,7 +95,7 @@ def _stack_tensors(x, dtype):
     return x
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, backend_version)
 @_asarray_to_native_arrays_and_back
 @_asarray_infer_device
 @_asarray_handle_nestable
@@ -116,10 +116,10 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    obj = ivy.nested_map(obj, _remove_np_bfloat16, shallow=False)
+    obj = ivy.nested_map(_remove_np_bfloat16, obj, shallow=False)
     if isinstance(obj, Sequence) and len(obj) != 0:
         contain_tensor = ivy.nested_any(obj, lambda x: isinstance(x, torch.Tensor))
         # if `obj` is a list of specifically tensors or
@@ -141,7 +141,7 @@ def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.empty(
@@ -160,13 +160,13 @@ def empty_like(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.empty_like(x, dtype=dtype, device=device)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -175,7 +175,7 @@ def eye(
     k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if n_cols is None:
@@ -228,9 +228,12 @@ def eye(
 eye.support_native_out = True
 
 
+def to_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
+    return torch.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
-    x = x.detach() if x.requires_grad else x
-    return torch.utils.dlpack.from_dlpack(x)
+    return torch.from_dlpack(x)
 
 
 def full(
@@ -238,11 +241,10 @@ def full(
     fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     if isinstance(shape, int):
         shape = (shape,)
     return torch.full(
@@ -263,10 +265,9 @@ def full_like(
     fill_value: Number,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
@@ -275,7 +276,7 @@ def _slice_at_axis(sl, axis):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.0.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.1.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def linspace(
     start: Union[torch.Tensor, float],
@@ -286,7 +287,7 @@ def linspace(
     axis: Optional[int] = None,
     endpoint: bool = True,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -432,7 +433,7 @@ def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ones(shape, dtype=dtype, device=device, out=out)
@@ -446,7 +447,7 @@ def ones_like_v_0p4p0_and_above(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ones_like(x, dtype=dtype, device=device)
@@ -457,7 +458,7 @@ def ones_like_v_0p3p0_to_0p3p1(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ones_like(x, out=out)
@@ -468,7 +469,7 @@ def ones_like_v_0p1p12_to_0p2p0(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ):
     if len(x.shape) == 1:
@@ -502,7 +503,7 @@ def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
@@ -516,7 +517,7 @@ def zeros_like(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.zeros_like(x, dtype=dtype, device=device)
@@ -549,7 +550,7 @@ def one_hot(
     off_value: Optional[torch.Tensor] = None,
     axis: Optional[int] = None,
     dtype: Optional[torch.dtype] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     on_none = on_value is None
@@ -598,7 +599,7 @@ def triu_indices(
     k: int = 0,
     /,
     *,
-    device: torch.device,
+    device: torch.device = None,
 ) -> Tuple[torch.Tensor]:
     n_cols = n_rows if n_cols is None else n_cols
     return tuple(
@@ -606,3 +607,15 @@ def triu_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
+
+
+def pad(tensor, sizes_of_pad, mode="constant", value=0):
+    if len(sizes_of_pad) == tensor.dim():
+        pad_pairs = []
+        for size in sizes_of_pad:
+            if size >= 0:
+                pad_pairs.append((size // 2, size - size // 2))
+        pad_pairs = pad_pairs[::-1]
+        pad_list = [item for pair in pad_pairs for item in pair]
+
+        return torch.nn.functional.pad(tensor, pad_list, mode, value)

@@ -23,14 +23,14 @@ jobs:
           pip install pydriller
           cp Mapping/tests.pbz2 ivy/
           cd ivy
-          python run_tests_CLI/array_api_determine_tests.py
+          python scripts/determine_tests/array_api_determine_tests.py
         continue-on-error: true
 
       - name: Run Tests
         id: tests
         run: |
           cd ivy
-          python run_tests_CLI/array_api_run_tests_pr.py
+          python scripts/run_tests/array_api_run_tests_pr.py
         continue-on-error: true
 
       - name: Check on failures

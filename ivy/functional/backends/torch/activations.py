@@ -4,7 +4,8 @@ PyTorch activation functions.
 Collection of PyTorch activation functions, wrapped to fit Ivy syntax
 and signature.
 """
-from typing import Optional, Union
+
+from typing import Optional, Union, Literal
 
 # global
 import numpy as np
@@ -18,14 +19,14 @@ from . import backend_version
 import ivy.functional.backends.torch as torch_backend
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def relu(
     x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.relu(x)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def leaky_relu(
     x: torch.Tensor,
     /,
@@ -37,7 +38,7 @@ def leaky_relu(
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def gelu(
     x: torch.Tensor,
     /,
@@ -47,14 +48,14 @@ def gelu(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if approximate:
-        return (
-            0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
-        )
+        return 0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
     return torch.nn.functional.gelu(x)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+def sigmoid(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if not ivy.is_array(x):
         x = torch.tensor(x)
     return torch.sigmoid(x, out=out)
@@ -63,7 +64,7 @@ def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
 sigmoid.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def softmax(
     x: torch.Tensor,
     /,
@@ -80,7 +81,7 @@ def softmax(
     return torch.nn.functional.softmax(x, axis)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
 def softplus(
     x: torch.Tensor,
     /,
@@ -97,7 +98,7 @@ def softplus(
 
 
 # Softsign
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
 def softsign(x: torch.Tensor, /, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     # return x / (1 + torch.abs(x))
     return torch.nn.functional.softsign(x)
@@ -107,42 +108,46 @@ softsign.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "complex",
-            "float16",
-        )
-    },
+    {"2.1.0 and below": ("float16",)},
     backend_version,
 )
 def log_softmax(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[torch.Tensor] = None,
 ):
-    if axis is None:
-        axis = -1
+    if torch.is_complex(x):
+        x_max = torch_backend.max(x, axis=axis, keepdims=True)
+        sub_temp = torch.sub(x, x_max)
+        ret = torch.sum(sub_temp.exp(), dim=axis, keepdim=True)
+        ret = torch.log(ret)
+        return torch.sub(sub_temp, ret)
     return torch.nn.functional.log_softmax(x, axis)
 
 
 @with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "complex",
-            "float16",
-        )
-    },
+    {"2.1.0 and below": ("float16",)},
     backend_version,
 )
-def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def mish(
+    x: torch.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if torch.is_complex(x):
+        x_norm = torch.log1p(x.exp())
+        return torch.multiply(x, x_norm.tanh())
     return torch.nn.functional.mish(x)
 
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "complex",
             "float16",
         )
@@ -150,6 +155,10 @@ def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     backend_version,
 )
 def hardswish(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.hardswish(x)

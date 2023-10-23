@@ -16,7 +16,10 @@ from ivy.functional.ivy.layers import (
     _validate_max_pool_params,
     _depth_max_pooling_helper,
 )
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
+from ivy.functional.ivy.experimental.layers import (
+    _padding_ceil_mode,
+    _get_size,
+)
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -172,7 +175,7 @@ def max_pool1d(
 ) -> JaxArray:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCW":
@@ -209,8 +212,9 @@ def max_pool2d(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dims = 2
+    odtype = x.dtype
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCHW":
@@ -234,9 +238,9 @@ def max_pool2d(
     )
 
     if data_format == "NCHW":
-        return jnp.transpose(res, (0, 3, 1, 2))
+        res = jnp.transpose(res, (0, 3, 1, 2))
 
-    return res
+    return res.astype(odtype)
 
 
 def max_pool3d(
@@ -253,7 +257,7 @@ def max_pool3d(
 ) -> JaxArray:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
@@ -437,7 +441,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.14 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.18 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -810,7 +814,7 @@ def ifftn(
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bfloat16", "float16", "complex")}, backend_version
+    {"0.4.18 and below": ("bfloat16", "float16", "complex")}, backend_version
 )
 def embedding(
     weights: JaxArray,
@@ -836,7 +840,29 @@ def embedding(
     return embeddings
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("float16", "complex")}, backend_version)
+def rfft(
+    x: JaxArray,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    x = x.real
+    if x.dtype == jnp.float16:
+        x = x.astype(jnp.float32)
+
+    ret = jnp.fft.rfft(x, n=n, axis=axis, norm=norm)
+
+    if x.dtype != jnp.float64:
+        ret = ret.astype(jnp.complex64)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+@with_unsupported_dtypes({"0.4.18 and below": ("float16", "complex")}, backend_version)
 def rfftn(
     x: JaxArray,
     s: Sequence[int] = None,
@@ -867,3 +893,112 @@ def rfftn(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.rfftn(x, s, axes, norm).astype(jnp.complex128)
+
+
+# stft
+def stft(
+    signals: JaxArray,
+    frame_length: int,
+    frame_step: int,
+    /,
+    *,
+    fft_length: Optional[int] = None,
+    window_fn: Optional[Callable] = None,
+    pad_end: Optional[bool] = False,
+    name: Optional[str] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if not isinstance(frame_length, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_length)}"
+        )
+
+    if frame_length < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if not isinstance(frame_step, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_step)}"
+        )
+
+    if frame_step < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if fft_length is not None:
+        if not isinstance(fft_length, int):
+            raise ivy.utils.exceptions.IvyError(
+                f"Expecting <class 'int'> instead of {type(fft_length)}"
+            )
+
+        if fft_length < 1:
+            raise ivy.utils.exceptions.IvyError(
+                f"Invalid data points {frame_length}, expecting frame_length larger"
+                " than or equal to 1"
+            )
+
+    input_dtype = signals.dtype
+    if input_dtype == jnp.float32:
+        dtype = jnp.complex64
+    elif input_dtype == jnp.float64:
+        dtype = jnp.complex128
+
+    def stft_1D(signals, frame_length, frame_step, fft_length, pad_end):
+        if fft_length is None:
+            fft_length = 1
+            while fft_length < frame_length:
+                fft_length *= 2
+
+        num_samples = signals.shape[-1]
+
+        if pad_end:
+            num_samples = signals.shape[-1]
+            num_frames = -(-num_samples // frame_step)
+            pad_length = max(
+                0, frame_length + frame_step * (num_frames - 1) - num_samples
+            )
+
+            signals = jnp.pad(signals, [(0, pad_length)])
+        else:
+            num_frames = 1 + (num_samples - frame_length) // frame_step
+
+        stft_result = []
+
+        if window_fn is None:
+            window = 1
+        else:
+            window = window_fn(frame_length)
+
+        for i in range(num_frames):
+            start = i * frame_step
+            end = start + frame_length
+            frame = signals[..., start:end]
+            windowed_frame = frame * window
+            pad_length = fft_length - frame_length
+            windowed_frame = jnp.pad(windowed_frame, [(0, pad_length)])
+            windowed_frame = jnp.asarray(windowed_frame, dtype=dtype)
+
+            fft_frame = jnp.fft.fft(windowed_frame, axis=-1)
+            slit = int((fft_length // 2 + 1))
+            stft_result.append(fft_frame[..., 0:slit])
+
+        stft = jnp.stack(stft_result, axis=0)
+        return stft
+
+    def stft_helper(nested_list, frame_length, frame_step, fft_length):
+        nested_list = nested_list
+        if len(jnp.shape(nested_list)) > 1:
+            return [
+                stft_helper(sublist, frame_length, frame_step, fft_length)
+                for sublist in nested_list
+            ]
+        else:
+            return stft_1D(nested_list, frame_length, frame_step, fft_length, pad_end)
+
+    to_return = stft_helper(signals, frame_length, frame_step, fft_length)
+    return jnp.asarray(to_return, dtype=dtype)

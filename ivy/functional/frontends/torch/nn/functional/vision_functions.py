@@ -8,10 +8,6 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-cubic_conv1 = lambda A, x: ((A + 2) * x - (A + 3)) * x * x + 1
-cubic_conv2 = lambda A, x: (((A * x) - (5 * A)) * x + (8 * A)) * x - (4 * A)
-
-
 # --- Helpers --- #
 # --------------- #
 
@@ -37,7 +33,7 @@ def _handle_padding_shape(padding, n, mode):
 # ------------ #
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def affine_grid(theta, size, align_corners=False):
     if len(size) == 4:
@@ -92,7 +88,15 @@ def bicubic_interp(x, t, alpha=-0.75):
     return x[0] * coeffs[0] + x[1] * coeffs[1] + x[2] * coeffs[2] + x[3] * coeffs[3]
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+def cubic_conv1(A, x):
+    return ((A + 2) * x - (A + 3)) * x * x + 1
+
+
+def cubic_conv2(A, x):
+    return ((A * x - 5 * A) * x + 8 * A) * x - 4 * A
+
+
+@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def grid_sample(
     input, grid, mode="bilinear", padding_mode="zeros", align_corners=False
@@ -309,7 +313,7 @@ def grid_sample(
             )
 
         elif mode == "bicubic":
-            raise ivy.exceptions.IvyError(f"Bicubic is not support in 3D grid sampling")
+            raise ivy.exceptions.IvyError("Bicubic is not support in 3D grid sampling")
 
     else:
         raise ivy.exceptions.IvyError(f"Not supported input shape {input_clone.shape}")
@@ -347,7 +351,7 @@ def grid_sample_padding(grid, padding_mode, align_corners, borders=None):
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "bfloat16",
             "float16",
         )
@@ -451,7 +455,7 @@ def interpolate(
 
     if (
         bool(antialias)
-        and not (mode in ["bilinear", "bicubic"])
+        and (mode not in ["bilinear", "bicubic"])
         and ivy.get_num_dims(input) == 4
     ):
         raise ivy.utils.exceptions.IvyException(
@@ -604,7 +608,7 @@ def reflect(x, low2, high2):
     return x
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample(
     input,
@@ -622,7 +626,7 @@ def upsample(
     )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample_bilinear(input, size=None, scale_factor=None):
     return interpolate(
@@ -630,7 +634,7 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample_nearest(input, size=None, scale_factor=None):
     return interpolate(input, size=size, scale_factor=scale_factor, mode="nearest")

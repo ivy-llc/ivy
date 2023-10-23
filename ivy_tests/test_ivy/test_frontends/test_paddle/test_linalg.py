@@ -12,9 +12,12 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_linalg import (
-    _get_first_matrix,
     _get_second_matrix,
     _get_cholesky_matrix,
+)
+
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_input_and_mat_vec,
 )
 
 
@@ -166,6 +169,17 @@ def _transpose_helper(draw):
     )
     perm = draw(st.permutations([i for i in range(len(shape))]))
     return dtype, x, perm
+
+
+@st.composite
+def dims_and_offset(draw, shape):
+    shape_actual = draw(shape)
+    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
+    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
+    offset = draw(
+        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
+    )
+    return dim1, dim2, offset
 
 
 # Helpers #
@@ -349,7 +363,7 @@ def test_paddle_cholesky(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.cholesky_solve",
+    fn_tree="paddle.linalg.cholesky_solve",
     x=_get_second_matrix(),
     y=_get_paddle_cholesky_matrix(),
     test_with_out=st.just(False),
@@ -382,7 +396,7 @@ def test_paddle_cholesky_solve(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.cond",
+    fn_tree="paddle.linalg.cond",
     dtype_and_x=_get_dtype_and_matrix_non_singular(dtypes=["float32", "float64"]),
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     test_with_out=st.just(False),
@@ -523,7 +537,7 @@ def test_paddle_dot(
 
 # eig
 @handle_frontend_test(
-    fn_tree="paddle.eig",
+    fn_tree="paddle.linalg.eig",
     dtype_and_input=_get_dtype_and_square_matrix(real_and_complex_only=True),
     test_with_out=st.just(False),
 )
@@ -570,7 +584,7 @@ def test_paddle_eig(
 
 # eigh
 @handle_frontend_test(
-    fn_tree="paddle.eigh",
+    fn_tree="paddle.linalg.eigh",
     dtype_and_input=_get_dtype_and_square_matrix(real_and_complex_only=True),
     UPLO=st.sampled_from(("L", "U")),
     test_with_out=st.just(False),
@@ -620,7 +634,7 @@ def test_paddle_eigh(
 
 # eigvals
 @handle_frontend_test(
-    fn_tree="paddle.eigvals",
+    fn_tree="paddle.linalg.eigvals",
     dtype_x=_get_dtype_and_square_matrix(real_and_complex_only=True),
     test_with_out=st.just(False),
 )
@@ -685,6 +699,86 @@ def test_paddle_eigvalsh(
     )
 
 
+# diagonal
+@handle_frontend_test(
+    fn_tree="paddle.diagonal",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
+    axis_and_offset=dims_and_offset(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
+    ),
+)
+def test_paddle_linalg_diagonal(
+    dtype_and_values,
+    axis_and_offset,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, value = dtype_and_values
+    axis1, axis2, offset = axis_and_offset
+    input = value[0]
+    num_dims = len(np.shape(input))
+    assume(axis1 != axis2)
+    if axis1 < 0:
+        assume(axis1 + num_dims != axis2)
+    if axis2 < 0:
+        assume(axis1 != axis2 + num_dims)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=input,
+        offset=offset,
+        axis1=axis1,
+        axis2=axis2,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.lu_unpack",
+    dtype_x=_get_dtype_and_square_matrix(real_and_complex_only=True),
+    p=st.lists(st.floats(1, 5), max_size=5),
+    unpack_datas=st.booleans(),
+    unpack_pivots=st.booleans(),
+)
+def test_paddle_lu_unpack(
+    *,
+    dtype_x,
+    p,
+    unpack_datas,
+    unpack_pivots,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x = dtype_x
+    x = np.array(x[0], dtype=dtype[0])
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lu_data=x,
+        lu_pivots=p,
+        unpack_datas=unpack_datas,
+        unpack_pivots=unpack_pivots,
+        rtol=1e-03,
+        atol=1e-03,
+    )
+
+
 # matmul
 @handle_frontend_test(
     fn_tree="paddle.matmul",
@@ -728,7 +822,7 @@ def test_paddle_matmul(
 
 # matrix_power
 @handle_frontend_test(
-    fn_tree="paddle.matrix_power",
+    fn_tree="paddle.linalg.matrix_power",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -757,6 +851,33 @@ def test_paddle_matrix_power(
         on_device=on_device,
         x=x[0],
         n=n,
+    )
+
+
+# mv
+@handle_frontend_test(
+    fn_tree="paddle.mv",
+    dtype_mat_vec=_get_dtype_input_and_mat_vec(),
+    test_with_out=st.just(False),
+)
+def test_paddle_mv(
+    dtype_mat_vec,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, mat, vec = dtype_mat_vec
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=mat,
+        vec=vec,
     )
 
 
@@ -795,7 +916,7 @@ def test_paddle_norm(
 
 # pinv
 @handle_frontend_test(
-    fn_tree="paddle.pinv",
+    fn_tree="paddle.linalg.pinv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
@@ -840,7 +961,7 @@ def test_paddle_pinv(
 
 # qr
 @handle_frontend_test(
-    fn_tree="paddle.qr",
+    fn_tree="paddle.linalg.qr",
     dtype_and_x=_get_dtype_and_matrix(),
     mode=st.sampled_from(("reduced", "complete")),
     test_with_out=st.just(False),
@@ -871,9 +992,9 @@ def test_paddle_qr(
 
 # solve
 @handle_frontend_test(
-    fn_tree="paddle.solve",
-    x=_get_first_matrix(),
-    y=_get_second_matrix(),
+    fn_tree="paddle.linalg.solve",
+    x=helpers.get_first_solve_batch_matrix(),
+    y=helpers.get_second_solve_batch_matrix(),
     test_with_out=st.just(False),
 )
 def test_paddle_solve(
@@ -886,8 +1007,8 @@ def test_paddle_solve(
     fn_tree,
     on_device,
 ):
-    input_dtype1, x1 = x
-    input_dtype2, x2 = y
+    input_dtype1, x1, _ = x
+    input_dtype2, x2, _ = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
         backend_to_test=backend_fw,
