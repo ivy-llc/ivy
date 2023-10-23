@@ -107,13 +107,16 @@ def _generic_lstm(
     h_outs = h_out if num_layers == 1 else ivy.concat(h_outs, axis=0)
     c_outs = c_out if num_layers == 1 else ivy.concat(c_outs, axis=0)
 
+    if batch_sizes is not None:
+        output = _pack_padded_sequence(output, batch_sizes)[0]
+
     return output, h_outs, c_outs
 
 
 def _lstm_cell(
     x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias, batch_sizes=None
 ):
-    x_shape = list(x.shape)
+    x_shape = x.shape
     batch_shape = x_shape[1:-1]
     timesteps = x_shape[0]
     input_channels = x_shape[-1]
@@ -160,10 +163,9 @@ def _lstm_cell(
         output = ivy.concat(ht_list, axis=0)
     else:
         ct_list = ivy.concat(ct_list, axis=0)
-        ht_list = ivy.concat(ht_list, axis=0)
+        output = ht_list = ivy.concat(ht_list, axis=0)
         c = _extract_states(ct_list, batch_sizes)
         h = _extract_states(ht_list, batch_sizes)
-        output = _pack_padded_sequence(ht_list, batch_sizes)[0]
     return output, (h, c)
 
 

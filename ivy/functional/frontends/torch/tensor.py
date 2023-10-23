@@ -774,6 +774,10 @@ class Tensor:
     def is_meta(self):
         return "meta" in ivy.dev(self.ivy_array)
 
+    @with_unsupported_dtypes({"2.1.0 and below": ("uint16", "bool")}, "torch")
+    def positive(self):
+        return torch_frontend.positive(self)
+
     @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, "torch")
     def pow(self, exponent):
         return torch_frontend.pow(self, exponent)
