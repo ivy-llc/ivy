@@ -158,3 +158,12 @@ def mel_weight_matrix(
         lower_edge_hertz=lower_edge_hertz,
         upper_edge_hertz=upper_edge_hertz,
     )
+
+
+def polysub(poly1: tf.Tensor, poly2: tf.Tensor) -> tf.Tensor:
+    max_length = max(poly1.shape[0], poly2.shape[0])
+
+    poly1 = tf.pad(poly1, paddings=[[0, max_length - poly1.shape[0]]])
+    poly2 = tf.pad(poly2, paddings=[[0, max_length - poly2.shape[0]]])
+
+    return tf.subtract(poly1, poly2)

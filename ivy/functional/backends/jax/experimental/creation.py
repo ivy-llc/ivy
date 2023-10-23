@@ -9,6 +9,7 @@ import jaxlib.xla_extension
 from ivy.functional.backends.jax import JaxArray
 import ivy
 
+
 # Array API Standard #
 # ------------------ #
 
@@ -163,3 +164,10 @@ def mel_weight_matrix(
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = jnp.maximum(zero, jnp.minimum(lower_slopes, upper_slopes))
     return jnp.pad(mel_weights, [[1, 0], [0, 0]])
+
+
+def polysub(
+    poly1: JaxArray,
+    poly2: JaxArray,
+) -> JaxArray:
+    return jnp.polysub(poly1, poly2)

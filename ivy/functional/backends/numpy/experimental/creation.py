@@ -204,3 +204,7 @@ def mel_weight_matrix(
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = np.maximum(zero, np.minimum(lower_slopes, upper_slopes))
     return np.pad(mel_weights, [[1, 0], [0, 0]])
+
+
+def polysub(poly1: np.ndarray, poly2: np.ndarray) -> np.ndarray:
+    return np.polysub(poly1, poly2)

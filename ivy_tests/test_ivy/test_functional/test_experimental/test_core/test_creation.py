@@ -407,6 +407,29 @@ def test_ndindex(dtype_x_shape):
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.polysub",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_num_dims=1,
+        min_value=-1000,
+        max_value=1000,
+    ),
+    test_with_out=st.just(True),
+    test_instance_method=st.just(False),
+)
+def test_polysub(*, dtype_and_x, dtype, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        dtype=dtype[0],
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.random_cp",
     data=_random_cp_data(),
     test_with_out=st.just(False),

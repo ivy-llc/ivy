@@ -223,3 +223,21 @@ def mel_weight_matrix(
         upper_edge_hertz,
     )
     return paddle.transpose(mel_mat, (1, 0))
+
+
+def polysub(poly1_coeffs: paddle.Tensor, poly2_coeffs: paddle.Tensor) -> paddle.Tensor:
+    max_length = max(poly1_coeffs.shape[0], poly1_coeffs.shape[0])
+    padded_poly1_coeffs = paddle.concat(
+        [
+            poly1_coeffs,
+            paddle.zeros([max_length - poly1_coeffs.shape[0]], dtype="float32"),
+        ]
+    )
+    padded_poly2_coeffs = paddle.concat(
+        [
+            poly2_coeffs,
+            paddle.zeros([max_length - poly2_coeffs.shape[0]], dtype="float32"),
+        ]
+    )
+
+    return padded_poly1_coeffs - padded_poly2_coeffs

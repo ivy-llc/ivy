@@ -1,6 +1,7 @@
 from typing import Union, Optional, Tuple
 import mxnet as mx
 import numpy as np
+from mxnet.ndarray import NDArray
 
 from ivy.utils.exceptions import IvyNotImplementedException
 
@@ -62,3 +63,23 @@ def blackman_window(
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
+
+
+def polysub(poly1: NDArray, poly2: NDArray) -> NDArray:
+    # Pad the coefficients to have the same length (necessary for subtraction)
+    max_length = max(poly1.shape[0], poly2.shape[0])
+    poly1 = mx.nd.pad(
+        poly1,
+        mode="constant",
+        pad_width=(0, max_length - poly1.shape[0]),
+        constant_value=0,
+    )
+    poly2 = mx.nd.pad(
+        poly2,
+        mode="constant",
+        pad_width=(0, max_length - poly2.shape[0]),
+        constant_value=0,
+    )
+
+    # Calculate the difference of the polynomials
+    return poly1 - poly2
