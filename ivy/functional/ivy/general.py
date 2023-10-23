@@ -2838,10 +2838,10 @@ def get_item(
     ivy.array([  4,  -2, -10])
     """
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        if not len(query.shape):
-            if not query:
-                return ivy.array([], shape=(0,), dtype=x.dtype)
-            return ivy.expand_dims(x, axis=0)
+        if query.ndim == 0:
+            if query is False:
+                return ivy.zeros(shape=(0,) + x.shape, dtype=x.dtype)
+            return x[None]  # eqivalent to ivy.expand_dims(x, axis=0)
         query = ivy.nonzero(query, as_tuple=False)
         ret = ivy.gather_nd(x, query)
     else:
