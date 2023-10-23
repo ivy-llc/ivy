@@ -1,7 +1,7 @@
 # global
 from numbers import Number
 from typing import Union, Tuple, Iterable
-
+import jax.numpy as jnp
 
 # local
 import ivy
@@ -19,26 +19,26 @@ _uint8 = ivy.UintDtype("uint8")
 _uint16 = ivy.UintDtype("uint16")
 _uint32 = ivy.UintDtype("uint32")
 _uint64 = ivy.UintDtype("uint64")
-_bfloat16 = ivy.FloatDtype("bfloat16")
-_float16 = ivy.FloatDtype("float16")
-_float32 = ivy.FloatDtype("float32")
-_float64 = ivy.FloatDtype("float64")
-_complex64 = ivy.ComplexDtype("complex64")
-_complex128 = ivy.ComplexDtype("complex128")
-_bool = ivy.Dtype("bool")
+_bfloat16 = jnp.bfloat16
+_float16 = jnp.float16
+_float32 = jnp.float32
+_float64 = jnp.float64
+_complex64 = jnp.complex64
+_complex128 = jnp.complex128
+_bool = jnp.bool_
 
 # jax-numpy casting table
 jax_numpy_casting_table = {
     _bool: [
         _bool,
-        _int8,
-        _int16,
-        _int32,
-        _int64,
-        _uint8,
-        _uint16,
-        _uint32,
-        _uint64,
+        jnp.int8,
+        jnp.int16,
+        jnp.int32,
+        jnp.int64,
+        jnp.uint8,
+        jnp.uint16,
+        jnp.uint32,
+        jnp.uint64,
         _float16,
         _float32,
         _float64,
@@ -46,11 +46,11 @@ jax_numpy_casting_table = {
         _complex128,
         _bfloat16,
     ],
-    _int8: [
-        _int8,
-        _int16,
-        _int32,
-        _int64,
+    jnp.int8: [
+        jnp.int8,
+        jnp.int16,
+        jnp.int32,
+        jnp.int64,
         _float16,
         _float32,
         _float64,
@@ -58,34 +58,10 @@ jax_numpy_casting_table = {
         _complex128,
         _bfloat16,
     ],
-    _int16: [
-        _int16,
-        _int32,
-        _int64,
-        _float32,
-        _float64,
-        _complex64,
-        _complex128,
-    ],
-    _int32: [
-        _int32,
-        _int64,
-        _float64,
-        _complex128,
-    ],
-    _int64: [
-        _int64,
-        _float64,
-        _complex128,
-    ],
-    _uint8: [
-        _int16,
-        _int32,
-        _int64,
-        _uint8,
-        _uint16,
-        _uint32,
-        _uint64,
+    jnp.int16: [
+        jnp.int16,
+        jnp.int32,
+        jnp.int64,
         _float16,
         _float32,
         _float64,
@@ -93,27 +69,73 @@ jax_numpy_casting_table = {
         _complex128,
         _bfloat16,
     ],
-    _uint16: [
-        _int32,
-        _int64,
-        _uint16,
-        _uint32,
-        _uint64,
+    jnp.int32: [
+        jnp.int32,
+        jnp.int64,
+        _float16,
         _float32,
         _float64,
         _complex64,
         _complex128,
+        _bfloat16,
     ],
-    _uint32: [
-        _int64,
-        _uint32,
-        _uint64,
+    jnp.int64: [
+        jnp.int64,
+        _float16,
+        _float32,
         _float64,
+        _complex64,
         _complex128,
+        _bfloat16,
     ],
-    _uint64: [
-        _uint64,
+    jnp.uint8: [
+        jnp.uint8,
+        jnp.uint16,
+        jnp.uint32,
+        jnp.uint64,
+        _float16,
+        _float32,
         _float64,
+        _complex64,
+        _complex128,
+        _bfloat16,
+    ],
+    jnp.uint16: [
+        jnp.uint16,
+        jnp.uint32,
+        jnp.uint64,
+        _float16,
+        _float32,
+        _float64,
+        _complex64,
+        _complex128,
+        _bfloat16,
+    ],
+    jnp.uint32: [
+        jnp.uint32,
+        jnp.uint64,
+        _float16,
+        _float32,
+        _float64,
+        _complex64,
+        _complex128,
+        _bfloat16,
+    ],
+    jnp.uint64: [
+        jnp.uint64,
+        _float16,
+        _float32,
+        _float64,
+        _complex64,
+        _complex128,
+        _bfloat16,
+    ],
+    _bfloat16: [
+        _bfloat16,
+        _float16,
+        _float32,
+        _float64,
+        _complex64,
         _complex128,
     ],
     _float16: [
@@ -131,15 +153,14 @@ jax_numpy_casting_table = {
     ],
     _float64: [
         _float64,
+        _complex64,
         _complex128,
     ],
-    _complex64: [_complex64, ivy.complex128],
-    _complex128: [_complex128],
-    _bfloat16: [
-        _bfloat16,
-        _float32,
-        _float64,
+    _complex64: [
         _complex64,
+        _complex128,
+    ],
+    _complex128: [
         _complex128,
     ],
 }
@@ -383,6 +404,16 @@ dtype_replacement_dict = {
     _complex128: _complex64,
 }
 
+
+def array_repr(arr):
+    shape = arr.shape
+    dtype = arr.dtype
+    device = arr.device
+    data = ivy.to_numpy(arr)
+    
+    repr_str = f"Ivy Array (shape={shape}, dtype={dtype}, device={device}):\n{data}" # takes an Ivy array as input and generates a string representation
+    
+    return repr_str
 
 @handle_exceptions
 def promote_types_jax(
