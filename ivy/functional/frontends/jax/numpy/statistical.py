@@ -365,9 +365,18 @@ def nanmin(
     "jax",
 )
 def nanpercentile(
-    a, q, /, *, axis=None, out=None, overwrite_input=False, method="linear", keepdims=False, interpolation=None
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
 ):
-    def _nanpercentile_1d(arr1d, q, interpolation='linear'):
+    def _nanpercentile_1d(arr1d, q, interpolation="linear"):
         nan_mask = ivy.isnan(arr1d)
 
         if ivy.all(nan_mask):
@@ -381,10 +390,10 @@ def nanpercentile(
         non_nan_values = arr1d[~nan_mask]
         nan_indices = ivy.nonzero(nan_mask)[0]
 
-        arr1d[nan_indices[:non_nan_values.size]] = non_nan_values
+        arr1d[nan_indices[: non_nan_values.size]] = non_nan_values
 
         return arr1d[: -nan_indices.size], True
-    
+
     def _apply_along_axis(func1d, axis, arr, *args, **kwargs):
         ndim = ivy.get_num_dims(arr)
         if axis is None or not isinstance(axis, int):
@@ -398,20 +407,21 @@ def nanpercentile(
 
         def apply_func(elem):
             return func1d(elem, *args, **kwargs)
+
         for i in range(1, ndim - axis):
             apply_func = ivy.vmap(apply_func, in_axes=i, out_axes=-1)
         for i in range(axis):
             apply_func = ivy.vmap(apply_func, in_axes=0, out_axes=0)
 
         return ivy.asarray(apply_func(arr))
-    
+
     def _ureduce(a, q, axis=None, out=None, overwrite_input=False):
         if axis is None or a.ndim == 1:
             part = a.ravel()
             return _nanpercentile_1d(part, q, interpolation=interpolation)
         else:
             return _apply_along_axis(_nanpercentile_1d, axis, a, q, interpolation)
-    
+
     a = ivy.asarray(a)
     q = ivy.divide(q, 100.0)
     q = ivy.asarray(q)
@@ -423,7 +433,9 @@ def nanpercentile(
         if not ivy.all((0 <= q) & (q <= 1)):
             raise ValueError("Percentiles must be in the range [0, 100]")
 
-    return ivy.reduce(a, q, axis=axis, keepdims=False, out=out, overwrite_input=overwrite_input)
+    return ivy.reduce(
+        a, q, axis=axis, keepdims=False, out=out, overwrite_input=overwrite_input
+    )
 
 
 @handle_jax_dtype
