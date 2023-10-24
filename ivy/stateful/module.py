@@ -1078,9 +1078,8 @@ class _HaikuIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         params_hk = self._dict_to_hk_flat_map(self.v.cont_to_dict())
         ret = self._native_module.apply(params_hk, 0, *a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
     def _hk_flat_map_to_dict(self, hk_flat_map):
         from haiku._src.data_structures import FlatMapping
@@ -1142,9 +1141,8 @@ class _FlaxIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         params_fx = flax.core.freeze(self.v.cont_to_dict())
         ret = self._native_module.apply(params_fx, *a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _KerasIvyModule(Module):
@@ -1169,9 +1167,8 @@ class _KerasIvyModule(Module):
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _PaddleIvyModule(Module):
@@ -1201,9 +1198,8 @@ class _PaddleIvyModule(Module):
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _TorchIvyModule(Module):
@@ -1269,6 +1265,5 @@ class _TorchIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         self._update_v(self.v)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)

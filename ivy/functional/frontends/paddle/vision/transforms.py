@@ -192,12 +192,12 @@ def pad(img, padding, fill=0, padding_mode="constant"):
         elif dim_size == 3:
             trans_padding = ((0, 0), (padding[1], padding[3]), (padding[0], padding[2]))
     else:
-        raise "padding can only be 1D with size 1, 2, 4 only"
+        raise ValueError("padding can only be 1D with size 1, 2, 4 only")
 
     if padding_mode in ["constant", "edge", "reflect", "symmetric"]:
         return ivy.pad(img, trans_padding, mode=padding_mode, constant_values=fill)
     else:
-        raise "Unsupported padding_mode"
+        raise ValueError("Unsupported padding_mode")
 
 
 @with_supported_dtypes(

@@ -79,4 +79,4 @@ if __name__ == "__main__":
                         f_write.write(line)
 
     if failed:
-        exit(1)
+        sys.exit(1)
