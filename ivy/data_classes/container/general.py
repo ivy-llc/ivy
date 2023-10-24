@@ -4291,7 +4291,7 @@ class _ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            A boolean container detaling if any of the leaf nodes are None.
+            A boolean container detailing if any of the leaf nodes are None.
             True if not None, False if None.
 
         Examples
@@ -4353,7 +4353,7 @@ class _ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            A boolean container detaling if any of the leaf nodes are None.
+            A boolean container detailing if any of the leaf nodes are None.
             True if not None, False if None.
 
         Examples

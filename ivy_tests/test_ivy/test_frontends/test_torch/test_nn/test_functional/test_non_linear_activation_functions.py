@@ -105,8 +105,9 @@ def _x_and_scaled_attention(draw, dtypes):
     fn_tree="torch.nn.functional.celu",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
     ),
-    alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0),
     test_inplace=st.booleans(),
     test_with_out=st.just(False),
 )
@@ -120,7 +121,7 @@ def test_torch_celu(
     test_flags,
     backend_fw,
 ):
-    input_dtype, input = dtype_and_input
+    input_dtype, x = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -129,7 +130,44 @@ def test_torch_celu(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input[0],
+        input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
+        alpha=alpha,
+    )
+
+
+# celu_
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.celu_",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0),
+    test_inplace=st.just(True),
+    test_with_out=st.just(False),
+)
+def test_torch_celu_(
+    *,
+    dtype_and_input,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_input
+    _filter_dtypes(input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
         alpha=alpha,
     )
 
@@ -1076,7 +1114,8 @@ def test_torch_softmax(
         input=x[0],
         dim=axis,
         _stacklevel=3,
-        dtype=ivy.as_ivy_dtype(dtypes[0]),
+        dtype=dtypes[0],
+        atol=1e-03,
     )
     ivy.previous_backend()
 

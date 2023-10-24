@@ -322,7 +322,7 @@ def greater(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.math.greater(x1, x2)
+    return tf.experimental.numpy.greater(x1, x2)
 
 
 @with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
@@ -749,7 +749,7 @@ def tanh(
     complex_mode="jax",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.tanh(x)
+    return tf.math.tanh(x)
 
 
 def trapz(
@@ -775,8 +775,8 @@ def trunc(
     ret = x
     if not ivy.is_array(x):
         raise ivy.utils.exceptions.IvyException("Input must be array")
-    elif not ("int" in str(x.dtype)):
-        if not ret.get_shape().ndims == 0:
+    elif "int" not in str(x.dtype):
+        if ret.get_shape().ndims != 0:
             ret = tf.tensor_scatter_nd_update(
                 x, tf.where(tf.greater_equal(x, 0)), tf.math.floor(x[x >= 0])
             )

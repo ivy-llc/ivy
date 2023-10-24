@@ -127,7 +127,7 @@ def get_dtypes(
         Supported types are integer, float, valid, numeric, signed_integer, complex,
         real_and_complex, float_and_complex, bool, and unsigned
     index
-        list indexing incase a test needs to be skipped for a particular dtype(s)
+        list indexing in case a test needs to be skipped for a particular dtype(s)
     mixed_fn_compos
         boolean if True, the function will return the dtypes of the compositional
         implementation for mixed partial functions and if False, it will return

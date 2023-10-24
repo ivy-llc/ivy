@@ -50,7 +50,7 @@ def current_backend_str() -> str:
 
 def _check_query(query):
     return not isinstance(query, list) and (
-        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
+        not (ivy.is_array(query) and ivy.is_bool_dtype(query) and bool(query.ndim > 0))
     )
 
 

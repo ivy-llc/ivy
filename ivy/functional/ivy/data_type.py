@@ -24,7 +24,6 @@ from ivy.func_wrapper import (
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
-from collections.abc import Hashable
 
 
 # Helpers #
@@ -181,6 +180,26 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
     return out
 
 
+# allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+def _expand_typesets(dtypes):
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+    dtypes = list(dtypes)
+    typeset_list = []
+    for i, dtype in reversed(list(enumerate(dtypes))):
+        if dtype in typesets:
+            typeset_list.extend(typesets[dtype])
+            dtypes.pop(i)
+    dtypes += typeset_list
+    return dtypes
+
+
 # Get the list of dtypes supported by the function
 # by default returns the supported dtypes
 def _get_dtypes(fn, complement=True):
@@ -205,16 +224,6 @@ def _get_dtypes(fn, complement=True):
         ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
     ]
 
-    # allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
-    typesets = {
-        "valid": ivy.valid_dtypes,
-        "numeric": ivy.valid_numeric_dtypes,
-        "float": ivy.valid_float_dtypes,
-        "integer": ivy.valid_int_dtypes,
-        "unsigned": ivy.valid_uint_dtypes,
-        "complex": ivy.valid_complex_dtypes,
-    }
-
     for key, merge_fn, base in basic:
         if hasattr(fn, key):
             dtypes = getattr(fn, key)
@@ -222,13 +231,9 @@ def _get_dtypes(fn, complement=True):
             if isinstance(dtypes, dict):
                 dtypes = dtypes.get(ivy.current_backend_str(), base)
             ivy.utils.assertions.check_isinstance(dtypes, tuple)
-            dtypes = list(dtypes)
-            typeset_list = []
-            for i, dtype in reversed(list(enumerate(dtypes))):
-                if dtype in typesets:
-                    typeset_list.extend(typesets[dtype])
-                    dtypes.pop(i)
-            dtypes += typeset_list
+            if not dtypes:
+                dtypes = base
+            dtypes = _expand_typesets(dtypes)
             supported = merge_fn(supported, set(dtypes))
 
     if complement:
@@ -603,7 +608,7 @@ def finfo(
     Returns
     -------
     ret
-        an object having the followng attributes:
+        an object having the following attributes:
 
         - **bits**: *int*
 
@@ -961,7 +966,15 @@ def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     ret
         True if data type is hashable else False
     """
-    return isinstance(dtype_in, Hashable)
+    # Doing something like isinstance(dtype_in, collections.abc.Hashable)
+    # fails where the `__hash__` method is overridden to simply raise an
+    # exception.
+    # [See `tensorflow.python.trackable.data_structures.ListWrapper`]
+    try:
+        hash(dtype_in)
+        return True
+    except TypeError:
+        return False
 
 
 @handle_exceptions
@@ -1822,12 +1835,12 @@ def is_bool_dtype(
     elif isinstance(dtype_in, np.ndarray):
         return "bool" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return isinstance(dtype_in, (bool, np.bool)) and not isinstance(dtype_in, bool)
+        return isinstance(dtype_in, (bool, np.bool_)) and not isinstance(dtype_in, bool)
     elif isinstance(dtype_in, (list, tuple, dict)):
         return bool(
             ivy.nested_argwhere(
                 dtype_in,
-                lambda x: isinstance(x, (bool, np.bool)) and x is not int,
+                lambda x: isinstance(x, (bool, np.bool_)) and x is not int,
             )
         )
     return "bool" in ivy.as_ivy_dtype(dtype_in)
@@ -2102,6 +2115,9 @@ def promote_types(
     ret
         The type that both input types promote to
     """
+    # in case either is of none type
+    if not (type1 and type2):
+        return type1 if type1 else type2
     query = [ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)]
     query = tuple(query)
     if query not in ivy.promotion_table:

@@ -465,7 +465,7 @@ def test_bitwise_invert(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devi
 def test_bitwise_left_shift(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
-    # shifts >= dtype witdth produce backend-defined behavior
+    # shifts >= dtype width produce backend-defined behavior
     dtype = np.promote_types(input_dtype[0], input_dtype[1])
     bit_cap = (
         np.iinfo(dtype).bits
@@ -532,7 +532,7 @@ def test_bitwise_right_shift(
     input_dtype, x = dtype_and_x
 
     # negative shifts will throw an exception
-    # shifts >= dtype witdth produce backend-defined behavior
+    # shifts >= dtype width produce backend-defined behavior
     x[1] = np.asarray(
         np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
     )
@@ -1502,6 +1502,7 @@ def test_multiply(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     posinf=st.floats(min_value=5e100, max_value=5e100),
     neginf=st.floats(min_value=-5e100, max_value=-5e100),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_nan_to_num(
     *,
@@ -1916,10 +1917,9 @@ def test_tanh(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-1,
-        atol_=1e-2,
         x=x[0],
         complex_mode=complex_mode,
+        atol_=1e-02,  # for `test_flags.test_gradients and 'bfloat16' in input_dtype`
     )
 
 

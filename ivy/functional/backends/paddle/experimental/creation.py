@@ -116,7 +116,7 @@ def unsorted_segment_min(
         init_val = 9223372036854775807
     else:
         raise ValueError("Unsupported data type")
-    # Using paddle.full is causing interger overflow for int64
+    # Using paddle.full is causing integer overflow for int64
     res = paddle.empty((num_segments,) + tuple(data.shape[1:]), dtype=data.dtype)
     res[:] = init_val
     for i in range(num_segments):
@@ -223,3 +223,26 @@ def mel_weight_matrix(
         upper_edge_hertz,
     )
     return paddle.transpose(mel_mat, (1, 0))
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float16", "int8", "int16", "uint8", "complex", "bool")
+        }
+    },
+    backend_version,
+)
+def polyval(
+    coeffs: paddle.Tensor,
+    x: paddle.Tensor,
+) -> paddle.Tensor:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
+    y = paddle.zeros_like(x)
+    for coeff in coeffs:
+        y = y * x + coeff
+    y = paddle.to_tensor(y)
+    y = y.astype(promoted_type)
+    return y

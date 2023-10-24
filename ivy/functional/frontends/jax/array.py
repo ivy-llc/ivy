@@ -384,6 +384,19 @@ class Array:
             self, axis=axis, out=out, keepdims=keepdims, where=where
         )
 
+    def std(
+        self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None
+    ):
+        return jax_frontend.numpy.std(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=ddof,
+            keepdims=keepdims,
+            where=where,
+        )
+
     def var(
         self, *, axis=None, dtype=None, out=None, ddof=False, keepdims=False, where=None
     ):

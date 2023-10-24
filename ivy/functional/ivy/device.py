@@ -1,6 +1,5 @@
 """Collection of device Ivy functions."""
 
-
 # global
 import os
 import gc
@@ -156,7 +155,7 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
 
 def _shift_native_arrays_on_default_device(*args, **kwargs):
     with ivy.ArrayMode(False):
-        default_device = ivy.default_device(as_native=True)
+        default_device = ivy.default_device()
         args, kwargs = ivy.nested_map(
             lambda x: (
                 ivy.to_device(x, default_device)
@@ -1199,7 +1198,7 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
             supported = set(all_devices).difference(supported)
         return supported
 
-    # Their values are formated like either
+    # Their values are formatted like either
     # 1. fn.supported_devices = ("cpu",)
     # Could also have the "all" value for the framework
     basic = [

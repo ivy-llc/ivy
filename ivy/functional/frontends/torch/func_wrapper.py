@@ -224,13 +224,15 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
-            # ivy.inplace_update with ensure_in_backend=True fails in jax and tf
-            # so update .data directly
-            if ivy.is_array(first_array):
-                first_array._data = ret.ivy_array.data
+            native_ret_data = ret.ivy_array.data
+            if ivy.is_ivy_array(first_array):
+                first_array.data = native_ret_data
+            elif ivy.is_native_array(first_array):
+                ivy.inplace_update(first_array, native_ret_data)
+                ret = torch_frontend.Tensor(first_array, _init_overload=True)
             else:
-                first_array.ivy_array._data = ret.ivy_array.data
-            ret = first_array
+                first_array.ivy_array.data = native_ret_data
+                ret = first_array
 
         # logic for setting is_leaf
         if ret is not None and isinstance(ret, torch_frontend.Tensor):
