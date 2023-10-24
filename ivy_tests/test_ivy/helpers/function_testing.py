@@ -924,9 +924,13 @@ def test_frontend_function(
                 precision_mode=test_flags.precision_mode,
                 **copy_kwargs,
             )
-            if _is_frontend_array(first_array):
-                first_array = first_array.ivy_array
-            ret_ = ret_.ivy_array
+            if test_flags.generate_frontend_arrays:
+                first_array = first_array.ivy_array.data
+            elif ivy_backend.is_ivy_array(first_array):
+                first_array = first_array.data
+            if hasattr(first_array, "requires_grad"):
+                first_array.requires_grad = False
+            ret_ = ret_.ivy_array.data
             assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
             assert _is_frontend_array(ret)
