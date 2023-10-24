@@ -11,6 +11,9 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipul
 from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (
     _get_repeat_interleaves_args,
 )
+from ivy_tests.test_ivy.test_frontends.test_torch.test_indexing_slicing_joining_mutating_ops import (  # noqa
+    _chunk_helper,
+)
 
 
 # --- Helpers --- #
@@ -323,6 +326,35 @@ def test_paddle_cast(
         on_device=on_device,
         x=x[0],
         dtype=dtype[0],
+    )
+
+
+# chunk
+@handle_frontend_test(
+    fn_tree="paddle.chunk",
+    x_dim_chunks=_chunk_helper(),
+    test_with_out=st.just(False),
+)
+def test_paddle_chunk(
+    *,
+    x_dim_chunks,
+    fn_tree,
+    on_device,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x, axis, chunks = x_dim_chunks
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        chunks=chunks,
+        axis=axis,
     )
 
 

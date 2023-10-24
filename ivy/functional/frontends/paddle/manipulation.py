@@ -44,6 +44,26 @@ def cast(x, dtype):
     return ivy.astype(x, dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def chunk(x, chunks, axis=0, name=None):
+    if x.shape == () and chunks > 1:
+        raise ValueError("Invalid value for chunks")
+    axis_size = ivy.shape(x)[axis]
+    chunk_size = axis_size // chunks
+    remainder = axis_size % chunks
+    num_or_size_splits = (
+        chunks
+        if remainder == 0
+        else tuple([chunk_size + remainder] + [chunk_size] * (chunks - 1))
+    )
+    num_or_size_splits = axis_size if chunk_size == 0 else num_or_size_splits
+    return ivy.split(x, num_or_size_splits=num_or_size_splits, axis=axis)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("int8", "int16")}, "paddle")
 @to_ivy_arrays_and_back
 def concat(x, axis, name=None):
