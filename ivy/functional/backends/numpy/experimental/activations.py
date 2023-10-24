@@ -55,7 +55,7 @@ def relu6(
 relu6.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.1 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def logsigmoid(
     input: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
@@ -149,6 +149,19 @@ tanhshrink.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+def softshrink(
+    x: np.ndarray, /, *, lambd: float = 0.5, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    ret = np.where(x > lambd, x - lambd, np.where(x < -lambd, x + lambd, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+softshrink.support_native_out = True
+
+
+@_scalar_output_to_0d_array
 def scaled_tanh(
     x: np.ndarray,
     /,
@@ -158,3 +171,16 @@ def scaled_tanh(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return alpha * np.tanh(beta * x)
+
+
+@_scalar_output_to_0d_array
+def hardshrink(
+    x: np.ndarray, /, *, lambd: float = 0.5, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    ret = np.where(x > lambd, x, np.where(x < -lambd, x, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+hardshrink.support_native_out = True

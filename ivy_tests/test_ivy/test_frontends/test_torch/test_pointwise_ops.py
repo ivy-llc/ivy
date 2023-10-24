@@ -5,12 +5,11 @@ from hypothesis import strategies as st, assume
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.array_api_testing.test_array_api.array_api_tests import (
+    hypothesis_helpers as hh,
+)
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
-
-from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
-    _broadcastable_trio,
-)
 
 
 # --- Helpers --- #
@@ -87,14 +86,26 @@ def _get_clip_inputs(draw):
 
 @st.composite
 def _masked_fill_helper(draw):
-    cond, xs, dtypes = draw(_broadcastable_trio())
-    if ivy.is_uint_dtype(dtypes[0]):
-        fill_value = draw(helpers.ints(min_value=0, max_value=5))
-    elif ivy.is_int_dtype(dtypes[0]):
-        fill_value = draw(helpers.ints(min_value=-5, max_value=5))
-    else:
-        fill_value = draw(helpers.floats(min_value=-5, max_value=5))
-    return dtypes[0], xs[0], cond, fill_value
+    shape_1, shape_2 = draw(hh.two_broadcastable_shapes())
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape_1,
+        )
+    )
+    _, mask = draw(
+        helpers.dtype_and_values(
+            dtype=["bool"],
+            shape=shape_2,
+        )
+    )
+    _, fill_value = draw(
+        helpers.dtype_and_values(
+            dtype=dtype,
+            shape=(),
+        )
+    )
+    return dtype[0], x[0], mask[0], fill_value[0]
 
 
 # --- Main --- #
@@ -2109,7 +2120,6 @@ def test_torch_masked_fill(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-03,
         input=x,
         mask=mask,
         value=val,

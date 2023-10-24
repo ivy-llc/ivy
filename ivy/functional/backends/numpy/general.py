@@ -1,5 +1,4 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 from typing import Optional, Union, Sequence, Callable, Tuple
@@ -436,7 +435,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.1 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,
