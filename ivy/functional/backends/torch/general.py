@@ -203,7 +203,7 @@ def gather(
         result = torch.stack(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
         if out:
-            out = result
+            out[:] = result
     return result
 
 
