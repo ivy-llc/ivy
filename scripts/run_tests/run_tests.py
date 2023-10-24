@@ -5,7 +5,7 @@ from pymongo import MongoClient
 import requests
 import json
 import old_run_test_helpers as old_helpers
-from run_tests_CLI.get_all_tests import BACKENDS
+from get_all_tests import BACKENDS
 
 
 def get_latest_package_version(package_name):
@@ -24,16 +24,50 @@ def get_submodule_and_function_name(test_path, is_frontend_test=False):
     submodule_test = test_path.split("/")[-1]
     submodule, test_function = submodule_test.split("::")
     submodule = submodule.replace("test_", "").replace(".py", "")
-    function_name = test_function[5:]
-    if is_frontend_test:
-        with open(test_path.split("::")[0]) as test_file:
-            test_file_content = test_file.read()
-            test_name = test_function.split(",")[0]
-            test_function_idx = test_file_content.find(f"def {test_name}")
-            fn_tree_idx = test_file_content[:test_function_idx].rfind('fn_tree="')
+
+    with open(test_path.split("::")[0]) as test_file:
+        test_file_content = test_file.read()
+        test_function_idx = test_file_content.find(f"def {test_function}")
+        test_function_block_idx = test_file_content[:test_function_idx].rfind("\n\n")
+        if test_function_block_idx == -1:
+            return submodule, None
+        relevant_file_content = test_file_content[
+            test_function_block_idx:test_function_idx
+        ]
+        fn_tree_idx = relevant_file_content.rfind('fn_tree="')
+
+        # frontend test
+        if is_frontend_test:
+            function_name = relevant_file_content[fn_tree_idx + 9 :].split('"')[0]
+
+            # instance method test
             if fn_tree_idx == -1:
-                return submodule, None
-            function_name = test_file_content[fn_tree_idx + 9 :].split('"')[0]
+                class_tree_idx = test_file_content.find('CLASS_TREE = "')
+                method_name_idx = relevant_file_content.rfind('method_name="')
+                if class_tree_idx == -1 or method_name_idx == -1:
+                    return submodule, None
+                class_tree = test_file_content[class_tree_idx + 14 :].split('"')[0]
+                class_name = ".".join(class_tree.split(".")[3:])
+                method_name = relevant_file_content[method_name_idx + 13 :].split('"')[
+                    0
+                ]
+                function_name = f"{class_name}.{method_name}"
+
+        # ivy test
+        else:
+            function_name = test_function[5:]
+
+            # instance method test
+            if fn_tree_idx == -1:
+                method_name_idx = relevant_file_content.rfind('method_tree="')
+                if method_name_idx != -1:
+                    method_name = relevant_file_content[method_name_idx + 13 :].split(
+                        '"'
+                    )[0]
+                    function_name = f"ivy.{method_name}"
+                else:
+                    return submodule, None
+
     return submodule, function_name
 
 
@@ -185,7 +219,8 @@ if __name__ == "__main__":
                 print(f"\n{'*' * 100}")
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
-                os.system(f"{command} --num-examples 1 --with-transpile")
+                sys.stdout.flush()
+                os.system(f"{command} --num-examples 5 --with-transpile")
 
             # load data from report if generated
             report_path = os.path.join(
@@ -248,4 +283,4 @@ if __name__ == "__main__":
 
     # if any tests fail, the workflow fails
     if failed:
-        exit(1)
+        sys.exit(1)

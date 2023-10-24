@@ -1,12 +1,13 @@
 import importlib
 import os
+import sys
 import glob
 
 
 def get_all_functions_from_directory(root_dir, startswith="test"):
     if not os.path.exists(root_dir):
         print("Invalid directory")
-        exit(1)
+        sys.exit(1)
     functions_names = []
     for filename in glob.iglob(f"{root_dir}/**/*.py", recursive=True):
         if len(filename) >= 2 and filename[:2] == "./":
@@ -40,4 +41,4 @@ if __name__ == "__main__":
     common_set = check_duplicate()
     if len(common_set) != 0:
         print("This function already exists in the functional API.")
-        exit(1)
+        sys.exit(1)

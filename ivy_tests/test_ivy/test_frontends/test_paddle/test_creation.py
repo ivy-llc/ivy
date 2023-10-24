@@ -99,6 +99,7 @@ def test_paddle_assign(
 @handle_frontend_test(
     fn_tree="paddle.clone",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_copy=st.just(True),
 )
 def test_paddle_clone(
     *,
