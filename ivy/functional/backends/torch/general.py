@@ -138,6 +138,9 @@ def to_numpy(
             # ml_dtypes
             # TODO: use torch's numpy() method once this feature is accepted
             # https://github.com/pytorch/pytorch/issues/109873
+            if 0 in x.shape:
+                # this is necessary because tolist converts all empty shapes to (0,)
+                return np.empty(x.shape, dtype=ivy.as_ivy_dtype(x.dtype))
             return np.array(x.tolist(), dtype=ivy.as_ivy_dtype(x.dtype))
         else:
             raise ivy.utils.exceptions.IvyException(

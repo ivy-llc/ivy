@@ -137,3 +137,13 @@ def scaled_tanh(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return alpha * torch.nn.functional.tanh(beta * x)
+
+
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+def hardshrink(
+    x: torch.Tensor, /, *, lambd: float = 0.5, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    ret = torch.nn.functional.hardshrink(x, lambd=lambd)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
