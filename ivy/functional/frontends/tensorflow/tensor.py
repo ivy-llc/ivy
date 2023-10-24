@@ -45,7 +45,7 @@ class EagerTensor:
 
     @property
     def shape(self):
-        return tuple(self.ivy_array.shape.shape)
+        return TensorShape(self.ivy_array.shape.shape)
 
     # Instance Methods #
     # ---------------- #
@@ -231,3 +231,67 @@ class EagerTensor:
 # Dummy Tensor class to help with compilation, don't add methods here
 class Tensor(EagerTensor):
     pass
+
+
+class TensorShape:
+    # TODO: there are still some methods that may need implementing
+
+    def __init__(self, dims):
+        self._dims = tuple(dims)
+
+    def __repr__(self):
+        return str(self._dims)
+
+    # Properties #
+    # ---------- #
+
+    @property
+    def ndims(self):
+        return self.__len__()
+
+    @property
+    def rank(self):
+        return self.__len__()
+    
+    # Instance Methods #
+    # ---------------- #
+
+    def __add__(self, y):
+        return self.concatenate(y)
+
+    def __bool__(self):
+        return self._dims is not None
+
+    def __concat__(self, y):
+        return self.concatenate(y)
+
+    def __eq__(self, y):
+        return self._dims == y._dims
+
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            return TensorShape(self._dims[key])
+        else:
+            return self._dims[key]
+
+    def __iter__(self):
+        return iter(d for d in self._dims)
+
+    def __len__(self):
+        return len(self._dims)
+
+    def __nonzero__(self):
+        return self.__bool__()
+
+    def __radd__(self, y):
+        return y.concatenate(self)
+
+    def as_list(self):
+        return list(self._dims)
+
+    def concatenate(self, y):
+        self._dims = self._dims + y._dims
+        return self
+
+    def num_elements(self):
+        return ivy.to_scalar(ivy.prod(self._dims))
