@@ -931,12 +931,17 @@ def test_frontend_function(
                 **copy_kwargs,
             )
             if test_flags.generate_frontend_arrays:
-                first_array = first_array.ivy_array.data
-            elif ivy_backend.is_ivy_array(first_array):
+                first_array = first_array.ivy_array
+            ret_ = ret_.ivy_array
+            if "bfloat16" in str(ret_.dtype):
+                ret_ = ivy_backend.astype(ret_, ivy_backend.float64)
+            if "bfloat16" in str(first_array.dtype):
+                first_array = ivy_backend.astype(first_array, ivy_backend.float64)
+            if not ivy_backend.is_native_array(first_array):
                 first_array = first_array.data
+            ret_ = ret_.data
             if hasattr(first_array, "requires_grad"):
                 first_array.requires_grad = False
-            ret_ = ret_.ivy_array.data
             assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
             assert _is_frontend_array(ret)
