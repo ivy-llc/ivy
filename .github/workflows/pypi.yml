@@ -29,4 +29,4 @@ jobs:
           PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
           cd ivy
-          bash deploy_pypi.sh
+          bash scripts/shell/deploy_pypi.sh
