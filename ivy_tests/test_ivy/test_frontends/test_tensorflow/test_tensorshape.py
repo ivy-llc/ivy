@@ -9,10 +9,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_method
 CLASS_TREE = "ivy.functional.frontends.tensorflow.tensor.TensorShape"
 
 
-# --- Main --- #
-# ------------ #
-
-
 # __add__
 @handle_frontend_method(
     class_tree=CLASS_TREE,

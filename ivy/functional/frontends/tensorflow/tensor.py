@@ -228,11 +228,6 @@ class EagerTensor:
             yield self[i]
 
 
-# Dummy Tensor class to help with compilation, don't add methods here
-class Tensor(EagerTensor):
-    pass
-
-
 class TensorShape:
     # TODO: there are still some methods that may need implementing
 
@@ -252,7 +247,7 @@ class TensorShape:
     @property
     def rank(self):
         return self.__len__()
-    
+
     # Instance Methods #
     # ---------------- #
 
@@ -295,3 +290,8 @@ class TensorShape:
 
     def num_elements(self):
         return ivy.to_scalar(ivy.prod(self._dims))
+
+
+# Dummy Tensor class to help with compilation, don't add methods here
+class Tensor(EagerTensor):
+    pass
