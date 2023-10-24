@@ -3697,13 +3697,41 @@ def multiprocessing(context: Optional[str] = None):
     Parameters
     ----------
     context
-        The context of the multiprocessing, either fork, forkserver or spawn.
+        The context of the multiprocessing, either 'fork', 'forkserver' or 'spawn'.
         Default is ``None``.
 
     Returns
     -------
     ret
         Multiprocessing module
+
+    Examples
+    --------
+    >>> import ivy
+
+    Using the default context (None):
+
+    >>> mp_default = ivy.multiprocessing()
+    >>> print(mp_default)
+    <multiprocessing.context.DefaultContext object at 0x7f4e3193e520>
+
+    Specifying 'fork' as the context:
+
+    >>> mp_fork = ivy.multiprocessing(context='fork')
+    >>> print(mp_fork)
+    <multiprocessing.context.ForkContext object at 0x7f4e3193e580>
+
+    Specifying 'spawn' as the context:
+
+    >>> mp_spawn = ivy.multiprocessing(context='spawn')
+    >>> print(mp_spawn)
+    <multiprocessing.context.SpawnContext object at 0x7f4e3193e5e0>
+
+    Specifying 'forkserver' as the context:
+
+    >>> mp_forkserver = ivy.multiprocessing(context='forkserver')
+    >>> print(mp_forkserver)
+    <multiprocessing.context.ForkServerContext object at 0x7f4e3193e640>
     """
     return current_backend().multiprocessing(context)
 
