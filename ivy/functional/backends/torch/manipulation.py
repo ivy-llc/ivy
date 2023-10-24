@@ -67,6 +67,8 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        x = x.clone().detach()
     num_dims = len(x.shape)
     if not num_dims:
         return x
