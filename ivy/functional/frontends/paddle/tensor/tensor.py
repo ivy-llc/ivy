@@ -927,7 +927,6 @@ class Tensor:
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
 
-
     @with_supported_dtypes(
         {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
     )
@@ -952,4 +951,3 @@ class Tensor:
     )
     def tile(self, repeat_times):
         return paddle_frontend.Tensor(ivy.tile(self._ivy_array, repeats=repeat_times))
-
