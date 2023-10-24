@@ -1336,6 +1336,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         """
         Apply a 3D adaptive maximum pooling over an input signal composed of several
         input planes.
+
         Parameters
         ----------
         self
