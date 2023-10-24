@@ -268,9 +268,12 @@ def test_function_backend_computation(
             array_fn = ivy_backend.is_array
             if "copy" in list(inspect.signature(target_fn).parameters.keys()):
                 kwargs["copy"] = True
-            first_array = ivy_backend.func_wrapper._get_first_array(
-                *args, array_fn=array_fn, **kwargs
-            )
+            if instance_method:
+                first_array = instance
+            else:
+                first_array = ivy_backend.func_wrapper._get_first_array(
+                    *args, array_fn=array_fn, **kwargs
+                )
             ret_, ret_np_flat_ = get_ret_and_flattened_np_array(
                 fw,
                 target_fn,
@@ -468,6 +471,9 @@ def test_function(
     """
     _switch_backend_context(test_flags.test_trace or test_flags.transpile)
     ground_truth_backend = test_flags.ground_truth_backend
+
+    if test_flags.container[0]:
+        test_flags.with_copy = False
 
     if test_flags.with_copy is True:
         test_flags.with_out = False
