@@ -83,10 +83,8 @@ def general_pool(
 
     # shape of window after dilation
     new_window_shape = tuple(
-        [
-            window_shape[i - 1] + (dilation[i] - 1) * (window_shape[i - 1] - 1)
-            for i in range(1, len(dims) - 1)
-        ]
+        window_shape[i - 1] + (dilation[i] - 1) * (window_shape[i - 1] - 1)
+        for i in range(1, len(dims) - 1)
     )
     inputs, window_shape, strides, depth_pooling = _determine_depth_max_pooling(
         inputs, window_shape, strides, dim, data_format="channel_last"
@@ -136,13 +134,13 @@ def general_pool(
                 # because they are counted in average calculation
                 inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
             pad_list = [(0, 0)] * len(pad_list)
+    elif isinstance(padding, list) and any(
+        item != 0 for sublist in padding for item in sublist
+    ):
+        raise NotImplementedError(
+            "Nonzero explicit padding is not supported for depthwise max pooling"
+        )
     else:
-        if isinstance(padding, list) and any(
-            item != 0 for sublist in padding for item in sublist
-        ):
-            raise NotImplementedError(
-                "Nonzero explicit padding is not supported for depthwise max pooling"
-            )
         pad_list = [(0, 0)] * (dim + 2)
 
     if not ivy.is_array(inputs):
@@ -455,7 +453,7 @@ def dct(
     if norm not in (None, "ortho"):
         raise ValueError("Norm must be either None or 'ortho'")
     if axis < 0:
-        axis = axis + len(x.shape)
+        axis += len(x.shape)
     if n is not None:
         signal_len = x.shape[axis]
         if n <= signal_len:
