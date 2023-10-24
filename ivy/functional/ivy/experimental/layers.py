@@ -3232,6 +3232,7 @@ def adaptive_max_pool1d(
     """
     Apply a 1D adaptive maximum pooling over an input signal composed of several input
     planes.
+
     Parameters
     ----------
     input

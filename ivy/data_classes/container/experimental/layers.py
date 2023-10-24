@@ -2869,6 +2869,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         ivy.Container static method variant of ivy.adaptive_max_pool1d. This method
         simply wraps the function, and so the docstring for ivy.adaptive_max_pool1d also
         applies to this method with minimal changes.
+
         Parameters
         ----------
         input
@@ -2904,6 +2905,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         """
         Apply a 1D adaptive maximum pooling over an input signal composed of several
         input planes.
+
         Parameters
         ----------
         self
