@@ -168,6 +168,7 @@ if __name__ == "__main__":
                     ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
                     f" -m pytest --tb=short {test_path} --backend {backend}"
                 )
+                print(f"COMMAND : {command}")
 
             # run the test
             sys.stdout.flush()
