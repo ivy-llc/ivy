@@ -63,11 +63,10 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        x = x.copy()
     num_dims = len(x.shape)
     if not num_dims:
-        if copy:
-            newarr = x.copy()
-            return newarr
         return x
     if axis is None:
         axis = list(range(num_dims))

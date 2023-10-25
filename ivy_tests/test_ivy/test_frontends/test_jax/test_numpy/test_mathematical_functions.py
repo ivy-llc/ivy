@@ -1062,6 +1062,53 @@ def test_jax_ediff1d(
     )
 
 
+# einsum_path
+# For the optimize parameter boolean values are not added to the samples for testing
+# as it seems that Jax einsum_path function currently fails when True or False is passed
+# as optimize values. Jax einsum_path function calls opt_einsum.contract_path function,
+# and it seems that there is an open bug on their repository for boolean values.
+# Please see link to the bug https://github.com/dgasmith/opt_einsum/issues/219
+@handle_frontend_test(
+    fn_tree="jax.numpy.einsum_path",
+    eq_n_op_n_shp=helpers.einsum_helper(),
+    dtype=helpers.get_dtypes("numeric", full=False),
+    test_with_out=st.just(False),
+    optimize=st.sampled_from(["greedy", "optimal"]),
+)
+def test_jax_einsum_path(
+    *,
+    eq_n_op_n_shp,
+    dtype,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+    optimize,
+):
+    eq, operands, dtypes = eq_n_op_n_shp
+    kw = {}
+    for i, x_ in enumerate(operands):
+        dtype = dtypes[i][0]
+        kw["x{}".format(i)] = np.array(x_).astype(dtype)
+    test_flags.num_positional_args = len(operands) + 1
+    ret, ret_gt = helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        subscripts=eq,
+        **kw,
+        optimize=optimize,
+    )
+    len(ret[0]) == len(ret_gt[0])
+    all(x == y for x, y in zip(ret[0], ret_gt[0]))
+    ret[1] == str(ret_gt[1])
+
+
 # exp
 @handle_frontend_test(
     fn_tree="jax.numpy.exp",
