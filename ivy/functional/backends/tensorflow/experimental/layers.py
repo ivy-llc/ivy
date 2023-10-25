@@ -928,6 +928,7 @@ interpolate.partial_mixed_handler = (
     lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: not align_corners  # noqa: E501
     and len(x.shape) < 4
     and mode not in ["nearest", "area", "bicubic", "nd"]
+    and (scale_factor is None or ivy.all(ivy.array(scale_factor) > 1))
 )
 
 

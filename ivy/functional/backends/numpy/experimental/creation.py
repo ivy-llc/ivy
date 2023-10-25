@@ -204,3 +204,11 @@ def mel_weight_matrix(
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = np.maximum(zero, np.minimum(lower_slopes, upper_slopes))
     return np.pad(mel_weights, [[1, 0], [0, 0]])
+
+
+def polyval(coeffs: np.ndarray, x: np.ndarray) -> np.ndarray:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    result = np.polyval(coeffs, x)
+    result = np.asarray(result, np.dtype(promoted_type))
+    return result

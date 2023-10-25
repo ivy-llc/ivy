@@ -115,6 +115,20 @@ def tanhshrink(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
+def threshold(
+    x: JaxArray,
+    /,
+    *,
+    threshold: Union[int, float],
+    value: Union[int, float],
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    ret = jnp.where(x > threshold, x, value).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)  # type: ignore
+    return ret
+
+
 @with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
 def softshrink(
     x: JaxArray, /, *, lambd: float = 0.5, out: Optional[JaxArray] = None

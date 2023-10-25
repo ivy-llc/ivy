@@ -268,9 +268,12 @@ def test_function_backend_computation(
             array_fn = ivy_backend.is_array
             if "copy" in list(inspect.signature(target_fn).parameters.keys()):
                 kwargs["copy"] = True
-            first_array = ivy_backend.func_wrapper._get_first_array(
-                *args, array_fn=array_fn, **kwargs
-            )
+            if instance_method:
+                first_array = instance
+            else:
+                first_array = ivy_backend.func_wrapper._get_first_array(
+                    *args, array_fn=array_fn, **kwargs
+                )
             ret_, ret_np_flat_ = get_ret_and_flattened_np_array(
                 fw,
                 target_fn,
@@ -468,6 +471,9 @@ def test_function(
     """
     _switch_backend_context(test_flags.test_trace or test_flags.transpile)
     ground_truth_backend = test_flags.ground_truth_backend
+
+    if test_flags.container[0]:
+        test_flags.with_copy = False
 
     if test_flags.with_copy is True:
         test_flags.with_out = False
@@ -924,9 +930,18 @@ def test_frontend_function(
                 precision_mode=test_flags.precision_mode,
                 **copy_kwargs,
             )
-            if _is_frontend_array(first_array):
+            if test_flags.generate_frontend_arrays:
                 first_array = first_array.ivy_array
             ret_ = ret_.ivy_array
+            if "bfloat16" in str(ret_.dtype):
+                ret_ = ivy_backend.astype(ret_, ivy_backend.float64)
+            if "bfloat16" in str(first_array.dtype):
+                first_array = ivy_backend.astype(first_array, ivy_backend.float64)
+            if not ivy_backend.is_native_array(first_array):
+                first_array = first_array.data
+            ret_ = ret_.data
+            if hasattr(first_array, "requires_grad"):
+                first_array.requires_grad = False
             assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
             assert _is_frontend_array(ret)

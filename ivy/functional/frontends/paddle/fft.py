@@ -126,6 +126,16 @@ def ifft(x, n=None, axis=-1.0, norm="backward", name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def ifftn(x, s=None, axes=None, norm="backward", name=None):
+    ret = ivy.ifftn(ivy.astype(x, "complex128"), s=s, axes=axes, norm=norm)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_supported_dtypes(
     {
         "2.5.1 and below": (
             "int32",
