@@ -76,7 +76,7 @@ RUN sed -i '/numpy/d' requirements.txt &&\
 ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/torch:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
 
 
-COPY run_tests_CLI/test_dependencies.py .
+COPY scripts/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
     rm -rf requirements.txt && \
     rm -rf tmp.txt && \

@@ -168,6 +168,7 @@ def test_as_native_dtype(
     fn_tree="functional.ivy.astype",
     dtype_and_x_and_cast_dtype=astype_helper(),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_astype(
     *, dtype_and_x_and_cast_dtype, test_flags, backend_fw, fn_name, on_device
@@ -300,11 +301,14 @@ def test_default_complex_dtype(
             complex_dtype=complex_dtype[0],
             as_native=as_native,
         )
-        assert (
-            isinstance(res, ivy_backend.Dtype)
-            or isinstance(res, typing.get_args(ivy_backend.NativeDtype))
-            or isinstance(res, ivy_backend.NativeDtype)
-            or isinstance(res, str)
+        assert isinstance(
+            res,
+            (
+                ivy_backend.Dtype,
+                typing.get_args(ivy_backend.NativeDtype),
+                ivy_backend.NativeDtype,
+                str,
+            ),
         )
         assert (
             ivy_backend.default_complex_dtype(
@@ -362,11 +366,14 @@ def test_default_float_dtype(
             float_dtype=float_dtype[0],
             as_native=as_native,
         )
-        assert (
-            isinstance(res, ivy_backend.Dtype)
-            or isinstance(res, typing.get_args(ivy_backend.NativeDtype))
-            or isinstance(res, ivy_backend.NativeDtype)
-            or isinstance(res, str)
+        assert isinstance(
+            res,
+            (
+                ivy_backend.Dtype,
+                typing.get_args(ivy_backend.NativeDtype),
+                ivy_backend.NativeDtype,
+                str,
+            ),
         )
         assert (
             ivy_backend.default_float_dtype(
@@ -401,11 +408,14 @@ def test_default_int_dtype(
             int_dtype=int_dtype[0],
             as_native=as_native,
         )
-        assert (
-            isinstance(res, ivy_backend.Dtype)
-            or isinstance(res, typing.get_args(ivy_backend.NativeDtype))
-            or isinstance(res, ivy_backend.NativeDtype)
-            or isinstance(res, str)
+        assert isinstance(
+            res,
+            (
+                ivy_backend.Dtype,
+                typing.get_args(ivy_backend.NativeDtype),
+                ivy_backend.NativeDtype,
+                str,
+            ),
         )
         assert (
             ivy_backend.default_int_dtype(input=None, int_dtype=None, as_native=False)

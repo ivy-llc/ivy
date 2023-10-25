@@ -73,6 +73,7 @@ def asarray(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ivy.utils.assertions._check_jax_x64_flag(dtype)
+    obj = jax.device_put(obj, device=device)
     if copy is True:
         return jnp.array(obj, dtype=dtype, copy=True)
     else:
