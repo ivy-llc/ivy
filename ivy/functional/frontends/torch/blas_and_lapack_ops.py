@@ -112,7 +112,7 @@ def cumulative_trapezoid(y, x=None, *, dx=None, dim=-1):
     # paddle's get_item function doesn't support bfloat16
     # this ensures compatability with paddle
     # TODO: remove once it is no longer needed
-    if y.dtype == "bfloat16":
+    if ivy.current_backend_str() == "paddle" and y.dtype == "bfloat16":
         y = y.astype(ivy.float32)
         if x is not None:
             x = x.astype(ivy.float32)
