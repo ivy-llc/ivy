@@ -70,6 +70,34 @@ def test_elu(
     )
 
 
+# hardshrink
+@handle_test(
+    fn_tree="functional.ivy.experimental.hardshrink",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    threshold=st.one_of(
+        st.floats(min_value=0.0, max_value=1e30),
+    ),
+)
+def test_hardshrink(
+    *, dtype_and_x, threshold, test_flags, backend_fw, fn_name, on_device
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        lambd=threshold,
+    )
+
+
 # hardtanh
 @handle_test(
     fn_tree="functional.ivy.experimental.hardtanh",
@@ -335,6 +363,38 @@ def test_tanhshrink(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         rtol_=1e-02,
         atol_=1e-02,
         x=x[0],
+    )
+
+
+# threshold
+@handle_test(
+    fn_tree="functional.ivy.experimental.threshold",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    threshold=st.one_of(
+        st.floats(min_value=-1e30, max_value=1e30),
+    ),
+    value=st.one_of(
+        st.floats(min_value=-1e30, max_value=1e30),
+    ),
+)
+def test_threshold(
+    *, dtype_and_x, threshold, value, test_flags, backend_fw, fn_name, on_device
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        threshold=threshold,
+        value=value,
     )
 
 

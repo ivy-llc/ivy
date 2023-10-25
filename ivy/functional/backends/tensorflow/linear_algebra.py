@@ -564,8 +564,10 @@ def svdvals(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    driver: Optional[str] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # TODO: handling the driver argument
     ret = tf.linalg.svd(x, compute_uv=False)
     return ret
 

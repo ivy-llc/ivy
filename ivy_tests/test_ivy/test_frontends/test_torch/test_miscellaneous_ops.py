@@ -945,12 +945,10 @@ def test_torch_diff(
 @handle_frontend_test(
     fn_tree="torch.einsum",
     eq_n_op_n_shp=helpers.einsum_helper(),
-    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_einsum(
     *,
     eq_n_op_n_shp,
-    dtype,
     on_device,
     fn_tree,
     frontend,
@@ -960,7 +958,7 @@ def test_torch_einsum(
     eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
     for i, x_ in enumerate(operands):
-        dtype = dtypes[i][0]
+        dtype = dtypes[i]
         kw[f"x{i}"] = np.array(x_).astype(dtype)
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_frontend_function(
