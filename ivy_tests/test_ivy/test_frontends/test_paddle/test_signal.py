@@ -14,7 +14,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def _valid_stft(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
+            available_dtypes=["complex64", "complex128"],
             max_value=65280,
             min_value=-65280,
             min_num_dims=1,
@@ -55,7 +55,7 @@ def test_paddle_stft(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x,
+        x=x[0],
         n_fft=n_fft,
         hop_length=hop_length,
         win_length=None,
