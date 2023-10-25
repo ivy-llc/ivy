@@ -109,6 +109,14 @@ def cumulative_trapezoid(y, x=None, *, dx=None, dim=-1):
 
     dtype = y.dtype if "int" not in y.dtype else ivy.float32
 
+    # paddle's get_item function doesn't support bfloat16
+    # this ensures compatability with paddle
+    # TODO: remove once it is no longer needed
+    if y.dtype == "bfloat16":
+        y = y.astype(ivy.float32)
+        if x is not None:
+            x = x.astype(ivy.float32)
+
     if x is None:
         d = dx if dx is not None else 1
     else:
