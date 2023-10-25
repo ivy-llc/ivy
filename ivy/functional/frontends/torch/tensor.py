@@ -271,7 +271,8 @@ class Tensor:
         return torch_frontend.atan2(self, other)
 
     def view(self, *args, size=None):
-        """Reshape Tensor.
+        """
+        Reshape Tensor.
 
         possible arguments are either:
             - size
@@ -772,6 +773,10 @@ class Tensor:
     @property
     def is_meta(self):
         return "meta" in ivy.dev(self.ivy_array)
+
+    @with_unsupported_dtypes({"2.1.0 and below": ("uint16", "bool")}, "torch")
+    def positive(self):
+        return torch_frontend.positive(self)
 
     @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, "torch")
     def pow(self, exponent):
@@ -1353,6 +1358,11 @@ class Tensor:
     @numpy_to_torch_style_args
     def count_nonzero(self, dim):
         return torch_frontend.count_nonzero(self, dim=dim)
+
+    def cov(self, /, *, correction=1, fweights=None, aweights=None):
+        return torch_frontend.cov(
+            self, correction=correction, fweights=fweights, aweights=aweights
+        )
 
     @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, "torch")
     def exp(self):

@@ -1,5 +1,4 @@
-"""Collection of Paddle gradient functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Paddle gradient functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 
@@ -108,7 +107,7 @@ def _grad_func(y, xs, retain_grads):
     {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=[[0]], ret_grad_idxs=[[0]]
+    func, xs, /, *, retain_grads=False, xs_grad_idxs=((0,),), ret_grad_idxs=((0,),)
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
