@@ -928,11 +928,11 @@ class Tensor:
         return ivy.inplace_update(self, res)
 
     @with_supported_dtypes(
-
         {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
     )
     def increment(self, value, name=None):
         return paddle_frontend.increment(self, value)
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("bool", "int32", "int64", "float32", "float64")}, "paddle"
     )
