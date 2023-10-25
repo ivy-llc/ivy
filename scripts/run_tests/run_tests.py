@@ -140,10 +140,10 @@ if __name__ == "__main__":
                     )
                 print("Backends:", backends)
                 os.system(
-                    "docker run --name test-container -v \"$(pwd)\":/ivy/ivy "
+                    'docker run --name test-container -v "$(pwd)":/ivy/ivy '
                     f"-e REDIS_URL={redis_url} -e REDIS_PASSWD={redis_pass} "
-                    f"-itd unifyai/multiversion:latest /bin/bash -c"
-                    f"python multiversion_framework_directory.py {' '.join(backends)};"
+                    "-itd unifyai/multiversion:latest /bin/bash -c"
+                    f'python multiversion_framework_directory.py {" ".join(backends)};'
                 )
                 os.system(
                     "docker exec test-container cd ivy; python3 -m pytest --tb=short "
@@ -163,13 +163,13 @@ if __name__ == "__main__":
                     device = " --device=gpu:0"
 
                 os.system(
-                    "docker run --name test-container -v \"$(pwd)\":/ivy -v "
-                    f"\"$(pwd)\"/.hypothesis:/.hypothesis -e REDIS_URL={redis_url} "
+                    'docker run --name test-container -v "$(pwd)":/ivy -v '
+                    f'"$(pwd)"/.hypothesis:/.hypothesis -e REDIS_URL={redis_url} '
                     f"-e REDIS_PASSWD={redis_pass} -itd {image}"
                 )
                 command = (
-                    f"docker exec test-container python3 -m pytest --tb=short {test_path} "
-                    f"{device} --backend {backend}"
+                    "docker exec test-container python3 -m pytest --tb=short"
+                    f" {test_path} {device} --backend {backend}"
                 )
                 os.system(command)
 
