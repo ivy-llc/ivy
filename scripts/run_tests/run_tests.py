@@ -224,7 +224,9 @@ if __name__ == "__main__":
                 print(f"{'*' * 100}\n")
                 sys.stdout.flush()
                 os.system(
-                    f"{command.replace('docker run', 'docker exec')}"
+                    f"{command.replace(
+                        'docker run --name test-container', 'docker exec'
+                    )}"
                     " --num-examples 5 --with-transpile"
                 )
                 os.system(f"docker cp test-container:/ivy/report.json .")
