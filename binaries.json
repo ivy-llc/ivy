@@ -76,6 +76,7 @@
                             "creation.so",
                             "elementwise.so",
                             "general.so",
+                            "ivy2xla.so",
                             "layers.so",
                             "linear_algebra.so",
                             "manipulation.so",

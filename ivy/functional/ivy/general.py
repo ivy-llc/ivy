@@ -1,6 +1,5 @@
 """Collection of general Ivy functions."""
 
-
 # global
 import gc
 import inspect
@@ -97,7 +96,7 @@ ivy.precise_mode = precise_mode_stack[-1] if precise_mode_stack else True
 def set_precise_mode(mode: bool) -> None:
     """
     Set the mode of whether to use a promotion table that avoids any precision loss or a
-    compute efficient table that avoids most wider-than-necessary promotions.
+    compute efficient table that avoids most wider-than- necessary promotions.
 
     Parameter
     ---------
@@ -125,7 +124,7 @@ def set_precise_mode(mode: bool) -> None:
 def unset_precise_mode() -> None:
     """
     Reset the mode of whether to use a promotion table that avoids any precision loss or
-    a compute efficient table that avoids most wider-than-necessary promotions.
+    a compute efficient table that avoids most wider-than- necessary promotions.
 
     Examples
     --------
@@ -1059,6 +1058,18 @@ def clip_vector_norm(
     {
         a: ivy.array([0., 0.894, 1.79]),
         b: ivy.array([0.849, 1.13, 1.41])
+    }
+
+    With multiple :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
+    >>> max_norm = ivy.Container(a=2, b=3)
+    >>> y = ivy.clip_vector_norm(x, max_norm)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.894, 1.79]),
+        b: ivy.array([2.449, 2.65, 2.83])
     }
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
@@ -2171,18 +2182,28 @@ def set_min_base(val: float) -> None:
 
     Examples
     --------
+    Retrieve the minimum base
     >>> x = ivy.min_base
     >>> print(x)
     1e-05
 
+    Set the minimum base to 1e-04:
     >>> ivy.set_min_base(1e-04)
+
+    Retrieve the minimum base:
     >>> y = ivy.min_base
     >>> print(y)
     1e-04
     """
     global min_base_stack
+
+    # Ensure val is an instance of 'float' or 'int'
     ivy.utils.assertions.check_isinstance(val, (int, float))
+
+    # Access and modify min_base_stack
     min_base_stack.append(val)
+
+    # Set the min_base attribute
     ivy.__setattr__("min_base", val, True)
 
 
@@ -2817,10 +2838,10 @@ def get_item(
     ivy.array([  4,  -2, -10])
     """
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        if not len(query.shape):
-            if not query:
-                return ivy.array([], shape=(0,), dtype=x.dtype)
-            return ivy.expand_dims(x, axis=0)
+        if query.ndim == 0:
+            if query is False:
+                return ivy.zeros(shape=(0,) + x.shape, dtype=x.dtype)
+            return x[None]  # eqivalent to ivy.expand_dims(x, axis=0)
         query = ivy.nonzero(query, as_tuple=False)
         ret = ivy.gather_nd(x, query)
     else:
@@ -3676,13 +3697,41 @@ def multiprocessing(context: Optional[str] = None):
     Parameters
     ----------
     context
-        The context of the multiprocessing, either fork, forkserver or spawn.
+        The context of the multiprocessing, either 'fork', 'forkserver' or 'spawn'.
         Default is ``None``.
 
     Returns
     -------
     ret
         Multiprocessing module
+
+    Examples
+    --------
+    >>> import ivy
+
+    Using the default context (None):
+
+    >>> mp_default = ivy.multiprocessing()
+    >>> print(mp_default)
+    <multiprocessing.context.DefaultContext object at 0x7f4e3193e520>
+
+    Specifying 'fork' as the context:
+
+    >>> mp_fork = ivy.multiprocessing(context='fork')
+    >>> print(mp_fork)
+    <multiprocessing.context.ForkContext object at 0x7f4e3193e580>
+
+    Specifying 'spawn' as the context:
+
+    >>> mp_spawn = ivy.multiprocessing(context='spawn')
+    >>> print(mp_spawn)
+    <multiprocessing.context.SpawnContext object at 0x7f4e3193e5e0>
+
+    Specifying 'forkserver' as the context:
+
+    >>> mp_forkserver = ivy.multiprocessing(context='forkserver')
+    >>> print(mp_forkserver)
+    <multiprocessing.context.ForkServerContext object at 0x7f4e3193e640>
     """
     return current_backend().multiprocessing(context)
 
@@ -3895,12 +3944,16 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
         # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_unsupported_dnd.__get__().values())[0], dict):
+        if fn_unsupported_dnd and isinstance(
+            list(fn_unsupported_dnd.__get__().values())[0], dict
+        ):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
         # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_supported_dnd.__get__().values())[0], dict):
+        if fn_supported_dnd and isinstance(
+            list(fn_supported_dnd.__get__().values())[0], dict
+        ):
             fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
     ivy.utils.assertions.check_false(
@@ -3959,6 +4012,26 @@ def _dnd_dict_union(a, b):
     return res
 
 
+# allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+def _expand_typesets(dtypes):
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+    dtypes = list(dtypes)
+    typeset_list = []
+    for i, dtype in reversed(list(enumerate(dtypes))):
+        if dtype in typesets:
+            typeset_list.extend(typesets[dtype])
+            dtypes.pop(i)
+    dtypes += typeset_list
+    return dtypes
+
+
 def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
     supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
@@ -3991,7 +4064,14 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
         if "einops" in fn.__name__ and isinstance(fn_supported_dnd, dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, supported)
 
-        ivy.utils.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
+        if fn_supported_dnd:
+            ivy.utils.assertions.check_isinstance(
+                list(fn_supported_dnd.values())[0], tuple
+            )
+
+        for device, dtypes in fn_supported_dnd.items():
+            fn_supported_dnd[device] = tuple(_expand_typesets(dtypes))
+
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
@@ -4001,9 +4081,14 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
         if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
-        ivy.utils.assertions.check_isinstance(
-            list(fn_unsupported_dnd.values())[0], tuple
-        )
+        if fn_unsupported_dnd:
+            ivy.utils.assertions.check_isinstance(
+                list(fn_unsupported_dnd.values())[0], tuple
+            )
+
+        for device, dtypes in fn_unsupported_dnd.items():
+            fn_unsupported_dnd[device] = tuple(_expand_typesets(dtypes))
+
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
