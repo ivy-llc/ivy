@@ -139,38 +139,39 @@ if __name__ == "__main__":
                         other_backend + "/" + get_latest_package_version(other_backend)
                     )
                 print("Backends:", backends)
-                command = (
-                    "docker run --name test-container -d -i -t --env"
-                    f" REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass}-v"
-                    ' "$(pwd)":/ivy/ivy unifyai/multiversion:latest /bin/bash -c'
-                    ' "python multiversion_framework_directory.py'
-                    f" {' '.join(backends)};cd ivy;pytest --tb=short"
-                    f' {test_path} --backend={backend.strip()}"'
+                os.system(
+                    "docker run --name test-container -v \"$(pwd)\":/ivy/ivy "
+                    f"-e REDIS_URL={redis_url} -e REDIS_PASSWD={redis_pass} "
+                    f"-itd unifyai/multiversion:latest /bin/bash -c"
+                    f"python multiversion_framework_directory.py {' '.join(backends)};"
+                )
+                os.system(
+                    "docker exec test-container cd ivy; python3 -m pytest --tb=short "
+                    f"{test_path} --backend={backend.strip()}"
                 )
                 backend = backend.split("/")[0] + "\n"
                 backend_version = backend_version.strip()
                 print("Running", command)
 
-            # gpu tests
-            elif device == "gpu":
-                command = (
-                    "docker run --name test-container -d -i -t --gpus all --env"
-                    f" REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass}"
-                    ' -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis'
-                    " unifyai/multicuda:base_and_requirements python3 -m pytest"
-                    f" --tb=short {test_path} --device=gpu:0 --backend={backend}"
-                )
-
-            # cpu tests
             else:
-                command = (
-                    "docker run --name test-container -d -i -t --env"
-                    f" REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v"
-                    ' "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis'
-                    " unifyai/ivy:latest python3 -m pytest --tb=short"
-                    f" {test_path} --backend {backend}"
+                device = ""
+                image = "unifyai/ivy:latest"
+
+                # gpu tests
+                if device == "gpu":
+                    image = "unifyai/multicuda:base_and_requirements"
+                    device = " --device=gpu:0"
+
+                os.system(
+                    "docker run --name test-container -v \"$(pwd)\":/ivy -v "
+                    f"\"$(pwd)\"/.hypothesis:/.hypothesis -e REDIS_URL={redis_url} "
+                    f"-e REDIS_PASSWD={redis_pass} -itd {image}"
                 )
-                print(f"COMMAND : {command}")
+                command = (
+                    f"docker exec test-container python3 -m pytest --tb=short {test_path} "
+                    f"{device} --backend {backend}"
+                )
+                os.system(command)
 
             # run the test
             sys.stdout.flush()
@@ -223,12 +224,7 @@ if __name__ == "__main__":
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
                 sys.stdout.flush()
-                command = (
-                    "docker exec test-container python3 -m pytest --tb=short"
-                    f" {test_path} --backend {backend} --num-examples 5"
-                    " --with-transpile"
-                )
-                os.system(command)
+                command = f"{command} --num-examples 5 --with-transpile"
                 os.system("docker cp test-container:/ivy/ivy/report.json .")
 
             # load data from report if generated
