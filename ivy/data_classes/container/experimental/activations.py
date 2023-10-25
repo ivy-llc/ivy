@@ -1613,3 +1613,121 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def _static_hardshrink(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        lambd: ivy.Container = 0.5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = False,
+        prune_unapplied: Union[bool, ivy.Container] = True,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hardshrink. This method simply wraps
+        the function, and so the docstring for ivy.hardshrink also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        lambd
+            Lambda value for hard shrinkage calculation.
+        key_chains
+            The key-chains to apply or not apply the method to.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+
+        Returns
+        -------
+        ret
+            Container with hard shrinkage applied to the leaves.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1., -2.]), b=ivy.array([0.4, -0.2]))
+        >>> y = ivy.Container._static_hardshrink(x)
+        >>> print(y)
+        {
+            a: ivy.array([1., -2.]),
+            b: ivy.array([0., 0.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "hardshrink",
+            x,
+            lambd=lambd,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hardshrink(
+        self: ivy.Container,
+        /,
+        *,
+        lambd: ivy.Container = 0.5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = False,
+        prune_unapplied: Union[bool, ivy.Container] = True,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        Apply the hard shrinkage function element-wise.
+
+        Parameters
+        ----------
+        self
+            Input container.
+        lambd
+            Lambda value for hard shrinkage calculation.
+        key_chains
+            The key-chains to apply or not apply the method to.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container with hard shrinkage applied to the leaves.
+
+        Examples
+        --------
+        >>> import ivy.numpy as np
+        >>> x = ivy.Container(a=np.array([1., -2.]), b=np.array([0.4, -0.2]))
+        >>> y = ivy.Container.hardshrink(x)
+        >>> print(y)
+        {
+            a: ivy.array([1., -2.]),
+            b: ivy.array([0., 0.])
+        }
+        """
+        return self._static_hardshrink(
+            self,
+            lambd=lambd,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

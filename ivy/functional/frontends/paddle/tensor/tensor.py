@@ -4,6 +4,7 @@ import ivy.functional.frontends.paddle as paddle_frontend
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_dtypes,
+    with_supported_device_and_dtypes,
 )
 from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
 
@@ -925,3 +926,22 @@ class Tensor:
     def gather_(self, y, name=None):
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
+
+    @with_supported_device_and_dtypes(
+        {
+            "2.5.1 and below": {
+                "cpu": (
+                    "bool",
+                    "int32",
+                    "int64",
+                    "float32",
+                    "float64",
+                    "complex64",
+                    "complex128",
+                )
+            }
+        },
+        "paddle",
+    )
+    def tile(self, repeat_times):
+        return paddle_frontend.Tensor(ivy.tile(self._ivy_array, repeats=repeat_times))

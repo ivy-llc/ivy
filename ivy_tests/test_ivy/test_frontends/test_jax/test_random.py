@@ -1027,7 +1027,7 @@ def test_jax_multivariate_normal(
     spd = np.matmul(cov.T, cov) + np.identity(cov.shape[0])
 
     def call():
-        helpers.test_frontend_function(
+        return helpers.test_frontend_function(
             input_dtypes=input_dtype + [shared_dtype],
             frontend=frontend,
             test_flags=test_flags,
