@@ -772,6 +772,22 @@ def unsorted_segment_mean(
 
 
 @to_ivy_arrays_and_back
+def unsorted_segment_min(data, segment_ids, num_segments, name="unsorted_segment_min"):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
+
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    min_array = ivy.zeros(
+        tuple([num_segments.item()] + (list(data.shape))[1:]), dtype=ivy.int32
+    )
+    for i in range((segment_ids).shape[0]):
+        min_array[segment_ids[i]] = ivy.minimum(min_array[segment_ids[i]], data[i])
+    return min_array
+
+
+@to_ivy_arrays_and_back
 def unsorted_segment_sqrt_n(
     data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):

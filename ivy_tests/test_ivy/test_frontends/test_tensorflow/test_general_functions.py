@@ -1050,6 +1050,7 @@ def test_tensorflow_gather_nd(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_tensorflow_identity(
     dtype_and_x,
@@ -1078,6 +1079,7 @@ def test_tensorflow_identity(
         available_dtypes=helpers.get_dtypes("valid"), max_num_dims=5
     ),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_tensorflow_identity_n(
     dtype_and_x,

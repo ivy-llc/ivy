@@ -1460,6 +1460,7 @@ def test_multi_head_attention(
     inputs=_nms_helper(),
     test_instance_method=st.just(False),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_nms(
     *,

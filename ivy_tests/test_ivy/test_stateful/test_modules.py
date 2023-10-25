@@ -451,7 +451,7 @@ def test_module_to_device(dummy, on_device, backend_fw):
             for key, obj in mod.v.items():
                 if isinstance(obj, ivy.Module):
                     return model_assert(obj, on_device)
-                if isinstance(obj, ivy.Container) or isinstance(obj, dict):
+                if isinstance(obj, (ivy.Container, dict)):
                     for item1, item2 in obj.items():
                         assertion(item2.device, on_device)
 
@@ -459,7 +459,7 @@ def test_module_to_device(dummy, on_device, backend_fw):
                     assertion(obj.device, on_device)
             if getattr(mod, "buffers", None):
                 for key, obj in mod.buffers.items():
-                    if isinstance(obj, ivy.Container) or isinstance(obj, dict):
+                    if isinstance(obj, (ivy.Container, dict)):
                         ivy.nested_map(lambda x: assertion(x.device, on_device), obj)
                     else:
                         assertion(obj.device, on_device)
