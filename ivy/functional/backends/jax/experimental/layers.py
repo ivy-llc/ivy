@@ -729,6 +729,7 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
         "gaussian",
         "bicubic",
     ]
+    and (scale_factor is None or ivy.all(ivy.array(scale_factor) > 1))
 )
 
 
