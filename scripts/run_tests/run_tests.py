@@ -227,6 +227,7 @@ if __name__ == "__main__":
                 __file__[: __file__.rfind(os.sep)], "report.json"
             )
             report_content = {}
+            print(f"REPORT FILE FOUND : {os.path.exists(report_path)}")
             if os.path.exists(report_path):
                 report_content = json.load(open(report_path))
 
