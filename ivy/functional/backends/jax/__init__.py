@@ -16,11 +16,15 @@ from ivy.func_wrapper import _dtype_from_version
 
 backend_version = {"version": jax.__version__}
 
-register_pytree_node(
-    ivy.Container,
-    lambda c: tree_flatten(c.cont_to_dict()),
-    lambda a, c: ivy.Container(tree_unflatten(a, c)),
-)
+try:
+    register_pytree_node(
+        ivy.Container,
+        lambda c: tree_flatten(c.cont_to_dict()),
+        lambda a, c: ivy.Container(tree_unflatten(a, c)),
+    )
+except Exception as e:
+    if "Duplicate custom PyTreeDef type registration" not in str(e):
+        raise
 
 
 # make ivy.Array compatible with jax pytree traversal
@@ -34,7 +38,12 @@ def _array_unflatten(aux_data, children):
     return ivy.Array(*children)
 
 
-register_pytree_node(ivy.Array, _array_flatten, _array_unflatten)
+try:
+    register_pytree_node(ivy.Array, _array_flatten, _array_unflatten)
+except Exception as e:
+    if "Duplicate custom PyTreeDef type registration" not in str(e):
+        raise
+
 
 # noinspection PyUnresolvedReferences
 if not ivy.is_local():

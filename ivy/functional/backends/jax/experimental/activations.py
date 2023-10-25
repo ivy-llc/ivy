@@ -135,3 +135,13 @@ def scaled_tanh(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return alpha * jax.nn.tanh(beta * x)
+
+
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
+def hardshrink(
+    x: JaxArray, /, *, lambd: float = 0.5, out: Optional[JaxArray] = None
+) -> JaxArray:
+    ret = jnp.where(x > lambd, x, jnp.where(x < -lambd, x, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret

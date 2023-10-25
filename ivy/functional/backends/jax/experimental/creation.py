@@ -163,3 +163,17 @@ def mel_weight_matrix(
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = jnp.maximum(zero, jnp.minimum(lower_slopes, upper_slopes))
     return jnp.pad(mel_weights, [[1, 0], [0, 0]])
+
+
+def polyval(
+    coeffs: JaxArray,
+    x: JaxArray,
+) -> JaxArray:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
+    y = jnp.zeros_like(x)
+    for pv in coeffs:
+        y = y * x + pv
+    y = jnp.array(y, dtype=jnp.dtype(promoted_type))
+    return y

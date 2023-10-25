@@ -19,6 +19,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
     _get_dtype_and_3dbatch_matrices,
 )
+from ivy_tests.test_ivy.test_frontends.test_paddle.test_manipulation import (
+    _tile_helper,
+)
 
 CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
 
@@ -4538,6 +4541,39 @@ def test_paddle_tanh_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# tile
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="tile",
+    dt_x_repeats=_tile_helper(),
+)
+def test_paddle_tensor_tile(
+    dt_x_repeats,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtypes, x, repeats = dt_x_repeats
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "repeat_times": repeats,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        backend_to_test=backend_fw,
+        method_flags=method_flags,
         on_device=on_device,
     )
 
