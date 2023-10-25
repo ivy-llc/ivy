@@ -140,11 +140,11 @@ if __name__ == "__main__":
                     )
                 print("Backends:", backends)
                 command = (
-                    f"docker run --rm --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy/ivy'
-                    ' unifyai/multiversion:latest /bin/bash -c "python'
-                    f" multiversion_framework_directory.py {' '.join(backends)};cd"
-                    f' ivy;pytest --tb=short {test_path} --backend={backend.strip()}"'
+                    f"docker run --name test-container -d -i -t --env"
+                    f' REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass}'
+                    '-v "$(pwd)":/ivy/ivy unifyai/multiversion:latest /bin/bash -c'
+                    f' "python multiversion_framework_directory.py {" ".join(backends)}'
+                    f';cd ivy;pytest --tb=short {test_path} --backend={backend.strip()}"'
                 )
                 backend = backend.split("/")[0] + "\n"
                 backend_version = backend_version.strip()
@@ -153,20 +153,21 @@ if __name__ == "__main__":
             # gpu tests
             elif device == "gpu":
                 command = (
-                    f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis'
+                    f"docker run --name test-container -d -i -t --gpus all --env"
+                    f' REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass}'
+                    ' -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis'
                     " unifyai/multicuda:base_and_requirements python3 -m pytest"
-                    f" --tb=short {test_path} --device=gpu:0 -B={backend}"
+                    f" --tb=short {test_path} --device=gpu:0 --backend={backend}"
                 )
 
             # cpu tests
             else:
                 command = (
-                    f"docker run --rm --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
-                    f" -m pytest --tb=short {test_path} --backend {backend}"
+                    f"docker run --name test-container -d -i -t --env"
+                    f' REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v'
+                    ' "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis'
+                    ' unifyai/ivy:latest python3 -m pytest --tb=short'
+                    f" {test_path} --backend {backend}"
                 )
                 print(f"COMMAND : {command}")
 
@@ -221,7 +222,10 @@ if __name__ == "__main__":
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
                 sys.stdout.flush()
-                os.system(f"{command} --num-examples 5 --with-transpile")
+                os.system((
+                    f"{command.replace('docker run', 'docker exec')}"" --num-examples 5 --with-transpile"
+                ))
+                os.system(f"docker cp test-container:/ivy/report.json .")
 
             # load data from report if generated
             report_path = os.path.join(
@@ -282,6 +286,9 @@ if __name__ == "__main__":
                 print(
                     collection.update_one({"_id": id}, {"$set": test_info}, upsert=True)
                 )
+            
+            # delete the container
+            os.system("docker rm -f test-container")
 
     # if any tests fail, the workflow fails
     if failed:
