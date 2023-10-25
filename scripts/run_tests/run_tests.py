@@ -223,10 +223,12 @@ if __name__ == "__main__":
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
                 sys.stdout.flush()
-                os.system(
-                    f"{command.replace('docker run --name test-container', 'docker exec')}"  # noqa
-                    " --num-examples 5 --with-transpile"
+                command = (
+                    "docker exec test-container python3 -m pytest --tb=short"
+                    f" {test_path} --backend {backend} --num-examples 5"
+                    " --with-transpile"
                 )
+                os.system(command)
                 os.system("docker cp test-container:/ivy/ivy/report.json .")
 
             # load data from report if generated
