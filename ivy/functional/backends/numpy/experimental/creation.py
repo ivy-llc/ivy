@@ -232,3 +232,11 @@ def unsorted_segment_mean(
             counts[seg_id] += 1
 
     return res / counts[:, np.newaxis]
+
+
+def polyval(coeffs: np.ndarray, x: np.ndarray) -> np.ndarray:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    result = np.polyval(coeffs, x)
+    result = np.asarray(result, np.dtype(promoted_type))
+    return result

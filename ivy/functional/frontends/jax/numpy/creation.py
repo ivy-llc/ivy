@@ -10,11 +10,28 @@ from ivy.functional.frontends.jax.func_wrapper import (
 )
 
 from ivy.func_wrapper import handle_out_argument
-
+from ivy import with_unsupported_device_and_dtypes
 
 ndarray = Array
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "0.4.19 and below": {
+            "cpu": (
+                "float16",
+                "bflooat16",
+                "complex64",
+                "complex128",
+            ),
+            "gpu": (
+                "complex64",
+                "complex128",
+            ),
+        }
+    },
+    "jax",
+)
 @handle_jax_dtype
 @outputs_to_frontend_arrays
 def arange(start, stop=None, step=1, dtype=None):
@@ -179,7 +196,7 @@ def iterable(y):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.17 and below": (
+        "0.4.19 and below": (
             "float16",
             "bfloat16",
         )
@@ -200,7 +217,7 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.17 and below": (
+        "0.4.19 and below": (
             "float16",
             "bfloat16",
         )

@@ -180,3 +180,17 @@ def unsorted_segment_mean(
     segment_mean = segment_sum / segment_count
 
     return segment_mean
+
+
+def polyval(
+    coeffs: JaxArray,
+    x: JaxArray,
+) -> JaxArray:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
+    y = jnp.zeros_like(x)
+    for pv in coeffs:
+        y = y * x + pv
+    y = jnp.array(y, dtype=jnp.dtype(promoted_type))
+    return y

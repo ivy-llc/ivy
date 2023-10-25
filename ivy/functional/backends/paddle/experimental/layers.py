@@ -491,6 +491,27 @@ def ifftn(
     return paddle.fft.ifftn(x, s, axes, norm)
 
 
+def rfft(
+    x: paddle.Tensor,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        x = x.real()
+    if x.dtype == paddle.float16:
+        x = x.astype(paddle.float32)
+
+    ret = paddle.fft.rfft(x, n=n, axis=axis, norm=norm)
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 @with_unsupported_dtypes(
     {"2.5.1 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
     backend_version,

@@ -20,7 +20,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.0.1 and below": {"cpu": ("float16",)}},
+    {"2.1.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def kaiser_window(
@@ -87,7 +87,7 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def hann_window(
     size: int,
     /,
@@ -152,7 +152,7 @@ def unsorted_segment_min(
     return res
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def blackman_window(
     size: int,
     /,
@@ -270,3 +270,21 @@ def unsorted_segment_mean(
         counts[seg_id] += 1
 
     return segment_sum / counts[:, None]
+
+
+@with_unsupported_dtypes({"2.0.1 and below": "float16"}, backend_version)
+def polyval(
+    coeffs: torch.Tensor,
+    x: torch.Tensor,
+) -> torch.Tensor:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
+    y = torch.zeros_like(x)
+    for coeff in coeffs:
+        y = y * x + coeff
+    if y.shape == (1,):
+        y = torch.unsqueeze(y, 0)
+    promoted_type = getattr(torch, promoted_type)
+    y = torch.tensor(y).to(dtype=promoted_type)
+    return y
