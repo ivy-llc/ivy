@@ -227,7 +227,7 @@ if __name__ == "__main__":
                     f"{command.replace('docker run --name test-container', 'docker exec')}"  # noqa
                     " --num-examples 5 --with-transpile"
                 )
-                os.system(f"docker cp test-container:/ivy/report.json .")
+                os.system("docker cp test-container:/ivy/ivy/report.json .")
 
             # load data from report if generated
             report_path = os.path.join(
