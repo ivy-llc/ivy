@@ -928,11 +928,11 @@ class Tensor:
         return ivy.inplace_update(self, res)
 
     @with_supported_dtypes(
-
         {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
     def heaviside(self, y, name=None):
         return paddle_frontend.heaviside(self, y)
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("bool", "int32", "int64", "float32", "float64")}, "paddle"
     )
@@ -957,4 +957,3 @@ class Tensor:
     )
     def tile(self, repeat_times):
         return paddle_frontend.Tensor(ivy.tile(self._ivy_array, repeats=repeat_times))
-
