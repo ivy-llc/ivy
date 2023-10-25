@@ -225,6 +225,18 @@ def _reshape_helper(draw):
     return dtypes, x, reshape_shape
 
 
+# diagonal
+@st.composite
+def dims_and_offset(draw, shape):
+    shape_actual = draw(shape)
+    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
+    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
+    offset = draw(
+        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
+    )
+    return dim1, dim2, offset
+
+
 # expand helper function
 @st.composite
 def dtypes_x_shape(draw):
@@ -252,18 +264,6 @@ def dtypes_x_shape(draw):
         )
     )
     return dtypes, x, shape
-
-
-# diagonal
-@st.composite
-def dims_and_offset(draw, shape):
-    shape_actual = draw(shape)
-    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
-    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
-    offset = draw(
-        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
-    )
-    return dim1, dim2, offset
 
 
 # --- Main --- #
@@ -2172,41 +2172,6 @@ def test_paddle_exp_(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# expand
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="expand",
-    dtype_x_shape=dtypes_x_shape(),
-)
-def test_paddle_tensor_expand(
-    dtype_x_shape,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-    backend_fw,
-):
-    input_dtype, x, shape = dtype_x_shape
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "shape": shape,
-        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -4601,6 +4566,41 @@ def test_paddle_tanh_(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# expand
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="expand",
+    dtype_x_shape=dtypes_x_shape(),
+)
+def test_paddle_tensor_expand(
+    dtype_x_shape,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, shape = dtype_x_shape
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "shape": shape,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
