@@ -521,14 +521,6 @@ class Tensor:
     def erfc(self, *, out=None):
         return torch_frontend.erfc(self, out=out)
 
-    @with_supported_device_and_dtypes(
-        {"2.1.0 and below": {"cpu": ("float32", "float64")}},
-        "torch",
-    )
-    def erfc_(self, *, out=None):
-        self.ivy_array = self.erfc(out=out).ivy_array
-        return self
-
     def new_zeros(
         self,
         *args,
