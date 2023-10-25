@@ -225,7 +225,7 @@ if __name__ == "__main__":
                 print(f"{'*' * 100}\n")
                 sys.stdout.flush()
                 command = f"{command} --num-examples 5 --with-transpile"
-                os.system("docker cp test-container:/ivy/ivy/report.json .")
+                os.system("docker cp test-container:/ivy/report.json .")
 
             # load data from report if generated
             report_path = os.path.join(
