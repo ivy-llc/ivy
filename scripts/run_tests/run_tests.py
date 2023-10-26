@@ -228,6 +228,7 @@ if __name__ == "__main__":
                 print(f"{'*' * 100}\n")
                 sys.stdout.flush()
                 command = f"{command} --num-examples 5 --with-transpile"
+                os.system("docker exec test-container ls")
                 os.system(
                     "docker cp test-container:/ivy/report.json"
                     f" {__file__[: __file__.rfind(os.sep)]}/report.json"
