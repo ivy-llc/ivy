@@ -149,7 +149,7 @@ def general_pool(
         # if dtype is not set here, jax casts it to float64
         inputs = jnp.array(inputs, dtype=jnp.float32)
     if not ivy.is_array(init):
-        init = jnp.array(init, dtype=jnp.float32)
+        init = jnp.array(init, dtype=inputs.dtype)
     promoted_type = jnp.promote_types(inputs.dtype, init.dtype)
     inputs = inputs.astype(promoted_type)
     init = init.astype(promoted_type)
@@ -703,7 +703,7 @@ def interpolate(
     out: Optional[JaxArray] = None,
 ):
     dims = len(x.shape) - 2
-    size = _get_size(scale_factor, size, dims, x.shape)
+    size, _ = _get_size(scale_factor, size, dims, x.shape)
     mode = (
         "nearest"
         if mode == "nearest-exact"

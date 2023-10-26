@@ -715,7 +715,7 @@ Just follow the steps outlined below:
 
       - :code:`Default project configuration` - This is the default option, it will set up with the default codespaces environment.
       - :code:`Ivy Development Environment (build)` - This will set up the development environment of ivy for CPU and build image from :code:`ivy/docker/Dockerfile`.
-      - :code:`Ivy GPU Development Environment (build)` - This will set up the development environment of ivy for GPU and build image from :code:`ivy/docker/DockerfileGPUMultiCuda`.
+      - :code:`Ivy GPU Development Environment (build)` - This will set up the development environment of ivy for GPU and build image from :code:`ivy/docker/DockerfileGPU`.
       - :code:`Ivv Development Environment for Multiver...` - This will set up the development environment of multiversion support with ivy and build image from :code:`ivy/docker/DockerfileMultiversion`.
       - :code:`Ivy Development Environment (image)` - This will set up the development environment of ivy for CPU and build image from the latest image from dockerhub.
       - :code:`Ivy GPU Development Environment (image)` - This will set up the development environment of ivy for GPU and build image from the latest image from dockerhub.

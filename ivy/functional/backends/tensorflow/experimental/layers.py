@@ -893,7 +893,7 @@ def interpolate(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     dims = len(x.shape) - 2
-    size = _get_size(scale_factor, size, dims, x.shape)
+    size, _ = _get_size(scale_factor, size, dims, x.shape)
     remove_dim = False
     if mode in ["linear", "tf_area", "lanczos3", "lanczos5", "nearest-exact"]:
         if dims == 1:
