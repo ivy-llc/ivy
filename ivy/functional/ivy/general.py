@@ -4086,8 +4086,9 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
                 list(fn_unsupported_dnd.values())[0], tuple
             )
 
-        for device, dtypes in fn_unsupported_dnd.items():
-            fn_unsupported_dnd[device] = tuple(_expand_typesets(dtypes))
+        if isinstance(fn_unsupported_dnd, dict):
+            for device, dtypes in fn_unsupported_dnd.items():
+                fn_unsupported_dnd[device] = tuple(_expand_typesets(dtypes))
 
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
