@@ -495,7 +495,6 @@ from .broadcast import *
 
 from . import ma
 from . import fft
-from . import random
 from .ufunc import ufunc
 
 from . import linalg
@@ -551,7 +550,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _reciprocal,
     _subtract,
     _divmod,
-    _remainder,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa

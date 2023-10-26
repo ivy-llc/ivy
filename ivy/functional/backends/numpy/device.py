@@ -18,11 +18,21 @@ def dev(x: np.ndarray, /, *, as_native: bool = False) -> Union[ivy.Device, str]:
 
 
 def as_ivy_dev(device: str, /):
-    return ivy.Device("cpu")
+    if "gpu" in device:
+        raise ivy.utils.exceptions.IvyException(
+            "Native Numpy does not support GPU placement, consider using Jax instead"
+        )
+    elif "cpu" in device:
+        return ivy.Device("cpu")
 
 
 def as_native_dev(device: str, /):
-    return "cpu"
+    if "gpu" in device:
+        raise ivy.utils.exceptions.IvyException(
+            "Native Numpy does not support GPU placement, consider using Jax instead"
+        )
+    elif "cpu" in device:
+        return "cpu"
 
 
 def clear_cached_mem_on_dev(device: str, /):
@@ -41,25 +51,6 @@ def gpu_is_available() -> bool:
     return False
 
 
-# private version of to_device to be used in backend implementations
-def _to_device(x: np.ndarray, device=None) -> np.ndarray:
-    """Private version of `to_device` to be used in backend implementations."""
-    if device is not None:
-        if "gpu" in device:
-            raise ivy.utils.exceptions.IvyException(
-                "Native Numpy does not support GPU placement, "
-                "consider using Jax instead"
-            )
-        elif "cpu" in device:
-            pass
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "Invalid device specified, must be in the form [ 'cpu:idx' | 'gpu:idx'"
-                f" ], but found {device}"
-            )
-    return x
-
-
 def to_device(
     x: np.ndarray,
     device: str,
@@ -70,18 +61,6 @@ def to_device(
 ) -> np.ndarray:
     if device is not None:
         device = as_native_dev(device)
-        if "gpu" in device:
-            raise ivy.utils.exceptions.IvyException(
-                "Native Numpy does not support GPU placement, "
-                "consider using Jax instead"
-            )
-        elif "cpu" in device:
-            pass
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "Invalid device specified, must be in the form [ 'cpu:idx' | 'gpu:idx'"
-                f" ], but found {device}"
-            )
     return x
 
 

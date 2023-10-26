@@ -95,15 +95,24 @@ def asarray(
                 ret = obj.clone().detach()
                 ret.stop_gradient = obj.stop_gradient
             else:
-                ret = obj
+                ret = paddle.to_tensor(
+                    obj.detach(),
+                    dtype=dtype,
+                    place=device,
+                    stop_gradient=obj.stop_gradient,
+                )
         else:
             ret = obj
-        return ret.astype(dtype)
+        ret = ret.astype(dtype) if ret.dtype != obj.dtype else ret
+        return paddle_backend.to_device(ret, device)
 
     elif isinstance(obj, (Number, bool, complex)):
-        return paddle_backend.squeeze(
-            paddle.to_tensor(obj, dtype=dtype, place=device), axis=0
-        )
+        ret = paddle.to_tensor(obj, dtype=dtype, place=device)
+
+        if ret.ndim != 0:  # for versions <2.5.0
+            return ret.squeeze()
+        else:
+            return ret
     obj = ivy.nested_map(_remove_np_bfloat16, obj, shallow=False)
     return paddle.to_tensor(obj, dtype=dtype, place=device)
 
