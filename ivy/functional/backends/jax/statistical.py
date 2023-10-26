@@ -41,14 +41,8 @@ def max(
     {
         "0.4.19 and below": (
             "bfloat16",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
+            "integer",
+            "unsigned",
         )
     },
     backend_version,
