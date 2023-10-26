@@ -4,7 +4,6 @@ from typing import Optional, Tuple, Sequence, Union
 import numpy as np
 
 # local
-from ivy.functional.backends.numpy.device import _to_device
 import ivy
 
 # Array API Standard #
@@ -35,9 +34,7 @@ def tril_indices(
     *,
     device: str = None,
 ) -> Tuple[np.ndarray, ...]:
-    return tuple(
-        _to_device(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)), device=device)
-    )
+    return tuple(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)))
 
 
 def hann_window(
