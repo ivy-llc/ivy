@@ -229,8 +229,6 @@ if __name__ == "__main__":
                 command = f"{command} --num-examples 5 --with-transpile"
                 sys.stdout.flush()
                 os.system(command)
-                os.system("docker exec test-container ls")
-                os.system("docker exec test-container pwd")
                 os.system(
                     "docker cp test-container:/ivy/report.json"
                     f" {__file__[: __file__.rfind(os.sep)]}/report.json"
@@ -241,7 +239,6 @@ if __name__ == "__main__":
                 __file__[: __file__.rfind(os.sep)], "report.json"
             )
             report_content = {}
-            print(f"REPORT FILE FOUND : {os.path.exists(report_path)}")
             if os.path.exists(report_path):
                 report_content = json.load(open(report_path))
 
