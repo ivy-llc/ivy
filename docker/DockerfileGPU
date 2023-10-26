@@ -1,16 +1,32 @@
-# uses the base image which has cuda and cudnn installed(multiple versions) and then installs the
+# installs multiple versions of cuda and cudnn and then installs the
 # latest frameworks and the requirements
-FROM unifyai/multicuda:base
+FROM debian:buster
 WORKDIR /ivy
-ARG fw
 
+# arguments
+ARG fw
 ARG pycon=3.10
 
+# environment variables
 ENV DEBIAN_FRONTEND=noninteractive
-
-# Install miniconda
+ENV TZ=Europe/Moscow
 ENV CONDA_DIR /opt/miniconda/
 
+
+# install base libraries
+RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list && \
+    apt-get update && \
+    apt-get upgrade -o Dir::Etc::SourceList=/etc/apt/security.sources.list -y &&\
+    apt-get -y update && \
+    apt-get install -y gnupg  \
+    curl  \
+    wget  \
+    software-properties-common  \
+    gcc  \
+    nano
+
+
+# install miniconda
 RUN apt clean && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get update && \
@@ -21,10 +37,12 @@ RUN apt clean && \
      /bin/bash ~/miniconda.sh -b -p /opt/miniconda
 
 
+# create conda environment
 ENV PATH=$CONDA_DIR/bin:$PATH
 RUN conda create --name multienv python==$pycon -y
 
-# to fix protobuf conflicts
+
+# fix protobuf conflicts
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
 RUN apt-get update && \
@@ -38,44 +56,42 @@ RUN apt-get update && \
     pip3 install setuptools==58.5.3
 
 
-# Install Ivy Upstream
+# install Ivy Upstream
 RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
     cd ivy && \
     cd ivy_tests/array_api_testing/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
 
-# Install local optional
-COPY /docker/multicuda_framework_directory.py .
+
+# copy library files to workdir
+COPY docker/gpu_framework_directory.py .
 COPY requirements/optional_gpu.txt .
 COPY requirements/requirements.txt .
 
 
-#setting torch path early on because torch-scatter needs it
+# setting torch path early on because torch-scatter needs it
 ENV PYTHONPATH "/opt/fw/torch:/opt/miniconda/envs/multienv/bin"
+
 
 # requirement mappings directs which dependency to be installed and where
 COPY /docker/requirement_mappings_gpu.json .
 SHELL ["/bin/bash", "-c"]
 
 
-
-RUN python3 multicuda_framework_directory.py $fw &&\
+# install all libraries based on the mappings
+RUN python3 gpu_framework_directory.py $fw &&\
     jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings_gpu.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2 --extra-index-url https://download.pytorch.org/whl/cu118' sh {}
-
-
-
 RUN sed -i '/numpy/d' requirements.txt &&\
     pip install -r  requirements.txt &&\
     cp ./optional_gpu.txt tmp.txt  &&\
     jq -r 'to_entries[] | [.key] + .value | select(length > 0 or (. == "")) | .[]' requirement_mappings_gpu.json | sort -u | xargs -I {} sed -i '/{}/d;/jaxlib/d' tmp.txt && pip install -r tmp.txt
 
 
-
-
 # add all the directories to environment path so that python knows where to find them
 ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/torch:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
 
 
+# test dependencies
 COPY scripts/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
     rm -rf requirements.txt && \

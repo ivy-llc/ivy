@@ -164,7 +164,7 @@ def _shift_native_arrays_on_default_device(*args, **kwargs):
             ),
             [args, kwargs],
         )
-    return args, kwargs, default_device
+    return args, kwargs, ivy.as_native_dev(default_device)
 
 
 # Device Queries #
