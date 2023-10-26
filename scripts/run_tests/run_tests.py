@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     # pull gpu image for gpu testing
     if device == "gpu":
-        os.system("docker pull unifyai/multicuda:base_and_requirements")
+        os.system("docker pull unifyai/ivy:latest-gpu")
 
     # read the tests to be run
     with open("tests_to_run", "r") as f:
@@ -151,16 +151,15 @@ if __name__ == "__main__":
                 )
                 backend = backend.split("/")[0] + "\n"
                 backend_version = backend_version.strip()
-                print("Running", command)
 
             else:
-                device = ""
+                device_str = ""
                 image = "unifyai/ivy:latest"
 
                 # gpu tests
                 if device == "gpu":
-                    image = "unifyai/multicuda:base_and_requirements"
-                    device = " --device=gpu:0"
+                    image = "unifyai/ivy:latest-gpu"
+                    device_str = " --device=gpu:0"
 
                 os.system(
                     'docker run --name test-container -v "$(pwd)":/ivy -v '
@@ -169,7 +168,7 @@ if __name__ == "__main__":
                 )
                 command = (
                     "docker exec test-container python3 -m pytest --tb=short"
-                    f" {test_path} {device} --backend {backend}"
+                    f" {test_path} {device_str} --backend {backend}"
                 )
                 os.system(command)
 
@@ -283,6 +282,8 @@ if __name__ == "__main__":
             # populate the ci_dashboard db, skip instance methods
             if function_name:
                 id = test_info.pop("_id")
+                print(f"ID : {id}")
+                print(f"TEST INFO : {test_info}")
                 print(
                     collection.update_one({"_id": id}, {"$set": test_info}, upsert=True)
                 )
