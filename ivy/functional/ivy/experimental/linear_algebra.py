@@ -1309,7 +1309,8 @@ def tensor_train_matrix(
     svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
     verbose: Optional[bool] = False,
 ):
-    """Decomposes a tensor into a matrix in TT format.
+    """
+    Decomposes a tensor into a matrix in TT format.
 
     Parameters
     ----------

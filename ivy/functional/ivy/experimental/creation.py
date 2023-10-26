@@ -1047,7 +1047,8 @@ def random_tt_matrix(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     seed: Optional[int] = None,
 ) -> Union[ivy.TTTensor, ivy.Array]:
-    """Generate a random tensor in TT-Matrix format.
+    """
+    Generate a random tensor in TT-Matrix format.
 
     Parameters
     ----------
