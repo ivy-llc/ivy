@@ -259,6 +259,11 @@ class Shape(Sequence):
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
 
+    def __deepcopy__(self, memo):
+        ret = self.__class__.__new__(self.__class__)
+        ret._shape = self.shape
+        return ret
+
     def __iter__(self):
         return iter(self._shape)
 

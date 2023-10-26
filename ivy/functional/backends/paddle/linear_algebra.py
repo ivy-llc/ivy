@@ -521,8 +521,13 @@ def svd(
     backend_version,
 )
 def svdvals(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor,
+    /,
+    *,
+    driver: Optional[str] = None,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    # TODO:handling the driver argument
     return paddle_backend.svd(x)[1]
 
 

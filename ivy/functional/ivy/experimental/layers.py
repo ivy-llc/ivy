@@ -1726,7 +1726,7 @@ def area_interpolate(x, dims, size, scale):
 
 def get_interpolate_kernel(mode):
     kernel_func = _triangle_kernel
-    if mode == "bicubic_tensorflow":
+    if mode == "tf_bicubic":
         kernel_func = lambda inputs: _cubic_kernel(inputs)
     elif mode == "lanczos3":
         kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
@@ -1788,7 +1788,7 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "bicubic",
         "mitchellcubic",
         "lanczos3",
@@ -1849,27 +1849,17 @@ def interpolate(
     """
     input_shape = ivy.shape(x)
     dims = len(input_shape) - 2
-    size = _get_size(scale_factor, size, dims, x.shape)
+    size, scale_factor = _get_size(scale_factor, size, dims, x.shape)
     if recompute_scale_factor:
-        scale_factor = None
-    elif scale_factor is not None:
-        scale_factor = (
-            [scale_factor] * dims
-            if isinstance(scale_factor, (int, float))
-            else scale_factor
-        )
-        scale_factor = (
-            [scale_factor[0]] * dims
-            if isinstance(scale_factor, (list, tuple)) and len(scale_factor) != dims
-            else [scale_factor] * dims
-        )
-    scale = [ivy.divide(size[i], input_shape[i + 2]) for i in range(dims)]
+        scale = [ivy.divide(size[i], input_shape[i + 2]) for i in range(dims)]
+    else:
+        scale = [1] * dims
     if mode in [
         "linear",
         "bilinear",
         "trilinear",
         "nd",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "lanczos3",
         "lanczos5",
     ]:
@@ -1996,7 +1986,7 @@ def _get_size(scale_factor, size, dims, x_shape):
         )
     else:
         size = (size,) * dims if isinstance(size, int) else tuple(size)
-    return size
+    return size, scale_factor
 
 
 def _output_ceil_shape(w, f, p, s):
@@ -3050,7 +3040,7 @@ def stft(
     /,
     *,
     fft_length: Optional[int] = None,
-    window_fn: Optional = None,
+    window_fn: Optional[Callable] = None,
     pad_end: bool = False,
     name: Optional[str] = None,
     out: Optional[ivy.Array] = None,

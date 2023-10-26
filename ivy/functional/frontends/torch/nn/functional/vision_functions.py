@@ -1,5 +1,4 @@
 # global
-import math
 
 # local
 import ivy
@@ -377,9 +376,6 @@ def interpolate(
                 " linear | bilinear | bicubic | trilinear"
             ),
         )
-    else:
-        if not ivy.exists(align_corners):
-            align_corners = False
 
     dim = ivy.get_num_dims(input) - 2  # Number of spatial dimensions.
 
@@ -389,8 +385,6 @@ def interpolate(
         )
 
     elif ivy.exists(size) and not ivy.exists(scale_factor):
-        scale_factors = None
-
         if isinstance(size, (list, tuple)):
             ivy.utils.assertions.check_equal(
                 len(size),
@@ -406,13 +400,7 @@ def interpolate(
                 ),
                 as_array=False,
             )
-            output_size = size
-        else:
-            output_size = [size for _ in range(dim)]
-
     elif ivy.exists(scale_factor) and not ivy.exists(size):
-        output_size = None
-
         if isinstance(scale_factor, (list, tuple)):
             ivy.utils.assertions.check_equal(
                 len(scale_factor),
@@ -428,10 +416,6 @@ def interpolate(
                 ),
                 as_array=False,
             )
-            scale_factors = scale_factor
-        else:
-            scale_factors = [scale_factor for _ in range(dim)]
-
     else:
         ivy.utils.assertions.check_any(
             [ivy.exists(size), ivy.exists(scale_factor)],
@@ -447,11 +431,6 @@ def interpolate(
         raise ivy.utils.exceptions.IvyException(
             "recompute_scale_factor is not meaningful with an explicit size."
         )
-
-    if ivy.exists(scale_factors):
-        output_size = [
-            math.floor(ivy.shape(input)[i + 2] * scale_factors[i]) for i in range(dim)
-        ]
 
     if (
         bool(antialias)
@@ -494,7 +473,13 @@ def interpolate(
     )
 
     return ivy.interpolate(
-        input, output_size, mode=mode, align_corners=align_corners, antialias=antialias
+        input,
+        size,
+        mode=mode,
+        scale_factor=scale_factor,
+        recompute_scale_factor=recompute_scale_factor,
+        align_corners=align_corners,
+        antialias=antialias,
     )
 
 

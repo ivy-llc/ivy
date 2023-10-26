@@ -119,6 +119,21 @@ def tanhshrink(
 
 
 @with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+def threshold(
+    x: torch.Tensor,
+    /,
+    *,
+    threshold: float,
+    value: float,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    ret = torch.nn.functional.threshold(threshold=threshold, value=value, input=x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
 def softshrink(
     x: torch.Tensor, /, *, lambd: float = 0.5, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -139,11 +154,21 @@ def scaled_tanh(
     return alpha * torch.nn.functional.tanh(beta * x)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
 def leaky_relu(
     x: torch.Tensor, /, *, alpha: float = 0.01, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     ret = torch.nn.functional.leaky_relu(x, negative_slope=alpha)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+def hardshrink(
+    x: torch.Tensor, /, *, lambd: float = 0.5, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    ret = torch.nn.functional.hardshrink(x, lambd=lambd)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)

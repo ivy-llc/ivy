@@ -875,12 +875,13 @@ def interpolate(
         "linear",
         "bilinear",
         "trilinear",
+        "nd",
         "nearest",
         "area",
-        "nearest-exact",
+        "nearest_exact",
         "tf_area",
+        "tf_bicubic",
         "bicubic",
-        "bicubic_tensorflow",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -893,7 +894,7 @@ def interpolate(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     dims = len(x.shape) - 2
-    size = _get_size(scale_factor, size, dims, x.shape)
+    size, _ = _get_size(scale_factor, size, dims, x.shape)
     remove_dim = False
     if mode in ["linear", "tf_area", "lanczos3", "lanczos5", "nearest-exact"]:
         if dims == 1:
@@ -910,7 +911,7 @@ def interpolate(
                 else "nearest" if mode == "nearest-exact" else mode
             )
         )
-    if mode == "bicubic_tensorflow":
+    if mode == "tf_bicubic":
         mode = "bicubic"
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     ret = tf.transpose(
@@ -928,6 +929,7 @@ interpolate.partial_mixed_handler = (
     lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: not align_corners  # noqa: E501
     and len(x.shape) < 4
     and mode not in ["nearest", "area", "bicubic", "nd"]
+    and (scale_factor is None or ivy.all(ivy.array(scale_factor) > 1))
 )
 
 

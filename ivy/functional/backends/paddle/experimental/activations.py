@@ -169,6 +169,27 @@ def tanhshrink(
 @with_unsupported_device_and_dtypes(
     {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
 )
+def threshold(
+    x: paddle.Tensor,
+    /,
+    *,
+    threshold: float,
+    value: float,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return paddle_backend.where(paddle_backend.greater(x, threshold), x, value)
+    if paddle.is_complex(x):
+        return paddle_backend.where(paddle_backend.greater(x, threshold), x, value)
+    x = x.cast("float32")
+    return paddle_backend.where(paddle_backend.greater(x, threshold), x, value).cast(
+        x.dtype
+    )
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+)
 def softshrink(
     x: paddle.Tensor, /, *, lambd: float = 0.5, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -232,7 +253,24 @@ def leaky_relu(
     if paddle.is_complex(x):
         ret = paddle.complex(
             F.leaky_relu(x.real(), negative_slope=alpha),
-            F.leaky_relu(x.imag(), negative_slope=alpha),
+            F.leaky_relu(x.img(), negative_slope=alpha),
         )
         return ret
     return F.leaky_relu(x.cast("float32"), negative_slope=alpha).cast(x.dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}},
+    backend_version,
+)
+def hardshrink(
+    x: paddle.Tensor, /, *, lambd: float = 0.5, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return F.hardshrink(x, threshold=lambd)
+    if paddle.is_complex(x):
+        return paddle.complex(
+            F.hardshrink(x.real(), threshold=lambd),
+            F.hardshrink(x.img(), threshold=lambd),
+        )
+    return F.hardshrink(x.cast("float32"), threshold=lambd).cast(x.dtype)
