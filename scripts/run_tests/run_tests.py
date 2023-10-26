@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     # pull gpu image for gpu testing
     if device == "gpu":
-        os.system("docker pull unifyai/multicuda:base_and_requirements")
+        os.system("docker pull unifyai/ivy:latest-gpu")
 
     # read the tests to be run
     with open("tests_to_run", "r") as f:
@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
                 # gpu tests
                 if device == "gpu":
-                    image = "unifyai/multicuda:base_and_requirements"
+                    image = "unifyai/ivy:latest-gpu"
                     device_str = " --device=gpu:0"
 
                 os.system(
