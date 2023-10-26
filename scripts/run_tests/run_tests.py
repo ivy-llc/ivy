@@ -228,7 +228,10 @@ if __name__ == "__main__":
                 print(f"{'*' * 100}\n")
                 sys.stdout.flush()
                 command = f"{command} --num-examples 5 --with-transpile"
-                os.system("docker cp test-container:/ivy/report.json .")
+                os.system(
+                    "docker cp test-container:/ivy/report.json"
+                    f" {__file__[: __file__.rfind(os.sep)]}/report.json"
+                )
 
             # load data from report if generated
             report_path = os.path.join(
@@ -286,8 +289,6 @@ if __name__ == "__main__":
             # populate the ci_dashboard db, skip instance methods
             if function_name:
                 id = test_info.pop("_id")
-                print(f"ID : {id}")
-                print(f"TEST INFO : {test_info}")
                 print(
                     collection.update_one({"_id": id}, {"$set": test_info}, upsert=True)
                 )
