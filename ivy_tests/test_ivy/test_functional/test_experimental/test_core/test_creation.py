@@ -422,6 +422,38 @@ def test_ndindex(dtype_x_shape):
         assert index1 == index2
 
 
+# polyval
+@handle_test(
+    fn_tree="functional.ivy.experimental.polyval",
+    dtype_and_coeffs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+    ),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=0,
+    ),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_polyval(
+    *, dtype_and_coeffs, dtype_and_x, test_flags, backend_fw, fn_name, on_device
+):
+    coeffs_dtype, coeffs = dtype_and_coeffs
+    x_dtype, x = dtype_and_x
+
+    helpers.test_function(
+        input_dtypes=coeffs_dtype + x_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        coeffs=coeffs,
+        x=x,
+    )
+
+
 @handle_test(
     fn_tree="functional.ivy.experimental.random_cp",
     data=_random_cp_data(),

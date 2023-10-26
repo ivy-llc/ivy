@@ -1,8 +1,10 @@
-"""MXNet random functions.
+"""
+MXNet random functions.
 
 Collection of MXNet random functions, wrapped to fit Ivy syntax and
 signature.
 """
+
 import mxnet as mx
 from typing import Optional, Union, Sequence
 import ivy
