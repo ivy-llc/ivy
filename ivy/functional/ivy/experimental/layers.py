@@ -1726,7 +1726,7 @@ def area_interpolate(x, dims, size, scale):
 
 def get_interpolate_kernel(mode):
     kernel_func = _triangle_kernel
-    if mode == "bicubic_tensorflow":
+    if mode == "tf_bicubic":
         kernel_func = lambda inputs: _cubic_kernel(inputs)
     elif mode == "lanczos3":
         kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
@@ -1788,7 +1788,7 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "bicubic",
         "mitchellcubic",
         "lanczos3",
@@ -1859,7 +1859,7 @@ def interpolate(
         "bilinear",
         "trilinear",
         "nd",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "lanczos3",
         "lanczos5",
     ]:

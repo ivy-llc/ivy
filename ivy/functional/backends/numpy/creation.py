@@ -6,7 +6,6 @@ import numpy as np
 
 # local
 import ivy
-from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.ivy.creation import (
     _asarray_to_native_arrays_and_back,
     _asarray_infer_device,
@@ -35,7 +34,7 @@ def arange(
 ) -> np.ndarray:
     if dtype:
         dtype = as_native_dtype(dtype)
-    res = _to_device(np.arange(start, stop, step, dtype=dtype), device=device)
+    res = np.arange(start, stop, step, dtype=dtype)
     if not dtype:
         if res.dtype == np.float64:
             return res.astype(np.float32)
@@ -60,7 +59,7 @@ def asarray(
     device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = _to_device(np.asarray(obj, dtype=dtype), device=device)
+    ret = np.asarray(obj, dtype=dtype)
     return np.copy(ret) if copy else ret
 
 
@@ -71,7 +70,7 @@ def empty(
     device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.empty(shape, dtype), device=device)
+    return np.empty(shape, dtype)
 
 
 def empty_like(
@@ -82,7 +81,7 @@ def empty_like(
     device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.empty_like(x, dtype=dtype), device=device)
+    return np.empty_like(x, dtype=dtype)
 
 
 def eye(
@@ -100,12 +99,12 @@ def eye(
         n_cols = n_rows
     i = np.eye(n_rows, n_cols, k, dtype)
     if batch_shape is None:
-        return _to_device(i, device=device)
+        return i
     else:
         reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
         tile_dims = list(batch_shape) + [1, 1]
         return_mat = np.tile(np.reshape(i, reshape_dims), tile_dims)
-        return _to_device(return_mat, device=device)
+        return return_mat
 
 
 def to_dlpack(x, /, *, out: Optional[np.ndarray] = None):
@@ -125,10 +124,7 @@ def full(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    return _to_device(
-        np.full(shape, fill_value, dtype),
-        device=device,
-    )
+    return np.full(shape, fill_value, dtype)
 
 
 def full_like(
@@ -140,7 +136,7 @@ def full_like(
     device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
+    return np.full_like(x, fill_value, dtype=dtype)
 
 
 def linspace(
@@ -165,7 +161,7 @@ def linspace(
         and (not isinstance(stop, np.ndarray))
     ):
         ans[0] = start
-    return _to_device(ans, device=device)
+    return ans
 
 
 def meshgrid(
@@ -184,7 +180,7 @@ def ones(
     device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.ones(shape, dtype), device=device)
+    return np.ones(shape, dtype)
 
 
 def ones_like(
@@ -195,7 +191,7 @@ def ones_like(
     device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.ones_like(x, dtype=dtype), device=device)
+    return np.ones_like(x, dtype=dtype)
 
 
 def tril(
@@ -217,7 +213,7 @@ def zeros(
     device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.zeros(shape, dtype), device=device)
+    return np.zeros(shape, dtype)
 
 
 def zeros_like(
@@ -228,7 +224,7 @@ def zeros_like(
     device: str = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.zeros_like(x, dtype=dtype), device=device)
+    return np.zeros_like(x, dtype=dtype)
 
 
 # Extra #
@@ -304,6 +300,4 @@ def triu_indices(
     *,
     device: str = None,
 ) -> Tuple[np.ndarray]:
-    return tuple(
-        _to_device(np.asarray(np.triu_indices(n=n_rows, k=k, m=n_cols)), device=device)
-    )
+    return tuple(np.asarray(np.triu_indices(n=n_rows, k=k, m=n_cols)))
