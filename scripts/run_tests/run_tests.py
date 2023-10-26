@@ -153,13 +153,13 @@ if __name__ == "__main__":
                 backend_version = backend_version.strip()
 
             else:
-                device = ""
+                device_str = ""
                 image = "unifyai/ivy:latest"
 
                 # gpu tests
                 if device == "gpu":
                     image = "unifyai/ivy:latest-gpu"
-                    device = " --device=gpu:0"
+                    device_str = " --device=gpu:0"
 
                 os.system(
                     'docker run --name test-container -v "$(pwd)":/ivy -v '
@@ -168,7 +168,7 @@ if __name__ == "__main__":
                 )
                 command = (
                     "docker exec test-container python3 -m pytest --tb=short"
-                    f" {test_path} {device} --backend {backend}"
+                    f" {test_path} {device_str} --backend {backend}"
                 )
                 os.system(command)
 
@@ -282,6 +282,8 @@ if __name__ == "__main__":
             # populate the ci_dashboard db, skip instance methods
             if function_name:
                 id = test_info.pop("_id")
+                print(f"ID : {id}")
+                print(f"TEST INFO : {test_info}")
                 print(
                     collection.update_one({"_id": id}, {"$set": test_info}, upsert=True)
                 )
