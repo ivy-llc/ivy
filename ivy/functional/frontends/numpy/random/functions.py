@@ -233,3 +233,27 @@ def triangular(left, mode, right, size=None):
         right - (right - mode) * ((1 - u) * (right - mode) / (right - left)) ** 0.5
     )
     return ivy.where(condition, values1, values2)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def noncentral_f(dfnum, dfden, nonc, size=None, seed=None):
+    # Checking parameter range validity
+    if dfnum <= 0 or dfden <= 0 or nonc < 0:
+        raise ValueError("Parameters must satisfy: dfnum > 0, dfden > 0, nonc >= 0")
+
+    # Generate samples from the F Distribution
+    x1 = ivy.gamma(
+        ivy.to_scalar(ivy.divide(dfnum, 2)), 2.0, shape=size, dtype="float64"
+    )
+    x2 = ivy.gamma(
+        ivy.to_scalar(ivy.divide(dfden, 2)), 2.0, shape=size, dtype="float64"
+    )
+
+    # Calculate the F-distributed samples
+    central_f_samples = ivy.divide(x1, ivy.array(dfnum)) / ivy.divide(
+        x2, ivy.array(dfden)
+    )
+    noncentral_f_samples = central_f_samples + nonc
+
+    return noncentral_f_samples
