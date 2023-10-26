@@ -1,4 +1,4 @@
-name: Dockerfile MultiCUDA Push
+name: GPU Dockerfile Push
 
 on:
   schedule:

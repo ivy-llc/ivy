@@ -64,7 +64,7 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
 
 
 # copy library files to workdir
-COPY docker/multicuda_framework_directory.py .
+COPY docker/gpu_framework_directory.py .
 COPY requirements/optional_gpu.txt .
 COPY requirements/requirements.txt .
 
@@ -79,7 +79,7 @@ SHELL ["/bin/bash", "-c"]
 
 
 # install all libraries based on the mappings
-RUN python3 multicuda_framework_directory.py $fw &&\
+RUN python3 gpu_framework_directory.py $fw &&\
     jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings_gpu.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2 --extra-index-url https://download.pytorch.org/whl/cu118' sh {}
 RUN sed -i '/numpy/d' requirements.txt &&\
     pip install -r  requirements.txt &&\

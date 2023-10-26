@@ -5,8 +5,8 @@
 		"dockerfile": "../../docker/DockerfileGPU",
 		"context": "../..",
 		"args": {
-            "IMAGE_NAME": "unifyai/multicuda",
-            "IMAGE_TAG": "base_and_requirements"
+            "IMAGE_NAME": "unifyai/ivy",
+            "IMAGE_TAG": "latest-gpu"
         }
 	},
 
