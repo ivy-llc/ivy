@@ -151,7 +151,6 @@ if __name__ == "__main__":
                 )
                 backend = backend.split("/")[0] + "\n"
                 backend_version = backend_version.strip()
-                print("Running", command)
 
             else:
                 device_str = ""
@@ -205,6 +204,7 @@ if __name__ == "__main__":
                 )
             else:
                 print(backend_version)
+                print(f"device {device}")
                 old_helpers.update_individual_test_results(
                     old_db[coll[0]],
                     coll[1],
