@@ -669,6 +669,34 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
 
+@to_ivy_arrays_and_back
+def ptp(a, axis=None, out=None, keepdims=False):
+    x = ivy.max(a, axis=axis, keepdims=keepdims)
+    y = ivy.min(a, axis=axis, keepdims=keepdims)
+    return ivy.subtract(x, y)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.19 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
+def nanquantile(
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    return ivy.nanquantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
+    )
+
 amax = max
 amin = min
 cumproduct = cumprod

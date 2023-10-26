@@ -1376,7 +1376,7 @@ class ContainerBase(dict, abc.ABC):
              (Default value = '__')
         """
         # noinspection RegExpSingleCharAlternation
-        flat_keys = re.split("/|\.", key_chain)  # noqa
+        flat_keys = re.split(r"/|\.", key_chain)  # noqa
         num_keys = len(flat_keys)
         pre_keys = []
         post_keys = []
