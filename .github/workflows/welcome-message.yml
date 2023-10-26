@@ -1,7 +1,7 @@
 name: Check Semantic and welcome new contributors
 
 on:
-  pull_request_target:
+  pull_request:
     types:
       - opened
       - edited
