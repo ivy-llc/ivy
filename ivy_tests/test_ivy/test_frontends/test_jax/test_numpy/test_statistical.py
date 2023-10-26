@@ -5,9 +5,8 @@ import numpy as np
 
 # local
 import ivy
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
+import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
@@ -106,7 +105,7 @@ def _get_castable_dtypes_values(draw, *, allow_nan=False, use_where=False):
         helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
     )
     if use_where:
-        where = draw(np_frontend_helpers.where(shape=shape))
+        where = draw(np_helpers.where(shape=shape))
         return [dtype1], [values], axis, dtype2, where
     return [dtype1], [values], axis, dtype2
 
@@ -811,7 +810,7 @@ def test_jax_nancumsum(
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
     if ivy.current_backend_str() == "torch":
         assume(not test_flags.as_variable[0])
-    np_frontend_helpers.test_frontend_function(
+    np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
@@ -1014,7 +1013,7 @@ def test_jax_nanmin(
     fn_tree="jax.numpy.nanstd",
     dtype_and_a=_statistical_dtype_values(function="nanstd"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    where=np_frontend_helpers.where(),
+    where=np_helpers.where(),
     keep_dims=st.booleans(),
 )
 def test_jax_nanstd(
@@ -1031,13 +1030,13 @@ def test_jax_nanstd(
     input_dtypes, a, axis, correction = dtype_and_a
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
     assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
-    np_frontend_helpers.test_frontend_function(
+    np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
@@ -1124,7 +1123,7 @@ def test_jax_ptp(
     keep_dims,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
-    np_frontend_helpers.test_frontend_function(
+    np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
