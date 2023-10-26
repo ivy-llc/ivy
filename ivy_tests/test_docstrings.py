@@ -128,6 +128,7 @@ def check_docstring_examples_run(
         # all examples are wrong including functional/ivy
         "einops_reduce",
         "max_unpool1d",
+        "max_unpool3d",
         "pool",
         "put_along_axis",
         "result_type",

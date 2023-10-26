@@ -1032,7 +1032,7 @@ def rfftn(
     if all(j < -len(x.shape) for j in s):
         raise ivy.utils.exceptions.IvyError(
             f"Invalid axes {axes}, expecting ranging"
-            f" from {-len(x.shape)} to {len(x.shape)-1}"
+            f" from {-len(x.shape)} to {len(x.shape) - 1}"
         )
     if not all(isinstance(j, int) for j in s):
         raise ivy.utils.exceptions.IvyError(
@@ -1274,3 +1274,57 @@ def _max_unpool1d_mixed_handler(input, indices, kernel_size, **kwargs):
 
 
 max_unpool1d.partial_mixed_handler = _max_unpool1d_mixed_handler
+
+
+def max_unpool3d(
+    input: torch.Tensor,
+    indices: torch.Tensor,
+    kernel_size: Union[Tuple[int], int],
+    /,
+    *,
+    strides: Union[int, Tuple[int]] = None,
+    padding: Union[int, Tuple[int]] = 0,
+    data_format: Optional[str] = "channels_first",
+) -> torch.Tensor:
+    if strides is None:
+        strides = kernel_size
+    revert = False
+    if data_format in ["channels_first", "channels_last"]:
+        if data_format == "channels_last":
+            input = input.permute(0, 4, 1, 2, 3)
+            indices = indices.permute(0, 4, 1, 2, 3)
+            revert = True
+    else:
+        raise ValueError(
+            f"data_format attr should be NCW or NWC but found {data_format}"
+        )
+    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
+    strides = _broadcast_pooling_helper(strides, "3d", name="strides")
+    output = torch.nn.functional.max_unpool3d(
+        input,
+        indices,
+        kernel_size,
+        strides,
+        padding,
+    )
+    if revert:
+        output = output.permute(0, 4, 1, 2, 3)
+    return output
+
+
+def _max_unpool3d_mixed_handler(input, indices, kernel_size, **kwargs):
+    dt = kwargs.get("data_format", "channels_first")
+    indices = indices.permute(0, 4, 1, 2, 3) if dt == "channels_last" else indices
+    flat_indices = indices.reshape((-1,))
+    stride = indices.shape[-1]
+    not_dup = True
+    for i in range(0, flat_indices.numel(), stride):
+        indices = flat_indices[i : (i + stride)]
+        indices = indices.unique()
+        if indices.numel() != stride:
+            not_dup = False
+    return not_dup
+
+
+max_unpool3d.partial_mixed_handler = _max_unpool3d_mixed_handler

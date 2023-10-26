@@ -3221,3 +3221,99 @@ max_unpool1d.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_partial_mixed_function
+@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_device
+def max_unpool3d(
+    input: ivy.Array,
+    indices: ivy.Array,
+    kernel_size: Union[Tuple[int], int],
+    /,
+    *,
+    strides: Union[int, Tuple[int]] = None,
+    padding: Union[int, Tuple[int]] = 0,
+    data_format: Optional[str] = "channels_first",
+) -> ivy.Array:
+    """
+
+    Parameters
+    ----------
+    input
+        3D pooled input image with shape
+        of [batch_size, channels, depth, height, width]
+    indices
+        Indices obtained from the 3D max pooling operation
+    kernel_size
+        Size of the kernel used as
+        sliding window for each dimension of input
+        [depth, height, width]
+    strides
+        The stride of the sliding window.
+    padding
+        `"SAME" or "VALID" indicating the algorithm.
+    data_format
+        "channels_first" confirms the data format to be
+        [batch_size, channels, depth, height, width]
+        "channels_last" confirms the data format to be
+        [batch_size, depth, height, width, channels]
+
+    Returns
+    -------
+    output
+        The result of the 3D unpooling operation.
+    """
+    if strides is None:
+        strides = kernel_size
+    if data_format in ["channels_first", "channels_last"]:
+        revert = False
+        if data_format == "channels_last":
+            d_in, h_in, w_in = input.shape[1], input.shape[2], input.shape[3]
+            input = input.permute_dims((0, 4, 1, 2, 3))
+            indices = indices.permute_dims((0, 4, 1, 2, 3))
+            revert = True
+        else:
+            d_in, h_in, w_in = input.shape[2], input.shape[3], input.shape[4]
+    else:
+        raise ValueError(
+            "data_format attr should be channels_first or channels_last but found"
+            f" {data_format}"
+        )
+    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
+    strides = _broadcast_pooling_helper(strides, "3d", name="strides")
+    d_out, h_out, w_out = _cal_output_shape(
+        (d_in, h_in, w_in), padding, kernel_size, strides
+    )
+    output_shape = (input.shape[0], input.shape[1], d_out, h_out, w_out)
+    output = ivy.zeros(output_shape, dtype=input.dtype)
+    one_like_mask = ivy.ones_like(indices, dtype="int32")
+    batch_shape = [input.shape[0], 1, 1, 1]
+    batch_range = ivy.reshape(
+        ivy.arange(0, output_shape[0], dtype="int32"), batch_shape
+    )
+    b = one_like_mask * batch_range
+    feature_range = ivy.arange(0, output_shape[-1], dtype="int32").reshape(
+        (1, 1, 1, -1, 1)
+    )
+    f = one_like_mask * feature_range
+    indices = ivy.stack([b, f, indices]).reshape((3, -1))
+    indices = tuple(indices)
+    output[indices] = input.reshape((-1,))
+    if revert:
+        output = output.permute_dims([0, 2, 3, 4, 1])
+    return output
+
+
+max_unpool3d.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "to_native_arrays_and_back",
+        "handle_device",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}

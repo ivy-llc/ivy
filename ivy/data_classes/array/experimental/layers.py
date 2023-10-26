@@ -1328,3 +1328,46 @@ class _ArrayWithLayersExperimental(abc.ABC):
             padding=padding,
             data_format=data_format,
         )
+
+    def max_unpool3d(
+        self: ivy.Array,
+        indices: ivy.Array,
+        kernel_size: Union[Tuple[int], int],
+        /,
+        *,
+        strides: Union[int, Tuple[int]] = None,
+        padding: Union[int, Tuple[int]] = 0,
+        data_format: Optional[str] = "channels_first",
+    ) -> ivy.Array:
+        """
+        Compute 3D max unpooling given the 3D max pooled inputs and indices.
+
+        Parameters
+        ----------
+        indices
+            obtained from the corresponding 3D max pooling operation.
+        kernel_size
+            Size of the kernel which acts as the
+            sliding window for each dimension of input
+            [depth, height, width]
+        strides
+            The strides of the sliding window.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
+        data_format
+            "channels_first" or "channels_last"
+            Default: "channels_first"
+        Returns
+        -------
+        output
+            result of the 3D max unpooling operation
+        """
+        return ivy.max_unpool3d(
+            self._data,
+            indices,
+            kernel_size,
+            strides=strides,
+            padding=padding,
+            data_format=data_format,
+        )

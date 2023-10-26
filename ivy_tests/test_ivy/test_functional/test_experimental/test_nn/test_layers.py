@@ -478,6 +478,41 @@ def max_unpool1d_helper(
     return dts, values, indices, kernel_size, strides, padding
 
 
+@st.composite
+def max_unpool3d_helper(
+    draw,
+    **data_gen_kwargs,
+):
+    dts, values, kernel_size, strides, _ = draw(
+        helpers.arrays_for_pooling(
+            min_dims=3,
+            max_dims=3,
+            data_format="channel_first",
+            **data_gen_kwargs,
+        )
+    )
+    dts.extend(["int64"])
+    values = values[0]
+    if dts[0] in ["float16", "bfloat16"]:
+        values = values.astype(np.float32)
+        dts[0] = "float32"
+    padding = draw(helpers.ints(min_value=0, max_value=2))
+    if padding > (kernel_size[0] // 2):
+        padding = 0
+    values, indices = torch.nn.functional.max_pool3d(
+        torch.tensor(values.astype(np.float32)),
+        kernel_size,
+        strides,
+        padding,
+        return_indices=True,
+    )
+    indices = indices.numpy().astype(np.int64)
+    max_idx = values.shape[-1] - 1
+    indices = np.where(indices > max_idx, max_idx, indices)
+    values = values.numpy().astype(dts[0])
+    return dts, values, indices, kernel_size, strides, padding
+
+
 # --- Main --- #
 # ------------ #
 
@@ -1276,6 +1311,38 @@ def test_max_pool3d(
     test_with_out=st.just(False),
 )
 def test_max_unpool1d(
+    *,
+    x_k_s_p,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, ind, kernel, stride, pad = x_k_s_p
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        input=x,
+        indices=ind,
+        kernel_size=kernel,
+        strides=stride,
+        padding=pad,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.max_unpool3d",
+    x_k_s_p=max_unpool3d_helper(min_side=2, max_side=5),
+    ground_truth_backend="jax",
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_max_unpool3d(
     *,
     x_k_s_p,
     test_flags,
