@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push base_and_requirements image
+      - name: Build and push GPU image
         run: |
           docker build --progress=plain --no-cache -t unifyai/ivy:latest-gpu -f docker/DockerfileGPU .
           docker push unifyai/ivy:latest-gpu
