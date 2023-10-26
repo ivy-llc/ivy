@@ -240,6 +240,14 @@ class TensorShape:
         else:
             return "TensorShape(None)"
 
+    def __str__(self):
+        if self.rank is None:
+            return "<unknown>"
+        elif self.rank == 1:
+            return "(%s,)" % self._dims[0]
+        else:
+            return "(%s)" % ", ".join(str(d) for d in self._dims)
+
     # Properties #
     # ---------- #
 
