@@ -738,6 +738,31 @@ def _tensor_train_data(draw):
     return x_dtype, x[0], rank
 
 
+# tensor train matrix
+@st.composite
+def _tensor_train_matrix_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=0.1,
+            max_value=10,
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            ret_shape=True,
+        ).filter(lambda x: "float16" not in x[0] and "bfloat16" not in x[0])
+    )
+    dims = len(shape)
+    rank = []
+    for i in range(dims):
+        rank.append(draw(helpers.ints(min_value=1, max_value=shape[i])))
+
+    rank[0] = rank[-1] = 1
+
+    return x_dtype, x[0], rank
+
+
 # truncated svd
 @st.composite
 def _truncated_svd_data(draw):
@@ -1775,7 +1800,7 @@ def test_tensor_train(*, data, svd, test_flags, backend_fw, fn_name, on_device):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.tensor_train_matrix",
-    data=_tensor_train_data(),
+    data=_tensor_train_matrix_data(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     svd=st.just("truncated_svd"),
