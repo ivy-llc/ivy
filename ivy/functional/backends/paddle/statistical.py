@@ -5,7 +5,6 @@ torch_scatter = None
 from typing import Union, Optional, Sequence
 
 import paddle
-import ivy
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_dtypes,
@@ -178,16 +177,7 @@ def sum(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = x.dtype if dtype is None else dtype
-    dtype = ivy.as_ivy_dtype(dtype)
     ret = paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
-    # The following code is to simulate other frameworks
-    # output shapes behaviour since min output dim is 1 in paddle
-    if isinstance(axis, Sequence):
-        if len(axis) == x.ndim:
-            axis = None
-    if (x.ndim == 1 or axis is None) and not keepdims:
-        ret = paddle_backend.squeeze(ret, axis=-1)
     return ret
 
 

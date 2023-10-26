@@ -648,7 +648,7 @@ def std(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device
+# @handle_device
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
