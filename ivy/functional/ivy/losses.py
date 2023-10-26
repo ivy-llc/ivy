@@ -412,13 +412,13 @@ def ssim_loss(
     """
 
     # Calculate the mean and variance of the two images.
-    mu_x = iv.avg_pool2d(pred, (3, 3), (3, 3), "SAME")
-    mu_y = iv.avg_pool2d(ytrue, (3, 3), (3, 3), "SAME")
+    mu_x = ivy.avg_pool2d(pred, (3, 3), (3, 3), "SAME")
+    mu_y = ivy.avg_pool2d(ytrue, (3, 3), (3, 3), "SAME")
 
-    sigma_x2 = iv.avg_pool2d(pred * pred, (3, 3), (3, 3), "SAME") - mu_x * mu_x
-    sigma_y2 = iv.avg_pool2d(ytrue * ytrue, (3, 3), (3, 3), "SAME") - mu_y * mu_y
+    sigma_x2 = ivy.avg_pool2d(pred * pred, (3, 3), (3, 3), "SAME") - mu_x * mu_x
+    sigma_y2 = ivy.avg_pool2d(ytrue * ytrue, (3, 3), (3, 3), "SAME") - mu_y * mu_y
 
-    sigma_xy = iv.avg_pool2d(pred * ytrue, (3, 3), (3, 3), "SAME") - mu_x * mu_y
+    sigma_xy = ivy.avg_pool2d(pred * ytrue, (3, 3), (3, 3), "SAME") - mu_x * mu_y
 
     # Add small constants to avoid division by zero.
     C1 = 0.01**2
@@ -433,6 +433,6 @@ def ssim_loss(
     ssim = 1 - ssim
 
     # Take the mean of the loss values for each image in the batch to get a single loss value that can be used to train the model.
-    loss = iv.mean(ssim)
+    loss = ivy.mean(ssim)
 
     return loss
