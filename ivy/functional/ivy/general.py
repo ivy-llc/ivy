@@ -4069,8 +4069,9 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
                 list(fn_supported_dnd.values())[0], tuple
             )
 
-        for device, dtypes in fn_supported_dnd.items():
-            fn_supported_dnd[device] = tuple(_expand_typesets(dtypes))
+        if isinstance(fn_supported_dnd, dict):
+            for device, dtypes in fn_supported_dnd.items():
+                fn_supported_dnd[device] = tuple(_expand_typesets(dtypes))
 
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
