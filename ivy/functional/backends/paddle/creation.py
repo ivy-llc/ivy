@@ -263,7 +263,10 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
         sos_shape = stop_shape
         if num == 1:
             return (
-                paddle_backend.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start
+                paddle_backend.ones(
+                    stop_shape[:axis] + [1] + stop_shape[axis:], dtype=dtype
+                )
+                * start
             )
         stop = stop.reshape((-1,))
         linspace_method = (
