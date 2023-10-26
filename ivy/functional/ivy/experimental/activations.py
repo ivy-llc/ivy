@@ -1028,7 +1028,6 @@ def hardshrink(
     Examples
     --------
     With :class:`ivy.Array` input:
-
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = ivy.hardshrink(x)
     >>> print(y)
