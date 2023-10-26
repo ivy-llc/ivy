@@ -235,7 +235,10 @@ class TensorShape:
         self._dims = tuple(dims)
 
     def __repr__(self):
-        return str(self._dims)
+        if self._dims is not None:
+            return f"TensorShape({list(self._dims)})"
+        else:
+            return "TensorShape(None)"
 
     # Properties #
     # ---------- #
