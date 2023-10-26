@@ -86,9 +86,6 @@ def std(
     return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 
-@with_unsupported_dtypes(
-    {"0.4.19 and below": ("complex64", "complex128")}, backend_version
-)
 def sum(
     x: JaxArray,
     /,
