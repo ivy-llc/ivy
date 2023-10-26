@@ -154,13 +154,13 @@ if __name__ == "__main__":
                 print("Running", command)
 
             else:
-                device = ""
+                device_str = ""
                 image = "unifyai/ivy:latest"
 
                 # gpu tests
                 if device == "gpu":
                     image = "unifyai/multicuda:base_and_requirements"
-                    device = " --device=gpu:0"
+                    device_str = " --device=gpu:0"
 
                 os.system(
                     'docker run --name test-container -v "$(pwd)":/ivy -v '
@@ -169,7 +169,7 @@ if __name__ == "__main__":
                 )
                 command = (
                     "docker exec test-container python3 -m pytest --tb=short"
-                    f" {test_path} {device} --backend {backend}"
+                    f" {test_path} {device_str} --backend {backend}"
                 )
                 os.system(command)
 
