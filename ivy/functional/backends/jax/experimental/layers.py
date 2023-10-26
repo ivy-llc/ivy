@@ -703,7 +703,7 @@ def interpolate(
     out: Optional[JaxArray] = None,
 ):
     dims = len(x.shape) - 2
-    size = _get_size(scale_factor, size, dims, x.shape)
+    size, _ = _get_size(scale_factor, size, dims, x.shape)
     mode = (
         "nearest"
         if mode == "nearest-exact"
