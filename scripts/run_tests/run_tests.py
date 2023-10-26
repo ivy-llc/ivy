@@ -2,6 +2,7 @@
 import os
 import sys
 from pymongo import MongoClient
+from pymongo.errors import WriteError
 import requests
 import json
 import old_run_test_helpers as old_helpers
@@ -189,33 +190,35 @@ if __name__ == "__main__":
             frontend_version = None
             if coll[0] in ["numpy", "jax", "tensorflow", "torch", "paddle"]:
                 frontend_version = "latest-stable"
-            if priority_flag:
-                print("Updating Priority DB")
-                old_helpers.update_individual_test_results(
-                    old_db_priority[coll[0]],
-                    coll[1],
-                    submod,
-                    backend,
-                    test_fn,
-                    res,
-                    "latest-stable",
-                    frontend_version,
-                    device,
-                )
-            else:
-                print(backend_version)
-                print(f"device {device}")
-                old_helpers.update_individual_test_results(
-                    old_db[coll[0]],
-                    coll[1],
-                    submod,
-                    backend,
-                    test_fn,
-                    res,
-                    backend_version,
-                    frontend_version,
-                    device,
-                )
+            try:
+                if priority_flag:
+                    print("Updating Priority DB")
+                    old_helpers.update_individual_test_results(
+                        old_db_priority[coll[0]],
+                        coll[1],
+                        submod,
+                        backend,
+                        test_fn,
+                        res,
+                        "latest-stable",
+                        frontend_version,
+                        device,
+                    )
+                else:
+                    print(backend_version)
+                    old_helpers.update_individual_test_results(
+                        old_db[coll[0]],
+                        coll[1],
+                        submod,
+                        backend,
+                        test_fn,
+                        res,
+                        backend_version,
+                        frontend_version,
+                        device,
+                    )
+            except WriteError:
+                print("Old DB Write Error")
 
             # skip updating db for instance methods as of now
             # run transpilation tests if the test passed
