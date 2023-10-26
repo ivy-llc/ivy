@@ -450,10 +450,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
         verbose: Optional[bool] = False,
     ) -> ivy.TTTensor:
-        """ivy.Array instance method variant of ivy.tensor_train_matrix. This
-        method simply wraps the function, and so the docstring for
-        ivy.tensor_train_matrix also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of ivy.tensor_train_matrix. This method simply
+        wraps the function, and so the docstring for ivy.tensor_train_matrix also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
