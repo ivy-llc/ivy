@@ -88,8 +88,6 @@ jobs:
       - name: Checkout Ivy 🛎
         uses: actions/checkout@v3
         with:
-          repository: vedpatwardhan/ivy
-          ref: sample-pr
           path: ivy
           persist-credentials: false
           submodules: "recursive"
