@@ -875,12 +875,13 @@ def interpolate(
         "linear",
         "bilinear",
         "trilinear",
+        "nd",
         "nearest",
         "area",
-        "nearest-exact",
+        "nearest_exact",
         "tf_area",
+        "tf_bicubic",
         "bicubic",
-        "bicubic_tensorflow",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -910,7 +911,7 @@ def interpolate(
                 else "nearest" if mode == "nearest-exact" else mode
             )
         )
-    if mode == "bicubic_tensorflow":
+    if mode == "tf_bicubic":
         mode = "bicubic"
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     ret = tf.transpose(
