@@ -283,6 +283,8 @@ if __name__ == "__main__":
             # populate the ci_dashboard db, skip instance methods
             if function_name:
                 id = test_info.pop("_id")
+                print(f"ID : {id}")
+                print(f"TEST INFO : {test_info}")
                 print(
                     collection.update_one({"_id": id}, {"$set": test_info}, upsert=True)
                 )
