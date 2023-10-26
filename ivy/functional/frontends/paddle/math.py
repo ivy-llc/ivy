@@ -325,6 +325,12 @@ def inner(x, y, name=None):
     return result
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def inverse(x, name=None):
+    return ivy.inv(x)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
 )
