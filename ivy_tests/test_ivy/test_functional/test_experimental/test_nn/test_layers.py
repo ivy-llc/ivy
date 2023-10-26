@@ -131,33 +131,25 @@ def _interp_args(draw, mode=None, mode_list=None):
         )
     )
     if draw(st.booleans()):
-        scale_factor = draw(
-            st.one_of(
-                helpers.lists(
-                    x=helpers.floats(
-                        min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
-                    ),
-                    min_size=num_dims - 2,
-                    max_size=num_dims - 2,
-                ),
-                helpers.floats(
-                    min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
-                ),
+        if draw(st.booleans()):
+            scale_factor = draw(
+                st.floats(min_value=max([1 / d for d in x[0].shape[2:]]), max_value=3)
             )
-        )
+        else:
+            scale_factor = []
+            for s in x[0].shape[2:]:
+                scale_factor += [draw(st.floats(min_value=1 / s, max_value=3))]
         recompute_scale_factor = draw(st.booleans())
         size = None
     else:
         size = draw(
             st.one_of(
-                helpers.lists(
-                    x=helpers.ints(
-                        min_value=1, max_value=3, mixed_fn_compos=mixed_fn_compos
-                    ),
+                st.lists(
+                    st.integers(min_value=1, max_value=3 * max(x[0].shape)),
                     min_size=num_dims - 2,
                     max_size=num_dims - 2,
                 ),
-                st.integers(min_value=1, max_value=3),
+                st.integers(min_value=1, max_value=3 * max(x[0].shape)),
             )
         )
         recompute_scale_factor = False
