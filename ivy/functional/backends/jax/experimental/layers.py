@@ -149,7 +149,7 @@ def general_pool(
         # if dtype is not set here, jax casts it to float64
         inputs = jnp.array(inputs, dtype=jnp.float32)
     if not ivy.is_array(init):
-        init = jnp.array(init, dtype=jnp.float32)
+        init = jnp.array(init, dtype=inputs.dtype)
     promoted_type = jnp.promote_types(inputs.dtype, init.dtype)
     inputs = inputs.astype(promoted_type)
     init = init.astype(promoted_type)
