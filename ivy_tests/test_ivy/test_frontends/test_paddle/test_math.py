@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import hypothesis.extra.numpy as nph
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -224,6 +225,42 @@ def test_paddle_addmm(
         y=y[0],
         beta=beta,
         alpha=alpha,
+    )
+
+
+# all
+@handle_frontend_test(
+    fn_tree="paddle.all",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=["bool"],
+        valid_axis=True,
+        allow_neg_axes=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+    keepdim=st.booleans(),
+)
+def test_paddle_all(
+    *,
+    dtype_and_x,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        x=x[0],
+        axis=axis,
+        keepdim=keepdim,
     )
 
 
@@ -497,6 +534,34 @@ def test_paddle_atanh(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# broadcast_shape
+@handle_frontend_test(
+    fn_tree="paddle.broadcast_shape",
+    input_shapes_x=nph.mutually_broadcastable_shapes(
+        num_shapes=2, min_dims=1, max_dims=5, min_side=1, max_side=5
+    ),
+)
+def test_paddle_broadcast_shape(
+    *,
+    input_shapes_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int32", "int64"],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x_shape=input_shapes_x[0][0],
+        y_shape=input_shapes_x[0][1],
     )
 
 

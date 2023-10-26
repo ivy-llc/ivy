@@ -4,6 +4,9 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    _x_and_ifftn,
+)
 
 
 # Custom Hypothesis strategy for generating sequences of 2 integers
@@ -221,6 +224,32 @@ def test_paddle_ifft(
         x=x[0],
         n=n,
         axis=axis,
+        norm=norm,
+    )
+
+
+# ifftn
+@handle_frontend_test(
+    fn_tree="paddle.fft.ifftn",
+    dtype_and_x=_x_and_ifftn(),
+)
+def test_paddle_ifftn(
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    dtype, x, s, axes, norm = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x,
+        s=s,
+        axes=axes,
         norm=norm,
     )
 

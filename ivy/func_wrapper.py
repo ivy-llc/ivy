@@ -1298,6 +1298,9 @@ def _versioned_attribute_factory(attribute_function, base):
         def __repr__(self):
             return repr(self.__get__())
 
+        def __bool__(self):
+            return bool(self.__get__())
+
     return VersionedAttributes()
 
 
@@ -1366,7 +1369,10 @@ def _dtype_device_wrapper_creator(attrib, t):
                             # for conflicting ones we do nothing
                             pass
             else:
-                setattr(func, attrib, val)
+                if not val and attrib.startswith("supported"):
+                    setattr(func, f"un{attrib}", val)
+                else:
+                    setattr(func, attrib, val)
                 setattr(func, "dictionary_info", (version_dict, version))
             if "frontends" in func.__module__:
                 # it's a frontend func, no casting modes for this
@@ -1829,9 +1835,7 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
                         dicti[key]["all"]
                     )
                 else:
-                    nested_dic[nested_key] = dicti[key].get(nested_key, ()) + tuple(
-                        dicti[key][nested_key]
-                    )
+                    nested_dic[nested_key] = tuple(dicti[key][nested_key])
             dicti[key] = nested_dic
         args = (dicti, args[1])
 
@@ -1889,9 +1893,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
                         dicti[key]["all"]
                     )
                 else:
-                    nested_dic[nested_key] = dicti[key].get(nested_key, ()) + tuple(
-                        dicti[key][nested_key]
-                    )
+                    nested_dic[nested_key] = tuple(dicti[key][nested_key])
             dicti[key] = nested_dic
         args = (dicti, args[1])
 

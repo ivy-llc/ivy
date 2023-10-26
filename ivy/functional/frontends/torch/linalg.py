@@ -314,8 +314,10 @@ def svd(A, /, *, full_matrices=True, driver=None, out=None):
     {"2.1.0 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def svdvals(A, *, driver=None, out=None):
-    # TODO: add handling for driver
-    return ivy.svdvals(A, out=out)
+    if driver in ["gesvd", "gesvdj", "gesvda", None]:
+        return ivy.svdvals(A, driver=driver, out=out)
+    else:
+        raise ValueError("Unsupported SVD driver")
 
 
 @to_ivy_arrays_and_back
