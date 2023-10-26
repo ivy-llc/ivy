@@ -388,7 +388,7 @@ def sparse_cross_entropy(
 @handle_array_function
 def ssim_loss(
     pred: Union[ivy.Array, ivy.NativeArray], ytrue: Union[ivy.Array, ivy.NativeArray]
-):
+) -> ivy.Array:
     """
     Calculates the Structural Similarity Index (SSIM) loss between two images.
 
