@@ -1545,20 +1545,14 @@ def _compute_weight_mat(
     scale,
     align_corners,
     kernel_fn,
-    antialias: bool,
     dim_scale_factor,
 ):
-    inv_scale = 1.0 / scale
-    kernel_scale = ivy.maximum(inv_scale, 1.0) if antialias else 1.0
     if not align_corners:
         sample_f = (ivy.arange(output_size) + 0.5) * dim_scale_factor - 0.5
     else:
         sample_f = ivy.arange(output_size) * dim_scale_factor
-    x = (
-        ivy.abs(
-            ivy.expand_dims(sample_f) - ivy.expand_dims(ivy.arange(input_size), axis=-1)
-        )
-        / kernel_scale
+    x = ivy.abs(
+        ivy.expand_dims(sample_f) - ivy.expand_dims(ivy.arange(input_size), axis=-1)
     )
     weights = kernel_fn(x)
     total_weight_sum = ivy.sum(weights, axis=0, keepdims=True)
@@ -1746,7 +1740,7 @@ def generate_einsum_equation(dim):
 
 
 def _interpolate_with_kernel(
-    x, dims, size, scale, input_shape, align_corners, antialias, scale_factor, mode
+    x, dims, size, scale, input_shape, align_corners, scale_factor, mode
 ):
     spatial_dims = [2 + i for i in range(dims)]
     equation = generate_einsum_equation(dims)
@@ -1763,7 +1757,7 @@ def _interpolate_with_kernel(
             scale_factor[i] if scale_factor is not None else None,
         )
         w = _compute_weight_mat(
-            m, n, scale[i], align_corners, kernel_func, antialias, dim_scale_factor
+            m, n, scale[i], align_corners, kernel_func, dim_scale_factor
         ).astype(x.dtype)
         operands.append(w)
     return ivy.einsum(equation, x, *operands)
@@ -1798,7 +1792,7 @@ def interpolate(
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
-    antialias: bool = False,
+    antialias: bool = False,  # ToDo: add support for antialias
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1836,9 +1830,6 @@ def interpolate(
         out-of-boundary values.
         only has an effect when mode is 'linear', 'bilinear',
         'bicubic' or 'trilinear'. Default: False
-    antialias
-        If True, antialiasing is applied when downsampling an image.
-        Supported modes: 'bilinear', 'bicubic'.
     out
         Optional output array, for writing the result to. It must
         have a shape that the inputs broadcast to.
@@ -1873,7 +1864,6 @@ def interpolate(
                 scale,
                 input_shape,
                 align_corners,
-                antialias,
                 scale_factor,
                 mode,
             )

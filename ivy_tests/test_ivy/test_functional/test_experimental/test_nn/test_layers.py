@@ -1067,13 +1067,10 @@ def test_ifftn(
 @handle_test(
     fn_tree="functional.ivy.experimental.interpolate",
     dtype_x_mode=_interp_args(),
-    antialias=st.just(False),
     test_gradients=st.just(False),
     number_positional_args=st.just(2),
 )
-def test_interpolate(
-    dtype_x_mode, antialias, test_flags, backend_fw, fn_name, on_device
-):
+def test_interpolate(dtype_x_mode, test_flags, backend_fw, fn_name, on_device):
     (
         input_dtype,
         x,
@@ -1095,7 +1092,6 @@ def test_interpolate(
         size=size,
         mode=mode,
         align_corners=align_corners,
-        antialias=antialias,
         scale_factor=scale_factor,
         recompute_scale_factor=recompute_scale_factor,
     )
