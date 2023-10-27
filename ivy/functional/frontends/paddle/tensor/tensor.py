@@ -211,6 +211,22 @@ class Tensor:
         self.ivy_array = self.subtract(y).ivy_array
         return self
 
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                    "bool",
+                    "int32",
+                    "int64",
+                    "float16",
+                    "float32",
+                    "float64",
+            )
+        },
+        "paddle",
+    )
+    def strided_slice(self, axes, starts, ends, strides):
+        return paddle_frontend.strided_slice(self._ivy_array, axes=axes, starts=starts, ends=ends, strides=strides)
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def log10(self, name=None):
         return paddle_frontend.Tensor(ivy.log10(self._ivy_array))

@@ -167,6 +167,23 @@ def stack(x, axis=0, name=None):
     return ivy.stack(x, axis=axis)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def strided_slice(x, axes, starts, ends, strides):
+    shape = list(x.shape)
+    slices = [slice(None) for i in range(len(shape))]
+    if axes:
+        for i in axes:
+            slices[i] = slice(starts[i], ends[i], strides[i])
+    else:
+        for i, start, end, stride in enumerate(zip(starts, ends, strides)):
+            slices[i] = slice(start, end, stride)
+    return x[slices]
+
+
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
