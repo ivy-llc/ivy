@@ -416,7 +416,6 @@ def set_backend(backend: str, dynamic: bool = False):
                 ivy.functional.__dict__[key] = ivy.__dict__[key]
 
         if dynamic:
-            print(f"devices {devices}")
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
         for sub_backend in ivy.available_sub_backends:
             ivy.set_sub_backend(sub_backend)
