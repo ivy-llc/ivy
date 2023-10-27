@@ -610,7 +610,7 @@ class BackendFunctionTestCaseRunner(BackendTestCaseRunner):
         sub_runner_target = FunctionTestCaseSubRunner(
             self.fn_name,
             self.backend_handler,
-            self.grond_truth_backend,
+            self.ground_truth_backend,
             self.on_device,
             input_dtypes,
             test_flags,
