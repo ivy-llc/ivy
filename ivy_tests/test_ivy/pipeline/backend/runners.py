@@ -25,6 +25,7 @@ class BackendTestCaseRunner(TestCaseRunner):
         rtol_,
         atol_,
         test_values,
+        traced_fn,
     ):
         self.backend_handler = backend_handler
         self.backend_to_test = backend_to_test
@@ -34,6 +35,7 @@ class BackendTestCaseRunner(TestCaseRunner):
         self.rtol = rtol_
         self.atol = atol_
         self.test_values = test_values
+        self.traced_fn = traced_fn
 
     def _check_assertions(self, target_results, ground_truth_results):
         if self.test_values:
@@ -51,7 +53,14 @@ class BackendTestCaseRunner(TestCaseRunner):
 
 class FunctionTestCaseSubRunner(TestCaseSubRunner):
     def __init__(
-        self, fn_name, backend_handler, backend, device, input_dtypes, test_flags
+        self,
+        fn_name,
+        backend_handler,
+        backend,
+        device,
+        input_dtypes,
+        test_flags,
+        traced_fn,
     ):
         self.fn_name = fn_name
         self._backend_handler = backend_handler
@@ -60,6 +69,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         self.__ivy = self._backend_handler.set_backend(backend)
         self.test_flags = test_flags
         self.input_dtypes = input_dtypes
+        self.traced_fn = traced_fn
 
     @property
     def backend_handler(self):
@@ -141,14 +151,12 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         ret = [self._ivy.to_numpy(x) for x in ret_flat]
         return ret
 
-    def _get_ret_and_flattened_np_array(self, fn, *args, **kwargs):
+    def _get_ret(self, fn, *args, **kwargs):
         """
         Run func with args and kwargs.
 
         Return the result along with its flattened version.
         """
-        fn = self._compile_if_required(fn, args=args, kwargs=kwargs)
-
         with self._ivy.PreciseMode(self.test_flags.precision_mode):
             ret = fn(*args, **kwargs)
 
@@ -181,7 +189,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             out = self._ivy.nested_map(
                 test_ret, self._ivy.zeros_like, to_mutable=True, include_derived=True
             )
-            ret_from_target = self._get_ret_and_flattened_np_array(
+            ret_from_target = self._get_ret(
                 target_fn,
                 *args,
                 **kwargs,
@@ -236,7 +244,12 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                     kwargs, arrays_kwargs_indices, kwargs_instance_mask  # noqa: F821
                 )
 
-            if self.test_flags.test_trace:
+            if self.test_flags.test_trace and self.traced_fn is not None:
+                args = [instance, *args]
+                target_fn = self.traced_fn
+                return target_fn, args
+
+            if self.test_flags.test_trace and self.traced_fn is None:
                 target_fn = lambda instance, *args, **kwargs: instance.__getattribute__(
                     self.fn_name
                 )(*args, **kwargs)
@@ -245,6 +258,10 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                 target_fn = instance.__getattribute__(self.fn_name)
         else:
             target_fn = self._ivy.__dict__[self.fn_name]
+
+        target_fn = self.trace_if_required(
+            target_fn, test_trace=self.test_flags.test_trace, args=args, kwargs=kwargs
+        )
         return target_fn, args
 
     def _search_args(self, all_as_kwargs_np):
@@ -290,7 +307,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         copy_args = copy.deepcopy(args)
         copy_kwargs = copy.deepcopy(kwargs)
 
-        ret_from_target = self._get_ret_and_flattened_np_array(
+        ret_from_target = self._get_ret(
             target_fn,
             *copy_args,
             **copy_kwargs,
@@ -560,6 +577,7 @@ class BackendFunctionTestCaseRunner(BackendTestCaseRunner):
         test_values,
         rtol,
         atol,
+        traced_fn,
     ):
         self.fn_name = fn_name
         super().__init__(
@@ -581,6 +599,7 @@ class BackendFunctionTestCaseRunner(BackendTestCaseRunner):
             self.on_device,
             input_dtypes,
             test_flags,
+            self.traced_fn,
         )
         results = sub_runner_target.get_results(test_arguments)
         sub_runner_target.exit()
@@ -594,6 +613,7 @@ class BackendFunctionTestCaseRunner(BackendTestCaseRunner):
             self.on_device,
             input_dtypes,
             test_flags,
+            self.traced_fn,
         )
         results = sub_runner_target.get_results(test_arguments)
         sub_runner_target.exit()
@@ -636,7 +656,6 @@ class BackendMethodTestCaseRunner(BackendTestCaseRunner):
         self.test_gradients = test_gradients
         self.xs_grad_idxs = xs_grad_idxs
         self.ret_grad_idxs = ret_grad_idxs
-        self.traced_fn = traced_fn
         super().__init__(
             backend_handler,
             backend_to_test,
@@ -646,6 +665,7 @@ class BackendMethodTestCaseRunner(BackendTestCaseRunner):
             rtol_,
             atol_,
             test_values,
+            traced_fn,
         )
 
     def _run_target(

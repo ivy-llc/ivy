@@ -38,6 +38,7 @@ class BackendPipeline(Pipeline):
             tolerance_dict=tolerance_dict,
             rtol=rtol_,
             atol=atol_,
+            traced_fn=BackendPipeline.traced_fn,
         )
 
         runner.run(input_dtypes, all_as_kwargs_np, test_flags)
