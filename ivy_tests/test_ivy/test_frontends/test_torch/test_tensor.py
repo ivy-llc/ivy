@@ -4023,6 +4023,7 @@ def test_torch_bernoulli(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
@@ -4038,6 +4039,7 @@ def test_torch_bernoulli(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
