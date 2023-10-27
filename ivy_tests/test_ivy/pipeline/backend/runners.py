@@ -146,11 +146,6 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             fn = self._ivy.compile(fn, args=args, kwargs=kwargs)
         return fn
 
-    def _flatten_and_to_np(self, *, ret):
-        ret_flat = self._flatten(ret=ret)
-        ret = [self._ivy.to_numpy(x) for x in ret_flat]
-        return ret
-
     def _get_ret(self, fn, *args, **kwargs):
         """
         Run func with args and kwargs.
@@ -320,7 +315,6 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
 
         self._test_out(target_fn, ret_from_target, *args, **kwargs)
-
         return self._get_results_from_ret(ret_from_target, store_types=True)
 
     def get_results(self, test_arguments):
@@ -627,7 +621,6 @@ class BackendFunctionTestCaseRunner(BackendTestCaseRunner):
         ground_truth_results: TestCaseSubRunnerResult = self._run_ground_truth(
             input_dtypes, test_arguments, test_flags
         )
-
         self._check_assertions(target_results, ground_truth_results)
 
 
