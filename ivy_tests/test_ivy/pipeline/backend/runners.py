@@ -141,11 +141,6 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         )
         return self.test_flags
 
-    def _compile_if_required(self, fn, args=None, kwargs=None):
-        if self.test_flags.test_compile:
-            fn = self._ivy.compile(fn, args=args, kwargs=kwargs)
-        return fn
-
     def _get_ret(self, fn, *args, **kwargs):
         """
         Run func with args and kwargs.
@@ -211,7 +206,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                     " returned"
                 )
 
-    def _get_target_fn(self, args, kwargs):
+    def _get_target_fn(self, arrays_args_indices, arrays_kwargs_indices, args, kwargs):
         if self.test_flags.instance_method:
             # TODO all this argument handling should be moved to _preprocess_args
             array_or_container_mask = [
@@ -232,11 +227,11 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
 
             if any(args_instance_mask):
                 instance, args = self._find_instance_in_args(
-                    args, arrays_args_indices, args_instance_mask  # noqa: F821
+                    args, arrays_args_indices, args_instance_mask
                 )
             else:
                 instance, kwargs = self._find_instance_in_args(
-                    kwargs, arrays_kwargs_indices, kwargs_instance_mask  # noqa: F821
+                    kwargs, arrays_kwargs_indices, kwargs_instance_mask
                 )
 
             if self.test_flags.test_trace and self.traced_fn is not None:
@@ -295,8 +290,13 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             ret.append(temp)
         return ret[0], ret[1]
 
-    def _call_function(self, args, kwargs):
-        target_fn, args = self._get_target_fn(args=args, kwargs=kwargs)
+    def _call_function(self, args, kwargs, args_array_indices, kwargs_array_indices):
+        target_fn, args = self._get_target_fn(
+            args_array_indices,
+            kwargs_array_indices,
+            args=args,
+            kwargs=kwargs,
+        )
 
         # Make copy of arguments for functions that might use inplace update by default
         copy_args = copy.deepcopy(args)
@@ -322,7 +322,9 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         self._preprocess_flags(total_num_arrays)
         args, kwargs = self._preprocess_args(args_result, kwargs_result)
 
-        return self._call_function(args, kwargs)
+        return self._call_function(
+            args, kwargs, args_result.indices, kwargs_result.indices
+        )
 
 
 class MethodTestCaseSubRunner(TestCaseSubRunner):
