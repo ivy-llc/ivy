@@ -693,8 +693,9 @@ def nanquantile(
     keepdims=False,
     interpolation=None,
 ):
+    ivy.set_inplace_mode('strict')
     return ivy.nanquantile(
-        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
+        a, q, axis=axis, overwrite_input=overwrite_input, keepdims=keepdims, interpolation=method, out=out
     )
 
 amax = max
