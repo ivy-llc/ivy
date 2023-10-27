@@ -47,7 +47,6 @@ jobs:
       - display_test_results
     name: Failures message
     uses: unifyai/workflows/.github/workflows/failures_message.yml@main
-    secrets: inherit
     with:
       github_output: ${{ GITHUB_OUTPUT }}
 
