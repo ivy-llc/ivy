@@ -327,7 +327,7 @@ def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
         # check if object was originally a variable
         if id(obj) in variable_ids:
             native_arr = ivy.nested_map(
-                lambda x: current_backend().asarray(x, device=device),
+                lambda x: ivy.asarray(x, device=device),
                 np_arr,
                 include_derived=True,
                 shallow=False,
@@ -336,7 +336,7 @@ def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
 
         else:
             new_data = ivy.nested_map(
-                lambda x: current_backend().asarray(x, device=device),
+                lambda x: ivy.asarray(x, device=device),
                 np_arr,
                 include_derived=True,
                 shallow=False,
@@ -416,6 +416,7 @@ def set_backend(backend: str, dynamic: bool = False):
                 ivy.functional.__dict__[key] = ivy.__dict__[key]
 
         if dynamic:
+            print(f"devices {devices}")
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
         for sub_backend in ivy.available_sub_backends:
             ivy.set_sub_backend(sub_backend)
