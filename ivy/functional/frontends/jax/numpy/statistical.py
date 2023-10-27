@@ -11,8 +11,6 @@ from ivy.functional.backends.jax.experimental.elementwise import _normalize_axis
 
 
 import builtins
-import operator
-import math
 
 
 @to_ivy_arrays_and_back
@@ -238,9 +236,11 @@ def histogramdd(sample, bins=10, range=None, weights=None, density=None):
                 smin -= 0.5
                 smax += 0.5
             try:
-                n = operator.index(bins_per_dimension[i])
-            except TypeError as e:
-                raise TypeError(f"`bins[{i}]` must be an integer, when a scalar") from e
+                n = bins_per_dimension[i].__index__()
+            except AttributeError as e:
+                raise AttributeError(
+                    f"`bins[{i}]` must be an integer, when a scalar"
+                ) from e
             edge = ivy.linspace(smin, smax, n + 1)
         # Each bin is a sequence --> just copy
         elif ivy.get_num_dims(bins_per_dimension[i]) == 1:
@@ -267,7 +267,8 @@ def histogramdd(sample, bins=10, range=None, weights=None, density=None):
     for i, s in zip(bin_idx_by_dim, strides):
         result += i * int(s)
 
-    hist = result.bincount(weights=weights, minlength=math.prod(nbins))
+    # hist = result.bincount(weights=weights, minlength=math.prod(nbins))
+    hist = result.bincount(weights=weights, minlength=ivy.prod(ivy.array(nbins)))
     ivy.reshape(hist, nbins)
 
     core = D * (slice(1, -1),)
