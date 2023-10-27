@@ -84,7 +84,7 @@ def main():
             'ARRAY_API_TESTS_MODULE="ivy" -v "$(pwd)":/ivy unifyai/ivy:latest '
             'timeout 30m /bin/bash -c "coverage run --source=ivy,ivy_tests -m pytest '
             f'{test_name} -k \\"{k_flag[backend]}\\" --disable-warnings --tb=short '
-            "--max-examples 5 -vv > coverage_output;coverage annotate > "
+            "--hypothesis-max-examples 5 -vv > coverage_output;coverage annotate > "
             'coverage_output"'
         )
         os.system(command)
