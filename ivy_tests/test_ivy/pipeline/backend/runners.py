@@ -589,6 +589,7 @@ class BackendFunctionTestCaseRunner(BackendTestCaseRunner):
             rtol,
             atol,
             test_values,
+            traced_fn,
         )
 
     def _run_target(self, input_dtypes, test_arguments, test_flags):
