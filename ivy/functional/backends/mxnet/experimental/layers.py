@@ -214,11 +214,13 @@ def interpolate(
         "linear",
         "bilinear",
         "trilinear",
+        "nd",
         "nearest",
         "area",
         "nearest_exact",
         "tf_area",
-        "bicubic_tensorflow" "bicubic",
+        "tf_bicubic",
+        "bicubic",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -230,4 +232,16 @@ def interpolate(
     antialias: bool = False,
     out: Optional[mx.nd.NDArray] = None,
 ):
+    raise IvyNotImplementedException()
+
+
+def rfft(
+    x: mx.nd.NDArray,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     raise IvyNotImplementedException()

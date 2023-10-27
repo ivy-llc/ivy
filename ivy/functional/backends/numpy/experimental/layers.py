@@ -726,7 +726,7 @@ def fft(
     return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
-@with_supported_dtypes({"1.26.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"1.26.1 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -991,7 +991,7 @@ def ifftn(
     return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.26.1 and below": ("complex",)}, backend_version)
 def embedding(
     weights: np.ndarray,
     indices: np.ndarray,
@@ -1014,6 +1014,26 @@ def embedding(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
     return embeddings
+
+
+def rfft(
+    x: np.ndarray,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x = x.real
+
+    ret = np.fft.rfft(x, n=n, axis=axis, norm=norm)
+
+    if x.dtype != np.float64:
+        ret = ret.astype(np.complex64)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def rfftn(
