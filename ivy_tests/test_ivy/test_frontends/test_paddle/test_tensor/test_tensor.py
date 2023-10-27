@@ -10,7 +10,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
 from ivy_tests.test_ivy.helpers import assert_all_close
 from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
-from ivy_tests.test_ivy.helpers.hypothesis_helpers import general_helpers as gh
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa E501
     _get_dtype_values_k_axes_for_rot90,
 )
@@ -206,11 +205,7 @@ def _get_dtype_and_values_for_lerp(draw):
 def _get_x_axes_starts_ends(draw):
     shape = draw(
         helpers.get_shape(
-            allow_none=False,
-            min_num_dims=1,
-            max_num_dims=3,
-            min_dim_size=1,
-            max_dim_size=3,
+            min_num_dims=1, max_num_dims=5, min_dim_size=1, max_dim_size=10
         )
     )
     x_dtype, x = draw(
@@ -220,7 +215,7 @@ def _get_x_axes_starts_ends(draw):
     )
 
     axes = draw(
-        gh.get_axis(
+        helpers.get_axis(
             shape=shape,
             min_size=0,
             max_size=2,
@@ -4647,6 +4642,44 @@ def test_paddle_tensor_expand(
     )
 
 
+# strided_slice
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="strided_slice",
+    input_axes_starts_ends=_get_x_axes_starts_ends(),
+)
+def test_paddle_tensor_stided_slice(
+    input_axes_starts_ends,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, axes, starts, ends, strides = input_axes_starts_ends
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axes": axes,
+            "starts": starts,
+            "ends": ends,
+            "strides": strides,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 # tile
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -4675,44 +4708,6 @@ def test_paddle_tensor_tile(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         backend_to_test=backend_fw,
-        method_flags=method_flags,
-        on_device=on_device,
-    )
-
-
-# strided_slice
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="strided_slice",
-    input_axes_starts_ends=_get_x_axes_starts_ends(),
-)
-def test_paddle_tensor_unique_consecutive(
-    input_axes_starts_ends,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-    backend_fw,
-):
-    input_dtypes, x, axes, starts, ends, strides = input_axes_starts_ends
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={
-            "axes": axes,
-            "starts": starts,
-            "ends": ends,
-            "strides": strides,
-        },
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
     )
