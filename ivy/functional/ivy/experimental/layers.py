@@ -1850,6 +1850,8 @@ def interpolate(
     input_shape = ivy.shape(x)
     dims = len(input_shape) - 2
     size, scale_factor = _get_size(scale_factor, size, dims, x.shape)
+    if all(a == b for a, b in zip(size, input_shape[2:])):
+        return x
     if recompute_scale_factor:
         scale = [ivy.divide(size[i], input_shape[i + 2]) for i in range(dims)]
     else:

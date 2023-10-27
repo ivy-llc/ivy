@@ -704,6 +704,8 @@ def interpolate(
 ):
     dims = len(x.shape) - 2
     size, _ = _get_size(scale_factor, size, dims, x.shape)
+    if all(a == b for a, b in zip(size, x.shape[2:])):
+        return x
     mode = (
         "nearest"
         if mode == "nearest-exact"
