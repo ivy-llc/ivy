@@ -1748,7 +1748,7 @@ def test_jax_expand_dims(
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         frontend=frontend,
-        bakcend_to_test=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1918,6 +1918,40 @@ def test_jax_gt(
         on_device=on_device,
         x=xs[0],
         y=xs[1],
+    )
+
+
+# igamma
+@handle_frontend_test(
+    fn_tree="jax.lax.igamma",
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_igamma(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, (x, y) = dtypes_and_xs
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        x=x,
+        y=y,
     )
 
 

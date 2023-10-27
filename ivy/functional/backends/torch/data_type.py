@@ -15,16 +15,10 @@ ivy_dtype_dict = {
     torch.int32: "int32",
     torch.int64: "int64",
     torch.uint8: "uint8",
-    torch.qint8: "qint8",
-    torch.qint32: "qint32",
-    torch.quint8: "quint8",
-    torch.quint2x4: "quint2x4",
-    torch.quint4x2: "quint4x2",
     torch.bfloat16: "bfloat16",
     torch.float16: "float16",
     torch.float32: "float32",
     torch.float64: "float64",
-    torch.complex32: "complex32",
     torch.complex64: "complex64",
     torch.complex128: "complex128",
     torch.bool: "bool",
@@ -186,7 +180,7 @@ def as_ivy_dtype(
         )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("uint16",)}, backend_version)
 def as_native_dtype(
     dtype_in: Union[torch.dtype, str, bool, int, float, np.dtype]
 ) -> torch.dtype:

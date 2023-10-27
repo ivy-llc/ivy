@@ -189,6 +189,7 @@ def test_mindspore_adaptive_avg_pool2d(
     output_size,
     test_flags,
     frontend,
+    backend_fw,
     on_device,
     fn_tree,
 ):
@@ -196,6 +197,7 @@ def test_mindspore_adaptive_avg_pool2d(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
         fn_tree=fn_tree,
@@ -261,7 +263,7 @@ def test_mindspore_avg_pool2d(
 # conv1d
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="mindspore.ops.function.nn_func.Conv1d",
+    fn_tree="mindspore.ops.function.nn_func.conv1d",
     dtype_vals=_x_and_filters(dim=1),
 )
 def test_mindspore_conv1d(
@@ -294,7 +296,7 @@ def test_mindspore_conv1d(
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="mindspore.ops.function.nn_func.Conv2d",
+    fn_tree="mindspore.ops.function.nn_func.conv2d",
     dtype_vals=_x_and_filters(dim=2),
 )
 def test_mindspore_conv2d(
@@ -327,7 +329,7 @@ def test_mindspore_conv2d(
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="mindspore.ops.function.nn_func.Conv3d",
+    fn_tree="mindspore.ops.function.nn_func.conv3d",
     dtype_vals=_x_and_filters(dim=3),
 )
 def test_mindspore_conv3d(
@@ -389,12 +391,14 @@ def test_mindspore_dropout2d(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, x = d_type_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -433,12 +437,14 @@ def test_mindspore_dropout3d(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, x = d_type_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -461,6 +467,7 @@ def test_mindspore_fast_gelu(
     *,
     test_flags,
     frontend,
+    backend_fw,
     on_device,
     fn_tree,
 ):
@@ -469,6 +476,7 @@ def test_mindspore_fast_gelu(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -551,6 +559,7 @@ def test_mindspore_interpolate(
     align_corners,
     recompute_scale_factor,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -562,6 +571,7 @@ def test_mindspore_interpolate(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -604,11 +614,13 @@ def test_mindspore_kl_div(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     helpers.test_frontend_function(
         input_dtypes=p[0],
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -714,7 +726,7 @@ def test_mindspore_max_pool3d(
 # pad
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="pad",
+    fn_tree="mindspore.ops.function.nn_func.pad",
     input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
@@ -740,11 +752,13 @@ def test_mindspore_pad(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     helpers.test_frontend_function(
         input_dtypes=input[0],
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -771,12 +785,14 @@ def test_mindspore_selu(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

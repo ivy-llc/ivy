@@ -31,6 +31,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         "nearest",
         "nearest-exact",
         "area",
+        "bicubic",
     ]
 
     tf_modes = [
@@ -39,7 +40,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         "trilinear",
         "nearest-exact",
         "tf_area",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "lanczos3",
         "lanczos5",
         "mitchellcubic",
@@ -51,7 +52,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         "bilinear",
         "trilinear",
         "nearest-exact",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "lanczos3",
         "lanczos5",
     ]
@@ -74,7 +75,7 @@ def _interp_args(draw, mode=None, mode_list=None):
                         "nearest-exact",
                         "area",
                         "tf_area",
-                        "bicubic_tensorflow",
+                        "tf_bicubic",
                         "lanczos3",
                         "lanczos5",
                         "mitchellcubic",
@@ -91,7 +92,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         num_dims = 3
     elif mode in [
         "bilinear",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "bicubic",
         "mitchellcubic",
         "gaussian",
@@ -131,33 +132,25 @@ def _interp_args(draw, mode=None, mode_list=None):
         )
     )
     if draw(st.booleans()):
-        scale_factor = draw(
-            st.one_of(
-                helpers.lists(
-                    x=helpers.floats(
-                        min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
-                    ),
-                    min_size=num_dims - 2,
-                    max_size=num_dims - 2,
-                ),
-                helpers.floats(
-                    min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
-                ),
+        if draw(st.booleans()):
+            scale_factor = draw(
+                st.floats(min_value=max([1 / d for d in x[0].shape[2:]]), max_value=3)
             )
-        )
+        else:
+            scale_factor = []
+            for s in x[0].shape[2:]:
+                scale_factor += [draw(st.floats(min_value=1 / s, max_value=3))]
         recompute_scale_factor = draw(st.booleans())
         size = None
     else:
         size = draw(
             st.one_of(
-                helpers.lists(
-                    x=helpers.ints(
-                        min_value=1, max_value=3, mixed_fn_compos=mixed_fn_compos
-                    ),
+                st.lists(
+                    st.integers(min_value=1, max_value=3 * max(x[0].shape)),
                     min_size=num_dims - 2,
                     max_size=num_dims - 2,
                 ),
-                st.integers(min_value=1, max_value=3),
+                st.integers(min_value=1, max_value=3 * max(x[0].shape)),
             )
         )
         recompute_scale_factor = False
@@ -383,6 +376,29 @@ def _x_and_ifftn(draw):
     )
 
     return dtype, x, s, axes, norm
+
+
+@st.composite
+def _x_and_rfft(draw):
+    min_fft_points = 2
+    dtype = draw(helpers.get_dtypes("numeric"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e-10,
+            max_value=1e10,
+        )
+    )
+    axis = draw(st.integers(1 - len(list(x_dim)), len(list(x_dim)) - 1))
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    n = draw(st.integers(min_fft_points, 256))
+    return dtype, x, axis, norm, n
 
 
 @st.composite
@@ -1299,6 +1315,35 @@ def test_reduce_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
         padding=padding,
         base_dilation=others[2],
         window_dilation=None,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.rfft",
+    dtype_x_axis_norm_n=_x_and_rfft(),
+    ground_truth_backend="numpy",
+)
+def test_rfft(
+    *,
+    dtype_x_axis_norm_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, axis, norm, n = dtype_x_axis_norm_n
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x,
+        n=n,
+        axis=axis,
+        norm=norm,
     )
 
 

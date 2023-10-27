@@ -73,10 +73,13 @@ def asarray(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ivy.utils.assertions._check_jax_x64_flag(dtype)
-    if copy is True:
-        return jnp.array(obj, dtype=dtype, copy=True)
-    else:
-        return jnp.asarray(obj, dtype=dtype)
+    ret = jnp.asarray(obj, dtype=dtype)
+    # jnp.copy is used to ensure correct device placement
+    # it's slower than jax.device_put before JIT, but it's necessary to use since
+    # jax device objects aren't serializable and prevent saving transpiled graphs
+    # this workaround only works because we are inside jax.default_device context
+    # invoked in @handle_device decorator
+    return jnp.copy(ret) if (ret.device != device or copy) else ret
 
 
 def empty(

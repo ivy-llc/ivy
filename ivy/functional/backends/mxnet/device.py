@@ -4,6 +4,7 @@ MXNet device functions.
 Collection of MXNet general functions, wrapped to fit Ivy syntax and
 signature.
 """
+
 import mxnet as mx
 from typing import Union, Optional
 import ivy

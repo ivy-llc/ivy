@@ -495,7 +495,6 @@ from .broadcast import *
 
 from . import ma
 from . import fft
-from . import random
 from .ufunc import ufunc
 
 from . import linalg
@@ -551,7 +550,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _reciprocal,
     _subtract,
     _divmod,
-    _remainder,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
@@ -638,6 +636,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
 
 from ivy.functional.frontends.numpy.mathematical_functions.floating_point_routines import (  # noqa
     _nextafter,
+    _signbit,
     _spacing,
 )
 
@@ -721,6 +720,7 @@ frexp = ufunc("_frexp")
 conj = ufunc("_conj")
 rint = ufunc("_rint")
 nextafter = ufunc("_nextafter")
+signbit = ufunc("_signbit")
 conjugate = ufunc("_conj")
 lcm = ufunc("_lcm")
 gcd = ufunc("_gcd")
