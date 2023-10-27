@@ -165,7 +165,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                 return self._ivy.to_ivy(x)
             return x
 
-        return self._ivy.nested_map(ret, map_fn, include_derived={"tuple": True})
+        return self._ivy.nested_map(map_fn, ret, include_derived={"tuple": True})
 
     def _test_out(self, target_fn, ret_from_target, *args, **kwargs):
 
@@ -187,7 +187,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                 else ret_from_target
             )
             out = self._ivy.nested_map(
-                test_ret, self._ivy.zeros_like, to_mutable=True, include_derived=True
+                self._ivy.zeros_like, test_ret, to_mutable=True, include_derived=True
             )
             ret_from_target = self._get_ret(
                 target_fn,
@@ -315,8 +315,8 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
 
         # TODO move from here to assertions
         assert self._ivy.nested_map(
-            ret_from_target,
             lambda x: self._ivy.is_ivy_array(x) if self._ivy.is_array(x) else True,
+            ret_from_target,
         ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
 
         self._test_out(target_fn, ret_from_target, *args, **kwargs)
