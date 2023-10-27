@@ -85,9 +85,18 @@ def _interp_args(draw, mode=None, mode_list=None):
             )
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
-    align_corners = draw(st.one_of(st.booleans(), st.none()))
-    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
-        align_corners = False
+    align_corners = None
+    if mode in [
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nd",
+        "tf_bicubic",
+        "lanczos3",
+        "lanczos5",
+        "bicubic",
+    ]:
+        align_corners = draw(st.booleans())
     if mode == "linear":
         num_dims = 3
     elif mode in [
@@ -114,7 +123,6 @@ def _interp_args(draw, mode=None, mode_list=None):
             )
             + 2
         )
-        align_corners = None
     if curr_backend == "tensorflow" and not mixed_fn_compos:
         num_dims = 3
     dtype, x = draw(
@@ -126,6 +134,8 @@ def _interp_args(draw, mode=None, mode_list=None):
             max_num_dims=num_dims,
             min_dim_size=2,
             max_dim_size=5,
+            max_value=10000,
+            min_value=-10000,
             large_abs_safety_factor=50,
             small_abs_safety_factor=50,
             safety_factor_scale="log",

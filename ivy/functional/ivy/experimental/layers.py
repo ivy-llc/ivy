@@ -1817,12 +1817,18 @@ def interpolate(
         - area
         - tf_area
         - bicubic
+        - tf_bicubic
         - mitchellcubic
         - lanczos3
         - lanczos5
         - gaussian
     scale_factor
         Multiplier for spatial size that defines the output size (overwriting `size`).
+    recompute_scale_factor
+        If True, then scale_factor must be provided and scale_factor is used to
+        compute the output size. The computed output size will be used to infer new
+        scales for the interpolation. If recompute_scale_factor is False, then size
+        or scale_factor will be used directly for interpolation.
     align_corners
         If True, the corner pixels of the input and output tensors are aligned,
         and thus preserving the values at the corner pixels. If False, the corner
@@ -1840,7 +1846,78 @@ def interpolate(
     """
     input_shape = ivy.shape(x)
     dims = len(input_shape) - 2
+    if (
+        mode
+        not in [
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nd",
+            "tf_bicubic",
+            "lanczos3",
+            "lanczos5",
+            "bicubic",
+        ]
+        and align_corners is not None
+    ):
+        raise ivy.utils.exceptions.IvyException(
+            f"align_corners option cannot be set with interpolating mode {mode}"
+        )
+    if ivy.exists(size) and ivy.exists(scale_factor):
+        raise ivy.utils.exceptions.IvyException(
+            "only one of size or scale_factor should be defined"
+        )
+    elif ivy.exists(size) and not ivy.exists(scale_factor):
+        if isinstance(size, (list, tuple)):
+            ivy.utils.assertions.check_equal(
+                len(size),
+                dims,
+                inverse=False,
+                message=(
+                    "Input and output must have the same number of spatial dimensions,"
+                    f" but got input with {list(x.shape[2:])} spatial dimensions and"
+                    f" output size {size}."
+                ),
+                as_array=False,
+            )
+    elif ivy.exists(scale_factor) and not ivy.exists(size):
+        if isinstance(scale_factor, (list, tuple)):
+            ivy.utils.assertions.check_equal(
+                len(scale_factor),
+                dims,
+                inverse=False,
+                message=(
+                    "Input and scale_factor must have the same number of spatial"
+                    f" dimensions, but got input with {list(x.shape[2:])} spatial"
+                    f" dimensions and scale_factor {scale_factor}."
+                ),
+                as_array=False,
+            )
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            "either size or scale_factor should be defined"
+        )
+    if ivy.exists(size) and recompute_scale_factor is not None:
+        raise ivy.utils.exceptions.IvyException(
+            "recompute_scale_factor is not meaningful with an explicit size."
+        )
+    if ivy.get_num_dims(x) != 4 and mode == "bilinear":
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {x.ndim}D input, but bilinear mode needs 4D input"
+        )
+    if ivy.get_num_dims(x) != 5 and mode == "trilinear":
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {x.ndim}D input, but trilinear mode needs 5D input"
+        )
+    if ivy.get_num_dims(x) != 3 and mode == "linear":
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {x.ndim}D input, but trilinear mode needs 3D input"
+        )
     size, scale_factor = _get_size(scale_factor, size, dims, x.shape)
+    ivy.utils.assertions.check_true(
+        all(s > 0 for s in size),
+        message=f"output sizes should be greater than 0, but got {size}",
+    )
     if all(a == b for a, b in zip(size, input_shape[2:])):
         ret = x
     else:
