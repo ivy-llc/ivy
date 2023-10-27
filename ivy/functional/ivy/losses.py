@@ -390,13 +390,14 @@ def ssim_loss(
     pred: Union[ivy.Array, ivy.NativeArray], ytrue: Union[ivy.Array, ivy.NativeArray]
 ) -> ivy.Array:
     """
-    Calculates the Structural Similarity Index (SSIM) loss between two images.
+    Calculate the Structural Similarity Index (SSIM) loss between two images.
 
-    Args:
+    Parameters
+    ----------
         pred: A 3D image tensor of shape (batch_size, channels, height, width).
         ytrue: A 3D image tensor of shape (batch_size, channels, height, width).
 
-    Returns:
+    Returns
     -------
         inv.array: The SSIM loss mesure similarity between the two images.
 
@@ -410,7 +411,6 @@ def ssim_loss(
     >>> print(loss)
     ivy.array(0.99989992)
     """
-
     # Calculate the mean and variance of the two images.
     mu_x = ivy.avg_pool2d(pred, (3, 3), (3, 3), "SAME")
     mu_y = ivy.avg_pool2d(ytrue, (3, 3), (3, 3), "SAME")
@@ -429,10 +429,8 @@ def ssim_loss(
         (mu_x**2 + mu_y**2 + C1) * (sigma_x2 + sigma_y2 + C2)
     )
 
-    # Subtract 1 from the SSIM index to make the loss function compatible with other loss functions that are minimized when the difference between the predicted image and the ground truth image is zero.
     ssim = 1 - ssim
 
-    # Take the mean of the loss values for each image in the batch to get a single loss value that can be used to train the model.
     loss = ivy.mean(ssim)
 
     return loss
