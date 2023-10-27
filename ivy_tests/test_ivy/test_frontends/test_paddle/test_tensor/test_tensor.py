@@ -203,6 +203,43 @@ def _get_dtype_and_values_for_lerp(draw):
 
 
 @st.composite
+def _get_x_axes_starts_ends(draw):
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=1,
+            max_dim_size=3,
+        )
+    )
+    x_dtype, x = draw(
+        helpers.array_values(
+            dtype=helpers.get_dtypes("valid"), shape=shape, min_value=0, max_value=10
+        )
+    )
+
+    axes = draw(
+        gh.get_axis(
+            shape=shape,
+            min_size=0,
+            max_size=2,
+            allow_neg=True,
+            force_int=True,
+        )
+    )
+    axes_shape = [len(a) for a in axes]
+    starts = draw(
+        helpers.array_values(dtype=helpers.get_dtypes("int"), shape=axes_shape)
+    )
+    ends = draw(helpers.array_values(dtype=helpers.get_dtypes("int"), shape=axes_shape))
+    strides = draw(
+        helpers.array_values(dtype=helpers.get_dtypes("int"), shape=axes_shape)
+    )
+    return x_dtype, x, axes, starts, ends, strides
+
+
+@st.composite
 def _reshape_helper(draw):
     # generate a shape s.t len(shape) > 0
     shape = draw(
@@ -265,35 +302,6 @@ def dtypes_x_shape(draw):
         )
     )
     return dtypes, x, shape
-
-
-@st.composite
-def _get_x_axes_starts_ends(draw):
-    shape = draw(
-        helpers.get_shape(
-            allow_none=False,
-            min_num_dims=1,
-            max_num_dims=3,
-            min_dim_size=1,
-            max_dim_size=3,
-        )
-    )
-    x_dtype, x = draw(
-        helpers.array_values(
-            dtype=helpers.get_dtypes("valid"), shape=shape, min_value=0, max_value=10
-        )
-    )
-
-    axes = draw(
-        gh.get_axis(
-            shape=shape, min_size=0, max_size=2, allow_neg=True, force_int=True,
-        )
-    )
-    axes_shape = [len(a) for a in axes]
-    starts = draw(helpers.array_values(dtype=helpers.get_dtypes("int"), shape=axes_shape))
-    ends = draw(helpers.array_values(dtype=helpers.get_dtypes("int"), shape=axes_shape))
-    strides = draw(helpers.array_values(dtype=helpers.get_dtypes("int"), shape=axes_shape))
-    return x_dtype, x, axes, starts, ends, strides
 
 
 # --- Main --- #
@@ -4498,42 +4506,6 @@ def test_paddle_subtract_(
     )
 
 
-# strided_slice
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="strided_slice",
-    input_axes_starts_ends=_get_x_axes_starts_ends(),
-)
-def test_paddle_tensor_unique_consecutive(
-    input_axes_starts_ends,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-    backend_fw,
-):
-    input_dtypes, x, axes, starts, ends, strides = input_axes_starts_ends
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x[0],},
-        method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={
-            "axes": axes,
-            "starts": starts,
-            "ends": ends,
-            "strides": strides,
-        },
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        on_device=on_device,
-    )
-
-
 # t
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -4703,6 +4675,44 @@ def test_paddle_tensor_tile(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         backend_to_test=backend_fw,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# strided_slice
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="strided_slice",
+    input_axes_starts_ends=_get_x_axes_starts_ends(),
+)
+def test_paddle_tensor_unique_consecutive(
+    input_axes_starts_ends,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, axes, starts, ends, strides = input_axes_starts_ends
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axes": axes,
+            "starts": starts,
+            "ends": ends,
+            "strides": strides,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
     )
