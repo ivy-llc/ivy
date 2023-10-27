@@ -270,7 +270,7 @@ def test_min(
 ):
     input_dtype, x, axis, dtype3, where = dtype_and_x
     helpers.test_function(
-        input_dtypes=[input_dtype, dtype3],
+        input_dtypes=[input_dtype[0], dtype3[0]],
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
