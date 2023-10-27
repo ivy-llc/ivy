@@ -31,9 +31,25 @@ jobs:
           then
               echo "This PR introduces the following new failing tests:"
               cat combined_failures.txt
+              {
+                echo 'MESSAGE<<EOF'
+                echo "# Failed tests:"
+                echo "This PR introduces the following new failing tests:"
+                cat combined_failures.txt
+                echo EOF
+              } >> "$GITHUB_OUTPUT"
           else
-              echo "This PR does not introduce any new test failures! Yippee!"
+              echo "MESSAGE=This pull request does not result in any additional test failures. Congratulations!" >> "$GITHUB_OUTPUT"
           fi
+
+  failures-message:
+    needs:
+      - display_test_results
+    name: Failures message
+    uses: unifyai/workflows/.github/workflows/failures_message.yml@main
+    secrets: inherit
+    with:
+      github_output: ${{ GITHUB_OUTPUT }}
 
   run_tests:
     runs-on: ubuntu-20.04
