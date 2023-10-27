@@ -109,7 +109,7 @@ def test_jax_argmax(
 @handle_frontend_test(
     fn_tree="jax.numpy.argmin",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         force_int_axis=True,
         min_num_dims=1,
         valid_axis=True,
