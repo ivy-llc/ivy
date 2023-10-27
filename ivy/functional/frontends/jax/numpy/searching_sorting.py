@@ -30,7 +30,21 @@ def argmax(a, axis=None, out=None, keepdims=False):
 # argmin
 @to_ivy_arrays_and_back
 @with_supported_device_and_dtypes(
-    {"0.4.18 and below": {"cpu": ("int16", "int32", "int64","float32","float64","uint8","uint16","uint32","uint64")}},
+    {
+        "0.4.18 and below": {
+            "cpu": (
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+            )
+        }
+    },
     "jax",
 )
 def argmin(a, axis=None, out=None, keepdims=None):
