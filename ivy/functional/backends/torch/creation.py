@@ -477,7 +477,7 @@ def ones_like_v_0p1p12_to_0p2p0(
             x[i] = 1
         return x
     for i in range(x.shape[0]):
-        x[i, :] = ones_like_v_0p1p12_to_0p2p0(x[i, :])
+        x[i, :] = ones_like_v_0p1p12_to_0p2p0(x[i, :], dtype=dtype)
     return x
 
 
