@@ -30,13 +30,27 @@ def min(
             return ivy.inplace_update(out, x)
         else:
             return x
+
     if where is not None:
-        x = torch.where(where, x, torch.ones_like(x) * float("inf"))
+        if x.dtype == torch.int8:
+            max_val = 127
+        elif x.dtype == torch.int16:
+            max_val = 32767
+        elif x.dtype == torch.int32:
+            max_val = 2147483647
+        elif x.dtype == torch.int64:
+            max_val = 922337203685477580
+        else:
+            max_val = float("inf")
+        val = torch.ones_like(x) * max_val
+        # print("val=",val)
+        val = val.type(x.dtype)
+        x = torch.where(where, x, val)
     if not keepdims and not axis and axis != 0:
         result = torch.amin(input=x, out=out)
     result = torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
     if initial is not None:
-        initial = torch.tensor(initial)
+        initial = torch.tensor(initial, dtype=x.dtype)
         result = torch.minimum(result, initial)
     return result
 

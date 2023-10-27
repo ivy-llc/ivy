@@ -13,7 +13,9 @@ from ivy.utils.einsum_parser import legalise_einsum_expr
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("complex", "bool")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.14.0 and below": ("complex", "bool", "unsigned")}, backend_version
+)
 def min(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -26,9 +28,17 @@ def min(
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
     if where is not None:
-        x = tf.where(
-            where, x, tf.ones_like(x) * tf.constant(float("inf"), dtype=x.dtype)
-        )
+        if x.dtype == tf.int8:
+            max_val = tf.constant(127, dtype=x.dtype)
+        elif x.dtype == tf.int16:
+            max_val = tf.constant(32767, dtype=x.dtype)
+        elif x.dtype == tf.int32:
+            max_val = tf.constant(2147483647, dtype=x.dtype)
+        elif x.dtype == tf.int64:
+            max_val = tf.constant(9223372036854775807, dtype=x.dtype)
+        else:
+            max_val = tf.constant(float("inf"), dtype=x.dtype)
+        x = tf.where(where, x, tf.ones_like(x) * max_val)
     result = tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
     if initial is not None:
         result = tf.minimum(result, initial)

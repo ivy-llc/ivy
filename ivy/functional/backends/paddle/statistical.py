@@ -22,7 +22,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64", "int32", "int64")},
+    {"2.5.2 and below": ("complex", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def min(
@@ -42,8 +42,19 @@ def min(
         ret = paddle.complex(real, imag)
     else:
         if where is not None:
-            x = paddle.where(where, x, paddle.ones_like(x) * float("inf"))
+            if x.dtype == paddle.int32:
+                max_val = 2147483647
+            elif x.dtype == paddle.int64:
+                max_val = 922337203685477580
+            else:
+                max_val = float("inf")
+            val = paddle.ones_like(x) * max_val
+            # print("val=",val)
+            val = val.astype(ret_dtype)
+            x = paddle.where(where, x, val)
+            # print(x)
         ret = paddle.amin(x, axis=axis, keepdim=keepdims)
+        # print(ret)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
