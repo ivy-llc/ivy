@@ -321,7 +321,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
 
         self._test_out(target_fn, ret_from_target, *args, **kwargs)
 
-        return self._get_results_from_ret(ret_from_target)
+        return self._get_results_from_ret(ret_from_target, store_types=True)
 
     def get_results(self, test_arguments):
         args_result, kwargs_result, total_num_arrays = self._search_args(test_arguments)
