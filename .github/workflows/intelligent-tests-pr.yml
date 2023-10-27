@@ -48,10 +48,10 @@ jobs:
     name: Failures message
     uses: unifyai/workflows/.github/workflows/failures_message.yml@main
     with:
-      github_output: ${{ GITHUB_OUTPUT }}
+      github_output: ${{ needs.display_test_results.outputs }}
 
   run_tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
