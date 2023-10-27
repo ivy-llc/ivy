@@ -33,7 +33,6 @@ def _interp_args(draw, mode=None, mode_list=None):
         "area",
         "bicubic",
     ]
-
     tf_modes = [
         "linear",
         "bilinear",
@@ -46,7 +45,6 @@ def _interp_args(draw, mode=None, mode_list=None):
         "mitchellcubic",
         "gaussian",
     ]
-
     jax_modes = [
         "linear",
         "bilinear",
@@ -56,7 +54,8 @@ def _interp_args(draw, mode=None, mode_list=None):
         "lanczos3",
         "lanczos5",
     ]
-
+    if mode_list == "torch":
+        mode_list = torch_modes
     if not mode and not mode_list:
         if curr_backend == "torch" and not mixed_fn_compos:
             mode = draw(st.sampled_from(torch_modes))
@@ -134,11 +133,9 @@ def _interp_args(draw, mode=None, mode_list=None):
             max_num_dims=num_dims,
             min_dim_size=2,
             max_dim_size=5,
-            max_value=10000,
-            min_value=-10000,
-            large_abs_safety_factor=50,
-            small_abs_safety_factor=50,
-            safety_factor_scale="log",
+            max_value=1e04,
+            min_value=-1e04,
+            abs_smallest_val=1e-04,
         )
     )
     if draw(st.booleans()):
