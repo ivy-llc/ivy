@@ -14,13 +14,15 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex", "bool")}, backend_version)
 def min(
     x: torch.Tensor,
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis == ():
@@ -28,9 +30,15 @@ def min(
             return ivy.inplace_update(out, x)
         else:
             return x
+    if where is not None:
+        x = torch.where(where, x, torch.ones_like(x) * float("inf"))
     if not keepdims and not axis and axis != 0:
-        return torch.amin(input=x, out=out)
-    return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
+        result = torch.amin(input=x, out=out)
+    result = torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
+    if initial is not None:
+        initial = torch.tensor(initial)
+        result = torch.minimum(result, initial)
+    return result
 
 
 min.support_native_out = True

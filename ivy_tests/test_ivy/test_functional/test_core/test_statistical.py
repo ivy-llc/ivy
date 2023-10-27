@@ -82,7 +82,10 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
                 | helpers.floats(min_value=0, max_value=max_correction - 1)
             )
         return dtype, values, axis, correction
-    return dtype, values, axis
+    dtype3, where = draw(
+        helpers.dtype_and_values(available_dtypes=["bool"], shape=shape)
+    )
+    return dtype, values, axis, dtype3, where
 
 
 # --- Main --- #
@@ -259,11 +262,15 @@ def test_mean(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_dev
     fn_tree="functional.ivy.min",
     dtype_and_x=_statistical_dtype_values(function="min"),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
+    initial=st.integers(min_value=-5, max_value=5),
 )
-def test_min(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x, axis = dtype_and_x
+def test_min(
+    *, dtype_and_x, keep_dims, initial, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x, axis, dtype3, where = dtype_and_x
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype, dtype3],
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
@@ -271,6 +278,8 @@ def test_min(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_devi
         x=x[0],
         axis=axis,
         keepdims=keep_dims,
+        initial=initial,
+        where=where[0],
     )
 
 
