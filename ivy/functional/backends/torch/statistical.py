@@ -40,6 +40,8 @@ def min(
             max_val = 2147483647
         elif x.dtype == torch.int64:
             max_val = 922337203685477580
+        elif x.dtype == torch.uint8:
+            max_val = 255
         else:
             max_val = float("inf")
         val = torch.ones_like(x) * max_val

@@ -14,7 +14,7 @@ from ivy.utils.einsum_parser import legalise_einsum_expr
 
 
 @with_unsupported_dtypes(
-    {"2.14.0 and below": ("complex", "bool", "unsigned")}, backend_version
+    {"2.14.0 and below": ("complex", "bool", "uint64")}, backend_version
 )
 def min(
     x: Union[tf.Tensor, tf.Variable],
@@ -36,6 +36,14 @@ def min(
             max_val = tf.constant(2147483647, dtype=x.dtype)
         elif x.dtype == tf.int64:
             max_val = tf.constant(9223372036854775807, dtype=x.dtype)
+        elif x.dtype == tf.uint8:
+            max_val = tf.constant(255, dtype=x.dtype)
+        elif x.dtype == tf.uint16:
+            max_val = tf.constant(65535, dtype=x.dtype)
+        elif x.dtype == tf.uint32:
+            max_val = tf.constant(4294967295, dtype=x.dtype)
+        elif x.dtype == tf.uint64:
+            max_val = tf.constant(18446744073709551615, dtype=x.dtype)
         else:
             max_val = tf.constant(float("inf"), dtype=x.dtype)
         x = tf.where(where, x, tf.ones_like(x) * max_val)
