@@ -46,6 +46,7 @@ def fftfreq(n, d=1.0, dtype=None, name=None):
     {"2.5.1 and below": ("complex64", "complex128")},
     "paddle",
 )
+@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16",)})
 @to_ivy_arrays_and_back
 def fftn(x, s=None, axes=None, norm="backward", name=None):
     """Compute the FFT of a N-Dimensional Arrau."""
