@@ -217,14 +217,15 @@ def einsum(
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)
 
+
 def nanquantile(
-        a, 
-        q, 
-        axis=None,
-        out=None,
-        overwrite_input=False,
-        method="linear",
-        keepdims=False,
-        interpolation=None,
-    ) -> JaxArray:
+    a,
+    q,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+) -> JaxArray:
     return jnp.nanquantile(a, q, axis, keepdims, interpolation, out)
