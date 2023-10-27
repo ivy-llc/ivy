@@ -163,12 +163,8 @@ def _interp_args(draw, mode=None, mode_list=None):
                 st.integers(min_value=1, max_value=3 * max(x[0].shape)),
             )
         )
-        recompute_scale_factor = False
+        recompute_scale_factor = None
         scale_factor = None
-    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
-        if not recompute_scale_factor:
-            recompute_scale_factor = True
-
     return (dtype, x, mode, size, align_corners, scale_factor, recompute_scale_factor)
 
 

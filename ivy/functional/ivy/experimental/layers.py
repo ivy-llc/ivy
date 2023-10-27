@@ -1516,15 +1516,10 @@ def _lanczos_kernel(radius, x):
 
 def _dim_scale_factor(input_size, output_size, align_corners, scales):
     if align_corners:
-        if output_size > 1:
-            dim_scale_factor = (input_size - 1) / (output_size - 1)
-        else:
-            dim_scale_factor = 0.0
+        dim_scale_factor = (input_size - 1) / (output_size - 1)
     else:
         dim_scale_factor = (
-            input_size / (input_size * scales)
-            if scales is not None
-            else input_size / output_size
+            1 / scales if scales is not None else input_size / output_size
         )
     return dim_scale_factor
 
@@ -1542,7 +1537,6 @@ def _mitchellcubic_kernel(x):
 def _compute_weight_mat(
     input_size,
     output_size,
-    scale,
     align_corners,
     kernel_fn,
     dim_scale_factor,
@@ -1623,8 +1617,8 @@ def _upsample_bicubic2d_default(
     height_scale = compute_scale(iH, oH, align_corners, scale_h)
     width_scale = compute_scale(iW, oW, align_corners, scale_w)
 
-    N_idx = ivy.reshape(ivy.arange(N), (N, 1, 1, 1))
-    C_idx = ivy.reshape(ivy.arange(C), (1, C, 1, 1))
+    N_idx = ivy.reshape(ivy.arange(N), (N, 1, 1, 1)).astype(ivy.int64)
+    C_idx = ivy.reshape(ivy.arange(C), (1, C, 1, 1)).astype(ivy.int64)
     out_y = ivy.reshape(ivy.arange(oH), ((1, 1, oH, 1)))
     out_x = ivy.reshape(ivy.arange(oW), ((1, 1, 1, oW)))
 
@@ -1740,7 +1734,7 @@ def generate_einsum_equation(dim):
 
 
 def _interpolate_with_kernel(
-    x, dims, size, scale, input_shape, align_corners, scale_factor, mode
+    x, dims, size, input_shape, align_corners, scale_factor, mode
 ):
     spatial_dims = [2 + i for i in range(dims)]
     equation = generate_einsum_equation(dims)
@@ -1757,7 +1751,7 @@ def _interpolate_with_kernel(
             scale_factor[i] if scale_factor is not None else None,
         )
         w = _compute_weight_mat(
-            m, n, scale[i], align_corners, kernel_func, dim_scale_factor
+            m, n, align_corners, kernel_func, dim_scale_factor
         ).astype(x.dtype)
         operands.append(w)
     return ivy.einsum(equation, x, *operands)
@@ -1922,9 +1916,9 @@ def interpolate(
         ret = x
     else:
         if recompute_scale_factor:
-            scale = [ivy.divide(size[i], input_shape[i + 2]) for i in range(dims)]
-        else:
-            scale = [1] * dims
+            scale_factor = [
+                ivy.divide(size[i], input_shape[i + 2]) for i in range(dims)
+            ]
         if mode in [
             "linear",
             "bilinear",
@@ -1938,7 +1932,6 @@ def interpolate(
                 x,
                 dims,
                 size,
-                scale,
                 input_shape,
                 align_corners,
                 scale_factor,
@@ -1951,7 +1944,7 @@ def interpolate(
                 x, dims, size, input_shape, mode == "nearest-exact"
             )
         elif mode == "area":
-            ret = area_interpolate(x, dims, size, scale)
+            ret = area_interpolate(x, dims, size, scale_factor)
         elif mode == "mitchellcubic":
             batch, channels, in_height, in_width = x.shape
             out_height, out_width = size
@@ -2065,6 +2058,7 @@ def _get_size(scale_factor, size, dims, x_shape):
         )
     else:
         size = (size,) * dims if isinstance(size, int) else tuple(size)
+        scale_factor = [ivy.divide(size[i], x_shape[i + 2]) for i in range(dims)]
     return size, scale_factor
 
 

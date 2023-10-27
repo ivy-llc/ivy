@@ -724,9 +724,8 @@ def interpolate(
     return ret
 
 
-interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-    (align_corners is None or not align_corners)
-    and mode
+interpolate.partial_mixed_handler = (
+    lambda *args, mode="linear", recompute_scale_factor=None, align_corners=None, **kwargs: mode  # noqa: E501
     not in [
         "area",
         "nearest",
@@ -736,7 +735,19 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
         "gaussian",
         "bicubic",
     ]
-    and (scale_factor is None or ivy.all(ivy.array(scale_factor) > 1))
+    and not align_corners
+    and (
+        recompute_scale_factor
+        or mode
+        not in [
+            "linear",
+            "bilinear",
+            "trilinear",
+            "tf_bicubic",
+            "lanczos3",
+            "lanczos5",
+        ]
+    )
 )
 
 
