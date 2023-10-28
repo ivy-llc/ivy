@@ -485,6 +485,10 @@ def put_along_axis_helper(draw):
     return input_dtype + ind_dtype + input_dtype, x[0], indices[0], values[0], axis
 
 
+# --- Main --- #
+# ------------ #
+
+
 def st_tuples(elements, *, min_size=0, max_size=None, unique_by=None, unique=False):
     return st.lists(
         elements,
@@ -1307,6 +1311,44 @@ def test_rot90(dtype_m_k_axes, test_flags, backend_fw, fn_name, on_device):
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.sequence_insert",
+    dtype_and_x=_st_sequence_dtypes_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="seq_shape"),
+    ),
+    indices_dtypes=_st_dtypes(dtypes=helpers.get_dtypes("valid"), shape=[1]),
+    insert_dtypes=helpers.get_dtypes("valid"),
+    indices_or_sections=_get_splits(allow_none=False, min_num_dims=1),
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+    test_with_copy=st.just(True),
+)
+def test_sequence_insert(
+    dtype_and_x,
+    indices_dtypes,
+    insert_dtypes,
+    indices_or_sections,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    indices_dtype = indices_dtypes[0]
+    insert_dtype = insert_dtypes[0]
+    helpers.test_function(
+        input_dtypes=[input_dtype, indices_dtype, insert_dtype],
+        on_device=on_device,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        indices=indices_or_sections,
+        values=insert_dtype(x[1][0]),
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.soft_thresholding",
     data=_soft_thresholding_data(),
 )
@@ -1567,35 +1609,4 @@ def test_vstack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_device):
         backend_to_test=backend_fw,
         fn_name=fn_name,
         arrays=arrays,
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.sequence_insert",
-    dtype_and_x=_st_sequence_dtypes_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(), key="seq_shape"),
-    ),
-    indices_dtypes=_st_dtypes(dtypes=helpers.get_dtypes("valid"), shape=[1]),
-    insert_dtypes=helpers.get_dtypes("valid"),
-    indices_or_sections=_get_splits(allow_none=False, min_num_dims=1),
-    test_gradients=st.just(False),
-    test_with_out=st.just(False),
-    test_with_copy=st.just(True),
-)
-def test_sequence_insert(
-    dtype_and_x, indices_dtypes, insert_dtypes, indices_or_sections, test_flags, backend_fw, fn_name, on_device
-):
-    input_dtype, x = dtype_and_x
-    indices_dtype = indices_dtypes[0]
-    insert_dtype = insert_dtypes[0]
-    helpers.test_function(
-        input_dtypes=[input_dtype, indices_dtype, insert_dtype],
-        on_device=on_device,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        x=x[0],
-        indices=indices_or_sections,
-        values=insert_dtype(x[1][0]),
     )
