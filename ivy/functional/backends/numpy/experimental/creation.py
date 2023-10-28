@@ -4,7 +4,6 @@ from typing import Optional, Tuple, Sequence, Union
 import numpy as np
 
 # local
-from ivy.functional.backends.numpy.device import _to_device
 import ivy
 
 # Array API Standard #
@@ -35,9 +34,7 @@ def tril_indices(
     *,
     device: str = None,
 ) -> Tuple[np.ndarray, ...]:
-    return tuple(
-        _to_device(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)), device=device)
-    )
+    return tuple(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)))
 
 
 def hann_window(
@@ -204,3 +201,11 @@ def mel_weight_matrix(
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = np.maximum(zero, np.minimum(lower_slopes, upper_slopes))
     return np.pad(mel_weights, [[1, 0], [0, 0]])
+
+
+def polyval(coeffs: np.ndarray, x: np.ndarray) -> np.ndarray:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    result = np.polyval(coeffs, x)
+    result = np.asarray(result, np.dtype(promoted_type))
+    return result

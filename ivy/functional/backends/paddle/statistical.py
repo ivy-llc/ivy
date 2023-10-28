@@ -13,7 +13,6 @@ from ivy.func_wrapper import (
 )
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.utils.einsum_parser import legalise_einsum_expr
-from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 
 # local
 from . import backend_version
@@ -329,6 +328,15 @@ def einsum(
     *operands: paddle.Tensor,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = _get_promoted_type_of_operands(operands)
     equation = legalise_einsum_expr(*[equation, *operands])
-    return paddle.einsum(equation, *operands).astype(dtype)
+
+    dtype_list = set(map(lambda x: x.dtype, operands))
+    dtype = dtype_list.pop()
+    if len(dtype_list) > 0:
+        for d in dtype_list:
+            dtype = ivy.promote_types(dtype, d)
+        operands = list(
+            map(lambda x: x.cast(dtype) if x.dtype != dtype else x, operands)
+        )
+
+    return paddle.einsum(equation, *operands)

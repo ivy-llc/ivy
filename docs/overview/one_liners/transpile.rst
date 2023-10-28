@@ -154,7 +154,7 @@ another, at the moment we support ``torch.nn.Module`` when ``to="torch"``,
   # Build a classifier using the transpiled encoder
   class Classifier(hk.Module):
       def __init__(self, num_classes=1000):
-          super(Classifier, self).__init__()
+          super().__init__()
               self.encoder = mlp_encoder()
               self.fc = hk.Linear(output_size=num_classes, with_bias=True)
 

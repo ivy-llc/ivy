@@ -23,7 +23,8 @@ from ..globals import mod_backend
 def array_bools(
     draw, *, size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size")
 ):
-    """Draws a list of booleans with a given size.
+    """
+    Draws a list of booleans with a given size.
 
     Parameters
     ----------
@@ -73,7 +74,8 @@ def array_bools(
 
 
 def list_of_size(*, x, size):
-    """Return a list of the given length with elements drawn randomly from x.
+    """
+    Return a list of the given length with elements drawn randomly from x.
 
     Parameters
     ----------
@@ -155,7 +157,8 @@ def lists(
     max_size=None,
     size_bounds=None,
 ):
-    """Draws a list with a random bounded size from the data-set x.
+    """
+    Draws a list with a random bounded size from the data-set x.
 
     Parameters
     ----------
@@ -310,8 +313,8 @@ def dtype_and_values(
     array_api_dtypes=False,
     shape_key="shape",
 ):
-    """Draws a list of arrays with elements from the given corresponding data
-    types.
+    """
+    Draws a list of arrays with elements from the given corresponding data types.
 
     Parameters
     ----------
@@ -574,8 +577,9 @@ def dtype_values_axis(
     force_tuple_axis=False,
     ret_shape=False,
 ):
-    """Draws a list of arrays with elements from the given data type, and a
-    random axis of the arrays.
+    """
+    Draws a list of arrays with elements from the given data type, and a random axis of
+    the arrays.
 
     Parameters
     ----------
@@ -813,9 +817,10 @@ def array_indices_axis(
     indices_same_dims=False,
     valid_bounds=True,
 ):
-    """Generate two arrays x & indices, the values in the indices array are
-    indices of the array x. Draws an integers randomly from the minimum and
-    maximum number of positional arguments a given function can take.
+    """
+    Generate two arrays x & indices, the values in the indices array are indices of the
+    array x. Draws an integers randomly from the minimum and maximum number of
+    positional arguments a given function can take.
 
     Parameters
     ----------
@@ -1041,9 +1046,10 @@ def array_indices_put_along_axis(
     values=None,
     values_dtypes=get_dtypes("valid"),
 ):
-    """Generate two arrays x & indices, the values in the indices array are
-    indices of the array x. Draws an integers randomly from the minimum and
-    maximum number of positional arguments a given function can take.
+    """
+    Generate two arrays x & indices, the values in the indices array are indices of the
+    array x. Draws an integers randomly from the minimum and maximum number of
+    positional arguments a given function can take.
 
     Parameters
     ----------
@@ -1232,7 +1238,8 @@ def arrays_and_axes(
     return_dtype=False,
     force_int_axis=False,
 ):
-    """Generate a list of arrays and axes.
+    """
+    Generate a list of arrays and axes.
 
     Parameters
     ----------
@@ -1401,8 +1408,8 @@ def array_values(
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
 ):
-    """Draws a list (of lists) of a given shape containing values of a given
-    data type.
+    """
+    Draws a list (of lists) of a given shape containing values of a given data type.
 
     Parameters
     ----------
@@ -1783,22 +1790,18 @@ def arrays_for_pooling(
         )
     if array_dim == 3:
         kernel = draw(st.tuples(st.integers(1, in_shape[1])))
-    new_kernel = kernel
     if return_dilation:
-        new_kernel = []
         dilations = []
         for i in range(len(kernel)):
             if kernel[i] > 1:
                 max_dilation = (in_shape[i + 1] - kernel[i]) // (kernel[i] - 1) + 1
                 dilations.append(draw(st.integers(1, max_dilation)))
-                new_kernel.append(kernel[i] + (kernel[i] - 1) * (dilations[i] - 1))
             else:
                 dilations.append(1)
-                new_kernel.append(kernel[i])
     if explicit_or_str_padding or only_explicit_padding:
         padding = []
         for i in range(array_dim - 2):
-            max_pad = new_kernel[i] // 2
+            max_pad = kernel[i] // 2
             padding.append(
                 draw(
                     st.tuples(
@@ -2168,10 +2171,11 @@ def create_concatenable_arrays_dtypes(
     dtypes,
     common_shape=None,
 ):
-    """Draws a random number of arrays with concatenable or stackable
-    dimensions. Arrays have same number of dimensions, but their shape can
-    differ along a specified dimension (concat_dim). If concat_dim is None,
-    arrays have the same shape. Dtypes of arrays can differ.
+    """
+    Draws a random number of arrays with concatenable or stackable dimensions. Arrays
+    have same number of dimensions, but their shape can differ along a specified
+    dimension (concat_dim). If concat_dim is None, arrays have the same shape. Dtypes of
+    arrays can differ.
 
     Parameters
     ----------
@@ -2234,9 +2238,10 @@ def create_concatenable_arrays_dtypes(
 # helpers for tests (core and frontend) related to solve function
 @st.composite
 def get_first_solve_batch_matrix(draw, choose_adjoint=False):
-    """Generate non-singular left hand side of equation system possibly with a
-    single batch dimension at the beginning. Use get_second_solve_batch_matrix
-    to get the right hand side.
+    """
+    Generate non-singular left hand side of equation system possibly with a single batch
+    dimension at the beginning. Use get_second_solve_batch_matrix to get the right hand
+    side.
 
     Parameters
     ----------
@@ -2293,9 +2298,10 @@ def get_first_solve_batch_matrix(draw, choose_adjoint=False):
 
 @st.composite
 def get_second_solve_batch_matrix(draw, allow_simplified=True, choose_side=False):
-    """Generate right hand side of equation system. Possible with a batch
-    dimension and possibly with several columns of values. Use
-    get_first_solve_batch_matrix to generate the left hand side.
+    """
+    Generate right hand side of equation system. Possible with a batch dimension and
+    possibly with several columns of values. Use get_first_solve_batch_matrix to
+    generate the left hand side.
 
     Parameters
     ----------

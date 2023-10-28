@@ -1,6 +1,9 @@
 name: array-api-determine-test-coverage
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "30 20 * * 6"
+
 permissions:
   actions: read
 jobs:
@@ -19,7 +22,7 @@ jobs:
         run: |
           pip install pydriller tqdm
           cd ivy
-          python run_tests_CLI/array_api_det_coverage.py
+          python scripts/determine_tests/array_api_det_coverage.py
           cd ..
           mkdir tests
           cp ivy/tests.pbz2 tests/
@@ -32,6 +35,6 @@ jobs:
           source-directory: tests/
           destination-github-username: 'unifyai'
           destination-repository-name: 'Mapping'
-          user-email: rashul.chutani@gmail.com
+          user-email: ivy.branch@lets-unify.ai
           commit-message: Update Array API Tests Mapping
           target-branch: main

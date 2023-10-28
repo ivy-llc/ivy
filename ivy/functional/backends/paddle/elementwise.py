@@ -13,8 +13,10 @@ from . import backend_version
 
 
 def _elementwise_helper(x1, x2):
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = paddle_backend.broadcast_arrays(x1, x2)
+    if (not hasattr(x1, "dtype") or not hasattr(x2, "dtype")) or (x1.dtype != x2.dtype):
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if x1.shape != x2.shape:
+        x1, x2 = paddle_backend.broadcast_arrays(x1, x2)
     return x1, x2, x1.dtype
 
 
@@ -269,7 +271,8 @@ def sign(
 def _determine_sqrt_dtype_cast(
     dtype: Type[paddle.Tensor],
 ) -> Tuple[Optional[str], Optional[str]]:
-    """Determine the appropriate casting dtype for sqrt operations.
+    """
+    Determine the appropriate casting dtype for sqrt operations.
 
     Returns:
         (intermediate_dtype, output_dtype)

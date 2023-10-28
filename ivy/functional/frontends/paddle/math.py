@@ -51,6 +51,12 @@ def addmm(input, x, y, beta=1.0, alpha=1.0, name=None):
     return value
 
 
+@with_supported_dtypes({"2.5.0 and below": "bool"}, "paddle")
+@to_ivy_arrays_and_back
+def all(x, axis, keepdim=False, name=None):
+    return ivy.all(x, axis=axis, keepdims=keepdim)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -120,6 +126,12 @@ def atan2(x, y, name=None):
 @to_ivy_arrays_and_back
 def atanh(x, name=None):
     return ivy.atanh(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def broadcast_shape(x_shape, y_shape):
+    return ivy.broadcast_shapes(x_shape, y_shape)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
@@ -311,6 +323,12 @@ def inner(x, y, name=None):
     elif x.shape == (1,) and y.shape == (1,):
         result = result.reshape((1,))
     return result
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def inverse(x, name=None):
+    return ivy.inv(x)
 
 
 @with_supported_dtypes(

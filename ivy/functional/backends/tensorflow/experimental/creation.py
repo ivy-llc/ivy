@@ -158,3 +158,14 @@ def mel_weight_matrix(
         lower_edge_hertz=lower_edge_hertz,
         upper_edge_hertz=upper_edge_hertz,
     )
+
+
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("bool", "bfloat16", "float16", "complex")}, backend_version
+)
+def polyval(coeffs: tf.Tensor, x: tf.Tensor):
+    result = tf.experimental.numpy.polyval(
+        coeffs,
+        x,
+    )
+    return result

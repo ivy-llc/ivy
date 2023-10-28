@@ -28,9 +28,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.<func_name>. This method
-        simply wraps the function, and so the docstring for ivy.histogram also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.<func_name>. This method simply wraps
+        the function, and so the docstring for ivy.histogram also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -134,9 +135,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.<func_name>. This
-        method simply wraps the function, and so the docstring for
-        ivy.histogram also applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.<func_name>. This method simply
+        wraps the function, and so the docstring for ivy.histogram also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -233,9 +235,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.median. This method
-        simply wraps the function, and so the docstring for ivy.median also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.median. This method simply wraps the
+        function, and so the docstring for ivy.median also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -285,9 +288,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         keepdims: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.median. This method
-        simply wraps the function, and so the docstring for ivy.median also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.median. This method simply wraps
+        the function, and so the docstring for ivy.median also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -336,9 +340,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.nanmean. This method
-        simply wraps the function, and so the docstring for ivy.nanmean also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.nanmean. This method simply wraps the
+        function, and so the docstring for ivy.nanmean also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -396,9 +401,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.nanmean. This method
-        simply wraps the function, and so the docstring for ivy.nanmean also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.nanmean. This method simply wraps
+        the function, and so the docstring for ivy.nanmean also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -453,9 +459,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         where: Optional[Union[ivy.Array, ivy.Container]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.nanmin. This method
-        simply wraps the function, and so the docstring for ivy.nanmin also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.nanmin. This method simply wraps the
+        function, and so the docstring for ivy.nanmin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -514,9 +521,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         initial: Optional[Union[int, float, complex, ivy.Container]] = None,
         where: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.nanmin. This method
-        simply wraps the function, and so the docstring for ivy.nanmin also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.nanmin. This method simply wraps
+        the function, and so the docstring for ivy.nanmin also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -576,9 +584,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         initial: Optional[Union[int, float, complex, ivy.Container]] = 1,
         where: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.nanprod. This method
-        simply wraps the function, and so the docstring for ivy.nanprod also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.nanprod. This method simply wraps the
+        function, and so the docstring for ivy.nanprod also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -642,9 +651,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         initial: Optional[Union[int, float, complex, ivy.Container]] = None,
         where: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.nanprod. This method
-        simply wraps the function, and so the docstring for ivy.nanprod also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.nanprod. This method simply wraps
+        the function, and so the docstring for ivy.nanprod also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -707,9 +717,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.quantile. This method
-        simply wraps the function, and so the docstring for ivy.quantile also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.quantile. This method simply wraps
+        the function, and so the docstring for ivy.quantile also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -831,9 +842,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.quantile. This method
-        simply wraps the function, and so the docstring for ivy.quantile also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.quantile. This method simply wraps
+        the function, and so the docstring for ivy.quantile also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -954,9 +966,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.corrcoef. This method
-        simply wraps the function, and so the docstring for ivy.corrcoef also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.corrcoef. This method simply wraps
+        the function, and so the docstring for ivy.corrcoef also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1006,9 +1019,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         rowvar: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.corrcoef. This method
-        simply wraps the function, and so the docstring for ivy.corrcoef also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.corrcoef. This method simply wraps
+        the function, and so the docstring for ivy.corrcoef also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1054,9 +1068,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.median. This method
-        simply wraps the function, and so the docstring for ivy.median also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.median. This method simply wraps the
+        function, and so the docstring for ivy.median also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1109,9 +1124,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         overwrite_input: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.nanmedian. This method
-        simply wraps the function, and so the docstring for ivy.nanmedian also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.nanmedian. This method simply wraps
+        the function, and so the docstring for ivy.nanmedian also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1177,9 +1193,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.bincount. This method
-        simply wraps the function, and so the docstring for ivy.bincount also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.bincount. This method simply wraps
+        the function, and so the docstring for ivy.bincount also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1226,9 +1243,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         minlength: Union[int, ivy.Container] = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Array instance method variant of ivy.bincount. This method
-        simply wraps the function, and so the docstring for ivy.bincount also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.bincount. This method simply wraps the
+        function, and so the docstring for ivy.bincount also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1266,9 +1284,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.igamma. This method
-        simply wraps the function, and so the docstring for ivy.igamma also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.igamma. This method simply wraps the
+        function, and so the docstring for ivy.igamma also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1310,9 +1329,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.igamma. This method
-        simply wraps the function, and so the docstring for ivy.igamma also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.igamma. This method simply wraps
+        the function, and so the docstring for ivy.igamma also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1355,9 +1375,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.cov. This method simply
-        wraps the function, and so the docstring for ivy.cov also applies to
-        this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.cov. This method simply wraps the
+        function, and so the docstring for ivy.cov also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1471,9 +1492,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.cov. This method simply
-        wraps the function, and so the docstring for ivy.cov also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.cov. This method simply wraps the
+        function, and so the docstring for ivy.cov also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1572,9 +1594,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.cummax. This method
-        simply wraps the function, and so the docstring for ivy.cummax also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.cummax. This method simply wraps
+        the function, and so the docstring for ivy.cummax also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1661,9 +1684,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.cummin. This method
-        simply wraps the function, and so the docstring for ivy.cummin also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.cummin. This method simply wraps
+        the function, and so the docstring for ivy.cummin also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1748,9 +1772,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.cummax. This method
-        simply wraps the function, and so the docstring for ivy.cummax also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.cummax. This method simply wraps the
+        function, and so the docstring for ivy.cummax also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1837,9 +1862,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.cummin. This method
-        simply wraps the function, and so the docstring for ivy.cummin also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.cummin. This method simply wraps the
+        function, and so the docstring for ivy.cummin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
