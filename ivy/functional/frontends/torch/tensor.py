@@ -2163,6 +2163,13 @@ class Tensor:
     def rad2deg(self, *, out=None):
         return torch_frontend.rad2deg(self, out=out)
 
+    @with_supported_dtypes(
+        {"2.1.0 and below": "valid"},
+        "torch",
+    )
+    def corrcoef(self):
+        return torch_frontend.corrcoef(self)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
