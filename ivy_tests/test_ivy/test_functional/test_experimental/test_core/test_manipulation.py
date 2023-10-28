@@ -1,8 +1,4 @@
 # global
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_sequences import (
-    _st_dtypes,
-    _st_sequence_dtypes_and_values,
-)
 from hypothesis import strategies as st, assume
 import hypothesis.extra.numpy as nph
 import numpy as np
@@ -1317,18 +1313,19 @@ def test_rot90(dtype_m_k_axes, test_flags, backend_fw, fn_name, on_device):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.sequence_insert",
-    dtype_and_x=_st_sequence_dtypes_and_values(
+    dtype_and_x=create_concatenable_arrays_dtypes(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(), key="seq_shape"),
+        shape=helpers.get_shape(),
     ),
-    indices_dtypes=_st_dtypes(dtypes=helpers.get_dtypes("valid"), shape=[1]),
+    indices_dtypes=helpers.get_dtypes("valid"),
     insert_dtypes=helpers.get_dtypes("valid"),
-    indices_or_sections=_get_splits(allow_none=False, min_num_dims=1),
+    indices_or_sections=helpers.get_splits(allow_none=False, min_num_dims=1),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
     test_with_copy=st.just(True),
 )
 def test_sequence_insert(
+    *,
     dtype_and_x,
     indices_dtypes,
     insert_dtypes,
