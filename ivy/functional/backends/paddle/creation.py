@@ -207,7 +207,11 @@ def to_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
-    return paddle.utils.dlpack.from_dlpack(x)
+    if hasattr(x, "__dlpack__"):
+        capsule = x.__dlpack__()
+    else:
+        capsule = x
+    return paddle.utils.dlpack.from_dlpack(capsule)
 
 
 def full(
@@ -272,7 +276,10 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
         sos_shape = stop_shape
         if num == 1:
             return (
-                paddle_backend.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start
+                paddle_backend.ones(
+                    stop_shape[:axis] + [1] + stop_shape[axis:], dtype=dtype
+                )
+                * start
             )
         stop = stop.reshape((-1,))
         linspace_method = (

@@ -704,23 +704,28 @@ def interpolate(
 ):
     dims = len(x.shape) - 2
     size, _ = _get_size(scale_factor, size, dims, x.shape)
-    mode = (
-        "nearest"
-        if mode == "nearest-exact"
-        else "bicubic" if mode == "tf_bicubic" else mode
-    )
+    if all(a == b for a, b in zip(size, x.shape[2:])):
+        ret = x
+    else:
+        mode = (
+            "nearest"
+            if mode == "nearest-exact"
+            else "bicubic" if mode == "tf_bicubic" else mode
+        )
 
-    size = [x.shape[0], *size, x.shape[1]]
-    x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
-    return jnp.transpose(
-        jax.image.resize(x, shape=size, method=mode, antialias=antialias),
-        (0, dims + 1, *range(1, dims + 1)),
-    )
+        size = [x.shape[0], *size, x.shape[1]]
+        x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
+        ret = jnp.transpose(
+            jax.image.resize(x, shape=size, method=mode, antialias=antialias),
+            (0, dims + 1, *range(1, dims + 1)),
+        )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-    (align_corners is None or not align_corners)
-    and mode
+interpolate.partial_mixed_handler = (
+    lambda *args, mode="linear", recompute_scale_factor=None, align_corners=None, **kwargs: mode  # noqa: E501
     not in [
         "area",
         "nearest",
@@ -730,7 +735,19 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
         "gaussian",
         "bicubic",
     ]
-    and (scale_factor is None or ivy.all(ivy.array(scale_factor) > 1))
+    and not align_corners
+    and (
+        recompute_scale_factor
+        or mode
+        not in [
+            "linear",
+            "bilinear",
+            "trilinear",
+            "tf_bicubic",
+            "lanczos3",
+            "lanczos5",
+        ]
+    )
 )
 
 

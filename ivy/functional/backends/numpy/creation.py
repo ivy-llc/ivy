@@ -111,8 +111,20 @@ def to_dlpack(x, /, *, out: Optional[np.ndarray] = None):
     return x.__dlpack__()
 
 
+class _dlpack_wrapper:
+    def __init__(self, capsule) -> None:
+        self.capsule = capsule
+
+    def dlpack(self):
+        return self.capsule
+
+
 def from_dlpack(x, /, *, out: Optional[np.ndarray] = None):
-    return np.from_dlpack(x)
+    if not hasattr(x, "__dlpack__"):
+        capsule = _dlpack_wrapper(x)
+    else:
+        capsule = x
+    return np.from_dlpack(capsule)
 
 
 def full(

@@ -2703,6 +2703,7 @@ def test_numpy_instance_ilshift__(
         init_all_as_kwargs_np={
             "object": x[0],
         },
+        method_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         method_all_as_kwargs_np={
             "value": x[1],

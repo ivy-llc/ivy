@@ -238,7 +238,7 @@ def test_torch_grid_sample(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.interpolate",
     dtype_and_input_and_other=_interp_args(
-        mode_list=["linear", "bilinear", "trilinear", "nearest", "area"],
+        mode_list="torch",
     ),
     number_positional_args=st.just(2),
 )
