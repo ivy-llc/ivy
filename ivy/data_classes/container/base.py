@@ -151,19 +151,19 @@ class ContainerBase(dict, abc.ABC):
                 "dict_in and **kwargs cannot both be specified for ivy.Container "
                 "constructor, please specify one or the other, not both."
             )
-        self._config_in = dict(
-            print_limit=print_limit,
-            print_indent=print_indent,
-            key_length_limit=key_length_limit,
-            print_line_spacing=print_line_spacing,
-            ivyh=ivyh,
-            default_key_color=default_key_color,
-            keyword_color_dict=keyword_color_dict,
-            rebuild_child_containers=rebuild_child_containers,
-            build_callable=build_callable,
-            types_to_iteratively_nest=types_to_iteratively_nest,
-            alphabetical_keys=alphabetical_keys,
-        )
+        self._config_in = {
+            "print_limit": print_limit,
+            "print_indent": print_indent,
+            "key_length_limit": key_length_limit,
+            "print_line_spacing": print_line_spacing,
+            "ivyh": ivyh,
+            "default_key_color": default_key_color,
+            "keyword_color_dict": keyword_color_dict,
+            "rebuild_child_containers": rebuild_child_containers,
+            "build_callable": build_callable,
+            "types_to_iteratively_nest": types_to_iteratively_nest,
+            "alphabetical_keys": alphabetical_keys,
+        }
         self._config = {}
         self.cont_inplace_update(dict_in, **self._config_in)
 
@@ -4101,7 +4101,7 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = value[query]
             else:
                 # noinspection PyBroadException
-                if isinstance(value, list) or isinstance(value, tuple):
+                if isinstance(value, (list, tuple)):
                     if len(value) == 0:
                         return_dict[key] = value
                     else:

@@ -607,7 +607,7 @@ def __find_cummax(
     if (
         isinstance(x.tolist()[0], list)
         and len(x[0].shape) >= 1
-        and (isinstance(x[0], paddle.Tensor) or isinstance(x[0], ivy.Array))
+        and (isinstance(x[0], (paddle.Tensor, ivy.Array)))
     ):
         if axis >= 1:
             if not isinstance(x, list):
