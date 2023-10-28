@@ -65,7 +65,7 @@ def cleanup_and_fetch_binaries(clean=True):
         binaries_dict = json.load(open(binaries_path))
         available_configs = json.load(open(available_configs_path))
         binaries_paths = _get_paths_from_binaries(binaries_dict, folder_path)
-        binaries_exts = set([path.split(".")[-1] for path in binaries_paths])
+        binaries_exts = {path.split(".")[-1] for path in binaries_paths}
 
         # clean up existing binaries
         if clean:

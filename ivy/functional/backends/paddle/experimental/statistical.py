@@ -94,7 +94,7 @@ def _validate_quantile(q):
             if not (0.0 <= q[i] <= 1.0):
                 return False
     else:
-        if not (paddle.all(0 <= q) and paddle.all(q <= 1)):
+        if not (paddle.all(q >= 0) and paddle.all(q <= 1)):
             return False
     return True
 

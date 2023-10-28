@@ -1003,7 +1003,7 @@ def stft(
             windowed_frame = jnp.asarray(windowed_frame, dtype=dtype)
 
             fft_frame = jnp.fft.fft(windowed_frame, axis=-1)
-            slit = int((fft_length // 2 + 1))
+            slit = int(fft_length // 2 + 1)
             stft_result.append(fft_frame[..., 0:slit])
 
         stft = jnp.stack(stft_result, axis=0)

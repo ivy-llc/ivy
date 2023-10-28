@@ -848,6 +848,7 @@ class ContainerBase(dict, abc.ABC):
         assert_and_assign
             if true, then the container being compared with is updated with the value
             in the container being compared to given that the structures are congruent
+
         Returns
         -------
         Boolean
@@ -1009,6 +1010,7 @@ class ContainerBase(dict, abc.ABC):
         assert_and_assign
             if true, then the container being compared with is updated with the value in
             the container being compared to given that the structures are congruent
+
         Returns
         -------
             Boolean
@@ -2052,9 +2054,9 @@ class ContainerBase(dict, abc.ABC):
                 value_shape = value_as_np.shape
                 this_batch_size = value_shape[0]
                 max_bs = (
-                    starting_index + this_batch_size
-                    if not max_batch_size
-                    else max_batch_size
+                    max_batch_size
+                    if max_batch_size
+                    else starting_index + this_batch_size
                 )
                 if key not in h5_obj.keys():
                     dataset_shape = [max_bs] + list(value_shape[1:])

@@ -27,6 +27,7 @@ def fn_name_from_version_specific_fn_name(name, version):
         the version is inferred by importing the framework in the case of frontend
         version support and defaults to the highest available version in case of import
         failure
+
     Returns
     -------
         the name of the original function which will then point to the version specific

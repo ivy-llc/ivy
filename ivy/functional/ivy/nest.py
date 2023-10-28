@@ -1417,6 +1417,7 @@ def nested_multi_map(
         The configuration for the nests. Default is the same as nest0.
     to_ivy
         convert the output to ivy_arrays. Default is ``True``
+
     Returns
     -------
         nest containing the result of the function. The structure of the output is the

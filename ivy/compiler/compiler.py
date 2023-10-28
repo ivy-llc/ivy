@@ -90,7 +90,6 @@ def trace_graph(
     >>> print(time.time() - start)
     0.0001785755157470703
     """
-
     from ._compiler import trace_graph as _trace_graph
 
     return _trace_graph(
@@ -153,7 +152,6 @@ def transpile(
     -------
     Either a transpiled Graph or a non-initialized LazyGraph.
     """
-
     from ._compiler import transpile as _transpile
 
     return _transpile(

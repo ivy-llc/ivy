@@ -4389,6 +4389,7 @@ def is_ivy_nested_array(x: Any, /) -> bool:
     ----------
     x
         The input to check
+
     Returns
     -------
     ret

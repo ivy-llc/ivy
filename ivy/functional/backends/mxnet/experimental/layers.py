@@ -219,7 +219,7 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
-        "tf_bicubic",
+        "bicubic_tensorflow",
         "bicubic",
         "mitchellcubic",
         "lanczos3",

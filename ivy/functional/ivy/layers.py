@@ -919,7 +919,7 @@ def multi_head_attention(
 
     # get attention scores
     attn_scores = ivy.matmul(q, ivy.swapaxes(k, 1, 2))
-    scale = 1 / (head_dim**0.5) if not scale else scale
+    scale = scale if scale else 1 / (head_dim**0.5)
     attn_scores *= scale
 
     # mask the attention scores
