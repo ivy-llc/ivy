@@ -11,3 +11,7 @@ def vmap(func, in_dims=0, out_dims=0, randomness="error", *, chunk_size=None):
     return to_ivy_arrays_and_back(
         outputs_to_ivy_arrays(ivy.vmap(fun, in_axes=in_dims, out_axes=out_dims))
     )
+
+
+def device(type, index=0):
+    return ivy.as_ivy_dev(type)
