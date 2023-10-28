@@ -4642,44 +4642,6 @@ def test_paddle_tensor_expand(
     )
 
 
-# strided_slice
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="strided_slice",
-    input_axes_starts_ends=_get_x_axes_starts_ends(),
-)
-def test_paddle_tensor_stided_slice(
-    input_axes_starts_ends,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-    backend_fw,
-):
-    input_dtypes, x, axes, starts, ends, strides = input_axes_starts_ends
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={
-            "axes": axes,
-            "starts": starts,
-            "ends": ends,
-            "strides": strides,
-        },
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        on_device=on_device,
-    )
-
-
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -4718,6 +4680,44 @@ def test_paddle_tensor_heaviside(
         method_flags=method_flags,
         frontend_method_data=frontend_method_data,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# strided_slice
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="strided_slice",
+    input_axes_starts_ends=_get_x_axes_starts_ends(),
+)
+def test_paddle_tensor_stided_slice(
+    input_axes_starts_ends,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, axes, starts, ends, strides = input_axes_starts_ends
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axes": axes,
+            "starts": starts,
+            "ends": ends,
+            "strides": strides,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         on_device=on_device,
     )
 
