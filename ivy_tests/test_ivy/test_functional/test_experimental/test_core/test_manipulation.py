@@ -12,8 +12,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_dtypes import (
     _st_dtypes,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_sequences import _st_sequence_dtypes_and_values
-
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_sequences import (
+    _st_sequence_dtypes_and_values,
+)
 
 
 # --- Helpers --- #
