@@ -485,89 +485,6 @@ def put_along_axis_helper(draw):
     return input_dtype + ind_dtype + input_dtype, x[0], indices[0], values[0], axis
 
 
-# --- Main --- #
-# ------------ #
-
-
-def sequence_insert_test(self):
-    """Tests the `sequence_insert` function."""
-
-    # Test inserting values into a 1D array.
-    arr = ivy.array([1, 2, 3, 4])
-    indices = ivy.array([1, 3])
-    values = ivy.array([5, 6])
-
-    expected = ivy.array([1, 5, 2, 6, 4])
-
-    actual = ivy.sequence_insert(arr, indices, values)
-
-    self.ivy.test_util.array_equal(expected, actual)
-
-    # Test inserting values into a 2D array.
-    arr = ivy.array([[1, 2], [3, 4]])
-    indices = ivy.array([1])
-    values = ivy.array([[5, 6]])
-
-    expected = ivy.array([[1, 2], [5, 6], [3, 4]])
-
-    actual = ivy.sequence_insert(arr, indices, values)
-
-    self.ivy.test_util.array_equal(expected, actual)
-
-    # Test inserting values with a negative axis.
-    arr = ivy.array([[1, 2], [3, 4]])
-    indices = ivy.array([1])
-    values = ivy.array([[5, 6]])
-
-    expected = ivy.array([[1, 2], [5, 6], [3, 4]])
-
-    actual = ivy.sequence_insert(arr, indices, values, axis=-1)
-
-    self.ivy.test_util.array_equal(expected, actual)
-
-    # Test inserting values with the `out` argument.
-    arr = ivy.array([[1, 2], [3, 4]])
-    indices = ivy.array([1])
-    values = ivy.array([[5, 6]])
-    out = ivy.zeros((3, 2))
-
-    expected = ivy.array([[1, 2], [5, 6], [3, 4]])
-
-    ivy.sequence_insert(arr, indices, values, out=out)
-
-    self.ivy.test_util.array_equal(expected, out)
-
-    # Test inserting values with NumPy arrays.
-    arr = ivy.array(np.array([1, 2, 3, 4]))
-    indices = ivy.array(np.array([1, 3]))
-    values = ivy.array(np.array([5, 6]))
-
-    expected = ivy.array(np.array([1, 5, 2, 6, 4]))
-
-    actual = ivy.sequence_insert(arr, indices, values)
-
-    self.ivy.test_util.array_equal(expected, actual)
-
-    # Test inserting values with empty values.
-    arr = ivy.array([1, 2, 3, 4])
-    indices = ivy.array([1, 3])
-    values = ivy.array([])
-
-    expected = ivy.array([1, 2, 3, 4])
-
-    actual = ivy.sequence_insert(arr, indices, values)
-
-    self.ivy.test_util.array_equal(expected, actual)
-
-    # Test inserting values with invalid indices.
-    arr = ivy.array([1, 2, 3, 4])
-    indices = ivy.array([5])
-    values = ivy.array([5, 6])
-
-    with self.assertRaises(ValueError):
-        ivy.sequence_insert(arr, indices, values)
-
-
 def st_tuples(elements, *, min_size=0, max_size=None, unique_by=None, unique=False):
     return st.lists(
         elements,
@@ -1650,4 +1567,35 @@ def test_vstack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_device):
         backend_to_test=backend_fw,
         fn_name=fn_name,
         arrays=arrays,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.sequence_insert",
+    dtype_and_x=_st_sequence_dtypes_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="seq_shape"),
+    ),
+    indices_dtypes=_st_dtypes(dtypes=helpers.get_dtypes("valid"), shape=[1]),
+    insert_dtypes=helpers.get_dtypes("valid"),
+    indices_or_sections=_get_splits(allow_none=False, min_num_dims=1),
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+    test_with_copy=st.just(True),
+)
+def test_sequence_insert(
+    dtype_and_x, indices_dtypes, insert_dtypes, indices_or_sections, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x = dtype_and_x
+    indices_dtype = indices_dtypes[0]
+    insert_dtype = insert_dtypes[0]
+    helpers.test_function(
+        input_dtypes=[input_dtype, indices_dtype, insert_dtype],
+        on_device=on_device,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        indices=indices_or_sections,
+        values=insert_dtype(x[1][0]),
     )
