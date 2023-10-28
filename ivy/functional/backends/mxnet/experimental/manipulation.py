@@ -222,8 +222,9 @@ def sequence_insert(
     values = mx.nd.asarray(values, dtype=data.dtype)
     indices = indices.ravel()
     values = values.ravel()
-    new_tensor = mx.nd.concatenate([data[: indices[0]], values, data[indices[-1:] + 1]], axis=axis)
+    new_tensor = mx.nd.concatenate(
+        [data[: indices[0]], values, data[indices[-1:] + 1]], axis=axis
+    )
     if out is not None:
         new_tensor = new_tensor.at[out].set(new_tensor)
     return new_tensor
-    
