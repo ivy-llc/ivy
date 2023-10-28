@@ -9,9 +9,12 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test, create_concatenable_arrays_dtypes
 from ivy.functional.ivy.experimental.manipulation import _check_bounds
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_dtypes import _st_dtypes
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_sequences import _st_sequence_dtypes_and_values
-
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_dtypes import (
+    _st_dtypes,
+)
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_sequences import (
+    _st_sequence_dtypes_and_values,
+)
 
 
 # --- Helpers --- #
@@ -1326,8 +1329,6 @@ def test_rot90(dtype_m_k_axes, test_flags, backend_fw, fn_name, on_device):
     test_with_out=st.just(False),
     test_with_copy=st.just(True),
 )
-
-
 @handle_test(
     fn_tree="functional.ivy.experimental.sequence_insert",
     dtype_and_x=_st_sequence_dtypes_and_values(
@@ -1342,7 +1343,14 @@ def test_rot90(dtype_m_k_axes, test_flags, backend_fw, fn_name, on_device):
     test_with_copy=st.just(True),
 )
 def test_sequence_insert(
-    dtype_and_x, indices_dtypes, insert_dtypes, indices_or_sections, test_flags, backend_fw, fn_name, on_device
+    dtype_and_x,
+    indices_dtypes,
+    insert_dtypes,
+    indices_or_sections,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     indices_dtype = indices_dtypes[0]
@@ -1357,7 +1365,6 @@ def test_sequence_insert(
         indices=indices_or_sections,
         values=insert_dtype(x[1][0]),
     )
-
 
 
 @handle_test(
