@@ -207,7 +207,11 @@ def to_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
-    return paddle.utils.dlpack.from_dlpack(x)
+    if hasattr(x, "__dlpack__"):
+        capsule = x.__dlpack__()
+    else:
+        capsule = x
+    return paddle.utils.dlpack.from_dlpack(capsule)
 
 
 def full(

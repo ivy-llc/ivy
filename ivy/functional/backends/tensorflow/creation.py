@@ -190,7 +190,11 @@ def from_dlpack(
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(x, tf.Variable):
         x = x.read_value()
-    return tf.experimental.dlpack.from_dlpack(x)
+    if hasattr(x, "__dlpack__"):
+        capsule = x.__dlpack__()
+    else:
+        capsule = x
+    return tf.experimental.dlpack.from_dlpack(capsule)
 
 
 def full(
