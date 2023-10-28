@@ -9,9 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test, create_concatenable_arrays_dtypes
 from ivy.functional.ivy.experimental.manipulation import _check_bounds
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_sequences import (
-    _st_sequence_dtypes_and_values,
-)
+
 
 
 # --- Helpers --- #
@@ -1625,4 +1623,36 @@ def test_vstack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_device):
         backend_to_test=backend_fw,
         fn_name=fn_name,
         arrays=arrays,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.sequence_insert",
+    dtype_x_indices_axis=create_concatenable_arrays_dtypes(
+        available_dtypes=ivy.all_dtypes(), indices_dtypes=["int32", "int64"]
+    ),
+    mode=st.sampled_from(["clip", "fill", "drop"]),
+    ground_truth_backend="jax",
+    test_gradients=st.just(False),
+)
+def test_sequence_insert(
+    *,
+    dtype_x_indices_axis,
+    mode,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, values, insertion_indices, axis, _ = dtype_x_indices_axis
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        arr=values,
+        indices=insertion_indices,
+        axis=axis,
+        mode=mode,
     )
