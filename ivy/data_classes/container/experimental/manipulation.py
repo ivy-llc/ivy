@@ -4238,7 +4238,7 @@ def sequence_insert(
     out: None = None,
 ) -> ivy.Array:
     """
-    Insert values into a sequence at the specified indices.
+    Inserts values into a sequence at the specified indices.
 
     Parameters
     ----------
