@@ -4264,7 +4264,6 @@ def sequence_insert(
     >>> data = ivy.array([1, 2, 3, 4])
     >>> indices = ivy.array([1, 3])
     >>> values = ivy.array([5, 6])
-
     >>> print(sequence_insert(data, indices, values))
     ivy.array([1, 5, 2, 6, 4])
 
@@ -4275,17 +4274,13 @@ def sequence_insert(
     """
     if axis is None:
         axis = -1
-
     indices = ivy.asarray(indices, dtype=ivy.int64)
     values = ivy.asarray(values, dtype=data.dtype)
-
     # Flatten the indices and values tensors.
     indices = indices.ravel()
     values = values.ravel()
-
     # Create a new tensor with the values inserted at the specified indices.
     new_tensor = ivy.concatenate(
         [data[: indices[0]], values, data[indices[-1:] + 1]], axis=axis
     )
-
     return new_tensor
