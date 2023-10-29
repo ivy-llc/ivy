@@ -14,7 +14,7 @@ _target_backend = ""
 
 _config = None
 
-_not_imlpemented_exc_name = "NotImplementedError"
+_not_implemented_exc_name = "NotImplementedError"
 _decorator_black_list = [
     "with_unsupported_dtypes",
     "with_supported_dtypes",
