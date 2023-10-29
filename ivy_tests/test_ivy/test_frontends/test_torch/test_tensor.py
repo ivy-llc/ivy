@@ -1533,98 +1533,6 @@ def test_torch_abs_(
     )
 
 
-# fill_diagonal_
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="fill_diagonal_",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        min_dim_size=2,
-        max_num_dims=2,
-    ),
-    val=helpers.floats(min_value=-10, max_value=10),
-    wrap=helpers.get_dtypes(kind="bool"),
-    test_with_out=st.just(False),
-)
-def test_torch_fill_diagonal_(
-    dtype_x_axis,
-    wrap,
-    val,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
-    backend_fw,
-):
-    input_dtype, x, axis = dtype_x_axis
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x[0]},
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "wrap": wrap,
-            "val": val,
-        },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# index_fill
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="index_fill",
-    dtype_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int64"],
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-        first_dimension_only=True,
-        indices_same_dims=False,
-    ),
-    value=st.floats(min_value=-100, max_value=100),
-)
-def test_torch_index_fill(
-    dtype_indices_axis,
-    value,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
-    backend_fw,
-):
-    input_dtypes, x, indices, axis, _ = dtype_indices_axis
-    if indices.ndim != 1:
-        indices = ivy.flatten(indices)
-    helpers.test_frontend_method(
-        init_input_dtypes=[input_dtypes[0]],
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x},
-        method_input_dtypes=[input_dtypes[1]],
-        method_all_as_kwargs_np={
-            "dim": axis,
-            "index": indices,
-            "value": value,
-        },
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        on_device=on_device,
-    )
-
-
 # acos
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -6730,6 +6638,50 @@ def test_torch_fill_(
     )
 
 
+# fill_diagonal_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="fill_diagonal_",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        min_dim_size=2,
+        max_num_dims=2,
+    ),
+    val=helpers.floats(min_value=-10, max_value=10),
+    wrap=helpers.get_dtypes(kind="bool"),
+    test_with_out=st.just(False),
+)
+def test_torch_fill_diagonal_(
+    dtype_x_axis,
+    wrap,
+    val,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "wrap": wrap,
+            "val": val,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # fix
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -7695,6 +7647,54 @@ def test_torch_index_add_(
         method_flags=method_flags,
         on_device=on_device,
         rtol_=1e-03,
+    )
+
+
+# index_fill
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="index_fill",
+    dtype_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        first_dimension_only=True,
+        indices_same_dims=False,
+    ),
+    value=st.floats(min_value=-100, max_value=100),
+)
+def test_torch_index_fill(
+    dtype_indices_axis,
+    value,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, axis, _ = dtype_indices_axis
+    if indices.ndim != 1:
+        indices = ivy.flatten(indices)
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=[input_dtypes[1]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "value": value,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
     )
 
 
