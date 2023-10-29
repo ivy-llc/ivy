@@ -544,6 +544,35 @@ def nanquantile(
     )
 
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.19 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
+def nanquantile(
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    ivy.set_inplace_mode("strict")
+    return ivy.nanquantile(
+        a,
+        q,
+        axis=axis,
+        overwrite_input=overwrite_input,
+        keepdims=keepdims,
+        interpolation=method,
+        out=out,
+    )
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def nanstd(
@@ -583,6 +612,13 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
     if ivy.all(all_nan):
         ret = ivy.astype(ret, ivy.array([float("inf")]))
     return ret
+
+
+@to_ivy_arrays_and_back
+def ptp(a, axis=None, out=None, keepdims=False):
+    x = ivy.max(a, axis=axis, keepdims=keepdims)
+    y = ivy.min(a, axis=axis, keepdims=keepdims)
+    return ivy.subtract(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -697,7 +733,6 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
-
 @to_ivy_arrays_and_back
 def ptp(a, axis=None, out=None, keepdims=False):
     x = ivy.max(a, axis=axis, keepdims=keepdims)
@@ -723,14 +758,9 @@ def nanquantile(
     interpolation=None,
 ):
     ivy.set_inplace_mode('strict')
-    # We delete here nan values
-    a = a[~ivy.isnan(a)]
-    # We calculate and return quantile without nan values
-    return ivy.quantile(
+    return ivy.nanquantile(
         a, q, axis=axis, overwrite_input=overwrite_input, keepdims=keepdims, interpolation=method, out=out
     )
-
-
 amax = max
 amin = min
 cumproduct = cumprod
