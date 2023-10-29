@@ -723,9 +723,13 @@ def nanquantile(
     interpolation=None,
 ):
     ivy.set_inplace_mode('strict')
-    return ivy.nanquantile(
+    # We delete here nan values
+    a = a[~ivy.isnan(a)]
+    # We calculate and return quantile without nan values
+    return ivy.quantile(
         a, q, axis=axis, overwrite_input=overwrite_input, keepdims=keepdims, interpolation=method, out=out
     )
+
 
 amax = max
 amin = min
