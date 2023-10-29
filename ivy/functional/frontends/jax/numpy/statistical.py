@@ -745,7 +745,7 @@ def ptp(a, axis=None, out=None, keepdims=False):
     {"0.4.19 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
     "jax",
 )
-def quantile(
+def nanquantile(
     a,
     q,
     /,
