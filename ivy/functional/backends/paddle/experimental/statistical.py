@@ -419,7 +419,7 @@ def unravel_index(
     /,
     *,
     out: Optional[paddle.Tensor] = None,
-) -> tuple[Any, ...]:
+) -> Tuple[Any, ...]:
     if indices.ndim == 0:
         indices = indices.unsqueeze(0)
     coord = []
