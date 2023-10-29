@@ -698,7 +698,6 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
 
-<<<<<<< HEAD
 @to_ivy_arrays_and_back
 def ptp(a, axis=None, out=None, keepdims=False):
     x = ivy.max(a, axis=axis, keepdims=keepdims)
@@ -728,8 +727,6 @@ def nanquantile(
         a, q, axis=axis, overwrite_input=overwrite_input, keepdims=keepdims, interpolation=method, out=out
     )
 
-=======
->>>>>>> 11ee6f83ee797affcfd5110a5823d5e7dc686075
 amax = max
 amin = min
 cumproduct = cumprod
