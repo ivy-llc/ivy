@@ -79,7 +79,8 @@ def asarray(
     # jax device objects aren't serializable and prevent saving transpiled graphs
     # this workaround only works because we are inside jax.default_device context
     # invoked in @handle_device decorator
-    return jnp.copy(ret) if (ret.device() != device or copy) else ret
+    current_device = ret.device_buffer.device() if hasattr(ret, 'device_buffer') else None
+    return jnp.copy(ret) if (current_device != device or copy) else ret
 
 
 def empty(
