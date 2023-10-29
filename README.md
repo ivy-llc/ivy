@@ -1586,6 +1586,12 @@ our journey to unify all ML frameworks!
 
 ------------------------------------------------------------------------
 
+# License
+
+This project is licensed under the [Apache License](./LICENSE).
+
+------------------------------------------------------------------------
+
 # Community
 
 
