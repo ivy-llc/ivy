@@ -1173,3 +1173,38 @@ def unsorted_segment_mean(
         equals to segment ID.
     """
     return ivy.current_backend().unsorted_segment_mean(data, segment_ids, num_segments)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_function
+@to_native_arrays_and_back
+def polyval(
+    coeffs: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
+):
+    """
+    Evaluate and return a polynomial at specific given values.
+
+    Parameters
+    ----------
+    coeffs
+        Polynomial coefficients (including zero) from highest degree to constant term.
+    x
+        The value of the indeterminate variable at which to evaluate the polynomial.
+
+    Returns
+    -------
+    ret
+       Simplified result of substituing x in the coefficients - final value
+       of polynomial.
+
+    Examples
+    --------
+    >>> ivy.polyval([3, 0, 1], 5)
+    ivy.array(76)
+    """
+    return ivy.current_backend().polyval(
+        coeffs,
+        x,
+    )

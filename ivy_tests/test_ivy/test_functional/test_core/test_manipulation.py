@@ -346,6 +346,7 @@ def test_constant_pad(
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
+    test_with_copy=st.just(True),
 )
 def test_expand_dims(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_device):
     dtype, value = dtype_value
@@ -379,6 +380,7 @@ def test_expand_dims(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_d
         max_size=1,
         force_int=True,
     ),
+    test_with_copy=st.just(True),
 )
 def test_flip(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_device):
     dtype, value = dtype_value
@@ -402,6 +404,7 @@ def test_flip(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_device):
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     permutation=_permute_dims_helper(),
+    test_with_copy=st.just(True),
 )
 def test_permute_dims(
     *, dtype_value, permutation, test_flags, backend_fw, fn_name, on_device
@@ -475,6 +478,7 @@ def test_repeat(
     ),
     order=st.sampled_from(["C", "F"]),
     allowzero=st.booleans(),
+    test_with_copy=st.just(True),
 )
 def test_reshape(
     *,
@@ -581,6 +585,7 @@ def test_roll(*, dtype_value, shift, axis, test_flags, backend_fw, fn_name, on_d
     with_remainder=st.booleans(),
     num_or_size_splits=_get_splits(),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_split(
     *,
@@ -621,6 +626,7 @@ def test_split(
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
+    test_with_copy=st.just(True),
 )
 def test_squeeze(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_device):
     dtype, value = dtype_value
@@ -672,6 +678,7 @@ def test_stack(*, dtypes_arrays, axis, test_flags, backend_fw, fn_name, on_devic
     axis1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"), force_int=True
     ),
+    test_with_copy=st.just(True),
 )
 def test_swapaxes(
     *, dtype_value, axis0, axis1, test_flags, backend_fw, fn_name, on_device
@@ -733,6 +740,7 @@ def test_tile(*, dtype_value, repeat, test_flags, backend_fw, fn_name, on_device
     ),
     keepdims=st.booleans(),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_unstack(
     *, x_n_dtype_axis, keepdims, test_flags, backend_fw, fn_name, on_device
