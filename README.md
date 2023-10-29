@@ -242,7 +242,7 @@ You can find Ivy's documentation in the [Docs page](https://unify.ai/docs/ivy/),
     - The current [ML Explosion](https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion).
     - Explaining why it is important [to solve this problem](https://unify.ai/docs/ivy/overview/background/why_unify.html#why-unify).
     - Explaining how we adhere to existing [standards](https://unify.ai/docs/ivy/overview/background/standardization.html#standardization) to make this happen.
-- [Related Work](https://unify.ai/docs/ivy/overview/related_work.html): Which paints a picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and abstraction level.
+- [Related Work](https://unify.ai/docs/ivy/overview/related_work.html): This paints a picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and abstraction level.
 - [Design](https://unify.ai/docs/ivy/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
 - [Deep Dive](https://unify.ai/docs/ivy/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented towards potential contributors to the code base.
 
@@ -1593,15 +1593,15 @@ In order to achieve the ambitious goal of unifying AI we definitely need
 as many hands as possible on it! Whether you are a seasoned developer or
 just starting out, you\'ll find a place here! Join the Ivy community in
 our [Discord](https://discord.gg/sXyFF8tDtm) 👾 server, which is the
-perfect place to ask questions, share ideas, and get help from both
+perfect place to ask questions, share ideas, and get help from
 fellow developers and the Ivy Team directly!
 
 Also! Feel free to follow us on
 [Twitter](https://twitter.com/letsunifyai) 🐦 as well, we use it to
-share updates, sneak peeks, and all sorts of relevant news, certainly a
+share updates, sneak peeks, and all sorts of relevant news, certainly, a
 great way to stay in the loop 😄
 
-Can\'t wait to see you there!
+I Can\'t wait to see you there!
 
 ------------------------------------------------------------------------
 
@@ -1610,7 +1610,7 @@ Can\'t wait to see you there!
 If you use Ivy for your work, please don\'t forget to give proper credit
 by including the accompanying [paper](https://arxiv.org/abs/2102.02886)
 📄 in your references. It\'s a small way to show appreciation and help
-to continue to support this and other open source projects 🙌
+to continue to support this and other open-source projects 🙌
 
 
     @article{lenton2021ivy,
