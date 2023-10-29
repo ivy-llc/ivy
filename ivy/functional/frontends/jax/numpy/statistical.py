@@ -745,7 +745,7 @@ def ptp(a, axis=None, out=None, keepdims=False):
     {"0.4.19 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
     "jax",
 )
-def nanquantile(
+def quantile(
     a,
     q,
     /,
@@ -757,10 +757,15 @@ def nanquantile(
     keepdims=False,
     interpolation=None,
 ):
-    ivy.set_inplace_mode('strict')
-    return ivy.nanquantile(
-        a, q, axis=axis, overwrite_input=overwrite_input, keepdims=keepdims, interpolation=method, out=out
+    # ivy.set_inplace_mode('strict')
+    # We delete nan values
+    a = a[~ivy.isnan(a)]
+
+    # We calculate and return the quantile
+    return ivy.quantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
     )
+
 amax = max
 amin = min
 cumproduct = cumprod
