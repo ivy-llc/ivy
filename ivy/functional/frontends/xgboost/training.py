@@ -18,7 +18,8 @@ def train(
     callbacks=None,
     custom_metric=None,
 ):
-    """Train a booster with given parameters.
+    """
+    Train a booster with given parameters.
 
     Parameters
     ----------

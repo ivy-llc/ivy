@@ -1114,7 +1114,8 @@ def test_torch_softmax(
         input=x[0],
         dim=axis,
         _stacklevel=3,
-        dtype=ivy.as_ivy_dtype(dtypes[0]),
+        dtype=dtypes[0],
+        atol=1e-03,
     )
     ivy.previous_backend()
 

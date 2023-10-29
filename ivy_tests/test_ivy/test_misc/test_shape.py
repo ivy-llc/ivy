@@ -448,6 +448,7 @@ def test_shape__mul__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -588,6 +589,7 @@ def test_shape__rmul__(
     method_name,
     class_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -596,6 +598,7 @@ def test_shape__rmul__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},

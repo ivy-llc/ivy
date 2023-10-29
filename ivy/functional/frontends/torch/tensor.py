@@ -272,7 +272,8 @@ class Tensor:
         return torch_frontend.atan2(self, other)
 
     def view(self, *args, size=None):
-        """Reshape Tensor.
+        """
+        Reshape Tensor.
 
         possible arguments are either:
             - size
@@ -773,6 +774,10 @@ class Tensor:
     @property
     def is_meta(self):
         return "meta" in ivy.dev(self.ivy_array)
+
+    @with_unsupported_dtypes({"2.1.0 and below": ("uint16", "bool")}, "torch")
+    def positive(self):
+        return torch_frontend.positive(self)
 
     @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, "torch")
     def pow(self, exponent):
@@ -2162,6 +2167,13 @@ class Tensor:
     @to_ivy_arrays_and_back
     def fill_diagonal_(self, fill_value, wrap=False):
         return ivy.fill_diagonal(self, fill_value, wrap=wrap)
+
+    @with_supported_dtypes(
+        {"2.1.0 and below": "valid"},
+        "torch",
+    )
+    def corrcoef(self):
+        return torch_frontend.corrcoef(self)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
