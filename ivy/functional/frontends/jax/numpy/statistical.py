@@ -791,7 +791,7 @@ def nanquantile(
     keepdims=False,
     interpolation=None,
 ):
-    # ivy.set_inplace_mode('strict')
+    ivy.set_inplace_mode('strict')
     # We delete nan values
     a = a[~ivy.isnan(a)]
 
