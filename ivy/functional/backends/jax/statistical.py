@@ -228,4 +228,5 @@ def nanquantile(
     keepdims=False,
     interpolation=None,
 ) -> JaxArray:
-    return jnp.nanquantile(a, q, axis, keepdims, interpolation, out)
+    a = a[~ivy.isnan(a)]
+    return jnp.quantile(a, q, axis, keepdims, interpolation, out)
