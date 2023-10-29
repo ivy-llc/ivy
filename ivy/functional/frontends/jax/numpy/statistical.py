@@ -636,6 +636,13 @@ def ptp(a, axis=None, out=None, keepdims=False):
 
 
 @to_ivy_arrays_and_back
+def ptp(a, axis=None, out=None, keepdims=False):
+    x = ivy.max(a, axis=axis, keepdims=keepdims)
+    y = ivy.min(a, axis=axis, keepdims=keepdims)
+    return ivy.subtract(x, y)
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"0.4.19 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
     "jax",
@@ -656,6 +663,33 @@ def quantile(
         return ivy.quantile(
             a, q, axis=axis, keepdims=keepdims, interpolation="nearest_jax", out=out
         )
+    return ivy.quantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
+    )
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.19 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
+def quantile(
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    # ivy.set_inplace_mode('strict')
+    # We delete nan values
+    a = a[~ivy.isnan(a)]
+
+    # We calculate and return the quantile
     return ivy.quantile(
         a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
     )
