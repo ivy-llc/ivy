@@ -2279,7 +2279,7 @@ def svdvals(
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form
         ``MxN`` matrices.
     driver
-        optional output array,name of the cuSOLVER method to be used. This keyword 
+        optional output array,name of the cuSOLVER method to be used. This keyword
         argument only works on CUDA inputs.
         Available options are: None, gesvd, gesvdj, and gesvda.Default: None.
     out
