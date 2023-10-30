@@ -2,6 +2,7 @@ name: intelligent-tests-pr
 on:
   workflow_dispatch:
   pull_request:
+    types: [labeled, opened, synchronize, reopened, review_requested]
 
 permissions:
   actions: read
@@ -35,7 +36,7 @@ jobs:
           fi
 
   run_tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
