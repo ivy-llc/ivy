@@ -1390,3 +1390,111 @@ class _ContainerWithCreationExperimental(ContainerBase):
             coefficients - final value of polynomial.
         """
         return self.static_polyval(self, coeffs, x)
+
+    @staticmethod
+    def static_unsorted_segment_sqrt_n(
+        data: ivy.Container,
+        segment_ids: ivy.Container,
+        num_segments: Union[int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        Compute the sqrt(N) of the sum along segments of a container.
+
+        Parameters
+        ----------
+        data
+            An input container from which to gather the input.
+        segment_ids
+            An array of integers indicating the segment identifier for each element
+            in 'data'.
+        num_segments
+            An integer or array representing the total number of distinct segment IDs.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key-chains, otherwise key-chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key-chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ivy.Container
+            An container representing the result of a segmented sqrt(N) operation.
+            For each segment, it computes the sqrt(N) of the sum of values
+            in 'data' where 'segment_ids' equals the segment ID.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "unsorted_segment_sqrt_n",
+            data,
+            segment_ids,
+            num_segments,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def unsorted_segment_sqrt_n(
+        self: ivy.Container,
+        segment_ids: ivy.Container,
+        num_segments: Union[int, ivy.Container],
+    ) -> ivy.Container:
+        """
+        Compute the square root of the count of values in the input array or container
+        based on segment identifiers.
+
+        Parameters
+        ----------
+        self : ivy.Container
+            Input array or container from which to gather the input.
+        segment_ids : ivy.Container
+            An array of integers indicating the segment identifier for each element in
+            'self'.
+        num_segments : Union[int, ivy.Container]
+            An integer or array representing the total number of distinct segment IDs.
+
+        Returns
+        -------
+        ivy.Container
+            A container representing the result of a segmented square root of count
+            operation. For each segment, it computes the square root of the count
+            of values in 'self' where 'segment_ids' equals the segment ID.
+
+        Examples
+        --------
+        >>> data = ivy.Container(a=ivy.array([0., 1., 2., 4.]),
+        ...                      b=ivy.array([3., 4., 5., 6.]))
+        >>> segment_ids = ivy.array([0, 0, 1, 1])
+        >>> num_segments = 2
+        >>> result = ivy.unsorted_segment_sqrt_n(data, segment_ids, num_segments)
+        >>> print(result)
+        {
+            a: ivy.array([0.70710678, 2.12132034]),
+            b: ivy.array([2.44948974, 3.46410161])
+        }
+
+        >>> data = ivy.Container(a=ivy.array([0., 1., 2., 4., 5., 6.]),
+        ...                      b=ivy.array([3., 4., 5., 6., 7., 8.]))
+        >>> segment_ids = ivy.array([0, 0, 1, 1, 2, 2])
+        >>> num_segments = 3
+        >>> result = ivy.unsorted_segment_sqrt_n(data, segment_ids, num_segments)
+        >>> print(result)
+        {
+            a: ivy.array([0.70710678, 2.12132034, 2.82842712]),
+            b: ivy.array([2.44948974, 3.46410161, 4.47213595])
+        }
+        """
+        return self.static_unsorted_segment_sqrt_n(
+            self,
+            segment_ids,
+            num_segments,
+        )
