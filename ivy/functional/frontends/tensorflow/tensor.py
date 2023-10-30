@@ -8,6 +8,29 @@ from ivy.functional.frontends.tensorflow.func_wrapper import _to_ivy_array
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
 
 
+# Helpers
+
+def as_shape(shape):
+    """Converts the given object to a TensorShape."""
+    if isinstance(shape, TensorShape):
+        return shape
+    else:
+        return TensorShape(shape)
+
+
+def unknown_shape(rank=None, **kwargs):
+    if rank is None and "ndims" in kwargs:
+        rank = kwargs.pop("ndims")
+    if kwargs:
+        raise TypeError("Unknown argument: %s" % kwargs)
+    if rank is None:
+        return TensorShape(None)
+    else:
+        return TensorShape([None] * rank)
+
+
+# Main
+
 class EagerTensor:
     def __init__(self, array):
         self._ivy_array = (
@@ -233,6 +256,9 @@ class TensorShape:
 
     def __init__(self, dims):
         self._dims = tuple(dims)
+        self._ivy_shape = (
+            dims if isinstance(dims, ivy.Shape) else ivy.shape(dims)
+        )
 
     def __repr__(self):
         if self._dims is not None:
@@ -252,6 +278,14 @@ class TensorShape:
     # ---------- #
 
     @property
+    def dims(self):
+        return self._dims
+
+    @property
+    def ivy_shape(self):
+        return self._ivy_shape
+
+    @property
     def ndims(self):
         return self.__len__()
 
@@ -262,17 +296,17 @@ class TensorShape:
     # Instance Methods #
     # ---------------- #
 
-    def __add__(self, y):
-        return self.concatenate(y)
+    def __add__(self, other):
+        return self.concatenate(other)
 
     def __bool__(self):
         return self._dims is not None
 
-    def __concat__(self, y):
-        return self.concatenate(y)
+    def __concat__(self, other):
+        return self.concatenate(other)
 
-    def __eq__(self, y):
-        return self._dims == y._dims
+    def __eq__(self, other):
+        return self._dims == other.dims
 
     def __getitem__(self, key):
         if isinstance(key, slice):
@@ -289,15 +323,18 @@ class TensorShape:
     def __nonzero__(self):
         return self.__bool__()
 
-    def __radd__(self, y):
-        return y.concatenate(self)
+    def __radd__(self, other):
+        return other.concatenate(self)
 
     def as_list(self):
         return list(self._dims)
 
-    def concatenate(self, y):
-        self._dims = self._dims + y._dims
-        return self
+    def concatenate(self, other):
+        other = as_shape(other)
+        if self.dims is None or other.dims is None:
+            return unknown_shape()
+        else:
+            return TensorShape(self.dims + other.dims)
 
     def num_elements(self):
         return ivy.to_scalar(ivy.prod(self._dims))
