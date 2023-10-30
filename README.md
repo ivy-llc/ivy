@@ -1570,7 +1570,7 @@ frameworks, then Ivy is for you!
 
 We believe that everyone can contribute and make a difference. Whether
 it\'s writing code 💻, fixing bugs 🐛, or simply sharing feedback 💬,
-your contributions are definitely welcome and appreciated 🙌
+your contributions are surely welcome and appreciated 🙌
 
 Check out all of our open tasks, and find out more info in our
 [Contributing
