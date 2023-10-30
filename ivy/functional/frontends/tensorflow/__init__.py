@@ -84,7 +84,7 @@ def check_tensorflow_casting(x1, x2):
 
 
 from . import dtypes
-from .dtypes import DType, as_dtype, cast
+from .dtypes import as_dtype, cast
 from . import ragged
 from .ragged import *
 from . import tensor

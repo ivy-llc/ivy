@@ -11,9 +11,6 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
-    _get_splits,
-)
 from ivy_tests.array_api_testing.test_array_api.array_api_tests import (
     hypothesis_helpers as hh,
 )

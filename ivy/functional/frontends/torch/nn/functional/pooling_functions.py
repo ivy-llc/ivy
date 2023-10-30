@@ -114,6 +114,10 @@ def avg_pool1d(
     )
 
 
+@with_unsupported_dtypes(
+    {"2.1.0 and below": ("float16",)},
+    "torch",
+)
 @to_ivy_arrays_and_back
 def avg_pool2d(
     input,

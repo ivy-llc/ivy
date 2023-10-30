@@ -162,6 +162,10 @@ def median(input, dim=None, keepdim=False, *, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.1.0 and below": ("complex64", "complex128")},
+    "torch",
+)
 def min(*input, dim=None, keepdim=False, out=None):
     if len(input) == 1:
         input = input[0]
