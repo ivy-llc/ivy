@@ -276,3 +276,15 @@ def polyval(
     y = paddle.to_tensor(y)
     y = y.astype(promoted_type)
     return y
+
+
+def unsorted_segment_sqrt_n(
+    data: paddle.Tensor,
+    segment_ids: paddle.Tensor,
+    num_segments: Union[int, paddle.Tensor],
+) -> paddle.Tensor:
+    segment_sum = paddle.sum(paddle.square(data), axis=1)
+    segment_count = paddle.bincount(segment_ids)
+    segment_sqrt_n = paddle.sqrt(segment_sum / segment_count)
+
+    return segment_sqrt_n

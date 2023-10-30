@@ -194,3 +194,15 @@ def polyval(
         y = y * x + pv
     y = jnp.array(y, dtype=jnp.dtype(promoted_type))
     return y
+
+
+def unsorted_segment_sqrt_n(
+    data: JaxArray,
+    segment_ids: JaxArray,
+    num_segments: int,
+) -> JaxArray:
+    segment_sum = jax.ops.segment_sum(jnp.square(data), segment_ids, num_segments)
+    segment_count = jax.ops.segment_sum(jnp.ones_like(data), segment_ids, num_segments)
+    segment_sqrt_n = jnp.sqrt(segment_sum / segment_count)
+
+    return segment_sqrt_n

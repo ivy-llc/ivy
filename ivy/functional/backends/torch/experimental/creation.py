@@ -288,3 +288,16 @@ def polyval(
     promoted_type = getattr(torch, promoted_type)
     y = torch.tensor(y).to(dtype=promoted_type)
     return y
+
+
+def unsorted_segment_sqrt_n(
+    data: torch.Tensor,
+    segment_ids: torch.Tensor,
+    num_segments: Union[int, torch.Tensor],
+) -> torch.Tensor:
+    segment_sum = torch.sum(torch.square(data), dim=1)
+    segment_count = torch.bincount(segment_ids)
+
+    segment_sqrt_n = torch.sqrt(segment_sum / segment_count)
+
+    return segment_sqrt_n

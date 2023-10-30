@@ -237,3 +237,16 @@ def polyval(coeffs: np.ndarray, x: np.ndarray) -> np.ndarray:
     result = np.polyval(coeffs, x)
     result = np.asarray(result, np.dtype(promoted_type))
     return result
+
+
+def unsorted_segment_sqrt_n(
+    data: np.ndarray,
+    segment_ids: np.ndarray,
+    num_segments: int,
+) -> np.ndarray:
+    segment_sum = np.sum(np.square(data), axis=1)
+    segment_count = np.bincount(segment_ids)
+
+    segment_sqrt_n = np.sqrt(segment_sum / segment_count)
+
+    return segment_sqrt_n

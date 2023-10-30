@@ -177,3 +177,19 @@ def polyval(coeffs: tf.Tensor, x: tf.Tensor):
         x,
     )
     return result
+
+
+def unsorted_segment_sqrt_n(
+    data: tf.Tensor,
+    segment_ids: tf.Tensor,
+    num_segments: Union[int, tf.Tensor],
+) -> tf.Tensor:
+    segment_sum = tf.math.unsorted_segment_sum(
+        tf.square(data), segment_ids, num_segments
+    )
+    segment_count = tf.math.unsorted_segment_sum(
+        tf.ones_like(data), segment_ids, num_segments
+    )
+    segment_sqrt_n = tf.math.sqrt(segment_sum / segment_count)
+
+    return segment_sqrt_n
