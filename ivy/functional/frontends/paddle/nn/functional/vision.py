@@ -9,7 +9,7 @@ from ivy.utils.assertions import check_equal
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({" 2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 def affine_grid(theta, out_shape, align_corners=True):
     if len(out_shape) == 4:
         N, C, H, W = out_shape
@@ -75,7 +75,7 @@ def affine_grid(theta, out_shape, align_corners=True):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({" 2.5.2 and below": ("float32", "float64")}, "paddle")
 def channel_shuffle(x, groups, data_format="NCHW", name=None):
     if len(ivy.shape(x)) != 4:
         raise ValueError(

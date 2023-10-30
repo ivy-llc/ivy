@@ -7,7 +7,7 @@ versions = {
     "numpy": "1.25.2",
     "jax": "0.4.14",
     "scipy": "1.10.1",
-    "paddle": "2.5.1",
+    "paddle": " 2.5.2",
     "sklearn": "1.3.0",
     "xgboost": "1.7.6",
     "torchvision": "0.15.2.",
