@@ -36,8 +36,8 @@ def _reduce_loss(red, loss, axis, out):
 @inputs_to_ivy_arrays
 @handle_array_function
 def cross_entropy(
-    true: Union[ivy.Array, ivy.NativeArray],
-    pred: Union[ivy.Array, ivy.NativeArray],
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: int = -1,
@@ -50,10 +50,10 @@ def cross_entropy(
 
     Parameters
     ----------
-    true
-        input array containing true labels.
-    pred
-        input array containing the predicted labels.
+    input
+        The input array containing predicted labels.
+    target
+        input array containing the true labels.
     axis
         the axis along which to compute the cross-entropy. If axis is ``-1``,
         the cross-entropy will be computed along the last dimension. Default: ``-1``.
@@ -75,22 +75,21 @@ def cross_entropy(
 
     Examples
     --------
-    >>> x = ivy.array([0, 0, 1, 0])
-    >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
-    >>> print(ivy.cross_entropy(x, y))
-    ivy.array(1.3862944)
+    >>> y = ivy.array([0, 0, 1, 0],[1, 0, 0, 0])
+    >>> x = ivy.array([0.25, 0.25, 0.25, 0.25], [0.7, 0.1, 0.2, 0.1])
+    >>> print(ivy.cross_entropy(y, x))
+    ivy.array([1.3862944 , 0.45198512])
 
-    >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >>> print(ivy.cross_entropy(x, z, reduction="sum"))
-    ivy.array(0.35667497)
+    >>> print(ivy.cross_entropy(y, x, reduction="sum"))
+    ivy.array(1.8382795)
 
-    >>> t = ivy.array([0.2, 0.5, 0.6, 0.3])
-    >>> print(ivy.cross_entropy(x, t, reduction="mean"))
+    >>> print(ivy.cross_entropy(y, x, reduction="mean"))
+    ivy.array(0.91913974)
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    pred = ivy.clip(pred, epsilon, 1 - epsilon)
+    pred = ivy.clip(input, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
-    return _reduce_loss(reduction, log_pred * true, axis, out)
+    return _reduce_loss(reduction, log_pred * target, axis, out)
 
 
 @handle_exceptions

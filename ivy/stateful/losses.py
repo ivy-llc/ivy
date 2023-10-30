@@ -60,21 +60,21 @@ class CrossEntropyLoss(Module):
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "none",
     ):
         self._axis = axis
         self._epsilon = epsilon
         self._reduction = reduction
         Module.__init__(self)
 
-    def _forward(self, true, pred, *, axis=None, epsilon=None, reduction=None):
+    def _forward(self, input, target, *, axis=None, epsilon=None, reduction=None):
         """
         Perform forward pass of the Cross Entropy Loss.
 
-        true
+        input
+            The input array containing predicted labels.
+        target
             input array containing true labels.
-        pred
-            input array containing Predicted labels.
         axis
             the axis along which to compute the cross-entropy loss. If axis is ``-1``,
             the cross-entropy loss will be computed along the last dimension.
@@ -84,7 +84,7 @@ class CrossEntropyLoss(Module):
         reduction
             ``'none'``: No reduction will be applied to the output.
             ``'mean'``: The output will be averaged.
-            ``'sum'``: The output will be summed. Default: ``'sum'``.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
 
         Returns
         -------
@@ -92,8 +92,8 @@ class CrossEntropyLoss(Module):
             The cross-entropy loss between the given distributions.
         """
         return ivy.cross_entropy(
-            true,
-            pred,
+            input,
+            target,
             axis=ivy.default(axis, self._axis),
             epsilon=ivy.default(epsilon, self._epsilon),
             reduction=ivy.default(reduction, self._reduction),

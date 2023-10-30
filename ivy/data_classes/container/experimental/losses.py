@@ -1261,8 +1261,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
     @staticmethod
     def _static_cross_entropy(
-        true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        pred: Union[ivy.Array, ivy.NativeArray],
+        input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
         axis: int = -1,
@@ -1281,9 +1281,9 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
         Parameters
         ----------
-        true
+        input
             An array or container of arbitrary shape containing probabilities.
-        pred
+        target
             An array or container same shape as input with values between 0 and 1.
         axis
             the axis along which to compute the cross-entropy. If axis is ``-1``,
@@ -1321,7 +1321,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "cross_entropy",
             input,
-            pred,
+            target,
             axis=axis,
             epsilon=epsilon,
             reduction=reduction,
@@ -1334,7 +1334,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
     def cross_entropy(
         self,
-        pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         axis: int = -1,
@@ -1353,7 +1353,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
         Parameters
         ----------
-        pred
+        target
             An array or container same shape as input with values between 0 and 1.
         axis
             the axis along which to compute the cross-entropy.
@@ -1389,24 +1389,20 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container([0, 0, 1, 0])
-        >>> y = ivy.Container([0.25, 0.25, 0.25, 0.25])
+        >>> x = ivy.Container(a=ivy.array([0.25, 0.25, 0.25, 0.25]),
+        ...        b=ivy.array([0.7, 0.1, 0.2, 0.1])
+        >>> y = ivy.Container(a=ivy.array([0, 0, 1, 0]),
+        ...        b=ivy.array([1, 0, 0, 0])))
         >>> z = x.cross_entropy(y)
         >>> print(z)
-
-        >>> x = ivy.Container([0, 0, 1, 0])
-        >>> y = ivy.Container([0.25, 0.25, 0.25, 0.25])
-        >>> z = x.cross_entropy(y,reduction="sum")
-        >>> print(z)
-
-        >>> x = ivy.Container([0, 0, 1, 0])
-        >>> y = ivy.Container([0.25, 0.25, 0.25, 0.25])
-        >>> z = x.cross_entropy(y,reduction="mean")
-        >>> print(z)
+        {
+            a: ivy.array(1.3862944),
+            b: ivy.array(0.45198512)
+        }
         """
         return self._static_cross_entropy(
             self,
-            pred,
+            target,
             axis=axis,
             epsilon=epsilon,
             reduction=reduction,

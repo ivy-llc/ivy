@@ -657,8 +657,8 @@ def binary_cross_entropy(
 
 
 def cross_entropy(
-    true: Union[ivy.Array, ivy.NativeArray],
-    pred: Union[ivy.Array, ivy.NativeArray],
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: int = -1,
@@ -671,10 +671,10 @@ def cross_entropy(
 
     Parameters
     ----------
-    true
-        an array-like attribute containing the true labels.
-    pred
+    input
         an array-like attribute containing the predicted labels.
+    target
+        an array-like attribute containing the true labels.
     axis
         the axis along which to compute the cross-entropy. If axis is ``-1``,
         the cross-entropy will be computed along the last dimension. Default: ``-1``.
@@ -696,18 +696,17 @@ def cross_entropy(
 
     Examples
     --------
-    >>> x = ivy.array([0.8, 0.2, 0.6, 0.4])
-    >>> y = ivy.array([1, 0, 1, 0])
+    >>> y = ivy.array([0, 0, 1, 0],[1, 0, 0, 0])
+    >>> x = ivy.array([0.25, 0.25, 0.25, 0.25], [0.7, 0.1, 0.2, 0.1])
     >>> print(ivy.cross_entropy(x, y))
+    ivy.array([1.3862944 , 0.45198512])
 
-    >>> x = ivy.array([0.8, 0.7, 0.2, 0.1])
-    >>> y = ivy.array([1, 1, 0, 0])
-    >>> print(ivy.cross_entropy(x, y, reduction='sum'))
+    >>> print(ivy.cross_entropy(x, y, reduction="sum"))
+    ivy.array(1.8382795)
 
-    >>> x = ivy.array([0.8, 0.7, 0.2, 0.1])
-    >>> y = ivy.array([1, 1, 0, 0])
-    >>> print(ivy.cross_entropy(x, y, reduction='mean'))
+    >>> print(ivy.cross_entropy(x, y, reduction="mean"))
+    ivy.array(0.91913974)
     """
-    return ivy.current_backend(pred).cross_entropy(
-        true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
+    return ivy.current_backend(input).cross_entropy(
+        input, target, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )

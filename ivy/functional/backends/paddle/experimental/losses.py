@@ -1,6 +1,5 @@
 # global
 from typing import Optional
-import ivy
 import paddle
 import paddle.nn.functional as F
 import math
@@ -292,17 +291,31 @@ def binary_cross_entropy(
         return F.binary_cross_entropy(input_arr, target_arr, reduction=reduction)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
 def cross_entropy(
     input: paddle.Tensor,
     target: paddle.Tensor,
     /,
     *,
     axis: int = -1,
-    epsilon: float = 1e-7,
+    epsilon: Optional[float] = None,
     reduction: str = "none",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    input = paddle.clip(input, epsilon, 1 - epsilon)
-    loss = paddle.log(input) * target
-    return _apply_loss_reduction(loss, reduction)
+    if out is not None:
+        raise NotImplementedError(
+            "The 'out' argument to paddle.cross_entropy is not supported."
+        )
+    if epsilon is not None:
+        raise NotImplementedError(
+            "The 'epsilon' argument to paddle.cross_entropy is not supported."
+        )
+    return F.cross_entropy(input, target, axis=axis, reduction=reduction)

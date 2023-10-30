@@ -442,7 +442,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
 
     def cross_entropy(
         self: Union[ivy.Array, ivy.NativeArray],
-        pred: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
         axis: int = -1,
@@ -458,9 +458,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         Parameters
         ----------
         self
-            input array containing true labels.
-        pred
-            input array containing the predicted labels.
+            input array containing predicted labels.
+        target
+            input array containing the true labels.
         axis
             the axis along which to compute the cross-entropy. If axis is ``-1``,
             the cross-entropy will be computed along the last dimension.
@@ -484,21 +484,17 @@ class _ArrayWithLossesExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([0, 0, 1, 0])
-        >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
-        >>> z = x.cross_entropy(y)
-        >>> print(z)
+        >>> y = ivy.array([0, 0, 1, 0],[1, 0, 0, 0])
+        >>> x = ivy.array([0.25, 0.25, 0.25, 0.25], [0.7, 0.1, 0.2, 0.1])
+        >>> print(x.cross_entropy(y))
+        ivy.array([1.3862944 , 0.45198512])
 
-        >>> x = ivy.array([0, 0, 1, 0])
-        >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
-        >>> z = x.cross_entropy(y,reduction="sum")
-        >>> print(z)
+        >>> print(x.cross_entropy(y, reduction="sum"))
+        ivy.array(1.8382795)
 
-        >>> x = ivy.array([0, 0, 1, 0])
-        >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
-        >>> z = x.cross_entropy(y,reduction="mean")
-        >>> print(z)
+        >>> print(x.cross_entropy(y, reduction="mean"))
+        ivy.array(0.91913974)
         """
         return ivy.cross_entropy(
-            self._data, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
+            self._data, target, axis=axis, epsilon=epsilon, reduction=reduction, out=out
         )

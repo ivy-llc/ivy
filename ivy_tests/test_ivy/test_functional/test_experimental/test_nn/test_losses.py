@@ -90,8 +90,8 @@ def test_cross_entropy_loss(
         on_device=on_device,
         atol_=1e-02,
         rtol_=1e-05,
-        true=inputs[0],
-        pred=inputs[1],
+        input=inputs[0],
+        target=inputs[1],
         reduction=reduction,
     )
 
