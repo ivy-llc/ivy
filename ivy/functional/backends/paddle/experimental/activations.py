@@ -2,6 +2,7 @@
 from typing import Optional, Union, Literal
 import paddle
 import paddle.nn.functional as F
+import ivy
 
 # local
 import ivy.functional.backends.paddle as paddle_backend
@@ -249,14 +250,16 @@ def leaky_relu(
     x: paddle.Tensor, /, *, alpha: float = 0.01, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
-        return F.leaky_relu(x, negative_slope=alpha)
+        ret = F.leaky_relu(x, negative_slope=alpha)
+        return ivy.inplace_update(out, ret).astype(x.dtype)
     if paddle.is_complex(x):
         ret = paddle.complex(
             F.leaky_relu(x.real(), negative_slope=alpha),
             F.leaky_relu(x.img(), negative_slope=alpha),
         )
-        return ret
-    return F.leaky_relu(x.cast("float32"), negative_slope=alpha).cast(x.dtype)
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    ret = F.leaky_relu(x.cast("float32"), negative_slope=alpha)
+    return ivy.inplace_update(out, ret).astype(x.dtype)
 
 
 @with_unsupported_device_and_dtypes(
