@@ -74,7 +74,7 @@ class Array:
                 f"Dtype {self.dtype} is not castable to {dtype}"
             )
 
-    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(
         self,
         /,
@@ -90,7 +90,7 @@ class Array:
             keepdims=keepdims,
         )
 
-    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
     def argmin(
         self,
         /,
@@ -409,6 +409,9 @@ class Array:
             keepdims=keepdims,
             where=where,
         )
+
+    def swapaxes(self, axis1, axis2):
+        return jax_frontend.numpy.swapaxes(self, axis1=axis1, axis2=axis2)
 
 
 # Jax supports DeviceArray from 0.4.13 and below
