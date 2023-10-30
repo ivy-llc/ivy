@@ -8,28 +8,8 @@ from ivy.functional.frontends.tensorflow.func_wrapper import _to_ivy_array
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
 
 
-# Helpers
-
-def as_shape(shape):
-    """Converts the given object to a TensorShape."""
-    if isinstance(shape, TensorShape):
-        return shape
-    else:
-        return TensorShape(shape)
-
-
-def unknown_shape(rank=None, **kwargs):
-    if rank is None and "ndims" in kwargs:
-        rank = kwargs.pop("ndims")
-    if kwargs:
-        raise TypeError("Unknown argument: %s" % kwargs)
-    if rank is None:
-        return TensorShape(None)
-    else:
-        return TensorShape([None] * rank)
-
-
 # Main
+
 
 class EagerTensor:
     def __init__(self, array):
@@ -256,9 +236,7 @@ class TensorShape:
 
     def __init__(self, dims):
         self._dims = tuple(dims)
-        self._ivy_shape = (
-            dims if isinstance(dims, ivy.Shape) else ivy.shape(dims)
-        )
+        self._ivy_shape = dims if isinstance(dims, ivy.Shape) else ivy.shape(dims)
 
     def __repr__(self):
         if self._dims is not None:
@@ -343,3 +321,25 @@ class TensorShape:
 # Dummy Tensor class to help with compilation, don't add methods here
 class Tensor(EagerTensor):
     pass
+
+
+# Helpers
+
+
+def as_shape(shape):
+    """Converts the given object to a TensorShape."""
+    if isinstance(shape, TensorShape):
+        return shape
+    else:
+        return TensorShape(shape)
+
+
+def unknown_shape(rank=None, **kwargs):
+    if rank is None and "ndims" in kwargs:
+        rank = kwargs.pop("ndims")
+    if kwargs:
+        raise TypeError("Unknown argument: %s" % kwargs)
+    if rank is None:
+        return TensorShape(None)
+    else:
+        return TensorShape([None] * rank)

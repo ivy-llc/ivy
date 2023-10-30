@@ -16,12 +16,8 @@ CLASS_TREE = "ivy.functional.frontends.tensorflow.tensor.TensorShape"
     class_tree=CLASS_TREE,
     init_tree="tensorflow.TensorShape",
     method_name="__add__",
-    shape_list=helpers.list_of_size(
-        x=st.sampled_from([0, 1, 2, 3, 4]), size=3
-    ),
-    other_list=helpers.list_of_size(
-        x=st.sampled_from([0, 1, 2, 3, 4]), size=3
-    ),
+    shape_list=helpers.list_of_size(x=st.sampled_from([0, 1, 2, 3, 4]), size=3),
+    other_list=helpers.list_of_size(x=st.sampled_from([0, 1, 2, 3, 4]), size=3),
 )
 def test_tensorflow__add__(
     shape_list,
@@ -57,9 +53,7 @@ def test_tensorflow__add__(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.TensorShape",
     method_name="__bool__",
-    shape_list=helpers.list_of_size(
-        x=st.sampled_from([0, 1, 2, 3, 4]), size=3
-    ),
+    shape_list=helpers.list_of_size(x=st.sampled_from([0, 1, 2, 3, 4]), size=3),
 )
 def test_tensorflow__bool__(
     shape_list,
@@ -84,44 +78,3 @@ def test_tensorflow__bool__(
         method_flags=method_flags,
         on_device=on_device,
     )
-
-
-# TODO: implement the following tests for frontend TensorShape methods
-
-# __concat__
-
-
-
-# __eq__
-
-
-
-# __getitem__
-
-
-
-# __iter__
-
-
-
-# __len__
-
-
-
-# __nonzero__
-
-
-
-# __radd__
-
-
-
-# as_list
-
-
-
-# concatenate
-
-
-
-# num_elements
