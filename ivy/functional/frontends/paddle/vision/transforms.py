@@ -104,7 +104,7 @@ def _rgb_to_hsv(img):
 # ------------ #
 
 
-@with_supported_dtypes({" 2.5.2 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def adjust_brightness(img, brightness_factor):
     assert brightness_factor >= 0, "brightness_factor should be non-negative."
@@ -117,7 +117,7 @@ def adjust_brightness(img, brightness_factor):
     return _blend_images(img, extreme_target, brightness_factor)
 
 
-@with_supported_dtypes({" 2.5.2 and below": ("float32", "float64", "uint8")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64", "uint8")}, "paddle")
 @to_ivy_arrays_and_back
 def adjust_hue(img, hue_factor):
     assert -0.5 <= hue_factor <= 0.5, "hue_factor should be in range [-0.5, 0.5]"
@@ -145,7 +145,7 @@ def adjust_hue(img, hue_factor):
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def hflip(img):
@@ -154,7 +154,7 @@ def hflip(img):
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 def normalize(img, mean, std, data_format="CHW", to_rgb=False):
     if ivy.is_array(img):
@@ -171,7 +171,7 @@ def normalize(img, mean, std, data_format="CHW", to_rgb=False):
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def pad(img, padding, fill=0, padding_mode="constant"):
@@ -201,7 +201,7 @@ def pad(img, padding, fill=0, padding_mode="constant"):
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def to_tensor(pic, data_format="CHW"):
@@ -211,7 +211,7 @@ def to_tensor(pic, data_format="CHW"):
 
 @with_unsupported_device_and_dtypes(
     {
-        " 2.5.2 and below": {
+        "2.5.2 and below": {
             "cpu": ("int8", "uint8", "int16", "float16", "bfloat16", "bool")
         }
     },

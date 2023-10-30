@@ -94,7 +94,7 @@ _i0B = [
 
 @with_unsupported_dtypes(
     {
-        " 2.5.2 and below": (
+        "2.5.2 and below": (
             "int16",
             "int8",
             "uint8",
@@ -120,7 +120,7 @@ def moveaxis(
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float16", "float32", "float64", "int32", "int64")},
+    {"2.5.2 and below": ("float16", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def pad(
@@ -178,7 +178,7 @@ pad.partial_mixed_handler = (
 
 @with_unsupported_device_and_dtypes(
     {
-        " 2.5.2 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -203,7 +203,7 @@ def heaviside(
 
 
 @with_unsupported_dtypes(
-    {" 2.5.2 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
+    {"2.5.2 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def flipud(
@@ -228,7 +228,7 @@ def vstack(
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("int16", "bfloat16")}},
+    {"2.5.2 and below": {"cpu": ("int16", "bfloat16")}},
     backend_version,
 )
 def hstack(
@@ -245,7 +245,7 @@ def hstack(
 
 
 @with_unsupported_dtypes(
-    {" 2.5.2 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
+    {"2.5.2 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def rot90(
@@ -261,7 +261,7 @@ def rot90(
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -288,7 +288,7 @@ def top_k(
 
 
 @with_unsupported_dtypes(
-    {" 2.5.2 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
+    {"2.5.2 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def fliplr(
@@ -456,7 +456,7 @@ def atleast_2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("float16",)}},
+    {"2.5.2 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def atleast_3d(
@@ -481,7 +481,7 @@ def atleast_3d(
 
 
 @with_unsupported_dtypes(
-    {" 2.5.2 and below": ("bfloat16", "bool", "float16", "int16", "int8", "uint8")},
+    {"2.5.2 and below": ("bfloat16", "bool", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def take_along_axis(
@@ -603,7 +603,7 @@ def concat_from_sequence(
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def unique_consecutive(
     x: paddle.Tensor,
@@ -666,7 +666,7 @@ def unique_consecutive(
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("int8", "int16", "uint8", "float16")}},
+    {"2.5.2 and below": {"cpu": ("int8", "int16", "uint8", "float16")}},
     backend_version,
 )
 def fill_diagonal(
@@ -732,7 +732,7 @@ def _take_with_axis(
 
 @with_supported_device_and_dtypes(
     {
-        " 2.5.2 and below": {
+        "2.5.2 and below": {
             "cpu": ("int64", "float64", "int32", "uint8", "float32", "bool")
         }
     },
@@ -869,7 +869,7 @@ def trim_zeros(a: paddle.Tensor, /, *, trim: Optional[str] = "bf") -> paddle.Ten
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def put_along_axis(
     arr: paddle.Tensor,

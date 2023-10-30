@@ -157,7 +157,7 @@ def conv1d(
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("float16", "bfloat16")}},
+    {"2.5.2 and below": {"cpu": ("float16", "bfloat16")}},
     backend_version,
 )
 def conv1d_transpose(
@@ -216,7 +216,7 @@ def conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("float16",)}},
+    {"2.5.2 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv2d_transpose(
@@ -275,7 +275,7 @@ def depthwise_conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("float16",)}},
+    {"2.5.2 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv3d(
@@ -334,7 +334,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("float16",)}},
+    {"2.5.2 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv_general_dilated(

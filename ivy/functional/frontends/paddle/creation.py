@@ -7,14 +7,14 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 
 
-@with_unsupported_dtypes({" 2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def arange(start, end=None, step=1, dtype=None, name=None):
     return ivy.arange(start, end, step=step, dtype=dtype)
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float16", "float32", "float64", "int32", "int64", "bool")},
+    {"2.5.2 and below": ("float16", "float32", "float64", "int32", "int64", "bool")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -30,7 +30,7 @@ def assign(x, output=None):
 
 
 @with_unsupported_dtypes(
-    {" 2.5.2 and below": ("bfloat16", "uint16", "uint32", "uint64")}, "paddle"
+    {"2.5.2 and below": ("bfloat16", "uint16", "uint32", "uint64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def clone(x):
@@ -38,7 +38,7 @@ def clone(x):
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64")},
+    {"2.5.2 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -54,7 +54,7 @@ def complex(real, imag, name=None):
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def diag(x, offset=0, padding_value=0, name=None):
@@ -69,7 +69,7 @@ def diag(x, offset=0, padding_value=0, name=None):
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def diagflat(x, offset=0, name=None):
@@ -105,7 +105,7 @@ def full_like(x, fill_value, /, *, dtype=None, name=None):
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def linspace(start, stop, num, dtype=None, name=None):
@@ -113,7 +113,7 @@ def linspace(start, stop, num, dtype=None, name=None):
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def logspace(start, stop, num, base=10.0, dtype=None, name=None):
@@ -121,14 +121,14 @@ def logspace(start, stop, num, base=10.0, dtype=None, name=None):
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def meshgrid(*args, **kwargs):
     return ivy.meshgrid(*args, indexing="ij")
 
 
-@with_unsupported_dtypes({" 2.5.2 and below": "int8"}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": "int8"}, "paddle")
 @to_ivy_arrays_and_back
 def ones(shape, /, *, dtype=None, name=None):
     dtype = "float32" if dtype is None else dtype
@@ -136,7 +136,7 @@ def ones(shape, /, *, dtype=None, name=None):
 
 
 @with_unsupported_dtypes(
-    {" 2.5.2 and below": ("uint8", "int8", "complex64", "complex128")}, "paddle"
+    {"2.5.2 and below": ("uint8", "int8", "complex64", "complex128")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def ones_like(x, /, *, dtype=None, name=None):
@@ -152,7 +152,7 @@ def to_tensor(data, /, *, dtype=None, place=None, stop_gradient=True):
 
 @with_unsupported_dtypes(
     {
-        " 2.5.2 and below": (
+        "2.5.2 and below": (
             "uint8",
             "int8",
             "int16",
@@ -169,7 +169,7 @@ def tril(x, diagonal=0, name=None):
     return ivy.tril(x, k=diagonal)
 
 
-@with_supported_dtypes({" 2.5.2 and below": ("int32", "int64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("int32", "int64")}, "paddle")
 @to_ivy_arrays_and_back
 def tril_indices(row, col, offset=0, dtype="int64"):
     arr = ivy.tril_indices(row, col, offset)
@@ -179,7 +179,7 @@ def tril_indices(row, col, offset=0, dtype="int64"):
 
 @with_unsupported_dtypes(
     {
-        " 2.5.2 and below": (
+        "2.5.2 and below": (
             "uint8",
             "int8",
             "int16",
@@ -196,7 +196,7 @@ def triu(x, diagonal=0, name=None):
     return ivy.triu(x, k=diagonal)
 
 
-@with_supported_dtypes({" 2.5.2 and below": ("int32", "int64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("int32", "int64")}, "paddle")
 @to_ivy_arrays_and_back
 def triu_indices(row, col=None, offset=0, dtype="int64"):
     arr = ivy.triu_indices(row, col, offset)
@@ -206,7 +206,7 @@ def triu_indices(row, col=None, offset=0, dtype="int64"):
     return arr
 
 
-@with_unsupported_dtypes({" 2.5.2 and below": "int8"}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": "int8"}, "paddle")
 @to_ivy_arrays_and_back
 def zeros(shape, /, *, dtype=None, name=None):
     dtype = "float32" if dtype is None else dtype
@@ -214,7 +214,7 @@ def zeros(shape, /, *, dtype=None, name=None):
 
 
 @with_unsupported_dtypes(
-    {" 2.5.2 and below": ("uint8", "int8", "complex64", "complex128")}, "paddle"
+    {"2.5.2 and below": ("uint8", "int8", "complex64", "complex128")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def zeros_like(x, /, *, dtype=None, name=None):

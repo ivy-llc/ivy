@@ -10,7 +10,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def unique_all(
     x: paddle.Tensor,
@@ -88,7 +88,7 @@ def unique_all(
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
     unique, counts = paddle.unique(x, return_counts=True)
@@ -111,7 +111,7 @@ def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def unique_inverse(
     x: paddle.Tensor,
@@ -146,7 +146,7 @@ def unique_inverse(
 
 
 @with_supported_dtypes(
-    {" 2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def unique_values(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None

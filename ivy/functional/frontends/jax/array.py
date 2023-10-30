@@ -74,7 +74,7 @@ class Array:
                 f"Dtype {self.dtype} is not castable to {dtype}"
             )
 
-    @with_unsupported_dtypes({" 2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(
         self,
         /,
@@ -90,7 +90,7 @@ class Array:
             keepdims=keepdims,
         )
 
-    @with_unsupported_dtypes({" 2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
     def argmin(
         self,
         /,

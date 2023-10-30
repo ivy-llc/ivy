@@ -13,7 +13,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("int8", "int16", "uint8", "float16", "bfloat16")}},
+    {"2.5.2 and below": {"cpu": ("int8", "int16", "uint8", "float16", "bfloat16")}},
     backend_version,
 )
 def diagflat(
@@ -47,7 +47,7 @@ def diagflat(
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
 )
 def kron(
     a: paddle.Tensor,
@@ -91,7 +91,7 @@ def adjoint(
 
 
 @with_unsupported_device_and_dtypes(
-    {" 2.5.2 and below": {"cpu": ("int8", "uint8", "int16", "float16")}},
+    {"2.5.2 and below": {"cpu": ("int8", "uint8", "int16", "float16")}},
     backend_version,
 )
 def solve_triangular(
@@ -133,7 +133,7 @@ def lu_factor(
 
 @with_supported_device_and_dtypes(
     {
-        " 2.5.2 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "float32",
                 "float64",
@@ -168,7 +168,7 @@ def dot(
 
 @with_supported_device_and_dtypes(
     {
-        " 2.5.2 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "float32",
                 "float64",

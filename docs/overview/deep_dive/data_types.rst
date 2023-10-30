@@ -423,7 +423,7 @@ set of dtypes is not supported by a certain device.
 
 .. code-block:: python
 
-    @with_unsupported_device_and_dtypes({" 2.5.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
+    @with_unsupported_device_and_dtypes({"2.5.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
     def gcd(
         x1: Union[paddle.Tensor, int, list, tuple],
         x2: Union[paddle.Tensor, float, list, tuple],
