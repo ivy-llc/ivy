@@ -8,9 +8,6 @@ from ivy.functional.frontends.tensorflow.func_wrapper import _to_ivy_array
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
 
 
-# Main
-
-
 class EagerTensor:
     def __init__(self, array):
         self._ivy_array = (
@@ -235,8 +232,8 @@ class TensorShape:
     # TODO: there are still some methods that may need implementing
 
     def __init__(self, dims):
-        self._dims = tuple(dims)
         self._ivy_shape = dims if isinstance(dims, ivy.Shape) else ivy.shape(dims)
+        self._dims = self._ivy_shape._shape
 
     def __repr__(self):
         if self._dims is not None:
