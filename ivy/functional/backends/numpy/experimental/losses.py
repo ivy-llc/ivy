@@ -229,6 +229,15 @@ def binary_cross_entropy(
     return _apply_loss_reduction(loss, reduction, axis=axis, out=out)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "1.25.2 and below": {
+            "cpu": ("float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+@_scalar_output_to_0d_array
 def cross_entropy(
     input: np.ndarray,
     target: np.ndarray,

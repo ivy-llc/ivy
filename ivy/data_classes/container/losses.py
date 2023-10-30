@@ -159,13 +159,14 @@ class _ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-        >>> y = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
-        >>> x = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
+        >>> y = ivy.Container(a=ivy.array([0, 0,  1, 0]),b=ivy.array([1,, 0, 0, 0]))
+        >>> x = ivy.Container(a=ivy.array([0.25, 0.25, 0.25, 0.25]),
+        ...                   b=ivy.array([0.7, 0.1, 0.2, 0.1]))
         >>> z = x.cross_entropy(y)
         >>> print(z)
         {
-            a:ivy.array(0.5108256),
-            b:ivy.array(1.609438)
+            a:ivy.array(1.3862944),
+            b:ivy.array(0.45198512)
         }
         """
         return self._static_cross_entropy(
