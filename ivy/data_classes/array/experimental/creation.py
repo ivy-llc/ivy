@@ -351,7 +351,6 @@ class _ArrayWithCreationExperimental(abc.ABC):
         >>> result
         ivy.array([[2.0, 2.0, 2.0],[2.0, 2.0, 2.0],[2.0, 2.0, 2.0]])
         """
-
         counts = ivy.unsorted_segment_sum(
             ivy.ones_like(segment_ids), segment_ids, num_segments
         )
