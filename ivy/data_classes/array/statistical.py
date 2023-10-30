@@ -14,7 +14,7 @@ class _ArrayWithStatistical(abc.ABC):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         initial: Optional[Union[int, float, complex]] = None,
         where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
