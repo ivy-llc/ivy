@@ -893,10 +893,12 @@ def interpolate(
         "linear",
         "bilinear",
         "trilinear",
+        "nd",
         "nearest",
         "area",
         "nearest_exact",
         "tf_area",
+        "tf_bicubic",
         "bicubic",
         "mitchellcubic",
         "lanczos3",
@@ -905,10 +907,12 @@ def interpolate(
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
-    align_corners: Optional[bool] = None,
+    align_corners: bool = False,
     antialias: bool = False,
     out: Optional[torch.Tensor] = None,
 ):
+    if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
+        align_corners = None
     return torch.nn.functional.interpolate(
         x,
         size=size,
@@ -920,15 +924,19 @@ def interpolate(
     )
 
 
-interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
-    "tf_area",
-    "nd",
-    "bicubic_tensorflow",
-    "mitchellcubic",
-    "lanczos3",
-    "lanczos5",
-    "gaussian",
-]
+interpolate.partial_mixed_handler = (
+    lambda *args, mode="linear", align_corners=False, **kwargs: mode
+    not in [
+        "tf_area",
+        "nd",
+        "tf_bicubic",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ]
+    and (mode in ["linear", "bilinear", "bicubic", "trilinear"] or not align_corners)
+)
 
 
 @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)

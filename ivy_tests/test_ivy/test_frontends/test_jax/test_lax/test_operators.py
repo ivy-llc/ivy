@@ -1748,7 +1748,7 @@ def test_jax_expand_dims(
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         frontend=frontend,
-        bakcend_to_test=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
