@@ -45,7 +45,7 @@ def install_pkg(path, pkg, base="fw/"):
         )
     elif pkg.split("==")[0] if "==" in pkg else pkg == "jax":
         subprocess.run(
-            f"yes |pip install --upgrade --target {path} 'jax[cuda11_local]' -f"
+            f"yes |pip install --upgrade --target {path} 'jax[cuda11_pip]' -f"
             " https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  "
             " --no-cache-dir",
             shell=True,

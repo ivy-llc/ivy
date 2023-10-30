@@ -231,17 +231,14 @@ def promote_types_of_torch_inputs(
     used as inputs only for those functions that expect an array-like or
     tensor-like objects, otherwise it might give unexpected results.
     """
-    # Ignore type of 0-dim arrays to mimic torch
-    x1_copy = x1
-    x2_copy = x2
-    x1 = ivy.asarray(x1)
-    x2 = ivy.asarray(x2)
-    if x1.shape == () and ivy.isscalar(x1_copy):
-        if ivy.is_int_dtype(x1):
-            x1 = ivy.astype(x1, "int64")
-    if x2.shape == () and ivy.isscalar(x2_copy):
-        if ivy.is_int_dtype(x2):
-            x2 = ivy.astype(x2, "int64")
+    if ivy.isscalar(x1) and ivy.is_int_dtype(x1):
+        x1 = ivy.asarray(x1, dtype="int64")
+    elif ivy.isscalar(x1):
+        x1 = ivy.asarray(x1)
+    if ivy.isscalar(x2) and ivy.is_int_dtype(x2):
+        x2 = ivy.asarray(x2, dtype="int64")
+    elif ivy.isscalar(x2):
+        x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
     if not x1.shape == () and x2.shape == () and type1 == type2:
@@ -254,13 +251,15 @@ def promote_types_of_torch_inputs(
         )
     elif x1.dtype != x2.dtype:
         promoted = promote_types_torch(x1.dtype, x2.dtype)
-        x1 = ivy.asarray(x1, dtype=promoted)
-        x2 = ivy.asarray(x2, dtype=promoted)
+        if x1.dtype != promoted:
+            x1 = x1.astype(promoted)
+        if x2.dtype != promoted:
+            x2 = x2.astype(promoted)
     return x1, x2
 
 
 from . import nn
-from .nn.functional import softmax, relu
+from .nn.functional import softmax, relu, lstm
 from . import tensor
 from .tensor import *
 from . import blas_and_lapack_ops

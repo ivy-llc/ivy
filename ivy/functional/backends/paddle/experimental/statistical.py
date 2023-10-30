@@ -14,7 +14,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64", "int32", "int64")},
+    {"2.5.2 and below": ("complex", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def median(
@@ -32,7 +32,7 @@ def median(
         )
     else:
         ret = paddle.median(input, axis=axis, keepdim=True)
-    # keepdims is set to True because in versions up to 2.5.1
+    # keepdims is set to True because in versions up to 2.5.2
     # there was a problem when the axis was defined, and it was the
     # only axis in the tensor, so it needs to be handled manually
     if not keepdims:
@@ -48,7 +48,7 @@ def median(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64", "int64")}, backend_version
+    {"2.5.2 and below": ("complex", "float32", "float64", "int64")}, backend_version
 )
 def nanmean(
     a: paddle.Tensor,
@@ -99,7 +99,48 @@ def _validate_quantile(q):
     return True
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "bfloat16",
+                "complex64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
+)
+def nanmin(
+    a: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[paddle.Tensor] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    nan_mask = paddle.isnan(a)
+    if where is not None:
+        nan_mask = paddle.logical_or(nan_mask, paddle.logical_not(where))
+    a_copy = a.clone()
+    a_copy = paddle.where(nan_mask, paddle.full_like(a_copy, float("inf")), a_copy)
+    if axis is None:
+        result = paddle.min(a_copy, keepdim=keepdims)
+    else:
+        result = paddle.min(a_copy, axis=axis, keepdim=keepdims)
+    if initial is not None:
+        initial = paddle.to_tensor(initial, dtype=a.dtype)
+        result = paddle.minimum(result, initial)
+    return result
+
+
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, backend_version)
 def nanprod(
     a: paddle.Tensor,
     /,
@@ -267,7 +308,7 @@ def _compute_quantile_wrapper(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -341,7 +382,7 @@ def histogram(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def nanmedian(
     input: paddle.Tensor,
@@ -360,7 +401,7 @@ def nanmedian(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -378,7 +419,7 @@ def unravel_index(
     /,
     *,
     out: Optional[paddle.Tensor] = None,
-) -> tuple[Any, ...]:
+) -> Tuple[Any, ...]:
     if indices.ndim == 0:
         indices = indices.unsqueeze(0)
     coord = []
@@ -392,7 +433,7 @@ def unravel_index(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -515,7 +556,7 @@ def cov(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "bool", "float32", "float64")},
+    {"2.5.2 and below": ("complex", "bool", "float32", "float64")},
     backend_version,
 )
 def cummax(
@@ -640,7 +681,7 @@ def __get_index(lst, indices=None, prefix=None):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16")}},
+    {"2.5.2 and below": {"cpu": ("uint8", "int8", "int16")}},
     backend_version,
 )
 def cummin(

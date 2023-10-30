@@ -14,7 +14,7 @@ def bincount(x, weights=None, minlength=0, name=None):
 
 
 # bmm
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def bmm(x, y, transpose_x=False, transpose_y=False, name=None):
     if len(ivy.shape(x)) != 3 or len(ivy.shape(y)) != 3:
@@ -24,14 +24,14 @@ def bmm(x, y, transpose_x=False, transpose_y=False, name=None):
 
 
 # cholesky
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def cholesky(x, /, *, upper=False, name=None):
     return ivy.cholesky(x, upper=upper)
 
 
 # cholesky_solve
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def cholesky_solve(x, y, /, *, upper=False, name=None):
     if upper:
@@ -41,7 +41,7 @@ def cholesky_solve(x, y, /, *, upper=False, name=None):
 
 
 # cond
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def cond(x, p=None, name=None):
     ret = ivy.cond(x, p=p, out=name)
@@ -51,12 +51,32 @@ def cond(x, p=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def cross(x, y, /, *, axis=9, name=None):
     x, y = promote_types_of_paddle_inputs(x, y)
     return ivy.cross(x, y, axis=axis)
+
+
+# diagonal
+@with_supported_dtypes(
+    {
+        "2.5.2 and below": (
+            "int32",
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+            "bool",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def diagonal(x, offset=0, axis1=0, axis2=1, name=None):
+    return ivy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
 @with_supported_dtypes({"2.4.1 and above": ("float64", "float32")}, "paddle")
@@ -67,7 +87,7 @@ def dist(x, y, p=2):
 
 
 # dot
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def dot(x, y, name=None):
     x, y = promote_types_of_paddle_inputs(x, y)
@@ -131,7 +151,7 @@ def lu_unpack(lu_data, lu_pivots, unpack_datas=True, unpack_pivots=True, *, out=
 
 
 # matmul
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def matmul(x, y, transpose_x=False, transpose_y=False, name=None):
     x, y = promote_types_of_paddle_inputs(x, y)
@@ -139,21 +159,21 @@ def matmul(x, y, transpose_x=False, transpose_y=False, name=None):
 
 
 # matrix_power
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def matrix_power(x, n, name=None):
     return ivy.matrix_power(x, n)
 
 
 # mv
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def mv(x, vec, name=None):
     return ivy.dot(x, vec)
 
 
 # norm
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def norm(x, p="fro", axis=None, keepdim=False, name=None):
     if axis is None and p is not None:
@@ -206,7 +226,7 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
 
 
 # pinv
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def pinv(x, rcond=1e-15, hermitian=False, name=None):
     # TODO: Add hermitian functionality
@@ -214,21 +234,21 @@ def pinv(x, rcond=1e-15, hermitian=False, name=None):
 
 
 # qr
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def qr(x, mode="reduced", name=None):
     return ivy.qr(x, mode=mode)
 
 
 # solve
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def solve(x, y, name=None):
     return ivy.solve(x, y)
 
 
 # transpose
-@with_unsupported_dtypes({"2.5.1 and below": ("uint8", "int8", "int16")}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("uint8", "int8", "int16")}, "paddle")
 @to_ivy_arrays_and_back
 def transpose(x, perm, name=None):
     return ivy.permute_dims(x, axes=perm)

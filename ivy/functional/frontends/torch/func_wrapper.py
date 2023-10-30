@@ -229,6 +229,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 first_array.data = native_ret_data
             elif ivy.is_native_array(first_array):
                 ivy.inplace_update(first_array, native_ret_data)
+                ret = torch_frontend.Tensor(first_array, _init_overload=True)
             else:
                 first_array.ivy_array.data = native_ret_data
                 ret = first_array

@@ -1,4 +1,5 @@
 # global
+
 import abc
 from typing import Union, Optional, Literal, Tuple, List, Sequence
 
@@ -935,6 +936,14 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         offset
             Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
+        axis1
+            axis to be used as the first axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``0.`` .
+        axis2
+            axis to be used as the second axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``1.`` .
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.

@@ -4,7 +4,6 @@ from typing import Optional, Tuple, Sequence, Union
 import numpy as np
 
 # local
-from ivy.functional.backends.numpy.device import _to_device
 import ivy
 
 # Array API Standard #
@@ -35,9 +34,7 @@ def tril_indices(
     *,
     device: str = None,
 ) -> Tuple[np.ndarray, ...]:
-    return tuple(
-        _to_device(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)), device=device)
-    )
+    return tuple(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)))
 
 
 def hann_window(
@@ -92,7 +89,7 @@ def unsorted_segment_min(
     segment_ids: np.ndarray,
     num_segments: int,
 ) -> np.ndarray:
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
 
@@ -146,7 +143,7 @@ def unsorted_segment_sum(
     # check should be same
     # Might require to change the assertion function name to
     # check_unsorted_segment_valid_params
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
 
@@ -204,3 +201,39 @@ def mel_weight_matrix(
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = np.maximum(zero, np.minimum(lower_slopes, upper_slopes))
     return np.pad(mel_weights, [[1, 0], [0, 0]])
+
+
+def unsorted_segment_mean(
+    data: np.ndarray,
+    segment_ids: np.ndarray,
+    num_segments: int,
+) -> np.ndarray:
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    if len(segment_ids) == 0:
+        # If segment_ids is empty, return an empty array of the correct shape
+        return np.zeros((num_segments,) + data.shape[1:], dtype=data.dtype)
+
+    # Initialize an array to store the sum of elements for each segment
+    res = np.zeros((num_segments,) + data.shape[1:], dtype=data.dtype)
+
+    # Initialize an array to keep track of the number of elements in each segment
+    counts = np.zeros(num_segments, dtype=np.int64)
+
+    for i in range(len(segment_ids)):
+        seg_id = segment_ids[i]
+        if seg_id < num_segments:
+            res[seg_id] += data[i]
+            counts[seg_id] += 1
+
+    return res / counts[:, np.newaxis]
+
+
+def polyval(coeffs: np.ndarray, x: np.ndarray) -> np.ndarray:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    result = np.polyval(coeffs, x)
+    result = np.asarray(result, np.dtype(promoted_type))
+    return result

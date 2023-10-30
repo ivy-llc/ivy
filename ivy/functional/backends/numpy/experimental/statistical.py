@@ -9,7 +9,7 @@ from copy import deepcopy
 
 
 @with_unsupported_dtypes(
-    {"1.26.0 and below": ("bfloat16",)},
+    {"1.26.1 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -165,6 +165,32 @@ def nanmean(
 
 
 nanmean.support_native_out = True
+
+
+def nanmin(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    if where is None:
+        where = True
+    return np.nanmin(
+        a=a,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+        initial=initial,
+        where=where,
+    )
+
+
+nanmin.support_native_out = True
 
 
 def nanprod(
@@ -508,7 +534,7 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_unsupported_dtypes({"1.26.0 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.26.1 and below": "bfloat16"}, backend_version)
 def cummin(
     x: np.ndarray,
     /,

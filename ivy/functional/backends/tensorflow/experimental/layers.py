@@ -875,12 +875,13 @@ def interpolate(
         "linear",
         "bilinear",
         "trilinear",
+        "nd",
         "nearest",
         "area",
-        "nearest-exact",
+        "nearest_exact",
         "tf_area",
+        "tf_bicubic",
         "bicubic",
-        "bicubic_tensorflow",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -893,41 +894,61 @@ def interpolate(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     dims = len(x.shape) - 2
-    size = _get_size(scale_factor, size, dims, x.shape)
-    remove_dim = False
-    if mode in ["linear", "tf_area", "lanczos3", "lanczos5", "nearest-exact"]:
-        if dims == 1:
-            size = (1,) + tuple(size)
-            x = tf.expand_dims(x, axis=-2)
-            dims = 2
-            remove_dim = True
-        mode = (
-            "bilinear"
-            if mode == "linear"
-            else (
-                "area"
-                if mode == "tf_area"
-                else "nearest" if mode == "nearest-exact" else mode
+    size, _ = _get_size(scale_factor, size, dims, x.shape)
+    if all(a == b for a, b in zip(size, x.shape[2:])):
+        ret = x
+    else:
+        remove_dim = False
+        if mode in ["linear", "tf_area", "lanczos3", "lanczos5", "nearest-exact"]:
+            if dims == 1:
+                size = (1,) + tuple(size)
+                x = tf.expand_dims(x, axis=-2)
+                dims = 2
+                remove_dim = True
+            mode = (
+                "bilinear"
+                if mode == "linear"
+                else (
+                    "area"
+                    if mode == "tf_area"
+                    else "nearest" if mode == "nearest-exact" else mode
+                )
             )
+        if mode == "tf_bicubic":
+            mode = "bicubic"
+        x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+        ret = tf.transpose(
+            tf.cast(
+                tf.image.resize(x, size=size, method=mode, antialias=antialias), x.dtype
+            ),
+            (0, dims + 1, *range(1, dims + 1)),
         )
-    if mode == "bicubic_tensorflow":
-        mode = "bicubic"
-    x = tf.transpose(x, (0, *range(2, dims + 2), 1))
-    ret = tf.transpose(
-        tf.cast(
-            tf.image.resize(x, size=size, method=mode, antialias=antialias), x.dtype
-        ),
-        (0, dims + 1, *range(1, dims + 1)),
-    )
-    if remove_dim:
-        ret = tf.squeeze(ret, axis=-2)
+        if remove_dim:
+            ret = tf.squeeze(ret, axis=-2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
 interpolate.partial_mixed_handler = (
-    lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: not align_corners  # noqa: E501
-    and len(x.shape) < 4
+    lambda x, *args, mode="linear", recompute_scale_factor=None, align_corners=None, **kwargs: len(  # noqa: E501
+        x.shape
+    )
+    < 4
     and mode not in ["nearest", "area", "bicubic", "nd"]
+    and not align_corners
+    and (
+        recompute_scale_factor
+        or mode
+        not in [
+            "linear",
+            "bilinear",
+            "trilinear",
+            "tf_bicubic",
+            "lanczos3",
+            "lanczos5",
+        ]
+    )
 )
 
 
