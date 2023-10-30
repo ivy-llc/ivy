@@ -232,8 +232,7 @@ class TensorShape:
     # TODO: there are still some methods that may need implementing
 
     def __init__(self, dims):
-        self._ivy_shape = dims if isinstance(dims, ivy.Shape) else ivy.shape(dims)
-        self._dims = self._ivy_shape._shape
+        self._dims = tuple(dims)
 
     def __repr__(self):
         if self._dims is not None:
@@ -258,7 +257,7 @@ class TensorShape:
 
     @property
     def ivy_shape(self):
-        return self._ivy_shape
+        return ivy.Shape(self._dims)
 
     @property
     def ndims(self):
