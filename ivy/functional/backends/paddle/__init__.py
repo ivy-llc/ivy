@@ -181,7 +181,14 @@ valid_int_dtypes = {
         ivy.int32,
         ivy.int64,
         ivy.uint8,
-    )
+    ),
+    "2.5.1 and above": (
+        ivy.int8,
+        ivy.int16,
+        ivy.int32,
+        ivy.int64,
+        ivy.uint8,
+    ),
 }
 valid_float_dtypes = {
     "2.4.0 and below": (ivy.float16, ivy.float32, ivy.float64),
