@@ -1337,7 +1337,7 @@ train(images, classes, num_epochs, model, device, num_classes = num_classes, bat
 
 # Diving deeper
 
-Although the [Docs](https://unify.ai/docs/ivy/) are the best place to learn more, in the next section we will take a look at how Ivy works as both a transpiler and a framework in a bit more of detail to get an idea of why and where to use it.
+Although the [Docs](https://unify.ai/docs/ivy/) are the best place to learn more, in the next section we will take a look at how Ivy works both as a transpiler and framework in a bit more of detail to get an idea of why and where to use it.
 
 <details>
 <summary><b>Ivy as a transpiler</b></summary>
