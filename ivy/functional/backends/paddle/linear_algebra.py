@@ -24,7 +24,7 @@ from .elementwise import _elementwise_helper
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -91,7 +91,7 @@ def cross(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -183,7 +183,7 @@ def inner(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def inv(
@@ -252,7 +252,7 @@ def matmul(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def matrix_norm(
@@ -334,7 +334,7 @@ def eig(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def matrix_power(
@@ -344,7 +344,7 @@ def matrix_power(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def matrix_rank(
@@ -441,7 +441,7 @@ def tensorsolve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def qr(
@@ -457,7 +457,7 @@ def qr(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def slogdet(
@@ -476,7 +476,7 @@ def slogdet(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def solve(
@@ -503,7 +503,7 @@ def solve(
     return ret
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, backend_version)
 def svd(
     x: paddle.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor, ...]]:
@@ -517,7 +517,7 @@ def svd(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def svdvals(
@@ -532,7 +532,7 @@ def svdvals(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64")}, backend_version
+    {"2.5.2 and below": ("complex", "float32", "float64")}, backend_version
 )
 def tensordot(
     x1: paddle.Tensor,
@@ -548,7 +548,7 @@ def tensordot(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -624,7 +624,7 @@ def vector_norm(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
+    {"2.5.2 and below": ("float16", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def diag(
@@ -638,7 +638,7 @@ def diag(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("uint8", "int8", "int16", "complex64", "complex128")}},
     backend_version,
 )
 def vander(
@@ -660,7 +660,7 @@ def vander(
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("unsigned", "int8", "int16", "float16")},
+    {"2.5.2 and below": ("unsigned", "int8", "int16", "float16")},
     backend_version,
 )
 def vector_to_skew_symmetric_matrix(

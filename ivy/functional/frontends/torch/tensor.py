@@ -142,6 +142,7 @@ class Tensor:
         return torch_frontend.reshape(self)
 
     @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16",)}, "paddle")
     def reshape_as(self, other):
         return torch_frontend.reshape(self, other.shape)
 
