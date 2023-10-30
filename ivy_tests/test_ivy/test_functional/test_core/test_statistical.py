@@ -342,7 +342,7 @@ def test_sum(
     if "torch" in backend_fw:
         assume(not test_flags.as_variable[0])
         assume(not test_flags.test_gradients)
-    if "jax" in backend_fw and castable_dtype in ["complex32", "complex64"]:
+    if "jax" in backend_fw and castable_dtype in ["complex64", "complex128"]:
         assume(not test_flags.test_gradients)
 
     helpers.test_function(
