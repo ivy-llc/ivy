@@ -9,13 +9,13 @@ from ivy.data_classes.container.base import ContainerBase
 class _ContainerWithLosses(ContainerBase):
     @staticmethod
     def _static_cross_entropy(
-        true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
-        reduction: Union[str, ivy.Container] = "sum",
+        reduction: Union[str, ivy.Container] = "none",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -29,9 +29,9 @@ class _ContainerWithLosses(ContainerBase):
 
         Parameters
         ----------
-        true
-            input array or container containing true labels.
-        pred
+        input
+            The input array or container containing true labels.
+        target
             input array or container containing the predicted labels.
         axis
             the axis along which to compute the cross-entropy. If axis is ``-1``,
@@ -42,7 +42,7 @@ class _ContainerWithLosses(ContainerBase):
             the loss. If epsilon is ``0``, no smoothing will be applied.
             Default: ``1e-7``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
+            The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
             will be skipped. Default is ``True``.
@@ -65,19 +65,20 @@ class _ContainerWithLosses(ContainerBase):
         --------
         With :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([0, 0, 1]), b=ivy.array([1, 1, 0]))
-        >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
+        >>> y = ivy.Container(a=ivy.array([0, 0, 1, 0]), b=ivy.array([1, 0, 0, 0]))
+        >>> x = ivy.Container(a=ivy.array([0.25, 0.25, 0.25, 0.25]),
+        ...                   b=ivy.array([0.7, 0.1, 0.2, 0.1]))
         >>> z = ivy.Container.static_cross_entropy(x, y)
         >>> print(z)
         {
-            a: ivy.array(1.20397282),
-            b: ivy.array(1.83258148)
+            a: ivy.array(1.3862944),
+            b: ivy.array(0.45198512)
         }
 
         With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
-        >>> x = ivy.array([0, 0, 1])
-        >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
+        >>> y = ivy.array([0, 0, 1])
+        >>> x = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
         >>> z = ivy.Container.static_cross_entropy(x, y)
         >>> print(z)
         {
@@ -87,8 +88,8 @@ class _ContainerWithLosses(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "cross_entropy",
-            true,
-            pred,
+            input,
+            target,
             axis=axis,
             epsilon=epsilon,
             reduction=reduction,
@@ -101,12 +102,12 @@ class _ContainerWithLosses(ContainerBase):
 
     def cross_entropy(
         self: ivy.Container,
-        pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
-        reduction: Union[str, ivy.Container] = "sum",
+        reduction: Union[str, ivy.Container] = "none",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -121,9 +122,9 @@ class _ContainerWithLosses(ContainerBase):
         Parameters
         ----------
         self
-            input container containing true labels.
-        pred
-            input array or container containing the predicted labels.
+            input container containing predicted labels.
+        target
+            input array or container containing the true labels.
         axis
             the axis along which to compute the cross-entropy. If axis is ``-1``,
             the cross-entropy will be computed along the last dimension.
@@ -132,6 +133,10 @@ class _ContainerWithLosses(ContainerBase):
             a float in [0.0, 1.0] specifying the amount of smoothing when calculating
             the loss. If epsilon is ``0``, no smoothing will be applied.
             Default: ``1e-7``.
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -154,8 +159,8 @@ class _ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
-        >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
+        >>> y = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
+        >>> x = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
         >>> z = x.cross_entropy(y)
         >>> print(z)
         {
@@ -165,7 +170,7 @@ class _ContainerWithLosses(ContainerBase):
         """
         return self._static_cross_entropy(
             self,
-            pred,
+            target,
             axis=axis,
             epsilon=epsilon,
             reduction=reduction,
