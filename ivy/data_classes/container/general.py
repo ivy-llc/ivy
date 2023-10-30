@@ -4061,6 +4061,114 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
+    def _static_copy_array(
+        dst: Union[ivy.Array, ivy.Container],
+        src: Union[ivy.Array, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> None:
+        """
+        ivy.Container instance method variant of ivy.copy_array. This method simply
+        wraps the function, and so the docstring for ivy.copy_array also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        dst
+            The destination container to copy data into.
+        src
+            The source container from which data will be copied.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key-chains will
+            be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key-chains for which the function was not applied. Default
+            is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Examples
+        --------
+        >>> dst = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+        >>> src = ivy.Container(a=ivy.array([7, 8, 9]), b=ivy.array([10, 11, 12]))
+        >>> ivy.Container.static_copy_array(dst, src)
+        >>> print(dst)
+        {
+            a: [7 8 9],
+            b: [10 11 12]
+        }
+        """
+        ContainerBase.cont_multi_map_in_function(
+            "copy_array",
+            dst,
+            src,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def copy_array(
+        self: Union[ivy.Array, ivy.Container],
+        src: Union[ivy.Array, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> None:
+        """
+        ivy.Container instance method variant of ivy.copy_array. This method simply
+        wraps the function, and so the docstring for ivy.copy_array also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The destination container to copy data into.
+        src
+            The source container from which data will be copied.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key-chains, otherwise key-chains will
+        be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key-chains for which the function was not applied. Default
+            is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Examples
+        --------
+        >>> dst = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+        >>> src = ivy.Container(a=ivy.array([7, 8, 9]), b=ivy.array([10, 11, 12]))
+        >>> dst.copy_array(src)
+        >>> print(dst)
+        {
+            a: [7 8 9],
+            b: [10 11 12]
+        }
+        """
+        ContainerBase._static_copy_array(
+            self,
+            src,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_isin(
         element: ivy.Container,
         test_elements: ivy.Container,

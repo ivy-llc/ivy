@@ -786,6 +786,39 @@ def all_equal(
 @inputs_to_native_arrays
 @handle_array_function
 @handle_device
+def copy_array(
+    dst: Union[ivy.Array, ivy.NativeArray],
+    src: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> None:
+    """
+    Copy the data from the source array `src` into the destination array `dst`.
+
+    Parameters
+    ----------
+    dst
+        The destination array where the data will be copied.
+    src
+        The source array from which the data will be copied.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> ivy.copy_array(y, x)
+    >>> print(y)
+    [1 2 3]
+    """
+    current_backend(dst).copy_array(dst, src)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_native_arrays
+@handle_array_function
+@handle_device
 def to_numpy(
     x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
 ) -> np.ndarray:

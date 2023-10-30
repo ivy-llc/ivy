@@ -99,6 +99,31 @@ class _ArrayWithGeneral(abc.ABC):
         """
         return ivy.is_array(self, exclusive=exclusive)
 
+    def copy_array(self: ivy.Array) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.copy_array. This method simply wraps
+        the function, and so the docstring for ivy.copy_array also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to be copied
+
+        Returns
+        -------
+        ret
+            A copy of the input array
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.copy_array()
+        >>> print(y)
+        [1 2 3]
+        """
+        return ivy.copy_array(self)
+
     def is_ivy_container(self: ivy.Array) -> bool:
         """
         ivy.Array instance method variant of ivy.is_ivy_container. This method simply
