@@ -1179,7 +1179,7 @@ class IvyNet(ivy.Module):
         return logits, probs
 ```
 
-After building your model in Ivy, you can set your favourite framework
+After building your model in Ivy, you can set your favorite framework
 as the backend to use its operations under the hood!
 
 ``` python
@@ -1601,13 +1601,13 @@ Also! Feel free to follow us on
 share updates, sneak peeks, and all sorts of relevant news, certainly a
 great way to stay in the loop 😄
 
-Can\'t wait to see you there!
+Can't wait to see you there!
 
 ------------------------------------------------------------------------
 
 # Citation
 
-If you use Ivy for your work, please don\'t forget to give proper credit
+If you use Ivy for your work, please don't forget to give proper credit
 by including the accompanying [paper](https://arxiv.org/abs/2102.02886)
 📄 in your references. It\'s a small way to show appreciation and help
 to continue to support this and other open source projects 🙌
