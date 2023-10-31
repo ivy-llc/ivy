@@ -159,8 +159,8 @@ class _ArrayWithLayers(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.dropout1d. This method simply wraps the
-        function, and so the docstring for ivy.dropout1d also applies to this method with
-        minimal changes.
+        function, and so the docstring for ivy.dropout1d also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -207,8 +207,8 @@ class _ArrayWithLayers(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.dropout2d. This method simply wraps the
-        function, and so the docstring for ivy.dropout1d also applies to this method with
-        minimal changes.
+        function, and so the docstring for ivy.dropout1d also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -256,8 +256,8 @@ class _ArrayWithLayers(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.dropout3d. This method simply wraps the
-        function, and so the docstring for ivy.dropout3d also applies to this method with
-        minimal changes.
+        function, and so the docstring for ivy.dropout3d also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
