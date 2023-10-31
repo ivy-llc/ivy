@@ -889,13 +889,14 @@ def interpolate(
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
-    align_corners: Optional[bool] = None,
+    align_corners: bool = False,
     antialias: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    dims = len(x.shape) - 2
-    size, _ = _get_size(scale_factor, size, dims, x.shape)
-    if all(a == b for a, b in zip(size, x.shape[2:])):
+    input_size = ivy.shape(x)[2:]
+    dims = len(input_size)
+    size, _ = _get_size(scale_factor, size, dims, input_size)
+    if all(a == b for a, b in zip(size, input_size)):
         ret = x
     else:
         remove_dim = False
@@ -937,18 +938,7 @@ interpolate.partial_mixed_handler = (
     < 4
     and mode not in ["nearest", "area", "bicubic", "nd"]
     and not align_corners
-    and (
-        recompute_scale_factor
-        or mode
-        not in [
-            "linear",
-            "bilinear",
-            "trilinear",
-            "tf_bicubic",
-            "lanczos3",
-            "lanczos5",
-        ]
-    )
+    and recompute_scale_factor
 )
 
 

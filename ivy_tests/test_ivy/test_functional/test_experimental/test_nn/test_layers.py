@@ -84,18 +84,6 @@ def _interp_args(draw, mode=None, mode_list=None):
             )
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
-    align_corners = None
-    if mode in [
-        "linear",
-        "bilinear",
-        "trilinear",
-        "nd",
-        "tf_bicubic",
-        "lanczos3",
-        "lanczos5",
-        "bicubic",
-    ]:
-        align_corners = draw(st.booleans())
     if mode == "linear":
         num_dims = 3
     elif mode in [
@@ -138,6 +126,7 @@ def _interp_args(draw, mode=None, mode_list=None):
             abs_smallest_val=1e-04,
         )
     )
+    align_corners = draw(st.booleans())
     if draw(st.booleans()):
         if draw(st.booleans()):
             scale_factor = draw(
@@ -1090,7 +1079,7 @@ def test_interpolate(dtype_x_mode, test_flags, backend_fw, fn_name, on_device):
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-01,
-        atol_=1e-01,
+        atol_=1e-03,
         x=x[0],
         size=size,
         mode=mode,
