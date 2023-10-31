@@ -214,13 +214,7 @@ def _get_x_axes_starts_ends(draw):
         )
     )
 
-    axes = draw(
-        helpers.get_axis(
-            shape=shape,
-            allow_neg=True,
-            force_tuple=True
-        )
-    )
+    axes = draw(helpers.get_axis(shape=shape, allow_neg=True, force_tuple=True))
     axes_shape = [len(a) for a in axes]
     starts = draw(
         helpers.array_values(dtype=helpers.get_dtypes("int"), shape=axes_shape)
