@@ -210,7 +210,10 @@ def _get_x_axes_starts_ends(draw):
     )
     x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"), shape=shape, min_value=0, max_value=10
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            min_value=0,
+            max_value=10,
         )
     )
 
