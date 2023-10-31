@@ -28,13 +28,13 @@ def broadcast_to(x, shape, name=None):
 @with_supported_dtypes(
     {
         "2.5.2 and below": (
-                "bool",
-                "float16",
-                "float32",
-                "float64",
-                "int32",
-                "int64",
-                "uint8",
+            "bool",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "uint8",
         )
     },
     "paddle",
@@ -109,12 +109,12 @@ def reshape(x, shape, name=None):
 @with_supported_dtypes(
     {
         "2.5.0 and below": (
-                "float32",
-                "float64",
-                "int32",
-                "int64",
-                "complex64",
-                "complex128",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
         )
     },
     "paddle",
@@ -128,11 +128,11 @@ def roll(x, shifts, axis=None, name=None):
     {
         "2.5.2 and above": {
             "cpu": (
-                    "bool",
-                    "int32",
-                    "int64",
-                    "float32",
-                    "float64",
+                "bool",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
             ),
             "gpu": ("float16",),
         },
@@ -227,10 +227,10 @@ def unique_consecutive(x, axis=0):
 @with_supported_dtypes(
     {
         "2.5.2 and below": (
-                "float32",
-                "float64",
-                "int32",
-                "int64",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
         )
     },
     "paddle",
