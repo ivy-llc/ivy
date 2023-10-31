@@ -235,9 +235,10 @@ def _get_x_axes_starts_ends(draw):
         helpers.array_values(
             dtype=helpers.get_dtypes("signed_integer"),
             shape=axes_shape,
+            exclude_min=True,
+            min_value=0
         )
     )
-    strides = (i if i != 0 else 1 for i in strides)
     return x_dtype, x, axes, starts, ends, strides
 
 
