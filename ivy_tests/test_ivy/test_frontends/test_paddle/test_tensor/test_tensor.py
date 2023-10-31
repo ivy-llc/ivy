@@ -222,7 +222,9 @@ def _get_x_axes_starts_ends(draw):
     starts = draw(
         helpers.array_values(dtype=helpers.get_dtypes("int64"), shape=axes_shape)
     )
-    ends = draw(helpers.array_values(dtype=helpers.get_dtypes("int64"), shape=axes_shape))
+    ends = draw(
+        helpers.array_values(dtype=helpers.get_dtypes("int64"), shape=axes_shape)
+    )
     strides = draw(
         helpers.array_values(dtype=helpers.get_dtypes("int64"), shape=axes_shape)
     )
