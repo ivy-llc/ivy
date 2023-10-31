@@ -1107,4 +1107,4 @@ def nanquantile(
     >>> ivy.quantile(a, q, interpolation='lower')
     ivy.array([1., 3.])
     """
-    # return ivy.current_backend(a).nanquantile(a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out)
+    return ivy.current_backend(a).nanquantile(a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out)
