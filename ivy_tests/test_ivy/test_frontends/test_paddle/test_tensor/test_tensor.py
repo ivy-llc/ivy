@@ -236,7 +236,7 @@ def _get_x_axes_starts_ends(draw):
             dtype=helpers.get_dtypes("signed_integer"),
             shape=axes_shape,
             exclude_min=True,
-            min_value=0
+            min_value=0,
         )
     )
     return x_dtype, x, axes, starts, ends, strides
