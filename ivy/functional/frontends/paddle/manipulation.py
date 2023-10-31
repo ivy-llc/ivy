@@ -168,8 +168,19 @@ def stack(x, axis=0, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5. and below": ("int64", "float64", "complex128", "float32", "complex64", "int32", "uint8", "bfloat16",
-                        "bool")},
+    {
+        "2.5. and below": (
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+            "int32",
+            "uint8",
+            "bfloat16",
+            "bool",
+        )
+    },
     "paddle",
 )
 @to_ivy_arrays_and_back
