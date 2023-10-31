@@ -223,7 +223,7 @@ def nanquantile(
     q,
     axis=None,
     out=None,
-    overwrite_input=False,
+    overwrite_input=None,
     method="linear",
     keepdims=False,
     interpolation=None,
