@@ -86,7 +86,7 @@ def _squeeze_helper(query, x_ndim):
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("int8", "int16", "float16", "complex64", "complex128")
         }
     },

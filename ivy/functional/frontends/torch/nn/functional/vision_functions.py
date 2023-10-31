@@ -366,6 +366,14 @@ def interpolate(
     recompute_scale_factor=None,
     antialias=False,
 ):
+    if (
+        mode not in ["linear", "bilinear", "bicubic", "trilinear"]
+        and align_corners is not None
+    ):
+        raise ivy.utils.exceptions.IvyException(
+            "align_corners option can only be set with the interpolating"
+            f"modes: linear | bilinear | bicubic | trilinear (got {mode})"
+        )
     ivy.utils.assertions.check_elem_in_list(
         ivy.get_num_dims(input),
         range(3, 6),
@@ -381,7 +389,7 @@ def interpolate(
         mode=mode,
         scale_factor=scale_factor,
         recompute_scale_factor=recompute_scale_factor,
-        align_corners=align_corners,
+        align_corners=True if align_corners else False,
         antialias=antialias,
     )
 
