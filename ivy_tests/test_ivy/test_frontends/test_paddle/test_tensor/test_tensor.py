@@ -4699,7 +4699,7 @@ def test_paddle_tensor_heaviside(
     method_name="strided_slice",
     input_axes_starts_ends=_get_x_axes_starts_ends(),
 )
-def test_paddle_tensor_stided_slice(
+def test_paddle_tensor_strided_slice(
     input_axes_starts_ends,
     frontend_method_data,
     init_flags,

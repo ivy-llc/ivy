@@ -232,12 +232,12 @@ class Tensor:
     @with_supported_dtypes(
         {
             "2.5.2 and below": (
-                "bool",
-                "int32",
-                "int64",
-                "float16",
-                "float32",
-                "float64",
+                    "bool",
+                    "int32",
+                    "int64",
+                    "float16",
+                    "float32",
+                    "float64",
             )
         },
         "paddle",
