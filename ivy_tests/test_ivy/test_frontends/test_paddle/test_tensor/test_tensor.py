@@ -218,37 +218,25 @@ def _get_x_axes_starts_ends(draw):
     )
 
     axes = draw(helpers.get_axis(shape=shape, allow_neg=False, force_tuple=True))
-    starts = []
-    ends = []
-    strides = []
-    for i in range(len(axes)):
-        starts.append(
-            draw(
+    axes_shape = (len(axes),)
+    starts = draw(
                 helpers.array_values(
                     dtype=helpers.get_dtypes("signed_integer"),
-                    shape=(1,),
-                    min_value=-1 * shape[axes[i]],
-                    max_value=shape[axes[i]],
+                    shape=axes_shape,
                 )
-            )[0]
-        )
-        ends.append(
-            draw(
+            )
+    ends = draw(
                 helpers.array_values(
                     dtype=helpers.get_dtypes("signed_integer"),
-                    shape=(1,),
-                    min_value=-1 * shape[axes[i]],
-                    max_value=shape[axes[i]],
+                    shape=axes_shape,
                 )
-            )[0]
-        )
-        strides.append(
-            draw(
+            )
+    strides = draw(
                 helpers.array_values(
-                    dtype=helpers.get_dtypes("signed_integer"), shape=(1,)
+                    dtype=helpers.get_dtypes("signed_integer"),
+                    shape=axes_shape,
                 )
-            )[0]
-        )
+            )
     return x_dtype, x, axes, starts, ends, strides
 
 
