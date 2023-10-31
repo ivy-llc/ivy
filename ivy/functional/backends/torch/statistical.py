@@ -32,20 +32,12 @@ def min(
             return x
 
     if where is not None:
-        if x.dtype == torch.int8:
-            max_val = 127
-        elif x.dtype == torch.int16:
-            max_val = 32767
-        elif x.dtype == torch.int32:
-            max_val = 2147483647
-        elif x.dtype == torch.int64:
-            max_val = 922337203685477580
-        elif x.dtype == torch.uint8:
-            max_val = 255
-        else:
-            max_val = float("inf")
+        max_val = (
+            ivy.iinfo(x.dtype).max
+            if ivy.is_int_dtype(x.dtype)
+            else ivy.finfo(x.dtype).max
+        )
         val = torch.ones_like(x) * max_val
-        # print("val=",val)
         val = val.type(x.dtype)
         x = torch.where(where, x, val)
     if not keepdims and not axis and axis != 0:

@@ -27,24 +27,11 @@ def min(
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
     if where is not None:
-        if x.dtype == tf.int8:
-            max_val = tf.constant(127, dtype=x.dtype)
-        elif x.dtype == tf.int16:
-            max_val = tf.constant(32767, dtype=x.dtype)
-        elif x.dtype == tf.int32:
-            max_val = tf.constant(2147483647, dtype=x.dtype)
-        elif x.dtype == tf.int64:
-            max_val = tf.constant(9223372036854775807, dtype=x.dtype)
-        elif x.dtype == tf.uint8:
-            max_val = tf.constant(255, dtype=x.dtype)
-        elif x.dtype == tf.uint16:
-            max_val = tf.constant(65535, dtype=x.dtype)
-        elif x.dtype == tf.uint32:
-            max_val = tf.constant(4294967295, dtype=x.dtype)
-        elif x.dtype == tf.uint64:
-            max_val = tf.constant(18446744073709551615, dtype=x.dtype)
-        else:
-            max_val = tf.constant(float("inf"), dtype=x.dtype)
+        max_val = (
+            ivy.iinfo(x.dtype).max
+            if ivy.is_int_dtype(x.dtype)
+            else ivy.finfo(x.dtype).max
+        )
         x = tf.where(where, x, tf.ones_like(x) * max_val)
     result = tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
     if initial is not None:

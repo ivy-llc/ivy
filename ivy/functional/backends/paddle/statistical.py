@@ -42,19 +42,18 @@ def min(
         ret = paddle.complex(real, imag)
     else:
         if where is not None:
-            if x.dtype == paddle.int32:
-                max_val = 2147483647
-            elif x.dtype == paddle.int64:
-                max_val = 922337203685477580
-            else:
-                max_val = float("inf")
+            max_val = (
+                ivy.iinfo(x.dtype).max
+                if ivy.is_int_dtype(x.dtype)
+                else ivy.finfo(x.dtype).max
+            )
+            max_val = max_val / 10
+            # max_val becomes negative after multiplying with paddle.ones_like(x)
+            # therefore reduced it
             val = paddle.ones_like(x) * max_val
-            # print("val=",val)
             val = val.astype(ret_dtype)
             x = paddle.where(where, x, val)
-            # print(x)
         ret = paddle.amin(x, axis=axis, keepdim=keepdims)
-        # print(ret)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
