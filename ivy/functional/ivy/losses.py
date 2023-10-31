@@ -75,16 +75,16 @@ def cross_entropy(
 
     Examples
     --------
-    >>> y = ivy.array([0, 0, 1, 0],[1, 0, 0, 0])
-    >>> x = ivy.array([0.25, 0.25, 0.25, 0.25], [0.7, 0.1, 0.2, 0.1])
-    >>> print(ivy.cross_entropy(y, x))
-    ivy.array([1.3862944 , 0.45198512])
+    >>> y = ivy.array([0, 0, 1, 0])
+    >>> x = ivy.array([0.25, 0.25, 0.25, 0.25])
+    >>> print(ivy.cross_entropy(x, y))
+    ivy.array([0.        , 0.        , 1.38629436, 0.        ])
 
-    >>> print(ivy.cross_entropy(y, x, reduction="sum"))
-    ivy.array(1.8382795)
+    >>> print(ivy.cross_entropy(x, y, reduction="sum"))
+    ivy.array(1.38629436)
 
-    >>> print(ivy.cross_entropy(y, x, reduction="mean"))
-    ivy.array(0.91913974)
+    >>> print(ivy.cross_entropy(x, y, reduction="mean"))
+    ivy.array(0.34657359)
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(input, epsilon, 1 - epsilon)
