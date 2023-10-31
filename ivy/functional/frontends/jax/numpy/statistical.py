@@ -523,6 +523,32 @@ def nanpercentile(
     return _nanquantile_unchecked(a, q, axis, out, overwrite_input, method, keepdims)
 
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.19 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
+def nanquantile(
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    # ivy.set_inplace_mode('strict')
+    # We delete nan values
+    a = a[~ivy.isnan(a)]
+
+    # We calculate and return the quantile
+    return ivy.quantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
+    )
+
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
@@ -681,7 +707,6 @@ def nanquantile(
         r = ivy.reshape(r, new_dims)
 
     return r
-
 
 @handle_jax_dtype
 @with_unsupported_dtypes({"0.4.19 and below": ("bfloat16",)}, "jax")
