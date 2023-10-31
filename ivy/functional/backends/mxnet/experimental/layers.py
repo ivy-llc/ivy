@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import List, Optional, Union, Tuple, Literal, Sequence
 import mxnet as mx
 
 # local
@@ -74,7 +74,7 @@ def avg_pool1d(
     x: mx.nd.NDArray,
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -89,7 +89,7 @@ def avg_pool2d(
     x: mx.nd.NDArray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -105,7 +105,7 @@ def avg_pool3d(
     x: mx.nd.NDArray,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
