@@ -221,17 +221,17 @@ def _get_x_axes_starts_ends(draw):
     axes_shape = (len(axes),)
     starts = draw(
         helpers.array_values(
-            dtype=['int64'], shape=axes_shape
+            dtype=helpers.get_dtypes(kind="signed_integer", full=False), shape=axes_shape
         )
     )
     ends = draw(
         helpers.array_values(
-            dtype=['int64'], shape=axes_shape
+            dtype=helpers.get_dtypes(kind="signed_integer", full=False), shape=axes_shape
         )
     )
     strides = draw(
         helpers.array_values(
-            dtype=['int64'], shape=axes_shape
+            dtype=helpers.get_dtypes(kind="signed_integer", full=False), shape=axes_shape
         )
     )
     return x_dtype, x, axes, starts, ends, strides
