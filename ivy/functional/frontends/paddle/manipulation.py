@@ -28,13 +28,13 @@ def broadcast_to(x, shape, name=None):
 @with_supported_dtypes(
     {
         "2.5.2 and below": (
-            "bool",
-            "float16",
-            "float32",
-            "float64",
-            "int32",
-            "int64",
-            "uint8",
+                "bool",
+                "float16",
+                "float32",
+                "float64",
+                "int32",
+                "int64",
+                "uint8",
         )
     },
     "paddle",
@@ -109,12 +109,12 @@ def reshape(x, shape, name=None):
 @with_supported_dtypes(
     {
         "2.5.0 and below": (
-            "float32",
-            "float64",
-            "int32",
-            "int64",
-            "complex64",
-            "complex128",
+                "float32",
+                "float64",
+                "int32",
+                "int64",
+                "complex64",
+                "complex128",
         )
     },
     "paddle",
@@ -128,11 +128,11 @@ def roll(x, shifts, axis=None, name=None):
     {
         "2.5.2 and above": {
             "cpu": (
-                "bool",
-                "int32",
-                "int64",
-                "float32",
-                "float64",
+                    "bool",
+                    "int32",
+                    "int64",
+                    "float32",
+                    "float64",
             ),
             "gpu": ("float16",),
         },
@@ -177,9 +177,13 @@ def strided_slice(x, axes, starts, ends, strides):
     slices = [slice(None) for i in range(len(shape))]
     if axes:
         for i in axes:
+            starts[i] = starts[i] if (starts[i]) > 0 else -starts[i] - 1
+            ends[i] = ends[i] if (ends[i]) > 0 else -ends[i] - 1
             slices[i] = slice(starts[i], ends[i], strides[i])
     else:
         for i, start, end, stride in enumerate(zip(starts, ends, strides)):
+            start = start if start > 0 else -start - 1
+            end = end if end > 0 else -end - 1
             slices[i] = slice(start, end, stride)
     slices = tuple(slices)
     return x[slices]
@@ -227,10 +231,10 @@ def unique_consecutive(x, axis=0):
 @with_supported_dtypes(
     {
         "2.5.2 and below": (
-            "float32",
-            "float64",
-            "int32",
-            "int64",
+                "float32",
+                "float64",
+                "int32",
+                "int64",
         )
     },
     "paddle",
