@@ -217,10 +217,8 @@ def _get_x_axes_starts_ends(draw):
     axes = draw(
         helpers.get_axis(
             shape=shape,
-            min_size=0,
-            max_size=2,
             allow_neg=True,
-            force_int=True,
+            force_tuple=True
         )
     )
     axes_shape = [len(a) for a in axes]
