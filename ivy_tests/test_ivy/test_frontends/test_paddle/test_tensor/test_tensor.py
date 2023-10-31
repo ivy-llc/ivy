@@ -222,13 +222,13 @@ def _get_x_axes_starts_ends(draw):
     ends = []
     strides = []
     for i in range(len(axes)):
-        starts.append(draw(helpers.array_values(dtype=["signed_integer"], shape=(1,),
+        starts.append(draw(helpers.array_values(dtype=helpers.get_dtypes("signed_integer"), shape=(1,),
                                                 min_value=-1 * shape[axes[i]],
                                                 max_value=shape[axes[i]]))[0])
-        ends.append(draw(helpers.array_values(dtype=["signed_integer"], shape=(1,),
+        ends.append(draw(helpers.array_values(dtype=helpers.get_dtypes("signed_integer"), shape=(1,),
                                               min_value=-1 * shape[axes[i]],
                                               max_value=shape[axes[i]]))[0])
-        strides.append(draw(helpers.array_values(dtype=["signed_integer"], shape=(1,)))[0])
+        strides.append(draw(helpers.array_values(dtype=helpers.get_dtypes("signed_integer"), shape=(1,)))[0])
     return x_dtype, x, axes, starts, ends, strides
 
 
