@@ -160,7 +160,7 @@ original_backend_dict = None
 
 
 def set_sub_backend(sub_backend_str: str):
-    if ivy.backend == "":
+    if not ivy.backend_stack:
         logging.warning("You must set a backend first")
         return
 

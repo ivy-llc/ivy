@@ -236,22 +236,6 @@ def _handle_backend_specific_vars(target, backend):
         target.set_global_attr("RNG", target.functional.backends.jax.random.RNG)
 
 
-def _is_variable(x, backend) -> bool:
-    x = ivy.to_native(x, nested=True)
-    return ivy.nested_map(
-        lambda x: backend._is_variable(x),
-        x,
-        include_derived=True,
-        shallow=False,
-    )
-
-
-def _variable_data(x, backend):
-    x = ivy.to_native(x, nested=True)
-    ret = ivy.nested_map(lambda x: backend.variable_data(x), x, include_derived=True)
-    return ivy.nested_map(ivy.to_ivy, ret, include_derived=True)
-
-
 def _data_to_new_backend(x, previous_backend):
     device = previous_backend.dev(x)
     try:
@@ -283,7 +267,7 @@ def dynamic_backend_converter(backend_stack):
                 ):
                     return False
 
-                return _is_variable(x, previous_backend)
+                return previous_backend.gradients._is_variable(x)
 
             return obj.cont_map(lambda x, kc: _map_fn(x)).cont_all_true()
 
@@ -295,7 +279,7 @@ def dynamic_backend_converter(backend_stack):
                 "jaxlib.xla_extension",
             ):
                 return False
-            return _is_variable(obj, previous_backend)
+            return previous_backend.gradients._is_variable(obj)
 
     # get all ivy array instances in the project scope
     container_list = [
@@ -304,7 +288,9 @@ def dynamic_backend_converter(backend_stack):
         if "ivy" in type(obj).__module__ and isinstance(obj, ivy.Container)
     ]
     cont_array_idxs = ivy.nested_argwhere(
-        container_list, lambda x: isinstance(x, ivy.Array)
+        container_list,
+        lambda x: isinstance(x, ivy.Array)
+        and x.backend == previous_backend.current_backend_str(),
     )
     cont_array_vals = ivy.multi_index_nest(container_list, cont_array_idxs)
     array_list = [
@@ -326,19 +312,21 @@ def dynamic_backend_converter(backend_stack):
     # to the new backend
 
     for obj in new_objs:
-        if _is_var(obj):
-            # add variable object id to set
-            native_var = _variable_data(obj, previous_backend)
-            data = _data_to_new_backend(native_var, previous_backend)
-            new_data = _variable(data)
+        # the following if condition avoids converting arrays that were already
+        # updated inplace i.e. are references to other arrays
+        if obj.backend == previous_backend.current_backend_str():
+            if _is_var(obj):
+                native_var = previous_backend.gradients._variable_data(obj)
+                data = _data_to_new_backend(native_var, previous_backend)
+                new_data = _variable(data)
 
-        else:
-            new_data = _data_to_new_backend(obj, previous_backend)
+            else:
+                new_data = _data_to_new_backend(obj, previous_backend)
 
-        if isinstance(obj, ivy.Container):
-            obj.cont_inplace_update(new_data)
-        else:
-            obj.data = new_data.data
+            if isinstance(obj, ivy.Container):
+                obj.cont_inplace_update(new_data)
+            else:
+                obj.data = new_data.data
 
 
 @prevent_access_locally

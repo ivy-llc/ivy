@@ -441,7 +441,7 @@ class Shape(Sequence):
 
     def with_rank(self, rank):
         try:
-            return self.merge_with(unknown_shape(rank=rank))
+            return self.merge_with(self.unknown_shape(rank=rank))
         except ValueError:
             raise ValueError(f"Shape {self} must have rank {rank}")
 
@@ -978,7 +978,7 @@ def del_global_attr(attr_name):
     delattr(globals_vars, attr_name)
 
 
-backend = ""
+backend = ivy.utils.backend.handler.implicit_backend
 backend_version = {}
 
 native_inplace_support = None
