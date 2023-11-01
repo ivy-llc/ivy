@@ -2,6 +2,7 @@
 import os
 import sys
 from pymongo import MongoClient
+from pymongo.errors import WriteError
 import requests
 import json
 import old_run_test_helpers as old_helpers
@@ -105,7 +106,7 @@ if __name__ == "__main__":
 
     # pull gpu image for gpu testing
     if device == "gpu":
-        os.system("docker pull unifyai/multicuda:base_and_requirements")
+        os.system("docker pull unifyai/ivy:latest-gpu")
 
     # read the tests to be run
     with open("tests_to_run", "r") as f:
@@ -151,16 +152,15 @@ if __name__ == "__main__":
                 )
                 backend = backend.split("/")[0] + "\n"
                 backend_version = backend_version.strip()
-                print("Running", command)
 
             else:
-                device = ""
+                device_str = ""
                 image = "unifyai/ivy:latest"
 
                 # gpu tests
                 if device == "gpu":
-                    image = "unifyai/multicuda:base_and_requirements"
-                    device = " --device=gpu:0"
+                    image = "unifyai/ivy:latest-gpu"
+                    device_str = " --device=gpu:0"
 
                 os.system(
                     'docker run --name test-container -v "$(pwd)":/ivy -v '
@@ -169,7 +169,7 @@ if __name__ == "__main__":
                 )
                 command = (
                     "docker exec test-container python3 -m pytest --tb=short"
-                    f" {test_path} {device} --backend {backend}"
+                    f" {test_path} {device_str} --backend {backend}"
                 )
                 os.system(command)
 
@@ -190,32 +190,35 @@ if __name__ == "__main__":
             frontend_version = None
             if coll[0] in ["numpy", "jax", "tensorflow", "torch", "paddle"]:
                 frontend_version = "latest-stable"
-            if priority_flag:
-                print("Updating Priority DB")
-                old_helpers.update_individual_test_results(
-                    old_db_priority[coll[0]],
-                    coll[1],
-                    submod,
-                    backend,
-                    test_fn,
-                    res,
-                    "latest-stable",
-                    frontend_version,
-                    device,
-                )
-            else:
-                print(backend_version)
-                old_helpers.update_individual_test_results(
-                    old_db[coll[0]],
-                    coll[1],
-                    submod,
-                    backend,
-                    test_fn,
-                    res,
-                    backend_version,
-                    frontend_version,
-                    device,
-                )
+            try:
+                if priority_flag:
+                    print("Updating Priority DB")
+                    old_helpers.update_individual_test_results(
+                        old_db_priority[coll[0]],
+                        coll[1],
+                        submod,
+                        backend,
+                        test_fn,
+                        res,
+                        "latest-stable",
+                        frontend_version,
+                        device,
+                    )
+                else:
+                    print(backend_version)
+                    old_helpers.update_individual_test_results(
+                        old_db[coll[0]],
+                        coll[1],
+                        submod,
+                        backend,
+                        test_fn,
+                        res,
+                        backend_version,
+                        frontend_version,
+                        device,
+                    )
+            except WriteError:
+                print("Old DB Write Error")
 
             # skip updating db for instance methods as of now
             # run transpilation tests if the test passed
@@ -223,16 +226,19 @@ if __name__ == "__main__":
                 print(f"\n{'*' * 100}")
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
-                sys.stdout.flush()
                 command = f"{command} --num-examples 5 --with-transpile"
-                os.system("docker cp test-container:/ivy/report.json .")
+                sys.stdout.flush()
+                os.system(command)
+                os.system(
+                    "docker cp test-container:/ivy/report.json"
+                    f" {__file__[: __file__.rfind(os.sep)]}/report.json"
+                )
 
             # load data from report if generated
             report_path = os.path.join(
                 __file__[: __file__.rfind(os.sep)], "report.json"
             )
             report_content = {}
-            print(f"REPORT FILE FOUND : {os.path.exists(report_path)}")
             if os.path.exists(report_path):
                 report_content = json.load(open(report_path))
 
