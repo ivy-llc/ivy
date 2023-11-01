@@ -978,7 +978,7 @@ def del_global_attr(attr_name):
     delattr(globals_vars, attr_name)
 
 
-backend = ivy.utils.backend.handler.implicit_backend
+backend = ""
 backend_version = {}
 
 native_inplace_support = None

@@ -160,7 +160,7 @@ class Array(
         self._dev_str = None
         self._pre_repr = None
         self._post_repr = None
-        self._backend = ivy.backend
+        self._backend = ivy.current_backend(self._data).backend
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:

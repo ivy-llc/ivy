@@ -1826,7 +1826,7 @@ def current_backend_str() -> Union[str, None]:
     """
     fw = current_backend()
     if not backend_stack:
-        return ivy.utils.backend.handler.implicit_backend
+        return ""
     return fw.current_backend_str()
 
 
