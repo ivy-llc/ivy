@@ -112,6 +112,11 @@ def max_pool2d(
     data_format="NCHW",
     name=None,
 ):
+    if stride is None:
+        stride = kernel_size
+    kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "2d", name="padding")
+
     if data_format not in ["NCHW", "NHWC"]:
         raise ValueError(
             "Attr(data_format) should be 'NCHW' or 'NHWC'. Received "
