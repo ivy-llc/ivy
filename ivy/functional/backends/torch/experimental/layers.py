@@ -316,7 +316,7 @@ def avg_pool1d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -406,7 +406,7 @@ def avg_pool2d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -493,7 +493,7 @@ def avg_pool3d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -907,10 +907,12 @@ def interpolate(
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
-    align_corners: Optional[bool] = None,
+    align_corners: bool = False,
     antialias: bool = False,
     out: Optional[torch.Tensor] = None,
 ):
+    if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
+        align_corners = None
     return torch.nn.functional.interpolate(
         x,
         size=size,
@@ -922,15 +924,19 @@ def interpolate(
     )
 
 
-interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
-    "tf_area",
-    "nd",
-    "tf_bicubic",
-    "mitchellcubic",
-    "lanczos3",
-    "lanczos5",
-    "gaussian",
-]
+interpolate.partial_mixed_handler = (
+    lambda *args, mode="linear", align_corners=False, **kwargs: mode
+    not in [
+        "tf_area",
+        "nd",
+        "tf_bicubic",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ]
+    and (mode in ["linear", "bilinear", "bicubic", "trilinear"] or not align_corners)
+)
 
 
 @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
