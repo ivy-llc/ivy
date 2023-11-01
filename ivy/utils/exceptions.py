@@ -242,9 +242,7 @@ def _add_native_error(default):
 def _combine_messages(*messages, include_backend=True):
     if not include_backend:
         return " ".join(messages)
-    default = [
-        "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
-    ]
+    default = ivy.current_backend_str()
     delimiter = ": "
     for message in messages:
         default.append(message)
