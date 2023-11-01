@@ -51,7 +51,6 @@ from .experimental import (
     _ArrayWithStatisticalExperimental,
     _ArrayWithUtilityExperimental,
 )
-from ivy.utils.backend.handler import _get_backend_for_arg
 
 
 class Array(
@@ -161,7 +160,7 @@ class Array(
         self._dev_str = None
         self._pre_repr = None
         self._post_repr = None
-        self._backend = _get_backend_for_arg(self.data.__class__.__module__).backend
+        self._backend = ivy.backend
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
@@ -190,7 +189,7 @@ class Array(
     @dynamic_backend.setter
     def dynamic_backend(self, value):
         from ivy.functional.ivy.gradients import _variable
-        from ivy.utils.backend.handler import _data_to_new_backend
+        from ivy.utils.backend.handler import _data_to_new_backend, _get_backend_for_arg
 
         if value:
             ivy_backend = ivy.with_backend(self._backend)

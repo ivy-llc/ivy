@@ -237,7 +237,7 @@ def _handle_backend_specific_vars(target, backend):
 
 
 def _data_to_new_backend(x, previous_backend):
-    device = previous_backend.dev(x)
+    device = previous_backend.dev(x.data)
     try:
         result = ivy.from_dlpack(previous_backend.to_dlpack(x.data))
         result = ivy.to_device(result, device)
