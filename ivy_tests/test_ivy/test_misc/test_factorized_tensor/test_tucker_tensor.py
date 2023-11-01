@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 
-@pytest.mark.parametrize("shape, rank", [((5, 4, 6), (3, 2, 3))])
+@pytest.mark.parametrize(("shape", "rank"), [((5, 4, 6), (3, 2, 3))])
 def test_n_param_tucker(shape, rank):
     tucker_tensor = ivy.random_tucker(shape, rank)
     true_n_param = ivy.prod(ivy.shape(tucker_tensor[0])) + ivy.sum(
@@ -14,7 +14,7 @@ def test_n_param_tucker(shape, rank):
     assert np.allclose(n_param, true_n_param)
 
 
-@pytest.mark.parametrize("shape, rank", [((3, 4, 5), 4)])
+@pytest.mark.parametrize(("shape", "rank"), [((3, 4, 5), 4)])
 def test_tucker_copy(shape, rank):
     tucker_tensor = ivy.random_tucker(shape, rank)
     core, factors = tucker_tensor
@@ -28,7 +28,7 @@ def test_tucker_copy(shape, rank):
     )
 
 
-@pytest.mark.parametrize("shape, ranks", [((5, 4, 6), (3, 2, 3))])
+@pytest.mark.parametrize(("shape", "ranks"), [((5, 4, 6), (3, 2, 3))])
 def test_tucker_mode_dot(shape, ranks):
     tucker_ten = ivy.random_tucker(shape, ranks, full=False)
     full_tensor = ivy.TuckerTensor.tucker_to_tensor(tucker_ten)
@@ -57,7 +57,7 @@ def test_tucker_mode_dot(shape, ranks):
     assert np.allclose(true_res, res)
 
 
-@pytest.mark.parametrize("shape, rank", [((3, 4, 5), (3, 2, 4))])
+@pytest.mark.parametrize(("shape", "rank"), [((3, 4, 5), (3, 2, 4))])
 def test_tucker_normalize(shape, rank):
     tucker_ten = ivy.random_tucker(shape, rank)
     core, factors = ivy.TuckerTensor.tucker_normalize(tucker_ten)
@@ -71,7 +71,7 @@ def test_tucker_normalize(shape, rank):
 
 
 @pytest.mark.parametrize(
-    "X, ranks, true_res",
+    ("X", "ranks", "true_res"),
     [
         (
             [
@@ -107,7 +107,7 @@ def test_tucker_to_tensor(X, ranks, true_res):
     assert np.allclose(true_res, res)
 
 
-@pytest.mark.parametrize("shape, ranks", [((4, 3, 5, 2), (2, 2, 3, 4))])
+@pytest.mark.parametrize(("shape", "ranks"), [((4, 3, 5, 2), (2, 2, 3, 4))])
 def test_tucker_to_unfolded(shape, ranks):
     G = ivy.random_uniform(shape=shape)
     U = [ivy.random_uniform(shape=(ranks[i], G.shape[i])) for i in range(4)]
@@ -126,7 +126,7 @@ def test_tucker_to_unfolded(shape, ranks):
         )
 
 
-@pytest.mark.parametrize("shape, ranks", [((4, 3, 5, 2), (2, 2, 3, 4))])
+@pytest.mark.parametrize(("shape", "ranks"), [((4, 3, 5, 2), (2, 2, 3, 4))])
 def test_tucker_to_vec(shape, ranks):
     G = ivy.random_uniform(shape=shape)
     ranks = [2, 2, 3, 4]
@@ -191,7 +191,7 @@ def test_validate_tucker_rank(tol):
 
 # These tests have been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tests/test_tucker_tensor.py
-@pytest.mark.parametrize("true_shape, true_rank", [((3, 4, 5), (3, 2, 4))])
+@pytest.mark.parametrize(("true_shape", "true_rank"), [((3, 4, 5), (3, 2, 4))])
 def test_validate_tucker_tensor(true_shape, true_rank):
     core, factors = ivy.random_tucker(true_shape, true_rank)
 

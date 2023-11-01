@@ -5,7 +5,7 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    "shape, rank",
+    ("shape", "rank"),
     [
         (
             (3, 4, 5),
@@ -28,7 +28,7 @@ def test_cp_flip_sign(shape, rank):
 
 
 @pytest.mark.parametrize(
-    "shape, rank",
+    ("shape", "rank"),
     [
         (
             (8, 5, 6, 4),
@@ -64,7 +64,7 @@ def test_cp_lstsq_grad(shape, rank):
 
 
 @pytest.mark.parametrize(
-    "shape, rank",
+    ("shape", "rank"),
     [
         (
             (5, 4, 6),
@@ -101,7 +101,7 @@ def test_cp_mode_dot(shape, rank):
 
 
 @pytest.mark.parametrize(
-    "shape, rank, tol",
+    ("shape", "rank", "tol"),
     [
         (
             (8, 5, 6, 4),
@@ -123,7 +123,7 @@ def test_cp_norm(shape, rank, tol):
 
 
 @pytest.mark.parametrize(
-    "shape, rank",
+    ("shape", "rank"),
     [
         (
             (3, 4, 5),
@@ -145,7 +145,7 @@ def test_cp_normalize(shape, rank):
 
 
 @pytest.mark.parametrize(
-    "shapeU1, shapeU2, shapeU3, shapeU4, true_res, columns, rows",
+    ("shapeU1", "shapeU2", "shapeU3", "shapeU4", "true_res", "columns", "rows"),
     [
         (
             (3, 3),
@@ -201,7 +201,7 @@ def test_cp_to_tensor(shapeU1, shapeU2, shapeU3, shapeU4, true_res, columns, row
         matrices.insert(i, U_i)
 
 
-@pytest.mark.parametrize("shape, expected", [((2, 2), [[-2, -2], [6, 10]])])
+@pytest.mark.parametrize(("shape", "expected"), [((2, 2), [[-2, -2], [6, 10]])])
 def test_cp_to_tensor_with_weights(shape, expected):
     A = ivy.reshape(ivy.arange(1, 5, dtype=float), shape)
     B = ivy.reshape(ivy.arange(5, 9, dtype=float), shape)
@@ -222,7 +222,7 @@ def test_cp_to_tensor_with_weights(shape, expected):
 
 
 @pytest.mark.parametrize(
-    "shapeU1, shapeU2, shapeU3, shapeU4", [((3, 3), (4, 3), (2, 3), (2, 3))]
+    ("shapeU1", "shapeU2", "shapeU3", "shapeU4"), [((3, 3), (4, 3), (2, 3), (2, 3))]
 )
 def test_cp_to_unfolded(shapeU1, shapeU2, shapeU3, shapeU4):
     U1 = ivy.reshape(ivy.arange(1, 10, dtype=float), shapeU1)
@@ -243,7 +243,7 @@ def test_cp_to_unfolded(shapeU1, shapeU2, shapeU3, shapeU4):
 
 
 @pytest.mark.parametrize(
-    "shapeU1, shapeU2, shapeU3, shapeU4", [((3, 3), (4, 3), (2, 3), (2, 3))]
+    ("shapeU1", "shapeU2", "shapeU3", "shapeU4"), [((3, 3), (4, 3), (2, 3), (2, 3))]
 )
 def test_cp_to_vec(shapeU1, shapeU2, shapeU3, shapeU4):
     """Test for cp_to_vec."""
@@ -267,7 +267,7 @@ def test_cp_to_vec(shapeU1, shapeU2, shapeU3, shapeU4):
 
 
 @pytest.mark.parametrize(
-    "shape, rank",
+    ("shape", "rank"),
     [
         (
             (10, 10, 10, 4),
@@ -307,7 +307,7 @@ def test_validate_cp_rank(size):
 
 
 @pytest.mark.parametrize(
-    "true_shape, true_rank",
+    ("true_shape", "true_rank"),
     [
         (
             (3, 4, 5),
