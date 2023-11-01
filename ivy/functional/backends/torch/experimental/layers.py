@@ -29,10 +29,10 @@ def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_
 def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
     dims = {"1d": 1, "2d": 2, "3d": 3}
     if isinstance(x, int):
-        return tuple([x for _ in range(dims[pool_dims])])
+        return tuple(x for _ in range(dims[pool_dims]))
 
     if len(x) == 1:
-        return tuple([x[0] for _ in range(dims[pool_dims])])
+        return tuple(x[0] for _ in range(dims[pool_dims]))
 
     elif len(x) == dims[pool_dims]:
         return tuple(x)
@@ -95,7 +95,7 @@ def max_pool1d(
         )
     else:
         if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
+            item != 0 for sublist in padding for item in sublist
         ):
             raise NotImplementedError(
                 "Nonzero explicit padding is not supported for depthwise max pooling"
@@ -177,7 +177,7 @@ def max_pool2d(
         )
     else:
         if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
+            item != 0 for sublist in padding for item in sublist
         ):
             raise NotImplementedError(
                 "Nonzero explicit padding is not supported for depthwise max pooling"
@@ -268,7 +268,7 @@ def max_pool3d(
         )
     else:
         if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
+            item != 0 for sublist in padding for item in sublist
         ):
             raise NotImplementedError(
                 "Nonzero explicit padding is not supported for depthwise max pooling"
@@ -316,7 +316,7 @@ def avg_pool1d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -406,7 +406,7 @@ def avg_pool2d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -493,7 +493,7 @@ def avg_pool3d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -716,7 +716,7 @@ def fft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     if x.dtype in [torch.int64, torch.float64, torch.complex128]:
         out_dtype = torch.complex128
@@ -861,7 +861,7 @@ def ifft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return torch.fft.ifft(x, n, dim, norm, out=out).resolve_conj()
 
@@ -907,10 +907,12 @@ def interpolate(
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
-    align_corners: Optional[bool] = None,
+    align_corners: bool = False,
     antialias: bool = False,
     out: Optional[torch.Tensor] = None,
 ):
+    if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
+        align_corners = None
     return torch.nn.functional.interpolate(
         x,
         size=size,
@@ -922,15 +924,19 @@ def interpolate(
     )
 
 
-interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
-    "tf_area",
-    "nd",
-    "tf_bicubic",
-    "mitchellcubic",
-    "lanczos3",
-    "lanczos5",
-    "gaussian",
-]
+interpolate.partial_mixed_handler = (
+    lambda *args, mode="linear", align_corners=False, **kwargs: mode
+    not in [
+        "tf_area",
+        "nd",
+        "tf_bicubic",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ]
+    and (mode in ["linear", "bilinear", "bicubic", "trilinear"] or not align_corners)
+)
 
 
 @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
@@ -978,7 +984,7 @@ def fft2(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return torch.tensor(
         torch.fft.fft2(x, s, dim, norm, out=out), dtype=torch.complex128
@@ -1044,7 +1050,7 @@ def rfftn(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return torch.tensor(
         torch.fft.rfftn(x, s, axes, norm=norm, out=out), dtype=torch.complex128

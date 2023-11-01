@@ -664,10 +664,10 @@ class Array(
         return ivy.remainder(self._data, other)
 
     def __divmod__(self, other):
-        return tuple([ivy.divide(self._data, other), ivy.remainder(self._data, other)])
+        return ivy.divide(self._data, other), ivy.remainder(self._data, other)
 
     def __rdivmod__(self, other):
-        return tuple([ivy.divide(other, self._data), ivy.remainder(other, self._data)])
+        return ivy.divide(other, self._data), ivy.remainder(other, self._data)
 
     def __truediv__(self, other):
         """

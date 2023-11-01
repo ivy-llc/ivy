@@ -90,7 +90,7 @@ def ceil(x, /):
     return ivy.ceil(x)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def clip(a, a_min=None, a_max=None, out=None):
     return ivy.array(ivy.clip(a, a_min, a_max), dtype=a.dtype)
