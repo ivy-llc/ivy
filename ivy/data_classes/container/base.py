@@ -2132,16 +2132,14 @@ class ContainerBase(dict, abc.ABC):
              Container data in its raw form.
         """
         return_item = {}
-        for i, (key, value) in enumerate(self.items()):
+        for key, value in self.items():
             if isinstance(value, ivy.Container):
                 return_item[key] = value.cont_to_raw()
             elif key[0:3] == "it_" and tuple(self._types_to_iteratively_nest):
-                return_item = list(
-                    [
-                        v.cont_to_raw() if isinstance(v, ivy.Container) else v
-                        for v in self.values()
-                    ]
-                )
+                return_item = [
+                    v.cont_to_raw() if isinstance(v, ivy.Container) else v
+                    for v in self.values()
+                ]
                 break
             else:
                 return_item[key] = value
@@ -2251,7 +2249,7 @@ class ContainerBase(dict, abc.ABC):
         ret
             Container as flat list.
         """
-        return list(item for key, item in self.cont_to_iterator())
+        return [item for key, item in self.cont_to_iterator()]
 
     def cont_from_flat_list(self, flat_list):
         """
