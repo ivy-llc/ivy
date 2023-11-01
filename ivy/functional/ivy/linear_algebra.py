@@ -2264,7 +2264,11 @@ def svd(
 @handle_array_function
 @handle_device
 def svdvals(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    driver: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Return the singular values of a matrix (or a stack of matrices) ``x``.
@@ -2274,6 +2278,10 @@ def svdvals(
     x
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form
         ``MxN`` matrices.
+    driver
+        optional output array,name of the cuSOLVER method to be used. This keyword
+        argument only works on CUDA inputs.
+        Available options are: None, gesvd, gesvdj, and gesvda.Default: None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2387,7 +2395,7 @@ def svdvals(
         b: ivy.array([23.16134834, 10.35037804, 4.31025076, 1.35769391])
     }
     """
-    return current_backend(x).svdvals(x, out=out)
+    return current_backend(x).svdvals(x, driver=driver, out=out)
 
 
 @handle_exceptions
