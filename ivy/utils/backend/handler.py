@@ -206,6 +206,8 @@ def _set_module_backend(
     )
     backend_str = backend.current_backend_str() if backend_str is None else backend_str
     for k, v in original_dict.items():
+        if k in ivy.GLOBAL_PROPS:
+            continue
         compositional = k not in backend.__dict__
         if compositional:
             if k in invalid_dtypes and k in target.__dict__:
@@ -501,6 +503,8 @@ def previous_backend():
         # wrap backend functions if there still is a backend, and add functions
         # to ivy namespace
         for k, v in new_backend_dict.items():
+            if k in ivy.GLOBAL_PROPS:
+                continue
             if backend_stack and k in ivy_original_dict:
                 v = _wrap_function(k, v, ivy_original_dict[k])
             if k in ivy_original_dict:

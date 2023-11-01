@@ -260,6 +260,8 @@ def test_torch_interpolate(
         scale_factor,
         recompute_scale_factor,
     ) = dtype_and_input_and_other
+    if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
+        align_corners = None
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -267,8 +269,7 @@ def test_torch_interpolate(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-01,
-        atol=1e-01,
+        atol=1e-03,
         input=x[0],
         size=size,
         scale_factor=scale_factor,

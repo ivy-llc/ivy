@@ -1762,7 +1762,7 @@ def test_stable_pow(
     *, dtypes_and_xs, min_base, test_flags, backend_fw, fn_name, on_device
 ):
     dtypes, xs = dtypes_and_xs
-    assume(all(["bfloat16" not in x for x in dtypes]))
+    assume(all("bfloat16" not in x for x in dtypes))
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
