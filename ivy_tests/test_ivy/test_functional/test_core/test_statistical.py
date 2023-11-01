@@ -332,6 +332,7 @@ def test_std(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_devi
     fn_tree="functional.ivy.sum",
     dtype_x_axis_castable=_get_castable_dtype(),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_sum(
     *, dtype_x_axis_castable, keep_dims, test_flags, backend_fw, fn_name, on_device

@@ -8,6 +8,7 @@ import paddle
 import ivy
 from ivy.func_wrapper import (
     with_supported_dtypes,
+    with_unsupported_dtypes,
     with_supported_device_and_dtypes,
 )
 import ivy.functional.backends.paddle as paddle_backend
@@ -166,8 +167,8 @@ def std(
     return _std(x, axis, correction, keepdims).cast(x.dtype)
 
 
-@with_supported_dtypes(
-    {"2.5.2 and below": ("float64", "complex128", "float32", "complex64", "bool")},
+@with_unsupported_dtypes(
+    {"2.5.2 and below": ("int8", "int16", "uint8")},
     backend_version,
 )
 def sum(
