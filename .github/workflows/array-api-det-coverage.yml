@@ -42,4 +42,3 @@ jobs:
           user-email: ivy.branch@lets-unify.ai
           commit-message: Update Array API Tests Mapping
           target-branch: main${{ matrix.branch }}
-          create-target-branch-if-needed: true
