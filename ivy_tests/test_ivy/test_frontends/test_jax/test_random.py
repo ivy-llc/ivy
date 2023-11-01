@@ -115,7 +115,7 @@ def get_shape_and_arrays(draw):
 # ------------ #
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.ball",
     dtype_key=helpers.dtype_and_values(
@@ -179,7 +179,7 @@ def test_jax_ball(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.bernoulli",
     dtype_key=helpers.dtype_and_values(
@@ -234,7 +234,7 @@ def test_jax_bernoulli(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.beta",
     dtype_key=helpers.dtype_and_values(
@@ -298,7 +298,7 @@ def test_jax_beta(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.categorical",
     dtype_key=helpers.dtype_and_values(
@@ -353,7 +353,7 @@ def test_jax_categorical(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.cauchy",
     dtype_key=helpers.dtype_and_values(
@@ -408,7 +408,7 @@ def test_jax_cauchy(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.dirichlet",
     dtype_key=helpers.dtype_and_values(
@@ -478,7 +478,7 @@ def test_jax_dirichlet(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.double_sided_maxwell",
     dtype_key=helpers.dtype_and_values(
@@ -540,7 +540,7 @@ def test_jax_double_sided_maxwell(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.exponential",
     dtype_key=helpers.dtype_and_values(
@@ -595,7 +595,7 @@ def test_jax_exponential(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.fold_in",
     dtype_key=helpers.dtype_and_values(
@@ -647,7 +647,7 @@ def test_jax_fold_in(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.gamma",
     dtype_key=helpers.dtype_and_values(
@@ -705,7 +705,7 @@ def test_jax_gamma(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.generalized_normal",
     dtype_key=helpers.dtype_and_values(
@@ -766,7 +766,7 @@ def test_jax_generalized_normal(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.gumbel",
     dtype_key=helpers.dtype_and_values(
@@ -824,7 +824,7 @@ def test_jax_gumbel(
 
 
 # loggamma
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.loggamma",
     dtype_key=helpers.dtype_and_values(
@@ -882,7 +882,7 @@ def test_jax_loggamma(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.logistic",
     dtype_key=helpers.dtype_and_values(
@@ -938,7 +938,7 @@ def test_jax_logistic(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.maxwell",
     dtype_key=helpers.dtype_and_values(
@@ -993,7 +993,7 @@ def test_jax_maxwell(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.multivariate_normal",
     dtype_key=helpers.dtype_and_values(
@@ -1055,7 +1055,7 @@ def test_jax_multivariate_normal(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.normal",
     dtype_key=helpers.dtype_and_values(
@@ -1110,7 +1110,7 @@ def test_jax_normal(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.orthogonal",
     dtype_key=helpers.dtype_and_values(
@@ -1170,7 +1170,7 @@ def test_jax_orthogonal(
         assert ivy.allclose(ivy.eye(n), ivy.matmul(u.T, u))
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.pareto",
     dtype_key=helpers.dtype_and_values(
@@ -1225,7 +1225,7 @@ def test_jax_pareto(
         assert ret_np.shape == b.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.permutation",
     dtype_key=helpers.dtype_and_values(
@@ -1280,7 +1280,7 @@ def test_jax_permutation(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.poisson",
     dtype_key=helpers.dtype_and_values(
@@ -1347,7 +1347,7 @@ def test_jax_poisson(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.rademacher",
     dtype_key=helpers.dtype_and_values(
@@ -1402,7 +1402,7 @@ def test_jax_rademacher(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.randint",
     dtype_key=helpers.dtype_and_values(
@@ -1462,7 +1462,7 @@ def test_jax_randint(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.shuffle",
     dtype_key=helpers.dtype_and_values(
@@ -1521,7 +1521,7 @@ def test_jax_shuffle(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.t",
     dtype_key=helpers.dtype_and_values(
@@ -1582,7 +1582,7 @@ def test_jax_t(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.uniform",
     dtype_key=helpers.dtype_and_values(
@@ -1642,7 +1642,7 @@ def test_jax_uniform(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail()
 @handle_frontend_test(
     fn_tree="jax.random.weibull_min",
     dtype_key=helpers.dtype_and_values(

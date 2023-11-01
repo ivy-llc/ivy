@@ -55,7 +55,7 @@ def test_with_backend_cached(backend_fw):
     assert non_cached_local_ivy == cached_local_ivy
 
 
-@pytest.fixture
+@pytest.fixture()
 def traced_backends():
     traced_backends = []
     for b in _backend_dict:
