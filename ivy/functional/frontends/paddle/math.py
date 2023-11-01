@@ -314,7 +314,6 @@ def heaviside(x, y, name=None):
     return ivy.heaviside(x, y)
 
 
-
 @with_supported_dtypes(
     {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
 )
@@ -325,7 +324,6 @@ def increment(x, value=1.0, name=None):
     ):  # TODO this function will be simplified as soon as ivy.increment is add
         raise ValueError("The input tensor x must contain only one element.")
     return ivy.add(x, value)
-
 
 
 @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")

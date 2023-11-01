@@ -951,7 +951,6 @@ class Tensor:
 
     @with_supported_dtypes(
         {"2.5.2 and below": ("bool", "int32", "int64", "float32", "float64")}, "paddle"
-
     )
     def expand(self, shape, name=None):
         return paddle_frontend.expand(self._ivy_array, shape)
