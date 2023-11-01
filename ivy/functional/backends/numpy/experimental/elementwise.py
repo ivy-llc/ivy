@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 import numpy as np
 import numpy.typing as npt
 
@@ -9,8 +9,40 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
+def amax(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = np.amax(a=x, axis=axis, out=out, keepdims=keepdims)
+    return np.asarray(ret) if np.isscalar(ret) else ret
+
+
+amax.support_native_out = True
+
+
+def amin(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = np.amin(a=x, axis=axis, out=out, keepdims=keepdims)
+    return np.asarray(ret) if np.isscalar(ret) else ret
+
+
+amin.support_native_out = True
+
+
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.26.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.1 and below": ("bfloat16",)}, backend_version)
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
 
@@ -543,7 +575,7 @@ def _EvaluatePolynomial(x, coefficients):
     return poly
 
 
-# TODO: Remove this once native function is avilable.
+# TODO: Remove this once native function is available.
 # Compute an approximation of the error function complement (1 - erf(x)).
 def erfc(
     x: np.ndarray,
@@ -568,7 +600,9 @@ def erfc(
     y = np.where(abs_x_small, z * pp / pq, z * pr / ps)
     result_no_underflow = np.where(x < 0.0, 2.0 - y, y)
 
-    is_pos_inf = lambda op: np.logical_and(np.isinf(op), op > 0)
+    def is_pos_inf(op):
+        return np.logical_and(np.isinf(op), op > 0)
+
     underflow = np.logical_or(
         z == 0,
         np.logical_or(

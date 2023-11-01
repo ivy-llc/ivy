@@ -6,6 +6,7 @@ on:
 
 permissions:
   actions: read
+
 jobs:
   display_test_results:
     if: ${{ always() }}
@@ -33,17 +34,6 @@ jobs:
           else
               echo "This PR does not introduce any new test failures! Yippee!"
           fi
-
-      - name: Write GitHub Comment
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '👋 Thanks for the PR, the tests are ready to view!'
-            })
 
   run_tests:
     runs-on: ubuntu-latest
@@ -73,20 +63,34 @@ jobs:
           submodules: "recursive"
           fetch-depth: 100
 
-      - name: Determine and Run Tests
-        id: tests
+      - name: Install ivy and fetch binaries
         run: |
-          git clone -b master${{ matrix.branch }} https://github.com/unifyai/Mapping.git --depth 200
-          pip install pydriller GitPython
-          python ivy/run_tests_CLI/clone-mapping.py
-          cp Mapping/tests.pbz2 ivy/
           cd ivy
+          pip3 install -e .
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          python determine_tests.py ${{ matrix.branch }} pr
+          cd ..
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
+
+      - name: Determine and Run Tests
+        id: tests
+        run: |
+          git clone -b master${{ matrix.branch }} https://github.com/unifyai/Mapping.git --depth 1
+          pip install pydriller GitPython
+          python ivy/scripts/setup_tests/clone-mapping.py
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python scripts/determine_tests/determine_tests.py ${{ matrix.branch }} pr
           set -o pipefail
-          python run_tests_pr.py new_failures_${{ matrix.branch }}.txt | tee test_results_${{ matrix.branch }}.txt
+          python scripts/run_tests/run_tests_pr.py new_failures_${{ matrix.branch }}.txt | tee test_results_${{ matrix.branch }}.txt
+          cd ..
         continue-on-error: true
 
       - name: Upload test results

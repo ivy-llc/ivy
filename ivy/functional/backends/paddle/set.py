@@ -10,7 +10,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def unique_all(
     x: paddle.Tensor,
@@ -88,7 +88,7 @@ def unique_all(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
     unique, counts = paddle.unique(x, return_counts=True)
@@ -111,10 +111,23 @@ def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
-def unique_inverse(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    unique, inverse_val = paddle.unique(x, return_inverse=True)
+def unique_inverse(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[paddle.Tensor, paddle.Tensor]:
+    if x.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+        x = x.cast("float32")
+
+    if axis is not None:
+        unique, inverse_val = paddle.unique(x, return_inverse=True, axis=axis)
+
+    if axis is None:
+        axis = 0
+
     nan_idx = paddle.where(paddle.isnan(x) > 0)
     nan_count = paddle.count_nonzero(nan_idx).numpy()[0]
 
@@ -133,7 +146,7 @@ def unique_inverse(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def unique_values(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None

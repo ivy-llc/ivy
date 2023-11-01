@@ -1,4 +1,5 @@
 """Collection of tests for statistical functions."""
+
 # global
 import numpy as np
 from hypothesis import strategies as st, assume
@@ -62,6 +63,10 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
     shape = values[0].shape
     size = values[0].size
     max_correction = np.min(shape)
+    if "complex" in dtype[0]:
+        # TODO skip complex median test until added ?
+        #  because it is not supported in tensorflow (ground truth backend)
+        dtype = ["float32"]
     if any(ele in function for ele in ["std", "var"]):
         if size == 1:
             correction = 0
@@ -190,7 +195,7 @@ def test_einsum(
     # x_dtype = np.dtype(dtype[0])
     for i, x_ in enumerate(operands):
         dtype = dtypes[i][0]
-        kw["x{}".format(i)] = np.array(x_).astype(dtype)
+        kw[f"x{i}"] = np.array(x_).astype(dtype)
     # len(operands) + 1 because of the equation
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_function(

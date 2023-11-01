@@ -21,8 +21,6 @@ from ivy.functional.ivy.gradients import (
 
 
 def variable(x, /):
-    if ivy.is_int_dtype(x.dtype):
-        x = x.astype(ivy.default_float_dtype())
     if not x.is_leaf:
         ret = x.detach()
         ret.stop_gradient = False
@@ -104,10 +102,10 @@ def _grad_func(y, xs, retain_grads):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=[[0]], ret_grad_idxs=[[0]]
+    func, xs, /, *, retain_grads=False, xs_grad_idxs=((0,),), ret_grad_idxs=((0,),)
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
@@ -160,7 +158,8 @@ def execute_with_gradients(
 
 
 def value_and_grad(func):
-    grad_fn = lambda xs: ivy.to_native(func(xs))
+    def grad_fn(xs):
+        return ivy.to_native(func(xs))
 
     def callback_fn(xs):
         y = grad_fn(xs)
@@ -238,11 +237,10 @@ def jacobian_to_ivy(jacobian, in_shape, out_shape):
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(
-        func(ivy.to_ivy(x_in, nested=True)),
-        nested=True,
-        include_derived=True,
-    )
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
 
     def callback_fn(xs):
         fn_ret = grad_fn(xs)

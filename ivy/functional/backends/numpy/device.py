@@ -18,11 +18,21 @@ def dev(x: np.ndarray, /, *, as_native: bool = False) -> Union[ivy.Device, str]:
 
 
 def as_ivy_dev(device: str, /):
-    return ivy.Device("cpu")
+    if "gpu" in device:
+        raise ivy.utils.exceptions.IvyException(
+            "Native Numpy does not support GPU placement, consider using Jax instead"
+        )
+    elif "cpu" in device:
+        return ivy.Device("cpu")
 
 
 def as_native_dev(device: str, /):
-    return "cpu"
+    if "gpu" in device:
+        raise ivy.utils.exceptions.IvyException(
+            "Native Numpy does not support GPU placement, consider using Jax instead"
+        )
+    elif "cpu" in device:
+        return "cpu"
 
 
 def clear_cached_mem_on_dev(device: str, /):
@@ -41,25 +51,6 @@ def gpu_is_available() -> bool:
     return False
 
 
-# private version of to_device to be used in backend implementations
-def _to_device(x: np.ndarray, device=None) -> np.ndarray:
-    """Private version of `to_device` to be used in backend implementations."""
-    if device is not None:
-        if "gpu" in device:
-            raise ivy.utils.exceptions.IvyException(
-                "Native Numpy does not support GPU placement, "
-                "consider using Jax instead"
-            )
-        elif "cpu" in device:
-            pass
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "Invalid device specified, must be in the form "
-                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
-            )
-    return x
-
-
 def to_device(
     x: np.ndarray,
     device: str,
@@ -70,18 +61,6 @@ def to_device(
 ) -> np.ndarray:
     if device is not None:
         device = as_native_dev(device)
-        if "gpu" in device:
-            raise ivy.utils.exceptions.IvyException(
-                "Native Numpy does not support GPU placement, "
-                "consider using Jax instead"
-            )
-        elif "cpu" in device:
-            pass
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "Invalid device specified, must be in the form "
-                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
-            )
     return x
 
 
@@ -92,7 +71,7 @@ def handle_soft_device_variable(*args, fn, **kwargs):
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
         # ToDO: add proper numpy profiler
-        super(Profiler, self).__init__(save_dir)
+        super().__init__(save_dir)
         os.makedirs(save_dir, exist_ok=True)
         self._start_time = None
 
@@ -102,7 +81,7 @@ class Profiler(BaseProfiler):
     def stop(self):
         time_taken = time.perf_counter() - self._start_time
         with open(os.path.join(self._save_dir, "profile.log"), "w+") as f:
-            f.write("took {} seconds to complete".format(time_taken))
+            f.write(f"took {time_taken} seconds to complete")
 
     def __enter__(self):
         self.start()

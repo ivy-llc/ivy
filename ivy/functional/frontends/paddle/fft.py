@@ -7,7 +7,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex64", "complex128")},
+    {"2.5.2 and below": ("complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -18,7 +18,33 @@ def fft(x, n=None, axis=-1.0, norm="backward", name=None):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def fftfreq(n, d=1.0, dtype=None, name=None):
+    if d * n == 0:
+        raise ValueError("d or n should not be 0.")
+
+    if dtype is None:
+        dtype = ivy.default_dtype()
+    val = 1.0 / (n * d)
+    pos_max = (n + 1) // 2
+    neg_max = n // 2
+    indices = ivy.arange(-neg_max, pos_max, dtype=dtype)
+    indices = ivy.roll(indices, -neg_max)
+    return ivy.multiply(indices, val)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.2 and below": (
             "int32",
             "int64",
             "float32",
@@ -47,7 +73,7 @@ def fftshift(x, axes=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex64", "complex128")},
+    {"2.5.2 and below": ("complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -69,7 +95,7 @@ def hfft(x, n=None, axes=-1, norm="backward", name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": "complex64"},
+    {"2.5.2 and below": "complex64"},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -90,7 +116,7 @@ def hfft2(x, s=None, axis=(-2, -1), norm="backward"):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex64", "complex128")},
+    {"2.5.2 and below": ("complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -100,8 +126,18 @@ def ifft(x, n=None, axis=-1.0, norm="backward", name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.2 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def ifftn(x, s=None, axes=None, norm="backward", name=None):
+    ret = ivy.ifftn(ivy.astype(x, "complex128"), s=s, axes=axes, norm=norm)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
             "int32",
             "int64",
             "float32",
@@ -128,7 +164,42 @@ def ifftshift(x, axes=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex64", "complex128")},
+    {
+        "2.5.2 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def ihfft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
+    # check if the input array is two-dimensional and real
+    if len(ivy.array(x).shape) != 2 or ivy.is_complex_dtype(x):
+        raise ValueError("input must be a two-dimensional real array")
+
+    # cast the input to the same float64 type so that there are no backend issues
+    x_ = ivy.astype(x, ivy.float64)
+
+    ihfft2_result = 0
+    # Compute the complex conjugate of the 2-dimensional discrete Fourier Transform
+    if norm == "backward":
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="forward"))
+    if norm == "forward":
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="backward"))
+    if norm == "ortho":
+        ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="ortho"))
+
+    if x.dtype in [ivy.float32, ivy.int32, ivy.int64]:
+        return ivy.astype(ihfft2_result, ivy.complex64)
+    if x.dtype == ivy.float64:
+        return ivy.astype(ihfft2_result, ivy.complex128)
+
+
+@with_supported_dtypes(
+    {"2.5.2 and below": ("complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -147,7 +218,7 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
             "int32",
             "int64",
             "float16",
@@ -183,7 +254,7 @@ def irfft2(x, s=None, axes=(-2, -1), norm="backward"):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex64", "complex128")},
+    {"2.5.2 and below": ("complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -232,6 +303,12 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
 
     result_t = ivy.astype(real_result, output_dtype)
     return result_t
+
+
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def rfft(x, n=None, axis=-1, norm="backward", name=None):
+    return ivy.dft(x, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
 
 
 @to_ivy_arrays_and_back

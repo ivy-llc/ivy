@@ -6,6 +6,7 @@ from ivy.functional.frontends.torch.func_wrapper import (
     numpy_to_torch_style_args,
     to_ivy_shape,
 )
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -68,6 +69,35 @@ def concat(tensors, dim=0, *, out=None):
 @to_ivy_arrays_and_back
 def conj(input):
     return ivy.conj(input)
+
+
+# diagonal_scatter
+@with_unsupported_dtypes(
+    {
+        "2.1.0 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def diagonal_scatter(input, src, offset=0, dim1=0, dim2=1):
+    input = ivy.copy_array(input)
+    input_shape = input.shape
+    indices = ivy.arange(0, input.size)
+    diagonal_indices = ivy.diagonal(
+        indices.reshape(input.shape), offset=offset, axis1=dim1, axis2=dim2
+    )
+    if not (src.shape == diagonal_indices.shape):
+        raise ivy.utils.exceptions.IvyException(
+            "src must have shape equal to specified diagonal of input. src size ="
+            f" {src.shape}, diagonal size = {diagonal_indices.shape}"
+        )
+    input = input.reshape((-1,))
+    input[diagonal_indices.reshape((-1,))] = src.reshape((-1,))
+    input = input.reshape(input_shape)
+    return input
 
 
 @to_ivy_arrays_and_back
@@ -185,7 +215,7 @@ def index_copy(input, dim, index, source, *, out=None):
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "uint16",
             "uint32",
             "uint64",
@@ -479,4 +509,5 @@ def vstack(tensors, *, out=None):
 def where(condition, input=None, other=None):
     if not ivy.exists(input) and not ivy.exists(other):
         return nonzero(condition, as_tuple=True)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.where(condition, input, other)

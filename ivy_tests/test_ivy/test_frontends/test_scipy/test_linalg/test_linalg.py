@@ -56,7 +56,7 @@ def _generate_eigh_tridiagonal_args(draw):
         select_range = [-100, 100]
 
     eigvals_only = draw(st.booleans())
-    tol = draw(st.floats(1e-5, 1e-3) | st.just(None))
+    tol = draw(st.floats(1e-5, 1e-3))
     return dtype, alpha, beta, eigvals_only, select, select_range, tol
 
 

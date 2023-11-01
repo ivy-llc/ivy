@@ -1790,22 +1790,18 @@ def arrays_for_pooling(
         )
     if array_dim == 3:
         kernel = draw(st.tuples(st.integers(1, in_shape[1])))
-    new_kernel = kernel
     if return_dilation:
-        new_kernel = []
         dilations = []
         for i in range(len(kernel)):
             if kernel[i] > 1:
                 max_dilation = (in_shape[i + 1] - kernel[i]) // (kernel[i] - 1) + 1
                 dilations.append(draw(st.integers(1, max_dilation)))
-                new_kernel.append(kernel[i] + (kernel[i] - 1) * (dilations[i] - 1))
             else:
                 dilations.append(1)
-                new_kernel.append(kernel[i])
     if explicit_or_str_padding or only_explicit_padding:
         padding = []
         for i in range(array_dim - 2):
-            max_pad = new_kernel[i] // 2
+            max_pad = kernel[i] // 2
             padding.append(
                 draw(
                     st.tuples(
@@ -2244,7 +2240,7 @@ def create_concatenable_arrays_dtypes(
 def get_first_solve_batch_matrix(draw, choose_adjoint=False):
     """
     Generate non-singular left hand side of equation system possibly with a single batch
-    dimension at the begining. Use get_second_solve_batch_matrix to get the right hand
+    dimension at the beginning. Use get_second_solve_batch_matrix to get the right hand
     side.
 
     Parameters
