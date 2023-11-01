@@ -65,6 +65,7 @@ jobs:
           cd ivy
           python scripts/determine_tests/array_api_determine_tests.py
           python scripts/run_tests/array_api_run_tests_pr.py new_failures_${{ matrix.branch }}.txt | tee test_results_${{ matrix.branch }}.txt
+          cd ..
         continue-on-error: true
 
       - name: Upload test results
