@@ -38,7 +38,7 @@ def max(
 
 
 @with_unsupported_dtypes(
-    {"0.4.19 and below": ("bfloat16",)},
+    {"0.4.19 and below": "bfloat16"},
     backend_version,
 )
 def mean(
