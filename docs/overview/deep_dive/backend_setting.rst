@@ -70,9 +70,7 @@ To make this easier, users can make use of the dynamic backend attribute of :cla
 Essentially, when the user calls :code:`ivy.set_backend(<backend>, dynamic=True)`, the following steps are performed:
 
 #. First, all live objects in the current project scope are found and then filtered to only include :class:`ivy.Array`/:class:`ivy.Container` objects.
-#. Then, these objects are iterated through and `converted to numpy`_ as an intermediary using the current backend.
-#. Next, the global :code:`ivy.__dict__` is updated to the new backend as mentioned in the Backend Setting section above.
-#. Finally, the objects are `converted from numpy`_ to the target backend using the newly set backend.
+#. Then, these objects are iterated through and converted to the target backend using DLPack or numpy as an intermediary.
 
 By default, the dynamic backend attribute is set to True when you create an ivy array (e.g., :code:`x = ivy.array([1,2,3])`), but the attribute is mutable and can be changed after the ivy array is created (e.g., :code:`x.dynamic_backend= True`).
 Here's an example to illustrate how this works in practice:
@@ -91,7 +89,7 @@ Here's an example to illustrate how this works in practice:
    x.data # will be a jax array
    y.data # will still be a torch tensor since dynamic_backend=False
 
-In addition to setting the dynamic backend attribute for individual ivy arrays, you can also set or unset the dynamic backend feature globally for all such instances using `ivy.set_dynamic_backend`_ and `ivy.unset_dynamic_backend`_ respectively.
+Setting the attribute to True converts the array to the current backend even if the backend was set with `dynamic=False`. In addition to setting the dynamic backend attribute for individual ivy arrays, you can also set or unset the dynamic backend feature globally for all such instances using `ivy.set_dynamic_backend`_ and `ivy.unset_dynamic_backend`_ respectively.
 
 Another useful feature of the dynamic backend is the `ivy.dynamic_backend_as`_ context manager. This allows you to write code like this:
 
@@ -107,25 +105,6 @@ Another useful feature of the dynamic backend is the `ivy.dynamic_backend_as`_ c
 
 This makes it easy to define different sections of your project with different settings, without having to explicitly call :code:`ivy.set_<something>` and :code:`ivy.unset_<something>` etc.
 
-There is one technical point to keep in mind when using the dynamic backend attribute. Consider the following example:
-
-.. code-block:: python
-
-   ivy.set_backend("tensorflow")
-   arr = ivy.array([1,2,3])
-   arr.dynamic_backend= False
-
-   ivy.set_backend("torch")
-
-   # arr.data should still be a tf.Tensor
-
-   arr.dynamic_backend = True
-
-   ivy.set_backend("jax")
-
-   # This would cause a problem since the conversion goes from TF -> JAX, whereas the backend stack goes from Torch -> Jax.
-
-To avoid the above issue, we update the :attr:`.data` attribute to be a native array for the current set backend framework in the setter method for dynamic_backend attribute for `ivy.Array`_ and `ivy.Container`_ classes. So after the line :code:`arr.dynamic_backend = True` in the example above, then :attr:`arr.data` would be a torch.Tensor and not a tf.Tensor.
 
 Backend and Frontend Version Support
 ------------------------------------
