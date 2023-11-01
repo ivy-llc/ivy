@@ -1,6 +1,5 @@
 """Collection of Jax activation functions, wrapped to fit Ivy syntax and signature."""
 
-
 # global
 
 
@@ -40,7 +39,9 @@ def relu(
     return jnp.maximum(x, 0)
 
 
-def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def sigmoid(
+    x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     return 1 / (1 + jnp.exp(-x))
 
 
@@ -106,5 +107,11 @@ def mish(
     return x * jnp.tanh(jax.nn.softplus(x))
 
 
-def hardswish(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def hardswish(
+    x: JaxArray,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     return jax.nn.hard_swish(x)

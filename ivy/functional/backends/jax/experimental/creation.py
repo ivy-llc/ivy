@@ -72,7 +72,7 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device = None,
 ) -> Tuple[JaxArray, ...]:
     return jnp.tril_indices(n=n_rows, k=k, m=n_cols)
 
@@ -83,7 +83,7 @@ def unsorted_segment_min(
     num_segments: int,
 ) -> JaxArray:
     # added this check to keep the same behaviour as tensorflow
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
     return jax.ops.segment_min(data, segment_ids, num_segments)
@@ -98,7 +98,7 @@ def unsorted_segment_sum(
     # the check should be same
     # Might require to change the assertion function name to
     # check_unsorted_segment_valid_params
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
     return jax.ops.segment_sum(data, segment_ids, num_segments)
@@ -118,9 +118,10 @@ def blackman_window(
         count = jnp.arange(size) / size
     else:
         count = jnp.linspace(start=0, stop=size, num=size)
-    return (0.42 - 0.5 * jnp.cos(2 * jnp.pi * count)) + (
-        0.08 * jnp.cos(2 * jnp.pi * 2 * count)
-    )
+    return (
+        (0.42 - 0.5 * jnp.cos(2 * jnp.pi * count))
+        + (0.08 * jnp.cos(2 * jnp.pi * 2 * count))
+    ).astype(dtype)
 
 
 def trilu(
@@ -141,7 +142,10 @@ def mel_weight_matrix(
     lower_edge_hertz = jnp.array(lower_edge_hertz)
     upper_edge_hertz = jnp.array(upper_edge_hertz)
     zero = jnp.array(0.0)
-    hz_to_mel = lambda f: 2595 * jnp.log10(1 + f / 700)
+
+    def hz_to_mel(f):
+        return 2595 * jnp.log10(1 + f / 700)
+
     nyquist_hz = sample_rate / 2
     linear_freqs = jnp.linspace(0, nyquist_hz, dft_length, dtype=jnp.float32)[1:]
     spec_bin_mels = hz_to_mel(linear_freqs)[..., None]
@@ -159,3 +163,34 @@ def mel_weight_matrix(
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = jnp.maximum(zero, jnp.minimum(lower_slopes, upper_slopes))
     return jnp.pad(mel_weights, [[1, 0], [0, 0]])
+
+
+def unsorted_segment_mean(
+    data: JaxArray,
+    segment_ids: JaxArray,
+    num_segments: int,
+) -> JaxArray:
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
+        data, segment_ids, num_segments
+    )
+    segment_sum = jax.ops.segment_sum(data, segment_ids, num_segments)
+
+    segment_count = jax.ops.segment_sum(jnp.ones_like(data), segment_ids, num_segments)
+
+    segment_mean = segment_sum / segment_count
+
+    return segment_mean
+
+
+def polyval(
+    coeffs: JaxArray,
+    x: JaxArray,
+) -> JaxArray:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
+    y = jnp.zeros_like(x)
+    for pv in coeffs:
+        y = y * x + pv
+    y = jnp.array(y, dtype=jnp.dtype(promoted_type))
+    return y

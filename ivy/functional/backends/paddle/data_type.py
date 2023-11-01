@@ -97,8 +97,9 @@ class Bfloat16Finfo:
         self.tiny = 1.17549e-38
 
     def __repr__(self):
-        return "finfo(resolution={}, min={}, max={}, dtype={})".format(
-            self.resolution, self.min, self.max, "bfloat16"
+        return (
+            f"finfo(resolution={self.resolution}, min={self.min}, max={self.max},"
+            " dtype=bfloat16)"
         )
 
 
@@ -116,8 +117,8 @@ def astype(
 ) -> paddle.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
-        return paddle_backend.copy_array(x).data if copy else x
-    return x.cast(dtype)
+        return x.clone() if copy else x
+    return x.clone().cast(dtype) if copy else x.cast(dtype)
 
 
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
@@ -196,7 +197,7 @@ def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
 
 
 def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
-    return ivy.promote_types(arrays_and_dtypes[0].dtype, arrays_and_dtypes[1].dtype)
+    return ivy.promote_types_of_inputs(*arrays_and_dtypes)[0].dtype
 
 
 # Extra #
@@ -236,7 +237,7 @@ def as_native_dtype(
         return paddle.bool
     if not isinstance(dtype_in, str):
         return dtype_in
-    if dtype_in in native_dtype_dict.keys():
+    if dtype_in in native_dtype_dict:
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(

@@ -48,7 +48,6 @@ numpy_promotion_table = {
     (_bool, _float64): _float64,
     (_bool, _complex64): _complex64,
     (_bool, _complex128): _complex128,
-    (_bool, _bool): _bool,
     (_int8, _bool): _int8,
     (_int8, _int8): _int8,
     (_int8, _int16): _int16,
@@ -496,7 +495,6 @@ from .broadcast import *
 
 from . import ma
 from . import fft
-from . import random
 from .ufunc import ufunc
 
 from . import linalg
@@ -552,7 +550,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _reciprocal,
     _subtract,
     _divmod,
-    _remainder,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
@@ -565,6 +562,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _sin,
     _tan,
     _degrees,
+    _arctan2,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
@@ -638,6 +636,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
 
 from ivy.functional.frontends.numpy.mathematical_functions.floating_point_routines import (  # noqa
     _nextafter,
+    _signbit,
     _spacing,
 )
 
@@ -672,6 +671,7 @@ true_divide = ufunc("_divide")
 arccos = ufunc("_arccos")
 arcsin = ufunc("_arcsin")
 arctan = ufunc("_arctan")
+arctan2 = ufunc("_arctan2")
 cos = ufunc("_cos")
 deg2rad = ufunc("_deg2rad")
 rad2deg = ufunc("_rad2deg")
@@ -720,6 +720,7 @@ frexp = ufunc("_frexp")
 conj = ufunc("_conj")
 rint = ufunc("_rint")
 nextafter = ufunc("_nextafter")
+signbit = ufunc("_signbit")
 conjugate = ufunc("_conj")
 lcm = ufunc("_lcm")
 gcd = ufunc("_gcd")
@@ -735,4 +736,4 @@ if ivy.is_local():
 else:
     module = sys.modules[__name__]
 
-set_frontend_to_specific_version(module)
+__version__ = set_frontend_to_specific_version(module)

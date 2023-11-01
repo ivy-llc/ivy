@@ -9,7 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -26,7 +26,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -147,7 +147,7 @@ def argsort(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -252,7 +252,7 @@ def sort(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def msort(
     a: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -297,7 +297,7 @@ def msort(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],

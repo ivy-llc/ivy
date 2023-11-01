@@ -4,7 +4,7 @@ import numpy as np
 from numbers import Number
 from typing import Union, List, Optional, Sequence, Tuple
 
-# lcoal
+# local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.creation import (
@@ -95,6 +95,15 @@ def eye(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def to_dlpack(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+):
     raise IvyNotImplementedException()
 
 

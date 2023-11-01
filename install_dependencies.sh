@@ -1,3 +1,6 @@
+# This shell script is required by the doc-builder. Moving it might break
+# the doc-building pipeline
+
 sudo apt-get update
 sudo apt-get install pandoc -y
 pip install -r requirements/requirements.txt

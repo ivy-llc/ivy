@@ -9,15 +9,13 @@ import math
 
 def calculate_same_padding(kernel_size, stride, shape):
     padding = tuple(
-        [
-            max(
-                0,
-                math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
-            )
-            for i in range(len(kernel_size))
-        ]
+        max(
+            0,
+            math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
+        )
+        for i in range(len(kernel_size))
     )
-    if all([kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))]):
+    if all(kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))):
         if is_same_padding(padding, stride, kernel_size, shape):
             return padding
     return [0] * len(shape)
@@ -25,16 +23,12 @@ def calculate_same_padding(kernel_size, stride, shape):
 
 def is_same_padding(padding, stride, kernel_size, input_shape):
     output_shape = tuple(
-        [
-            (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
-            for i in range(len(padding))
-        ]
+        (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
+        for i in range(len(padding))
     )
     return all(
-        [
-            output_shape[i] == math.ceil(input_shape[i] / stride[i])
-            for i in range(len(padding))
-        ]
+        output_shape[i] == math.ceil(input_shape[i] / stride[i])
+        for i in range(len(padding))
     )
 
 
@@ -193,14 +187,7 @@ def test_torch_avg_pool1d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
-    # TODO: remove the processing of padding attribute when ivy.avg_pool
-    #   support explicit padding
-    x_shape = [x[0].shape[2]]
-    padding = [pad[i] for i, pad in enumerate(padding)]
-    # figuring out the exact kernel_size for SAME and VALID padding
-    # As ivy.avg_pool1d doesn't support explicit padding scheme
-    if not sum(padding) == 0:
-        padding = calculate_same_padding(kernel_size, stride, x_shape)
+    padding = [pad[0] for pad in padding]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -248,7 +235,7 @@ def test_torch_avg_pool2d(
     #   support explicit padding
     padding = [pad[i] for i, pad in enumerate(padding)]
     x_shape = x[0].shape[2:]
-    if not sum(padding) == 0:
+    if sum(padding) != 0:
         padding = calculate_same_padding(kernel_size, [stride[0]] * 2, x_shape)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -300,7 +287,7 @@ def test_torch_avg_pool3d(
     #   support explicit padding
     x_shape = x[0].shape[2:]
     padding = [pad[0] for pad in padding]
-    if not sum(padding) == 0:
+    if sum(padding) != 0:
         stride_broad = (stride[0],) * 3 if len(stride) == 1 else stride
         padding = calculate_same_padding(kernel_size, stride_broad, x_shape)
     helpers.test_frontend_function(
@@ -476,6 +463,49 @@ def test_torch_max_pool2d(
         kernel_size=kernel,
         stride=stride,
         padding=pad,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
+
+
+# max_pool3d
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.max_pool3d",
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=5,
+        max_dims=5,
+        min_side=1,
+        max_side=5,
+        only_explicit_padding=True,
+        return_dilation=True,
+        data_format="channel_first",
+    ),
+    test_with_out=st.just(False),
+    ceil_mode=st.booleans(),
+)
+def test_torch_max_pool3d(
+    x_k_s_p,
+    ceil_mode,
+    *,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, x, kernel, stride, pad, dilation = x_k_s_p
+    padding = (pad[0][0], pad[1][0], pad[2][0])
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        kernel_size=kernel,
+        stride=stride,
+        padding=padding,
         dilation=dilation,
         ceil_mode=ceil_mode,
     )

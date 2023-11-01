@@ -1,4 +1,5 @@
 """Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
+
 from typing import Optional, Tuple, Union, Sequence
 
 # global
@@ -6,13 +7,116 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
-from ivy.functional.ivy.layers import _handle_padding, _deconv_length
+from ivy.functional.ivy.layers import _get_embed_dim, _handle_padding, _deconv_length
+
+
+@with_supported_dtypes(
+    {"2.1.0 and below": ("float32", "float64", "complex")},
+    backend_version,
+)
+def multi_head_attention(
+    query: torch.Tensor,
+    /,
+    *,
+    key: torch.Tensor = None,
+    value: torch.Tensor = None,
+    batch_first: bool = True,
+    num_heads: Optional[int] = 8,
+    scale: Optional[float] = None,
+    attention_mask: torch.Tensor = None,
+    in_proj_weights: torch.Tensor = None,
+    q_proj_weights: torch.Tensor = None,
+    k_proj_weights: torch.Tensor = None,
+    v_proj_weights: torch.Tensor = None,
+    out_proj_weights: torch.Tensor = None,
+    in_proj_bias: torch.Tensor = None,
+    out_proj_bias: torch.Tensor = None,
+    is_causal: Optional[bool] = False,
+    key_padding_mask: Optional[torch.Tensor] = None,
+    bias_k: Optional[torch.Tensor] = None,
+    bias_v: Optional[torch.Tensor] = None,
+    static_k: Optional[torch.Tensor] = None,
+    static_v: Optional[torch.Tensor] = None,
+    add_zero_attn: bool = False,
+    return_attention_weights: Optional[bool] = False,
+    average_attention_weights: Optional[bool] = True,
+    dropout: Optional[float] = 0.0,
+    training: Optional[bool] = False,
+    out: torch.Tensor = None,
+) -> torch.Tensor:
+    if key is None and value is None:
+        key = value = query
+    emb_dim = _get_embed_dim(
+        in_proj_weights,
+        q_proj_weights,
+        k_proj_weights,
+        v_proj_weights,
+        query,
+    )[1]
+    num_dims = query.ndim
+    if num_dims == 3 and batch_first:
+        query, key, value = [torch.swapaxes(x, 0, 1) for x in [query, key, value]]
+    ret = torch.nn.functional.multi_head_attention_forward(
+        query,
+        key,
+        value,
+        emb_dim,
+        num_heads,
+        in_proj_weights,
+        in_proj_bias,
+        bias_k,
+        bias_v,
+        add_zero_attn,
+        dropout,
+        out_proj_weights,
+        out_proj_bias,
+        training=training,
+        key_padding_mask=key_padding_mask,
+        need_weights=return_attention_weights,
+        attn_mask=attention_mask,
+        use_separate_proj_weight=not ivy.exists(in_proj_weights),
+        q_proj_weight=q_proj_weights,
+        k_proj_weight=k_proj_weights,
+        v_proj_weight=v_proj_weights,
+        static_k=static_k,
+        static_v=static_v,
+        average_attn_weights=average_attention_weights,
+        is_causal=is_causal,
+    )
+    ret = list(ret) if isinstance(ret, tuple) else [ret]
+    if num_dims == 3 and batch_first:
+        ret[0] = ret[0].swapaxes(0, 1)
+    if return_attention_weights:
+        return tuple(ret)
+    return ret[0]
+
+
+multi_head_attention.partial_mixed_handler = (
+    lambda *args, scale=None, out_proj_weights=None, is_causal=False, attention_mask=None, return_attention_weights=False, in_proj_weights=None, q_proj_weights=None, k_proj_weights=None, v_proj_weights=None, **kwargs: not ivy.exists(  # noqa: E501
+        scale
+    )
+    and ivy.exists(out_proj_weights)
+    and (not is_causal or ivy.exists(attention_mask))
+    and (not is_causal or not return_attention_weights)
+    and (
+        ivy.exists(in_proj_weights)
+        or all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights])
+    )
+    and len(
+        set(
+            _get_embed_dim(
+                in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, args[0]
+            )
+        )
+    )
+    == 1
+)
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def linear(
@@ -127,7 +231,7 @@ def _pad_before_conv_tranpose(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -159,7 +263,7 @@ def conv1d(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -206,7 +310,7 @@ def conv1d_transpose(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -238,7 +342,7 @@ def conv2d(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -290,7 +394,7 @@ def conv2d_transpose(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -331,7 +435,7 @@ def depthwise_conv2d(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")}, backend_version
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")}, backend_version
 )
 # noinspection PyUnresolvedReferences
 def conv3d(
@@ -361,7 +465,7 @@ def conv3d(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -407,7 +511,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_dilated(
@@ -470,7 +574,7 @@ def conv_general_dilated(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_transpose(
@@ -544,3 +648,18 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.permute(0, *range(2, dims + 2), 1)
     return res
+
+
+def scaled_dot_product_attention_v_2p0p0_and_above(
+    q,
+    k,
+    v,
+    scale: float,
+    /,
+    *,
+    mask=None,
+    out=None,
+):
+    if isinstance(mask, torch.Tensor):
+        mask = torch.where(mask == 0, -torch.inf, 0)
+    return torch.nn.functional.scaled_dot_product_attention(q, k, v, attn_mask=mask)

@@ -98,12 +98,14 @@ def fmin(input, other, *, out=None):
     )
 
 
+@with_unsupported_dtypes({"2.1.0 and below": ("complex64", "complex128")}, "torch")
 @to_ivy_arrays_and_back
 def greater(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.greater(input, other, out=out)
 
 
+@with_unsupported_dtypes({"2.1.0 and below": ("complex64", "complex128")}, "torch")
 @to_ivy_arrays_and_back
 def greater_equal(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -140,7 +142,7 @@ def isfinite(input):
     return ivy.isfinite(input)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def isin(elements, test_elements, *, assume_unique=False, invert=False):
     input_elements_copy = ivy.reshape(ivy.to_ivy(elements), (-1,))
@@ -208,13 +210,15 @@ def isposinf(input, *, out=None):
     return ivy.logical_and(is_inf, pos_sign_bit, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def isreal(input):
     return ivy.isreal(input)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes(
+    {"2.1.0 and below": ("bfloat16", "float16", "bool", "complex")}, "torch"
+)
 @to_ivy_arrays_and_back
 def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     sorted_input = ivy.sort(input, axis=dim)
@@ -237,12 +241,14 @@ def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     return ret
 
 
+@with_unsupported_dtypes({"2.1.0 and below": ("complex64", "complex128")}, "torch")
 @to_ivy_arrays_and_back
 def less(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.less(input, other, out=out)
 
 
+@with_unsupported_dtypes({"2.1.0 and below": ("complex64", "complex128")}, "torch")
 @to_ivy_arrays_and_back
 def less_equal(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -266,7 +272,7 @@ def msort(input, *, out=None):
     return ivy.sort(input, axis=0, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def not_equal(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -281,7 +287,7 @@ def sort(input, *, dim=-1, descending=False, stable=False, out=None):
     return namedtuple("sort", ["values", "indices"])(values, indices)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def topk(input, k, dim=None, largest=True, sorted=True, *, out=None):
     if dim is None:

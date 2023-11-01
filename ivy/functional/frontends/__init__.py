@@ -2,14 +2,15 @@ import importlib
 
 
 versions = {
-    "torch": "2.0.1",
-    "tensorflow": "2.13.0",
+    "torch": "2.1.0",
+    "tensorflow": "2.14.0",
     "numpy": "1.25.2",
     "jax": "0.4.14",
     "scipy": "1.10.1",
-    "paddle": "2.5.1",
+    "paddle": "2.5.2",
     "sklearn": "1.3.0",
     "xgboost": "1.7.6",
+    "torchvision": "0.15.2.",
 }
 
 
@@ -91,3 +92,5 @@ def set_frontend_to_specific_version(frontend):
             orig_name = fn_name_from_version_specific_fn_name(i, f_version)
             if orig_name:
                 frontend.__dict__[orig_name] = frontend.__dict__[i]
+
+    return f_version
