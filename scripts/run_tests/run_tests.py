@@ -2,6 +2,7 @@
 import os
 import sys
 from pymongo import MongoClient
+from pymongo.errors import WriteError
 import requests
 import json
 import old_run_test_helpers as old_helpers
@@ -105,7 +106,7 @@ if __name__ == "__main__":
 
     # pull gpu image for gpu testing
     if device == "gpu":
-        os.system("docker pull unifyai/multicuda:base_and_requirements")
+        os.system("docker pull unifyai/ivy:latest-gpu")
 
     # read the tests to be run
     with open("tests_to_run", "r") as f:
@@ -139,35 +140,38 @@ if __name__ == "__main__":
                         other_backend + "/" + get_latest_package_version(other_backend)
                     )
                 print("Backends:", backends)
-                command = (
-                    f"docker run --rm --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy/ivy'
-                    ' unifyai/multiversion:latest /bin/bash -c "python'
-                    f" multiversion_framework_directory.py {' '.join(backends)};cd"
-                    f' ivy;pytest --tb=short {test_path} --backend={backend.strip()}"'
+                os.system(
+                    'docker run --name test-container -v "$(pwd)":/ivy/ivy '
+                    f"-e REDIS_URL={redis_url} -e REDIS_PASSWD={redis_pass} "
+                    "-itd unifyai/multiversion:latest /bin/bash -c"
+                    f'python multiversion_framework_directory.py {" ".join(backends)};'
+                )
+                os.system(
+                    "docker exec test-container cd ivy; python3 -m pytest --tb=short "
+                    f"{test_path} --backend={backend.strip()}"
                 )
                 backend = backend.split("/")[0] + "\n"
                 backend_version = backend_version.strip()
-                print("Running", command)
 
-            # gpu tests
-            elif device == "gpu":
-                command = (
-                    f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis'
-                    " unifyai/multicuda:base_and_requirements python3 -m pytest"
-                    f" --tb=short {test_path} --device=gpu:0 -B={backend}"
-                )
-
-            # cpu tests
             else:
-                command = (
-                    f"docker run --rm --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
-                    f" -m pytest --tb=short {test_path} --backend {backend}"
+                device_str = ""
+                image = "unifyai/ivy:latest"
+
+                # gpu tests
+                if device == "gpu":
+                    image = "unifyai/ivy:latest-gpu"
+                    device_str = " --device=gpu:0"
+
+                os.system(
+                    'docker run --name test-container -v "$(pwd)":/ivy -v '
+                    f'"$(pwd)"/.hypothesis:/.hypothesis -e REDIS_URL={redis_url} '
+                    f"-e REDIS_PASSWD={redis_pass} -itd {image}"
                 )
+                command = (
+                    "docker exec test-container python3 -m pytest --tb=short"
+                    f" {test_path} {device_str} --backend {backend}"
+                )
+                os.system(command)
 
             # run the test
             sys.stdout.flush()
@@ -186,32 +190,35 @@ if __name__ == "__main__":
             frontend_version = None
             if coll[0] in ["numpy", "jax", "tensorflow", "torch", "paddle"]:
                 frontend_version = "latest-stable"
-            if priority_flag:
-                print("Updating Priority DB")
-                old_helpers.update_individual_test_results(
-                    old_db_priority[coll[0]],
-                    coll[1],
-                    submod,
-                    backend,
-                    test_fn,
-                    res,
-                    "latest-stable",
-                    frontend_version,
-                    device,
-                )
-            else:
-                print(backend_version)
-                old_helpers.update_individual_test_results(
-                    old_db[coll[0]],
-                    coll[1],
-                    submod,
-                    backend,
-                    test_fn,
-                    res,
-                    backend_version,
-                    frontend_version,
-                    device,
-                )
+            try:
+                if priority_flag:
+                    print("Updating Priority DB")
+                    old_helpers.update_individual_test_results(
+                        old_db_priority[coll[0]],
+                        coll[1],
+                        submod,
+                        backend,
+                        test_fn,
+                        res,
+                        "latest-stable",
+                        frontend_version,
+                        device,
+                    )
+                else:
+                    print(backend_version)
+                    old_helpers.update_individual_test_results(
+                        old_db[coll[0]],
+                        coll[1],
+                        submod,
+                        backend,
+                        test_fn,
+                        res,
+                        backend_version,
+                        frontend_version,
+                        device,
+                    )
+            except WriteError:
+                print("Old DB Write Error")
 
             # skip updating db for instance methods as of now
             # run transpilation tests if the test passed
@@ -219,8 +226,13 @@ if __name__ == "__main__":
                 print(f"\n{'*' * 100}")
                 print(f"{line[:-1]} --> transpilation tests")
                 print(f"{'*' * 100}\n")
+                command = f"{command} --num-examples 5 --with-transpile"
                 sys.stdout.flush()
-                os.system(f"{command} --num-examples 5 --with-transpile")
+                os.system(command)
+                os.system(
+                    "docker cp test-container:/ivy/report.json"
+                    f" {__file__[: __file__.rfind(os.sep)]}/report.json"
+                )
 
             # load data from report if generated
             report_path = os.path.join(
@@ -280,6 +292,9 @@ if __name__ == "__main__":
                 print(
                     collection.update_one({"_id": id}, {"$set": test_info}, upsert=True)
                 )
+
+            # delete the container
+            os.system("docker rm -f test-container")
 
     # if any tests fail, the workflow fails
     if failed:
