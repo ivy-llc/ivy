@@ -385,7 +385,7 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
             axis = [operator.index(axis)]
         except TypeError:
             pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
     if len(set(axis)) != len(axis):
         raise ValueError("repeated axis")
     return axis

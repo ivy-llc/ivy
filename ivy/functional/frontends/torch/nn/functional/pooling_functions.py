@@ -17,13 +17,13 @@ def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
     dims = {"1d": 1, "2d": 2, "3d": 3}
 
     if isinstance(x, int):
-        return tuple([x for _ in range(dims[pool_dims])])
+        return tuple(x for _ in range(dims[pool_dims]))
 
     if len(x) == 1:
-        return tuple([x[0] for _ in range(dims[pool_dims])])
+        return tuple(x[0] for _ in range(dims[pool_dims]))
     elif len(x) == dims[pool_dims]:
         return tuple(x)
-    elif len(x) != dims[pool_dims]:
+    else:
         raise ValueError(
             f"`{name}` must either be a single int, "
             f"or a tuple of {dims[pool_dims]} ints. "

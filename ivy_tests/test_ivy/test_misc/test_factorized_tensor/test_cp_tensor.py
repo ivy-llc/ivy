@@ -78,7 +78,7 @@ def test_cp_mode_dot(shape, rank):
     # matrix for mode 1
     matrix = ivy.random_uniform(shape=(7, shape[1]))
     # vec for mode 2
-    vec = ivy.random_uniform(shape=(shape[2]))
+    vec = ivy.random_uniform(shape=shape[2])
 
     # Test cp_mode_dot with matrix
     res = ivy.CPTensor.cp_mode_dot(cp_ten, matrix, mode=1, copy=True)
