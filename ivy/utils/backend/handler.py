@@ -250,12 +250,7 @@ def _data_to_new_backend(x, previous_backend):
 def dynamic_backend_converter(backend_stack):
     from ivy.functional.ivy.gradients import _variable
 
-    if len(backend_stack) < 2:
-        previous_backend = ivy.with_backend("numpy")
-    else:
-        previous_backend = ivy.with_backend(backend_stack[-2].current_backend_str())
-
-    def _is_var(obj):
+    def _is_var(obj, backend):
         if isinstance(obj, ivy.Container):
 
             def _map_fn(x):
@@ -267,7 +262,7 @@ def dynamic_backend_converter(backend_stack):
                 ):
                     return False
 
-                return previous_backend.gradients._is_variable(x)
+                return backend.gradients._is_variable(x)
 
             return obj.cont_map(lambda x, kc: _map_fn(x)).cont_all_true()
 
@@ -279,7 +274,7 @@ def dynamic_backend_converter(backend_stack):
                 "jaxlib.xla_extension",
             ):
                 return False
-            return previous_backend.gradients._is_variable(obj)
+            return backend.gradients._is_variable(obj)
 
     # get all ivy array instances in the project scope
     container_list = [
@@ -289,8 +284,7 @@ def dynamic_backend_converter(backend_stack):
     ]
     cont_array_idxs = ivy.nested_argwhere(
         container_list,
-        lambda x: isinstance(x, ivy.Array)
-        and x.backend == previous_backend.current_backend_str(),
+        lambda x: isinstance(x, ivy.Array) and x.backend != ivy.current_backend_str(),
     )
     cont_array_vals = ivy.multi_index_nest(container_list, cont_array_idxs)
     array_list = [
@@ -304,7 +298,7 @@ def dynamic_backend_converter(backend_stack):
     array_list = [
         arr
         for arr in array_list
-        if arr.__dict__ and arr.backend == previous_backend.current_backend_str()
+        if arr.__dict__ and arr.backend != ivy.current_backend_str()
     ]
     new_objs = [obj for obj in array_list if obj.dynamic_backend]
 
@@ -314,14 +308,15 @@ def dynamic_backend_converter(backend_stack):
     for obj in new_objs:
         # the following if condition avoids converting arrays that were already
         # updated inplace i.e. are references to other arrays
-        if obj.backend == previous_backend.current_backend_str():
-            if _is_var(obj):
-                native_var = previous_backend.gradients._variable_data(obj)
-                data = _data_to_new_backend(native_var, previous_backend)
+        if obj.backend != ivy.current_backend_str():
+            backend = ivy.with_backend(obj.backend, cached=True)
+            if _is_var(obj, backend):
+                native_var = backend.gradients._variable_data(obj)
+                data = _data_to_new_backend(native_var, backend)
                 new_data = _variable(data)
 
             else:
-                new_data = _data_to_new_backend(obj, previous_backend)
+                new_data = _data_to_new_backend(obj, backend)
 
             if isinstance(obj, ivy.Container):
                 obj.cont_inplace_update(new_data)
