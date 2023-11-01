@@ -2439,9 +2439,7 @@ def _validate_max_pool_params(
             kernel = [1, 1, *kernel]
         else:
             kernel = [1, *kernel, 1]
-    new_kernel = tuple(
-        [dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel))]
-    )
+    new_kernel = tuple(dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel)))
     new_kernel = tuple(dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel)))
     if isinstance(padding, list) and len(padding) == len(new_kernel):
         ivy.utils.assertions.check_kernel_padding_size(new_kernel, padding)

@@ -1326,7 +1326,7 @@ def value_is_nan(
     x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
     if x_scalar != x:
         return True
-    if include_infs and (x_scalar == INF or x_scalar == -INF):
+    if include_infs and (x_scalar in [INF, -INF]):
         return True
     return False
 

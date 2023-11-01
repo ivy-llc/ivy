@@ -9,15 +9,13 @@ import math
 
 def calculate_same_padding(kernel_size, stride, shape):
     padding = tuple(
-        [
-            max(
-                0,
-                math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
-            )
-            for i in range(len(kernel_size))
-        ]
+        max(
+            0,
+            math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
+        )
+        for i in range(len(kernel_size))
     )
-    if all([kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))]):
+    if all(kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))):
         if is_same_padding(padding, stride, kernel_size, shape):
             return padding
     return [0] * len(shape)
@@ -25,16 +23,12 @@ def calculate_same_padding(kernel_size, stride, shape):
 
 def is_same_padding(padding, stride, kernel_size, input_shape):
     output_shape = tuple(
-        [
-            (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
-            for i in range(len(padding))
-        ]
+        (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
+        for i in range(len(padding))
     )
     return all(
-        [
-            output_shape[i] == math.ceil(input_shape[i] / stride[i])
-            for i in range(len(padding))
-        ]
+        output_shape[i] == math.ceil(input_shape[i] / stride[i])
+        for i in range(len(padding))
     )
 
 

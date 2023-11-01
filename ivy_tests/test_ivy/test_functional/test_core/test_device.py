@@ -460,7 +460,7 @@ def test_print_all_ivy_arrays_on_dev(
             del item
 
         # Apply the regex search
-        assert all([re.match(regex, line) for line in written])
+        assert all(re.match(regex, line) for line in written)
 
 
 # profiler

@@ -87,7 +87,7 @@ def _flatten_frontend_return(*, ret, backend):
             else:
                 ret_np_flat = _flatten_fw_return(ret=ret, backend=backend)
         else:
-            if any([not ivy_backend.is_ivy_array(x) for x in ret]):
+            if any(not ivy_backend.is_ivy_array(x) for x in ret):
                 ret_np_flat = helpers.flatten_frontend_to_np(backend=backend, ret=ret)
             else:
                 ret_np_flat = _flatten_fw_return(ret=ret, backend=backend)
@@ -223,11 +223,11 @@ def _test_frontend_function_ignoring_uninitialized(*args, **kwargs):
     frontend_ret_flat = [
         np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
     ]
-    if "rtol" in kwargs.keys():
+    if "rtol" in kwargs:
         rtol = kwargs["rtol"]
     else:
         rtol = 1e-4
-    if "atol" in kwargs.keys():
+    if "atol" in kwargs:
         atol = kwargs["atol"]
     else:
         atol = 1e-6

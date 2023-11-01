@@ -21,7 +21,7 @@ def trace_graph(
     v=None
 ):
     """
-    Takes `fn` and traces it into a more efficient composition of backend operations.
+    Take `fn` and traces it into a more efficient composition of backend operations.
 
     Parameters
     ----------
