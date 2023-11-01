@@ -123,6 +123,13 @@ pad.partial_mixed_handler = (
 
 def _check_torch_pad(mode, reflect_type, pad_width, input_shape, constant_values):
     pad_width = _to_tf_padding(pad_width, len(input_shape))
+    if mode != "constant" and (
+        len(input_shape) > 4
+        or (len(input_shape) == 4 and len(pad_width) > 3)
+        or (len(input_shape) == 3 and len(pad_width) > 2)
+        or (len(input_shape) == 2 and len(pad_width) > 1)
+    ):
+        return False
     return _check_paddle_pad(
         mode, reflect_type, pad_width, input_shape, constant_values, 4
     ) and (
@@ -339,7 +346,7 @@ def take_along_axis(
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = torch.clamp(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
+    elif mode in {"fill", "drop"}:
         if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = float("nan")
         elif "uint" in str(arr.dtype):

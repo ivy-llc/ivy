@@ -241,7 +241,7 @@ Ivy allows this using the `partial_mixed_handler`_ attribute on the backend-spec
 
     interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
         "tf_area",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",

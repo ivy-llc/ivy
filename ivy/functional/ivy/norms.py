@@ -1,6 +1,5 @@
 """Collection of Ivy normalization functions."""
 
-
 # local
 from typing import List, Union, Optional
 import ivy
@@ -33,7 +32,8 @@ def layer_norm(
     new_std: float = 1.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply Layer Normalization over a mini-batch of inputs.
+    """
+    Apply Layer Normalization over a mini-batch of inputs.
 
     Parameters
     ----------

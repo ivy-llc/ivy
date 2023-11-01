@@ -454,7 +454,7 @@ def minimum(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16",)}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("bfloat16",)}, "paddle")
 def mod(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.remainder(x, y)
@@ -769,6 +769,22 @@ def unsorted_segment_mean(
     for j in range(num_segments):
         x[j] = ivy.divide(x[j], count[j])
     return x
+
+
+@to_ivy_arrays_and_back
+def unsorted_segment_min(data, segment_ids, num_segments, name="unsorted_segment_min"):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
+
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    min_array = ivy.zeros(
+        tuple([num_segments.item()] + (list(data.shape))[1:]), dtype=ivy.int32
+    )
+    for i in range((segment_ids).shape[0]):
+        min_array[segment_ids[i]] = ivy.minimum(min_array[segment_ids[i]], data[i])
+    return min_array
 
 
 @to_ivy_arrays_and_back

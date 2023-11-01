@@ -117,8 +117,8 @@ def astype(
 ) -> paddle.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
-        return paddle_backend.copy_array(x).data if copy else x
-    return x.cast(dtype)
+        return x.clone() if copy else x
+    return x.clone().cast(dtype) if copy else x.cast(dtype)
 
 
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
@@ -237,7 +237,7 @@ def as_native_dtype(
         return paddle.bool
     if not isinstance(dtype_in, str):
         return dtype_in
-    if dtype_in in native_dtype_dict.keys():
+    if dtype_in in native_dtype_dict:
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(

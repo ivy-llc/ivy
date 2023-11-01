@@ -142,6 +142,7 @@ class Tensor:
         return torch_frontend.reshape(self)
 
     @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16",)}, "paddle")
     def reshape_as(self, other):
         return torch_frontend.reshape(self, other.shape)
 
@@ -271,7 +272,8 @@ class Tensor:
         return torch_frontend.atan2(self, other)
 
     def view(self, *args, size=None):
-        """Reshape Tensor.
+        """
+        Reshape Tensor.
 
         possible arguments are either:
             - size
@@ -773,6 +775,10 @@ class Tensor:
     def is_meta(self):
         return "meta" in ivy.dev(self.ivy_array)
 
+    @with_unsupported_dtypes({"2.1.0 and below": ("uint16", "bool")}, "torch")
+    def positive(self):
+        return torch_frontend.positive(self)
+
     @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, "torch")
     def pow(self, exponent):
         return torch_frontend.pow(self, exponent)
@@ -882,7 +888,7 @@ class Tensor:
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, "torch")
     def cumsum_(self, dim, *, dtype=None):
-        self.ivy_array = self.cumsum(dim, dtype).ivy_array
+        self.ivy_array = self.cumsum(dim, dtype=dtype).ivy_array
         return self
 
     @with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
@@ -2157,6 +2163,13 @@ class Tensor:
 
     def rad2deg(self, *, out=None):
         return torch_frontend.rad2deg(self, out=out)
+
+    @with_supported_dtypes(
+        {"2.1.0 and below": "valid"},
+        "torch",
+    )
+    def corrcoef(self):
+        return torch_frontend.corrcoef(self)
 
     # Method aliases
     absolute, absolute_ = abs, abs_

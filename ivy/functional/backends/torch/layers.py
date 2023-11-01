@@ -1,5 +1,5 @@
-"""Collection of PyTorch network layers, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
+
 from typing import Optional, Tuple, Union, Sequence
 
 # global
@@ -102,9 +102,7 @@ multi_head_attention.partial_mixed_handler = (
     and (not is_causal or not return_attention_weights)
     and (
         ivy.exists(in_proj_weights)
-        or all(
-            [ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]
-        )
+        or all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights])
     )
     and len(
         set(

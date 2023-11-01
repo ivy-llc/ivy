@@ -9,7 +9,8 @@ TO_IGNORE = ["shape"]
 
 
 def _wrap_function(function_name: str) -> Callable:
-    """Wrap the function called `function_name`.
+    """
+    Wrap the function called `function_name`.
 
     Parameters
     ----------
@@ -32,8 +33,9 @@ def _wrap_function(function_name: str) -> Callable:
     """
 
     def new_function(self, *args, **kwargs):
-        """Add the data of the current array from which the instance function
-        is invoked as the first arg parameter or kwarg parameter.
+        """
+        Add the data of the current array from which the instance function is invoked as
+        the first arg parameter or kwarg parameter.
 
         Return the new function with the name function_name and the new
         args variable or kwargs as the new inputs.
@@ -61,8 +63,9 @@ def _wrap_function(function_name: str) -> Callable:
 def add_ivy_array_instance_methods(
     cls: Type[ivy.Array], modules: List[ModuleType], to_ignore: Iterable = ()
 ):
-    """Loop over all ivy modules such as activations, general, etc. and add the
-    module functions to ivy arrays as instance methods using _wrap_function.
+    """
+    Loop over all ivy modules such as activations, general, etc. and add the module
+    functions to ivy arrays as instance methods using _wrap_function.
 
     Parameters
     ----------

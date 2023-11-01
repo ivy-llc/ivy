@@ -237,7 +237,7 @@ After installing Ivy, you can start using it straight away, for example:
 
 # Documentation
 
-You can find Ivy's documentation in the [Docs page](https://unify.ai/docs/ivy/), which includes:
+You can find Ivy's documentation on the [Docs page](https://unify.ai/docs/ivy/), which includes:
 - [Motivation](https://unify.ai/docs/ivy/overview/background.html): This contextualizes the problem Ivy is trying to solve by going over
     - The current [ML Explosion](https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion).
     - Explaining why it is important [to solve this problem](https://unify.ai/docs/ivy/overview/background/why_unify.html#why-unify).
@@ -282,7 +282,7 @@ torch_eff_encoder = ivy.transpile(eff_encoder, to="torch", args=(noise,))
 # Build a classifier using the transpiled encoder
 class Classifier(torch.nn.Module):
     def __init__(self, num_classes=20):
-        super(Classifier, self).__init__()
+        super().__init__()
         self.encoder = torch_eff_encoder
         self.fc = torch.nn.Linear(1280, num_classes)
 
@@ -318,7 +318,7 @@ backbone = ivy.transpile(
 # Build a classifier using the transpiled backbone
 class PerceiverIOClassifier(torch.nn.Module):
     def __init__(self, num_classes=20):
-        super(PerceiverIOClassifier, self).__init__()
+        super().__init__()
         self.backbone = backbone
         self.max_pool = torch.nn.MaxPool2d((512, 1))
         self.flatten = torch.nn.Flatten()
@@ -508,7 +508,7 @@ mlp_encoder = ivy.transpile(mlp_encoder, to="tensorflow", args=(noise,))
 # Build a classifier using the transpiled encoder
 class Classifier(tf.keras.Model):
     def __init__(self):
-        super(Classifier, self).__init__()
+        super().__init__()
         self.encoder = mlp_encoder
         self.output_dense = tf.keras.layers.Dense(units=1000, activation="softmax")
 
@@ -545,7 +545,7 @@ backbone = ivy.transpile(
 # Build a classifier using the transpiled backbone
 class PerceiverIOClassifier(tf.keras.Model):
     def __init__(self, num_classes=20):
-        super(PerceiverIOClassifier, self).__init__()
+        super().__init__()
         self.backbone = backbone
         self.max_pool = tf.keras.layers.MaxPooling1D(pool_size=512)
         self.flatten = tf.keras.layers.Flatten()
@@ -743,7 +743,7 @@ mlp_encoder = ivy.transpile(mlp_encoder, to="jax", args=(noise,))
 # Build a classifier using the transpiled encoder
 class Classifier(hk.Module):
     def __init__(self, num_classes=1000):
-        super(Classifier, self).__init__()
+        super().__init__()
         self.encoder = mlp_encoder()
         self.fc = hk.Linear(output_size=num_classes, with_bias=True)
 
@@ -787,7 +787,7 @@ hk_eff_encoder = ivy.transpile(eff_encoder, to="jax", args=(noise,))
 # Build a classifier using the transpiled encoder
 class Classifier(hk.Module):
     def __init__(self, num_classes=1000):
-        super(Classifier, self).__init__()
+        super().__init__()
         self.encoder = hk_eff_encoder()
         self.fc = hk.Linear(output_size=num_classes, with_bias=True)
 
@@ -1337,7 +1337,7 @@ train(images, classes, num_epochs, model, device, num_classes = num_classes, bat
 
 # Diving deeper
 
-Although the [Docs](https://unify.ai/docs/ivy/) are the best place to learn more, in the next section we will take a look at how Ivy works as both a transpiler and a framework in a bit more of detail to get an idea of why and where to use it.
+Although the [Docs](https://unify.ai/docs/ivy/) are the best place to learn more, in the next section we will take a look at how Ivy works as both a transpiler and a framework in a bit more detail to get an idea of why and where to use it.
 
 <details>
 <summary><b>Ivy as a transpiler</b></summary>
@@ -1591,7 +1591,7 @@ our journey to unify all ML frameworks!
 
 In order to achieve the ambitious goal of unifying AI we definitely need
 as many hands as possible on it! Whether you are a seasoned developer or
-just starting out, you\'ll find a place here! Join the Ivy community in
+just starting out, you\'ll find a place here! Join the Ivy community on
 our [Discord](https://discord.gg/sXyFF8tDtm) 👾 server, which is the
 perfect place to ask questions, share ideas, and get help from both
 fellow developers and the Ivy Team directly!

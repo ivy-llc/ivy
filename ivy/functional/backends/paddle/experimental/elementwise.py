@@ -20,7 +20,7 @@ from .. import backend_version
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
             "float32",
             "float64",
             "int32",
@@ -42,7 +42,7 @@ def amax(
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
             "float32",
             "float64",
             "int32",
@@ -63,7 +63,7 @@ def amin(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+    {"2.5.2 and below": ("float32", "float64")},
     backend_version,
 )
 def lgamma(
@@ -73,7 +73,7 @@ def lgamma(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float64", "float32", "int32", "int64")},
+    {"2.5.2 and below": ("float64", "float32", "int32", "int64")},
     backend_version,
 )
 def fmax(
@@ -89,7 +89,7 @@ def fmax(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
@@ -153,7 +153,8 @@ def copysign(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("uint8", "int8", "int16", "float16")}},
+    backend_version,
 )
 def nansum(
     x: paddle.Tensor,
@@ -171,7 +172,7 @@ def nansum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def isclose(
     a: paddle.Tensor,
@@ -187,7 +188,7 @@ def isclose(
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("float16", "int16", "int8", "uint8")}, backend_version
+    {"2.5.2 and below": ("float16", "int16", "int8", "uint8")}, backend_version
 )
 def diff(
     x: Union[paddle.Tensor, list, tuple],
@@ -236,7 +237,7 @@ def hypot(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -276,7 +277,7 @@ def fix(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def nextafter(
     x1: paddle.Tensor,
@@ -317,7 +318,7 @@ _BERNOULLI_COEFS = [
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -384,7 +385,7 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
             axis = [operator.index(axis)]
         except TypeError:
             pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
     if len(set(axis)) != len(axis):
         raise ValueError("repeated axis")
     return axis
@@ -395,7 +396,7 @@ def _np_ndim(x):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+    {"2.5.2 and below": ("float32", "float64")},
     backend_version,
 )
 def gradient(
@@ -653,7 +654,7 @@ def count_nonzero(
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
             "complex64",
             "complex128",
             "float32",
@@ -755,7 +756,8 @@ def _EvaluatePolynomial(x, coefficients):
 
 
 def _is_scalar(x):
-    """Determines if the given tensor is a scalar.
+    """
+    Determines if the given tensor is a scalar.
 
     Args:
     - x (paddle.Tensor): Input tensor.
@@ -769,7 +771,7 @@ def _is_scalar(x):
 # TODO: Repalce once native function becomes available.
 # Compute an approximation of the error function complement (1 - erf(x)).
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float64", "float32")},
+    {"2.5.2 and below": ("float64", "float32")},
     backend_version,
 )
 def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:

@@ -21,7 +21,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 duplicate.py
+           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 scripts/duplicate.py
          continue-on-error: true
 
        - name: Check on failures
