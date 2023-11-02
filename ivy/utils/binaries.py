@@ -1,7 +1,7 @@
 import os
 import logging
 import json
-from pip._vendor.packaging import tags
+from packaging import tags
 from urllib import request
 from tqdm import tqdm
 
