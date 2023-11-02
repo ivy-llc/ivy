@@ -8,7 +8,7 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 # ToDo: this function will be simplified once ivy.alpha_dropout is implemented
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, "torch")
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 def alpha_dropout(input, p=0.5, training=False, inplace=False):
     if p == 0.0 or not training or input.shape == () or input.shape == (0,):
         return input

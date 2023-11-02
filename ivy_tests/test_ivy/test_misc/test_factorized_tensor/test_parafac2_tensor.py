@@ -5,7 +5,7 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    "weights, factors, projections, true_res",
+    ("weights", "factors", "projections", "true_res"),
     [
         (
             (2, 3),
@@ -29,7 +29,7 @@ def test_apply_parafac2_projections(weights, factors, projections, true_res):
 
 
 @pytest.mark.parametrize(
-    "shape, rank",
+    ("shape", "rank"),
     [
         (
             [(4, 5)] * 3,
@@ -54,7 +54,7 @@ def test_parafac2_normalise(shape, rank):
 
 
 @pytest.mark.parametrize(
-    "weights, factors, projections, true_res",
+    ("weights", "factors", "projections", "true_res"),
     [
         (
             (2, 3),
@@ -82,7 +82,7 @@ def test_parafac2_to_slices(weights, factors, projections, true_res):
 
 
 @pytest.mark.parametrize(
-    "weights, factors, projections, true_res",
+    ("weights", "factors", "projections", "true_res"),
     [
         (
             (2, 3),
@@ -103,7 +103,7 @@ def test_parafac2_to_tensor(weights, factors, projections, true_res):
 
 
 @pytest.mark.parametrize(
-    "shape, rank",
+    ("shape", "rank"),
     [
         (
             [(4, 5)] * 3,
@@ -122,7 +122,7 @@ def test_parafac2_to_unfolded(shape, rank):
 
 
 @pytest.mark.parametrize(
-    "shape, rank",
+    ("shape", "rank"),
     [
         (
             [(4, 5)] * 3,
@@ -140,7 +140,7 @@ def test_parafac2_to_vec(shape, rank):
 
 
 @pytest.mark.parametrize(
-    "true_shape, true_rank",
+    ("true_shape", "true_rank"),
     [
         (
             [(4, 5)] * 3,
