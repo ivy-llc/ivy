@@ -1589,7 +1589,7 @@ our journey to unify all ML frameworks!
 # Community
 
 
-In order to achieve the ambitious goal of unifying AI we definitely need
+In order to achieve the ambitious goal of unifying AI, we definitely need
 as many hands as possible on it! Whether you are a seasoned developer or
 just starting out, you\'ll find a place here! Join the Ivy community on
 our [Discord](https://discord.gg/sXyFF8tDtm) 👾 server, which is the
