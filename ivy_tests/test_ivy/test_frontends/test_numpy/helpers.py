@@ -43,6 +43,7 @@ def _array_and_axes_permute_helper(
         minimum size of the dimension
     max_dim_size
         maximum size of the dimension
+
     Returns
     -------
     A strategy that draws an array, its dtype and axes (or None).

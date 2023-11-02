@@ -59,7 +59,6 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([4.5, 5.3, 0, 2.3])
         }
         """
-
         return ContainerBase.cont_multi_map_in_function(
             "abs",
             x,

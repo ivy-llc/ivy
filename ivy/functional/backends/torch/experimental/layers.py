@@ -749,7 +749,7 @@ def dropout(
 ) -> torch.Tensor:
     x = ivy.astype(x, dtype) if dtype else x
     res = torch.nn.functional.dropout(x, prob, training=training)
-    res = torch.multiply(res, (1.0 - prob)) if not scale else res
+    res = res if scale else torch.multiply(res, (1.0 - prob))
     return res
 
 
@@ -1155,7 +1155,7 @@ def stft(
             windowed_frame = torch.tensor(windowed_frame, dtype=dtype)
 
             fft_frame = torch.fft.fft(windowed_frame, axis=-1)
-            slit = int((fft_length // 2 + 1))
+            slit = int(fft_length // 2 + 1)
             stft_result.append(fft_frame[..., 0:slit])
 
         stft = torch.stack(stft_result, axis=0)
