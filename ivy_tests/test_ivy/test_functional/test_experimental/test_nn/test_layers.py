@@ -1079,7 +1079,7 @@ def test_interpolate(dtype_x_mode, test_flags, backend_fw, fn_name, on_device):
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-01,
-        atol_=1e-01,
+        atol_=1e-03,
         x=x[0],
         size=size,
         mode=mode,
