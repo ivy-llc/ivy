@@ -206,6 +206,8 @@ def _set_module_backend(
     )
     backend_str = backend.current_backend_str() if backend_str is None else backend_str
     for k, v in original_dict.items():
+        if k in ivy.GLOBAL_PROPS:
+            continue
         compositional = k not in backend.__dict__
         if compositional:
             if k in invalid_dtypes and k in target.__dict__:
@@ -236,11 +238,21 @@ def _handle_backend_specific_vars(target, backend):
         target.set_global_attr("RNG", target.functional.backends.jax.random.RNG)
 
 
-def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
-    # Dynamic Backend
-    from ivy.functional.ivy.gradients import _is_variable, _variable_data
+def _data_to_new_backend(x, previous_backend):
+    device = previous_backend.dev(x.data)
+    try:
+        result = ivy.from_dlpack(previous_backend.to_dlpack(x.data))
+        result = ivy.to_device(result, device)
+    except Exception:
+        np_res = previous_backend.to_numpy(x.data)
+        result = ivy.asarray(np_res, device=device)
+    return result
 
-    def _is_var(obj):
+
+def dynamic_backend_converter(backend_stack):
+    from ivy.functional.ivy.gradients import _variable
+
+    def _is_var(obj, backend):
         if isinstance(obj, ivy.Container):
 
             def _map_fn(x):
@@ -252,7 +264,7 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
                 ):
                     return False
 
-                return _is_variable(x)
+                return backend.gradients._is_variable(x)
 
             return obj.cont_map(lambda x, kc: _map_fn(x)).cont_all_true()
 
@@ -264,7 +276,7 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
                 "jaxlib.xla_extension",
             ):
                 return False
-            return _is_variable(obj)
+            return backend.gradients._is_variable(obj)
 
     # get all ivy array instances in the project scope
     container_list = [
@@ -273,7 +285,8 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
         if "ivy" in type(obj).__module__ and isinstance(obj, ivy.Container)
     ]
     cont_array_idxs = ivy.nested_argwhere(
-        container_list, lambda x: isinstance(x, ivy.Array)
+        container_list,
+        lambda x: isinstance(x, ivy.Array) and x.backend != ivy.current_backend_str(),
     )
     cont_array_vals = ivy.multi_index_nest(container_list, cont_array_idxs)
     array_list = [
@@ -287,65 +300,30 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
     array_list = [
         arr
         for arr in array_list
-        if arr.__dict__ and arr.backend == ivy.current_backend_str()
+        if arr.__dict__ and arr.backend != ivy.current_backend_str()
     ]
-    arr_ids = [id(item.data) for item in array_list]
-    new_objs = dict(zip(arr_ids, array_list))
-    new_objs = list(new_objs.values())
+    new_objs = [obj for obj in array_list if obj.dynamic_backend]
 
     # now convert all ivy.Array and ivy.Container instances
-    # to numpy using the current backend
+    # to the new backend
+
     for obj in new_objs:
-        if obj.dynamic_backend:
-            numpy_objs.append(obj)
-            devices.append(obj.device)
-            if _is_var(obj):
-                # add variable object id to set
-                variable_ids.add(id(obj))
-                native_var = _variable_data(obj)
-                np_data = ivy.to_numpy(native_var)
+        # the following if condition avoids converting arrays that were already
+        # updated inplace i.e. are references to other arrays
+        if obj.backend != ivy.current_backend_str():
+            backend = ivy.with_backend(obj.backend, cached=True)
+            if _is_var(obj, backend):
+                native_var = backend.gradients._variable_data(obj)
+                data = _data_to_new_backend(native_var, backend)
+                new_data = _variable(data)
 
             else:
-                np_data = obj.to_numpy()
+                new_data = _data_to_new_backend(obj, backend)
 
             if isinstance(obj, ivy.Container):
-                obj.cont_inplace_update(np_data)
+                obj.cont_inplace_update(new_data)
             else:
-                obj._data = np_data
-
-    return variable_ids, numpy_objs, devices
-
-
-def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
-    # Dynamic Backend
-    from ivy.functional.ivy.gradients import _variable
-
-    # convert all ivy.Array and ivy.Container instances from numpy
-    # to native arrays using the newly set backend
-    for obj, device in zip(numpy_objs, devices):
-        np_arr = obj.data if isinstance(obj, ivy.Array) else obj
-        # check if object was originally a variable
-        if id(obj) in variable_ids:
-            native_arr = ivy.nested_map(
-                lambda x: current_backend().asarray(x, device=device),
-                np_arr,
-                include_derived=True,
-                shallow=False,
-            )
-            new_data = _variable(native_arr)
-
-        else:
-            new_data = ivy.nested_map(
-                lambda x: current_backend().asarray(x, device=device),
-                np_arr,
-                include_derived=True,
-                shallow=False,
-            )
-
-        if isinstance(obj, ivy.Container):
-            obj.cont_inplace_update(new_data)
-        else:
-            obj.data = new_data.data
+                obj.data = new_data.data
 
 
 @prevent_access_locally
@@ -378,16 +356,6 @@ def set_backend(backend: str, dynamic: bool = False):
         f"backend must be one from {list(_backend_dict.keys())}",
     )
 
-    variable_ids = set()  # create an empty set to store variable object ids
-    numpy_objs = []  # create an empty list to store numpy objects
-    devices = []  # create an empty list to store device strings
-    # created during 1st conversion step
-
-    if dynamic:
-        variable_ids, numpy_objs, devices = convert_from_source_backend_to_numpy(
-            variable_ids, numpy_objs, devices
-        )
-
     # update the global dict with the new backend
     with ivy.locks["backend_setter"]:
         global ivy_original_dict
@@ -416,7 +384,7 @@ def set_backend(backend: str, dynamic: bool = False):
                 ivy.functional.__dict__[key] = ivy.__dict__[key]
 
         if dynamic:
-            convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
+            dynamic_backend_converter(backend_stack)
         for sub_backend in ivy.available_sub_backends:
             ivy.set_sub_backend(sub_backend)
         if verbosity.level > 0:
@@ -535,6 +503,8 @@ def previous_backend():
         # wrap backend functions if there still is a backend, and add functions
         # to ivy namespace
         for k, v in new_backend_dict.items():
+            if k in ivy.GLOBAL_PROPS:
+                continue
             if backend_stack and k in ivy_original_dict:
                 v = _wrap_function(k, v, ivy_original_dict[k])
             if k in ivy_original_dict:

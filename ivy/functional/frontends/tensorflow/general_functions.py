@@ -255,8 +255,7 @@ def gather(params, indices, validate_indices=None, axis=None, batch_dims=0, name
         axis = batch_dims
     else:
         axis = axis % len(params.shape)
-    if axis < batch_dims:
-        axis = batch_dims
+    axis = max(axis, batch_dims)
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 

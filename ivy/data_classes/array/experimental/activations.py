@@ -361,6 +361,45 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         """
         return ivy.tanhshrink(self._data, out=out)
 
+    def threshold(
+        self: ivy.Array,
+        /,
+        *,
+        threshold: Union[int, float],
+        value: Union[int, float],
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.threshold. This method simply wraps the
+        function, and so the docstring for ivy.threshold also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        threshold
+            threshold value for thresholding operation.
+        value
+            value to replace with if thresholding condition is not met.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the thresholding function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.hreshold(threshold=0.5, value=0.0)
+        >>> print(y)
+        ivy.array([0.5, 0.5 , 1. ])
+        """
+        return ivy.threshold(self._data, threshold=threshold, value=value, out=out)
+
     def softshrink(
         self: ivy.Array,
         /,

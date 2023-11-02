@@ -186,7 +186,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         #  once frontend specific backend setting is added
         set_default_dtype = False
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and all(
-            [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
+            not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args
         ):
             if ivy.current_backend_str() == "jax":
                 import jax

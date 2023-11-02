@@ -259,6 +259,11 @@ class Shape(Sequence):
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
 
+    def __deepcopy__(self, memo):
+        ret = self.__class__.__new__(self.__class__)
+        ret._shape = self.shape
+        return ret
+
     def __iter__(self):
         return iter(self._shape)
 
@@ -436,7 +441,7 @@ class Shape(Sequence):
 
     def with_rank(self, rank):
         try:
-            return self.merge_with(unknown_shape(rank=rank))
+            return self.merge_with(self.unknown_shape(rank=rank))
         except ValueError:
             raise ValueError(f"Shape {self} must have rank {rank}")
 

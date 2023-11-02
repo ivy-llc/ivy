@@ -50,8 +50,8 @@ def batch_norm(
     xdims = x.ndim
     if data_format == "NSC":
         x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
-    runningmean = mean.clone()
-    runningvariance = variance.clone()
+    runningmean = mean.detach().clone()
+    runningvariance = variance.detach().clone()
     xnormalized = torch.nn.functional.batch_norm(
         x,
         runningmean,
