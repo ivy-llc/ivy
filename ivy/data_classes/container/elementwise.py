@@ -9,7 +9,7 @@ from ivy.data_classes.container.base import ContainerBase
 class _ContainerWithElementwise(ContainerBase):
     @staticmethod
     def _static_abs(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray, ivy.Container],
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
