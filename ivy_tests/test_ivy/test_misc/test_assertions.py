@@ -64,7 +64,7 @@ def test_check_all(results):
 
 
 @pytest.mark.parametrize(
-    "args, fn, type, limit",
+    ("args", "fn", "type", "limit"),
     [
         # INVALID CASES
         ((1, 2, 0), ivy.array, "all", [3]),
@@ -198,7 +198,7 @@ def test_check_dimensions(x):
 
 
 @pytest.mark.parametrize(
-    "elem, list, inverse",
+    ("elem", "list", "inverse"),
     [
         (1, [1, 2], False),
         ("a", [1, 2], False),
@@ -240,7 +240,7 @@ def test_check_elem_in_list(elem, list, inverse):
 
 
 @pytest.mark.parametrize(
-    "x1, x2, inverse",
+    ("x1", "x2", "inverse"),
     [
         (5, 10, False),
         (10, 10, False),
@@ -283,7 +283,7 @@ def test_check_equal(x1, x2, inverse):
 
 
 @pytest.mark.parametrize(
-    "x, inverse",
+    ("x", "inverse"),
     [(None, False), ([], False), (None, True), ("abc", True)],
 )
 def test_check_exists(x, inverse):
@@ -356,7 +356,7 @@ def test_check_false(expression):
 
 
 @pytest.mark.parametrize(
-    "params, indices, axis, batch_dims",
+    ("params", "indices", "axis", "batch_dims"),
     [
         # INVALID CASES
         (ivy.array([1, 2, 3]), ivy.array([1]), 2, 3),
@@ -402,7 +402,7 @@ def test_check_gather_input_valid(params, indices, axis, batch_dims):
 
 
 @pytest.mark.parametrize(
-    "params, indices, batch_dims",
+    ("params", "indices", "batch_dims"),
     [
         # INVALID CASES
         (ivy.array([1, 2, 3]), ivy.array([1]), 2),
@@ -450,7 +450,7 @@ def test_check_gather_nd_input_valid(params, indices, batch_dims):
 
 
 @pytest.mark.parametrize(
-    "x1, x2, allow_equal",
+    ("x1", "x2", "allow_equal"),
     [
         (5, 10, False),
         (10, 5, False),
@@ -488,7 +488,7 @@ def test_check_greater(x1, x2, allow_equal):
 
 
 @pytest.mark.parametrize(
-    "var, data",
+    ("var", "data"),
     [
         # INVALID CASES
         (ivy.array([1]), ivy.array([1, 2])),
@@ -528,7 +528,7 @@ def test_check_inplace_sizes_valid(var, data):
 
 
 @pytest.mark.parametrize(
-    "x, allowed_types",
+    ("x", "allowed_types"),
     [(5.0, float), (ivy.array(5), type(ivy.array(8))), (5, float), ([5, 10], tuple)],
 )
 def test_check_isinstance(x, allowed_types):
@@ -602,7 +602,7 @@ def test_check_jax_x64_flag(dtype):
 
 
 @pytest.mark.parametrize(
-    "kernel_size, padding_size",
+    ("kernel_size", "padding_size"),
     [
         # INVALID CASES
         (((2, 2), ((2, 2), (1, 1)))),
@@ -642,7 +642,7 @@ def test_check_kernel_padding_size(kernel_size, padding_size):
 
 
 @pytest.mark.parametrize(
-    "x1, x2, allow_equal",
+    ("x1", "x2", "allow_equal"),
     [
         (5, 10, False),
         (10, 5, False),
@@ -680,7 +680,7 @@ def test_check_less(x1, x2, allow_equal):
 
 
 @pytest.mark.parametrize(
-    "x1, x2",
+    ("x1", "x2"),
     [
         (ivy.array([1, 2, 3]), ivy.array([4, 5, 6])),
         (ivy.array([1.0, 2.0, 3.0]), ivy.array([4, 5, 6])),
@@ -718,7 +718,7 @@ def test_check_same_dtype(x1, x2):
 
 
 @pytest.mark.parametrize(
-    "x1, x2",
+    ("x1", "x2"),
     [
         (ivy.array([1, 2, 3]), ivy.array([[4, 5, 6], [2, 3, 1]])),
         (ivy.array([[1.0, 2.0], [3.0, 4.0]]), ivy.array([4, 5, 6])),
@@ -757,7 +757,7 @@ def test_check_shape(x1, x2):
 
 
 @pytest.mark.parametrize(
-    "var, data",
+    ("var", "data"),
     [
         # INVALID CASES
         ((2, 1), (1, 2, 1)),
@@ -832,7 +832,7 @@ def test_check_true(expression):
 
 
 @pytest.mark.parametrize(
-    "data, segment_ids, num_segments",
+    ("data", "segment_ids", "num_segments"),
     [
         # INVALID CASES
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 2.0),

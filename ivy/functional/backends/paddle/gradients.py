@@ -21,8 +21,6 @@ from ivy.functional.ivy.gradients import (
 
 
 def variable(x, /):
-    if ivy.is_int_dtype(x.dtype):
-        x = x.astype(ivy.default_float_dtype())
     if not x.is_leaf:
         ret = x.detach()
         ret.stop_gradient = False

@@ -70,7 +70,7 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
         else:
             raise ValueError(f"Invalid padding format: {padding}")
 
-    if not all([p >= 0 for p in padding]):
+    if not all(p >= 0 for p in padding):
         raise ValueError(
             "Invalid padding, all values should be larger than"
             f"or equal to 0, but received: {padding}."

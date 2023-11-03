@@ -243,7 +243,7 @@ def avg_pool1d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -258,7 +258,7 @@ def avg_pool2d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -274,7 +274,7 @@ def avg_pool3d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -464,7 +464,7 @@ def interpolate(
     mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
-    align_corners: Optional[bool] = None,
+    align_corners: bool = False,
     antialias: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ):
@@ -643,7 +643,7 @@ def stft(
             windowed_frame = paddle.to_tensor(windowed_frame)
 
             fft_frame = fft(windowed_frame, -1)
-            slit = int((fft_length // 2 + 1))
+            slit = int(fft_length // 2 + 1)
             stft_result.append(fft_frame[..., 0:slit])
 
         stft = paddle.to_tensor(stft_result)

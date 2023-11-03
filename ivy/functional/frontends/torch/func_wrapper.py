@@ -186,7 +186,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         #  once frontend specific backend setting is added
         set_default_dtype = False
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and all(
-            [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
+            not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args
         ):
             if ivy.current_backend_str() == "jax":
                 import jax
@@ -209,10 +209,8 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             requires_grad=kwargs.get(
                 "requires_grad",
                 any(
-                    [
-                        isinstance(i, torch_frontend.Tensor) and i.requires_grad
-                        for i in args
-                    ]
+                    isinstance(i, torch_frontend.Tensor) and i.requires_grad
+                    for i in args
                 ),
             ),
         )
@@ -239,19 +237,15 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             if fn.__name__ in dir(torch_frontend.creation_ops):
                 ret.is_leaf = True
             elif all(
-                [
-                    not isinstance(i, torch_frontend.Tensor)
-                    or (not i.requires_grad and not i.grad_fn)
-                    for i in args
-                ]
+                not isinstance(i, torch_frontend.Tensor)
+                or (not i.requires_grad and not i.grad_fn)
+                for i in args
             ):
                 ret.is_leaf = True
             else:
                 ret.is_leaf = False
         # set grad_fn
-        if any(
-            [isinstance(i, torch_frontend.Tensor) and i.requires_grad for i in args]
-        ):
+        if any(isinstance(i, torch_frontend.Tensor) and i.requires_grad for i in args):
             # ToDo: Implement for unbind
             grad_fn = GradFn(fn, args)
             grad_fn.__self__ = ret

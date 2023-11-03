@@ -1250,9 +1250,7 @@ def test_jax_conv_general_dilated(
 ):
     dtype, x, filters, dilations, dim_num, stride, pad, fc, pref = x_f_d_other
     _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations[0])
-    assume(
-        not (isinstance(pad, str) and not len(dilations[1]) == dilations[1].count(1))
-    )
+    assume(not isinstance(pad, str) or len(dilations[1]) == dilations[1].count(1))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,

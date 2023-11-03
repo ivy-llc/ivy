@@ -97,7 +97,7 @@ def max_pool1d(
         )
     else:
         if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
+            item != 0 for sublist in padding for item in sublist
         ):
             raise NotImplementedError(
                 "Nonzero explicit padding is not supported for depthwise max pooling"
@@ -203,7 +203,7 @@ def max_pool2d(
         )
     else:
         if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
+            item != 0 for sublist in padding for item in sublist
         ):
             raise NotImplementedError(
                 "Nonzero explicit padding is not supported for depthwise max pooling"
@@ -317,7 +317,7 @@ def max_pool3d(
         )
     else:
         if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
+            item != 0 for sublist in padding for item in sublist
         ):
             raise NotImplementedError(
                 "Nonzero explicit padding is not supported for depthwise max pooling"
@@ -386,7 +386,7 @@ def avg_pool1d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -470,7 +470,7 @@ def avg_pool2d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -577,7 +577,7 @@ def avg_pool3d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -717,7 +717,7 @@ def fft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     if x.dtype in [np.uint64, np.int64, np.float64, np.complex128]:
         out_dtype = np.complex128
@@ -940,7 +940,7 @@ def ifft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)
 
@@ -1063,7 +1063,7 @@ def rfftn(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.fft.rfftn(x, s, axes, norm).astype(np.complex128)
 
@@ -1157,7 +1157,7 @@ def stft(
             windowed_frame = np.array(windowed_frame, dtype=dtype)
 
             fft_frame = np.fft.fft(windowed_frame, axis=-1)
-            slit = int((fft_length // 2 + 1))
+            slit = int(fft_length // 2 + 1)
             stft_result.append(fft_frame[..., 0:slit])
 
         stft = np.stack(stft_result, axis=0)

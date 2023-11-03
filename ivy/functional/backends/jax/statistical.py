@@ -41,7 +41,10 @@ def max(
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
-@with_unsupported_dtypes({"0.4.14 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes(
+    {"0.4.19 and below": "bfloat16"},
+    backend_version,
+)
 def mean(
     x: JaxArray,
     /,
@@ -51,7 +54,7 @@ def mean(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.mean(x, axis=axis, keepdims=keepdims)
+    return jnp.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype)
 
 
 def _infer_dtype(dtype: jnp.dtype):

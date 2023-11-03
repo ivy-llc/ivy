@@ -94,7 +94,7 @@ def mean(
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
-    if axis == () or axis == []:
+    if axis in [(), []]:
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
         else:

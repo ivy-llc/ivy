@@ -60,9 +60,7 @@ def mean(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return ivy.astype(
-        np.mean(x, axis=axis, keepdims=keepdims, out=out), x.dtype, copy=False
-    )
+    return np.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype, out=out)
 
 
 mean.support_native_out = True
