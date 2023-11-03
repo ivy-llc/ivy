@@ -2,6 +2,7 @@
 import copy
 import re
 import warnings
+import logging
 import builtins
 import numpy as np
 import sys
@@ -258,6 +259,11 @@ class Shape(Sequence):
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
 
+    def __deepcopy__(self, memo):
+        ret = self.__class__.__new__(self.__class__)
+        ret._shape = self.shape
+        return ret
+
     def __iter__(self):
         return iter(self._shape)
 
@@ -398,10 +404,6 @@ class Shape(Sequence):
         else:
             return self._shape[index]
 
-    @property
-    def shape(self):
-        return self._shape
-
     def as_dimension(self):
         if isinstance(self._shape, Shape):
             return self._shape
@@ -439,7 +441,7 @@ class Shape(Sequence):
 
     def with_rank(self, rank):
         try:
-            return self.merge_with(unknown_shape(rank=rank))
+            return self.merge_with(self.unknown_shape(rank=rank))
         except ValueError:
             raise ValueError(f"Shape {self} must have rank {rank}")
 
@@ -789,12 +791,12 @@ _imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
     from .engines import XLA as xla
     from .engines import ivy2xla
-except:
+except:  # noqa: E722
     pass
 try:
     from .compiler.compiler import transpile, trace_graph, unify
 except:  # noqa: E722
-    pass  # Added for the finally statment
+    pass  # Added for the finally statement
 finally:
     # Skip framework imports done by Ivy compiler for now
     for backend_framework in _not_imported_backends.copy():
@@ -992,7 +994,7 @@ def _assert_array_significant_figures_formatting(sig_figs):
     ivy.utils.assertions.check_greater(sig_figs, 0, as_array=False)
 
 
-# ToDo: SF formating for complex number
+# ToDo: SF formatting for complex number
 def vec_sig_fig(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
@@ -1502,7 +1504,7 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
 
 
 if (
-    "ivy" in sys.modules.keys()
+    "ivy" in sys.modules
     and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND
 ):
     # Required for ivy.with_backend internal compilation

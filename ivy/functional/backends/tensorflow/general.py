@@ -50,7 +50,7 @@ def current_backend_str() -> str:
 
 def _check_query(query):
     return not isinstance(query, list) and (
-        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
+        not (ivy.is_array(query) and ivy.is_bool_dtype(query) and bool(query.ndim > 0))
     )
 
 
@@ -66,6 +66,7 @@ def get_item(
 
 get_item.partial_mixed_handler = lambda x, query, **kwargs: (
     all(_check_query(i) for i in query)
+    and len({i.shape for i in query if ivy.is_array(i)}) == 1
     if isinstance(query, tuple)
     else _check_query(query)
 )
@@ -344,7 +345,7 @@ def scatter_flat(
 scatter_flat.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16", "complex")}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -504,7 +505,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16", "complex")}, backend_version)
 def isin(
     elements: tf.Tensor,
     test_elements: tf.Tensor,

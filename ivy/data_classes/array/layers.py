@@ -80,7 +80,7 @@ class _ArrayWithLayers(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.dropout. This method simply wraps the
-        function, and so the docstring for ivy.droput also applies to this method with
+        function, and so the docstring for ivy.dropout also applies to this method with
         minimal changes.
 
         Parameters
@@ -327,7 +327,7 @@ class _ArrayWithLayers(abc.ABC):
             Default is None. The shape of mask input should be in
             *[batch_shape,num_queries,num_keys]*.
         dropout_p
-            Specifies the dropout probablity, if greater than 0.0, dropout is applied
+            Specifies the dropout probability, if greater than 0.0, dropout is applied
         is_causal
             If true, assumes causal attention masking and errors if both `mask` and
             `is_causal` are set.

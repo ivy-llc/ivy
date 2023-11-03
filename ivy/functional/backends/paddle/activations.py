@@ -4,6 +4,7 @@ Paddle activation functions.
 Collection of Paddle activation functions, wrapped to fit Ivy syntax and
 signature.
 """
+
 from typing import Optional, Union, Literal
 
 # global
@@ -32,7 +33,7 @@ def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float32", "float64", "complex")}},
+    {"2.5.2 and below": {"cpu": ("float32", "float64", "complex")}},
     backend_version,
 )
 def leaky_relu(
@@ -52,7 +53,7 @@ def leaky_relu(
 
 
 @with_supported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float32", "float64", "complex")}},
+    {"2.5.2 and below": {"cpu": ("float32", "float64", "complex")}},
     backend_version,
 )
 def gelu(
@@ -76,7 +77,7 @@ def gelu(
 
 
 @with_supported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float32", "float64", "complex")}},
+    {"2.5.2 and below": {"cpu": ("float32", "float64", "complex")}},
     backend_version,
 )
 def sigmoid(
@@ -88,7 +89,7 @@ def sigmoid(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
 )
 def softmax(
     x: paddle.Tensor,
@@ -138,7 +139,7 @@ def softplus(
 
 # Softsign
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def softsign(
     x: paddle.Tensor,
@@ -152,7 +153,7 @@ softsign.support_native_out = True
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def log_softmax(
     x: paddle.Tensor,
@@ -171,7 +172,7 @@ def log_softmax(
 
 
 @with_supported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float32", "float64", "complex")}},
+    {"2.5.2 and below": {"cpu": ("float32", "float64", "complex")}},
     backend_version,
 )
 def mish(
@@ -187,7 +188,7 @@ def mish(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def hardswish(
     x: paddle.Tensor,

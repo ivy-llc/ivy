@@ -48,7 +48,7 @@ def to_device(
     device = as_native_dev(device)
     current_dev = dev(x)
     if not _same_device(current_dev, device):
-        with tf.device("/" + device.upper()):
+        with tf.device(f"/{device.upper()}"):
             return tf.identity(x)
     return x
 
@@ -69,7 +69,7 @@ def as_ivy_dev(device: str, /):
 def as_native_dev(device: str, /):
     if isinstance(device, str) and "/" in device:
         return device
-    ret = "/" + ivy.Device(device).upper()
+    ret = f"/{ivy.Device(device).upper()}"
     if not ret[-1].isnumeric():
         ret += ":0"
     return ret
@@ -106,7 +106,7 @@ def handle_soft_device_variable(*args, fn, **kwargs):
 
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
-        super(Profiler, self).__init__(save_dir)
+        super().__init__(save_dir)
         self._options = tf.profiler.experimental.ProfilerOptions(
             host_tracer_level=3, python_tracer_level=1, device_tracer_level=1
         )

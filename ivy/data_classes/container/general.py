@@ -1019,6 +1019,7 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             An ivy.Container instance of True bool values if nodes of the Container \
             support in-place operations, raises IvyBackendException otherwise
+
         Examples
         --------
         >>> ivy.set_backend("numpy")
@@ -4291,7 +4292,7 @@ class _ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            A boolean container detaling if any of the leaf nodes are None.
+            A boolean container detailing if any of the leaf nodes are None.
             True if not None, False if None.
 
         Examples
@@ -4353,7 +4354,7 @@ class _ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            A boolean container detaling if any of the leaf nodes are None.
+            A boolean container detailing if any of the leaf nodes are None.
             True if not None, False if None.
 
         Examples

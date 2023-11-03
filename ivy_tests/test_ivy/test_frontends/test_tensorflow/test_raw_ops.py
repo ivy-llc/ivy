@@ -276,6 +276,12 @@ def _squeeze_helper(draw):
     return [axis] if axis is not None else axis
 
 
+@st.composite
+def df(draw, data_format):
+    data_format = draw(data_format)
+    return data_format
+
+
 # Reverse
 @st.composite
 def reverse_helper(draw):
@@ -1193,6 +1199,35 @@ def test_tensorflow_ConcatV2(
     )
 
 
+# Conj
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Conj",
+    dtype_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Conj(  # NOQA
+    *,
+    dtype_and_xs,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, xs = dtype_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=xs[0],
+    )
+
+
 # Conv2D
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Conv2D",
@@ -1834,6 +1869,45 @@ def test_tensorflow_FFT(  # NOQA
     ),
 )
 def test_tensorflow_FFT2D(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
+    )
+
+
+# FFT3D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.FFT3D",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+        min_value=-1e5,
+        max_value=1e5,
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_tensorflow_FFT3D(
     *,
     dtype_and_x,
     frontend,
@@ -2769,6 +2843,41 @@ def test_tensorflow_Max(  # NOQA
     )
 
 
+# MaxPool3D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.MaxPool3D",
+    aliases=["tensorflow.nn.max_pool3d"],
+    data_format=st.sampled_from(["NDHWC", "NCDHW"]),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=5),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_MaxPool3D(
+    *,
+    x_k_s_p,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+    )
+
+
 # Maximum
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Maximum",
@@ -2890,6 +2999,38 @@ def test_tensorflow_Min(  # NOQA
     test_with_out=st.just(False),
 )
 def test_tensorflow_Minimum(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+# Mod
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Mod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Mod(  # NOQA
     *,
     dtype_and_x,
     frontend,

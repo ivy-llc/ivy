@@ -123,7 +123,6 @@ def abs(
         b: ivy.array([4.5, 5.3, 0., 2.3])
     }
     """
-
     return ivy.current_backend(x).abs(x, out=out)
 
 
@@ -421,7 +420,7 @@ def add(
 
     For complex floating-point operands, the real valued floating-point
     special cases must independently apply to the real and
-    imaginary component operation invloving real numbers as
+    imaginary component operation involving real numbers as
     described in the above table. For example, let ``a = real(x1_i)``,
     ``c = real(x2_i)``, ``d = imag(x2_i)``,
     and
@@ -515,7 +514,7 @@ def asin(
     """
     Calculate an implementation-dependent approximation of the principal value of the
     inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each
-    element ``x_i`` of the input array ``x``. Each element-wise result is expressed in
+    element ``x_i`` of the input array ``x``. Each element- wise result is expressed in
     radians.
 
     **Special cases**
@@ -4212,7 +4211,7 @@ def log2(
     - If ``x_i`` is ``1``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
 
-    For complex floating-point operands, special cases must be hanled as if
+    For complex floating-point operands, special cases must be handled as if
     the operation is implemented using the standard change of base formula
 
     .. math::
@@ -4246,6 +4245,37 @@ def log2(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([5.0, 1, -0.0, -6.0])
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    ivy.array([2.32, 0., -inf, nan])
+    >>> x = ivy.array([[float('nan'), 1, 6.0, float('+inf')],
+    ...               [+0, -2.0, -7, float('-inf')]])
+    >>> y = ivy.empty_like(x)
+    >>> ivy.log2(x, out=y)
+    >>> print(y)
+    ivy.array([[nan, 0., 2.58, inf],[inf, nan, nan, nan]])
+    >>> x = ivy.array([[float('nan'), 1, 7.0, float('+inf')],
+    ...               [+0, -3.0, -8, float('-inf')]])
+    >>> ivy.log2(x, out=x)
+    >>> print(x)
+    ivy.array([[nan, 0., 2.81, inf],[inf, nan, nan, nan]])
+
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+    ...                   b=ivy.array([-0., -4.9, float('+inf')]),
+    ...                   c=ivy.array([8.9, 2.1, 1.]))
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    {
+        a: ivy.array([-inf, nan]),
+        b: ivy.array([-inf, nan, inf]),
+        c: ivy.array([3.15, 1.07, 0.])
+    }
     """
     return ivy.current_backend(x).log2(x, out=out)
 
@@ -4965,7 +4995,7 @@ def not_equal(
       and ``x1_i`` does not equal ``x2_i``, the result is ``True``.
     - In the remaining cases, the result is ``False``.
 
-    For omplex floating-point operands, let ``a = real(x1_i)``, ``b = imag(x1_i)``,
+    For complex floating-point operands, let ``a = real(x1_i)``, ``b = imag(x1_i)``,
     ``c = real(x2_i)``, ``d = imag(x2_i)``, and
 
     - If ``a``, ``b``, ``c``, or ``d`` is ``NaN``, the result is ``True``.

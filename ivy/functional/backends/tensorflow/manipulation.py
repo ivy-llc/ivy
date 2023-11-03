@@ -10,7 +10,7 @@ import tensorflow as tf
 import ivy
 
 # noinspection PyProtectedMember
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
@@ -106,7 +106,7 @@ def permute_dims(
     return tf.transpose(x, perm=axes)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -186,7 +186,7 @@ def squeeze(
     return ret
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, backend_version)
 def stack(
     arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     /,
@@ -240,7 +240,6 @@ def split(
     return tf.split(x, num_or_size_splits, axis)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("int32", "int64")}, backend_version)
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -254,7 +253,7 @@ def repeat(
 
 @with_unsupported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.14.0 and below": (
             "uint8",
             "uint16",
             "uint32",
@@ -325,7 +324,7 @@ def swapaxes(
     return tf.transpose(x, config)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
     /,
