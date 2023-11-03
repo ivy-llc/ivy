@@ -38,7 +38,7 @@ def current_backend_str() -> str:
 
 def _check_query(query):
     if isinstance(query, Sequence):
-        return not any([isinstance(item, (Sequence, paddle.Tensor)) for item in query])
+        return not any(isinstance(item, (Sequence, paddle.Tensor)) for item in query)
     else:
         return True
 
