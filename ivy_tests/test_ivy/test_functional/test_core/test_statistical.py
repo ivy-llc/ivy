@@ -82,9 +82,19 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
                 | helpers.floats(min_value=0, max_value=max_correction - 1)
             )
         return dtype, values, axis, correction
-    dtype3, where = draw(
-        helpers.dtype_and_values(available_dtypes=["bool"], shape=shape)
+
+    if isinstance(axis, tuple):
+        axis = axis[0]
+
+    where_shape = draw(
+        helpers.mutually_broadcastable_shapes(
+            num_shapes=1, base_shape=shape, min_dims=0, max_dims=axis
+        )
     )
+    dtype3, where = draw(
+        helpers.dtype_and_values(available_dtypes=["bool"], shape=where_shape[0])
+    )
+
     return dtype, values, axis, dtype3, where
 
 
