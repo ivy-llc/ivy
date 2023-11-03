@@ -415,8 +415,10 @@ def pixel_shuffle(input, upscale_factor):
     ivy.utils.assertions.check_equal(
         ivy.get_num_dims(input),
         4,
-        message="pixel_shuffle expects 4D input, but got input with sizes "
-        + str(input_shape),
+        message=(
+            "pixel_shuffle expects 4D input, but got input with sizes"
+            f" {str(input_shape)}"
+        ),
         as_array=False,
     )
     b = input_shape[0]
