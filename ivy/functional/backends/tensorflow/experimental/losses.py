@@ -68,7 +68,7 @@ def soft_margin_loss(
         return loss
 
 
-def _apply_loss_reduction(loss: tf.Tensor, reduction: str, axis) -> tf.Tensor:
+def _apply_loss_reduction(loss: tf.Tensor, reduction: str, axis=None) -> tf.Tensor:
     if reduction == "sum":
         return tf.math.reduce_sum(loss, axis=axis)
     elif reduction == "mean":
@@ -156,3 +156,36 @@ def poisson_nll_loss(
         cond = tf.math.logical_and(target_tensor >= zeros, target_tensor <= ones)
         loss = loss + tf.where(cond, zeros, stirling_approx)
     return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.14.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def multilabel_margin_loss(
+    input: tf.Tensor, target: tf.Tensor, /, *, reduction: str = "none"
+) -> tf.Tensor:
+    """
+
+    Parameters
+    ----------
+    input
+    target
+    reduction
+
+    Returns
+    -------
+    out: tf.Tensor
+    """
+    input_tensor = tf.constant(input, dtype=input.dtype)
+    target_tensor = tf.constant(target, dtype=input.dtype)
+
+    loss = tf.reduce_sum(
+        tf.maximum(0.0, 1.0 - (input_tensor[target_tensor] - input_tensor))
+    ) / tf.cast(tf.size(input_tensor), tf.float32)
+    return _apply_loss_reduction(loss, reduction=reduction)

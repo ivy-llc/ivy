@@ -574,3 +574,32 @@ def poisson_nll_loss(
         eps=eps,
         reduction=reduction,
     )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+def multilabel_margin_loss(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    *,
+    reduction: str = "none",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+
+    Parameters
+    ----------
+    input
+    target
+    reduction
+    out
+
+    Returns
+    -------
+    out: array
+    """
+    return ivy.current_backend(input).multilabel_margin_loss(
+        input, target, reduction=reduction, out=out
+    )

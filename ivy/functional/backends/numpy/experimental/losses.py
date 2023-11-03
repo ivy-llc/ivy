@@ -75,7 +75,9 @@ def soft_margin_loss(
         return loss
 
 
-def _apply_loss_reduction(loss: np.ndarray, reduction: str, axis, out) -> np.ndarray:
+def _apply_loss_reduction(
+    loss: np.ndarray, reduction: str, axis=None, out=None
+) -> np.ndarray:
     if reduction == "sum":
         return np.sum(loss, axis=axis, out=out)
     elif reduction == "mean":
@@ -167,3 +169,37 @@ def poisson_nll_loss(
         cond = np.logical_and(target_arr >= zeroes, target_arr <= ones)
         loss = loss + np.where(cond, zeroes, striling_approx_term)
     return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "1.25.2 and below": {
+            "cpu": ("float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+@_scalar_output_to_0d_array
+def multilabel_margin_loss(
+    input: np.ndarray, target: np.ndarray, /, *, reduction: str = "none"
+) -> np.ndarray:
+    """
+
+    Parameters
+    ----------
+    input
+    target
+    reduction
+
+    Returns
+    -------
+    out: np.ndarray
+    """
+    input_arr = np.asarray(input)
+    target_arr = np.asarray(target, dtype=input.dtype)
+
+    loss = (
+        np.sum(np.maximum(0, 1 - (input_arr[target_arr] - input_arr)))
+        / input_arr.shape[0]
+    )
+    return _apply_loss_reduction(loss, reduction=reduction)

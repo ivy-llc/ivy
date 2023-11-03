@@ -153,3 +153,35 @@ def poisson_nll_loss(
         cond = jnp.logical_and(target_arr >= zeroes, target_arr <= ones)
         loss = loss + jnp.where(cond, zeroes, striling_approx_term)
     return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "0.4.14 and below": {
+            "cpu": ("float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def multilabel_margin_loss(
+    input: JaxArray, target: JaxArray, /, *, reduction: str = "none"
+) -> JaxArray:
+    """
+
+    Parameters
+    ----------
+    input
+    target
+    reduction
+
+    Returns
+    -------
+    out: JaxArray
+    """
+    input_arr = jnp.asarray(input, dtype=input.dtype)
+    target_arr = jnp.asarray(target, dtype=input.dtype)
+    loss = (
+        jnp.sum(jnp.maximum(0, 1 - (input_arr[target_arr] - input_arr)))
+        / input_arr.shape[0]
+    )
+    return _apply_loss_reduction(loss, reduction=reduction)

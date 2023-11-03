@@ -152,3 +152,41 @@ def poisson_nll_loss(
     return torch.nn.functional.poisson_nll_loss(
         input, target, log_input=log_input, full=full, eps=eps, reduction=reduction
     )
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.14.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "complex64",
+                "complex128",
+            ),
+        }
+    },
+    backend_version,
+)
+def multilabel_margin_loss(
+    input: torch.Tensor, target: torch.Tensor, /, *, reduction: str = "none"
+) -> torch.Tensor:
+    """
+
+    Parameters
+    ----------
+    input
+    target
+    reduction
+
+    Returns
+    -------
+    out: torch.Tensor
+    """
+    return torch.nn.functional.multilabel_margin_loss(
+        input=input, target=target, reduction=reduction
+    )

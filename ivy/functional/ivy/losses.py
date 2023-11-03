@@ -16,10 +16,10 @@ from ivy.utils.exceptions import handle_exceptions
 # ------- #
 
 
-def _reduce_loss(red, loss, axis, out):
-    if red == "sum":
+def _reduce_loss(reduction, loss, axis=None, out=None):
+    if reduction == "sum":
         return ivy.negative(ivy.sum(loss, axis=axis), out=out)
-    elif red == "mean":
+    elif reduction == "mean":
         return ivy.negative(ivy.mean(loss, axis=axis), out=out)
     else:
         return ivy.negative(loss, out=out)
@@ -379,3 +379,36 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def multilabel_margin_loss(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = -1,
+    reduction: str = "none",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+
+    Parameters
+    ----------
+    input
+    target
+    axis
+    reduction
+    out
+
+    Returns
+    -------
+    out: ivy.Array
+    """
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    loss = ivy.sum(ivy.maximum(0, 1 - (input[target] - target))) / input.shape[0]
+    return _reduce_loss(reduction=reduction, loss=loss, axis=axis, out=out)

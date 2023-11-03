@@ -239,3 +239,36 @@ def poisson_nll_loss(
         cond = paddle.logical_and(target_arr >= zeroes, target_arr <= ones)
         loss = loss + paddle.where(cond, zeroes, striling_approx_term)
     return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.2 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def multilabel_margin_loss(
+    input: paddle.Tensor, target: paddle.Tensor, /, *, reduction: str = "none"
+) -> paddle.Tensor:
+    """
+
+    Parameters
+    ----------
+    input
+    target
+    reduction
+
+    Returns
+    -------
+    out: paddle.Tensor
+    """
+    input_arr = paddle.to_tensor(input)
+    target_arr = paddle.to_tensor(target, dtype=input.dtype)
+
+    loss = F.multi_label_soft_margin_loss(
+        input=input_arr, label=target_arr, reduction=reduction
+    )
+    return loss
