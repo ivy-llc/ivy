@@ -60,6 +60,8 @@ def _affine_grid_helper(draw):
 def _pad_generator(draw, shape, mode):
     pad = ()
     m = max(int((len(shape) + 1) / 2), 1)
+    if mode == "circular":
+        m = max(int((len(shape)) / 2), 1)
     for i in range(m):
         if mode != "constant":
             if i < 2:
