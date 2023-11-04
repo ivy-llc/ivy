@@ -393,7 +393,7 @@ def disc_wl(
     Compute the Wasserstein loss for the discriminator (critic).
 
     Parameters
-    ---------
+    ----------
         p_real (`ivy.Array`): Predictions for real data.
         p_fake (`ivy.Array`): Predictions for fake data.
 
@@ -416,7 +416,7 @@ def gan_wl(pred_fake: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     Compute the Wasserstein loss for the generator.
 
     Parameters
-    ---------
+    ----------
         pred_fake `(ivy.Array)`: Predictions for fake data.
 
     Returns
