@@ -679,6 +679,24 @@ class Tensor:
     def logical_not(self, out=None, name=None):
         return paddle_frontend.logical_not(self)
 
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "bool",
+                "float16",
+                "float32",
+                "float64",
+                "int32",
+                "int64",
+                "int8",
+                "int16",
+            )
+        },
+        "paddle",
+    )
+    def broadcast_tensors(self, name=None):
+        return paddle_frontend.Tensor(ivy.broadcast_arrays(self._ivy_array))
+
     @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
     def sign(self, name=None):
         return paddle_frontend.sign(self)
