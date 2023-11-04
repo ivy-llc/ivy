@@ -6650,7 +6650,7 @@ def test_torch_fill_(
         max_num_dims=2,
     ),
     val=helpers.floats(min_value=-10, max_value=10),
-    wrap=helpers.get_dtypes(kind="bool"),
+    wrap=helpers.get_dtypes("valid"),
     test_with_out=st.just(False),
 )
 def test_torch_fill_diagonal_(
