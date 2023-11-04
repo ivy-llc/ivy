@@ -379,3 +379,42 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def disc_wl(p_real:Union[ivy.Array, ivy.NativeArray], p_fake:Union[ivy.Array, ivy.NativeArray]
+    )-> ivy.Array:
+    """
+        Compute the Wasserstein loss for the discriminator (critic).
+
+        Args:
+            p_real (`ivy.Array`): Predictions for real data.
+            p_fake (`ivy.Array`): Predictions for fake data.
+
+        Returns:
+            `ivy.Array`: Wasserstein loss for the discriminator.
+    """
+    r_loss = ivy.mean(p_real)
+    f_loss = ivy.mean(p_fake)
+    return f_loss - r_loss
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def gan_wl(pred_fake:Union[ivy.Array, ivy.NativeArray]
+    ) -> ivy.Array:
+    """
+    Compute the Wasserstein loss for the generator.
+
+    Args:
+        pred_fake `(ivy.Array)`: Predictions for fake data.
+
+    Returns:
+        `ivy.Array`: Wasserstein loss for the generator.
+    """
+    return -1 * ivy.mean(pred_fake)
