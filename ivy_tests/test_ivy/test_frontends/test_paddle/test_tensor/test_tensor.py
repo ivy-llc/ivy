@@ -1286,7 +1286,7 @@ def test_paddle_bmm(
     init_tree="paddle.to_tensor",
     method_name="broadcast_tensors",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
     ),
 )
 def test_paddle_broadcast_tensors(
