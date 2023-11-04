@@ -126,7 +126,6 @@ def _to_ivy_array(x):
     # else if x is a frontend torch Tensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
     elif hasattr(x, "ivy_array"):
         return x.ivy_array
-
     # else just return x
     return x
 
@@ -187,7 +186,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         #  once frontend specific backend setting is added
         set_default_dtype = False
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and all(
-            [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
+            not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args
         ):
             if ivy.current_backend_str() == "jax":
                 import jax
@@ -210,10 +209,8 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             requires_grad=kwargs.get(
                 "requires_grad",
                 any(
-                    [
-                        isinstance(i, torch_frontend.Tensor) and i.requires_grad
-                        for i in args
-                    ]
+                    isinstance(i, torch_frontend.Tensor) and i.requires_grad
+                    for i in args
                 ),
             ),
         )
@@ -225,32 +222,30 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
-            # ivy.inplace_update with ensure_in_backend=True fails in jax and tf
-            # so update .data directly
-            if ivy.is_array(first_array):
-                first_array._data = ret.ivy_array.data
+            native_ret_data = ret.ivy_array.data
+            if ivy.is_ivy_array(first_array):
+                first_array.data = native_ret_data
+            elif ivy.is_native_array(first_array):
+                ivy.inplace_update(first_array, native_ret_data)
+                ret = torch_frontend.Tensor(first_array, _init_overload=True)
             else:
-                first_array.ivy_array._data = ret.ivy_array.data
-            ret = first_array
+                first_array.ivy_array.data = native_ret_data
+                ret = first_array
 
         # logic for setting is_leaf
         if ret is not None and isinstance(ret, torch_frontend.Tensor):
             if fn.__name__ in dir(torch_frontend.creation_ops):
                 ret.is_leaf = True
             elif all(
-                [
-                    not isinstance(i, torch_frontend.Tensor)
-                    or (not i.requires_grad and not i.grad_fn)
-                    for i in args
-                ]
+                not isinstance(i, torch_frontend.Tensor)
+                or (not i.requires_grad and not i.grad_fn)
+                for i in args
             ):
                 ret.is_leaf = True
             else:
                 ret.is_leaf = False
         # set grad_fn
-        if any(
-            [isinstance(i, torch_frontend.Tensor) and i.requires_grad for i in args]
-        ):
+        if any(isinstance(i, torch_frontend.Tensor) and i.requires_grad for i in args):
             # ToDo: Implement for unbind
             grad_fn = GradFn(fn, args)
             grad_fn.__self__ = ret

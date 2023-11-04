@@ -30,7 +30,7 @@ def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -51,7 +51,7 @@ def max_pool1d(
 ) -> paddle.Tensor:
     dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NWC":
@@ -97,7 +97,7 @@ def max_pool1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -118,7 +118,7 @@ def max_pool2d(
 ) -> paddle.Tensor:
     dims = 2
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NHWC":
@@ -168,7 +168,7 @@ def max_pool2d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -189,7 +189,7 @@ def max_pool3d(
 ) -> paddle.Tensor:
     dims = 3
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=dims
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NDHWC":
@@ -243,7 +243,7 @@ def avg_pool1d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -258,7 +258,7 @@ def avg_pool2d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -274,7 +274,7 @@ def avg_pool3d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -299,6 +299,9 @@ def dct(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {"2.5.2 and below": ("bfloat16", "bool", "float16")}, backend_version
+)
 def fft(
     x: paddle.Tensor,
     dim: int,
@@ -332,17 +335,16 @@ def fft(
             f" {valid_norm_modes}"
         )
 
-    if x.dtype in [paddle.int64, paddle.float64, paddle.complex128]:
-        x = x.cast(paddle.complex128)
-    else:
-        x = x.cast(paddle.complex64)
-
-    return paddle.fft.fft(x, n, dim, norm=norm)
+    ret = paddle.fft.fft(x, n, dim, norm=norm)
+    # to make it compatible with other backends
+    if x.dtype == paddle.int64:
+        ret = ret.astype("complex128")
+    return ret
 
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -364,7 +366,7 @@ def dropout1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -386,7 +388,7 @@ def dropout2d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -419,7 +421,7 @@ def ifft(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("int8", "float32", "float64"),
             "gpu": ("int8", "bfloat16", "float16", "float32", "float64"),
         },
@@ -462,7 +464,7 @@ def interpolate(
     mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
-    align_corners: Optional[bool] = None,
+    align_corners: bool = False,
     antialias: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ):
@@ -489,8 +491,29 @@ def ifftn(
     return paddle.fft.ifftn(x, s, axes, norm)
 
 
+def rfft(
+    x: paddle.Tensor,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        x = x.real()
+    if x.dtype == paddle.float16:
+        x = x.astype(paddle.float32)
+
+    ret = paddle.fft.rfft(x, n=n, axis=axis, norm=norm)
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
+    {"2.5.2 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
     backend_version,
 )
 def rfftn(
@@ -507,7 +530,7 @@ def rfftn(
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
             "complex64",
             "complex128",
         )
@@ -529,7 +552,7 @@ def fft2(
 # stft
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
             "complex64",
             "complex128",
         )

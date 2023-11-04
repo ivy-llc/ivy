@@ -515,7 +515,7 @@ def ndenumerate(
             for idx in _iter_product(*i):
                 yield idx, input[idx]
 
-    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
+    input = input if ivy.is_ivy_array(input) else ivy.array(input)
     return _ndenumerate(input)
 
 
@@ -945,11 +945,12 @@ def random_parafac2(
         the decomposed tensor is returned
      seed
         seed for generating random numbers
+
     Returns
     -------
       ivy.Parafac2Tensor
     """
-    if not all(shape[1] == shapes[0][1] for shape in shapes):
+    if any(shape[1] != shapes[0][1] for shape in shapes):
         raise ValueError("All matrices must have equal number of columns.")
 
     projection_matrices = [
@@ -1013,14 +1014,14 @@ def random_tt(
     rank = list(rank)
     if rank[0] != 1:
         message = (
-            "Provided rank[0] == {} but boundaring conditions dictatate rank[0] =="
-            " rank[-1] == 1.".format(rank[0])
+            f"Provided rank[0] == {rank[0]} but boundaring conditions dictatate rank[0]"
+            " == rank[-1] == 1."
         )
         raise ValueError(message)
     if rank[-1] != 1:
         message = (
-            "Provided rank[-1] == {} but boundaring conditions dictatate rank[0] =="
-            " rank[-1] == 1.".format(rank[-1])
+            f"Provided rank[-1] == {rank[-1]} but boundaring conditions dictatate"
+            " rank[0] == rank[-1] == 1."
         )
         raise ValueError(message)
 
@@ -1136,4 +1137,75 @@ def mel_weight_matrix(
         sample_rate,
         lower_edge_hertz,
         upper_edge_hertz,
+    )
+
+
+# unsorted_segment_mean
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def unsorted_segment_mean(
+    data: Union[ivy.Array, ivy.NativeArray],
+    segment_ids: Union[ivy.Array, ivy.NativeArray],
+    num_segments: Union[int, ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    """
+    Compute the mean of elements along segments of an array. Segments are defined by an
+    integer array of segment IDs.
+
+    Parameters
+    ----------
+    data : Union[ivy.Array, ivy.NativeArray]
+        The array from which to gather values.
+
+    segment_ids : Union[ivy.Array, ivy.NativeArray]
+        Must be in the same size with the first dimension of `data`. Has to be
+        of integer data type. The index-th element of `segment_ids` array is
+        the segment identifier for the index-th element of `data`.
+
+    num_segments : Union[int, ivy.Array, ivy.NativeArray]
+        An integer or array representing the total number of distinct segment IDs.
+
+    Returns
+    -------
+    ivy.Array
+        The output array, representing the result of a segmented mean operation.
+        For each segment, it computes the mean value in `data` where `segment_ids`
+        equals to segment ID.
+    """
+    return ivy.current_backend().unsorted_segment_mean(data, segment_ids, num_segments)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_function
+@to_native_arrays_and_back
+def polyval(
+    coeffs: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
+):
+    """
+    Evaluate and return a polynomial at specific given values.
+
+    Parameters
+    ----------
+    coeffs
+        Polynomial coefficients (including zero) from highest degree to constant term.
+    x
+        The value of the indeterminate variable at which to evaluate the polynomial.
+
+    Returns
+    -------
+    ret
+       Simplified result of substituing x in the coefficients - final value
+       of polynomial.
+
+    Examples
+    --------
+    >>> ivy.polyval([3, 0, 1], 5)
+    ivy.array(76)
+    """
+    return ivy.current_backend().polyval(
+        coeffs,
+        x,
     )

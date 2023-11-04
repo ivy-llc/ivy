@@ -109,7 +109,7 @@ def _get_required_float_variables(xs, xs_grad_idxs):
     Also, returns a list of duplicate index chains for the nested
     structure.
     """
-    if (ivy.is_ivy_container(xs) or ivy.is_array(xs)) and xs_grad_idxs == [[0]]:
+    if (ivy.is_ivy_container(xs) or ivy.is_array(xs)) and xs_grad_idxs == ((0,),):
         xs_grad_idxs = None
     duplicate_index_chains = _get_duplicate_index_chains(xs)
     xs = _to_ivy(xs)
@@ -133,7 +133,7 @@ def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=Fal
         if ivy.is_array(x_):
             x_ = ivy.to_ivy(x_) if ivy.is_native_array(x_) else x_
             if create_var:
-                x_ = _variable(x_) if not _is_variable(x_, exclusive=True) else x_
+                x_ = x_ if _is_variable(x_, exclusive=True) else _variable(x_)
             if len(x_.shape) == 0:
                 return ivy.to_native(x_)
             if reshape:
@@ -271,6 +271,47 @@ def _non_finite_to_zero(xs):
     )
 
 
+def _flatten_containers(inputs):
+    """
+    Flatten containers into a single tuple of arrays.
+
+    Returns a flattened tuple of arrays and the indices of the arrays in
+    the original containers.
+    """
+    if ivy.is_array(inputs) or ivy.is_ivy_container(inputs):
+        inputs = (inputs,)
+    values = []
+    ret_idxs = []
+    for idx, input in enumerate(inputs):
+        if isinstance(input, ivy.Container):
+            grad_arr_idxs = ivy.nested_argwhere(input, lambda x: ivy.is_array(x))
+            grad_arr_values = ivy.multi_index_nest(input, grad_arr_idxs)
+            values.extend(grad_arr_values)
+            ret_idxs.append(grad_arr_idxs)
+        elif ivy.is_array(input):
+            values.append(input)
+            ret_idxs.append(None)
+    return tuple(values), ret_idxs
+
+
+def _rebuild_flattened_containers(outputs, ret_idxs):
+    """Rebuild the containers from the flattened arrays into a single tuple."""
+    rebuilt_outputs = []
+    curr_idx = 0
+    for ret_idx in ret_idxs:
+        if ret_idx is None:
+            rebuilt_outputs.append(outputs[curr_idx])
+            curr_idx += 1
+        else:
+            cont = ivy.Container()
+            num_elements = len(ret_idx)
+            cont_outputs = outputs[curr_idx : curr_idx + num_elements]
+            ivy.insert_into_nest_at_indices(cont, ret_idx, cont_outputs)
+            rebuilt_outputs.append(cont)
+            curr_idx += num_elements
+    return tuple(rebuilt_outputs)
+
+
 # Private Variable Helpers #
 # -------------------------#
 
@@ -406,8 +447,8 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    xs_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
+    ret_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
     Call function func with input of xs variables, and return the function result

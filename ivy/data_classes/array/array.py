@@ -160,7 +160,7 @@ class Array(
         self._dev_str = None
         self._pre_repr = None
         self._post_repr = None
-        self._backend = ivy.backend
+        self._backend = ivy.current_backend(self._data).backend
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
@@ -188,27 +188,26 @@ class Array(
 
     @dynamic_backend.setter
     def dynamic_backend(self, value):
-        from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
-        from ivy.utils.backend.handler import _determine_backend_from_args
+        from ivy.functional.ivy.gradients import _variable
+        from ivy.utils.backend.handler import _data_to_new_backend, _get_backend_for_arg
 
-        if value == False:
-            self._backend = _determine_backend_from_args(self).backend
-
-        else:
+        if value:
             ivy_backend = ivy.with_backend(self._backend)
-            to_numpy = ivy_backend.to_numpy
 
-            if _is_variable(self.data) and not self._backend in ["jax", "numpy"]:
-                native_data = _variable_data(self.data)
-                np_data = to_numpy(native_data)
-                new_arr = ivy.array(np_data)
-                self._data = _variable(new_arr).data
+            if ivy_backend.gradients._is_variable(self.data):
+                native_var = ivy_backend.gradients._variable_data(
+                    self,
+                )
+                data = _data_to_new_backend(native_var, ivy_backend).data
+                self._data = _variable(data).data
 
             else:
-                np_data = to_numpy(self.data)
-                self._data = ivy.array(np_data).data
+                self._data = _data_to_new_backend(self, ivy_backend).data
 
             self._backend = ivy.backend
+
+        else:
+            self._backend = _get_backend_for_arg(self.data.__class__.__module__).backend
 
         self._dynamic_backend = value
 
@@ -401,13 +400,7 @@ class Array(
                 self._post_repr = ")"
         sig_fig = ivy.array_significant_figures
         dec_vals = ivy.array_decimal_values
-        if self.backend == "" or ivy.is_local():
-            # If the array was constructed using implicit backend
-            backend = ivy.current_backend()
-        else:
-            # Requirerd in the case that backend is different
-            # from the currently set backend
-            backend = ivy.with_backend(self.backend)
+        backend = ivy.with_backend(self.backend)
         arr_np = backend.to_numpy(self._data)
         rep = (
             np.array(ivy.vec_sig_fig(arr_np, sig_fig))
@@ -446,7 +439,7 @@ class Array(
         return self._data.__contains__(key)
 
     def __getstate__(self):
-        data_dict = dict()
+        data_dict = {}
 
         # only pickle the native array
         data_dict["data"] = self.data
@@ -671,10 +664,10 @@ class Array(
         return ivy.remainder(self._data, other)
 
     def __divmod__(self, other):
-        return tuple([ivy.divide(self._data, other), ivy.remainder(self._data, other)])
+        return ivy.divide(self._data, other), ivy.remainder(self._data, other)
 
     def __rdivmod__(self, other):
-        return tuple([ivy.divide(other, self._data), ivy.remainder(other, self._data)])
+        return ivy.divide(other, self._data), ivy.remainder(other, self._data)
 
     def __truediv__(self, other):
         """

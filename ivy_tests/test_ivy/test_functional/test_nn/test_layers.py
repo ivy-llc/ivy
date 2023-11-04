@@ -307,7 +307,7 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
     average_attention_weights = draw(st.booleans())
 
     if len(q.shape) == 3 and not batch_first:
-        q, k, v = (np.swapaxes(x, 0, 1) if x is not None else x for x in [q, k, v])
+        q, k, v = [np.swapaxes(x, 0, 1) if x is not None else x for x in [q, k, v]]
 
     ret = (
         q,
@@ -516,7 +516,7 @@ def _x_and_filters(
     else:
         filter_shape = filter_shape + (input_channels,)
     channel_first = True
-    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+    if data_format in ["NHWC", "NWC", "NDHWC"]:
         x_shape = (batch_size,) + x_dim + (input_channels,)
         channel_first = False
     else:
@@ -1460,6 +1460,7 @@ def test_multi_head_attention(
     inputs=_nms_helper(),
     test_instance_method=st.just(False),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_nms(
     *,

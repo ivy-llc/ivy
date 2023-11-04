@@ -46,8 +46,8 @@ def train(
         Requires at least one item in **evals**.
         The method returns the model from the last iteration (not the best one).  Use
         custom callback or model slicing if the best model is desired.
-        If there's more than one item in **evals**, the last entry will be used for early
-        stopping.
+        If there's more than one item in **evals**, the last entry will be used for
+        early stopping.
         If there's more than one metric in the **eval_metric** parameter given in
         **params**, the last metric will be used for early stopping.
         If early stopping occurs, the model will have two additional fields:
@@ -58,11 +58,13 @@ def train(
         Requires at least one item in **evals**.
         If **verbose_eval** is True then the evaluation metric on the validation set is
         printed at each boosting stage.
-        If **verbose_eval** is an integer then the evaluation metric on the validation set
-        is printed at every given **verbose_eval** boosting stage. The last boosting stage
-        / the boosting stage found by using **early_stopping_rounds** is also printed.
-        Example: with ``verbose_eval=4`` and at least one item in **evals**, an evaluation metric
-        is printed every 4 boosting stages, instead of every boosting stage.
+        If **verbose_eval** is an integer then the evaluation metric on the validation
+        set is printed at every given **verbose_eval** boosting stage. The last boosting
+        stage / the boosting stage found by using **early_stopping_rounds** is also
+        printed.
+        Example: with ``verbose_eval=4`` and at least one item in **evals**, an
+        evaluation metric is printed every 4 boosting stages, instead of every boosting
+        stage.
     xgb_model
         Xgb model to be loaded before training (allows training continuation).
     callbacks

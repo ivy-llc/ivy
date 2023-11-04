@@ -1,4 +1,4 @@
-# function wrappers for pandas frontend to handle commmon operations
+# function wrappers for pandas frontend to handle common operations
 from functools import wraps
 
 

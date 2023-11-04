@@ -327,9 +327,8 @@ class ModuleHelpers(abc.ABC):
             return ret
         else:
             print(
-                "both self.top_v and self.v must be initialized in order to show v in "
-                "top_v, "
-                "but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
+                "both self.top_v and self.v must be initialized in order to show v in"
+                f" top_v, but found\n\ntop_v: {self.top_v}\n\nv: {self.v}."
             )
 
     def mod_with_top_mod_key_chain(self, /, *, depth=None, flatten_key_chain=False):

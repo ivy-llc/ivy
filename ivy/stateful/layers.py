@@ -1,4 +1,5 @@
 """Collection of Ivy neural network layers as stateful classes."""
+
 # flake8: noqa
 # local
 import ivy
@@ -117,8 +118,9 @@ class Linear(Module):
         return ivy.linear(x, self.v.w, bias=self.v.b if self._with_bias else None)
 
     def extra_repr(self) -> str:
-        return "in_features={}, out_features={}, with_bias={}".format(
-            self._input_channels, self._output_channels, self._with_bias is True
+        return (
+            f"in_features={self._input_channels}, out_features={self._output_channels},"
+            f" with_bias={self._with_bias is True}"
         )
 
 
@@ -2235,7 +2237,7 @@ class Dct(Module):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The length of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal length,
             then x is truncated, if n is larger then x is zero-padded.
         axis
             The axis to compute the DCT along.
