@@ -94,11 +94,19 @@ def avg_pool1d(
     ceil_mode=False,
     count_include_pad=True,
 ):
+    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
+    if all(
+        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+    ):
+        padding = "SAME"
+    else:
+        padding = "VALID"
     return ivy.avg_pool1d(
         input,
         kernel_size,
         stride if stride is not None else kernel_size,
-        [(pad, pad) for pad in padding],
+        padding,
         data_format="NCW",
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
@@ -119,11 +127,19 @@ def avg_pool2d(
     count_include_pad=True,
     divisor_override=None,
 ):
+    kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "2d", name="padding")
+    if all(
+        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+    ):
+        padding = "SAME"
+    else:
+        padding = "VALID"
     return ivy.avg_pool2d(
         input,
         kernel_size,
         stride if stride is not None else kernel_size,
-        [(pad, pad) for pad in padding],
+        padding,
         data_format="NCHW",
         ceil_mode=ceil_mode,
         count_include_pad=count_include_pad,
@@ -145,11 +161,19 @@ def avg_pool3d(
     count_include_pad=True,
     divisor_override=None,
 ):
+    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
+    if all(
+        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+    ):
+        padding = "SAME"
+    else:
+        padding = "VALID"
     return ivy.avg_pool3d(
         input,
         kernel_size,
         stride if stride is not None else kernel_size,
-        [(pad, pad) for pad in padding],
+        padding,
         data_format="NCDHW",
         ceil_mode=ceil_mode,
         count_include_pad=count_include_pad,
