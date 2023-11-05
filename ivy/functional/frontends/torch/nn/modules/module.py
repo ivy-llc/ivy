@@ -564,6 +564,8 @@ class Module(ivy.Module):
             return self._call_impl(*args, **kwargs)
 
     def _call_impl(self, *args, **kwargs):
+        # TODO: Remove this once backprop through the frontends is fixed
+        self.requires_grad_(False)
         forward_call = self.forward
         # If we don't have any hooks, we want to skip the rest of the logic in
         # this function, and just call forward.
