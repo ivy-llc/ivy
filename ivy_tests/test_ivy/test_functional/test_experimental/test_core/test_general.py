@@ -65,3 +65,28 @@ def test_reduce(*, args, keepdims, test_flags, backend_fw, fn_name, on_device):
         axes=axes,
         keepdims=keepdims,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.sequence_length",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float64", "int8", "bool", "complex64", "int32"],
+        min_value=-10,
+        max_value=10,
+        num_arrays=3,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_sequence_length(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        num_positional_args=2,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        test_values=True,
+        x=x,
+    )
