@@ -56,9 +56,9 @@ class _ArrayWithGeneralExperimental(abc.ABC):
         /,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.sequence_length. This method simply wraps the
-        function, and so the docstring for ivy.sequence_length also applies to this method with
-        minimal changes.
+        ivy.Array instance method variant of ivy.sequence_length. This method simply
+        wraps the function, and so the docstring for ivy.sequence_length also applies to
+        this method with minimal changes.
 
         Parameters
         ----------

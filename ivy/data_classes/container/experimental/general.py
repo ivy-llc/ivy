@@ -160,9 +160,9 @@ class _ContainerWithGeneralExperimental(ContainerBase):
         /,
     ) -> ivy.Container:
         """
-        Container instance method variant of ivy.sequence_length.This method simply wraps the
-        function, and so the docstring for ivy.sequence_length also applies to this method with
-        minimal changes.
+        Container instance method variant of ivy.sequence_length.This method simply
+        wraps the function, and so the docstring for ivy.sequence_length also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -191,9 +191,9 @@ class _ContainerWithGeneralExperimental(ContainerBase):
         /,
     ) -> ivy.Container:
         """
-        Container instance method variant of ivy.sequence_length.This method simply wraps the
-        function, and so the docstring for ivy.sequence_length also applies to this method with
-        minimal changes.
+        Container instance method variant of ivy.sequence_length.This method simply
+        wraps the function, and so the docstring for ivy.sequence_length also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
