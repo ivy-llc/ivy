@@ -1,6 +1,6 @@
 # global
 import functools
-from typing import Callable, Union, Sequence
+from typing import Callable, Optional, Union, Sequence
 
 # local
 import ivy
@@ -97,7 +97,6 @@ reduce.mixed_backend_wrappers = {
 }
 
 
-
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -106,7 +105,11 @@ reduce.mixed_backend_wrappers = {
 def sequence_length(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,
-) -> int:
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """
     Return the length of the input array's elements.
 
@@ -130,4 +133,6 @@ def sequence_length(
     >>> ivy.sequence_length(x)
     ivy.array(2)
     """
-    return ivy.current_backend().sequence_length(x)
+    return ivy.current_backend(x).sequence_length(
+        x, dtype=dtype, device=device, out=out
+    )
