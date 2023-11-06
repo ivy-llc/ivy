@@ -856,9 +856,9 @@ def multi_head_attention(
     if key is None and value is None:
         key = value = query
     if num_dims == 2:
-        query, key, value = [ivy.expand_dims(x, axis=0) for x in [query, key, value]]
+        query, key, value = (ivy.expand_dims(x, axis=0) for x in [query, key, value])
     elif not batch_first:
-        query, key, value = [ivy.swapaxes(x, 0, 1) for x in [query, key, value]]
+        query, key, value = (ivy.swapaxes(x, 0, 1) for x in [query, key, value])
 
     # project query, key and value
     if ivy.exists(in_proj_weights):
