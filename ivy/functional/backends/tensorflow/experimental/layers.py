@@ -338,7 +338,7 @@ def avg_pool1d(
         else:
             num_padded_values = tf.scatter_nd(
                 tf.constant([[res.shape[1] - 1]]),
-                tf.constant([c], dtype=res.dtype),
+                tf.constant([c[0]], dtype=res.dtype),
                 tf.constant([res.shape[1]], dtype=tf.int32),
             )
         res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
