@@ -9,15 +9,13 @@ import math
 
 def calculate_same_padding(kernel_size, stride, shape):
     padding = tuple(
-        [
-            max(
-                0,
-                math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
-            )
-            for i in range(len(kernel_size))
-        ]
+        max(
+            0,
+            math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
+        )
+        for i in range(len(kernel_size))
     )
-    if all([kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))]):
+    if all(kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))):
         if is_same_padding(padding, stride, kernel_size, shape):
             return padding
     return [0] * len(shape)
@@ -25,16 +23,12 @@ def calculate_same_padding(kernel_size, stride, shape):
 
 def is_same_padding(padding, stride, kernel_size, input_shape):
     output_shape = tuple(
-        [
-            (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
-            for i in range(len(padding))
-        ]
+        (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
+        for i in range(len(padding))
     )
     return all(
-        [
-            output_shape[i] == math.ceil(input_shape[i] / stride[i])
-            for i in range(len(padding))
-        ]
+        output_shape[i] == math.ceil(input_shape[i] / stride[i])
+        for i in range(len(padding))
     )
 
 
@@ -193,14 +187,8 @@ def test_torch_avg_pool1d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
-    # TODO: remove the processing of padding attribute when ivy.avg_pool
-    #   support explicit padding
-    x_shape = [x[0].shape[2]]
-    padding = [pad[i] for i, pad in enumerate(padding)]
-    # figuring out the exact kernel_size for SAME and VALID padding
-    # As ivy.avg_pool1d doesn't support explicit padding scheme
-    if not sum(padding) == 0:
-        padding = calculate_same_padding(kernel_size, stride, x_shape)
+    if not isinstance(padding, int):
+        padding = [pad[0] for pad in padding]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -244,12 +232,8 @@ def test_torch_avg_pool2d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
-    # TODO: remove the processing of padding attribute when ivy.avg_pool
-    #   support explicit padding
-    padding = [pad[i] for i, pad in enumerate(padding)]
-    x_shape = x[0].shape[2:]
-    if not sum(padding) == 0:
-        padding = calculate_same_padding(kernel_size, [stride[0]] * 2, x_shape)
+    if not isinstance(padding, int):
+        padding = [pad[0] for pad in padding]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -296,13 +280,8 @@ def test_torch_avg_pool3d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
-    # TODO: remove the processing of padding and strides attributes when ivy.avg_pool
-    #   support explicit padding
-    x_shape = x[0].shape[2:]
-    padding = [pad[0] for pad in padding]
-    if not sum(padding) == 0:
-        stride_broad = (stride[0],) * 3 if len(stride) == 1 else stride
-        padding = calculate_same_padding(kernel_size, stride_broad, x_shape)
+    if not isinstance(padding, int):
+        padding = [pad[0] for pad in padding]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -320,7 +299,7 @@ def test_torch_avg_pool3d(
     )
 
 
-# avg_pool1d
+# lp_pool1d
 @handle_frontend_test(
     fn_tree="torch.nn.functional.lp_pool1d",
     dtype_x_k_s=helpers.arrays_for_pooling(
@@ -360,7 +339,7 @@ def test_torch_lp_pool1d(
     )
 
 
-# avg_pool2d
+# lp_pool2d
 @handle_frontend_test(
     fn_tree="torch.nn.functional.lp_pool2d",
     dtype_x_k_s=helpers.arrays_for_pooling(
@@ -422,7 +401,8 @@ def test_torch_max_pool1d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
-    padding = (padding[0][0],)
+    if not isinstance(padding, int):
+        padding = [pad[0] for pad in padding]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -462,9 +442,9 @@ def test_torch_max_pool2d(
     fn_tree,
     on_device,
 ):
-    dtype, x, kernel, stride, pad, dilation = x_k_s_p
-    pad = (pad[0][0], pad[1][0])
-
+    dtype, x, kernel, stride, padding, dilation = x_k_s_p
+    if not isinstance(padding, int):
+        padding = [pad[0] for pad in padding]
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -475,7 +455,7 @@ def test_torch_max_pool2d(
         input=x[0],
         kernel_size=kernel,
         stride=stride,
-        padding=pad,
+        padding=padding,
         dilation=dilation,
         ceil_mode=ceil_mode,
     )
@@ -506,8 +486,9 @@ def test_torch_max_pool3d(
     fn_tree,
     on_device,
 ):
-    dtype, x, kernel, stride, pad, dilation = x_k_s_p
-    padding = (pad[0][0], pad[1][0], pad[2][0])
+    dtype, x, kernel, stride, padding, dilation = x_k_s_p
+    if not isinstance(padding, int):
+        padding = [pad[0] for pad in padding]
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,

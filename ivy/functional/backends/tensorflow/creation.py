@@ -90,14 +90,12 @@ def asarray(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     # convert the input to a tensor using the appropriate function
-    try:
-        ret = tf.convert_to_tensor(obj, dtype)
-    except (TypeError, ValueError):
-        obj = (
-            obj if isinstance(obj, tf.Tensor) else tf.convert_to_tensor(obj, tf.float64)
-        )
-        ret = tf.cast(obj, dtype)
-    return tf.identity(ret) if copy else ret
+    with tf.device(device):
+        if tf.is_tensor(obj):
+            ret = tf.cast(obj, dtype) if obj.dtype != dtype else obj
+        else:
+            ret = tf.convert_to_tensor(obj, dtype)
+        return tf.identity(ret) if (copy or ret.device != device) else ret
 
 
 def empty(
@@ -192,7 +190,11 @@ def from_dlpack(
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(x, tf.Variable):
         x = x.read_value()
-    return tf.experimental.dlpack.from_dlpack(x)
+    if hasattr(x, "__dlpack__"):
+        capsule = x.__dlpack__()
+    else:
+        capsule = x
+    return tf.experimental.dlpack.from_dlpack(capsule)
 
 
 def full(
@@ -348,14 +350,20 @@ array = asarray
 
 
 def copy_array(
-    x: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.Tensor, tf.Variable, tf.TensorArray],
     *,
     to_ivy_array: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(x, tf.TensorArray):
+        x_wrapped = x.stack()
+        y = tf.TensorArray(x.dtype, x.size())
+        x = y.unstack(ivy.copy_array(x_wrapped))
+    else:
+        x = tf.identity(x)
     if to_ivy_array:
-        return ivy.to_ivy(tf.identity(x))
-    return tf.identity(x)
+        return ivy.to_ivy(x)
+    return x
 
 
 def one_hot(

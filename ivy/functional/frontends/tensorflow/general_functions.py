@@ -255,8 +255,7 @@ def gather(params, indices, validate_indices=None, axis=None, batch_dims=0, name
         axis = batch_dims
     else:
         axis = axis % len(params.shape)
-    if axis < batch_dims:
-        axis = batch_dims
+    axis = max(axis, batch_dims)
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
@@ -584,6 +583,13 @@ def strided_slice(
     ]
     ret = ivy.squeeze(ret, axis=shrink_indices)
     return ret
+
+
+@to_ivy_arrays_and_back
+def tensor_scatter_nd_add(tensor, indices, updates, name=None):
+    zero_tensor = ivy.zeros_like(tensor)
+    scatter_tensor = ivy.scatter_nd(indices, updates, zero_tensor.shape)
+    return ivy.add(tensor, scatter_tensor)
 
 
 @with_unsupported_dtypes({"2.14.0 and below": ("uint16",)}, "tensorflow")

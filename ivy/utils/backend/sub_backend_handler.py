@@ -44,6 +44,7 @@ def fn_name_from_version_specific_fn_name(name, version):
     version
         the version of the current framework for which the support is to be
         provided, the version is inferred by importing the framework
+
     Returns
     -------
         the name of the original function which will then point to the version
@@ -93,6 +94,7 @@ def fn_name_from_version_specific_fn_name_sub_backend(
     version
         the version of the current framework for which the support is to be
         provided, the version is inferred by importing the framework
+
     Returns
     -------
         the name of the original function which will then point to the version

@@ -282,12 +282,13 @@ def avg_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    division_override: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(kernel, int):
@@ -337,7 +338,7 @@ def avg_pool1d(
         else:
             num_padded_values = tf.scatter_nd(
                 tf.constant([[res.shape[1] - 1]]),
-                tf.constant([c], dtype=res.dtype),
+                tf.constant([c[0]], dtype=res.dtype),
                 tf.constant([res.shape[1]], dtype=tf.int32),
             )
         res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
@@ -354,7 +355,7 @@ def avg_pool2d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -364,14 +365,14 @@ def avg_pool2d(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(kernel, int):
-        kernel = [kernel] * 2
+        kernel = (kernel,) * 2
     elif len(kernel) == 1:
-        kernel = [kernel[0]] * 2
+        kernel = (kernel[0],) * 2
 
     if isinstance(strides, int):
-        strides = [strides] * 2
+        strides = (strides,) * 2
     elif len(strides) == 1:
-        strides = [strides[0]] * 2
+        strides = (strides[0],) * 2
 
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
@@ -446,7 +447,7 @@ def avg_pool3d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -456,14 +457,14 @@ def avg_pool3d(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(kernel, int):
-        kernel = [kernel] * 3
+        kernel = (kernel,) * 3
     elif len(kernel) == 1:
-        kernel = [kernel[0]] * 3
+        kernel = (kernel[0],) * 3
 
     if isinstance(strides, int):
-        strides = [strides] * 3
+        strides = (strides,) * 3
     elif len(strides) == 1:
-        strides = [strides[0]] * 3
+        strides = (strides[0],) * 3
 
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
@@ -483,7 +484,7 @@ def avg_pool3d(
         res = ivy.conv_general_dilated(
             x,
             tf.ones(kernel + (1, x.shape[-1])),
-            strides,
+            list(strides),
             padding,
             dims=3,
             feature_group_count=x.shape[-1],
@@ -875,12 +876,13 @@ def interpolate(
         "linear",
         "bilinear",
         "trilinear",
+        "nd",
         "nearest",
         "area",
-        "nearest-exact",
+        "nearest_exact",
         "tf_area",
+        "tf_bicubic",
         "bicubic",
-        "bicubic_tensorflow",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -888,46 +890,56 @@ def interpolate(
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
-    align_corners: Optional[bool] = None,
+    align_corners: bool = False,
     antialias: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    dims = len(x.shape) - 2
-    size = _get_size(scale_factor, size, dims, x.shape)
-    remove_dim = False
-    if mode in ["linear", "tf_area", "lanczos3", "lanczos5", "nearest-exact"]:
-        if dims == 1:
-            size = (1,) + tuple(size)
-            x = tf.expand_dims(x, axis=-2)
-            dims = 2
-            remove_dim = True
-        mode = (
-            "bilinear"
-            if mode == "linear"
-            else (
-                "area"
-                if mode == "tf_area"
-                else "nearest" if mode == "nearest-exact" else mode
+    input_size = ivy.shape(x)[2:]
+    dims = len(input_size)
+    size, _ = _get_size(scale_factor, size, dims, input_size)
+    if all(a == b for a, b in zip(size, input_size)):
+        ret = x
+    else:
+        remove_dim = False
+        if mode in ["linear", "tf_area", "lanczos3", "lanczos5", "nearest-exact"]:
+            if dims == 1:
+                size = (1,) + tuple(size)
+                x = tf.expand_dims(x, axis=-2)
+                dims = 2
+                remove_dim = True
+            mode = (
+                "bilinear"
+                if mode == "linear"
+                else (
+                    "area"
+                    if mode == "tf_area"
+                    else "nearest" if mode == "nearest-exact" else mode
+                )
             )
+        if mode == "tf_bicubic":
+            mode = "bicubic"
+        x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+        ret = tf.transpose(
+            tf.cast(
+                tf.image.resize(x, size=size, method=mode, antialias=antialias), x.dtype
+            ),
+            (0, dims + 1, *range(1, dims + 1)),
         )
-    if mode == "bicubic_tensorflow":
-        mode = "bicubic"
-    x = tf.transpose(x, (0, *range(2, dims + 2), 1))
-    ret = tf.transpose(
-        tf.cast(
-            tf.image.resize(x, size=size, method=mode, antialias=antialias), x.dtype
-        ),
-        (0, dims + 1, *range(1, dims + 1)),
-    )
-    if remove_dim:
-        ret = tf.squeeze(ret, axis=-2)
+        if remove_dim:
+            ret = tf.squeeze(ret, axis=-2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
 interpolate.partial_mixed_handler = (
-    lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: not align_corners  # noqa: E501
-    and len(x.shape) < 4
+    lambda x, *args, mode="linear", recompute_scale_factor=None, align_corners=None, **kwargs: len(  # noqa: E501
+        x.shape
+    )
+    < 4
     and mode not in ["nearest", "area", "bicubic", "nd"]
+    and not align_corners
+    and recompute_scale_factor
 )
 
 
@@ -1394,6 +1406,89 @@ def _rfftn_helper(x, shape, axes, norm):
     x = tf.ensure_shape(x, static_output_shape(input_shape, shape_, axes_))
 
     return x
+
+
+def rfft(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    # type cast
+    if x.dtype in [tf.complex64, tf.complex128]:
+        x = tf.math.real(x)
+    if x.dtype not in [tf.float32, tf.float64]:
+        x = tf.cast(x, tf.float32)
+
+    # axis check
+    if not isinstance(axis, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(axis)}"
+        )
+
+    # axis normalization
+    naxis = axis
+    if axis < 0:
+        naxis = x.ndim + axis
+    if naxis < 0 or naxis >= x.ndim:
+        raise ivy.utils.exceptions.IvyError(
+            f"Axis {axis} is out of bounds for array of dimension {x.ndim}"
+        )
+    axis = naxis
+
+    # n checks
+    if n is None:
+        n = x.shape[axis]
+    if not isinstance(n, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
+    if n < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid number of FFT data points ({n}) specified."
+        )
+
+    # norm check & value
+    if norm == "backward":
+        inv_norm = tf.constant(1, dtype=x.dtype)
+    elif norm in ["forward", "ortho"]:
+        inv_norm = tf.cast(tf.math.reduce_prod(n), dtype=x.dtype)
+        if norm == "ortho":
+            inv_norm = tf.math.sqrt(inv_norm)
+    else:
+        raise ivy.utils.exceptions.IvyError(
+            f'Invalid norm value {norm}; should be "backward", "ortho" or "forward".'
+        )
+    fct = 1 / inv_norm
+
+    if x.shape[axis] != n:
+        s = list(x.shape)
+        if s[axis] > n:
+            index = [slice(None)] * len(s)
+            index[axis] = slice(0, n)
+            x = x[tuple(index)]
+        else:
+            s[axis] = n - s[axis]
+            z = tf.zeros(s, x.dtype)
+            x = tf.concat([x, z], axis=axis)
+
+    if axis == x.ndim - 1:
+        ret = tf.signal.rfft(x, fft_length=None, name=None)
+    else:
+        x = tf.experimental.numpy.swapaxes(x, axis, -1)
+        ret = tf.signal.rfft(x, fft_length=None, name=None)
+        ret = tf.experimental.numpy.swapaxes(ret, axis, -1)
+
+    ret *= tf.cast(fct, dtype=ret.dtype)
+
+    if x.dtype != tf.float64:
+        ret = tf.cast(ret, dtype=tf.complex64)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @with_supported_device_and_dtypes(

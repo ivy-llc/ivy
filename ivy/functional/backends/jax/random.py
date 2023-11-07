@@ -82,7 +82,7 @@ def random_normal(
     return jax.random.normal(rng_input, shape, dtype=dtype) * std + mean
 
 
-@with_unsupported_dtypes({"0.4.17 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.19 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,

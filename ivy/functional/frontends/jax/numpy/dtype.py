@@ -37,7 +37,7 @@ def can_cast(from_, to, casting="safe"):
             "to must be one of dtype, or dtype specifier"
         )
 
-    if casting == "no" or casting == "equiv":
+    if casting in ["no", "equiv"]:
         return from_ == to
 
     if casting == "safe":

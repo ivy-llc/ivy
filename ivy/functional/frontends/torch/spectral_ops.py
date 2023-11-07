@@ -1,6 +1,6 @@
 import ivy
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -44,3 +44,30 @@ def blackman_window(
     requires_grad=False
 ):
     return ivy.blackman_window(window_length, periodic=periodic, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.51.0 and below": ("float32", "float64")}, "torch")
+def kaiser_window(
+    window_length,
+    periodic=True,
+    beta=12.0,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    return ivy.kaiser_window(window_length, periodic=periodic, beta=beta, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+def hamming_window(
+    window_length,
+    periodic=True,
+    alpha=0.54,
+    beta=0.46,
+    return ivy.hamming_window(
+        window_length, periodic=periodic, alpha=alpha, beta=beta, dtype=dtype
+    )

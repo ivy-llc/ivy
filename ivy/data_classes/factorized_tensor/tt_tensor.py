@@ -139,7 +139,7 @@ class TTTensor(FactorizedTensor):
     @staticmethod
     def tt_to_unfolded(factors, mode):
         """
-        Return the unfolding matrix of a tensor given in TT (or Tensor-Train) format.
+        Return the unfolding matrix of a tensor given in TT (or Tensor- Train) format.
 
         Reassembles a full tensor from 'factors' and returns its unfolding matrix
         with mode given by 'mode'

@@ -67,6 +67,8 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        x = x.clone().detach()
     num_dims = len(x.shape)
     if not num_dims:
         return x
@@ -244,7 +246,7 @@ def split(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("int8", "int16", "uint8")}, backend_version
+    {"2.1.0 and below": ("int8", "int16", "uint8")}, backend_version
 )
 def repeat(
     x: torch.Tensor,
@@ -313,7 +315,7 @@ def swapaxes(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("bool", "float16", "complex")}, backend_version
+    {"2.1.0 and below": ("bool", "float16", "complex")}, backend_version
 )
 def clip(
     x: torch.Tensor,

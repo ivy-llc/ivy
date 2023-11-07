@@ -24,6 +24,19 @@ from ivy.utils.exceptions import handle_exceptions
 # ------#
 
 
+def _get_embed_dim(
+    in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query
+):
+    pre_embed_dim = query.shape[-1]
+    if ivy.exists(in_proj_weights):
+        embed_dim = in_proj_weights.shape[0] / 3
+    elif all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]):
+        embed_dim = q_proj_weights.shape[0]
+    else:
+        embed_dim = None
+    return pre_embed_dim, embed_dim
+
+
 def _in_projection(
     q,
     k,
@@ -851,7 +864,7 @@ def multi_head_attention(
     if ivy.exists(in_proj_weights):
         q, k, v = _in_projection(query, key, value, w=in_proj_weights, b=in_proj_bias)
         emb_dim = int(in_proj_weights.shape[0] / 3)
-    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+    elif all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]):
         if ivy.exists(in_proj_bias):
             b_q, b_k, b_v = ivy.split(in_proj_bias, num_or_size_splits=3)
         else:
@@ -906,7 +919,7 @@ def multi_head_attention(
 
     # get attention scores
     attn_scores = ivy.matmul(q, ivy.swapaxes(k, 1, 2))
-    scale = 1 / (head_dim**0.5) if not scale else scale
+    scale = scale if scale else 1 / (head_dim**0.5)
     attn_scores *= scale
 
     # mask the attention scores
@@ -1845,15 +1858,15 @@ def conv3d_transpose(
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-    >>> y = ivy.conv3d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 6, 56, 56, 6)
 
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32])
-    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID')
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
-    ivy.Shape(1, 9, 258, 258, 32)
+    ivy.Shape(1, 7, 129, 129, 6)
 
     With :class:`ivy.Container` inputs:
 
@@ -1863,7 +1876,7 @@ def conv3d_transpose(
     >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
     >>> x = ivy.Container(a=a, b=b)
     >>> filters = ivy.Container(c=c, d=d)
-    >>> y = ivy.conv3d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
     >>> print(y.shape)
     {
         a: {
@@ -1887,22 +1900,21 @@ def conv3d_transpose(
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.full((1, 6, 6, 6, 1), 2.7)
-    >>> a =  ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
-    >>> b =  ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
-    >>> filters = ivy.Container(a = a, b = b)
-    >>> y = ivy.conv3d_transpose(x, filters, 1, 'VALID', dilations=1)
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
     {
         a: ivy.Shape(1, 8, 8, 8, 1),
         b: ivy.Shape(1, 8, 8, 8, 1)
     }
 
-
     >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
-    >>> a =  ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> b =  ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> filters = ivy.Container(a = a, b = b)
-    >>> y = ivy.conv3d_transpose(x, filters, 1, 'VALID', dilations=1)
+    >>> a = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> b = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
     {
         a: ivy.Shape(1, 8, 8, 8, 1),
@@ -2067,6 +2079,68 @@ def conv_general_transpose(
     -------
     ret
         The result of the transpose convolution operation.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
+    >>> print(y.shape)
+    ivy.Shape(1, 6, 56, 56, 6)
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    ivy.Shape(1, 7, 129, 129, 6)
+    With :class: 'ivy.Container' inputs:
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
+    >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
+    >>> x = ivy.Container(a=a, b=b)
+    >>> filters = ivy.Container(c=c, d=d)
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
+    >>> print(y.shape)
+    {
+        a: {
+            c: ivy.Shape(1, 6, 28, 28, 3),
+            d: ivy.Shape(1, 6, 28, 28, 3)
+        },
+        b: {
+            c: ivy.Shape(1, 6, 56, 56, 3),
+            d: ivy.Shape(1, 6, 56, 56, 3)
+        },
+        c: {
+            c: ivy.Shape(6, 6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 6, 3)
+        },
+        d: {
+            c: ivy.Shape(6, 6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 6, 3)
+        }
+    }
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+    >>> x = ivy.full((1, 6, 6, 6, 1), 2.7)
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    {
+        a: ivy.Shape(1, 8, 8, 8, 1),
+        b: ivy.Shape(1, 8, 8, 8, 1)
+    }
+    >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
+    >>> a = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> b = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    {
+        a: ivy.Shape(1, 8, 8, 8, 1),
+        b: ivy.Shape(1, 8, 8, 8, 1)
+    }
     """
     return current_backend(x).conv_general_transpose(
         x,
@@ -2365,9 +2439,7 @@ def _validate_max_pool_params(
             kernel = [1, 1, *kernel]
         else:
             kernel = [1, *kernel, 1]
-    new_kernel = tuple(
-        [dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel))]
-    )
+    new_kernel = tuple(dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel)))
     new_kernel = tuple(dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel)))
     if isinstance(padding, list) and len(padding) == len(new_kernel):
         ivy.utils.assertions.check_kernel_padding_size(new_kernel, padding)
