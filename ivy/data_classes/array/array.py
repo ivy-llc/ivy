@@ -263,7 +263,7 @@ class Array(
         """Number of elements in the array."""
         if self._size is None:
             if ivy.current_backend_str() in ["numpy", "jax"]:
-                self._size = self._data.size()
+                self._size = self._data.size
                 return self._size
             self._size = (
                 functools.reduce(mul, self._data.shape)
