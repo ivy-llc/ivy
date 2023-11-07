@@ -369,6 +369,8 @@ def _get_padded_values(x_shape, kernel, strides, padding, ceil_mode, dim):
             for i in range(dim)
         ]
     else:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * dim
         pad_specific = [sum(padding[i]) for i in range(dim)]
 
     c = []
