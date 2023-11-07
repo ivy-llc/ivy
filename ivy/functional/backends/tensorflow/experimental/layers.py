@@ -484,7 +484,7 @@ def avg_pool3d(
         res = ivy.conv_general_dilated(
             x,
             tf.ones(kernel + (1, x.shape[-1])),
-            strides,
+            list(strides),
             padding,
             dims=3,
             feature_group_count=x.shape[-1],
