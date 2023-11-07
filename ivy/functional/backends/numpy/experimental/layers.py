@@ -392,7 +392,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
-    divisor_override: Optional[int] = None,
+    division_override: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(kernel, int):
