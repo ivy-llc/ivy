@@ -59,8 +59,8 @@ def kaiser_window(
     requires_grad=False
 ):
     return ivy.kaiser_window(window_length, periodic=periodic, beta=beta, dtype=dtype)
-  
-  
+
+
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def hamming_window(
