@@ -1,4 +1,6 @@
 # global
+import numpy as np
+
 import ivy
 from ivy import (
     with_supported_dtypes,
@@ -610,6 +612,12 @@ def rsqrt(x, name=None):
 def scalar_mul(scalar, x, name="scalar_mul"):
     scalar, x = check_tensorflow_casting(scalar, x)
     return ivy.multiply(x, scalar).astype(x.dtype)
+
+
+@to_ivy_arrays_and_back
+def segment_sum(data, segment_ids, name="segment_sum"):
+    num_segments = np.array(np.max(segment_ids) + 1)
+    return unsorted_segment_sum(data, segment_ids, num_segments)
 
 
 @to_ivy_arrays_and_back
