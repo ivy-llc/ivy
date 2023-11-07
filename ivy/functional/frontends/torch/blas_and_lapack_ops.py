@@ -85,6 +85,11 @@ def bmm(input, mat2, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def chain_matmul(*matrices, out=None):
+    return ivy.multi_dot(matrices, out=out)
+
+
+@to_ivy_arrays_and_back
 def cholesky(input, upper=False, *, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
 
@@ -92,6 +97,15 @@ def cholesky(input, upper=False, *, out=None):
 @to_ivy_arrays_and_back
 def det(input):
     return torch_frontend.linalg.det(input)
+
+
+@to_ivy_arrays_and_back
+def dot(input, other, *, out=None):
+    if len(input.shape) == 1 and len(other.shape) == 1:
+        input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+        return ivy.matmul(input, other, out=out)
+    else:
+        raise RuntimeError("input must be 1D vectors")
 
 
 @to_ivy_arrays_and_back
@@ -123,14 +137,13 @@ def matmul(input, other, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def matrix_power(input, n, *, out=None):
-    return torch_frontend.matrix_power(input, n, out=out)
+def matrix_power(A, n, *, out=None):
+    return torch_frontend.linalg.matrix_power(A, n, out=out)
 
 
 @to_ivy_arrays_and_back
 def matrix_rank(input, tol=None, symmetric=False, *, out=None):
-    # TODO: add symmetric
-    return ivy.matrix_rank(input, rtol=tol, out=out).astype("int64")
+    return ivy.matrix_rank(input, atol=tol, hermitian=symmetric, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -172,8 +185,8 @@ def qr(input, some=True, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def slogdet(input):
-    return torch_frontend.slogdet(input)
+def slogdet(A, *, out=None):
+    return torch_frontend.linalg.slogdet(A, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -188,25 +201,22 @@ def svd(input, some=True, compute_uv=True, *, out=None):
     return ret
 
 
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
-def vdot(input, other, *, out=None):
-    if len(ivy.shape(input)) != 1 or len(ivy.shape(other)) != 1:
-        raise RuntimeError("input must be 1D vectors")
-    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
-    return ivy.vecdot(input, other, out=out)
-
-
-@to_ivy_arrays_and_back
-def dot(input, other, *, out=None):
-    if len(ivy.shape(input)) == 1 and len(ivy.shape(other)) == 1:
-        input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
-        return ivy.dot(input, other, out=out)
-    else:
-        raise RuntimeError("input must be 1D vectors")
-
-
-@with_unsupported_dtypes({"1.13.1 and below": ("float16", "bfloat16")}, "torch")
 def trapezoid(y, x=None, *, dx=None, dim=-1):
     if x is not None:
         y, x = torch_frontend.promote_types_of_torch_inputs(y, x)
     return ivy.trapz(y, x=x, dx=dx, axis=dim)
+
+
+@to_ivy_arrays_and_back
+def vdot(input, other, *, out=None):
+    if len(input.shape) != 1 or len(other.shape) != 1:
+        raise RuntimeError("input must be 1D vectors")
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+    ret = ivy.vecdot(input, other, out=out)
+    return ret.squeeze(0) if ret.ndim == 1 else ret
+
+
+# alias to fix mm transpilation issue as mm() gets mapped to spmm() after transpilation
+spmm = mm

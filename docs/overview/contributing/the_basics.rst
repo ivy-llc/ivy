@@ -10,7 +10,6 @@ The Basics
 .. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
 .. _`PyCharm blog`: https://www.jetbrains.com/help/pycharm/finding-and-replacing-text-in-file.html
 .. _`Debugging`: https://www.jetbrains.com/help/pycharm/debugging-code.html
-.. _`Ivy Experimental API Open Task`: https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#ivy-experimental-api
 
 Getting Help
 ------------
@@ -40,7 +39,7 @@ It can also serve as a useful place to ask questions, but only if you suspect th
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video" allowfullscreen="true">
     </iframe>
 
@@ -54,30 +53,32 @@ We make extensive use of `ToDo list issues <https://github.com/unifyai/ivy/issue
 
 We have a clear process for contributors to engage with such ToDo lists:
 
-a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: `function reformatting <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#function-formatting>`_, `frontend APIs <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis>`_ and `ivy experimental API <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#ivy-experimental-api>`_.
+a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: :ref:`overview/contributing/open_tasks:Function Formatting`, :ref:`overview/contributing/open_tasks:Frontend APIs` and :ref:`overview/contributing/open_tasks:Ivy Experimental API`.
 
 b. Create a new issue with the title being just the name of the sub-task you would like to work on.
 
-c. Comment on the ToDo list issue with a reference to this issue like so:
+c. Comment on the ToDo list issue with a reference to your new issue like so:
 
    :code:`- [ ] #Issue_number`
 
-   Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
-   No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should    be kept clean with comments only as described above. 
+   For example, if your issue number is 12345, then the text of your comment should be :code:`- [ ] #12345`. You could also use just the issue number (:code:`#12345`), or a link to the issue itself (:code:`https://github.com/unifyai/ivy/issues/12345`).
 
-d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following comment in the PR:
+   At some point after your comment is made, your issue will automatically be added to the ToDo list and the comment will be deleted.
+   No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should be kept clean with comments only as described above.
+
+d. Start working on the task, and open a PR as soon as you have a full or partial solution, when you open the PR make sure to follow the `conventional commits format <https://www.conventionalcommits.org/en/v1.0.0/>`_, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
 
    :code:`Close #Issue_number`
 
-   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is the 
-   first comment on the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
-   Also remember to make the PR name well described and if there are some details that can support your changes add them to the first comment of the PR.
+   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is in the
+   description of the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
+   Also, remember to make the PR name well described and if there are some details that can support your changes add them to the description of the PR.
 
 e. Wait for us to review your PR.
    Once we have reviewed your PR we will either merge or request changes.
    Every time you respond to our requested changes you must re-request a review in order for us to re-engage with the PR.
 
-f. Once the PR is in good shape, we will merge into master, and then you become an Ivy contributor!
+f. Once the PR is in good shape, we will merge into main, and then you become an Ivy contributor!
 
 In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then a warning message will appear on the issue.
 If another 7 days pass without any changes, the issue will be closed and the task will be made free for others in the community.
@@ -97,7 +98,7 @@ Please don't take it personally if your issue or PR gets closed because of this 
 
 Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely investigate!
 
-Finally, we limit the maximum number of *open* and *incomplete* sub-task issues at *three* per person.
+Finally, we limit the maximum number of *open* and *incomplete* sub-task issues to *three* per person.
 This is to prevent anyone from self-allocating many sub-tasks, preventing others in the community from engaging, and then not being able to complete them.
 Even though the limit is three, sub-tasks should only be self-assigned using **one comment per sub-task**.
 For example, a sequence of comments like this :code:`- [ ] #Issue_number` will register correctly whereas a single comment like this :code:`- [ ] #Issue_number, - [ ] #Issue_number, - [ ] #Issue_number` or this :code:`- [ ] #Issue_number #Issue_number #Issue_number` etc. will not.
@@ -106,7 +107,7 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video" allowfullscreen="true">
     </iframe>
 
@@ -114,21 +115,10 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 
 For questions, please reach out on `discord`_ in the `todo list issues channel`_!
 
-Ivy Experimental API
---------------------
-
-We primarily invite contributors to work on the tasks listed as :ref:`Open Tasks`, as these are on our current roadmap. As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the `Ivy Experimental API Open Task`_.
-
-However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in `Creating an Issue on Ivy’s GitHub using a Template <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#creating-an-issue-on-ivy-s-github-using-a-template>`_.
-
-In this template form, you'll be asked to fill in the reason you think we should implement the suggested function, as well as the links to any native implementations of the suggested function.
-
-We will review your issue as soon as possible and let you know if it's been accepted or not. In case we deem that the suggested function fits our roadmap, we will add it as a subtask to the `Ivy Experimental API Open Task`_.
-
 Managing Your Fork
 ------------------
 
-When contributing to Ivy, the first step is create a fork of the repository.
+When contributing to Ivy, the first step is to create a fork of the repository.
 Then, it's best practice to create a separate branch for each new pull request (PR) you create.
 This can be done using:
 
@@ -136,20 +126,20 @@ This can be done using:
 
    git checkout -b name_of_your_branch
 
-The master branch then simply has the role of being kept up to date with upstream.
-You *can* create PRs based on the master branch of your fork, but this will make things more complicated if you would then like to create additional PRs in future.
+The main branch then simply has the role of being kept up to date with upstream.
+You *can* create PRs based on the main branch of your fork, but this will make things more complicated if you would then like to create additional PRs in the future.
 
-For keeping any branch on your fork up to date, there is a script in the root folder of the repo `merge_with_upstream.sh <https://github.com/unifyai/ivy/blob/2994da4f7347b0b3fdd81b91c83bcbaa5580e7fb/merge_with_upstream.sh>`_.
-To update your fork's branch to the upstream master branch, simply run :code:`./merge_with_upstream.sh name_of_your_branch`.
-To update the master branch, this would then be: :code:`./merge_with_upstream.sh master`.
+For keeping any branch on your fork up to date, there is a script in the root folder of the repo `scripts/shell/merge_with_upstream.sh <https://github.com/unifyai/ivy/blob/bcddc79978afe447958dfa3ea660716845c85846/scripts/shell/merge_with_upstream.sh>`_.
+To update your fork's branch to the upstream main branch, simply run :code:`./scripts/shell/merge_with_upstream.sh name_of_your_branch`.
+To update the main branch, this would then be: :code:`./scripts/shell/merge_with_upstream.sh main`.
 
 When making a PR (explained in the next sub-section), sometimes you will see that changes to upstream have caused conflicts with your PR.
 In this case, you will need to either resolve these conflicts in the browser, or clone your fork and make changes locally in the terminal and push once resolved.
 Both of these cases are explained in the following video.
 
-You may find that once you have made changes locally and try pulling from master, the pull request is aborted as there are merge conflicts.
-In order to avoid tedious merge conflict resolution, you can try 'stashing' your local changes, then pulling from master.
-Once your branch is up-to-date with master, you can reinstate the most recently stashed changes, commit and push to master with no conflicts.
+You may find that once you have made changes locally and try pulling from main, the pull request is aborted as there are merge conflicts.
+In order to avoid tedious merge conflict resolution, you can try 'stashing' your local changes, then pulling from main.
+Once your branch is up-to-date with main, you can reinstate the most recently stashed changes, commit and push to main with no conflicts.
 The corresponding commands are :code:`git stash` -> :code:`git fetch` -> :code:`git pull` -> :code:`git stash apply stash@{0}`.
 Note that this only works for uncommitted changes (staged and unstaged) and untracked files won't be stashed.
 For a comprehensive explanation of git stashing, check out this `Atlassian tutorial`_.
@@ -158,7 +148,7 @@ For a comprehensive explanation of git stashing, check out this `Atlassian tutor
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/TFMPihytg9U" class="video" allowfullscreen="true">
     </iframe>
 
@@ -193,20 +183,20 @@ With Browser:
 
 **Git Blame View** is a handy tool to view the line-by-line revision history for an entire file, or view the revision history of a single line within a file.
 
-    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/git_blame/git_blame_1.png?raw=true
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/the_basics/git_blame/git_blame_1.png?raw=true
        :width: 420
 
 This view can be toggled from the option in left vertical pane, or from the "blame" icon in top-right, as highlighted above.
 
-    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/git_blame/git_blame_2.png?raw=true
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/the_basics/git_blame/git_blame_2.png?raw=true
        :width: 420
 
 Each time you click the highlighted icon, the previous revision information for that line is shown, including who committed the change and when this happened.
 
-    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/git_blame/git_blame_3.png?raw=true
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/the_basics/git_blame/git_blame_3.png?raw=true
        :width: 420
 
-Whenever starting a discussion or creating an issue, you are very welcome to tag members of the Ivy team using "@", selecting the person you think would most suitable to interact with, based on the information gained from the above steps.
+Whenever starting a discussion or creating an issue, you are very welcome to tag members of the Ivy team using "@", selecting the person you think would be most suitable to interact with, based on the information gained from the above steps.
 
 Pull Requests
 -------------
@@ -223,24 +213,24 @@ This simple process makes it much simpler for us to track where and when our att
 
 Note that you cannot request a code review until you have already received at least one review from us.
 Therefore, all new PRs will receive a code review, so please just wait and we will check out and review your newly created PR as soon as possible!
-Your PR will never be closed until we have provided at least code review on it.
+Your PR will never be closed until we have provided at least a code review on it.
 
 After a new PR is made, for the tests to run, it needs an approval of someone from the ivy team for the workflows to start running.
 Once approved, you can see the failing and passing checks for a commit relevant to your PR by clicking on the ❌ or ✔️ or 🟤 (each for: one or more tests are failing, all tests are passing, the check has just started, respectively) icon next to the commit hash.
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/pull_requests/PR_checks.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/pull_requests/PR_checks.png?raw=true
        :width: 420
 
 Further, if you click on the details next to a check then you can see the logs for that particular test.
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/pull_requests/pr_logs.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/pull_requests/pr_logs.png?raw=true
        :width: 420
 
 Also, if you have pushed multiple commits to a PR in a relatively short time, you may want to cancel the checks for a previous commit to speedup the process, you can do that by going to the log page as described above and clicking on the `Cancel Workflow` button.
 
 Note that this option might be unavailable depending on the level of access that you have.
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/pull_requests/cancel_workflow.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/pull_requests/cancel_workflow.png?raw=true
        :width: 420
 
 Finally, all PRs must give write access to Ivy maintainers of the branch.
@@ -253,7 +243,7 @@ The code review process is explained in more detail in the following video.
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/9G4d-CvlT2g" class="video" allowfullscreen="true">
     </iframe>
 
@@ -278,11 +268,11 @@ This is for a few reasons:
 #. It means you avoid the mountain of conflicts to resolve when you do get around to merging.
 
 This is also why we advocate using individual pull-requests per issue in the ToDo list issues.
-This keeps each of the commits on master very contained and incremental, which is the style we're going for.
+This keeps each of the commits on main very contained and incremental, which is the style we're going for.
 
 Sometimes, you've already dived very deep into some substantial changes in your fork, and it might be that only some of the problems you were trying to fix are actually fixed by your local changes.
 
-In this hypothetical situation, you should aim to get the working parts merged into master **as soon as possible**.
+In this hypothetical situation, you should aim to get the working parts merged into main **as soon as possible**.
 Adding subsections of your local changes with :code:`git` is easy.
 You can add individual files using:
 
@@ -349,16 +339,16 @@ With Docker
 
 #. With PyCharm (With or without docker):
     1. PyCharm enables users to run pytest using the green button present near every function declaration inside the :code:`ivy_tests` folder.
-        
-    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_button_pycharm.png?raw=true
+
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_button_pycharm.png?raw=true
         :width: 420
-        
-    2. Testing can be done for the entire project, individual submodules, individual files and individual tests.
+
+    2. Testing can be done for the entire project, individual submodules, individual files, and individual tests.
        This can be done by selecting the appropriate configuration from the top pane in PyCharm.
-        
-    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_with_pycharm.png?raw=true
+
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_with_pycharm.png?raw=true
         :width: 420
-        
+
 
 #. Through the command line (With docker):
     1. We need to replace the folder inside the container with the current local ivy directory to run tests on the current local code.
@@ -366,29 +356,29 @@ With Docker
     .. code-block:: none
 
         docker exec <container-name> rm -rf ivy
-        docker cp ivy <container-name>:/ 
+        docker cp ivy <container-name>:/
 
     2. We need to then enter inside the docker container and change into the :code:`ivy` directory using the following command.
 
     .. code-block:: none
 
-        docker exec -it ivy_container bash 
+        docker exec -it ivy_container bash
         cd ivy
 
     3. Run the test using the pytest command.
 
         1. Ivy Tests:
 
-            1. For a single function: 
+            1. For a single function:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
 
             3. For all tests:
@@ -399,28 +389,28 @@ With Docker
 
         2.  Array API Tests:
 
-            1. For a single function: 
+            1. For a single function:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
-            
+
             3. For all tests:
 
             .. code-block:: none
 
                 pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
-        
+
         3. For the entire project:
 
         .. code-block:: none
-            
+
             pytest ivy_tests/ --no-header --no-summary -q
 
 #. Through the command line (Without docker):
@@ -444,16 +434,16 @@ With Docker
 
         1. Ivy Tests:
 
-            1. For a single function: 
+            1. For a single function:
 
             .. code-block:: none
-            
+
                 python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
 
             3. For all tests:
@@ -462,43 +452,43 @@ With Docker
 
                 python -m pytest ivy_tests/test_ivy/ --no-header --no-summary -q
 
-        2.  Array API Tests 
+        2.  Array API Tests
 
-            1. For a single function: 
+            1. For a single function:
 
                 .. code-block:: none
-                
+
                     python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
-            
+
             3. For all tests:
 
             .. code-block:: none
 
                 python -m pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
-        
+
         3. For the entire project
 
         .. code-block:: none
-            
+
             python -m pytest ivy_tests/ --no-header --no-summary -q
 
 #. Optional Flags: Various optional flags are available for running the tests such as :code:`device`, :code:`backend`, etc.
-    1. :code:`device`: 
-        1. This flag enables setting of the device where the tests would be run.
+    1. :code:`device`:
+        1. This flag enables the setting of the device where the tests would be run.
         2. Possible values being :code:`cpu` and :code:`gpu`.
         3. Default value is :code:`cpu`
     2. :code:`backend`:
         1. This flag enables running the tests for particular backends.
-        2. The values of this flag could be any possible combination of JAX, numpy, tensorflow and torch.
+        2. The values of this flag could be any possible combination of JAX, numpy, tensorflow, and torch.
         3. Default value is :code:`jax,numpy,tensorflow,torch`.
     3. :code:`num-examples`:
-        1. Set the maximum number for examples to be generated by Hypothesis.
+        1. Set the maximum number of examples to be generated by Hypothesis.
         2. The value of this flag could be any positive integer value that is greater than 1.
         3. Default value is :code:`5`.
 
@@ -507,31 +497,31 @@ Getting the most out of IDE
 with PyCharm
 ************
 #. Find a text:
-    1. :code:`Ctrl+F` will prompt you to type in the text to be found, if not already selected, and then find all the instances of text within current file.
+    1. :code:`Ctrl+F` will prompt you to type in the text to be found, if not already selected, and then find all the instances of text within the current file.
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_file.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_file.png?raw=true
         :align: center
 
     2. :code:`Ctrl+Shift+F` will find all the instances of text within the project.
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_project_wide.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_project_wide.png?raw=true
         :align: center
 
 #. Find+Replace a text:
-    1. :code:`Ctrl+R` will prompt you to type in the text to be found and the text to be replaced, if not already selected, within current file.
+    1. :code:`Ctrl+R` will prompt you to type in the text to be found and the text to be replaced, if not already selected, within the current file.
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_n_replace_file.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_n_replace_file.png?raw=true
         :align: center
 
     2. :code:`Ctrl+Shift+R` will prompt you to type in the text to be found and the text to be replaced, if not already selected, within the whole project.
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_and_replace_project_wide.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/find_and_replace_project_wide.png?raw=true
         :align: center
 
 #. Find and multiply the cursor:
-    1. :code:`Ctrl+Shift+Alt+J` will find all the instances of selected text and multiply the cursor to all these locations.
+    1. :code:`Ctrl+Shift+Alt+J` will find all the instances of the selected text and multiply the cursor to all these locations.
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/multiple_cursor.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/multiple_cursor.png?raw=true
         :align: center
 
     You can visit `Pycharm Blog`_ for more details on efficient coding!
@@ -540,23 +530,23 @@ with PyCharm
     1. add breakpoints:
         1. Click the gutter at the executable line of code where you want to set the breakpoint or place the caret at the line and press :code:`Ctrl+F8`
 
-        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/adding_breakpoint.png?raw=true
-           :aligh: center
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/adding_breakpoint.png?raw=true
+           :align: center
 
     2. Enter into the debug mode:
         1. Click on Run icon and Select **Debug test** or press :code:`Shift+F9`.
         This will open up a Debug Window Toolbar:
 
-        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/open_in_debug_mode.png?raw=true
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/open_in_debug_mode.png?raw=true
            :align: center
 
     3. Stepping through the code:
-        1. Step over: 
+        1. Step over:
             Steps over the current line of code and takes you to the next line even if the highlighted line has method calls in it.
 
             1. Click the Step Over button or press :code:`F8`
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/step_over.png?raw=true
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/step_over.png?raw=true
                :align: center
 
         2. Step into:
@@ -572,34 +562,35 @@ with PyCharm
                 1. Press :code:`Shift+F7`.
                    This will prompt you to select the method you want to step into:
 
-                .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/smart_step_into.png?raw=true
+                .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/smart_step_into.png?raw=true
                    :align: center
 
                 2. Click the desired method.
 
-    4. Python Console: 
+    4. Python Console:
         1. Click the Console option on Debug Tool Window:
             This currently stores variables and their values upto which the code has been executed.
             You can print outputs and debug the code further on.
 
-        2. If you want to open console at certain breakpoint:
+        2. If you want to open the console at a certain breakpoint:
             1. Select the breakpoint-fragment of code, press :code:`Alt+shift+E` Start debugging!
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/console_coding.png?raw=true
-               :aligh: center
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/console_coding.png?raw=true
+               :align: center
+
 
     5. Using **try-except**:
-        1. PyChram is great at pointing the lines of code which are causing tests to fail.
+        1. PyCharm is great at pointing the lines of code which are causing tests to fail.
            Navigating to that line, you can add Try-Except block with breakpoints to get in depth understanding of the errors.
 
-        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/try_except.png?raw=true
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/try_except.png?raw=true
            :align: center
 
     6. Dummy **test** file:
         1. Create a separate dummy :code:`test.py` file wherein you can evaluate a particular test failure.
            Make sure you don't add or commit this dummy file while pushing your changes.
 
-        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/dummy_test.png?raw=true
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/dummy_test.png?raw=true
            :align: center
 
     PyCharm has a detailed blog on efficient `Debugging`_ which is quite useful.

@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple, Union, List, Dict
+from typing import Optional, Union, List, Dict
 
 # local
 import ivy
@@ -8,69 +8,15 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithCreationExperimental(ContainerBase):
     @staticmethod
-    def static_triu_indices(
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: int = 0,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[Tuple[ivy.Array]] = None,
-    ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
-            "triu_indices",
-            n_rows,
-            n_cols,
-            k,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            device=device,
-            out=out,
-        )
-
-    def triu_indices(
-        self: ivy.Container,
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: int = 0,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[Tuple[ivy.Array]] = None,
-    ) -> ivy.Container:
-        return self.static_triu_indices(
-            self,
-            n_rows,
-            n_cols,
-            k,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            device=device,
-            out=out,
-        )
-
-    @staticmethod
     def static_hann_window(
         window_length: Union[int, ivy.Container],
-        periodic: bool = True,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        periodic: Union[bool, ivy.Container] = True,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -120,8 +66,8 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
     def hann_window(
         self: ivy.Container,
-        periodic: bool = True,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        periodic: Union[bool, ivy.Container] = True,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -163,14 +109,14 @@ class _ContainerWithCreationExperimental(ContainerBase):
     @staticmethod
     def static_kaiser_window(
         window_length: Union[int, ivy.Container],
-        periodic: bool = True,
-        beta: float = 12.0,
+        periodic: Union[bool, ivy.Container] = True,
+        beta: Union[float, ivy.Container] = 12.0,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -181,7 +127,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         window_length
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a periodic window suitable for use in spectral analysis.
             If False, returns a symmetric window suitable for use in filter design.
@@ -221,14 +167,14 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
     def kaiser_window(
         self: ivy.Container,
-        periodic: bool = True,
-        beta: float = 12.0,
+        periodic: Union[bool, ivy.Container] = True,
+        beta: Union[float, ivy.Container] = 12.0,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -239,7 +185,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a periodic window suitable for use in spectral analysis.
             If False, returns a symmetric window suitable for use in filter design.
@@ -279,14 +225,14 @@ class _ContainerWithCreationExperimental(ContainerBase):
     @staticmethod
     def static_kaiser_bessel_derived_window(
         x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
-        periodic: bool = True,
-        beta: float = 12.0,
+        periodic: Union[bool, ivy.Container] = True,
+        beta: Union[float, ivy.Container] = 12.0,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -298,7 +244,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         x
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a periodic window suitable for use in spectral analysis.
             If False, returns a symmetric window suitable for use in filter design.
@@ -338,14 +284,14 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
     def kaiser_bessel_derived_window(
         self: ivy.Container,
-        periodic: bool = True,
-        beta: float = 12.0,
+        periodic: Union[bool, ivy.Container] = True,
+        beta: Union[float, ivy.Container] = 12.0,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -357,7 +303,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a periodic window suitable for use in spectral analysis.
             If False, returns a symmetric window suitable for use in filter design.
@@ -399,14 +345,14 @@ class _ContainerWithCreationExperimental(ContainerBase):
         x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        periodic: bool = True,
-        alpha: float = 0.54,
-        beta: float = 0.46,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        periodic: Union[bool, ivy.Container] = True,
+        alpha: Union[float, ivy.Container] = 0.54,
+        beta: Union[float, ivy.Container] = 0.46,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -417,7 +363,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         x
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a window to be used as periodic function.
             If False, return a symmetric window.
@@ -461,14 +407,14 @@ class _ContainerWithCreationExperimental(ContainerBase):
     def hamming_window(
         self: ivy.Container,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        periodic: bool = True,
-        alpha: float = 0.54,
-        beta: float = 0.46,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        periodic: Union[bool, ivy.Container] = True,
+        alpha: Union[float, ivy.Container] = 0.54,
+        beta: Union[float, ivy.Container] = 0.46,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -479,7 +425,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input container including window lenghts.
+            input container including window lengths.
         periodic
             If True, returns a window to be used as periodic function.
             If False, return a symmetric window.
@@ -515,11 +461,11 @@ class _ContainerWithCreationExperimental(ContainerBase):
         x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -530,7 +476,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         x
-            input container including window lenghts.
+            input container including window lengths.
 
         dtype
             data type of the returned arrays.
@@ -567,11 +513,11 @@ class _ContainerWithCreationExperimental(ContainerBase):
     def vorbis_window(
         self: ivy.Container,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -582,7 +528,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input container including window lenghts.
+            input container including window lengths.
         dtype
             data type of the returned arrays.
         out
@@ -616,16 +562,16 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_tril_indices(
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: int = 0,
+        n_rows: Union[int, ivy.Container],
+        n_cols: Optional[Union[int, ivy.Container]] = None,
+        k: Union[int, ivy.Container] = 0,
         /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "tril_indices",
@@ -641,16 +587,16 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
     def tril_indices(
         self: ivy.Container,
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: int = 0,
+        n_rows: Union[int, ivy.Container],
+        n_cols: Optional[Union[int, ivy.Container]] = None,
+        k: Union[int, ivy.Container] = 0,
         /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
     ) -> ivy.Container:
         return self.static_tril_indices(
             self,
@@ -668,15 +614,15 @@ class _ContainerWithCreationExperimental(ContainerBase):
     def static_eye_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
-        k: int = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        k: Union[int, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
         out: Optional[ivy.Container] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.eye_like. This method simply wraps
@@ -745,15 +691,15 @@ class _ContainerWithCreationExperimental(ContainerBase):
     def eye_like(
         self: ivy.Container,
         /,
-        k: int = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        k: Union[int, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
         out: Optional[ivy.Container] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.eye_like. This method simply wraps
@@ -801,8 +747,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> y = x.eye_like()
         >>> print(y)
         {
-            a: ivy.array([[1.]]),
-            b: ivy.array([[1.]])
+            a: ivy.array([[1.],
+                          [0.]]),
+            b: ivy.array([[1.],
+                          [0.]])
         }
         """
         return self.static_eye_like(
@@ -816,3 +764,629 @@ class _ContainerWithCreationExperimental(ContainerBase):
             dtype=dtype,
             device=device,
         )
+
+    @staticmethod
+    def static_unsorted_segment_min(
+        data: ivy.Container,
+        segment_ids: ivy.Container,
+        num_segments: Union[int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        r"""
+        ivy.Container instance method variant of ivy.unsorted_segment_min. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_min
+        also applies to this method with minimal changes.
+
+        Note
+        ----
+        If the given segment ID `i` is negative, then the corresponding
+        value is dropped, and will not be included in the result.
+
+        Parameters
+        ----------
+        data
+            input array or container from which to gather the input.
+        segment_ids
+            Must be in the same size with the first dimension of `data`. Has to be
+            of integer data type. The index-th element of `segment_ids` array is
+            the segment identifier for the index-th element of `data`.
+        num_segments
+            An integer or array representing the total number of distinct segment IDs.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            A container, representing the result of a segmented min operation.
+            For each segment, it computes the min value in `data` where `segment_ids`
+            equals to segment ID.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "unsorted_segment_min",
+            data,
+            segment_ids,
+            num_segments,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def unsorted_segment_min(
+        self: ivy.Container,
+        segment_ids: ivy.Container,
+        num_segments: Union[int, ivy.Container],
+    ):
+        r"""
+        ivy.Container instance method variant of ivy.unsorted_segment_min. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_min
+        also applies to this method with minimal changes.
+
+        Note
+        ----
+        If the given segment ID `i` is negative, then the corresponding
+        value is dropped, and will not be included in the result.
+
+        Parameters
+        ----------
+        self
+            input array or container from which to gather the input.
+        segment_ids
+            Must be in the same size with the first dimension of `self`. Has to be
+            of integer data type. The index-th element of `segment_ids` array is
+            the segment identifier for the index-th element of `self`.
+        num_segments
+            An integer or array representing the total number of distinct segment IDs.
+
+        Returns
+        -------
+        ret
+            A container, representing the result of a segmented min operation.
+            For each segment, it computes the min value in `self` where `segment_ids`
+            equals to segment ID.
+        """
+        return self.static_unsorted_segment_min(
+            self,
+            segment_ids,
+            num_segments,
+        )
+
+    @staticmethod
+    def static_unsorted_segment_sum(
+        data: ivy.Container,
+        segment_ids: ivy.Container,
+        num_segments: Union[int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        r"""
+        ivy.Container instance method variant of ivy.unsorted_segment_sum. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_sum
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        data
+            input array or container from which to gather the input.
+        segment_ids
+            Must be in the same size with the first dimension of `data`. Has to be
+            of integer data type. The index-th element of `segment_ids` array is
+            the segment identifier for the index-th element of `data`.
+        num_segments
+            An integer or array representing the total number of distinct segment IDs.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            A container, representing the result of a segmented sum operation.
+            For each segment, it computes the sum of values in `data` where
+            `segment_ids` equals to segment ID.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "unsorted_segment_sum",
+            data,
+            segment_ids,
+            num_segments,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def unsorted_segment_sum(
+        self: ivy.Container,
+        segment_ids: ivy.Container,
+        num_segments: Union[int, ivy.Container],
+    ):
+        r"""
+        ivy.Container instance method variant of ivy.unsorted_segment_sum. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_sum
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container from which to gather the input.
+        segment_ids
+            Must be in the same size with the first dimension of `self`. Has to be
+            of integer data type. The index-th element of `segment_ids` array is
+            the segment identifier for the index-th element of `self`.
+        num_segments
+            An integer or array representing the total number of distinct segment IDs.
+
+        Returns
+        -------
+        ret
+            A container, representing the result of a segmented sum operation.
+            For each segment, it computes the sum of values in `self` where
+            `segment_ids` equals to segment ID.
+        """
+        return self.static_unsorted_segment_sum(
+            self,
+            segment_ids,
+            num_segments,
+        )
+
+    @staticmethod
+    def static_blackman_window(
+        window_length: Union[int, ivy.Container],
+        periodic: bool = True,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.blackman_window. This method simply
+        wraps the function, and so the docstring for ivy.blackman_window also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        window_length
+            container including multiple window sizes.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        dtype
+            The data type to produce. Must be a floating point type.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container that contains the Blackman windows.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.Container.static_blackman_window(x)
+        {
+            a: ivy.array([-1.38777878e-17,  6.30000000e-01,  6.30000000e-01])
+            b: ivy.array([-1.38777878e-17,  2.00770143e-01,  8.49229857e-01,
+                        8.49229857e-01, 2.00770143e-01])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "blackman_window",
+            window_length,
+            periodic,
+            dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def blackman_window(
+        self: ivy.Container,
+        periodic: bool = True,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.blackman_window. This method simply
+        wraps the function, and so the docstring for ivy.blackman_window also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container with window sizes.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        dtype
+            The data type to produce. Must be a floating point type.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container containing the Blackman windows.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.blackman_window(x)
+        {
+            a: ivy.array([-1.38777878e-17,  6.30000000e-01,  6.30000000e-01])
+            b: ivy.array([-1.38777878e-17,  2.00770143e-01,  8.49229857e-01,
+                            8.49229857e-01, 2.00770143e-01])
+        }
+        """
+        return self.static_blackman_window(self, periodic, dtype, out=out)
+
+    @staticmethod
+    def _static_trilu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        *,
+        k: Union[int, ivy.Container] = 0,
+        upper: bool = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "trilu",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            k=k,
+            upper=upper,
+            out=out,
+        )
+
+    def trilu(
+        self: ivy.Container,
+        /,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        *,
+        k: Union[int, ivy.Container] = 0,
+        upper: bool = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self._static_trilu(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            k=k,
+            upper=upper,
+            out=out,
+        )
+
+    @staticmethod
+    def static_mel_weight_matrix(
+        num_mel_bins: Union[int, ivy.Container],
+        dft_length: Union[int, ivy.Container],
+        sample_rate: Union[int, ivy.Container],
+        lower_edge_hertz: Optional[Union[float, ivy.Container]] = 0.0,
+        upper_edge_hertz: Optional[Union[float, ivy.Container]] = 3000.0,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        r"""
+        ivy.Container instance method variant of ivy.mel_weight_matrix. This method
+        simply wraps the function, and so the docstring for ivy.mel_weight_matrix also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        num_mel_bins
+            The number of bands in the mel spectrum.
+        dft_length
+            The size of the original DFT obtained from (n_fft / 2 + 1).
+        sample_rate
+            Samples per second of the input signal.
+        lower_edge_hertz
+            Lower bound on the frequencies to be included in the mel spectrum.
+        upper_edge_hertz
+            The desired top edge of the highest frequency band.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            MelWeightMatrix of shape:  [frames, num_mel_bins]
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "mel_weight_matrix",
+            num_mel_bins,
+            dft_length,
+            sample_rate,
+            lower_edge_hertz,
+            upper_edge_hertz,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def mel_weight_matrix(
+        self: ivy.Container,
+        num_mel_bins: int,
+        dft_length: int,
+        sample_rate: int,
+        lower_edge_hertz: Optional[float] = 0.0,
+        upper_edge_hertz: Optional[float] = 3000.0,
+    ):
+        r"""
+        ivy.Container instance method variant of ivy.mel_weight_matrix. This method
+        simply wraps the function, and so the docstring for ivy.mel_weight_matrix also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        num_mel_bins
+            The number of bands in the mel spectrum.
+        dft_length
+            The size of the original DFT obtained from (n_fft / 2 + 1).
+        sample_rate
+            Samples per second of the input signal.
+        lower_edge_hertz
+            Lower bound on the frequencies to be included in the mel spectrum.
+        upper_edge_hertz
+            The desired top edge of the highest frequency band.
+
+        Returns
+        -------
+        ret
+            MelWeightMatrix of shape:  [frames, num_mel_bins]
+        """
+        return self.static_mel_weight_matrix(
+            num_mel_bins,
+            dft_length,
+            sample_rate,
+            lower_edge_hertz,
+            upper_edge_hertz,
+        )
+
+    @staticmethod
+    def static_unsorted_segment_mean(
+        data: ivy.Container,
+        segment_ids: Union[ivy.Array, ivy.Container],
+        num_segments: Union[int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        Compute the mean of values in the input data based on segment identifiers.
+
+        Parameters
+        ----------
+        data : ivy.Container
+            Input array or container from which to gather the input.
+        segment_ids : ivy.Container
+            An array of integers indicating the segment identifier for each element in
+            'data'.
+        num_segments : Union[int, ivy.Container]
+            An integer or array representing the total number of distinct segment IDs.
+        key_chains : Optional[Union[List[str], Dict[str, str], ivy.Container]], optional
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply : Union[bool, ivy.Container], optional
+            If True, the method will be applied to key-chains, otherwise key-chains will
+            be skipped. Default is True.
+        prune_unapplied : Union[bool, ivy.Container], optional
+            Whether to prune key-chains for which the function was not applied.
+            Default is False.
+        map_sequences : Union[bool, ivy.Container], optional
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ivy.Container
+            A container representing the result of a segmented mean operation.
+            For each segment, it computes the mean of values in 'data' where
+            'segment_ids' equals the segment ID.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "unsorted_segment_mean",
+            data,
+            segment_ids,
+            num_segments,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def static_polyval(
+        coeffs: ivy.Container,
+        x: Union[ivy.Container, int, float],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        r"""
+        ivy.Container static method variant of ivy.polyval. This method simply wraps the
+        function, and so the docstring for ivy.polyval also applies to this method with
+        minimal changes.
+
+        Evaluate and return a polynomial at specific given values.
+
+        Parameters
+        ----------
+        coeffs
+            Polynomial coefficients (including zero) from highest degree
+            to constant term.
+        x
+            The value of the indeterminate variable at which to evaluate the polynomial.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            Output container containing simplified result of substituing x in the
+            coefficients - final value of polynomial.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "polyval",
+            coeffs,
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def unsorted_segment_mean(
+        self: ivy.Container,
+        segment_ids: Union[ivy.Array, ivy.Container],
+        num_segments: Union[int, ivy.Container],
+    ) -> ivy.Container:
+        """
+        Compute the mean of values in the input array or container based on segment
+        identifiers.
+
+        Parameters
+        ----------
+        self : ivy.Container
+            Input array or container from which to gather the input.
+        segment_ids : ivy.Container
+            An array of integers indicating the segment identifier for each element
+            in 'self'.
+        num_segments : Union[int, ivy.Container]
+            An integer or array representing the total number of distinct segment IDs.
+
+        Returns
+        -------
+        ivy.Container
+            A container representing the result of a segmented mean operation.
+            For each segment, it computes the mean of values in 'self' where
+            'segment_ids' equals the segment ID.
+
+        Example
+        --------
+        >>> data = ivy.Container(a=ivy.array([0., 1., 2., 4.]),
+        ...                      b=ivy.array([3., 4., 5., 6.]))
+        >>> segment_ids = ivy.array([0, 0, 1, 1])
+        >>> num_segments = 2
+        >>> result = ivy.unsorted_segment_mean(data, segment_ids, num_segments)
+        >>> print(result)
+        {
+            a: ivy.array([0.5, 3.0]),
+            b: ivy.array([3.5, 5.5])
+        }
+
+        >>> data = ivy.Container(a=ivy.array([0., 1., 2., 4., 5., 6.]),
+        ...                      b=ivy.array([3., 4., 5., 6., 7., 8.]))
+        >>> segment_ids = ivy.array([0, 0, 1, 1, 2, 2])
+        >>> num_segments = 3
+        >>> result = ivy.unsorted_segment_mean(data, segment_ids, num_segments)
+        >>> print(result)
+        {
+            a: ivy.array([0.5, 3.0, 5.5]),
+            b: ivy.array([3.5, 5.5, 7.5])
+        }
+        """
+        return self.static_unsorted_segment_mean(
+            self,
+            segment_ids,
+            num_segments,
+        )
+
+    def polyval(
+        self: ivy.Container,
+        coeffs: ivy.Container,
+        x: ivy.Container,
+    ) -> ivy.Container:
+        r"""
+        ivy.Container instance method variant of ivy.polyval. This method simply wraps
+        the function, and so the docstring for ivy.polyval also applies to this method
+        with minimal changes.
+
+        Evaluate and return a polynomial at specific given values.
+
+        Parameters
+        ----------
+        self
+            Arbitrary input container
+        coeffs
+            Polynomial coefficients (including zero) from highest degree to
+            constant term.
+        x
+            The value of the indeterminate variable at which to
+            evaluate the polynomial.
+
+        Returns
+        -------
+        ret
+            Output container containing simplified result of substituing x in the
+            coefficients - final value of polynomial.
+        """
+        return self.static_polyval(self, coeffs, x)

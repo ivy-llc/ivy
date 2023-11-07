@@ -17,6 +17,10 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_supported_dtypes
+
+# noinspection PyProtectedMember
+from . import backend_version
 
 
 def moveaxis(
@@ -28,8 +32,6 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        a = a.copy()
     return np.moveaxis(a, source, destination)
 
 
@@ -60,8 +62,6 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        m = m.copy()
     return np.flipud(m)
 
 
@@ -95,8 +95,6 @@ def rot90(
     axes: Tuple[int, int] = (0, 1),
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        m = m.copy()
     return np.rot90(m, k, axes)
 
 
@@ -131,8 +129,6 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        m = m.copy()
     return np.fliplr(m)
 
 
@@ -172,7 +168,7 @@ def _interior_pad(operand, padding_value, padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-            new_array = np.full(new_shape, padding_value)
+            new_array = np.full(new_shape, padding_value, dtype=operand.dtype)
             src_indices = np.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
@@ -232,13 +228,7 @@ def pad(
     **kwargs: Optional[Any],
 ) -> np.ndarray:
     if mode == "dilated":
-        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
-            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
-        else:
-            padding_value = constant_values
-        padded = _interior_pad(input, padding_value, pad_width)
-        return ivy.native_array(padded)
-
+        return _interior_pad(input, constant_values, pad_width)
     if callable(mode):
         return np.pad(
             _flat_array_to_1_dim_array(input),
@@ -284,14 +274,16 @@ def pad(
 
 def vsplit(
     ary: np.ndarray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], np.ndarray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[np.ndarray]:
-    if copy:
-        ary = ary.copy()
-    return np.vsplit(ary, indices_or_sections)
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
@@ -305,16 +297,12 @@ def dsplit(
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
-    if copy:
-        ary = ary.copy()
-    return np.dsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
     *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = None
 ) -> List[np.ndarray]:
-    if copy:
-        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_1d(*arys)
 
 
@@ -328,16 +316,12 @@ def dstack(
 
 
 def atleast_2d(*arys: np.ndarray, copy: Optional[bool] = None) -> List[np.ndarray]:
-    if copy:
-        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_2d(*arys)
 
 
 def atleast_3d(
     *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = None
 ) -> List[np.ndarray]:
-    if copy:
-        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_3d(*arys)
 
 
@@ -366,13 +350,18 @@ def take_along_axis(
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = np.clip(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
-        if "float" in str(arr.dtype):
+    elif mode in ("fill", "drop"):
+        if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = np.NAN
         elif "uint" in str(arr.dtype):
             fill_value = np.iinfo(arr.dtype).max
-        else:
+        elif "int" in str(arr.dtype):
             fill_value = -np.iinfo(arr.dtype).max - 1
+        else:
+            raise TypeError(
+                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex',"
+                " 'uint', 'int'."
+            )
         indices = np.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
         arr_shape = list(arr_shape)
         arr_shape[axis] = 1
@@ -388,9 +377,9 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[np.ndarray]:
-    if copy:
-        ary = ary.copy()
-    return np.hsplit(ary, indices_or_sections)
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 take_along_axis.support_native_out = False
@@ -411,8 +400,6 @@ def expand(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        x = x.copy()
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
@@ -483,3 +470,130 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def fill_diagonal(
+    a: np.ndarray,
+    v: Union[int, float, np.ndarray],
+    /,
+    *,
+    wrap: bool = False,
+) -> np.ndarray:
+    np.fill_diagonal(a, v, wrap=wrap)
+    return a
+
+
+@_scalar_output_to_0d_array
+def take(
+    x: Union[int, List, np.ndarray],
+    indices: Union[int, List, np.ndarray],
+    /,
+    *,
+    axis: Optional[int] = None,
+    mode: str = "raise",
+    fill_value: Optional[Number] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if mode not in ["raise", "wrap", "clip", "fill"]:
+        raise ValueError("mode must be one of 'clip', 'raise', 'wrap', or 'fill'")
+
+    # raise, clip, wrap
+    if mode != "fill":
+        return np.take(x, indices, axis=axis, mode=mode, out=out)
+
+    if not isinstance(x, np.ndarray):
+        x = np.array(x)
+    if len(x.shape) == 0:
+        x = np.array([x])
+    if not isinstance(indices, np.ndarray):
+        indices = np.array(indices)
+    if np.issubdtype(indices.dtype, np.floating):
+        indices = indices.astype(np.int64)
+
+    # fill
+    x_dtype = x.dtype
+    if fill_value is None:
+        # set according to jax behaviour
+        # https://tinyurl.com/66jn68uj
+        # NaN for inexact types (let fill_value as None)
+        if not np.issubdtype(x_dtype, np.inexact):
+            if np.issubdtype(x_dtype, np.bool_):
+                # True for booleans
+                fill_value = True
+            elif np.issubdtype(x_dtype, np.unsignedinteger):
+                # the largest positive value for unsigned types
+                fill_value = np.iinfo(x_dtype).max
+            else:
+                # the largest negative value for signed types
+                fill_value = np.iinfo(x_dtype).min
+
+    fill_value = np.array(fill_value, dtype=x_dtype)
+    x_shape = x.shape
+    ret = np.take(x, indices, axis=axis, mode="wrap")
+
+    if len(ret.shape) == 0:
+        # if scalar, scalar fill (replace)
+        if np.any(indices != 0):
+            ret = fill_value
+    else:
+        if ivy.exists(axis):
+            rank = len(x.shape)
+            axis = ((axis % rank) + rank) % rank
+            x_shape = x_shape[axis]
+        else:
+            axis = 0
+            x_shape = np.prod(x_shape)
+
+        bound_check = (indices < -x_shape) | (indices >= x_shape)
+
+        if np.any(bound_check):
+            if axis > 0:
+                bound_check = np.broadcast_to(
+                    bound_check, (*x.shape[:axis], *bound_check.shape)
+                )
+            ret[bound_check] = fill_value
+
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+
+    return ret
+
+
+take.support_native_out = True
+
+
+def trim_zeros(
+    a: np.ndarray,
+    /,
+    *,
+    trim: Optional[str] = "fb",
+) -> np.ndarray:
+    return np.trim_zeros(a, trim=trim)
+
+
+def column_stack(
+    arrays: Sequence[np.ndarray], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.column_stack(arrays)
+
+
+@with_supported_dtypes(
+    {"1.25.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
+def put_along_axis(
+    arr: np.ndarray,
+    indices: np.ndarray,
+    values: Union[int, np.ndarray],
+    axis: int,
+    /,
+    *,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
+    out: Optional[np.ndarray] = None,
+):
+    ret = np.put_along_axis(arr.copy(), indices, values, axis)
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
+
+
+put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
+    "replace",
+]

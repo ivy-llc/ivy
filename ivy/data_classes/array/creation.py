@@ -33,7 +33,12 @@ class _ArrayWithCreation(abc.ABC):
             lists, lists of tuples, tuples, tuples of tuples, tuples of lists and
             ndarrays.
         copy
-            boolean, indicating whether or not to copy the input. Default: ``None``.
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         dtype
             datatype, optional. Datatype is inferred from the input data.
         device
@@ -50,16 +55,19 @@ class _ArrayWithCreation(abc.ABC):
         Examples
         --------
         With list of lists as input:
+
         >>> ivy.asarray([[1,2],[3,4]])
         ivy.array([[1, 2],
                [3, 4]])
 
         With tuple of lists as input:
+
         >>> ivy.asarray(([1.4,5.6,5.5],[3.1,9.1,7.5]))
         ivy.array([[1.39999998, 5.5999999 , 5.5       ],
                [3.0999999 , 9.10000038, 7.5       ]])
 
         With ndarray as input:
+
         >>> x = ivy.np.ndarray(shape=(2,2), order='C')
         >>> x
         array([[6.90786433e-310, 6.90786433e-310],
@@ -284,7 +292,7 @@ class _ArrayWithCreation(abc.ABC):
             input array from which to derive the output array shape.
         dtype
             output array data type. If dtype is None, the output array data type must be
-            inferred from ``self``. Deafult: ``None``.
+            inferred from ``self``. Default: ``None``.
         device
             device on which to place the created array. If device is None, the output
             array device must be inferred from ``self``. Default: ``None``.
@@ -584,8 +592,8 @@ class _ArrayWithCreation(abc.ABC):
         simplicity, but this function is *nestable*, and therefore also accepts
         :class:`ivy.Container` instances in place of any of the arguments.
 
-        Functional Examples
-        -------------------
+        Examples
+        --------
         With float input:
 
         >>> x = ivy.array([1, 2])

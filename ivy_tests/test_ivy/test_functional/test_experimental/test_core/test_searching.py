@@ -7,6 +7,10 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 # unravel_index
 @st.composite
 def max_value_as_shape_prod(draw):
@@ -34,22 +38,13 @@ def max_value_as_shape_prod(draw):
     dtype_x_shape=max_value_as_shape_prod(),
     test_gradients=st.just(False),
 )
-def test_unravel_index(
-    *,
-    dtype_x_shape,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_unravel_index(*, dtype_x_shape, test_flags, backend_fw, fn_name, on_device):
     dtype_and_x, shape = dtype_x_shape
     input_dtype, x = dtype_and_x[0], dtype_and_x[1]
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         indices=np.asarray(x[0], dtype=input_dtype[0]),

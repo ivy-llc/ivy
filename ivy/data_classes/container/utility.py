@@ -15,10 +15,12 @@ class _ContainerWithUtility(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
-        key_chains: Optional[Union[Sequence[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[
+            Union[Sequence[str], Dict[str, str], ivy.Container]
+        ] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -98,10 +100,12 @@ class _ContainerWithUtility(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
-        key_chains: Optional[Union[Sequence[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[
+            Union[Sequence[str], Dict[str, str], ivy.Container]
+        ] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -181,10 +185,12 @@ class _ContainerWithUtility(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
-        key_chains: Optional[Union[Sequence[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[
+            Union[Sequence[str], Dict[str, str], ivy.Container]
+        ] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -264,10 +270,12 @@ class _ContainerWithUtility(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
-        key_chains: Optional[Union[Sequence[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[
+            Union[Sequence[str], Dict[str, str], ivy.Container]
+        ] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """

@@ -5,10 +5,8 @@ Navigating the Code
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`navigating the code channel`: https://discord.com/channels/799879767196958751/982737793476345888
-.. _`navigating the code forum`: https://discord.com/channels/799879767196958751/1028295746807660574
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
-.. _`pre-commit guide`: https://unify.ai/docs/ivy/contributing/setting_up.html#pre-commit
 
 Categorization
 --------------
@@ -34,7 +32,6 @@ In addition to these, we also add the following categories, used for additional 
 * `device <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/device.py>`_
 * `general <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/general.py>`_
 * `gradients <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/gradients.py>`_
-* `image <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/image.py>`_
 * `layers <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/layers.py>`_
 * `losses <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/losses.py>`_
 * `meta <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/meta.py>`_
@@ -85,7 +82,7 @@ Functions written here look something like the following, (explained in much mor
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        My function does something cool.
+        Explanation of the function.
 
         .. note::
             This is an important note.
@@ -115,12 +112,12 @@ Functions written here look something like the following, (explained in much mor
         Returns
         -------
         ret
-            a cooler array.
+            an array.
 
         Examples
         --------
 
-        Some cool examples go here
+        Some examples go here
         """
         return ivy.current_backend(x).my_func(x, axes, dtype=dtype, device=device, out=out)
 
@@ -136,7 +133,7 @@ Keyword-only parameters will mandate the use of argument names when calling func
 Similar arguments can be kept together in the argument list, rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
-Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
+Arrays always have a type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
 All functions which produce a single array include the :code:`out` argument.
 The reasons for each of these features are explained in the following sections.
 
@@ -157,7 +154,7 @@ Code in the backend submodules such as :mod:`ivy.functional.backends.torch` shou
         device: torch.device,
         out: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
-        return torch.something_cool(x, axes, dtype, device, out)
+        return torch.function_name(x, axes, dtype, device, out)
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are again all keyword-only, but :code:`dtype` and :code:`device` are now required arguments, rather than optional as they were in the Ivy API.
 All arrays also now have the same type hint :class:`torch.Tensor`, rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
@@ -167,7 +164,7 @@ Again, the reasons for these features are explained in the following sections.
 Submodule Helper Functions
 --------------------------
 
-At times, helper functions specific to submodule is required to:
+At times, helper functions specific to the submodule are required to:
 
 * keep the code clean and readable
 * be imported in their respective backend implementations
@@ -178,16 +175,26 @@ To have a better idea on this, let's look at an example!
 
 .. code-block:: python
 
-    # in ivy/functional/ivy/creation.py
-    def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-        assert (
-            (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-            and isinstance(fill_value, int)
-        ) or (
-            ivy.is_float_dtype(dtype)
-            and isinstance(fill_value, float)
-            or (isinstance(fill_value, bool))
-        ), "the fill_value and data type are not compatible"
+    # in ivy/utils/assertions.py
+    def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
+        if (
+            not (
+                (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
+                and isinstance(fill_value, int)
+            )
+            and not (
+                ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))
+            )
+            and not (
+                ivy.is_float_dtype(dtype)
+                and isinstance(fill_value, (float, np.float32))
+                or isinstance(fill_value, bool)
+            )
+        ):
+            raise ivy.utils.exceptions.IvyException(
+                f"the fill_value: {fill_value} and data type: {dtype} are not compatible"
+            )
+
 
 In the :func:`full_like` function in :mod:`creation.py`, the types of :code:`fill_value` and :code:`dtype` has to be verified to avoid errors.
 This check has to be applied to all backends, which means the related code is common and identical.
@@ -201,18 +208,17 @@ Then, we import this submodule-specific helper function to the respective backen
 .. code-block:: python
 
     # in ivy/functional/backends/jax/creation.py
-    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 
     def full_like(
         x: JaxArray,
         /,
-        fill_value: Union[int, float],
+        fill_value: Number,
         *,
         dtype: jnp.dtype,
         device: jaxlib.xla_extension.Device,
-        out: Optional[JaxArray] = None
+        out: Optional[JaxArray] = None,
     ) -> JaxArray:
-        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
         return _to_device(
             jnp.full_like(x, fill_value, dtype=dtype),
             device=device,
@@ -223,18 +229,17 @@ Then, we import this submodule-specific helper function to the respective backen
 .. code-block:: python
 
     # in ivy/functional/backends/numpy/creation.py
-    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 
     def full_like(
         x: np.ndarray,
         /,
-        fill_value: Union[int, float],
+        fill_value: Number,
         *,
         dtype: np.dtype,
         device: str,
-        out: Optional[np.ndarray] = None
+        out: Optional[np.ndarray] = None,
     ) -> np.ndarray:
-        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
         return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
 
 **TensorFlow**
@@ -242,18 +247,17 @@ Then, we import this submodule-specific helper function to the respective backen
 .. code-block:: python
 
     # in ivy/functional/backends/tensorflow/creation.py
-    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 
     def full_like(
         x: Union[tf.Tensor, tf.Variable],
         /,
-        fill_value: Union[int, float],
+        fill_value: Number,
         *,
         dtype: tf.DType,
         device: str,
-        out: Union[tf.Tensor, tf.Variable] = None
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
     ) -> Union[tf.Tensor, tf.Variable]:
-        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
         with tf.device(device):
             return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
@@ -267,45 +271,41 @@ Then, we import this submodule-specific helper function to the respective backen
 .. code-block:: python
 
     # in ivy/functional/backends/torch/creation.py
-    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 
     def full_like(
         x: torch.Tensor,
         /,
-        fill_value: Union[int, float],
+        fill_value: Number,
         *,
         dtype: torch.dtype,
         device: torch.device,
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
-        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
         return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
-Version Pinning
----------------
+Version Unpinning
+-----------------
 
-At any point in time, Ivy's development will be predominantly focused around a particular version (and all prior versions) for each of the backend frameworks.
-These are the pinned versions shown in the `optional.txt <https://github.com/unifyai/ivy/blob/master/requirements/optional.txt>`_ file.
+At any point in time, Ivy's development will be predominantly focused around the latest pypi version (and all prior versions) for each of the backend frameworks.
 
-At the time of pinning, these will be the most up-to-date versions for each framework, but new releases of the backend frameworks will then of course be made and there will sometimes be a short period of time in which we are working towards the next Ivy release, and we opt to keep the repo pinned to the older version until the next release is out.
-This helps to prevent our work growing in an unbounded manner, as we work towards getting all tests passing and everything in good shape before making the release.
-If we always pulled the latest version of every framework into master, we might end up constantly battling new subtle bugs, without knowing whether the bugs come from the change in version or our own incremental changes to the code.
-Therefore, when working towards an Ivy release, keeping the backends temporarily pinned essentially ensures that our development target remains fixed for this period of time.
+Earlier we had our versions pinned for each framework to provide stability but later concluded that by unpinnning the versions we would be able to account for the latest breaking changes if any and support the latest version of the framework.
+Any prior version's compatibility would be tested by our multiversion testing pipeline, thus keeping us ahead and in light of the latest changes.
 
-As an example, at the time of writing the latest version of PyTorch is :code:`1.12.1`, whereas Ivy is pinned to version :code:`1.11.0`.
-Therefore, all frontend functions (see Ivy Frontends section) added to ivy should not include any arguments or behaviours which are exclusive to PyTorch version :code:`1.12.1`.
+This helps to prevent our work from culminating over a fixed version while strides are being made in the said frameworks. Multiversion testing ensures the backward compatibility of the code while this approach ensures we support the latest changes too.
+
 
 **Round Up**
 
 This should have hopefully given you a good feel for how to navigate the Ivy codebase.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code channel`_  or in the `navigating the code forum`_ !
+If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code channel`_!
 
 
 **Video**
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/67UYuLcAKbY" class="video">
     </iframe>

@@ -9,118 +9,8 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
-# argsort
-@handle_test(
-    fn_tree="functional.ivy.argsort",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        min_dim_size=1,
-        min_axis=-1,
-        max_axis=0,
-    ),
-    descending=st.booleans(),
-    stable=st.booleans(),
-    test_gradients=st.just(False),
-)
-def test_argsort(
-    *,
-    dtype_x_axis,
-    descending,
-    stable,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x, axis = dtype_x_axis
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-        axis=axis,
-        descending=descending,
-        stable=stable,
-    )
-
-
-# sort
-@handle_test(
-    fn_tree="functional.ivy.sort",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        min_dim_size=1,
-        min_axis=-1,
-        max_axis=0,
-    ),
-    descending=st.booleans(),
-    stable=st.booleans(),
-    test_gradients=st.just(False),
-)
-def test_sort(
-    *,
-    dtype_x_axis,
-    descending,
-    stable,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x, axis = dtype_x_axis
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-        axis=axis,
-        descending=descending,
-        stable=stable,
-    )
-
-
-# msort
-@handle_test(
-    fn_tree="functional.ivy.msort",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
-        min_value=-100,
-        max_value=100,
-    ),
-    test_gradients=st.just(False),
-)
-def test_msort(
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x = dtype_and_x
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        fw=backend_fw,
-        fn_name=fn_name,
-        x=x[0],
-    )
+# --- Helpers --- #
+# --------------- #
 
 
 @st.composite
@@ -166,13 +56,75 @@ def _searchsorted_case2(draw):
     return dtype_x + dtype_v, x + v
 
 
+# --- Main --- #
+# ------------ #
+
+
+# argsort
+@handle_test(
+    fn_tree="functional.ivy.argsort",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_dim_size=1,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    descending=st.booleans(),
+    stable=st.booleans(),
+    test_gradients=st.just(False),
+)
+def test_argsort(
+    *, dtype_x_axis, descending, stable, test_flags, backend_fw, fn_name, on_device
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        descending=descending,
+        stable=stable,
+    )
+
+
+# msort
+@handle_test(
+    fn_tree="functional.ivy.msort",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        min_value=-100,
+        max_value=100,
+    ),
+    test_gradients=st.just(False),
+    test_with_copy=st.just(True),
+)
+def test_msort(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+    )
+
+
 @handle_test(
     fn_tree="functional.ivy.searchsorted",
     data=st.data(),
     dtypes_and_xs=st.one_of(_searchsorted_case1(), _searchsorted_case2()),
     side=st.sampled_from(["left", "right"]),
     use_sorter=st.booleans(),
-    ret_dtype=helpers.get_dtypes("integer", full=False),
+    ret_dtype=helpers.get_dtypes("valid", full=False),
     test_gradients=st.just(False),
 )
 def test_searchsorted(
@@ -185,8 +137,7 @@ def test_searchsorted(
     test_flags,
     backend_fw,
     fn_name,
-    on_device,
-    ground_truth_backend,
+    on_device
 ):
     dtypes, xs = dtypes_and_xs
     if use_sorter:
@@ -197,10 +148,9 @@ def test_searchsorted(
         sorter = None
         xs[0] = np.sort(xs[0])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=xs[0],
@@ -208,4 +158,36 @@ def test_searchsorted(
         side=side,
         sorter=sorter,
         ret_dtype=ret_dtype[0],
+    )
+
+
+# sort
+@handle_test(
+    fn_tree="functional.ivy.sort",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_dim_size=1,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    descending=st.booleans(),
+    stable=st.booleans(),
+    test_gradients=st.just(False),
+    test_with_copy=st.just(True),
+)
+def test_sort(
+    *, dtype_x_axis, descending, stable, test_flags, backend_fw, fn_name, on_device
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        descending=descending,
+        stable=stable,
     )

@@ -3,15 +3,13 @@
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
-
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
-
 
 # local
 import ivy
 from ivy import inf
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
 
@@ -19,7 +17,7 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
 def cholesky(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -37,7 +35,7 @@ def cholesky(
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.14.0 and below": (
             "complex",
             "float16",
         )
@@ -63,7 +61,7 @@ def cross(
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.14.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -79,7 +77,7 @@ def det(
     return tf.linalg.det(x)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def diagonal(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -92,7 +90,7 @@ def diagonal(
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
 def eig(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -110,7 +108,7 @@ def eig(
     return result_tuple(eigenvalues, eigenvectors)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -137,7 +135,7 @@ def eigh(
     return result_tuple(eigenvalues, eigenvectors)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -158,7 +156,7 @@ def eigvalsh(
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.14.0 and below": (
             "int8",
             "uint8",
             "int16",
@@ -182,7 +180,15 @@ def inner(
     return tf.experimental.numpy.inner(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.14.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def inv(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -190,19 +196,12 @@ def inv(
     adjoint: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if tf.math.reduce_any(tf.linalg.det(tf.cast(x, dtype="float64")) == 0):
-        return x
-    else:
-        if adjoint is False:
-            ret = tf.linalg.inv(x)
-            return ret
-        else:
-            x = tf.linalg.adjoint(x)
-            ret = tf.linalg.inv(x)
-            return ret
+    return tf.linalg.inv(x, adjoint=adjoint)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.14.0 and below": ("float16", "bfloat16", "bool")}, backend_version
+)
 def matmul(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -279,7 +278,9 @@ def matmul(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_supported_dtypes(
+    {"2.14.0 and below": ("float32", "float64", "complex")}, backend_version
+)
 def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -289,18 +290,12 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    _expand_dims = False
-    if len(tuple(x.shape)) == 2:  # ndim doesn't work for tf.Variable
-        x = tf.expand_dims(x, axis=0)
-        _expand_dims = True
-
-    if ord == -float("inf"):
-        reduce_min = tf.reduce_min(
-            tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True),
-            axis=axis,
-            keepdims=keepdims,
+    if ord == "nuc":
+        x = tf.experimental.numpy.moveaxis(x, axis, (-2, -1))
+        ret = tf.reduce_sum(
+            tf.linalg.svd(x, compute_uv=False),
+            axis=-1,
         )
-        ret = reduce_min
     elif ord == -1:
         ret = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axis[0], keepdims=True),
@@ -308,28 +303,27 @@ def matrix_norm(
             keepdims=keepdims,
         )
     elif ord == -2:
+        x = tf.experimental.numpy.moveaxis(x, axis, (-2, -1))
         ret = tf.reduce_min(
-            tf.linalg.svd(x, compute_uv=False), axis=axis[1], keepdims=keepdims
+            tf.linalg.svd(x, compute_uv=False),
+            axis=-1,
         )
-        if keepdims:
-            ret = tf.expand_dims(ret, -1)
-    elif ord == "nuc":
-        if tf.size(x).numpy() == 0:
-            ret = x
-        else:
-            ret = tf.reduce_sum(
-                tf.linalg.svd(x, compute_uv=False), axis=-1, keepdims=keepdims
-            )
-            if keepdims:
-                ret = tf.expand_dims(ret, -1)
+    elif ord == float("-inf"):
+        ret = tf.reduce_min(
+            tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True),
+            axis=axis,
+            keepdims=keepdims,
+        )
     else:
-        ret = tf.linalg.norm(x, ord, axis, keepdims)
-    if _expand_dims:
-        ret = tf.squeeze(ret, axis=0)
+        ret = tf.norm(x, ord=ord, axis=axis, keepdims=keepdims)
+    ret = tf.cast(ret, ret.dtype.real_dtype)
+    if keepdims and ord in [-2, "nuc"]:
+        for dim in axis:
+            ret = tf.expand_dims(ret, dim % tf.rank(x))
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_power(
     x: Union[tf.Tensor, tf.Variable],
     n: int,
@@ -362,7 +356,7 @@ def matrix_power(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    {"2.14.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 # noinspection PyPep8Naming
@@ -372,88 +366,35 @@ def matrix_rank(
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    def dim_reduction(array):
-        if array.ndim == 1:
-            ret = array[0]
-        elif array.ndim == 2:
-            ret = array[0][0]
-        elif array.ndim == 3:
-            ret = array[0][0][0]
-        elif array.ndim == 4:
-            ret = array[0][0][0][0]
-        return ret
-
-    if len(x.shape) == 3:
-        if x.shape[-3] == 0:
-            return tf.constant(0, dtype=x.dtype)
-    elif len(x.shape) > 3:
-        if x.shape[-3] == 0 or x.shape[-4] == 0:
-            return tf.constant(0, dtype=x.dtype)
-    axis = None
-    ret_shape = x.shape[:-2]
-    if len(x.shape) == 2:
-        singular_values = tf.linalg.svd(x, full_matrices=False, compute_uv=False)
-    elif len(x.shape) > 2:
-        y = tf.reshape(x, (-1, *x.shape[-2:]))
-        singular_values = tf.stack(
-            [
-                tf.linalg.svd(split[0], full_matrices=False, compute_uv=False)
-                for split in tf.split(y, y.shape[0], axis=0)
-            ]
-        )
-        axis = 1
-    if len(x.shape) < 2 or len(singular_values.shape) == 0:
-        return tf.constant(0, dtype=x.dtype)
-    max_values = tf.math.reduce_max(singular_values, axis=axis)
-    if atol is None:
-        if rtol is None:
-            ret = ivy.sum(singular_values != 0, axis=axis)
-        else:
-            try:
-                max_rtol = tf.cast(max_values, dtype=tf.float32) * tf.cast(
-                    rtol, dtype=tf.float32
-                )
-            except ValueError:
-                if ivy.all(
-                    element == rtol[0] for element in rtol
-                ):  # all elements are same in rtol
-                    rtol = dim_reduction(rtol)
-                    max_rtol = tf.cast(max_values, dtype=tf.float32) * tf.cast(
-                        rtol, dtype=tf.float32
-                    )
-            if not isinstance(rtol, float) and tf.size(rtol) > 1:
-                if ivy.all(
-                    tf.math.equal(
-                        max_rtol, tf.fill(max_rtol.shape, dim_reduction(max_rtol))
-                    )
-                ):
-                    max_rtol = dim_reduction(max_rtol)
-            elif not isinstance(max_values, float) and tf.size(max_values) > 1:
-                if ivy.all(
-                    tf.math.equal(max_values, tf.fill(max_values.shape, max_values[0]))
-                ):
-                    max_rtol = dim_reduction(max_rtol)
-            ret = ivy.sum(
-                tf.cast(singular_values, dtype=tf.float32)
-                > tf.cast(max_rtol, dtype=tf.float32),
-                axis=axis,
-            )
-    else:  # atol is not None
-        if rtol is None:  # atol is not None, rtol is None
-            ret = ivy.sum(singular_values > atol, axis=axis)
-        else:
-            tol = tf.experimental.numpy.max(atol, max_values * rtol)
-            ret = ivy.sum(singular_values > tol, axis=axis)
-    if len(ret_shape):
-        ret = ivy.reshape(ret, ret_shape)
-    return ivy.astype(ret, x.dtype)
+    if (tf.rank(x) < 2) or (0 in x.shape):
+        return tf.convert_to_tensor(0, dtype=tf.int64)
+    # we don't use the native matrix_rank function because the behaviour of the
+    # tolerance argument is difficult to unify,
+    # and the native implementation is compositional
+    if hermitian:
+        svd_values = tf.abs(tf.linalg.eigh(x)[0])
+    else:
+        svd_values = tf.linalg.svd(x, compute_uv=False)
+    sigma = tf.reduce_max(svd_values, axis=-1, keepdims=False)
+    atol = (
+        atol
+        if atol is not None
+        else tf.experimental.numpy.finfo(x.dtype).eps * max(x.shape[-2:]) * sigma
+    )
+    rtol = rtol if rtol is not None else 0.0
+    tol = tf.maximum(atol, rtol * sigma)
+    # make sure it's broadcastable again with svd_values
+    tol = tf.expand_dims(tol, axis=-1)
+    ret = tf.math.count_nonzero(svd_values > tol, axis=-1)
+    return ret
 
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.14.0 and below": (
             "float16",
             "int8",
             "int16",
@@ -475,12 +416,12 @@ def matrix_transpose(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if conjugate:
-        tf.math.conj(x)
+        x = tf.math.conj(x)
     return tf.linalg.matrix_transpose(x)
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def outer(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -493,7 +434,7 @@ def outer(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    {"2.14.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def pinv(
@@ -511,7 +452,7 @@ def pinv(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
 def qr(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -520,7 +461,7 @@ def qr(
     out: Optional[
         Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]
     ] = None,
-) -> NamedTuple:
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = tf.linalg.qr(x, full_matrices=False)
@@ -536,7 +477,7 @@ def qr(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
 def slogdet(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -547,7 +488,7 @@ def slogdet(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    {"2.14.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def solve(
@@ -582,10 +523,6 @@ def solve(
     else:
         x1 = tf.broadcast_to(x1, output_shape + x1.shape[-2:])
         x2 = tf.broadcast_to(x2, output_shape + x2.shape[-2:])
-        if tf.math.reduce_any(tf.linalg.det(x1) == 0) or (
-            x2.shape[-1] == x2.shape[-2] and tf.math.reduce_any(tf.linalg.det(x2) == 0)
-        ):
-            return x1
         ret = tf.linalg.solve(x1, x2)
 
     if expanded_last:
@@ -594,7 +531,7 @@ def solve(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    {"2.14.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def svd(
@@ -622,18 +559,20 @@ def svd(
         return results(D)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
 def svdvals(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    driver: Optional[str] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # TODO: handling the driver argument
     ret = tf.linalg.svd(x, compute_uv=False)
     return ret
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("float32",)}, backend_version)
 def tensordot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -642,18 +581,13 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    # find type to promote to
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
-
-    # type casting to float32 which is acceptable for tf.tensordot
-    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-
     ret = tf.cast(tf.tensordot(x1, x2, axes=axes), dtype)
     return ret
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    {"2.14.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def trace(
@@ -672,8 +606,7 @@ def trace(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
-    backend_version,
+    {"2.14.0 and below": ("int16", "int8", "bool", "unsigned")}, backend_version
 )
 def vecdot(
     x1: Union[tf.Tensor, tf.Variable],
@@ -684,16 +617,12 @@ def vecdot(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
-    if dtype != "float64":
-        x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    else:
-        x1, x2 = tf.cast(x1, tf.float64), tf.cast(x2, tf.float64)
     return tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
 
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.14.0 and below": (
             "float16",
             "bfloat16",
             "integer",
@@ -713,32 +642,22 @@ def vector_norm(
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype and x.dtype != dtype:
         x = tf.cast(x, dtype)
-    # Mathematical Norms
-    if ord > 0:
-        tn_normalized_vector = tf.linalg.norm(x, ord, axis, keepdims)
+    abs_x = tf.abs(x)
+    if ord == 0:
+        return tf.reduce_sum(tf.cast(x != 0, abs_x.dtype), axis=axis, keepdims=keepdims)
+    elif ord == inf:
+        return tf.reduce_max(abs_x, axis=axis, keepdims=keepdims)
+    elif ord == -inf:
+        return tf.reduce_min(abs_x, axis=axis, keepdims=keepdims)
     else:
-        if ord == -float("inf"):
-            tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
-        elif ord == 0:
-            tn_normalized_vector = tf.reduce_sum(
-                tf.cast(x != 0, x.dtype), axis, keepdims
-            )
-        else:
-            tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
-                1.0 / ord
-            )
-        tn_normalized_vector = tf.cast(
-            tn_normalized_vector, tn_normalized_vector.dtype.real_dtype
-        )
-
-    return tn_normalized_vector
+        return tf.reduce_sum(abs_x**ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
 
 
 # Extra #
 # ----- #
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def diag(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -750,7 +669,7 @@ def diag(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    {"2.14.0 and below": ("bfloat16", "float16", "complex", "unsigned")},
     backend_version,
 )
 def vander(
@@ -766,7 +685,7 @@ def vander(
 
 @with_unsupported_dtypes(
     {
-        "2.9.1": (
+        "2.14.0 and below": (
             "int8",
             "int16",
             "int32",

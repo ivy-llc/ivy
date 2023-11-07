@@ -8,6 +8,91 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
+def append(arr, values, axis=None):
+    if axis is None:
+        return ivy.concat((ivy.flatten(arr), ivy.flatten(values)), axis=0)
+    else:
+        return ivy.concat((arr, values), axis=axis)
+
+
+@to_ivy_arrays_and_back
+def array_split(ary, indices_or_sections, axis=0):
+    return ivy.split(
+        ary, num_or_size_splits=indices_or_sections, axis=axis, with_remainder=True
+    )
+
+
+@to_ivy_arrays_and_back
+def atleast_1d(*arys):
+    return ivy.atleast_1d(*arys)
+
+
+@to_ivy_arrays_and_back
+def atleast_2d(*arys):
+    return ivy.atleast_2d(*arys)
+
+
+@to_ivy_arrays_and_back
+def atleast_3d(*arys):
+    return ivy.atleast_3d(*arys)
+
+
+@to_ivy_arrays_and_back
+def bartlett(M):
+    if M < 1:
+        return ivy.array([])
+    if M == 1:
+        return ivy.ones(M, dtype=ivy.float64)
+    res = ivy.arange(0, M)
+    res = ivy.where(
+        ivy.less_equal(res, (M - 1) / 2.0),
+        2.0 * res / (M - 1),
+        2.0 - 2.0 * res / (M - 1),
+    )
+    return res
+
+
+@to_ivy_arrays_and_back
+def blackman(M):
+    if M < 1:
+        return ivy.array([])
+    if M == 1:
+        return ivy.ones((1,))
+    n = ivy.arange(0, M)
+    alpha = 0.16
+    a0 = (1 - alpha) / 2
+    a1 = 1 / 2
+    a2 = alpha / 2
+    ret = (
+        a0
+        - a1 * ivy.cos(2 * ivy.pi * n / (M - 1))
+        + a2 * ivy.cos(4 * ivy.pi * n / (M - 1))
+    )
+    return ret
+
+
+@to_ivy_arrays_and_back
+def block(arr):
+    # TODO: reimplement block
+    raise ivy.utils.exceptions.IvyNotImplementedError()
+
+
+@to_ivy_arrays_and_back
+def broadcast_arrays(*args):
+    return ivy.broadcast_arrays(*args)
+
+
+@to_ivy_arrays_and_back
+def broadcast_shapes(*shapes):
+    return ivy.broadcast_shapes(*shapes)
+
+
+@to_ivy_arrays_and_back
+def broadcast_to(array, shape):
+    return ivy.broadcast_to(array, shape)
+
+
+@to_ivy_arrays_and_back
 def clip(a, a_min=None, a_max=None, out=None):
     ivy.utils.assertions.check_all_or_any_fn(
         a_min,
@@ -27,6 +112,16 @@ def clip(a, a_min=None, a_max=None, out=None):
     return ivy.clip(a, a_min, a_max, out=out)
 
 
+@to_ivy_arrays_and_back
+def column_stack(tup):
+    if len(ivy.shape(tup[0])) == 1:
+        ys = []
+        for t in tup:
+            ys += [ivy.reshape(t, (ivy.shape(t)[0], 1))]
+        return ivy.concat(ys, axis=1)
+    return ivy.concat(tup, axis=1)
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def concatenate(arrays, axis=0, dtype=None):
@@ -37,50 +132,32 @@ def concatenate(arrays, axis=0, dtype=None):
 
 
 @to_ivy_arrays_and_back
-def repeat(a, repeats, axis=None, *, total_repeat_length=None):
-    return ivy.repeat(a, repeats, axis=axis)
+def diagflat(v, k=0):
+    ret = ivy.diagflat(v, offset=k)
+    while len(ivy.shape(ret)) < 2:
+        ret = ret.expand_dims(axis=0)
+    return ret
 
 
 @to_ivy_arrays_and_back
-def reshape(a, newshape, order="C"):
-    return ivy.reshape(a, shape=newshape, order=order)
+def dsplit(ary, indices_or_sections):
+    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
+        indices_or_sections = (
+            ivy.diff(indices_or_sections, prepend=[0], append=[ary.shape[2]])
+            .astype(ivy.int8)
+            .to_list()
+        )
+    return ivy.dsplit(ary, indices_or_sections)
 
 
 @to_ivy_arrays_and_back
-def ravel(a, order="C"):
-    return ivy.reshape(a, shape=(-1,), order=order)
+def dstack(tup, dtype=None):
+    return ivy.dstack(tup)
 
 
 @to_ivy_arrays_and_back
-def resize(a, new_shape):
-    a = ivy.array(a)
-    resized_a = ivy.reshape(a, new_shape)
-    return resized_a
-
-
-@to_ivy_arrays_and_back
-def moveaxis(a, source, destination):
-    return ivy.moveaxis(a, source, destination)
-
-
-@to_ivy_arrays_and_back
-def flipud(m):
-    return ivy.flipud(m, out=None)
-
-
-@to_ivy_arrays_and_back
-def transpose(a, axes=None):
-    if ivy.isscalar(a):
-        return ivy.array(a)
-    elif a.ndim == 1:
-        return a
-    if not axes:
-        axes = list(range(len(a.shape)))[::-1]
-    if type(axes) is int:
-        axes = [axes]
-    if (len(a.shape) == 0 and not axes) or (len(a.shape) == 1 and axes[0] == 0):
-        return a
-    return ivy.permute_dims(a, axes, out=None)
+def expand_dims(a, axis):
+    return ivy.expand_dims(a, axis=axis)
 
 
 @to_ivy_arrays_and_back
@@ -94,169 +171,8 @@ def fliplr(m):
 
 
 @to_ivy_arrays_and_back
-def expand_dims(a, axis):
-    return ivy.expand_dims(a, axis=axis)
-
-
-@to_ivy_arrays_and_back
-def stack(arrays, axis=0, out=None, dtype=None):
-    if dtype:
-        return ivy.astype(
-            ivy.stack(arrays, axis=axis, out=out), ivy.as_ivy_dtype(dtype)
-        )
-    return ivy.stack(arrays, axis=axis, out=out)
-
-
-@to_ivy_arrays_and_back
-def take(
-    a,
-    indices,
-    axis=None,
-    out=None,
-    mode=None,
-    unique_indices=False,
-    indices_are_sorted=False,
-    fill_value=None,
-):
-    return ivy.gather(a, indices, axis=axis, out=out)
-
-
-@to_ivy_arrays_and_back
-def broadcast_arrays(*args):
-    return ivy.broadcast_arrays(*args)
-
-
-@to_ivy_arrays_and_back
-def broadcast_shapes(*shapes):
-    return ivy.broadcast_shapes(*shapes)
-
-
-@to_ivy_arrays_and_back
-def broadcast_to(array, shape):
-    return ivy.broadcast_to(array, shape)
-
-
-@to_ivy_arrays_and_back
-def append(arr, values, axis=None):
-    if axis is None:
-        return ivy.concat((ivy.flatten(arr), ivy.flatten(values)), axis=0)
-    else:
-        return ivy.concat((arr, values), axis=axis)
-
-
-@to_ivy_arrays_and_back
-def swapaxes(a, axis1, axis2):
-    return ivy.swapaxes(a, axis1, axis2)
-
-
-@to_ivy_arrays_and_back
-def atleast_3d(*arys):
-    return ivy.atleast_3d(*arys)
-
-
-@to_ivy_arrays_and_back
-def atleast_1d(*arys):
-    return ivy.atleast_1d(*arys)
-
-
-@to_ivy_arrays_and_back
-def atleast_2d(*arys):
-    return ivy.atleast_2d(*arys)
-
-
-@to_ivy_arrays_and_back
-def tril(m, k=0):
-    return ivy.tril(m, k=k)
-
-
-@to_ivy_arrays_and_back
-def block(arr, block_size):
-    if isinstance(arr, ivy.Array):
-        arr_blocks = ivy.reshape(
-            arr, ivy.concat([ivy.shape(arr)[:-1], [-1, block_size]], 0)
-        )
-        return arr_blocks
-
-
-@to_ivy_arrays_and_back
-def squeeze(a, axis=None):
-    return ivy.squeeze(a, axis)
-
-
-@to_ivy_arrays_and_back
-def rot90(m, k=1, axes=(0, 1)):
-    return ivy.rot90(m, k=k, axes=axes)
-
-
-@to_ivy_arrays_and_back
-def split(ary, indices_or_sections, axis=0):
-    if isinstance(indices_or_sections, (list, tuple)):
-        indices_or_sections = (
-            ivy.diff(indices_or_sections, prepend=[0], append=[ary.shape[axis]])
-            .astype(ivy.int8)
-            .to_list()
-        )
-    return ivy.split(
-        ary, num_or_size_splits=indices_or_sections, axis=axis, with_remainder=False
-    )
-
-
-@to_ivy_arrays_and_back
-def array_split(ary, indices_or_sections, axis=0):
-    if isinstance(indices_or_sections, (list, tuple)):
-        indices_or_sections = (
-            ivy.diff(indices_or_sections, prepend=[0], append=[ary.shape[axis]])
-            .astype(ivy.int8)
-            .to_list()
-        )
-    return ivy.split(
-        ary, num_or_size_splits=indices_or_sections, axis=axis, with_remainder=True
-    )
-
-
-@to_ivy_arrays_and_back
-def tile(A, reps):
-    return ivy.tile(A, reps)
-
-
-@to_ivy_arrays_and_back
-def dsplit(ary, indices_or_sections):
-    return ivy.dsplit(ary, indices_or_sections)
-
-
-@to_ivy_arrays_and_back
-def dstack(tup, dtype=None):
-    return ivy.dstack(tup)
-
-
-@to_ivy_arrays_and_back
-def vsplit(ary, indices_or_sections):
-    return ivy.vsplit(ary, indices_or_sections)
-
-
-@to_ivy_arrays_and_back
-def hsplit(ary, indices_or_sections):
-    return ivy.hsplit(ary, indices_or_sections)
-
-
-@to_ivy_arrays_and_back
-def roll(a, shift, axis=None):
-    return ivy.roll(a, shift, axis=axis)
-
-
-@to_ivy_arrays_and_back
-def row_stack(tup):
-    if len(ivy.shape(tup[0])) == 1:
-        xs = []
-        for t in tup:
-            xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
-        return ivy.concat(xs, axis=0)
-    return ivy.concat(tup, axis=0)
-
-
-@to_ivy_arrays_and_back
-def pad(array, pad_width, mode="constant", **kwargs):
-    return ivy.pad(array, pad_width, mode=mode, **kwargs)
+def flipud(m):
+    return ivy.flipud(m, out=None)
 
 
 def hamming(M):
@@ -277,6 +193,24 @@ def hanning(M):
 
 
 @to_ivy_arrays_and_back
+def hsplit(ary, indices_or_sections):
+    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
+        if ary.ndim == 1:
+            indices_or_sections = (
+                ivy.diff(indices_or_sections, prepend=[0], append=[ary.shape[0]])
+                .astype(ivy.int8)
+                .to_list()
+            )
+        else:
+            indices_or_sections = (
+                ivy.diff(indices_or_sections, prepend=[0], append=[ary.shape[1]])
+                .astype(ivy.int8)
+                .to_list()
+            )
+    return ivy.hsplit(ary, indices_or_sections)
+
+
+@to_ivy_arrays_and_back
 def kaiser(M, beta):
     if M <= 1:
         return ivy.ones([M], dtype=ivy.float64)
@@ -284,6 +218,124 @@ def kaiser(M, beta):
     alpha = 0.5 * (M - 1)
     ret = ivy.i0(beta * ivy.sqrt(1 - ((n - alpha) / alpha) ** 2)) / ivy.i0(beta)
     return ret
+
+
+@to_ivy_arrays_and_back
+def moveaxis(a, source, destination):
+    return ivy.moveaxis(a, source, destination)
+
+
+@to_ivy_arrays_and_back
+def pad(array, pad_width, mode="constant", **kwargs):
+    return ivy.pad(array, pad_width, mode=mode, **kwargs)
+
+
+@to_ivy_arrays_and_back
+def ravel(a, order="C"):
+    return ivy.reshape(a, shape=(-1,), order=order)
+
+
+@to_ivy_arrays_and_back
+def repeat(a, repeats, axis=None, *, total_repeat_length=None):
+    return ivy.repeat(a, repeats, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def reshape(a, newshape, order="C"):
+    return ivy.reshape(a, shape=newshape, order=order)
+
+
+@to_ivy_arrays_and_back
+def resize(a, new_shape):
+    a = ivy.array(a)
+    resized_a = ivy.reshape(a, new_shape)
+    return resized_a
+
+
+@to_ivy_arrays_and_back
+def roll(a, shift, axis=None):
+    return ivy.roll(a, shift, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def rot90(m, k=1, axes=(0, 1)):
+    return ivy.rot90(m, k=k, axes=axes)
+
+
+@to_ivy_arrays_and_back
+def row_stack(tup):
+    if len(ivy.shape(tup[0])) == 1:
+        xs = []
+        for t in tup:
+            xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
+        return ivy.concat(xs, axis=0)
+    return ivy.concat(tup, axis=0)
+
+
+@to_ivy_arrays_and_back
+def split(ary, indices_or_sections, axis=0):
+    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
+        indices_or_sections = (
+            ivy.diff(indices_or_sections, prepend=[0], append=[ary.shape[axis]])
+            .astype(ivy.int8)
+            .to_list()
+        )
+    return ivy.split(
+        ary, num_or_size_splits=indices_or_sections, axis=axis, with_remainder=False
+    )
+
+
+@to_ivy_arrays_and_back
+def squeeze(a, axis=None):
+    return ivy.squeeze(a, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def stack(arrays, axis=0, out=None, dtype=None):
+    if dtype:
+        return ivy.astype(
+            ivy.stack(arrays, axis=axis, out=out), ivy.as_ivy_dtype(dtype)
+        )
+    return ivy.stack(arrays, axis=axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def swapaxes(a, axis1, axis2):
+    return ivy.swapaxes(a, axis1, axis2)
+
+
+@to_ivy_arrays_and_back
+def take(
+    a,
+    indices,
+    axis=None,
+    out=None,
+    mode=None,
+    unique_indices=False,
+    indices_are_sorted=False,
+    fill_value=None,
+):
+    return ivy.gather(a, indices, axis=axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def tile(A, reps):
+    return ivy.tile(A, reps)
+
+
+@to_ivy_arrays_and_back
+def transpose(a, axes=None):
+    if ivy.isscalar(a):
+        return ivy.array(a)
+    elif a.ndim == 1:
+        return a
+    if not axes:
+        axes = list(range(len(a.shape)))[::-1]
+    if type(axes) is int:
+        axes = [axes]
+    if (len(a.shape) == 0 and not axes) or (len(a.shape) == 1 and axes[0] == 0):
+        return a
+    return ivy.permute_dims(a, axes, out=None)
 
 
 @handle_jax_dtype
@@ -296,19 +348,36 @@ def tri(N, M=None, k=0, dtype="float64"):
 
 
 @to_ivy_arrays_and_back
-def blackman(M):
-    if M < 1:
-        return ivy.array([])
-    if M == 1:
-        return ivy.ones(1)
-    n = ivy.arange(0, M)
-    alpha = 0.16
-    a0 = (1 - alpha) / 2
-    a1 = 1 / 2
-    a2 = alpha / 2
-    ret = (
-        a0
-        - a1 * ivy.cos(2 * ivy.pi * n / (M - 1))
-        + a2 * ivy.cos(4 * ivy.pi * n / (M - 1))
-    )
-    return ret
+def tril(m, k=0):
+    return ivy.tril(m, k=k)
+
+
+@to_ivy_arrays_and_back
+def trim_zeros(flit, trim="fb"):
+    start_index = 0
+    end_index = ivy.shape(flit)[0]
+    trim = trim.lower()
+    if "f" in trim:
+        for item in flit:
+            if item == 0:
+                start_index += 1
+            else:
+                break
+    if "b" in trim:
+        for item in flit[::-1]:
+            if item == 0:
+                end_index -= 1
+            else:
+                break
+    return flit[start_index:end_index]
+
+
+@to_ivy_arrays_and_back
+def vsplit(ary, indices_or_sections):
+    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
+        indices_or_sections = (
+            ivy.diff(indices_or_sections, prepend=[0], append=[ary.shape[0]])
+            .astype(ivy.int8)
+            .to_list()
+        )
+    return ivy.vsplit(ary, indices_or_sections)

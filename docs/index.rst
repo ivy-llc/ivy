@@ -1,34 +1,67 @@
-.. include:: ../README.rst
+.. title:: Home
+
+.. include:: ../README.md
+  :parser: myst_parser.sphinx_
+
 
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Overview
 
-  overview/background.rst
-  overview/design.rst
+  Home <self>
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: The Basics
+
+  overview/get_started.rst
+  demos/quickstart.ipynb
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Demos
+
+  demos/learn_the_basics.rst
+  demos/guides.rst
+  demos/examples_and_demos.rst
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Background
+
+  overview/motivation.rst
   overview/related_work.rst
-  overview/extensions.rst
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Contributors
+
+  overview/design.rst
   overview/contributing.rst
   overview/deep_dive.rst
-  Examples <https://unify.ai/demos/>
-  overview/faq.rst
   overview/glossary.rst
+  overview/faq.rst
 
 
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Compiling and Transpiling
+  :caption: API Reference
 
-  compiler/compiler.rst
-  compiler/transpiler.rst
+  overview/one_liners.rst
 
 
 .. autosummary::
   :toctree: docs/functional
   :template: top_functional_toc.rst
-  :caption: API Reference
   :recursive:
   :hide-table:
 
@@ -51,6 +84,5 @@
   :hide-table:
 
   ivy.stateful
-  ivy.nested_array
   ivy.utils
   ivy_tests.test_ivy.helpers

@@ -1,6 +1,10 @@
+# global
+import sys
+
 # local
-from ivy.utils.exceptions import handle_exceptions
 import ivy
+from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
 from numbers import Number
 from typing import Union, Tuple, Iterable
 from .dtypes import DType
@@ -80,11 +84,12 @@ def check_tensorflow_casting(x1, x2):
 
 
 from . import dtypes
-from .dtypes import DType, as_dtype, cast
+from .dtypes import as_dtype, cast
 from . import ragged
 from .ragged import *
 from . import tensor
 from .tensor import EagerTensor, Tensor
+from .tensorarray import TensorArray
 from . import variable
 from .variable import Variable, IndexedSlices
 from . import keras
@@ -105,4 +110,15 @@ from . import sets
 from . import signal
 from . import sparse
 
+
 _frontend_array = constant
+
+# setting to specific version #
+# --------------------------- #
+
+if ivy.is_local():
+    module = ivy.utils._importlib.import_cache[__name__]
+else:
+    module = sys.modules[__name__]
+
+__version__ = set_frontend_to_specific_version(module)

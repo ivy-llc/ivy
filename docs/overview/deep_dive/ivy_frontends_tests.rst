@@ -1,24 +1,22 @@
 Ivy Frontend Tests
 ==================
 
-.. _`here`: https://unify.ai/docs/ivy/design/ivy_as_a_transpiler.html
+.. _`here`: ../design/ivy_as_a_transpiler.rst
 .. _`ivy frontends tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
-.. _`ivy frontends tests forum`: https://discord.com/channels/799879767196958751/1028297887605587998
 .. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`Function Wrapping`: https://unify.ai/docs/ivy/deep_dive/3_function_wrapping.html
-.. _`open task`: https://unify.ai/docs/ivy/contributing/open_tasks.html#open-tasks
-.. _`Ivy Tests`: https://unify.ai/docs/ivy/deep_dive/ivy_tests.html
+.. _`Function Wrapping`: function_wrapping.rst
+.. _`open task`: ../contributing/open_tasks.rst
+.. _`Ivy Tests`: ivy_tests.rst
 .. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
-.. _`CI Pipeline`: https://unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
-.. _`setting up`: https://unify.ai/docs/ivy/contributing/setting_up.html#setting-up-testing
+.. _`CI Pipeline`: continuous_integration.rst
 
 
 Introduction
 ------------
 
-Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in subfolder `test ivy`_.
+Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in the subfolder `test ivy`_.
 In this section of the deep dive we are going to jump into Ivy Frontend Tests!
 
 **Writing Ivy Frontend Tests**
@@ -28,7 +26,7 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 
 **Ivy Decorators**
 
-Ivy provides test decorators for frontend tests to make it easier and more maintainable, currently there are two:
+Ivy provides test decorators for frontend tests to make them easier and more maintainable, currently there are two:
 
 * :func:`@handle_frontend_test` a decorator which is used to test frontend functions, for example :func:`np.zeros` and :func:`tensorflow.tan`.
 * :func:`@handle_frontend_method` a decorator which is used to test frontend methods and special methods, for example :func:`torch.Tensor.add` and :func:`numpy.ndarray.__add__`.
@@ -63,7 +61,7 @@ Frontend Test Examples
 -----------------------
 
 Before you begin writing a frontend test, make sure you are placing it in the correct location.
-See the 'Where to place a frontend function' sub-section of the frontend APIs `open task`_ for more details.
+See the :ref:`/overview/contributing/open_tasks:Where to place a frontend function` sub-section of the frontend APIs `open task`_ for more details.
 
 ivy.tan()
 ^^^^^^^^^
@@ -72,23 +70,25 @@ ivy.tan()
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py
+    # ivy_tests/test_ivy/test_frontends/test_jax/test_lax/test_operators.py
     @handle_frontend_test(
         fn_tree="jax.lax.tan",
         dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
         test_with_out=st.just(False),
     )
-    def test_jax_lax_tan(
+    def test_jax_tan(
         *,
         dtype_and_x,
         on_device,
         fn_tree,
+        backend_fw,
         frontend,
         test_flags,
     ):
         input_dtype, x = dtype_and_x
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
@@ -109,8 +109,8 @@ ivy.tan()
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_np_trigonometric_functions.py
-        @handle_frontend_test(
+    # ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_trigonometric_functions.py
+    @handle_frontend_test(
         fn_tree="numpy.tan",
         dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
             arr_func=[
@@ -121,37 +121,42 @@ ivy.tan()
         ),
         where=np_frontend_helpers.where(),
         number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-                fn_name="tan"
-            ),
+            fn_name="tan"
+        ),
+    )
+    def test_numpy_tan(
+        dtypes_values_casting,
+        where,
+        frontend,
+        backend_fw,
+        test_flags,
+        fn_tree,
+        on_device,
+    ):
+        input_dtypes, x, casting, dtype = dtypes_values_casting
+        where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            test_flags=test_flags,
         )
-        def test_numpy_tan(
-            dtypes_values_casting,
-            where,
-            frontend,
-            test_flags,
-            fn_tree,
-            on_device,
-        ):
-            input_dtypes, x, casting, dtype = dtypes_values_casting
-            where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-                where=where,
-                input_dtype=input_dtypes,
-                test_flags=test_flags,
-            )
-            np_frontend_helpers.test_frontend_function(
-                input_dtypes=input_dtypes,
-                frontend=frontend,
-                test_flags=test_flags,
-                fn_tree=fn_tree,
-                on_device=on_device,
-                x=x[0],
-                out=None,
-                where=where,
-                casting=casting,
-                order="K",
-                dtype=dtype,
-                subok=True,
-            )
+        np_frontend_helpers.test_frontend_function(
+            input_dtypes=input_dtypes,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            rtol=1e-02,
+            atol=1e-02,
+            x=x[0],
+            out=None,
+            where=where,
+            casting=casting,
+            order="K",
+            dtype=dtype,
+            subok=True,
+        )
+
 * We set :code:`fn_tree` to :code:`numpy.tan` which is the path to the function in the NumPy namespace.
 * Here we use :code:`helpers.get_dtypes("numeric")` to generate :code:`available_dtypes`, these are valid :code:`numeric` data types specifically for NumPy.
 * NumPy has an optional argument :code:`where` which is generated using :func:`np_frontend_helpers.where`.
@@ -162,31 +167,33 @@ ivy.tan()
 **TensorFlow**
 
 .. code-block:: python
-        
-        # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py
-        # tan
-        @handle_frontend_test(
-            fn_tree="tensorflow.math.tan",
-            dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-            test_with_out=st.just(False),
+
+    # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py
+    @handle_frontend_test(
+        fn_tree="tensorflow.math.tan",
+        dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+        test_with_out=st.just(False),
+    )
+    def test_tensorflow_tan(
+        *,
+        dtype_and_x,
+        frontend,
+        backend_fw,
+        test_flags,
+        fn_tree,
+        on_device,
+    ):
+        input_dtype, x = dtype_and_x
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            x=x[0],
         )
-        def test_tensorflow_tan(
-            *,
-            dtype_and_x,
-            frontend,
-            test_flags,
-            fn_tree,
-            on_device,
-        ):
-            input_dtype, x = dtype_and_x
-            helpers.test_frontend_function(
-                input_dtypes=input_dtype,
-                frontend=frontend,
-                test_flags=test_flags,
-                fn_tree=fn_tree,
-                on_device=on_device,
-                x=x[0],
-            )
+
 * We set :code:`fn_tree` to :code:`tensorflow.math.tan` which is the path to the function in the TensorFlow namespace.
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid float data types specifically for the function.
 
@@ -196,32 +203,27 @@ ivy.tan()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_torch/test_pointwise_ops.py
-    # tan
     @handle_frontend_test(
-    fn_tree="torch.tan",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-            ),
+        fn_tree="torch.tan",
+        dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+        ),
     )
     def test_torch_tan(
         *,
         dtype_and_x,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
         on_device,
         fn_tree,
         frontend,
+        backend_fw,
+        test_flags,
     ):
         input_dtype, x = dtype_and_x
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
             frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             input=x[0],
@@ -241,14 +243,15 @@ This function requires us to create extra functions for generating :code:`shape`
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py
+    # ivy_tests/test_ivy/test_frontends/test_jax/test_lax/test_operators.py
     @st.composite
     def _fill_value(draw):
         dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-        if ivy.is_uint_dtype(dtype):
-            return draw(helpers.ints(min_value=0, max_value=5))
-        elif ivy.is_int_dtype(dtype):
-            return draw(helpers.ints(min_value=-5, max_value=5))
+        with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+            if ivy_backend.is_uint_dtype(dtype):
+                return draw(helpers.ints(min_value=0, max_value=5))
+            elif ivy_backend.is_int_dtype(dtype):
+                return draw(helpers.ints(min_value=-5, max_value=5))
         return draw(helpers.floats(min_value=-5, max_value=5))
 
 
@@ -264,7 +267,7 @@ This function requires us to create extra functions for generating :code:`shape`
         fill_value=_fill_value(),
         dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
     )
-    def test_jax_lax_full(
+    def test_jax_full(
         *,
         shape,
         fill_value,
@@ -272,11 +275,13 @@ This function requires us to create extra functions for generating :code:`shape`
         on_device,
         fn_tree,
         frontend,
+        backend_fw,
         test_flags,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtypes,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -302,14 +307,24 @@ This function requires us to create extra functions for generating :code:`shape`
     def _input_fill_and_dtype(draw):
         dtype = draw(helpers.get_dtypes("float", full=False))
         dtype_and_input = draw(helpers.dtype_and_values(dtype=dtype))
-        if ivy.is_uint_dtype(dtype[0]):
-            fill_values = draw(st.integers(min_value=0, max_value=5))
-        elif ivy.is_int_dtype(dtype[0]):
-            fill_values = draw(st.integers(min_value=-5, max_value=5))
-        else:
-            fill_values = draw(st.floats(min_value=-5, max_value=5))
-        dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
+        with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+            if ivy_backend.is_uint_dtype(dtype[0]):
+                fill_values = draw(st.integers(min_value=0, max_value=5))
+            elif ivy_backend.is_int_dtype(dtype[0]):
+                fill_values = draw(st.integers(min_value=-5, max_value=5))
+            else:
+                fill_values = draw(
+                    helpers.floats(
+                        min_value=-5,
+                        max_value=5,
+                        large_abs_safety_factor=10,
+                        small_abs_safety_factor=10,
+                        safety_factor_scale="log",
+                    )
+                )
+            dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
         return dtype, dtype_and_input[1], fill_values, dtype_to_cast[0]
+
 
     # full
     @handle_frontend_test(
@@ -328,6 +343,7 @@ This function requires us to create extra functions for generating :code:`shape`
         shape,
         input_fill_dtype,
         frontend,
+        backend_fw,
         test_flags,
         fn_tree,
         on_device,
@@ -336,6 +352,7 @@ This function requires us to create extra functions for generating :code:`shape`
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -345,21 +362,23 @@ This function requires us to create extra functions for generating :code:`shape`
         )
 
 * We use :func:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for NumPy.
-* :func:`numpy.full` does not have a :code:`where` argument so we can use :func:`helpers.test_frontend_function`, we specify the `out` flag explicitely.
+* :func:`numpy.full` does not have a :code:`where` argument so we can use :func:`helpers.test_frontend_function`, we specify the `out` flag explicitly.
 
 **TensorFlow**
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tf_functions.py
+    # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_raw_ops.py
     @st.composite
     def _fill_value(draw):
-        dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-        if ivy.is_uint_dtype(dtype):
-            return draw(helpers.ints(min_value=0, max_value=5))
-        if ivy.is_int_dtype(dtype):
-            return draw(helpers.ints(min_value=-5, max_value=5))
-        return draw(helpers.floats(min_value=-5, max_value=5))
+        dtype = draw(_dtypes())[0]
+        with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+            if ivy_backend.is_uint_dtype(dtype):
+                return draw(helpers.ints(min_value=0, max_value=5))
+            elif ivy_backend.is_int_dtype(dtype):
+                return draw(helpers.ints(min_value=-5, max_value=5))
+            return draw(helpers.floats(min_value=-5, max_value=5))
+
 
     # fill
     @handle_frontend_test(
@@ -379,6 +398,7 @@ This function requires us to create extra functions for generating :code:`shape`
         fill_value,
         dtypes,
         frontend,
+        backend_fw,
         test_flags,
         fn_tree,
         on_device,
@@ -386,6 +406,7 @@ This function requires us to create extra functions for generating :code:`shape`
         helpers.test_frontend_function(
             input_dtypes=dtypes,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -397,7 +418,7 @@ This function requires us to create extra functions for generating :code:`shape`
 
 * We use :func:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for this function.
 * Tensorflow's version of :func:`full` is named :func:`Fill` therefore we specify the :code:`fn_tree` argument to be :code:`"Fill"`
-* When running the test there were some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitely.
+* When running the test there were some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitly.
 
 
 **PyTorch**
@@ -407,12 +428,20 @@ This function requires us to create extra functions for generating :code:`shape`
     # ivy_tests/test_ivy/test_frontends/test_torch/test_creation_ops.py
     @st.composite
     def _fill_value(draw):
-        dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-        if ivy.is_uint_dtype(dtype):
-            return draw(helpers.ints(min_value=0, max_value=5))
-        if ivy.is_int_dtype(dtype):
-            return draw(helpers.ints(min_value=-5, max_value=5))
-        return draw(helpers.floats(min_value=-5, max_value=5))
+        with_array = draw(st.sampled_from([True, False]))
+        dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
+        with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+            if ivy_backend.is_uint_dtype(dtype):
+                ret = draw(helpers.ints(min_value=0, max_value=5))
+            elif ivy_backend.is_int_dtype(dtype):
+                ret = draw(helpers.ints(min_value=-5, max_value=5))
+            else:
+                ret = draw(helpers.floats(min_value=-5, max_value=5))
+            if with_array:
+                return np.array(ret, dtype=dtype)
+            else:
+                return ret
+
 
     @handle_frontend_test(
         fn_tree="torch.full",
@@ -434,12 +463,14 @@ This function requires us to create extra functions for generating :code:`shape`
         on_device,
         fn_tree,
         frontend,
+        backend_fw,
         test_flags,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtype,
             on_device=on_device,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             size=shape,
@@ -454,7 +485,7 @@ Testing Without Using Tests Values
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 While even using hypothesis, there are some cases in which we set :code:`test_values=False` for example, we have a
-function add_noise() and we call it on x and we try to assert (we interally use assert np.all_close) that the result
+function add_noise() and we call it on x and we try to assert (we internally use assert np.all_close) that the result
 from torch backend matches tensorflow and the test will always fail, because the function add_noise() depends on a random
 seed internally that we have no control over, what we change is only how we test for equality, in which in that case
 we can not and we have to reconstruct the output as shown in the example below.
@@ -464,8 +495,7 @@ we can not and we have to reconstruct the output as shown in the example below.
     # ivy_tests/test_ivy/test_frontends/test_torch/test_linalg.py
     @handle_frontend_test(
         fn_tree="torch.linalg.qr",
-        dtype_and_input=_get_dtype_and_matrix(),
-        test_with_out=st.just(False),
+        dtype_and_input=_get_dtype_and_matrix(batch=True),
     )
     def test_torch_qr(
         *,
@@ -473,35 +503,40 @@ we can not and we have to reconstruct the output as shown in the example below.
         frontend,
         test_flags,
         fn_tree,
+        backend_fw,
         on_device,
     ):
         input_dtype, x = dtype_and_input
         ret, frontend_ret = helpers.test_frontend_function(
             input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
-            input=x[0],
+            A=x[0],
             test_values=False,
         )
-        ret = [ivy.to_numpy(x) for x in ret]
-        frontend_ret = [np.asarray(x) for x in frontend_ret]
 
+        with update_backend(backend_fw) as ivy_backend:
+            ret = [ivy_backend.to_numpy(x) for x in ret]
+
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
         q, r = ret
         frontend_q, frontend_r = frontend_ret
 
-        assert_all_close(
-            ret_np=q @ r,
-            ret_from_gt_np=frontend_q @ frontend_r,
-            rtol=1e-2,
-            atol=1e-2,
-            ground_truth_backend=frontend,
-        )
+            assert_all_close(
+                ret_np=q @ r,
+                ret_from_gt_np=frontend_q @ frontend_r,
+                rtol=1e-2,
+                atol=1e-2,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
 
-* The parameter :code:`test_values=False` is explicitly set to "False" as there can be multiple solutions for this and those multiple solutions can all be correct, so we have to test with reconstructing the output.
+* The parameter :code:`test_values=False` is explicitly set to "False" as there can be multiple solutions for this and those multiple solutions can all be correct, so we have to test by reconstructing the output.
 
-What assert_all_close() actually does is, it checks for values and dtypes, if even one of them is not same it will cause
+What assert_all_close() actually does is, it checks for values and dtypes, if even one of them is not the same it will cause
 an assertion, the examples given below will make it clearer.
 
 .. code-block:: python
@@ -517,13 +552,13 @@ an assertion, the examples given below will make it clearer.
     >>> a = np.array([[1., 5.]], dtype='float64')
     >>> b = np.array([[2., 4.]], dtype='float32')
     >>> print(helpers.assert_all_close(a, b))
-    AssertionError: the return with a TensorFlow backend produced data type of float32, while the return with a  backend returned a data type of float64.
+    AssertionError: the return with a TensorFlow backend produced a data type of float32, while the return with a  backend returned a data type of float64.
 
 
 Alias functions
 ^^^^^^^^^^^^^^^
 Let's take a quick walkthrough on testing the function alias as we know that such functions have the same behavior as original functions.
-Taking an example of :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`.
+For example :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working the same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`.
 
 Code example for alias function:
 
@@ -561,12 +596,14 @@ Code example for alias function:
         on_device,
         fn_tree,
         frontend,
+        backend_fw,
         test_flags,
     ):
         input_dtype, inputs = dtype_and_inputs
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -582,16 +619,20 @@ Frontend Instance Method Tests
 
 The frontend instance method tests are similar to the frontend function test, but instead of testing the function directly we test the instance method of the frontend class.
 major difference is that we have more flags to pass now, most initialization functions take an array as an input. also some methods may take an array as input,
-for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate seperate flags for each.
+for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate separate flags for each.
 
 **Important Helper Functions**
 
 :func:`@handle_frontend_method` requires 3 keyword only parameters:
-    - :code:`class_tree` A full path to the array class in **Ivy** namespace. 
+    - :code:`class_tree` A full path to the array class in **Ivy** namespace.
     - :code:`init_tree` A full path to initialization function.
-    - :code:`method_name` The name of the method to test. 
+    - :code:`method_name` The name of the method to test.
 
-:func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`.
+:func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`. A few important arguments for this function are following:
+  - :code:`init_input_dtypes` Input dtypes of the arguments on which we are initializing the array on.
+  - :code:`init_all_as_kwargs_np` The data to be passed when initializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
+  - :code:`method_input_dtypes` The input dtypes of the argument which are to be passed to the instance method after the initialization of the array.
+  - :code:`method_all_as_kwargs_np` All the arguments which are to be passed to the instance method.
 
 
 Frontend Instance Method Test Examples
@@ -618,6 +659,7 @@ ivy.add()
         init_flags,
         method_flags,
         frontend,
+        backend_fw,
     ):
         input_dtypes, xs = dtype_and_x
 
@@ -631,6 +673,7 @@ ivy.add()
                 "value": xs[1],
             },
             frontend=frontend,
+            backend_to_test=backend_fw,
             frontend_method_data=frontend_method_data,
             init_flags=init_flags,
             method_flags=method_flags,
@@ -659,6 +702,7 @@ ivy.add()
     def test_tensorflow_instance_add(
         dtype_and_x,
         frontend,
+        backend_fw,
         frontend_method_data,
         init_flags,
         method_flags,
@@ -674,6 +718,7 @@ ivy.add()
                 "y": x[1],
             },
             frontend=frontend,
+            backend_to_test=backend_fw,
             frontend_method_data=frontend_method_data,
             init_flags=init_flags,
             method_flags=method_flags,
@@ -705,6 +750,7 @@ ivy.add()
         dtype_and_x,
         alpha,
         frontend,
+        backend_fw,
         frontend_method_data,
         init_flags,
         method_flags,
@@ -724,6 +770,7 @@ ivy.add()
             init_flags=init_flags,
             method_flags=method_flags,
             frontend=frontend,
+            backend_to_test=backend_fw,
             atol_=1e-02,
         )
 
@@ -754,20 +801,28 @@ The CI Pipeline runs the entire collection of Frontend Tests for the frontend th
 You will need to make sure the Frontend Test is passing for each Ivy Frontend function you introduce/modify.
 If a test fails on the CI, you can see details about the failure under `Details -> Run Frontend Tests` as shown in `CI Pipeline`_.
 
-You can also run the tests locally before making a PR. See the relevant `setting up`_ section for instructions on how to do so.
+You can also run the tests locally before making a PR. See the relevant :ref:`overview/contributing/setting_up:Setting Up Testing in PyCharm` section for instructions on how to do so.
 
+Frontend Framework Testing Configuration
+----------------------------------------
+To effectively test a frontend within our pipeline, it is essential to provide specific information about the framework we're trying to test.
+This information includes how to create an array, return type checking, supported devices, and data types, etc.
+
+All the required information for a frontend is stored in a configuration file, which serves as a reference for our testing pipeline.
+The process of incorporating a new frontend into our testing procedure involves simply writing a new config file for that framework.
+The configuration files are located at: :code:`ivy_tests/test_ivy/test_frontends/config/`
 
 **Round Up**
 
 This should have hopefully given you a good understanding of Ivy Frontend Tests!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_ or in the `ivy frontends tests forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_!
 
 
 **Video**
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/iS7QFsQa9bI" class="video">
     </iframe>

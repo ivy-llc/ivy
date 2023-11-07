@@ -2,16 +2,8 @@ import ivy
 import ivy.functional.frontends.numpy as np_frontend
 import numpy as np
 
-masked = True
-nomask = False
 masked_print_options = "--"
-
-# Helpers #
-# ------- #
-
-
-def _is_masked_array(x):
-    return isinstance(x, (np.ma.MaskedArray, np_frontend.ma.MaskedArray))
+nomask = False
 
 
 # Class #
@@ -59,6 +51,7 @@ class MaskedArray(np_frontend.ndarray):
                         ivy.shape(self._mask),
                         ivy.shape(data.mask),
                         message="shapes of input mask does not match current mask",
+                        as_array=False,
                     )
                 self._mask = ivy.bitwise_or(self._mask, data.mask)
         else:
@@ -74,6 +67,7 @@ class MaskedArray(np_frontend.ndarray):
                 ivy.shape(self._data),
                 ivy.shape(ivy.array(mask)),
                 message="shapes of data and mask must match",
+                as_array=False,
             )
             self._mask = ivy.array(mask)
         elif mask.all():
@@ -164,7 +158,7 @@ class MaskedArray(np_frontend.ndarray):
         return self
 
     def __repr__(self):
-        dec_vals = ivy.array_decimal_values()
+        dec_vals = ivy.array_decimal_values
         with np.printoptions(precision=dec_vals):
             return (
                 "ivy.MaskedArray("
@@ -191,10 +185,20 @@ class MaskedArray(np_frontend.ndarray):
             )
         return str(self._data.to_list())
 
-    # Instance Methods #
-    # ---------------- #
 
-    # TODO
+# --- Helpers --- #
+# --------------- #
+
+
+def _is_masked_array(x):
+    return isinstance(x, (np.ma.MaskedArray, np_frontend.ma.MaskedArray))
+
+
+masked = True
+# Instance Methods #
+# ---------------- #
+
+# TODO
 
 
 # masked_array (alias)

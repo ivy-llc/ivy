@@ -1,5 +1,5 @@
 # global
-from hypothesis import given
+from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -8,31 +8,51 @@ from ivy.functional.frontends.torch.func_wrapper import (
     inputs_to_ivy_arrays,
     outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
+    numpy_to_torch_style_args,
 )
 from ivy.functional.frontends.torch.tensor import Tensor
 import ivy.functional.frontends.torch as torch_frontend
 
 
-def _fn(*args, dtype=None, check_default=False):
+# --- Helpers --- #
+# --------------- #
+
+
+def _fn(*args, dtype=None, check_default=False, inplace=False):
     if (
         check_default
-        and all([not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args])
+        and all(not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args)
         and not ivy.exists(dtype)
     ):
         ivy.utils.assertions.check_equal(
-            ivy.default_float_dtype(), torch_frontend.get_default_dtype()
+            ivy.default_float_dtype(),
+            torch_frontend.get_default_dtype(),
+            as_array=False,
         )
-        ivy.utils.assertions.check_equal(ivy.default_int_dtype(), "int64")
+        ivy.utils.assertions.check_equal(
+            ivy.default_int_dtype(), "int64", as_array=False
+        )
     return args[0]
+
+
+# --- Main --- #
+# ------------ #
+
+
+@numpy_to_torch_style_args
+def mocked_func(dim=None, keepdim=None, input=None, other=None):
+    return dim, keepdim, input, other
 
 
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ).filter(lambda x: "bfloat16" not in x[0])
 )
-def test_inputs_to_ivy_arrays(dtype_and_x):
+def test_torch_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
     x_dtype, x = dtype_and_x
+
+    ivy.set_backend(backend=backend_fw)
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
@@ -56,33 +76,87 @@ def test_inputs_to_ivy_arrays(dtype_and_x):
     assert str(input_frontend.dtype) == str(output.dtype)
     assert ivy.all(input_frontend.ivy_array == output)
 
+    ivy.previous_backend()
+
+
+@given(
+    dim=st.integers(),
+    keepdim=st.booleans(),
+    input=st.lists(st.integers()),
+    other=st.integers(),
+)
+def test_torch_numpy_to_torch_style_args(dim, keepdim, input, other):
+    # PyTorch-style keyword arguments
+    assert (dim, keepdim, input, other) == mocked_func(
+        dim=dim, keepdim=keepdim, input=input, other=other
+    )
+
+    # NumPy-style keyword arguments
+    assert (dim, keepdim, input, other) == mocked_func(
+        axis=dim, keepdims=keepdim, x=input, x2=other
+    )
+
+    # Mixed-style keyword arguments
+    assert (dim, keepdim, input, other) == mocked_func(
+        axis=dim, keepdim=keepdim, input=input, x2=other
+    )
+
 
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
     dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
+    generate_type=st.sampled_from(["frontend", "ivy", "native"]),
+    inplace=st.booleans(),
 )
-def test_outputs_to_frontend_arrays(dtype_and_x, dtype):
+def test_torch_outputs_to_frontend_arrays(
+    dtype_and_x,
+    dtype,
+    generate_type,
+    inplace,
+    backend_fw,
+):
     x_dtype, x = dtype_and_x
 
-    # check for ivy array
-    input_ivy = ivy.array(x[0], dtype=x_dtype[0])
-    if not len(input_ivy.shape):
-        scalar_input_ivy = ivy.to_scalar(input_ivy)
+    ivy.set_backend(backend_fw)
+
+    x = ivy.array(x[0], dtype=x_dtype[0])
+    if generate_type == "frontend":
+        x = Tensor(x)
+    elif generate_type == "native":
+        x = x.data
+
+    if not len(x.shape):
+        scalar_x = ivy.to_scalar(x.ivy_array if isinstance(x, Tensor) else x)
         outputs_to_frontend_arrays(_fn)(
-            scalar_input_ivy, scalar_input_ivy, check_default=True, dtype=dtype
+            scalar_x, scalar_x, check_default=True, dtype=dtype
         )
-        outputs_to_frontend_arrays(_fn)(
-            scalar_input_ivy, input_ivy, check_default=True, dtype=dtype
-        )
-    output = outputs_to_frontend_arrays(_fn)(input_ivy, check_default=True, dtype=dtype)
+        outputs_to_frontend_arrays(_fn)(scalar_x, x, check_default=True, dtype=dtype)
+    output = outputs_to_frontend_arrays(_fn)(
+        x, check_default=True, dtype=dtype, inplace=inplace
+    )
     assert isinstance(output, Tensor)
-    assert str(input_ivy.dtype) == str(output.dtype)
-    assert ivy.all(input_ivy == output.ivy_array)
+    if inplace:
+        if generate_type == "frontend":
+            assert x is output
+        elif generate_type == "native":
+            assert x is output.ivy_array.data
+        else:
+            assert x is output.ivy_array
+    else:
+        assert ivy.as_ivy_dtype(x.dtype) == ivy.as_ivy_dtype(output.dtype)
+        if generate_type == "frontend":
+            assert ivy.all(x.ivy_array == output.ivy_array)
+        elif generate_type == "native":
+            assert ivy.all(x == output.ivy_array.data)
+        else:
+            assert ivy.all(x == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
 
+    ivy.previous_backend()
+
 
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -90,8 +164,10 @@ def test_outputs_to_frontend_arrays(dtype_and_x, dtype):
     ).filter(lambda x: "bfloat16" not in x[0]),
     dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
 )
-def test_to_ivy_arrays_and_back(dtype_and_x, dtype):
+def test_torch_to_ivy_arrays_and_back(dtype_and_x, dtype, backend_fw):
     x_dtype, x = dtype_and_x
+
+    ivy.set_backend(backend_fw)
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
@@ -142,3 +218,5 @@ def test_to_ivy_arrays_and_back(dtype_and_x, dtype):
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
+
+    ivy.previous_backend()
