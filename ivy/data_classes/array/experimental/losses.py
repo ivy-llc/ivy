@@ -372,3 +372,25 @@ class _ArrayWithLossesExperimental(abc.ABC):
             eps=eps,
             reduction=reduction,
         )
+
+    def multilabel_margin_loss(
+        self: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        axis: int = -1,
+        reduction: str = "none",
+    ) -> ivy.Array:
+        """
+
+        Parameters
+        ----------
+        target
+        axis
+        reduction
+
+        Returns
+        -------
+        out: array
+        """
+        return ivy.multilabel_margin_loss(
+            input=self._data, target=target, axis=axis, reduction=reduction
+        )

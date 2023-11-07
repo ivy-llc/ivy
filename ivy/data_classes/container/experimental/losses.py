@@ -1103,3 +1103,48 @@ class _ContainerWithLossesExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def _static_multilabel_margin_loss(
+        input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        axis: int = -1,
+        reduction: str = "none",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "multilabel_margin_loss",
+            input,
+            target,
+            axis=axis,
+            reduction=reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def multilabel_margin_loss(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        axis: int = -1,
+        reduction: str = "none",
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        target
+        axis
+        reduction
+
+        Returns
+        -------
+        out: container
+        """
+        return self._static_multilabel_margin_loss(
+            self, target=target, axis=axis, reduction=reduction
+        )
