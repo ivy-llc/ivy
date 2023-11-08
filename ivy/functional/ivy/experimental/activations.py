@@ -729,6 +729,64 @@ def _celu_jax_like(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device
+def threshold(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    threshold: float,
+    value: float,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Apply the threshold function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    threshold
+        The value to threshold at.
+    value
+        The value to replace with.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the threshold activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.threshold(x,value=0.0, threshold=1.5)
+    >>> print(y)
+    ivy.array([0., 0., 2.])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> x.threshold(value=0.0, threshold=1.5)
+    >>> print(y)
+    ivy.array([0., 0., 2.])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.threshold(x, value=0.0, threshold=1.5)
+    >>> print(y)
+    ivy.array([[0.        , 3.79999995, 2.0999999 ],
+            [1.70000005, 4.19999981, 0.        ]])
+    """
+    return current_backend(x).threshold(x, threshold=threshold, value=value, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_array_function
 @handle_device
 @handle_complex_input

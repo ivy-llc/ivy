@@ -1189,6 +1189,138 @@ class _ContainerWithActivationExperimental(ContainerBase):
         )
 
     @staticmethod
+    def _static_threshold(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        threshold: ivy.Container,
+        value: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.threshold. This method simply wraps
+        the function, and so the docstring for ivy.threshold also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        threshold
+            threshold value for thresholding operation.
+        value
+            value to replace with if thresholding condition is not met.
+        key_chains
+            The key-chains to apply or not apply the method to.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the threshold activation unit function
+            applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+        >>> y = x._static_threshold(threshold=0.5, value=0.0)
+        >>> print(y)
+        {
+            a: ivy.array([1., 0.]),
+            b: ivy.array([0., 0.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "threshold",
+            x,
+            threshold=threshold,
+            value=value,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def threshold(
+        self: ivy.Container,
+        /,
+        *,
+        threshold: ivy.Container,
+        value: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.threshold. This method simply wraps
+        the function, and so the docstring for ivy.threshold also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        threshold
+            threshold value for thresholding operation.
+        value
+            value to replace with if thresholding condition is not met.
+        key_chains
+            The key-chains to apply or not apply the method to.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the threshold activation unit function
+            applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+        >>> y = x.threshold(threshold=0.5, value=0.0)
+        >>> print(y)
+        {
+            a: ivy.array([1., 0.]),
+            b: ivy.array([0., 0.])
+        }
+        """
+        return self._static_threshold(
+            self,
+            threshold=threshold,
+            value=value,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def _static_softshrink(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1220,6 +1352,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
             Whether to prune key_chains for which the function was not applied.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------

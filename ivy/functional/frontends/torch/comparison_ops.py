@@ -98,12 +98,14 @@ def fmin(input, other, *, out=None):
     )
 
 
+@with_unsupported_dtypes({"2.1.0 and below": ("complex64", "complex128")}, "torch")
 @to_ivy_arrays_and_back
 def greater(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.greater(input, other, out=out)
 
 
+@with_unsupported_dtypes({"2.1.0 and below": ("complex64", "complex128")}, "torch")
 @to_ivy_arrays_and_back
 def greater_equal(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -239,12 +241,14 @@ def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     return ret
 
 
+@with_unsupported_dtypes({"2.1.0 and below": ("complex64", "complex128")}, "torch")
 @to_ivy_arrays_and_back
 def less(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.less(input, other, out=out)
 
 
+@with_unsupported_dtypes({"2.1.0 and below": ("complex64", "complex128")}, "torch")
 @to_ivy_arrays_and_back
 def less_equal(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)

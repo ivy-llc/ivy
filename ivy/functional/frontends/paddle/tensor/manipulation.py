@@ -45,7 +45,7 @@ def index_add_(x, index, axis, value, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
+    {"2.5.2 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
     "paddle",
 )
 @to_ivy_arrays_and_back

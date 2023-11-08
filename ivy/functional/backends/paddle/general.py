@@ -38,7 +38,7 @@ def current_backend_str() -> str:
 
 def _check_query(query):
     if isinstance(query, Sequence):
-        return not any([isinstance(item, (Sequence, paddle.Tensor)) for item in query])
+        return not any(isinstance(item, (Sequence, paddle.Tensor)) for item in query)
     else:
         return True
 
@@ -86,7 +86,7 @@ def _squeeze_helper(query, x_ndim):
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("int8", "int16", "float16", "complex64", "complex128")
         }
     },

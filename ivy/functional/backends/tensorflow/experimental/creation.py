@@ -160,6 +160,14 @@ def mel_weight_matrix(
     )
 
 
+def unsorted_segment_mean(
+    data: tf.Tensor,
+    segment_ids: tf.Tensor,
+    num_segments: Union[int, tf.Tensor],
+) -> tf.Tensor:
+    return tf.math.unsorted_segment_mean(data, segment_ids, num_segments)
+
+
 @with_unsupported_dtypes(
     {"2.13.0 and below": ("bool", "bfloat16", "float16", "complex")}, backend_version
 )

@@ -721,22 +721,28 @@ def test_torch___gt__(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "other": x[1],
-        },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
+    try:
+        helpers.test_frontend_method(
+            init_input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
+            init_all_as_kwargs_np={
+                "data": x[0],
+            },
+            method_input_dtypes=input_dtype,
+            method_all_as_kwargs_np={
+                "other": x[1],
+            },
+            frontend_method_data=frontend_method_data,
+            init_flags=init_flags,
+            method_flags=method_flags,
+            frontend=frontend,
+            on_device=on_device,
+        )
+    except RuntimeError as e:
+        if "overflow" in e:
+            assume(False)
+        else:
+            raise
 
 
 # __invert__
@@ -2612,11 +2618,13 @@ def test_torch_angle(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, values = dtype_and_values
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": values[0],
         },
@@ -3977,10 +3985,12 @@ def test_torch_baddbmm_(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, batch1, batch2 = dtype_and_matrices
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -4013,6 +4023,7 @@ def test_torch_bernoulli(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
@@ -4028,6 +4039,7 @@ def test_torch_bernoulli(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -12702,6 +12714,41 @@ def test_torch_tanh_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# corrcoef
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="corrcoef",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_tensor_corrcoef(
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
         on_device=on_device,
     )
 

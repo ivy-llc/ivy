@@ -945,6 +945,7 @@ def random_parafac2(
         the decomposed tensor is returned
      seed
         seed for generating random numbers
+
     Returns
     -------
       ivy.Parafac2Tensor
@@ -1137,6 +1138,42 @@ def mel_weight_matrix(
         lower_edge_hertz,
         upper_edge_hertz,
     )
+
+
+# unsorted_segment_mean
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def unsorted_segment_mean(
+    data: Union[ivy.Array, ivy.NativeArray],
+    segment_ids: Union[ivy.Array, ivy.NativeArray],
+    num_segments: Union[int, ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    """
+    Compute the mean of elements along segments of an array. Segments are defined by an
+    integer array of segment IDs.
+
+    Parameters
+    ----------
+    data : Union[ivy.Array, ivy.NativeArray]
+        The array from which to gather values.
+
+    segment_ids : Union[ivy.Array, ivy.NativeArray]
+        Must be in the same size with the first dimension of `data`. Has to be
+        of integer data type. The index-th element of `segment_ids` array is
+        the segment identifier for the index-th element of `data`.
+
+    num_segments : Union[int, ivy.Array, ivy.NativeArray]
+        An integer or array representing the total number of distinct segment IDs.
+
+    Returns
+    -------
+    ivy.Array
+        The output array, representing the result of a segmented mean operation.
+        For each segment, it computes the mean value in `data` where `segment_ids`
+        equals to segment ID.
+    """
+    return ivy.current_backend().unsorted_segment_mean(data, segment_ids, num_segments)
 
 
 @handle_exceptions
