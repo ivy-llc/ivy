@@ -774,7 +774,7 @@ def dropout(
     noise_shape: Optional[Sequence[int]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = ivy.astype(x, dtype) if dtype else x
+    x = ivy.astype(x, dtype) if dtype and x.dtype != dtype else x
     res = torch.nn.functional.dropout(x, prob, training=training)
     res = res if scale else torch.multiply(res, (1.0 - prob))
     return res

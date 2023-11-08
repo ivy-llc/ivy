@@ -723,7 +723,7 @@ def dropout(
     noise_shape: Optional[Sequence[int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x = ivy.astype(x, dtype) if dtype else x
+    x = ivy.astype(x, dtype) if dtype and x.dtype != dtype else x
     res = tf.nn.dropout(x, prob, noise_shape=noise_shape, seed=seed) if training else x
     res = res if scale else tf.multiply(res, (1.0 - prob))
     return res
