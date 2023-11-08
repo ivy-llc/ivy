@@ -59,7 +59,7 @@ def unique_all(
         values_ = tf.experimental.numpy.moveaxis(values, axis, 0)
         values_ = tf.reshape(values_, (values_.shape[0], -1))
         sort_idx = tf.stack(
-            [i[0] for i in sorted(list(enumerate(values_)), key=lambda x: tuple(x[1]))]
+            [i[0] for i in sorted(enumerate(values_), key=lambda x: tuple(x[1]))]
         )
         sort_idx = tf.cast(sort_idx, tf.int32)
         values = tf.gather(values, sort_idx, axis=axis)
