@@ -123,7 +123,6 @@ def abs(
         b: ivy.array([4.5, 5.3, 0., 2.3])
     }
     """
-
     return ivy.current_backend(x).abs(x, out=out)
 
 

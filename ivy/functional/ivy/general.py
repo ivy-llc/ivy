@@ -1326,7 +1326,7 @@ def value_is_nan(
     x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
     if x_scalar != x:
         return True
-    if include_infs and (x_scalar == INF or x_scalar == -INF):
+    if include_infs and (x_scalar in [INF, -INF]):
         return True
     return False
 
@@ -4069,8 +4069,9 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
                 list(fn_supported_dnd.values())[0], tuple
             )
 
-        for device, dtypes in fn_supported_dnd.items():
-            fn_supported_dnd[device] = tuple(_expand_typesets(dtypes))
+        if isinstance(fn_supported_dnd, dict):
+            for device, dtypes in fn_supported_dnd.items():
+                fn_supported_dnd[device] = tuple(_expand_typesets(dtypes))
 
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
@@ -4086,8 +4087,9 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
                 list(fn_unsupported_dnd.values())[0], tuple
             )
 
-        for device, dtypes in fn_unsupported_dnd.items():
-            fn_unsupported_dnd[device] = tuple(_expand_typesets(dtypes))
+        if isinstance(fn_unsupported_dnd, dict):
+            for device, dtypes in fn_unsupported_dnd.items():
+                fn_unsupported_dnd[device] = tuple(_expand_typesets(dtypes))
 
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
@@ -4387,6 +4389,7 @@ def is_ivy_nested_array(x: Any, /) -> bool:
     ----------
     x
         The input to check
+
     Returns
     -------
     ret

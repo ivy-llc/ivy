@@ -1019,6 +1019,7 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             An ivy.Container instance of True bool values if nodes of the Container \
             support in-place operations, raises IvyBackendException otherwise
+
         Examples
         --------
         >>> ivy.set_backend("numpy")

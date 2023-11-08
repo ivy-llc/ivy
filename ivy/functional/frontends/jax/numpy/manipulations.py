@@ -38,6 +38,21 @@ def atleast_3d(*arys):
 
 
 @to_ivy_arrays_and_back
+def bartlett(M):
+    if M < 1:
+        return ivy.array([])
+    if M == 1:
+        return ivy.ones(M, dtype=ivy.float64)
+    res = ivy.arange(0, M)
+    res = ivy.where(
+        ivy.less_equal(res, (M - 1) / 2.0),
+        2.0 * res / (M - 1),
+        2.0 - 2.0 * res / (M - 1),
+    )
+    return res
+
+
+@to_ivy_arrays_and_back
 def blackman(M):
     if M < 1:
         return ivy.array([])

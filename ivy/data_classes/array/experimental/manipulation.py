@@ -1197,7 +1197,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> ivy.trim_zeros([0, 8, 3, 0, 0])
         [8, 3]
         """
-        return ivy.trim_zeros(self, trim)
+        return ivy.trim_zeros(self, trim=trim)
 
     def unfold(
         self: Union[ivy.Array, ivy.NativeArray],

@@ -20,7 +20,7 @@ def beta(
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: Optional[str] = None,
-    dtype: Optional[Union[ivy.Dtype, ivy.Dtype]] = None,
+    dtype: Optional[Union[ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

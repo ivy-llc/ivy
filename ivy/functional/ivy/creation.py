@@ -1738,12 +1738,12 @@ def from_dlpack(
 ) -> ivy.Array:
     """
     Return a new array containing the data from another (array) object with a
-    ``__dlpack__`` method.
+    ``__dlpack__`` method or PyCapsule Object.
 
     Parameters
     ----------
     x  object
-        input (array) object.
+        input (array) object with a ``__dlpack__`` method or PyCapsule Object.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
