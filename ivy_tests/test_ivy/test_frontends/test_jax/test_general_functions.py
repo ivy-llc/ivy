@@ -1,10 +1,14 @@
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 from ivy.functional.frontends.jax import vmap
 from hypothesis import strategies as st
 import jax
+
+
+# --- Helpers --- #
+# --------------- #
 
 
 def _fn1(x, y):
@@ -17,6 +21,77 @@ def _fn2(x, y):
 
 def _fn3(x, y):
     return ivy.add(x, y)
+
+
+# --- Main --- #
+# ------------ #
+
+
+# device_get
+@handle_frontend_test(
+    fn_tree="jax.general_functions.device_get",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_jax_device_get(
+    *,
+    dtype_and_x,
+    test_flags,
+    fn_tree,
+    frontend,
+    backend_fw,
+    on_device,
+):
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        dtype, x = dtype_and_x
+        dtype = dtype[0]
+        x = x[0]
+
+        x = ivy_backend.asarray(x)
+        if test_flags.as_variable and ivy_backend.is_float_dtype(dtype):
+            x = ivy_backend.functional.ivy.gradients._variable(x)
+
+        x_on_dev = ivy_backend.functional.frontends.jax.device_get(x).ivy_array
+        dev_from_new_x = ivy_backend.dev(x_on_dev)
+
+        # value test
+        assert dev_from_new_x == "cpu"
+
+
+# device_put
+@handle_frontend_test(
+    fn_tree="jax.general_functions.device_put",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_jax_device_put(
+    *,
+    dtype_and_x,
+    test_flags,
+    fn_tree,
+    frontend,
+    backend_fw,
+    on_device,
+):
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        dtype, x = dtype_and_x
+        dtype = dtype[0]
+        x = x[0]
+
+        x = ivy_backend.asarray(x)
+        if test_flags.as_variable and ivy_backend.is_float_dtype(dtype):
+            x = ivy_backend.functional.ivy.gradients._variable(x)
+
+        device = ivy_backend.dev(x)
+        x_on_dev = ivy_backend.functional.frontends.jax.device_put(
+            x, on_device
+        ).ivy_array
+        dev_from_new_x = ivy_backend.dev(x_on_dev)
+
+        # value test
+        assert dev_from_new_x == device
 
 
 # vmap
@@ -93,70 +168,3 @@ def test_jax_vmap(
         pass
     else:
         assert False, "One of the results is None while other isn't"
-
-
-# device_put
-@handle_frontend_test(
-    fn_tree="jax.general_functions.device_put",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_jax_device_put(
-    *,
-    dtype_and_x,
-    test_flags,
-    fn_tree,
-    frontend,
-    backend_fw,
-    on_device,
-):
-    with update_backend(backend_fw) as ivy_backend:
-        dtype, x = dtype_and_x
-        dtype = dtype[0]
-        x = x[0]
-
-        x = ivy_backend.asarray(x)
-        if test_flags.as_variable and ivy_backend.is_float_dtype(dtype):
-            x = ivy_backend.functional.ivy.gradients._variable(x)
-
-        device = ivy_backend.dev(x)
-        x_on_dev = ivy_backend.functional.frontends.jax.device_put(
-            x, on_device
-        ).ivy_array
-        dev_from_new_x = ivy_backend.dev(x_on_dev)
-
-        # value test
-        assert dev_from_new_x == device
-
-
-# device_get
-@handle_frontend_test(
-    fn_tree="jax.general_functions.device_get",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_jax_device_get(
-    *,
-    dtype_and_x,
-    test_flags,
-    fn_tree,
-    frontend,
-    backend_fw,
-    on_device,
-):
-    with update_backend(backend_fw) as ivy_backend:
-        dtype, x = dtype_and_x
-        dtype = dtype[0]
-        x = x[0]
-
-        x = ivy_backend.asarray(x)
-        if test_flags.as_variable and ivy_backend.is_float_dtype(dtype):
-            x = ivy_backend.functional.ivy.gradients._variable(x)
-
-        x_on_dev = ivy_backend.functional.frontends.jax.device_get(x).ivy_array
-        dev_from_new_x = ivy_backend.dev(x_on_dev)
-
-        # value test
-        assert dev_from_new_x == "cpu"

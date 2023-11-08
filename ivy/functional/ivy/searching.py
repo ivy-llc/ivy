@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 
@@ -28,7 +28,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -50,7 +50,7 @@ def argmax(
         input array. Should have a numeric data type.
     axis
         axis along which to search. If None, the function must return the index of the
-        maximum value of the flattened array. Deafult: ``None``.
+        maximum value of the flattened array. Default = None.
     keepdims
         If this is set to True, the axes which are reduced are left in the result as
         dimensions with size one. With this option, the result will broadcast correctly
@@ -117,6 +117,16 @@ def argmax(
     >>> y = ivy.argmax(x, axis=1, keepdims=True, out=z)
     >>> print(z)
     ivy.array([[0],[2],[2]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.argmax(x)
+    >>> print(y)
+    {
+        a: ivy.array(2),
+        b: ivy.array(2)
+    }
     """
     return current_backend(x).argmax(
         x,
@@ -135,7 +145,7 @@ def argmax(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -164,7 +174,10 @@ def argmin(
         input array (see Broadcasting). Otherwise, if False, the reduced axes
         (dimensions) must not be included in the result. Default = False.
     dtype
-            An optional output_dtype from: int32, int64. Defaults to int64.
+        An optional output_dtype from: int32, int64. Defaults to int64.
+    select_last_index
+        If this is set to True, the index corresponding to the
+        last occurrence of the maximum value will be returned.
     out
         if axis is None, a zero-dimensional array containing the index of the first
         occurrence of the minimum value; otherwise, a non-zero-dimensional array
@@ -242,7 +255,7 @@ def argmin(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -302,9 +315,8 @@ def nonzero(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 10, 15, 20, -50, 0])
@@ -350,8 +362,7 @@ def nonzero(
     }]
 
     Instance Method Examples
-    ------------------------
-
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     With :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0,0,0,1,1,1])
@@ -381,7 +392,7 @@ def nonzero(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -467,7 +478,7 @@ def where(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

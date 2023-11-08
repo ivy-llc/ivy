@@ -179,13 +179,9 @@ def pad(
     input_dtype = input.dtype
 
     if mode == "dilated":
-        if ivy.as_ivy_dtype(type(constant_values)) != input_dtype:
-            padding_value = ivy.native_array(constant_values, dtype=input_dtype)
-        else:
-            padding_value = constant_values
-        padded = jlax.pad(input, padding_value, pad_width)
-        return padded
-
+        if not ivy.is_array(constant_values) or constant_values.dtype != input_dtype:
+            constant_values = jnp.array(constant_values, dtype=input_dtype)
+        return jlax.pad(input, constant_values, pad_width)
     if callable(mode):
         ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
@@ -416,3 +412,58 @@ def fill_diagonal(
     a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
     a = jnp.reshape(a, shape)
     return a
+
+
+def take(
+    x: Union[int, JaxArray],
+    indices: Union[int, JaxArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+    mode: str = "fill",
+    fill_value: Optional[Number] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if mode not in ["raise", "wrap", "clip", "fill"]:
+        raise ValueError("mode must be one of 'clip', 'raise', 'wrap', or 'fill'")
+    if not isinstance(x, JaxArray):
+        x = jnp.array(x)
+    if len(x.shape) == 0:
+        x = jnp.array([x])
+    if not isinstance(indices, JaxArray):
+        indices = jnp.array(indices)
+    if jnp.issubdtype(indices.dtype, jnp.floating):
+        indices = indices.astype(jnp.int64)
+
+    # raise
+    if mode == "raise":
+        mode = "fill"
+        if ivy.exists(axis):
+            try:
+                x_shape = x.shape[axis]
+            except Exception:
+                raise ValueError(
+                    f"axis {axis} is out of bounds for array of dimension"
+                    f" {len(x.shape)}"
+                )
+        else:
+            x_shape = jnp.prod(x.shape)
+
+        bound_check = (indices < -x_shape) | (indices >= x_shape)
+        if jnp.any(bound_check):
+            if len(indices.shape) != 0:
+                indices = indices[bound_check].flatten()[0]
+            raise IndexError(
+                f"index {indices} is out of bounds for axis "
+                f"{axis if axis else 0} with size {x_shape}"
+            )
+
+    # clip, wrap, fill
+    ret = jnp.take(x, indices, axis=axis, mode=mode, fill_value=fill_value)
+    if ivy.exists(out):
+        ivy.inplace_update(out)
+    return ret
+
+
+def trim_zeros(a: JaxArray, /, *, trim: Optional[str] = "bf") -> JaxArray:
+    return jnp.trim_zeros(a, trim=trim)

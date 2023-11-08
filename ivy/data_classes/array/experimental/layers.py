@@ -455,7 +455,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The lenght of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal length,
             then x is truncated, if n is larger than x is zero-padded.
         norm
             The type of normalization to be applied. Must be either None or "ortho".
@@ -1086,6 +1086,62 @@ class _ArrayWithLayersExperimental(abc.ABC):
         """
         return ivy.ifftn(self._data, s=s, axes=axes, norm=norm, out=out)
 
+    def rfft(
+        self: ivy.Array,
+        /,
+        *,
+        n: Optional[int] = None,
+        axis: int = -1,
+        norm: Literal["backward", "ortho", "forward"] = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.rfft. This method simply wraps the
+        function, and so the docstring for ivy.rfft also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Must have a real-valued floating-point data type.
+        n
+            length of the transformed axis of the input. If
+            -   n is greater than the length of the input array, the input array
+            is zero-padded to length n.
+            -   n is less than the length of the input array, the input array is
+            trimmed to length n.
+            -   n is not provided, the length of the transformed axis of the
+            output must equal the length of the input along the axis specified
+            by axis. Default is ``None``.
+        axis
+            axis (dimension) over which to compute the Fourier transform.
+            If not set, the last axis (dimension) is used. Default is ``-1``.
+        norm
+            normalization mode. Should be one of the following modes:
+            -   'backward': no normalization.
+            -   'ortho': normalize by 1/sqrt(n) (i.e., make the FFT orthonormal).
+            -   'forward': normalize by 1/n.
+            Default is ``backward``.
+        out
+            Optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array transformed along the axis (dimension) indicated by axis.
+            The returned array must have a complex-valued floating-point
+            data type determined by Type Promotion Rules.
+
+        Examples
+        --------
+        >>> x = ivy.array([0,1,2])
+        >>> y = x.rfft()
+        >>> print(y)
+        ivy.array([ 3. +0.j       , -1.5+0.8660254j])
+        """
+        return ivy.rfft(self, n=n, axis=axis, norm=norm, out=out)
+
     def rfftn(
         self: ivy.Array,
         s: Sequence[int] = None,
@@ -1117,3 +1173,158 @@ class _ArrayWithLayersExperimental(abc.ABC):
             The result of the RFFT operation.
         """
         return ivy.rfftn(self._data, s=s, axes=axes, norm=norm, out=out)
+
+    def stft(
+        self: ivy.Array,
+        frame_length: int,
+        frame_step: int,
+        /,
+        *,
+        fft_length: Optional[int] = None,
+        window_fn: Optional[Callable] = None,
+        pad_end: Optional[bool] = False,
+        name: Optional[str] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the Short-time Fourier Transform of signals.
+
+        Parameters
+        ----------
+        self
+            Input Arrays.
+        frame_length
+           An integer scalar Tensor. The window length in samples.
+        frame_step
+            An integer scalar Tensor. The number of samples to step.
+        fft_length
+            An integer scalar Tensor. The size of the FFT to apply.
+            If not provided, uses the smallest power of 2 enclosing frame_length.
+        window_fn
+            A callable that takes a window length and a dtype keyword
+            argument and returns a [window_length] Tensor of samples in the
+            provided datatype. If set to None, no windowing is used.
+        pad_end
+            Whether to pad the end of signals with zeros when the provided frame length
+            and step produces a frame that lies partially past its end.
+        name
+            An optional name for the operation.
+        out
+            Optional output array for writing the result.
+
+        Returns
+        -------
+        ret
+            A [..., frames, fft_unique_bins] Tensor of
+            complex64/complex128 STFT values where fft_unique_bins is
+            fft_length // 2 + 1 (the unique components of the FFT).
+        """
+        return ivy.stft(
+            self._data,
+            frame_length,
+            frame_step,
+            fft_length=fft_length,
+            window_fn=window_fn,
+            pad_end=pad_end,
+            name=name,
+            out=out,
+        )
+
+    def sliding_window(
+        self: ivy.Array,
+        window_size: Union[int, Tuple[int, int], Tuple[int, int, int]],
+        /,
+        *,
+        stride: Union[int, Tuple[int, int]] = 1,
+        dilation: Union[int, Tuple[int, int]] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+    ) -> ivy.Array:
+        """
+        Slide a window of specified dimension over all elements of an array.
+
+        Parameters
+        ----------
+        input
+            An array representing the base area on which the window is going to slide
+            over.
+        window_size
+            Size of the sliding window for each dimension of the input.
+        stride
+            The stride of the sliding window for each dimension of input
+        padding
+            Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’
+            (no padding), or a sequence of n (low, high) integer pairs that give the
+            padding to apply before and after each spatial dimension.
+        dilation
+            The stride between elements within a sliding window, must be > 0.
+
+        Returns
+        -------
+        ret
+            The result of the sliding window operation.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2, 3, 4],
+        >>>                [5, 6, 7, 8],
+        >>>                [9, 10, 11, 12]])
+        >>> x.sliding_window((2, 2))
+        ivy.array([[[ 1,  2,  5,  6],
+                    [ 2,  3,  6,  7],
+                    [ 3,  4,  7,  8]],
+
+                    [[ 5,  6,  9, 10],
+                    [ 6,  7, 10, 11],
+                    [ 7,  8, 11, 12]]])
+        """
+        return ivy.sliding_window(
+            self._data,
+            window_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+        )
+
+    def max_unpool1d(
+        self: ivy.Array,
+        indices: ivy.Array,
+        kernel_size: Union[Tuple[int], int],
+        /,
+        *,
+        strides: Union[int, Tuple[int]] = None,
+        padding: Union[int, Tuple[int]] = 0,
+        data_format: Optional[str] = "NCW",
+    ) -> ivy.Array:
+        """
+        Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+
+        Parameters
+        ----------
+        self
+            Pooled input image *[batch_size, w, d_in]*.
+        indices
+            Indices obtained from the corresponding max pooling operation.
+        kernel_size
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
+        data_format
+            NWC" or "NCW". Defaults to "NWC".
+
+        Returns
+        -------
+        ret
+            The result of the unpooling operation.
+        """
+        return ivy.max_unpool1d(
+            self._data,
+            indices,
+            kernel_size,
+            strides=strides,
+            padding=padding,
+            data_format=data_format,
+        )

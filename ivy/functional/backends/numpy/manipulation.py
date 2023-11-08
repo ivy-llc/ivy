@@ -52,9 +52,6 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        newarr = x.copy()
-        return np.expand_dims(newarr, axis)
     return np.expand_dims(x, axis)
 
 
@@ -66,20 +63,16 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        x = x.copy()
     num_dims = len(x.shape)
     if not num_dims:
-        if copy:
-            newarr = x.copy()
-            return newarr
         return x
     if axis is None:
         axis = list(range(num_dims))
     if type(axis) is int:
         axis = [axis]
     axis = [item + num_dims if item < 0 else item for item in axis]
-    if copy:
-        newarr = x.copy()
-        return np.flip(newarr, axis)
     return np.flip(x, axis)
 
 
@@ -91,9 +84,6 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        newarr = x.copy()
-        return np.transpose(newarr, axes)
     return np.transpose(x, axes)
 
 
@@ -113,9 +103,6 @@ def reshape(
             new_s if con else old_s
             for new_s, con, old_s in zip(shape, np.array(shape) != 0, x.shape)
         ]
-    if copy:
-        newarr = x.copy()
-        return np.reshape(newarr, shape, order=order)
     return np.reshape(x, shape, order=order)
 
 
@@ -144,11 +131,8 @@ def squeeze(
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+            f"tried to squeeze a zero-dimensional input by axis {axis}"
         )
-    if copy:
-        newarr = x.copy()
-        return np.squeeze(newarr, axis=axis)
     return np.squeeze(x, axis=axis)
 
 
@@ -181,13 +165,9 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
-        if copy:
-            newarr = x.copy()
-            return [newarr]
         return [x]
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
@@ -209,7 +189,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"1.26.1 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,
@@ -253,9 +233,6 @@ def swapaxes(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        newarr = x.copy()
-        return np.swapaxes(newarr, axis0, axis1)
     return np.swapaxes(x, axis0, axis1)
 
 
@@ -268,9 +245,6 @@ def unstack(
     keepdims: bool = False,
 ) -> List[np.ndarray]:
     if x.shape == ():
-        if copy:
-            newarr = x.copy()
-            return [newarr]
         return [x]
     x_split = None
     if copy:
@@ -285,13 +259,24 @@ def unstack(
 
 def clip(
     x: np.ndarray,
-    x_min: Union[Number, np.ndarray],
-    x_max: Union[Number, np.ndarray],
     /,
+    x_min: Optional[Union[Number, np.ndarray]] = None,
+    x_max: Optional[Union[Number, np.ndarray]] = None,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
+    promoted_type = x.dtype
+    if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
+    return np.clip(x.astype(promoted_type), x_min, x_max, out=out)
 
 
 clip.support_native_out = True

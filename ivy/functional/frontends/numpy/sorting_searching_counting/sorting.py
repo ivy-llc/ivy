@@ -16,23 +16,13 @@ def argsort(
 
 
 @to_ivy_arrays_and_back
-def sort(a, axis=-1, kind=None, order=None):
-    return ivy.sort(a, axis=axis)
+def lexsort(keys, /, *, axis=-1):
+    return ivy.lexsort(keys, axis=axis)
 
 
 @to_ivy_arrays_and_back
 def msort(a):
     return ivy.msort(a)
-
-
-@to_ivy_arrays_and_back
-def sort_complex(a):
-    return ivy.sort(a)
-
-
-@to_ivy_arrays_and_back
-def lexsort(keys, /, *, axis=-1):
-    return ivy.lexsort(keys, axis=axis)
 
 
 @to_ivy_arrays_and_back
@@ -61,3 +51,13 @@ def partition(a, kth, axis=-1, kind="introselect", order=None):
                 left = ivy.concat((left, ivy.array([equal[j]], dtype=a.dtype)))
         a = ivy.concat((left, ivy.array([sorted_arr[k]], dtype=a.dtype), right))
     return a
+
+
+@to_ivy_arrays_and_back
+def sort(a, axis=-1, kind=None, order=None):
+    return ivy.sort(a, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def sort_complex(a):
+    return ivy.sort(a)

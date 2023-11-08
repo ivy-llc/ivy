@@ -6,56 +6,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
-# cross_entropy
-@handle_test(
-    fn_tree="functional.ivy.cross_entropy",
-    dtype_true_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_value=1e-04,
-        max_value=1,
-        allow_inf=False,
-        valid_axis=True,
-        allow_neg_axes=True,
-        force_int_axis=True,
-    ),
-    dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=1e-04,
-        max_value=1,
-        allow_inf=False,
-    ),
-    reduction=st.sampled_from(["none", "sum", "mean"]),
-    epsilon=helpers.floats(min_value=0.0, max_value=1.0),
-)
-def test_cross_entropy(
-    dtype_true_axis,
-    dtype_and_pred,
-    reduction,
-    epsilon,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    pred_dtype, pred = dtype_and_pred
-    true_dtype, true, axis = dtype_true_axis
-
-    helpers.test_function(
-        input_dtypes=true_dtype + pred_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-02,
-        atol_=1e-02,
-        true=true[0],
-        pred=pred[0],
-        axis=axis,
-        epsilon=epsilon,
-        reduction=reduction,
-    )
-
-
 # binary_cross_entropy
 @handle_test(
     fn_tree="functional.ivy.binary_cross_entropy",
@@ -148,6 +98,56 @@ def test_binary_cross_entropy(
             reduction=reduction,
             from_logits=from_logits,
         )
+
+
+# cross_entropy
+@handle_test(
+    fn_tree="functional.ivy.cross_entropy",
+    dtype_true_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False,
+        valid_axis=True,
+        allow_neg_axes=True,
+        force_int_axis=True,
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False,
+    ),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    epsilon=helpers.floats(min_value=0.0, max_value=1.0),
+)
+def test_cross_entropy(
+    dtype_true_axis,
+    dtype_and_pred,
+    reduction,
+    epsilon,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    pred_dtype, pred = dtype_and_pred
+    true_dtype, true, axis = dtype_true_axis
+
+    helpers.test_function(
+        input_dtypes=true_dtype + pred_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
+        true=true[0],
+        pred=pred[0],
+        axis=axis,
+        epsilon=epsilon,
+        reduction=reduction,
+    )
 
 
 # sparse_cross_entropy

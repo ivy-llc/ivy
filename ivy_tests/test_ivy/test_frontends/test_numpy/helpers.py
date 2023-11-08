@@ -7,10 +7,14 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.frontends.numpy as np_frontend
 from ivy_tests.test_ivy.helpers.pipeline_helper import (
-    update_backend,
+    BackendHandler,
     get_frontend_config,
 )
 import ivy_tests.test_ivy.helpers.globals as test_globals
+
+
+# --- Helpers --- #
+# --------------- #
 
 
 @st.composite
@@ -39,6 +43,7 @@ def _array_and_axes_permute_helper(
         minimum size of the dimension
     max_dim_size
         maximum size of the dimension
+
     Returns
     -------
     A strategy that draws an array, its dtype and axes (or None).
@@ -73,13 +78,97 @@ def _array_and_axes_permute_helper(
     return array, dtype, axes
 
 
+def _flatten_frontend_return(*, ret, backend):
+    """Flattening the returned frontend value to a list of numpy arrays."""
+    with BackendHandler.update_backend(backend) as ivy_backend:
+        if not isinstance(ret, tuple):
+            if not ivy_backend.is_ivy_array(ret):
+                ret_np_flat = helpers.flatten_frontend_to_np(backend=backend, ret=ret)
+            else:
+                ret_np_flat = _flatten_fw_return(ret=ret, backend=backend)
+        else:
+            if any(not ivy_backend.is_ivy_array(x) for x in ret):
+                ret_np_flat = helpers.flatten_frontend_to_np(backend=backend, ret=ret)
+            else:
+                ret_np_flat = _flatten_fw_return(ret=ret, backend=backend)
+        return ret_np_flat
+
+
+def _flatten_fw_return(ret, backend):
+    with BackendHandler.update_backend(backend) as ivy_backend:
+        if not isinstance(ret, tuple):
+            ret = (ret,)
+        ret_idxs = ivy_backend.nested_argwhere(
+            ret, lambda x: ivy_backend.is_ivy_array(x) or ivy_backend.is_native_array(x)
+        )
+        if len(ret_idxs) == 0:
+            ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.isscalar)
+            ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
+            ret_flat = [
+                ivy_backend.asarray(
+                    x, dtype=ivy_backend.Dtype(str(np.asarray(x).dtype))
+                )
+                for x in ret_flat
+            ]
+        else:
+            ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
+
+        # convert the return to NumPy
+        ret_np_flat = [ivy_backend.to_numpy(x) for x in ret_flat]
+        return ret_np_flat
+
+
 @st.composite
-def where(draw, *, shape=None):
-    if shape is None:
-        _, values = draw(helpers.dtype_and_values(dtype=["bool"]))
+def _get_dtype_input_and_vectors(draw):
+    dim_size = draw(helpers.ints(min_value=1, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    if dim_size == 1:
+        vec1 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
+        )
+        vec2 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
+        )
     else:
-        _, values = draw(helpers.dtype_and_values(dtype=["bool"], shape=shape))
-    return draw(st.just(values) | st.just(True))
+        vec1 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+        vec2 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+    return dtype, vec1, vec2
+
+
+# Casting helper
+@st.composite
+def _get_safe_casting_dtype(draw, *, dtypes):
+    target_dtype = dtypes[0]
+    for dtype in dtypes[1:]:
+        if np_frontend.can_cast(target_dtype, dtype, casting="safe"):
+            target_dtype = dtype
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        if ivy_backend.is_float_dtype(target_dtype):
+            dtype = draw(st.sampled_from(["float64", None]))
+        elif ivy_backend.is_uint_dtype(target_dtype):
+            dtype = draw(st.sampled_from(["uint64", None]))
+        elif ivy_backend.is_int_dtype(target_dtype):
+            dtype = draw(st.sampled_from(["int64", None]))
+        elif ivy_backend.is_complex_dtype(target_dtype):
+            dtype = draw(st.sampled_from(["complex128", None]))
+        else:
+            dtype = draw(st.sampled_from(["bool", None]))
+        # filter uint64 as not supported by torch backend
+        if dtype == "uint64":
+            dtype = None
+        return dtype
 
 
 # noinspection PyShadowingNames
@@ -134,11 +223,11 @@ def _test_frontend_function_ignoring_uninitialized(*args, **kwargs):
     frontend_ret_flat = [
         np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
     ]
-    if "rtol" in kwargs.keys():
+    if "rtol" in kwargs:
         rtol = kwargs["rtol"]
     else:
         rtol = 1e-4
-    if "atol" in kwargs.keys():
+    if "atol" in kwargs:
         atol = kwargs["atol"]
     else:
         atol = 1e-6
@@ -151,94 +240,6 @@ def _test_frontend_function_ignoring_uninitialized(*args, **kwargs):
         backend=kwargs["backend_to_test"],
         ground_truth_backend=kwargs["frontend"],
     )
-
-
-def _flatten_fw_return(ret, backend):
-    with update_backend(backend) as ivy_backend:
-        if not isinstance(ret, tuple):
-            ret = (ret,)
-        ret_idxs = ivy_backend.nested_argwhere(
-            ret, lambda x: ivy_backend.is_ivy_array(x) or ivy_backend.is_native_array(x)
-        )
-        if len(ret_idxs) == 0:
-            ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.isscalar)
-            ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
-            ret_flat = [
-                ivy_backend.asarray(
-                    x, dtype=ivy_backend.Dtype(str(np.asarray(x).dtype))
-                )
-                for x in ret_flat
-            ]
-        else:
-            ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
-
-        # convert the return to NumPy
-        ret_np_flat = [ivy_backend.to_numpy(x) for x in ret_flat]
-        return ret_np_flat
-
-
-def _flatten_frontend_return(*, ret, backend):
-    """Flattening the returned frontend value to a list of numpy arrays."""
-    with update_backend(backend) as ivy_backend:
-        if not isinstance(ret, tuple):
-            if not ivy_backend.is_ivy_array(ret):
-                ret_np_flat = helpers.flatten_frontend_to_np(backend=backend, ret=ret)
-            else:
-                ret_np_flat = _flatten_fw_return(ret=ret, backend=backend)
-        else:
-            if any([not ivy_backend.is_ivy_array(x) for x in ret]):
-                ret_np_flat = helpers.flatten_frontend_to_np(backend=backend, ret=ret)
-            else:
-                ret_np_flat = _flatten_fw_return(ret=ret, backend=backend)
-        return ret_np_flat
-
-
-# noinspection PyShadowingNames
-def test_frontend_function(*args, where=None, **kwargs):
-    if not ivy.exists(where):
-        helpers.test_frontend_function(*args, **kwargs)
-    else:
-        kwargs["where"] = where
-        if "out" in kwargs and kwargs["out"] is None:
-            _test_frontend_function_ignoring_uninitialized(*args, **kwargs)
-            return
-        else:
-            helpers.test_frontend_function(*args, **kwargs)
-
-
-# noinspection PyShadowingNames
-def handle_where_and_array_bools(where, input_dtype, test_flags):
-    if isinstance(where, list) or isinstance(where, tuple):
-        where = where[0]
-        test_flags.as_variable += [False]
-        test_flags.native_arrays += [False]
-        input_dtype += ["bool"]
-        return where, input_dtype, test_flags
-    return where, input_dtype, test_flags
-
-
-# Casting helper
-@st.composite
-def _get_safe_casting_dtype(draw, *, dtypes):
-    target_dtype = dtypes[0]
-    for dtype in dtypes[1:]:
-        if np_frontend.can_cast(target_dtype, dtype, casting="safe"):
-            target_dtype = dtype
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
-        if ivy_backend.is_float_dtype(target_dtype):
-            dtype = draw(st.sampled_from(["float64", None]))
-        elif ivy_backend.is_uint_dtype(target_dtype):
-            dtype = draw(st.sampled_from(["uint64", None]))
-        elif ivy_backend.is_int_dtype(target_dtype):
-            dtype = draw(st.sampled_from(["int64", None]))
-        elif ivy_backend.is_complex_dtype(target_dtype):
-            dtype = draw(st.sampled_from(["complex128", None]))
-        else:
-            dtype = draw(st.sampled_from(["bool", None]))
-        # filter uint64 as not supported by torch backend
-        if dtype == "uint64":
-            dtype = None
-        return dtype
 
 
 @st.composite
@@ -298,29 +299,37 @@ def get_num_positional_args_ufunc(draw, *, fn_name=None):
 
 
 @st.composite
-def _get_dtype_input_and_vectors(draw):
-    dim_size = draw(helpers.ints(min_value=1, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
-    if dim_size == 1:
-        vec1 = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
-            )
-        )
-        vec2 = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
-            )
-        )
+def where(draw, *, shape=None):
+    if shape is None:
+        _, values = draw(helpers.dtype_and_values(dtype=["bool"]))
     else:
-        vec1 = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
-            )
-        )
-        vec2 = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
-            )
-        )
-    return dtype, vec1, vec2
+        _, values = draw(helpers.dtype_and_values(dtype=["bool"], shape=shape))
+    return draw(st.just(values) | st.just(True))
+
+
+# --- Main --- #
+# ------------ #
+
+
+# noinspection PyShadowingNames
+def handle_where_and_array_bools(where, input_dtype, test_flags):
+    if isinstance(where, (list, tuple)):
+        where = where[0]
+        test_flags.as_variable += [False]
+        test_flags.native_arrays += [False]
+        input_dtype += ["bool"]
+        return where, input_dtype, test_flags
+    return where, input_dtype, test_flags
+
+
+# noinspection PyShadowingNames
+def test_frontend_function(*args, where=None, **kwargs):
+    if not ivy.exists(where):
+        helpers.test_frontend_function(*args, **kwargs)
+    else:
+        kwargs["where"] = where
+        if "out" in kwargs and kwargs["out"] is None:
+            _test_frontend_function_ignoring_uninitialized(*args, **kwargs)
+            return
+        else:
+            helpers.test_frontend_function(*args, **kwargs)
