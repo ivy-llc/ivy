@@ -402,7 +402,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
 
         Returns
         -------
-        out : array
+        |array|
             The calculated multilabel margin loss.
 
         Examples
@@ -413,14 +413,15 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ... [1, 1, 1], [1, -1, 1]], dtype=ivy.float32)
 
         >>> loss_none = input_tensor.multilabel_margin_loss(
-        ... target=target_tensor, reduction="none")
+        ...  target_tensor, reduction="none")
         >>> print(loss_none)
-        ivy.array([3.49625897, 0.71111226, 0.43989015])
+        ivy.array([3.49625897, 0.71111232, 0.43989024])
 
         >>> loss_mean = input_tensor.multilabel_margin_loss(
-        ... target=target_tensor, reduction="mean")
+        ...  target_tensor, reduction="mean")
+        >>> print(loss_mean)
         ivy.array(1.54908717)
         """
         return ivy.multilabel_margin_loss(
-            input=self._data, target=target, axis=axis, reduction=reduction, out=out
+            self._data, target, axis=axis, reduction=reduction, out=out
         )

@@ -251,7 +251,12 @@ def poisson_nll_loss(
     backend_version,
 )
 def multilabel_margin_loss(
-    input: paddle.Tensor, target: paddle.Tensor, /, *, reduction: str = "none"
+    input: paddle.Tensor,
+    target: paddle.Tensor,
+    /,
+    *,
+    reduction: str = "none",
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     """
     Compute the multilabel margin loss.
@@ -277,6 +282,11 @@ def multilabel_margin_loss(
     if reduction not in ["none", "mean", "sum"]:
         raise ValueError(
             "Invalid reduction value. Allowed values are 'none', 'mean', 'sum'."
+        )
+    if out is not None:
+        raise ValueError(
+            "Invalid out value. out is not supported in paddle, hence only None is"
+            " allowed."
         )
 
     loss = F.multi_label_soft_margin_loss(

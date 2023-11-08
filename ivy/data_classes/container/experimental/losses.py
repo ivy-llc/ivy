@@ -1159,7 +1159,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         ... input_tensor, target_tensor)
         >>> print(loss)
         {
-            a: ivy.array([3.49625897, 0.71111226, 0.43989015])
+            a: ivy.array([3.49625897, 0.71111232, 0.43989024])
         }
 
         With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -1245,7 +1245,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         >>> loss = input_tensor.multilabel_margin_loss(target_tensor)
         >>> print(loss)
         {
-            a: ivy.array([3.49625897, 0.71111226, 0.43989015])
+            a: ivy.array([3.49625897, 0.71111232, 0.43989024])
         }
 
         With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:

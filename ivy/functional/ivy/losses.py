@@ -422,12 +422,19 @@ def multilabel_margin_loss(
     --------
     >>> input_tensor = ivy.array([0.2, 0.4, 0.6])
     >>> target_tensor = ivy.array([0, 1, 1])
-    >>> loss = multilabel_margin_loss(input_data, target)
-    >>> print(loss)
-    ivy.array(0.4)
+    >>> loss_none = multilabel_margin_loss(input_tensor, target_tensor)
+    >>> print(loss_none)
+    ivy.array(0.58288069)
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    loss = (
-        ivy.sum(ivy.maximum(0, 1 - (input_data[target] - target))) / input_data.shape[0]
+    loss = -(
+        target * (-ivy.logaddexp(0, -input_data))
+        + (1 - target) * (-ivy.logaddexp(0, input_data))
     )
-    return _reduce_loss(reduction=reduction, loss=loss, axis=axis, out=out)
+    loss = ivy.mean(loss, axis=-1)
+    if reduction == "none":
+        return loss
+    if reduction == "mean":
+        return ivy.mean(loss, axis=axis, out=out)
+    if reduction == "sum":
+        return ivy.sum(loss, axis=axis, out=out)

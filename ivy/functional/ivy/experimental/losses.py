@@ -620,7 +620,7 @@ def multilabel_margin_loss(
     ... [1, 1, 1], [1, -1, 1]], dtype=ivy.float32)
 
     >>> multilabel_margin_loss(input_tensor, target_tensor)
-    ivy.array([3.49625897, 0.71111226, 0.43989015])
+    ivy.array([3.49625897, 0.71111232, 0.43989024])
 
     >>> multilabel_margin_loss(input_tensor, target_tensor, reduction="mean")
     ivy.array(1.54908717)
@@ -630,5 +630,5 @@ def multilabel_margin_loss(
             "Invalid value for 'reduction'. Expected 'none', 'mean', or 'sum'."
         )
     return ivy.current_backend(input_data).multilabel_margin_loss(
-        input_data=input_data, target=target, reduction=reduction, out=out
+        input_data, target, reduction=reduction, out=out
     )
