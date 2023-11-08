@@ -29,65 +29,59 @@ class AccumulateGrad:
         return self.__name__ == __value
 
     def __call__(self, grads):
-        for i in range(self.__self__.ndim):
-            grads = grads.sum(-1)
         self.__self__._grads = grads
         return None
 
 
 class GradFn:
-    def __init__(self, fn, inputs) -> None:
+    def __init__(self, fn, args, kwargs) -> None:
         self._inputs = []
         self._fns = []
         self.next_functions = []
-        assert len(inputs) <= 2
-        if len(inputs) == 1 and isinstance(inputs[0], torch_frontend.Tensor):
-            self._inputs.append(inputs[0].detach())
+        for idx, input in [*enumerate(args), *kwargs.items()]:
+            if isinstance(input, torch_frontend.Tensor) and input.requires_grad:
+                self._inputs.append(input.detach())
 
-            def d_fn(x):
-                return fn(x)
+                def wrap_fn(idx):
+                    def d_fn(x):
+                        if idx in kwargs:
+                            return fn(
+                                *args,
+                                **{
+                                    key: value
+                                    for key, value in kwargs.items()
+                                    if key != idx
+                                },
+                                idx=x,
+                            )
+                        return fn(*args[:idx], x, *args[idx + 1 :], **kwargs)
 
-            self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
-            if inputs[0].grad_fn is not None:
-                self.next_functions.append(inputs[0].grad_fn)
-            elif inputs[0].requires_grad and inputs[0].is_leaf:
-                acc_grad = AccumulateGrad()
-                acc_grad.__self__ = inputs[0]
-                self.next_functions.append(acc_grad)
-        elif len(inputs) == 2:
-            if isinstance(inputs[0], torch_frontend.Tensor):
-                self._inputs.append(inputs[0].detach())
+                    return d_fn
 
-                def d_fn(x):
-                    return fn(x, inputs[1])
-
-                self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
-                if inputs[0].grad_fn is not None:
-                    self.next_functions.append(inputs[0].grad_fn)
-                elif inputs[0].requires_grad and inputs[0].is_leaf:
+                self._fns.append(to_ivy_arrays_and_back(ivy.jac(wrap_fn(idx))))
+                if input.grad_fn is not None:
+                    self.next_functions.append(input.grad_fn)
+                elif input.is_leaf:
                     acc_grad = AccumulateGrad()
-                    acc_grad.__self__ = inputs[0]
-                    self.next_functions.append(acc_grad)
-            if isinstance(inputs[1], torch_frontend.Tensor):
-                self._inputs.append(inputs[1].detach())
-
-                def d_fn(x):
-                    return fn(inputs[0], x)
-
-                self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
-                if inputs[1].grad_fn is not None:
-                    self.next_functions.append(inputs[1].grad_fn)
-                elif inputs[1].requires_grad and inputs[1].is_leaf:
-                    acc_grad = AccumulateGrad()
-                    acc_grad.__self__ = inputs[1]
+                    acc_grad.__self__ = input
                     self.next_functions.append(acc_grad)
         self.__name__ = fn.__name__.capitalize() + "Backward"
 
     def __call__(self, prev_grads):
-        return [
-            jac_fn(input_tensor) * prev_grads
-            for input_tensor, jac_fn in zip(self._inputs, self._fns)
-        ]
+        result = []
+        for input_tensor, jac_fn in zip(self._inputs, self._fns):
+            jacobian = jac_fn(input_tensor)
+            dims = list(range(jacobian.dim()))
+            permuted_dims = dims[input_tensor.dim() :] + dims[: input_tensor.dim()]
+            result.append(
+                (
+                    jacobian.permute(dims=permuted_dims).reshape(
+                        shape=(*input_tensor.shape, -1)
+                    )
+                    * prev_grads.ravel()
+                ).sum(-1)
+            )
+        return result
 
     def __repr__(self):
         return self.__name__
@@ -245,9 +239,12 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             else:
                 ret.is_leaf = False
         # set grad_fn
-        if any(isinstance(i, torch_frontend.Tensor) and i.requires_grad for i in args):
+        if any(
+            isinstance(i, torch_frontend.Tensor) and i.requires_grad
+            for i in [*args, *kwargs.values()]
+        ):
             # ToDo: Implement for unbind
-            grad_fn = GradFn(fn, args)
+            grad_fn = GradFn(fn, args, kwargs)
             grad_fn.__self__ = ret
             ret.grad_fn = grad_fn
 

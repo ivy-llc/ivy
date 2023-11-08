@@ -350,14 +350,20 @@ array = asarray
 
 
 def copy_array(
-    x: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.Tensor, tf.Variable, tf.TensorArray],
     *,
     to_ivy_array: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(x, tf.TensorArray):
+        x_wrapped = x.stack()
+        y = tf.TensorArray(x.dtype, x.size())
+        x = y.unstack(ivy.copy_array(x_wrapped))
+    else:
+        x = tf.identity(x)
     if to_ivy_array:
-        return ivy.to_ivy(tf.identity(x))
-    return tf.identity(x)
+        return ivy.to_ivy(x)
+    return x
 
 
 def one_hot(

@@ -271,8 +271,14 @@ def floor_divide(x, y, name=None):
     return ivy.floor_divide(x, y)
 
 
-@with_supported_dtypes(
-    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+@with_supported_device_and_dtypes(
+    {
+        "2.5.2 and below": {
+            "cpu": ("float32", "float64", "int32", "int64"),
+            "gpu": ("float16", "float32", "float64", "int32", "int64"),
+        }
+    },
+    "paddle",
 )
 @to_ivy_arrays_and_back
 def floor_mod(x, y, name=None):
@@ -667,3 +673,6 @@ def trace(x, offset=0, axis1=0, axis2=1, name=None):
 @to_ivy_arrays_and_back
 def trunc(x, name=None):
     return ivy.trunc(x)
+
+
+mod = remainder

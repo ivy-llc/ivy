@@ -480,8 +480,7 @@ class Shape(Sequence):
             shape is not None for shape in self._shape
         )
 
-    property
-
+    @property
     def num_elements(self):
         if not self.is_fully_defined():
             return None

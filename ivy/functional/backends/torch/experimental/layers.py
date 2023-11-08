@@ -13,7 +13,10 @@ from ivy.functional.ivy.layers import (
     _validate_max_pool_params,
     _depth_max_pooling_helper,
 )
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.functional.ivy.experimental.layers import (
+    _padding_ceil_mode,
+    _broadcast_pooling_helper,
+)
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_first"):
@@ -24,24 +27,6 @@ def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_
     if depth_pooling:
         x = torch.permute(x, (0, 2, 1, *range(3, dims + 2)))
     return x, kernel, strides, depth_pooling
-
-
-def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
-    dims = {"1d": 1, "2d": 2, "3d": 3}
-    if isinstance(x, int):
-        return tuple(x for _ in range(dims[pool_dims]))
-
-    if len(x) == 1:
-        return tuple(x[0] for _ in range(dims[pool_dims]))
-
-    elif len(x) == dims[pool_dims]:
-        return tuple(x)
-
-    elif len(x) != dims[pool_dims]:
-        raise ValueError(
-            f"`{name}` must either be a single int, "
-            f"or a tuple of {dims[pool_dims]} ints. "
-        )
 
 
 @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
@@ -322,6 +307,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    division_override: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -338,17 +324,8 @@ def avg_pool1d(
         x = x.permute(0, 2, 1)
 
     x_shape = x.shape[2]
-    if isinstance(padding, str):
-        pad_specific = [
-            _handle_padding(x_shape, strides[i], kernel[i], padding) for i in range(1)
-        ]
-        padding = [
-            (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
-            for i in range(1)
-        ]
-    else:
-        pad_specific = [sum(padding[i]) for i in range(1)]
-    x = torch.nn.functional.pad(x, *padding, value=0.0)
+    padding, pad_specific = _get_specific_pad(x_shape, kernel, strides, padding, 1)
+    x = torch.nn.functional.pad(x, padding, value=0.0)
 
     res = torch.nn.functional.avg_pool1d(x, kernel, strides, 0, ceil_mode)
 

@@ -2,27 +2,11 @@
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.ivy.experimental.layers import _broadcast_pooling_helper
 
 
 # --- Helpers --- #
 # --------------- #
-
-
-def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
-    dims = {"1d": 1, "2d": 2, "3d": 3}
-
-    if isinstance(x, int):
-        return tuple(x for _ in range(dims[pool_dims]))
-
-    if len(x) == 1:
-        return tuple(x[0] for _ in range(dims[pool_dims]))
-    elif len(x) == dims[pool_dims]:
-        return tuple(x)
-    else:
-        raise ValueError(
-            f"`{name}` must either be a single int, "
-            f"or a tuple of {dims[pool_dims]} ints. "
-        )
 
 
 def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):

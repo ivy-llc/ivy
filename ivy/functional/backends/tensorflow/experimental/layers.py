@@ -288,6 +288,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    division_override: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(kernel, int):
@@ -337,7 +338,7 @@ def avg_pool1d(
         else:
             num_padded_values = tf.scatter_nd(
                 tf.constant([[res.shape[1] - 1]]),
-                tf.constant([c], dtype=res.dtype),
+                tf.constant([c[0]], dtype=res.dtype),
                 tf.constant([res.shape[1]], dtype=tf.int32),
             )
         res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
@@ -364,14 +365,14 @@ def avg_pool2d(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(kernel, int):
-        kernel = [kernel] * 2
+        kernel = (kernel,) * 2
     elif len(kernel) == 1:
-        kernel = [kernel[0]] * 2
+        kernel = (kernel[0],) * 2
 
     if isinstance(strides, int):
-        strides = [strides] * 2
+        strides = (strides,) * 2
     elif len(strides) == 1:
-        strides = [strides[0]] * 2
+        strides = (strides[0],) * 2
 
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
@@ -456,14 +457,14 @@ def avg_pool3d(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(kernel, int):
-        kernel = [kernel] * 3
+        kernel = (kernel,) * 3
     elif len(kernel) == 1:
-        kernel = [kernel[0]] * 3
+        kernel = (kernel[0],) * 3
 
     if isinstance(strides, int):
-        strides = [strides] * 3
+        strides = (strides,) * 3
     elif len(strides) == 1:
-        strides = [strides[0]] * 3
+        strides = (strides[0],) * 3
 
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
@@ -483,7 +484,7 @@ def avg_pool3d(
         res = ivy.conv_general_dilated(
             x,
             tf.ones(kernel + (1, x.shape[-1])),
-            strides,
+            list(strides),
             padding,
             dims=3,
             feature_group_count=x.shape[-1],
