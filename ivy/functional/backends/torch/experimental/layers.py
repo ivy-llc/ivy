@@ -307,7 +307,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
-    division_override: Optional[int] = None,
+    divisor_override: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -323,34 +323,50 @@ def avg_pool1d(
     if data_format in ("NWC", "NCL"):
         x = x.permute(0, 2, 1)
 
-    x_shape = x.shape[2]
-    padding, pad_specific = _get_specific_pad(x_shape, kernel, strides, padding, 1)
-    x = torch.nn.functional.pad(x, padding, value=0.0)
-
-    res = torch.nn.functional.avg_pool1d(x, kernel, strides, 0, ceil_mode)
-
-    if not count_include_pad and any(pad_specific):
-        num_padded_values = ivy.map(
-            _get_num_padded_values,
-            constant={
-                "p": pad_specific[0],
-                "n": x_shape,
-                "k": kernel[0],
-                "s": strides[0],
-            },
-            unique={
-                "i": torch.arange(res.shape[2]),
-            },
+    if (
+        isinstance(padding, int)
+        or not isinstance(padding, str)
+        and padding[0][0] == padding[0][1]
+    ) and not divisor_override:
+        if not isinstance(padding, int):
+            padding = padding[0][0]
+        res = torch.nn.functional.avg_pool1d(
+            x,
+            kernel,
+            strides,
+            padding,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
         )
-        num_padded_values = torch.tensor(num_padded_values, dtype=res.dtype)
+    else:
+        x_shape = x.shape[2]
+        padding, pad_specific = _get_specific_pad(
+            [x_shape], kernel, strides, padding, 1
+        )
+        x = torch.nn.functional.pad(x, padding, value=0.0)
 
-        if ceil_mode:
-            _, c = _padding_ceil_mode(x_shape, kernel[0], padding[0], strides[0], True)
-            num_padded_values[-1] = _add_ceil_pad_to_pad_list(
-                num_padded_values[-1], kernel[0], c
+        res = torch.nn.functional.avg_pool1d(x, kernel, strides, 0, ceil_mode)
+
+        if not count_include_pad and any(pad_specific):
+            num_padded_values = ivy.map(
+                _get_num_padded_values,
+                constant={
+                    "p": pad_specific[0],
+                    "n": x_shape,
+                    "k": kernel[0],
+                    "s": strides[0],
+                },
+                unique={
+                    "i": torch.arange(res.shape[2]),
+                },
             )
-
-        res = (kernel[0] * res) / (kernel[0] - num_padded_values)
+            num_padded_values = torch.tensor(num_padded_values, dtype=res.dtype)
+            if ceil_mode:
+                _, c = _padding_ceil_mode(x_shape, kernel[0], padding, strides[0], True)
+                num_padded_values[-1] = _add_ceil_pad_to_pad_list(
+                    num_padded_values[-1], kernel[0], c
+                )
+            res = (kernel[0] * res) / (kernel[0] - num_padded_values)
 
     if data_format in ("NWC", "NCL"):
         res = res.permute(0, 2, 1)
@@ -404,54 +420,71 @@ def avg_pool2d(
 
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    x_shape = list(x.shape[2:])
-    padding, pad_specific = _get_specific_pad(x_shape, kernel, strides, padding, 2)
-    x = torch.nn.functional.pad(
-        x,
-        padding,
-        value=0.0,
-    )
-    res = torch.nn.functional.avg_pool2d(
-        x, kernel, strides, 0, ceil_mode, divisor_override=divisor_override
-    )
 
-    if not count_include_pad and any(pad_specific) and not divisor_override:
-        num_padded_values = [
-            ivy.map(
-                _get_num_padded_values,
-                constant={
-                    "p": pad_specific[i],
-                    "n": x_shape[i],
-                    "k": kernel[i],
-                    "s": strides[i],
-                },
-                unique={
-                    "i": torch.arange(res.shape[i + 2]),
-                },
-            )
-            for i in range(2)
-        ]
+    if (
+        isinstance(padding, int)
+        or not isinstance(padding, str)
+        and all(pad[0] == pad[1] for pad in padding)
+    ):
+        if not isinstance(padding, int):
+            padding = [padding[0][0], padding[1][0]]
+        res = torch.nn.functional.avg_pool2d(
+            x,
+            kernel,
+            strides,
+            padding,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
+        )
+    else:
+        x_shape = list(x.shape[2:])
+        padding, pad_specific = _get_specific_pad(x_shape, kernel, strides, padding, 2)
+        x = torch.nn.functional.pad(
+            x,
+            padding,
+            value=0.0,
+        )
+        res = torch.nn.functional.avg_pool2d(
+            x, kernel, strides, 0, ceil_mode, divisor_override=divisor_override
+        )
 
-        if ceil_mode:
-            for i in range(2):
-                num_padded_values = _adjust_num_padded_values_to_ceil(
-                    pad_specific, num_padded_values, x_shape, kernel, strides, 2
+        if not count_include_pad and any(pad_specific) and not divisor_override:
+            num_padded_values = [
+                ivy.map(
+                    _get_num_padded_values,
+                    constant={
+                        "p": pad_specific[i],
+                        "n": x_shape[i],
+                        "k": kernel[i],
+                        "s": strides[i],
+                    },
+                    unique={
+                        "i": torch.arange(res.shape[i + 2]),
+                    },
                 )
+                for i in range(2)
+            ]
+            if ceil_mode:
+                for i in range(2):
+                    num_padded_values = _adjust_num_padded_values_to_ceil(
+                        pad_specific, num_padded_values, x_shape, kernel, strides, 2
+                    )
+            num_padded_values1 = torch.tensor(num_padded_values[0], dtype=res.dtype)[
+                :, None
+            ]
+            num_padded_values2 = torch.tensor(num_padded_values[1], dtype=res.dtype)[
+                None, :
+            ]
+            num_padded_values = (
+                num_padded_values1 * kernel[1]
+                + num_padded_values2 * kernel[0]
+                - num_padded_values1 * num_padded_values2
+            )
+            res = (kernel[0] * kernel[1] * res) / (
+                kernel[0] * kernel[1] - num_padded_values
+            )
 
-        num_padded_values1 = torch.tensor(num_padded_values[0], dtype=res.dtype)[
-            :, None
-        ]
-        num_padded_values2 = torch.tensor(num_padded_values[1], dtype=res.dtype)[
-            None, :
-        ]
-        num_padded_values = (
-            num_padded_values1 * kernel[1]
-            + num_padded_values2 * kernel[0]
-            - num_padded_values1 * num_padded_values2
-        )
-        res = (kernel[0] * kernel[1] * res) / (
-            kernel[0] * kernel[1] - num_padded_values
-        )
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
@@ -489,56 +522,73 @@ def avg_pool3d(
         kernel = (kernel[0], kernel[0], kernel[0])
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
-    x_shape = list(x.shape[2:])
-    padding, pad_specific = _get_specific_pad(x_shape, kernel, strides, padding, 3)
-    x = torch.nn.functional.pad(
-        x,
-        padding,
-        value=0.0,
-    )
-    res = torch.nn.functional.avg_pool3d(
-        x, kernel, strides, 0, ceil_mode, divisor_override=divisor_override
-    )
 
-    if not count_include_pad and any(pad_specific) and not divisor_override:
-        num_padded_values = [
-            torch.tensor(
-                ivy.map(
-                    _get_num_padded_values,
-                    constant={
-                        "p": pad_specific[i],
-                        "n": x_shape[i],
-                        "k": kernel[i],
-                        "s": strides[i],
-                    },
-                    unique={
-                        "i": torch.arange(res.shape[i + 2]),
-                    },
-                ),
-                dtype=res.dtype,
-            )
-            for i in range(3)
-        ]
-
-        if ceil_mode:
-            for i in range(3):
-                num_padded_values = _adjust_num_padded_values_to_ceil(
-                    pad_specific, num_padded_values, x_shape, kernel, strides, 3
-                )
-        num_padded_values1 = num_padded_values[0].reshape((-1, 1, 1))
-        num_padded_values2 = num_padded_values[1].reshape((1, -1, 1))
-        num_padded_values3 = num_padded_values[2].reshape((1, 1, -1))
-        num_padded_values = (
-            num_padded_values1 * kernel[1] * kernel[2]
-            + num_padded_values2 * kernel[0] * kernel[2]
-            + num_padded_values3 * kernel[0] * kernel[1]
-            + num_padded_values1 * num_padded_values2 * num_padded_values3
-            - num_padded_values1 * num_padded_values2 * kernel[2]
-            - num_padded_values1 * num_padded_values3 * kernel[1]
-            - num_padded_values2 * num_padded_values3 * kernel[0]
+    if (
+        isinstance(padding, int)
+        or not isinstance(padding, str)
+        and all(pad[0] == pad[1] for pad in padding)
+    ):
+        if not isinstance(padding, int):
+            padding = [padding[0][0], padding[1][0], padding[2][0]]
+        res = torch.nn.functional.avg_pool3d(
+            x,
+            kernel,
+            strides,
+            padding,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+            divisor_override=divisor_override,
         )
-        kernel_mul = kernel[0] * kernel[1] * kernel[2]
-        res = (kernel_mul * res) / (kernel_mul - num_padded_values)
+    else:
+        x_shape = list(x.shape[2:])
+        padding, pad_specific = _get_specific_pad(x_shape, kernel, strides, padding, 3)
+        x = torch.nn.functional.pad(
+            x,
+            padding,
+            value=0.0,
+        )
+        res = torch.nn.functional.avg_pool3d(
+            x, kernel, strides, 0, ceil_mode, divisor_override=divisor_override
+        )
+
+        if not count_include_pad and any(pad_specific) and not divisor_override:
+            num_padded_values = [
+                torch.tensor(
+                    ivy.map(
+                        _get_num_padded_values,
+                        constant={
+                            "p": pad_specific[i],
+                            "n": x_shape[i],
+                            "k": kernel[i],
+                            "s": strides[i],
+                        },
+                        unique={
+                            "i": torch.arange(res.shape[i + 2]),
+                        },
+                    ),
+                    dtype=res.dtype,
+                )
+                for i in range(3)
+            ]
+            if ceil_mode:
+                for i in range(3):
+                    num_padded_values = _adjust_num_padded_values_to_ceil(
+                        pad_specific, num_padded_values, x_shape, kernel, strides, 3
+                    )
+            num_padded_values1 = num_padded_values[0].reshape((-1, 1, 1))
+            num_padded_values2 = num_padded_values[1].reshape((1, -1, 1))
+            num_padded_values3 = num_padded_values[2].reshape((1, 1, -1))
+            num_padded_values = (
+                num_padded_values1 * kernel[1] * kernel[2]
+                + num_padded_values2 * kernel[0] * kernel[2]
+                + num_padded_values3 * kernel[0] * kernel[1]
+                + num_padded_values1 * num_padded_values2 * num_padded_values3
+                - num_padded_values1 * num_padded_values2 * kernel[2]
+                - num_padded_values1 * num_padded_values3 * kernel[1]
+                - num_padded_values2 * num_padded_values3 * kernel[0]
+            )
+            kernel_mul = kernel[0] * kernel[1] * kernel[2]
+            res = (kernel_mul * res) / (kernel_mul - num_padded_values)
 
     if data_format == "NDHWC":
         res = res.permute(0, 2, 3, 4, 1)
