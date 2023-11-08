@@ -34,7 +34,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         "trilinear",
         "nearest-exact",
         "tf_area",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "lanczos3",
         "lanczos5",
         "mitchellcubic",
@@ -46,7 +46,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         "bilinear",
         "trilinear",
         "nearest-exact",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "lanczos3",
         "lanczos5",
     ]
@@ -69,7 +69,7 @@ def _interp_args(draw, mode=None, mode_list=None):
                         "nearest-exact",
                         "area",
                         "tf_area",
-                        "bicubic_tensorflow",
+                        "tf_bicubic",
                         "lanczos3",
                         "lanczos5",
                         "mitchellcubic",
@@ -86,7 +86,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         num_dims = 3
     elif mode in [
         "bilinear",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "bicubic",
         "mitchellcubic",
         "gaussian",

@@ -213,6 +213,7 @@ def relu6(input, inplace=False):
     return ivy.relu6(input)
 
 
+@to_ivy_arrays_and_back
 def relu_(input):
     return relu(input, inplace=True)
 

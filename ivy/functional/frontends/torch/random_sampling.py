@@ -91,7 +91,7 @@ def rand(
 ):
     if not size and "size" not in kwargs:
         raise ValueError("Missing 1 required positional/keyword argument: size")
-    size = kwargs["size"] if not size else size
+    size = size if size else kwargs["size"]
     if (
         isinstance(size, (list, tuple))
         and len(size) == 1
@@ -191,7 +191,7 @@ def randn(
 ):
     if not size and "size" not in kwargs:
         raise ValueError("Missing 1 required positional/keyword argument: size")
-    size = kwargs["size"] if not size else size
+    size = size if size else kwargs["size"]
     if (
         isinstance(size, (list, tuple))
         and len(size) == 1

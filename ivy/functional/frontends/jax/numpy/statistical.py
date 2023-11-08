@@ -516,7 +516,7 @@ def nanpercentile(
                 ivy.logging.warning("percentile s must be in the range [0, 100]")
                 return []
     else:
-        if not (ivy.all(0 <= q) and ivy.all(q <= 1)):
+        if not (ivy.all(q >= 0) and ivy.all(q <= 1)):
             ivy.logging.warning("percentile s must be in the range [0, 100]")
             return []
     return _nanquantile_unchecked(a, q, axis, out, overwrite_input, method, keepdims)

@@ -254,7 +254,7 @@ def _validate_quantile(q):
             if not (0.0 <= q[i] <= 1.0):
                 return False
     else:
-        if not (torch.all(0 <= q) and torch.all(q <= 1)):
+        if not (torch.all(q >= 0) and torch.all(q <= 1)):
             return False
     return True
 

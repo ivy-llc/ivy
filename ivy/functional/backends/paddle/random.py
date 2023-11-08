@@ -25,7 +25,7 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8",)}},
+    {"2.5.2 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def random_uniform(
@@ -56,7 +56,7 @@ def random_uniform(
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("float16", "int16", "int8")}, backend_version
+    {"2.5.2 and below": ("float16", "int16", "int8")}, backend_version
 )
 def random_normal(
     *,
@@ -77,7 +77,7 @@ def random_normal(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "float32",
                 "float64",
@@ -108,7 +108,7 @@ def multinomial(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8",)}},
+    {"2.5.2 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def randint(
