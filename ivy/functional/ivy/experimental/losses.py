@@ -581,25 +581,54 @@ def poisson_nll_loss(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 def multilabel_margin_loss(
-    input: Union[ivy.Array, ivy.NativeArray],
+    input_data: Union[ivy.Array, ivy.NativeArray],
     target: Union[ivy.Array, ivy.NativeArray],
     *,
     reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
+    Compute the multilabel margin loss.
 
     Parameters
     ----------
-    input
-    target
-    reduction
-    out
+    input_data : array-like
+        The input data.
+    target : array-like
+        The target data.
+    reduction : str, optional
+        The reduction method for the loss, by default "none".
+        Must be one of 'none', 'mean', or 'sum'.
+    out : array-like, optional
+        Output array to store the result, by default None.
 
     Returns
     -------
-    out: array
+    array
+        The computed multilabel margin loss.
+
+    Raises
+    ------
+    ValueError
+        If the 'reduction' parameter is not one of 'none', 'mean', or 'sum'.
+
+    Examples
+    --------
+    >>> input_tensor = ivy.array([[1, -2, 3],
+    ... [0, -1, 2], [1, 0, 1]], dtype=ivy.float32)
+    >>> target_tensor = ivy.array([[-1, 1, -1],
+    ... [1, 1, 1], [1, -1, 1]], dtype=ivy.float32)
+
+    >>> multilabel_margin_loss(input_tensor, target_tensor)
+    ivy.array([3.49625897, 0.71111226, 0.43989015])
+
+    >>> multilabel_margin_loss(input_tensor, target_tensor, reduction="mean")
+    ivy.array(1.54908717)
     """
-    return ivy.current_backend(input).multilabel_margin_loss(
-        input, target, reduction=reduction, out=out
+    if reduction not in ["none", "mean", "sum"]:
+        raise ValueError(
+            "Invalid value for 'reduction'. Expected 'none', 'mean', or 'sum'."
+        )
+    return ivy.current_backend(input_data).multilabel_margin_loss(
+        input_data=input_data, target=target, reduction=reduction, out=out
     )

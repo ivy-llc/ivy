@@ -254,21 +254,32 @@ def multilabel_margin_loss(
     input: paddle.Tensor, target: paddle.Tensor, /, *, reduction: str = "none"
 ) -> paddle.Tensor:
     """
+    Compute the multilabel margin loss.
 
-    Parameters
-    ----------
-    input
-    target
-    reduction
+    Parameters:
+    - input: paddle.Tensor
+        The input tensor.
+    - target: paddle.Tensor
+        The target tensor.
+    - reduction: str, optional
+        The reduction type. Default is "none".
 
-    Returns
-    -------
-    out: paddle.Tensor
+    Returns:
+    - loss: paddle.Tensor
+        The computed loss tensor.
     """
-    input_arr = paddle.to_tensor(input)
-    target_arr = paddle.to_tensor(target, dtype=input.dtype)
+    if not isinstance(input, paddle.Tensor):
+        raise TypeError("Input must be a paddle.Tensor.")
+    if not isinstance(target, paddle.Tensor):
+        raise TypeError("Target must be a paddle.Tensor.")
+    if input.shape != target.shape:
+        raise ValueError("Input and target tensors must have the same shape.")
+    if reduction not in ["none", "mean", "sum"]:
+        raise ValueError(
+            "Invalid reduction value. Allowed values are 'none', 'mean', 'sum'."
+        )
 
     loss = F.multi_label_soft_margin_loss(
-        input=input_arr, label=target_arr, reduction=reduction
+        input=input, label=target, reduction=reduction
     )
     return loss

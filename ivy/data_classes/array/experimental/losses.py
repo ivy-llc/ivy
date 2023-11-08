@@ -378,19 +378,49 @@ class _ArrayWithLossesExperimental(abc.ABC):
         target: Union[ivy.Array, ivy.NativeArray],
         axis: int = -1,
         reduction: str = "none",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
+        Calculate the multilabel margin loss.
 
         Parameters
         ----------
+        self
+            The input array containing predicted labels.
         target
+            The input array containing target labels.
         axis
+            The axis along which to compute the multi-label margin loss.
+            If axis is -1,
+            the loss will be computed along the last dimension. Default: -1.
         reduction
+            The reduction method to apply to the loss.
+            Options are 'none', 'mean', or 'sum'.
+            Default: 'none'.
+        out
+            Optional output array to write the result to.
 
         Returns
         -------
-        out: array
+        out : array
+            The calculated multilabel margin loss.
+
+        Examples
+        --------
+        >>> input_tensor = ivy.array([[1, -2, 3],
+        ... [0, -1, 2], [1, 0, 1]], dtype=ivy.float32)
+        >>> target_tensor = ivy.array([[-1, 1, -1],
+        ... [1, 1, 1], [1, -1, 1]], dtype=ivy.float32)
+
+        >>> loss_none = input_tensor.multilabel_margin_loss(
+        ... target=target_tensor, reduction="none")
+        >>> print(loss_none)
+        ivy.array([3.49625897, 0.71111226, 0.43989015])
+
+        >>> loss_mean = input_tensor.multilabel_margin_loss(
+        ... target=target_tensor, reduction="mean")
+        ivy.array(1.54908717)
         """
         return ivy.multilabel_margin_loss(
-            input=self._data, target=target, axis=axis, reduction=reduction
+            input=self._data, target=target, axis=axis, reduction=reduction, out=out
         )

@@ -176,16 +176,21 @@ def multilabel_margin_loss(
     input: torch.Tensor, target: torch.Tensor, /, *, reduction: str = "none"
 ) -> torch.Tensor:
     """
+    Compute the multilabel margin loss.
 
     Parameters
     ----------
-    input
-    target
-    reduction
+    input : torch.Tensor
+        The input tensor.
+    target : torch.Tensor
+        The target tensor.
+    reduction : str, optional
+        The reduction method, by default "none".
 
     Returns
     -------
-    out: torch.Tensor
+    torch.Tensor
+        The computed loss tensor.
     """
     return torch.nn.functional.multilabel_margin_loss(
         input=input, target=target, reduction=reduction

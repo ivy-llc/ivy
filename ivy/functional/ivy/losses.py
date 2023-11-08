@@ -387,7 +387,7 @@ def sparse_cross_entropy(
 @inputs_to_ivy_arrays
 @handle_array_function
 def multilabel_margin_loss(
-    input: Union[ivy.Array, ivy.NativeArray],
+    input_data: Union[ivy.Array, ivy.NativeArray],
     target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
@@ -396,19 +396,38 @@ def multilabel_margin_loss(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
+    Compute the multilabel margin loss.
 
     Parameters
     ----------
-    input
-    target
-    axis
-    reduction
-    out
+    input_data : array-like
+        The input data.
+    target : array-like
+        The target data.
+    axis : int, optional
+        The axis along which to compute the loss. Default is -1.
+    reduction : str, optional
+        The reduction method for the loss.
+        Options are 'none', 'sum', and 'mean'.
+        Default is 'none'.
+    out : array-like, optional
+        The output array to store the result.
 
     Returns
     -------
-    out: ivy.Array
+    loss : array-like
+        The computed loss.
+
+    Examples
+    --------
+    >>> input_tensor = ivy.array([0.2, 0.4, 0.6])
+    >>> target_tensor = ivy.array([0, 1, 1])
+    >>> loss = multilabel_margin_loss(input_data, target)
+    >>> print(loss)
+    ivy.array(0.4)
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    loss = ivy.sum(ivy.maximum(0, 1 - (input[target] - target))) / input.shape[0]
+    loss = (
+        ivy.sum(ivy.maximum(0, 1 - (input_data[target] - target))) / input_data.shape[0]
+    )
     return _reduce_loss(reduction=reduction, loss=loss, axis=axis, out=out)

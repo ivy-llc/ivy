@@ -183,23 +183,14 @@ def poisson_nll_loss(
 def multilabel_margin_loss(
     input: np.ndarray, target: np.ndarray, /, *, reduction: str = "none"
 ) -> np.ndarray:
-    """
+    input_arr = np.asanyarray(input)
+    target_arr = np.asanyarray(target, dtype=input.dtype)
 
-    Parameters
-    ----------
-    input
-    target
-    reduction
+    loss = np.maximum.reduce(
+        np.maximum(0, 1 - np.take_along_axis(input_arr, target_arr, axis=0))
+    ) / np.prod(input_arr.shape)
 
-    Returns
-    -------
-    out: np.ndarray
-    """
-    input_arr = np.asarray(input)
-    target_arr = np.asarray(target, dtype=input.dtype)
+    if reduction not in ["sum", "mean", "none"]:
+        raise ValueError("Invalid reduction value. Expected 'sum', 'mean', or 'none'.")
 
-    loss = (
-        np.sum(np.maximum(0, 1 - (input_arr[target_arr] - input_arr)))
-        / input_arr.shape[0]
-    )
     return _apply_loss_reduction(loss, reduction=reduction)

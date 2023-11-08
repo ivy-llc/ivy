@@ -168,24 +168,45 @@ def poisson_nll_loss(
     backend_version,
 )
 def multilabel_margin_loss(
-    input: tf.Tensor, target: tf.Tensor, /, *, reduction: str = "none"
+    input: tf.Tensor,
+    target: tf.Tensor,
+    /,
+    *,
+    reduction: str = "none",
+    margin: float = 1.0,
 ) -> tf.Tensor:
     """
+    Compute the multilabel margin loss.
 
     Parameters
     ----------
-    input
-    target
-    reduction
+    input : tf.Tensor
+        The input tensor.
+    target : tf.Tensor
+        The target tensor.
+    reduction : str, optional
+        The reduction method for the loss, by default "none".
+    margin : float, optional
+        The margin value for the loss, by default 1.0.
 
     Returns
     -------
-    out: tf.Tensor
+    tf.Tensor
+        The computed loss tensor.
     """
-    input_tensor = tf.constant(input, dtype=input.dtype)
-    target_tensor = tf.constant(target, dtype=input.dtype)
+    input_tensor = tf.convert_to_tensor(input, dtype=input.dtype)
+    target_tensor = tf.convert_to_tensor(target, dtype=input.dtype)
+
+    if input.shape != target.shape:
+        raise ValueError("Input and target tensors must have matching shapes.")
 
     loss = tf.reduce_sum(
-        tf.maximum(0.0, 1.0 - (input_tensor[target_tensor] - input_tensor))
+        tf.maximum(0.0, margin - (input_tensor[target_tensor] - input_tensor))
     ) / tf.cast(tf.size(input_tensor), tf.float32)
+
+    if reduction not in ["none", "sum", "mean"]:
+        raise ValueError(
+            "Invalid reduction value. Allowed values are 'none', 'sum', 'mean'."
+        )
+
     return _apply_loss_reduction(loss, reduction=reduction)

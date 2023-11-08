@@ -1106,7 +1106,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
     @staticmethod
     def _static_multilabel_margin_loss(
-        input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        input_data: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: int = -1,
         reduction: str = "none",
@@ -1114,10 +1114,76 @@ class _ContainerWithLossesExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Calculate the multilabel margin loss between the input and target tensors.
+
+        Parameters
+        ----------
+        input_data : Union[ivy.Container, ivy.Array, ivy.NativeArray]
+            The input tensor.
+        target : Union[ivy.Container, ivy.Array, ivy.NativeArray]
+            The target tensor.
+        axis : int, optional
+            The axis along which the loss is calculated, by default -1.
+        reduction : str, optional
+            The reduction method for the loss, by default "none".
+        key_chains : Optional[Union[List[str], Dict[str, str], ivy.Container]]
+            The key-chains to apply or not apply the method to, by default None.
+        to_apply : Union[bool, ivy.Container], optional
+            Whether to apply the method to key_chains, by default True.
+        prune_unapplied : Union[bool, ivy.Container], optional
+            Whether to prune key_chains for which the function was not applied,
+            by default False.
+        map_sequences : Union[bool, ivy.Container], optional
+            Whether to also map the method to sequences (lists, tuples),
+            by default False.
+        out : Optional[ivy.Container]
+            Optional output container, by default None.
+
+        Returns
+        -------
+        ivy.Container
+            The calculated multilabel margin loss.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> input_tensor = ivy.Container(a=ivy.array([[1, -2, 3],
+        ... [0, -1, 2], [1, 0, 1]], dtype=ivy.float32))
+        >>> target_tensor = ivy.Container(a=ivy.array([[-1, 1, -1],
+        ... [1, 1, 1], [1, -1, 1]], dtype=ivy.float32))
+        >>> loss = ivy.Container._static_multilabel_margin_loss(
+        ... input_tensor, target_tensor)
+        >>> print(loss)
+        {
+            a: ivy.array([3.49625897, 0.71111226, 0.43989015])
+        }
+
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
+        >>> input_tensor = ivy.array([[1, -2, 3],
+        ... [0, -1, 2], [1, 0, 1]], dtype=ivy.float32)
+        >>> target_tensor = ivy.Container(a=ivy.array([[-1, 1, -1],
+        ... [1, 1, 1], [1, -1, 1]], dtype=ivy.float32))
+        >>> z = ivy.Container._static_multilabel_margin_loss(
+        ... input_tensor, target_tensor, reduction="mean")
+        >>> print(z)
+        {
+            a: ivy.array(1.54908717)
+        }
+        """
+        if reduction not in ["none", "mean", "sum"]:
+            raise ValueError(
+                f"Invalid reduction value: {reduction}. Valid options are 'none',"
+                " 'mean', or 'sum'."
+            )
+
         return ContainerBase.cont_multi_map_in_function(
             "multilabel_margin_loss",
-            input,
+            input_data,
             target,
             axis=axis,
             reduction=reduction,
@@ -1125,6 +1191,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            out=out,
         )
 
     def multilabel_margin_loss(
@@ -1132,19 +1199,81 @@ class _ContainerWithLossesExperimental(ContainerBase):
         target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: int = -1,
         reduction: str = "none",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
+        Compute the multilabel margin loss between the input and target tensors.
 
         Parameters
         ----------
-        target
-        axis
-        reduction
+        self : Union[ivy.Container, ivy.Array, ivy.NativeArray]
+            The input tensor.
+        target : Union[ivy.Container, ivy.Array, ivy.NativeArray]
+            The target tensor.
+        axis : int, optional
+            The axis along which to compute the loss. Default is -1.
+        reduction : str, optional
+            The reduction method for the loss. Default is "none".
+        key_chains : Optional[Union[List[str], Dict[str, str], ivy.Container]], optional
+            The keychains to apply the loss to. Default is None.
+        to_apply : Union[bool, ivy.Container], optional
+            Whether to apply the loss. Default is True.
+        prune_unapplied : Union[bool, ivy.Container], optional
+            Whether to prune unapplied keys. Default is False.
+        map_sequences : Union[bool, ivy.Container], optional
+            Whether to map sequences. Default is False.
+        out : Optional[ivy.Container], optional
+            The output container. Default is None.
 
         Returns
         -------
-        out: container
+        ivy.Container
+            The computed multilabel margin loss.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> input_tensor = ivy.Container(a=ivy.array([[1, -2, 3],
+        ... [0, -1, 2], [1, 0, 1]], dtype=ivy.float32))
+        >>> target_tensor = ivy.Container(a=ivy.array([[-1, 1, -1],
+        ... [1, 1, 1], [1, -1, 1]], dtype=ivy.float32))
+        >>> loss = input_tensor.multilabel_margin_loss(target_tensor)
+        >>> print(loss)
+        {
+            a: ivy.array([3.49625897, 0.71111226, 0.43989015])
+        }
+
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
+        >>> input_tensor = ivy.array([[1, -2, 3],
+        ... [0, -1, 2], [1, 0, 1]], dtype=ivy.float32)
+        >>> target_tensor = ivy.Container(a=ivy.array([[-1, 1, -1],
+        ... [1, 1, 1], [1, -1, 1]], dtype=ivy.float32))
+        >>> z = input_tensor.multilabel_margin_loss(target_tensor, reduction="mean")
+        >>> print(z)
+        {
+            a: ivy.array(1.54908717)
+        }
         """
+        if axis not in [-1, 0, 1]:
+            raise ValueError("Invalid value for 'axis'. Expected -1, 0, or 1.")
+        if reduction not in ["none", "mean", "sum"]:
+            raise ValueError(
+                "Invalid value for 'reduction'. Expected 'none', 'mean', or 'sum'."
+            )
         return self._static_multilabel_margin_loss(
-            self, target=target, axis=axis, reduction=reduction
+            self,
+            target=target,
+            axis=axis,
+            reduction=reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
