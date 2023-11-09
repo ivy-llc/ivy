@@ -11,12 +11,13 @@ jobs:
     if: always() # Run this job always, regardless of the status of run-test-basics
     steps:
       - name: Checkout Demos🛎
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
-             path: demos
-             persist-credentials: false
-             submodules: "recursive"
-             fetch-depth: 1
+          repository: unifyai/demos
+          path: demos
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 1
 
       - name: Install clients for GCP/Mongo
         run: |
@@ -40,13 +41,14 @@ jobs:
         run:
           sudo rm -fr $GITHUB_WORKSPACE && mkdir $GITHUB_WORKSPACE
 
-      - name: Checkout Ivy 🛎
-        uses: actions/checkout@v2
+      - name: Checkout Ivy🛎
+        uses: actions/checkout@v4
         with:
+          repository: unifyai/ivy
           path: ivy
           persist-credentials: false
           submodules: "recursive"
-          set-safe-directory: false
+          fetch-depth: 1
 
       - name: Install ivy and fetch binaries
         run: |
