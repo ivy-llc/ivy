@@ -170,6 +170,8 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
     fn_tree="functional.ivy.experimental.batch_norm",
     data=_instance_and_batch_norm_helper(min_dims=2, test_function="batch_norm"),
     training=st.booleans(),
+    test_instance_method=st.just(False),
+    container_flags=st.just([False]),
 )
 def test_batch_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data

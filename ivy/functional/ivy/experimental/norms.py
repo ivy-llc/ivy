@@ -183,8 +183,7 @@ def batch_norm(
     runningvariance = variance
 
     if training:
-        numel = int(ivy.prod(x.shape))
-        n = numel if xdims == 1 else numel / x.shape[-1]
+        n = x.size if xdims == 1 else x.size / x.shape[-1]
         dims = (0, *range(1, xdims - 1))
         mean = ivy.mean(x, axis=dims)
         variance = ivy.var(x, axis=dims)
@@ -193,11 +192,10 @@ def batch_norm(
             n - 1
         )
     inv = 1.0 / ivy.sqrt(variance + eps)
+    offset = 0 if offset is None else offset
     if scale is not None:
         inv = inv * scale
-    xnormalized = x * inv.astype(x.dtype, copy=False) + ivy.astype(
-        offset - mean * inv if offset is not None else -mean * inv, x.dtype, copy=False
-    )
+    xnormalized = x * inv + offset - mean * inv
 
     if data_format == "NCS":
         xnormalized = ivy.permute_dims(

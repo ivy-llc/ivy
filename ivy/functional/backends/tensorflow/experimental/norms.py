@@ -61,12 +61,8 @@ def batch_norm(
     runningmean = mean
     runningvariance = variance
     if training:
-        n = (
-            tf.size(x)
-            if xdims == 1
-            else tf.cast(tf.divide(tf.size(x), tf.shape(x)[-1]), x.dtype)
-        )
-        n = tf.cast(n, x.dtype)
+        n = tf.size(x) if xdims == 1 else tf.divide(tf.size(x), tf.shape(x)[-1])
+        n = tf.cast(n, x.dtype) if n.dtype != x.dtype else n
         dims = (0, *range(1, xdims - 1))
         mean = tf.math.reduce_mean(x, axis=dims)
         variance = tf.math.reduce_variance(x, axis=dims)
