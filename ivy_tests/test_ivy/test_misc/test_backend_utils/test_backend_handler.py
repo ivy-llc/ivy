@@ -127,7 +127,7 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
     assert isinstance(a.data, ivy.NativeArray)
     assert isinstance(ivy_cont["b"].data, ivy.NativeArray)
 
-    if set(["numpy", "jax"]).intersection([middle_backend, end_backend]):
+    if {"numpy", "jax"}.intersection([middle_backend, end_backend]):
         # these frameworks don't support native variables
         assert isinstance(var_cont["b"].data, ivy.NativeArray)
     else:
