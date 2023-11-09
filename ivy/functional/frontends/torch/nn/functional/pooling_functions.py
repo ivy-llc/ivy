@@ -208,8 +208,8 @@ def max_pool1d(
     kernel_size,
     stride=None,
     padding=0,
-    ceil_mode=False,
     dilation=1,
+    ceil_mode=False,
     return_indices=False,
 ):
     if stride is None:
