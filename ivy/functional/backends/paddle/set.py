@@ -67,7 +67,7 @@ def unique_all(
             [
                 i[0]
                 for i in sorted(
-                    list(enumerate(values_.numpy().tolist())), key=lambda x: tuple(x[1])
+                    enumerate(values_.numpy().tolist()), key=lambda x: tuple(x[1])
                 )
             ]
         )

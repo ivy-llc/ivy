@@ -46,7 +46,7 @@ FN_DECORATORS = [
 casting_modes_dict = {
     "uint": lambda: ivy.valid_uint_dtypes,
     "int": lambda: sorted(
-        tuple(set(ivy.valid_int_dtypes).difference(set(ivy.valid_uint_dtypes)))
+        set(ivy.valid_int_dtypes).difference(set(ivy.valid_uint_dtypes))
     ),
     "float": lambda: ivy.valid_float_dtypes,
     "complex": lambda: ivy.valid_complex_dtypes,
