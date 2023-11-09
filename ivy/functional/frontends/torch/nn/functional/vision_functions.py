@@ -17,11 +17,10 @@ def _handle_padding_shape(padding, n, mode):
             for i in range(int(len(padding) / 2) - 1, -1, -1)
         ]
     )
-    while len(padding) < n:
-        if mode == "circular":
-            padding = padding + ((0, 0),)
-        else:
-            padding = ((0, 0),) + padding
+    if mode == "circular":
+        padding = padding + ((0, 0),) * (n - len(padding))
+    else:
+        padding = ((0, 0),) * (n - len(padding)) + padding
     if mode == "circular":
         padding = tuple(list(padding)[::-1])
     return padding
