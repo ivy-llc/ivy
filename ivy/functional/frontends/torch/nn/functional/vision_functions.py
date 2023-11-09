@@ -461,7 +461,7 @@ def pixel_unshuffle(input, downscale_factor):
             f"pixel_unshuffle expects 4D input, but got input with sizes {input_shape}"
         ),
         as_array=False,
-    ),
+    )
 
     b = input_shape[0]
     c = input_shape[1]
