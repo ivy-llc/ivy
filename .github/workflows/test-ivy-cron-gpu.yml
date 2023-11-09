@@ -31,7 +31,7 @@ jobs:
            echo -n "${{ secrets.GPU_SSH_KEY }}" > ~/.ssh/id_rsa
            chmod +x ~/.ssh/id_rsa
            python3 db_auth.py ${{ secrets.GPU_DB_ENDPOINT }} ${{ secrets.GPU_DB_OBJ_ID }}
-           python3 vm_auth.py ${{ secrets.GPU_SSH_USERNAME }} ${{ secrets.GPU_SSH_PASSPHRASE }} "false"
+           python3 vm_auth.py ${{ secrets.GPU_SSH_USERNAME }} ${{ secrets.GPU_SSH_PASSPHRASE }} "false" "ivy-repo-gpu-testing"
 
   run-gpu-tests:
     needs: start-vm
@@ -96,4 +96,4 @@ jobs:
           run: |
             cd demos/tests/auth
             python3 db_auth.py ${{ secrets.GPU_DB_ENDPOINT }} ${{ secrets.GPU_DB_OBJ_ID }}
-            python3 vm_auth.py ${{ secrets.GPU_SSH_USERNAME }} ${{ secrets.GPU_SSH_PASSPHRASE }} "true"
+            python3 vm_auth.py ${{ secrets.GPU_SSH_USERNAME }} ${{ secrets.GPU_SSH_PASSPHRASE }} "true" "ivy-repo-gpu-testing"
