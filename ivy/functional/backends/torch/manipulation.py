@@ -32,14 +32,7 @@ def concat(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
-        is_tuple = type(xs) is tuple
-        if is_tuple:
-            xs = list(xs)
-        for i in range(len(xs)):
-            xs[i] = torch.flatten(xs[i])
-        if is_tuple:
-            xs = tuple(xs)
-        axis = 0
+        return torch.cat([torch.flatten(x) for x in xs], dim=0, out=out)
     return torch.cat(xs, dim=axis, out=out)
 
 
@@ -67,6 +60,8 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        x = x.clone().detach()
     num_dims = len(x.shape)
     if not num_dims:
         return x

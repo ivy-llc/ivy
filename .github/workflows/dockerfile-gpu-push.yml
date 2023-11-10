@@ -1,4 +1,4 @@
-name: Dockerfile MultiCUDA Push
+name: GPU Dockerfile Push
 
 on:
   schedule:
@@ -20,8 +20,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-
-      - name: Build and push Dockerfile
+      - name: Build and push GPU image
         run: |
-          docker build --progress=plain --no-cache -t unifyai/multicuda:base_and_requirements -f docker/DockerfileGPUMultiCuda .
-          docker push unifyai/multicuda:base_and_requirements
+          docker build --progress=plain --no-cache -t unifyai/ivy:latest-gpu -f docker/DockerfileGPU .
+          docker push unifyai/ivy:latest-gpu

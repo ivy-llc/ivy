@@ -1,5 +1,5 @@
-"""Collection of PyTorch network layers, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
+
 from typing import Optional, Tuple, Union, Sequence
 
 # global
@@ -57,7 +57,7 @@ def multi_head_attention(
     )[1]
     num_dims = query.ndim
     if num_dims == 3 and batch_first:
-        query, key, value = [torch.swapaxes(x, 0, 1) for x in [query, key, value]]
+        query, key, value = (torch.swapaxes(x, 0, 1) for x in [query, key, value])
     ret = torch.nn.functional.multi_head_attention_forward(
         query,
         key,
@@ -102,9 +102,7 @@ multi_head_attention.partial_mixed_handler = (
     and (not is_causal or not return_attention_weights)
     and (
         ivy.exists(in_proj_weights)
-        or all(
-            [ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]
-        )
+        or all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights])
     )
     and len(
         set(

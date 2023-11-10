@@ -122,9 +122,18 @@ pad.partial_mixed_handler = (
 
 
 def _check_torch_pad(mode, reflect_type, pad_width, input_shape, constant_values):
-    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    ndim = len(input_shape)
+    pad_width = _to_tf_padding(pad_width, ndim)
+    if mode != "constant" and (ndim > 4 or (ndim > 1 and len(pad_width) > ndim - 1)):
+        return False
     return _check_paddle_pad(
-        mode, reflect_type, pad_width, input_shape, constant_values, 4
+        mode,
+        reflect_type,
+        pad_width,
+        input_shape,
+        constant_values,
+        4,
+        extend=False,
     ) and (
         mode != "wrap"
         or all(
@@ -339,7 +348,7 @@ def take_along_axis(
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = torch.clamp(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
+    elif mode in {"fill", "drop"}:
         if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = float("nan")
         elif "uint" in str(arr.dtype):
@@ -474,6 +483,134 @@ def concat_from_sequence(
     elif new_axis == 1:
         ret = torch.stack(input_sequence, dim=axis)
         return ret
+
+
+def _take_with_axis(
+    x: torch.Tensor, indices: torch.Tensor, /, *, axis: int, mode: str
+) -> torch.Tensor:
+    # has no checks
+    # default behaviour is 'raise' like ON CPU
+    # additional check is recommended
+
+    x_shape = x.shape[axis]
+    if not ivy.exists(axis):
+        x = x.flatten()
+        x_shape = torch.prod(torch.tensor(x_shape))
+    else:
+        x_shape = x.shape[axis]
+
+    # wrap
+    if mode == "wrap":
+        indices = ((indices % x_shape) + x_shape) % x_shape
+    # clip
+    else:
+        indices = torch.clip(indices, 0, x_shape - 1)
+
+    rank = len(x.shape)
+    axis = ((axis % rank) + rank) % rank
+    slicer = ([slice(None)] * axis) + [indices]
+    slicer = tuple(slicer)
+
+    return x[slicer]
+
+
+def take(
+    x: Union[int, List, torch.Tensor],
+    indices: Union[int, List, torch.Tensor],
+    /,
+    *,
+    axis: Optional[int] = None,
+    mode: str = "clip",
+    fill_value: Optional[Number] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if mode not in ["raise", "wrap", "clip", "fill"]:
+        raise ValueError("mode must be one of 'clip', 'raise', 'wrap', or 'fill'")
+    if not isinstance(x, torch.Tensor):
+        x = torch.tensor(x)
+    if len(x.shape) == 0:
+        x = torch.tensor([x])
+    if not isinstance(indices, torch.Tensor):
+        indices = torch.tensor(indices)
+    if indices.dtype.is_floating_point:
+        indices = indices.to(torch.int64)
+
+    # raise
+    if mode == "raise":
+        mode = "clip"
+        if ivy.exists(axis):
+            try:
+                x_shape = x.shape[axis]
+            except Exception:
+                rank = len(x.shape)
+                raise IndexError(
+                    "IndexError: Dimension out of range"
+                    f"(expected to be in range of[-{rank}, {rank-1}]"
+                    f", but got {axis})"
+                )
+        else:
+            x_shape = torch.prod(torch.tensor(x.shape))
+
+        bound_check = (indices < -x_shape) | (indices >= x_shape)
+        if torch.any(torch.tensor(bound_check)):
+            raise IndexError("index out of range in self")
+
+    # clip, wrap
+    if mode != "fill":
+        ret = _take_with_axis(x, indices, axis=axis, mode=mode)
+        if ivy.exists(out):
+            ivy.inplace_update(out, ret)
+        return ret
+
+    # fill
+    x_dtype = x.dtype
+    if fill_value is None:
+        # set according to jax behaviour
+        # https://tinyurl.com/66jn68uj
+        if x_dtype.is_floating_point or x_dtype.is_complex:
+            # NaN for inexact types
+            fill_value = float("NaN")
+        else:
+            if x_dtype == torch.bool:
+                # True for booleans
+                fill_value = True
+            elif str(x_dtype).split(".")[-1].startswith("u"):
+                # the largest positive value for unsigned types
+                fill_value = torch.iinfo(x_dtype).max
+            else:
+                # the largest negative value for signed types
+                fill_value = torch.iinfo(x_dtype).min
+
+    fill_value = torch.tensor(fill_value, dtype=x_dtype)
+    x_shape = x.shape
+    ret = _take_with_axis(x, indices, axis=axis, mode="wrap")
+
+    if len(ret.shape) == 0:
+        # if scalar (paddle scalar), scalar fill (replace)
+        if torch.any(torch.tensor(indices != 0)):
+            ret = fill_value
+    else:
+        if ivy.exists(axis):
+            rank = len(x.shape)
+            axis = ((axis % rank) + rank) % rank
+            x_shape = x_shape[axis]
+        else:
+            axis = 0
+            x_shape = torch.prod(x_shape)
+
+        bound_check = torch.tensor((indices < -x_shape) | (indices >= x_shape))
+
+        if torch.any(bound_check):
+            if axis > 0:
+                bound_check = torch.broadcast_to(
+                    bound_check, (*x.shape[:axis], *bound_check.shape)
+                )
+            ret[bound_check] = fill_value
+
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+
+    return ret
 
 
 def trim_zeros(a: torch.Tensor, /, *, trim: Optional[str] = "bf") -> torch.Tensor:

@@ -259,6 +259,11 @@ class Shape(Sequence):
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
 
+    def __deepcopy__(self, memo):
+        ret = self.__class__.__new__(self.__class__)
+        ret._shape = self.shape
+        return ret
+
     def __iter__(self):
         return iter(self._shape)
 
@@ -436,7 +441,7 @@ class Shape(Sequence):
 
     def with_rank(self, rank):
         try:
-            return self.merge_with(unknown_shape(rank=rank))
+            return self.merge_with(self.unknown_shape(rank=rank))
         except ValueError:
             raise ValueError(f"Shape {self} must have rank {rank}")
 
@@ -475,8 +480,7 @@ class Shape(Sequence):
             shape is not None for shape in self._shape
         )
 
-    property
-
+    @property
     def num_elements(self):
         if not self.is_fully_defined():
             return None
@@ -1008,7 +1012,8 @@ ivy.array_significant_figures = (
 
 
 def set_array_significant_figures(sig_figs):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
@@ -1048,7 +1053,8 @@ ivy.array_decimal_values = (
 
 
 def set_array_decimal_values(dec_vals):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
@@ -1074,7 +1080,8 @@ ivy.warning_level = warning_level_stack[-1] if warning_level_stack else "ivy_onl
 
 
 def set_warning_level(warn_level):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
@@ -1106,7 +1113,8 @@ ivy.nan_policy = nan_policy_stack[-1] if nan_policy_stack else "nothing"
 
 
 def set_nan_policy(warn_level):
-    """Summary.
+    """
+    Summary.
 
     Parameters
     ----------
@@ -1139,8 +1147,7 @@ ivy.dynamic_backend = dynamic_backend_stack[-1] if dynamic_backend_stack else Tr
 
 
 def set_dynamic_backend(flag):
-    """Set the global dynamic backend setting to the provided flag (True or
-    False)"""
+    """Set the global dynamic backend setting to the provided flag (True or False)"""
     global dynamic_backend_stack
     if flag not in [True, False]:
         raise ValueError("dynamic_backend must be a boolean value (True or False)")
@@ -1149,7 +1156,8 @@ def set_dynamic_backend(flag):
 
 
 def unset_dynamic_backend():
-    """Remove the current dynamic backend setting.
+    """
+    Remove the current dynamic backend setting.
 
     Also restore the previous setting (if any)
     """
@@ -1458,7 +1466,8 @@ class LoggingMode:
         self.logging_mode_stack.append(logging.WARNING)
 
     def set_logging_mode(self, mode):
-        """Set the current logging mode for Ivy.
+        """
+        Set the current logging mode for Ivy.
 
         Possible modes are 'DEBUG', 'INFO', 'WARNING', 'ERROR'.
         """
@@ -1471,8 +1480,7 @@ class LoggingMode:
         self.logging_mode_stack.append(mode)
 
     def unset_logging_mode(self):
-        """Remove the most recently set logging mode, returning to the previous
-        one."""
+        """Remove the most recently set logging mode, returning to the previous one."""
         if len(self.logging_mode_stack) > 1:
             # Remove the current mode
             self.logging_mode_stack.pop()

@@ -14,7 +14,7 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def logit(
     x: paddle.Tensor,
@@ -44,7 +44,7 @@ def logit(
     ).cast(x.dtype)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, backend_version)
 def thresholded_relu(
     x: paddle.Tensor,
     /,
@@ -56,7 +56,7 @@ def thresholded_relu(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64")}, backend_version
+    {"2.5.2 and below": ("complex", "float32", "float64")}, backend_version
 )
 def relu6(
     x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
@@ -67,7 +67,7 @@ def relu6(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64")}, backend_version
+    {"2.5.2 and below": ("complex", "float32", "float64")}, backend_version
 )
 def logsigmoid(
     input: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
@@ -82,7 +82,7 @@ def logsigmoid(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64")}, backend_version
+    {"2.5.2 and below": ("complex", "float32", "float64")}, backend_version
 )
 def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -101,7 +101,7 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64")}, backend_version
+    {"2.5.2 and below": ("complex", "float32", "float64")}, backend_version
 )
 def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -110,7 +110,7 @@ def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64")}, backend_version
+    {"2.5.2 and below": ("complex", "float32", "float64")}, backend_version
 )
 def elu(
     x: paddle.Tensor, /, *, alpha: float = 1.0, out: Optional[paddle.Tensor] = None
@@ -128,7 +128,7 @@ def elu(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
 )
 def hardtanh(
     x: paddle.Tensor,
@@ -154,7 +154,7 @@ def hardtanh(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
 )
 def tanhshrink(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
@@ -167,7 +167,44 @@ def tanhshrink(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+)
+def threshold(
+    x: paddle.Tensor,
+    /,
+    *,
+    threshold: float,
+    value: float,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return paddle_backend.where(paddle_backend.greater(x, threshold), x, value)
+    if paddle.is_complex(x):
+        return paddle_backend.where(paddle_backend.greater(x, threshold), x, value)
+    x = x.cast("float32")
+    return paddle_backend.where(paddle_backend.greater(x, threshold), x, value).cast(
+        x.dtype
+    )
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.2 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+)
+def softshrink(
+    x: paddle.Tensor, /, *, lambd: float = 0.5, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return F.softshrink(x, threshold=lambd)
+    if paddle.is_complex(x):
+        return paddle.complex(
+            F.softshrink(x.real(), threshold=lambd),
+            F.softshrink(x.img(), threshold=lambd),
+        )
+    return F.softshrink(x.cast("float32"), threshold=lambd).cast(x.dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.2 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
 )
 def celu(
     x: paddle.Tensor,
@@ -182,7 +219,7 @@ def celu(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("uint16", "float16", "float32", "float64"),
         }
@@ -198,3 +235,20 @@ def scaled_tanh(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.stanh(x, scale_a=beta, scale_b=alpha)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.2 and below": {"cpu": ("float16", "bfloat16")}},
+    backend_version,
+)
+def hardshrink(
+    x: paddle.Tensor, /, *, lambd: float = 0.5, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return F.hardshrink(x, threshold=lambd)
+    if paddle.is_complex(x):
+        return paddle.complex(
+            F.hardshrink(x.real(), threshold=lambd),
+            F.hardshrink(x.img(), threshold=lambd),
+        )
+    return F.hardshrink(x.cast("float32"), threshold=lambd).cast(x.dtype)

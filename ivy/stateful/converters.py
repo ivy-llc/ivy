@@ -1,5 +1,7 @@
 """Converters from Native Modules to Ivy Modules."""
+
 # global
+import importlib
 from typing import Optional, Dict, List
 import re  # noqa
 import inspect
@@ -19,8 +21,9 @@ def to_ivy_module(
     devices=None,
     inplace_update=False,
 ):
-    """Convert an instance of a trainable module from a native framework into a
-    trainable ivy.Module instance.
+    """
+    Convert an instance of a trainable module from a native framework into a trainable
+    ivy.Module instance.
 
     Parameters
     ----------
@@ -73,7 +76,8 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """Convert a Haiku module instance to an Ivy module instance.
+        """
+        Convert a Haiku module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -166,7 +170,8 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """Convert a Flax module instance to an Ivy module instance.
+        """
+        Convert a Flax module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -255,7 +260,8 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """Convert a Keras module instance to an Ivy module instance.
+        """
+        Convert a Keras module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -317,7 +323,8 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """Convert a Paddle layer instance to an Ivy module instance.
+        """
+        Convert a Paddle layer instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -373,7 +380,8 @@ class ModuleConverters:
         devices=None,
         inplace_update=False,
     ):
-        """Convert a Torch module instance to an Ivy module instance.
+        """
+        Convert a Torch module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -430,3 +438,86 @@ class ModuleConverters:
             inplace_update=inplace_update,
             **i_kwargs,
         )
+
+    def to_keras_module(self):
+        class KerasModel(importlib.import_module("tensorflow").keras.Model):
+            def __init__(self, ivy_module):
+                super(KerasModel, self).__init__()
+                self._ivy_module = ivy_module
+                self._parameters_converted = False
+                self._assign_variables()
+
+            def _assign_variables(self):
+                ivy.set_backend("tensorflow")
+
+                self._ivy_module.v = self._ivy_module.v.cont_map(
+                    lambda x, kc: (
+                        x.ivy_array.data
+                        if hasattr(x, "_ivy_array")
+                        else ivy.to_native(x, nested=False, cont_inplace=True)
+                    )
+                )
+
+                self._ivy_module.v = self._ivy_module.v.cont_map(
+                    lambda x, kc: ivy.array_to_new_backend(x, native=True)
+                )
+                self._ivy_module.v.cont_map(
+                    lambda x, kc: self.add_weight(
+                        name=kc, shape=x.shape, dtype=x.dtype, trainable=True
+                    )
+                )
+                model_weights = []
+                self._ivy_module.v.cont_map(
+                    lambda x, kc: model_weights.append(ivy.to_numpy(x))
+                )
+                self.set_weights(model_weights)
+
+                ivy.previous_backend()
+
+            def call(self, *args, **kwargs):
+                if not self._parameters_converted:
+                    params = {
+                        re.sub(r":([0-9]+)$", "", param.name).replace(
+                            f"{self.name}/", ""
+                        ): param
+                        for param in self.variables
+                    }
+                    self._ivy_module.v = self._ivy_module.v.cont_map(
+                        lambda _, kc: params[kc]
+                    )
+                    self._parameters_converted = True
+                if "training" in kwargs:
+                    del kwargs["training"]
+                ret = self._ivy_module(*args, **kwargs)
+                ret = ivy.nested_map(
+                    lambda x: (
+                        x.ivy_array.data
+                        if hasattr(x, "_ivy_array")
+                        else ivy.to_native(x, nested=False)
+                    ),
+                    ret,
+                )
+                return ret
+
+            def __call__(self, *args, **kwargs):
+                ivy.set_backend("tensorflow")
+                args = ivy.nest_array_to_new_backend(args, native=True)
+                kwargs = ivy.nest_array_to_new_backend(kwargs, native=True)
+                ivy.previous_backend()
+
+                return super(KerasModel, self).__call__(*args, **kwargs)
+
+            def to_device(self, device):
+                self._ivy_module._module_graph.to_device(device)
+                model_weights = ivy.nested_map(
+                    lambda x: (
+                        ivy.to_native(ivy.to_device(x, device))
+                        if ivy.is_array(x)
+                        else x
+                    ),
+                    self.weights,
+                )
+                self.set_weights(model_weights)
+
+        keras_module = KerasModel(self)
+        return keras_module

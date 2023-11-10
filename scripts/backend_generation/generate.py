@@ -94,7 +94,7 @@ def _get_user_input(fn, *args, **kwargs):
                 break
         except KeyboardInterrupt:
             print("Aborted.")
-            exit()
+            sys.exit()
 
 
 def _update_native_config_value(key):

@@ -426,7 +426,7 @@ class SparseArray(ivy.Array):
             )
 
         # initialize parent class
-        super(SparseArray, self).__init__(self)
+        super().__init__(self)
 
     def _init_data(self, data):
         if ivy.is_ivy_sparse_array(data):
