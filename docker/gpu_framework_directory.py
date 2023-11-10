@@ -59,6 +59,11 @@ def install_pkg(path, pkg, base="fw/"):
             " --no-cache-dir",
             shell=True,
         )
+    elif pkg.split("==")[0] if "==" in pkg else pkg == "tensorflow":
+        subprocess.run(
+            f"yes |pip install tensorflow[and-cuda] --target {path}",
+            shell=True,
+        )
     else:
         subprocess.run(
             f"yes |pip3 install --upgrade {pkg} --target"

@@ -17,11 +17,10 @@ def _handle_padding_shape(padding, n, mode):
             for i in range(int(len(padding) / 2) - 1, -1, -1)
         ]
     )
-    while len(padding) < n:
-        if mode == "circular":
-            padding = padding + ((0, 0),)
-        else:
-            padding = ((0, 0),) + padding
+    if mode == "circular":
+        padding = padding + ((0, 0),) * (n - len(padding))
+    else:
+        padding = ((0, 0),) * (n - len(padding)) + padding
     if mode == "circular":
         padding = tuple(list(padding)[::-1])
     return padding
@@ -461,7 +460,7 @@ def pixel_unshuffle(input, downscale_factor):
             f"pixel_unshuffle expects 4D input, but got input with sizes {input_shape}"
         ),
         as_array=False,
-    ),
+    )
 
     b = input_shape[0]
     c = input_shape[1]
