@@ -7,7 +7,7 @@ repos:
       - id: check-toml
       - id: end-of-file-fixer
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 23.10.1
+    rev: 23.11.0
     hooks:
       - id: black
         language_version: python3

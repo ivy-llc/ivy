@@ -37,9 +37,9 @@ def unique_all(
     if x.dtype.is_floating and tf.reduce_any(tf.math.is_nan(values)):
         unique_nan = tf.math.is_nan(values)
         nan_index = tf.reshape(tf.where(tf.math.is_nan(x)), [-1])
-        non_nan_index = tf.experimental.numpy.array(
-            [tensor_list.index(val) for val in values if not tf.math.is_nan(val)]
-        )
+        non_nan_index = tf.experimental.numpy.array([
+            tensor_list.index(val) for val in values if not tf.math.is_nan(val)
+        ])
         indices = tf.experimental.numpy.full(
             fill_value=float("NaN"), shape=values.shape
         ).numpy()
@@ -58,9 +58,9 @@ def unique_all(
     if by_value:
         values_ = tf.experimental.numpy.moveaxis(values, axis, 0)
         values_ = tf.reshape(values_, (values_.shape[0], -1))
-        sort_idx = tf.stack(
-            [i[0] for i in sorted(enumerate(values_), key=lambda x: tuple(x[1]))]
-        )
+        sort_idx = tf.stack([
+            i[0] for i in sorted(enumerate(values_), key=lambda x: tuple(x[1]))
+        ])
         sort_idx = tf.cast(sort_idx, tf.int32)
         values = tf.gather(values, sort_idx, axis=axis)
         counts = tf.gather(counts, sort_idx)

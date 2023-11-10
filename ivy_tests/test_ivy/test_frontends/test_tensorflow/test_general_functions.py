@@ -228,13 +228,11 @@ def _multiple_shape_helper(draw):
 @st.composite
 def _pad_helper(draw):
     mode = draw(
-        st.sampled_from(
-            [
-                "CONSTANT",
-                "REFLECT",
-                "SYMMETRIC",
-            ]
-        )
+        st.sampled_from([
+            "CONSTANT",
+            "REFLECT",
+            "SYMMETRIC",
+        ])
     )
     dtype, input, shape = draw(
         helpers.dtype_and_values(
@@ -695,13 +693,11 @@ def test_tensorflow_convert_to_tensor(
 # einsum
 @handle_frontend_test(
     fn_tree="tensorflow.einsum",
-    eq_n_op_n_shp=st.sampled_from(
-        [
-            ("ii", (np.arange(25).reshape(5, 5),), ()),
-            ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
-            ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
-        ]
-    ),
+    eq_n_op_n_shp=st.sampled_from([
+        ("ii", (np.arange(25).reshape(5, 5),), ()),
+        ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
+        ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
+    ]),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_tensorflow_einsum(
