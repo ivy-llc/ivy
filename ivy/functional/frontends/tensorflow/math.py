@@ -454,7 +454,7 @@ def minimum(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16",)}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("bfloat16",)}, "paddle")
 def mod(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.remainder(x, y)
@@ -845,7 +845,7 @@ def xlogy(x, y, name=None):
 
 @to_ivy_arrays_and_back
 def zero_fraction(value, name="zero_fraction"):
-    zero = ivy.zeros(tuple(list(value.shape)), dtype=ivy.float32)
+    zero = ivy.zeros(tuple(value.shape), dtype=ivy.float32)
     x = ivy.array(value, dtype=ivy.float32)
     count_zero = ivy.sum(ivy.equal(x, zero))
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))

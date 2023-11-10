@@ -37,7 +37,7 @@ def to_device(
     elif (device.is_gpu_place() and not x.place.is_gpu_place()) or (
         x.place.is_gpu_place()
         and device.is_gpu_place()
-        and x.gpu_device_id() != device.gpu_device_id()
+        and x.place.gpu_device_id() != device.gpu_device_id()
     ):
         return x.cuda(device.gpu_device_id())
     else:

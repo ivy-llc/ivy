@@ -46,7 +46,7 @@ def resize(
     else:
         new_height, new_width = size
     if method == "bicubic":
-        method = "bicubic_tensorflow"
+        method = "tf_bicubic"
     elif method == "area":
         method = "tf_area"
     image = ivy.interpolate(

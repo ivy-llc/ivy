@@ -200,7 +200,7 @@ def pytest_configure(config):
             if "/" in backend_str:
                 backend_str = backend_str.split("/")[0]
             if (
-                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES.keys()
+                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES
                 and device.partition(":")[0]
                 in UNSUPPORTED_FRAEMWORK_DEVICES[backend_str]
             ):

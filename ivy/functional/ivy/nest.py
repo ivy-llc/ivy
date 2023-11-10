@@ -245,7 +245,7 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
     >>> print(nest)
     [[1, 2], [3, 99, 4]]
     """
-    if isinstance(nest, dict) or isinstance(nest, ivy.Container):
+    if isinstance(nest, (dict, ivy.Container)):
         if len(index) == 1:
             key = index[0]
             if isinstance(nest, dict):
@@ -1417,6 +1417,7 @@ def nested_multi_map(
         The configuration for the nests. Default is the same as nest0.
     to_ivy
         convert the output to ivy_arrays. Default is ``True``
+
     Returns
     -------
         nest containing the result of the function. The structure of the output is the

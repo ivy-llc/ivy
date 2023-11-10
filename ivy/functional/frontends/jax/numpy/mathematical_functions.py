@@ -90,7 +90,7 @@ def ceil(x, /):
     return ivy.ceil(x)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def clip(a, a_min=None, a_max=None, out=None):
     return ivy.array(ivy.clip(a, a_min, a_max), dtype=a.dtype)
@@ -322,7 +322,7 @@ def einsum_path(subscripts, *operands, optimize="greedy"):
     # Build contraction tuple (positions, gemm, einsum_str, remaining)
     for cnum, contract_inds in enumerate(path):
         # Make sure we remove inds from right to left
-        contract_inds = tuple(sorted(list(contract_inds), reverse=True))
+        contract_inds = tuple(sorted(contract_inds, reverse=True))
 
         contract = find_contraction(contract_inds, input_sets, output_set)
         out_inds, input_sets, idx_removed, idx_contract = contract

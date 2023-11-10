@@ -25,9 +25,6 @@ class SupportedDtypes:
     valid_uint_dtypes: List[str]
     invalid_uint_dtypes: List[str]
 
-    valid_uint_dtypes: List[str]
-    invalid_uint_dtypes: List[str]
-
     valid_float_dtypes: List[str]
     invalid_float_dtypes: List[str]
 

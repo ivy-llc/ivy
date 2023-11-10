@@ -441,7 +441,7 @@ class Shape(Sequence):
 
     def with_rank(self, rank):
         try:
-            return self.merge_with(unknown_shape(rank=rank))
+            return self.merge_with(self.unknown_shape(rank=rank))
         except ValueError:
             raise ValueError(f"Shape {self} must have rank {rank}")
 
@@ -480,8 +480,7 @@ class Shape(Sequence):
             shape is not None for shape in self._shape
         )
 
-    property
-
+    @property
     def num_elements(self):
         if not self.is_fully_defined():
             return None

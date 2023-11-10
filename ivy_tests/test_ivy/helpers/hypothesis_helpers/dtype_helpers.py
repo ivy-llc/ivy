@@ -354,9 +354,9 @@ def array_dtypes(
         else:
             pairs = ivy.promotion_table.keys()
         # added to avoid complex dtypes from being sampled if they are not available.
-        pairs = [pair for pair in pairs if all([d in available_dtypes for d in pair])]
+        [pair for pair in pairs if all(d in available_dtypes for d in pair)]
         available_dtypes = [
-            pair for pair in pairs if not any([d in pair for d in unwanted_types])
+            pair for pair in pairs if not any(d in pair for d in unwanted_types)
         ]
         dtypes = list(draw(st.sampled_from(available_dtypes)))
         if num_arrays > 2:
