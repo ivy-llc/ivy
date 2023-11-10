@@ -17,6 +17,10 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_supported_dtypes
+
+# noinspection PyProtectedMember
+from . import backend_version
 
 
 def moveaxis(
@@ -399,7 +403,7 @@ def expand(
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
-            shape[i] = int(np.prod(x.shape) / np.prod([s for s in shape if s > 0]))
+            shape[i] = x.shape[i]
     return np.broadcast_to(x, tuple(shape))
 
 
@@ -479,7 +483,117 @@ def fill_diagonal(
     return a
 
 
+@_scalar_output_to_0d_array
+def take(
+    x: Union[int, List, np.ndarray],
+    indices: Union[int, List, np.ndarray],
+    /,
+    *,
+    axis: Optional[int] = None,
+    mode: str = "raise",
+    fill_value: Optional[Number] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if mode not in ["raise", "wrap", "clip", "fill"]:
+        raise ValueError("mode must be one of 'clip', 'raise', 'wrap', or 'fill'")
+
+    # raise, clip, wrap
+    if mode != "fill":
+        return np.take(x, indices, axis=axis, mode=mode, out=out)
+
+    if not isinstance(x, np.ndarray):
+        x = np.array(x)
+    if len(x.shape) == 0:
+        x = np.array([x])
+    if not isinstance(indices, np.ndarray):
+        indices = np.array(indices)
+    if np.issubdtype(indices.dtype, np.floating):
+        indices = indices.astype(np.int64)
+
+    # fill
+    x_dtype = x.dtype
+    if fill_value is None:
+        # set according to jax behaviour
+        # https://tinyurl.com/66jn68uj
+        # NaN for inexact types (let fill_value as None)
+        if not np.issubdtype(x_dtype, np.inexact):
+            if np.issubdtype(x_dtype, np.bool_):
+                # True for booleans
+                fill_value = True
+            elif np.issubdtype(x_dtype, np.unsignedinteger):
+                # the largest positive value for unsigned types
+                fill_value = np.iinfo(x_dtype).max
+            else:
+                # the largest negative value for signed types
+                fill_value = np.iinfo(x_dtype).min
+
+    fill_value = np.array(fill_value, dtype=x_dtype)
+    x_shape = x.shape
+    ret = np.take(x, indices, axis=axis, mode="wrap")
+
+    if len(ret.shape) == 0:
+        # if scalar, scalar fill (replace)
+        if np.any(indices != 0):
+            ret = fill_value
+    else:
+        if ivy.exists(axis):
+            rank = len(x.shape)
+            axis = ((axis % rank) + rank) % rank
+            x_shape = x_shape[axis]
+        else:
+            axis = 0
+            x_shape = np.prod(x_shape)
+
+        bound_check = (indices < -x_shape) | (indices >= x_shape)
+
+        if np.any(bound_check):
+            if axis > 0:
+                bound_check = np.broadcast_to(
+                    bound_check, (*x.shape[:axis], *bound_check.shape)
+                )
+            ret[bound_check] = fill_value
+
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+
+    return ret
+
+
+take.support_native_out = True
+
+
+def trim_zeros(
+    a: np.ndarray,
+    /,
+    *,
+    trim: Optional[str] = "fb",
+) -> np.ndarray:
+    return np.trim_zeros(a, trim=trim)
+
+
 def column_stack(
     arrays: Sequence[np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.column_stack(arrays)
+
+
+@with_supported_dtypes(
+    {"1.25.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
+def put_along_axis(
+    arr: np.ndarray,
+    indices: np.ndarray,
+    values: Union[int, np.ndarray],
+    axis: int,
+    /,
+    *,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
+    out: Optional[np.ndarray] = None,
+):
+    ret = np.put_along_axis(arr.copy(), indices, values, axis)
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
+
+
+put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
+    "replace",
+]

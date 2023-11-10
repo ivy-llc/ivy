@@ -54,9 +54,7 @@ def mean(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return ivy.astype(
-        np.mean(x, axis=axis, keepdims=keepdims, out=out), x.dtype, copy=False
-    )
+    return np.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype, out=out)
 
 
 mean.support_native_out = True
@@ -171,7 +169,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.25.2 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.26.1 and below": ("bfloat16",)}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,
@@ -183,10 +181,7 @@ def cumprod(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        if x.dtype == "bool":
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
+        dtype = _infer_dtype(x.dtype)
     if not (exclusive or reverse):
         return np.cumprod(x, axis, dtype=dtype, out=out)
     elif exclusive and reverse:
@@ -218,10 +213,6 @@ def cumsum(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        if x.dtype == "bool":
-            dtype = ivy.default_int_dtype(as_native=True)
-        if ivy.is_int_dtype(x.dtype):
-            dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
         dtype = _infer_dtype(x.dtype)
 
     if exclusive or reverse:

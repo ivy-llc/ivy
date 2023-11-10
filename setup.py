@@ -18,11 +18,68 @@ __version__ = None
 import setuptools
 from setuptools import setup
 from pathlib import Path
+from pip._vendor.packaging import tags
+from urllib import request
+import os
+import json
 import re
+
+
+def _get_paths_from_binaries(binaries, root_dir=""):
+    """Get all the paths from the binaries.json into a list."""
+    paths = []
+    if isinstance(binaries, str):
+        return [os.path.join(root_dir, binaries)]
+    elif isinstance(binaries, dict):
+        for k, v in binaries.items():
+            paths += _get_paths_from_binaries(v, os.path.join(root_dir, k))
+    else:
+        for i in binaries:
+            paths += _get_paths_from_binaries(i, root_dir)
+    return paths
 
 
 def _strip(line):
     return line.split(" ")[0].split("#")[0].split(",")[0]
+
+
+# Download all relevant binaries in binaries.json
+binaries_dict = json.load(open("binaries.json"))
+available_configs = json.load(open("available_configs.json"))
+binaries_paths = _get_paths_from_binaries(binaries_dict)
+version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
+terminate = False
+fixed_tag = os.environ["TAG"] if "TAG" in os.environ else None
+all_tags = list(tags.sys_tags())
+python_tag, plat_name, options = None, None, None
+if fixed_tag:
+    python_tag, _, plat_name = str(fixed_tag).split("-")
+    options = {"bdist_wheel": {"python_tag": python_tag, "plat_name": plat_name}}
+    all_tags = [fixed_tag]
+
+# download binaries for the tag with highest precedence
+for tag in all_tags:
+    if terminate:
+        break
+    for path in binaries_paths:
+        module = path.split(os.sep)[1]
+        if os.path.exists(path) or str(tag) not in available_configs[module]:
+            continue
+        folders = path.split(os.sep)
+        folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
+        file_name = f"{file_path[:-3]}_{tag}.so"
+        search_path = f"{module}/{file_name}"
+        try:
+            response = request.urlopen(
+                f"https://github.com/unifyai/binaries/raw/{version}/{search_path}",
+                timeout=40,
+            )
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, "wb") as f:
+                f.write(response.read())
+            terminate = path == binaries_paths[-1]
+        except request.HTTPError:
+            break
 
 
 this_directory = Path(__file__).parent
@@ -70,6 +127,10 @@ setup(
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
-    classifiers=["License :: OSI Approved :: Apache Software License"],
+    python_requires=">=3.8,<=3.11",
+    classifiers=[
+        "License :: OSI Approved :: Apache Software License",
+    ],
     license="Apache 2.0",
+    options=options,
 )

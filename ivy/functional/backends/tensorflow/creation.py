@@ -26,7 +26,7 @@ from . import backend_version
 
 @with_unsupported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.14.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -41,7 +41,7 @@ def arange(
     step: float = 1,
     *,
     dtype: Optional[tf.DType] = None,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if stop is None:
@@ -86,25 +86,23 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[tf.DType] = None,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     # convert the input to a tensor using the appropriate function
-    try:
-        ret = tf.convert_to_tensor(obj, dtype)
-    except (TypeError, ValueError):
-        obj = (
-            obj if isinstance(obj, tf.Tensor) else tf.convert_to_tensor(obj, tf.float64)
-        )
-        ret = tf.cast(obj, dtype)
-    return tf.identity(ret) if copy else ret
+    with tf.device(device):
+        if tf.is_tensor(obj):
+            ret = tf.cast(obj, dtype) if obj.dtype != dtype else obj
+        else:
+            ret = tf.convert_to_tensor(obj, dtype)
+        return tf.identity(ret) if (copy or ret.device != device) else ret
 
 
 def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.empty(shape, dtype)
@@ -115,13 +113,13 @@ def empty_like(
     /,
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("uint16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -130,7 +128,7 @@ def eye(
     k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if n_cols is None:
@@ -171,17 +169,32 @@ def eye(
         return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
+def to_dlpack(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+):
+    if isinstance(x, tf.Variable):
+        x = x.read_value()
+    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
+    return dlcapsule
+
+
 # noinspection PyShadowingNames
 def from_dlpack(
-    x: Union[tf.Tensor, tf.Variable],
+    x,
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(x, tf.Variable):
         x = x.read_value()
-    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
-    return tf.experimental.dlpack.from_dlpack(dlcapsule)
+    if hasattr(x, "__dlpack__"):
+        capsule = x.__dlpack__()
+    else:
+        capsule = x
+    return tf.experimental.dlpack.from_dlpack(capsule)
 
 
 def full(
@@ -189,7 +202,7 @@ def full(
     fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
@@ -202,7 +215,7 @@ def full_like(
     fill_value: Number,
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
@@ -221,7 +234,7 @@ def linspace(
     axis: Optional[int] = None,
     endpoint: bool = True,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if axis is None:
@@ -240,7 +253,7 @@ def linspace(
     return tf.cast(ans, dtype)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
 def meshgrid(
     *arrays: Union[tf.Tensor, tf.Variable],
     sparse: bool = False,
@@ -267,7 +280,7 @@ def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.ones(shape, dtype)
@@ -278,13 +291,13 @@ def ones_like(
     /,
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.ones_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
 def tril(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -297,7 +310,7 @@ def tril(
     return tf.experimental.numpy.tril(x, k)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
 def triu(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -312,7 +325,7 @@ def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.zeros(shape, dtype)
@@ -323,7 +336,7 @@ def zeros_like(
     /,
     *,
     dtype: tf.DType,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.zeros_like(x, dtype=dtype)
@@ -337,14 +350,20 @@ array = asarray
 
 
 def copy_array(
-    x: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.Tensor, tf.Variable, tf.TensorArray],
     *,
     to_ivy_array: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(x, tf.TensorArray):
+        x_wrapped = x.stack()
+        y = tf.TensorArray(x.dtype, x.size())
+        x = y.unstack(ivy.copy_array(x_wrapped))
+    else:
+        x = tf.identity(x)
     if to_ivy_array:
-        return ivy.to_ivy(tf.identity(x))
-    return tf.identity(x)
+        return ivy.to_ivy(x)
+    return x
 
 
 def one_hot(
@@ -356,7 +375,7 @@ def one_hot(
     off_value: Optional[Number] = None,
     axis: Optional[int] = None,
     dtype: Optional[tf.DType] = None,
-    device: str,
+    device: str = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.one_hot(
@@ -364,7 +383,7 @@ def one_hot(
     )
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("uint32", "uint64")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("uint32", "uint64")}, backend_version)
 def frombuffer(
     buffer: bytes,
     dtype: Optional[tf.DType] = float,
@@ -391,7 +410,7 @@ def triu_indices(
     k: int = 0,
     /,
     *,
-    device: str,
+    device: str = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable]]:
     n_cols = n_rows if n_cols is None else n_cols
 

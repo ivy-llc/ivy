@@ -1027,7 +1027,7 @@ def test_jax_multivariate_normal(
     spd = np.matmul(cov.T, cov) + np.identity(cov.shape[0])
 
     def call():
-        helpers.test_frontend_function(
+        return helpers.test_frontend_function(
             input_dtypes=input_dtype + [shared_dtype],
             frontend=frontend,
             test_flags=test_flags,
@@ -1584,7 +1584,7 @@ def test_jax_t(
 
 @pytest.mark.xfail
 @handle_frontend_test(
-    fn_tree="jax.random.ball",
+    fn_tree="jax.random.uniform",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
         min_value=0,

@@ -12,7 +12,7 @@ from . import backend_version
 # use numpy implementation with ivy functions
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -42,9 +42,9 @@ def batch_norm(
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     if x.dtype not in [paddle.float32, paddle.float64]:
-        x, mean, variance, scale, offset = [
+        x, mean, variance, scale, offset = (
             t.cast("float32") for t in [x, mean, variance, scale, offset]
-        ]
+        )
     runningmean = mean
     runningvariance = variance
     data_formats = ["NC", "NCL", "NCHW", "NCDHW", "NLC", "NHWC", "NDHWC"]
@@ -57,8 +57,8 @@ def batch_norm(
         )
     except IndexError:
         raise IndexError(
-            "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', "
-            "'NLC', 'NHWC', 'NDHWC' but receive {}".format(data_format)
+            "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', 'NLC', 'NHWC',"
+            f" 'NDHWC' but receive {data_format}"
         )
 
     with ivy.ArrayMode(False):
@@ -105,7 +105,7 @@ batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
 )
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, backend_version)
 def l1_normalize(
     x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
@@ -155,7 +155,11 @@ def instance_norm(
             paddle.Tensor,
         ]
     ] = None,
-) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor,]:
+) -> Tuple[
+    paddle.Tensor,
+    paddle.Tensor,
+    paddle.Tensor,
+]:
     raise IvyNotImplementedException()
 
 
