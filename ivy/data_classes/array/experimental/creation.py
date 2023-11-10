@@ -352,9 +352,12 @@ class _ArrayWithCreationExperimental(abc.ABC):
         ivy.array([[2.0, 2.0, 2.0],[2.0, 2.0, 2.0],[2.0, 2.0, 2.0]])
         """
         counts = ivy.unsorted_segment_sum(
-            ivy.ones_like(segment_ids), segment_ids, num_segments
+            ivy.ones_like(self), segment_ids, num_segments
         )
-        return ivy.sqrt(counts)
+
+        sqrt_counts = ivy.sqrt(counts)
+
+        return sqrt_counts
 
 
 def polyval(
