@@ -177,12 +177,10 @@ class MaskedArray(np_frontend.ndarray):
                 return masked_print_options
             return str(self._data.to_list())
         if ivy.any(self._mask):
-            return str(
-                [
-                    masked_print_options if mask else x
-                    for x, mask in zip(self._data.to_list(), self._mask.to_list())
-                ]
-            )
+            return str([
+                masked_print_options if mask else x
+                for x, mask in zip(self._data.to_list(), self._mask.to_list())
+            ])
         return str(self._data.to_list())
 
 

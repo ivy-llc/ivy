@@ -111,21 +111,19 @@ def _get_input_and_block(draw):
             max_size=10,
         )
     )
-    x_dtypes, xs = zip(
-        *[
-            draw(
-                helpers.dtype_and_values(
-                    available_dtypes=helpers.get_dtypes("valid"),
-                    min_num_dims=1,
-                    max_num_dims=5,
-                    min_dim_size=2,
-                    max_dim_size=10,
-                    shape=shape,
-                )
+    x_dtypes, xs = zip(*[
+        draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"),
+                min_num_dims=1,
+                max_num_dims=5,
+                min_dim_size=2,
+                max_dim_size=10,
+                shape=shape,
             )
-            for shape in shapes
-        ]
-    )
+        )
+        for shape in shapes
+    ])
     return x_dtypes, xs
 
 
@@ -230,20 +228,18 @@ def _get_input_and_two_swapabble_axes(draw):
 @st.composite
 def _pad_helper(draw):
     mode = draw(
-        st.sampled_from(
-            [
-                "constant",
-                "edge",
-                "linear_ramp",
-                "maximum",
-                "mean",
-                "median",
-                "minimum",
-                "reflect",
-                "symmetric",
-                "wrap",
-            ]
-        )
+        st.sampled_from([
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+        ])
     )
     if mode == "median":
         dtypes = "float"
