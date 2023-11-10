@@ -306,9 +306,9 @@ def depthwise_conv2d(
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     fc = filter.shape[-2]
-    filter = filter.reshape(
-        [*filter.shape[0:2], 1, filter.shape[-2] * filter.shape[-1]]
-    )
+    filter = filter.reshape([
+        *filter.shape[0:2], 1, filter.shape[-2] * filter.shape[-1]
+    ])
     return ivy.conv_general_dilated(
         input,
         filter,

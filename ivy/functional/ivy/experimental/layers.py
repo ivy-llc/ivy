@@ -1918,18 +1918,14 @@ def interpolate(
                     right = int(math.ceil(p_j + 2))
                     top = int(math.floor(p_i - 2))
                     bottom = int(math.ceil(p_i + 2))
-                    kernel_w = ivy.array(
-                        [
-                            _mitchellcubic_kernel((p_j - j) * scale_w)
-                            for i in range(left, right)
-                        ]
-                    )
-                    kernel_h = ivy.array(
-                        [
-                            _mitchellcubic_kernel((p_i - i) * scale_h)
-                            for j in range(top, bottom)
-                        ]
-                    )
+                    kernel_w = ivy.array([
+                        _mitchellcubic_kernel((p_j - j) * scale_w)
+                        for i in range(left, right)
+                    ])
+                    kernel_h = ivy.array([
+                        _mitchellcubic_kernel((p_i - i) * scale_h)
+                        for j in range(top, bottom)
+                    ])
                     left_pad = max(0, -left)
                     right_pad = max(0, right - in_width)
                     top_pad = max(0, -top)

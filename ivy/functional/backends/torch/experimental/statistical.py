@@ -291,12 +291,10 @@ def _handle_axis(a, q, fn, keepdims=False, axis=None):
 
             for i, s in enumerate(sorted(keep)):
                 a = torch.moveaxis(a, s, i)
-            a = a.view(
-                [
-                    *a.shape[:nkeep],
-                    -1,
-                ]
-            )
+            a = a.view([
+                *a.shape[:nkeep],
+                -1,
+            ])
             axis_arg = -1
 
     ret = fn(a, q, axis=axis_arg)
