@@ -53,9 +53,10 @@ def _to_tf_padding(pad_width, ndim):
 
 
 def _check_paddle_pad(
-    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit
+    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit, extend=True
 ):
-    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    if extend:
+        pad_width = _to_tf_padding(pad_width, len(input_shape))
     return isinstance(constant_values, Number) and (
         mode == "constant"
         or (

@@ -1,7 +1,7 @@
 import torch
-from typing import Optional, Tuple
+from typing import Literal, Optional, Tuple
 
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from .. import backend_version
 
 
@@ -30,6 +30,30 @@ def l2_normalize(
 
 
 l2_normalize.support_native_out = True
+
+
+@with_supported_dtypes({"2.1.0 and below": ("float",)}, backend_version)
+def local_response_norm(
+    x: torch.Tensor,
+    size,
+    /,
+    *,
+    bias: Optional[float] = 1.0,
+    alpha: Optional[float] = 1.0,
+    beta: Optional[float] = 0.5,
+    average: bool = False,
+    data_format: Optional[Literal["NHWC", "NCHW"]] = "NHWC",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if data_format == "NHWC":
+        x = torch.permute(x, (0, 3, 1, 2))
+    alpha = alpha * size if not average else alpha
+    ret = torch.nn.functional.local_response_norm(
+        x, size, alpha=alpha, beta=beta, k=bias
+    )
+    if data_format == "NHWC":
+        ret = torch.permute(ret, (0, 2, 3, 1))
+    return ret
 
 
 @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
