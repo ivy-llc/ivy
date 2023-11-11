@@ -32,14 +32,7 @@ def concat(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
-        is_tuple = type(xs) is tuple
-        if is_tuple:
-            xs = list(xs)
-        for i in range(len(xs)):
-            xs[i] = torch.flatten(xs[i])
-        if is_tuple:
-            xs = tuple(xs)
-        axis = 0
+        return torch.cat([torch.flatten(x) for x in xs], dim=0, out=out)
     return torch.cat(xs, dim=axis, out=out)
 
 

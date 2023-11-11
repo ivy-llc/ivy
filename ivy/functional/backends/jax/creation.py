@@ -12,6 +12,7 @@ import jaxlib.xla_extension
 import ivy
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax.device import dev
 from ivy.functional.ivy.creation import (
     _asarray_to_native_arrays_and_back,
     _asarray_infer_device,
@@ -79,7 +80,7 @@ def asarray(
     # jax device objects aren't serializable and prevent saving transpiled graphs
     # this workaround only works because we are inside jax.default_device context
     # invoked in @handle_device decorator
-    return jnp.copy(ret) if (ret.device() != device or copy) else ret
+    return jnp.copy(ret) if (dev(ret, as_native=True) != device or copy) else ret
 
 
 def empty(

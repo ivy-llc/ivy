@@ -583,11 +583,13 @@ def test_torch_leaky_relu_(
 # local_response_norm
 @handle_frontend_test(
     fn_tree="torch.nn.functional.local_response_norm",
-    dtype_x_and_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=3,
-        force_int_axis=True,
-        valid_axis=True,
+        max_num_dims=4,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     size=helpers.ints(min_value=3, max_value=10),
     alpha=helpers.floats(min_value=1e-4, max_value=1e-3),
@@ -596,7 +598,7 @@ def test_torch_leaky_relu_(
 )
 def test_torch_local_response_norm(
     *,
-    dtype_x_and_axis,
+    dtype_and_x,
     size,
     alpha,
     beta,
@@ -607,7 +609,7 @@ def test_torch_local_response_norm(
     test_flags,
     backend_fw,
 ):
-    dtype, x, axis = dtype_x_and_axis
+    dtype, x = dtype_and_x
     _filter_dtypes(dtype)
     helpers.test_frontend_function(
         input_dtypes=dtype,

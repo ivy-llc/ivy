@@ -18,15 +18,13 @@ import ivy
 
 def _calculate_same_padding(kernel_size, stride, shape):
     padding = tuple(
-        [
-            max(
-                0,
-                math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
-            )
-            for i in range(len(kernel_size))
-        ]
+        max(
+            0,
+            math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
+        )
+        for i in range(len(kernel_size))
     )
-    if all([kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))]):
+    if all(kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))):
         if _is_same_padding(padding, stride, kernel_size, shape):
             return padding
     return (0, 0)
@@ -34,16 +32,12 @@ def _calculate_same_padding(kernel_size, stride, shape):
 
 def _is_same_padding(padding, stride, kernel_size, input_shape):
     output_shape = tuple(
-        [
-            (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
-            for i in range(len(padding))
-        ]
+        (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
+        for i in range(len(padding))
     )
     return all(
-        [
-            output_shape[i] == math.ceil(input_shape[i] / stride[i])
-            for i in range(len(padding))
-        ]
+        output_shape[i] == math.ceil(input_shape[i] / stride[i])
+        for i in range(len(padding))
     )
 
 
@@ -535,17 +529,15 @@ def test_mindspore_flatten(
         num_arrays=1,
         shared_dtype=True,
     ),
-    mode=st.sampled_from(
-        [
-            "nearest",
-            "linear",
-            "bilinear",
-            "bicubic",
-            "trilinear",
-            "area",
-            "nearest-exact",
-        ]
-    ),
+    mode=st.sampled_from([
+        "nearest",
+        "linear",
+        "bilinear",
+        "bicubic",
+        "trilinear",
+        "area",
+        "nearest-exact",
+    ]),
     align_corners=st.booleans(),
     recompute_scale_factor=st.booleans(),
     size_and_scale_factor=_size_and_scale_factor_strategy(),

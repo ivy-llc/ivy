@@ -194,7 +194,7 @@ def _matricize_data(draw):
         )
     )
     ndims = len(shape)
-    dims = set([*range(ndims)])
+    dims = {*range(ndims)}
     row_modes = set(
         draw(st.lists(helpers.ints(min_value=0, max_value=ndims - 1), min_size=1))
     )
@@ -205,21 +205,19 @@ def _matricize_data(draw):
 @st.composite
 def _pad_helper(draw):
     mode = draw(
-        st.sampled_from(
-            [
-                "constant",
-                "dilated",
-                "edge",
-                "linear_ramp",
-                "maximum",
-                "mean",
-                "median",
-                "minimum",
-                "reflect",
-                "symmetric",
-                "wrap",
-            ]
-        )
+        st.sampled_from([
+            "constant",
+            "dilated",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+        ])
     )
     if mode in ["median", "minimum", "maximum", "linear_ramp"]:
         dtypes = "float"

@@ -63,14 +63,12 @@ def unique_all(
             axis = 0
         values_ = paddle.moveaxis(values, axis, 0)
         values_ = paddle.reshape(values_, (values_.shape[0], -1))
-        sort_idx = paddle.to_tensor(
-            [
-                i[0]
-                for i in sorted(
-                    list(enumerate(values_.numpy().tolist())), key=lambda x: tuple(x[1])
-                )
-            ]
-        )
+        sort_idx = paddle.to_tensor([
+            i[0]
+            for i in sorted(
+                enumerate(values_.numpy().tolist()), key=lambda x: tuple(x[1])
+            )
+        ])
     values = paddle.gather(values, sort_idx, axis=axis)
     counts = paddle.gather(counts, sort_idx)
     indices = paddle.gather(indices, sort_idx)

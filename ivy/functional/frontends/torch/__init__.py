@@ -241,11 +241,11 @@ def promote_types_of_torch_inputs(
         x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
-    if not x1.shape == () and x2.shape == () and type1 == type2:
+    if x1.shape != () and x2.shape == () and type1 == type2:
         x2 = ivy.asarray(
             x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
         )
-    elif x1.shape == () and not x2.shape == () and type1 == type2:
+    elif x1.shape == () and x2.shape != () and type1 == type2:
         x1 = ivy.asarray(
             x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
         )
@@ -258,6 +258,7 @@ def promote_types_of_torch_inputs(
     return x1, x2
 
 
+from . import utils
 from . import nn
 from .nn.functional import softmax, relu, lstm
 from . import tensor
