@@ -283,21 +283,19 @@ def _sequence_mask_helper(draw):
 
     max_len = draw(st.integers(min_value=max_val, max_value=max_val))
     dtype = draw(
-        st.sampled_from(
-            [
-                "float16",
-                "uint8",
-                "complex128",
-                "bool",
-                "float64",
-                "int8",
-                "int16",
-                "complex64",
-                "float32",
-                "int32",
-                "int64",
-            ]
-        )
+        st.sampled_from([
+            "float16",
+            "uint8",
+            "complex128",
+            "bool",
+            "float64",
+            "int8",
+            "int16",
+            "complex64",
+            "float32",
+            "int32",
+            "int64",
+        ])
     )
     return in_dtype, lens, max_len, dtype
 
