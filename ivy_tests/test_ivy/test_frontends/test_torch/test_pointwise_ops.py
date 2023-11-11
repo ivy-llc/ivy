@@ -5,7 +5,7 @@ from hypothesis import strategies as st, assume
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.array_api_testing.test_array_api.array_api_tests import (
+from ivy_tests.test_ivy.helpers import (
     hypothesis_helpers as hh,
 )
 from ivy_tests.test_ivy.helpers import handle_frontend_test
