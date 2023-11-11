@@ -1555,20 +1555,18 @@ def test_multi_head_attention_layer(
 # # Sequential #
 @handle_method(
     method_tree="Sequential.__call__",
-    bs_c_target=st.sampled_from(
-        [
-            (
-                [1, 2],
-                5,
+    bs_c_target=st.sampled_from([
+        (
+            [1, 2],
+            5,
+            [
                 [
-                    [
-                        [-0.34784955, 0.47909835, 0.7241975, -0.82175905, -0.43836743],
-                        [-0.34784955, 0.47909835, 0.7241975, -0.82175905, -0.43836743],
-                    ]
-                ],
-            )
-        ]
-    ),
+                    [-0.34784955, 0.47909835, 0.7241975, -0.82175905, -0.43836743],
+                    [-0.34784955, 0.47909835, 0.7241975, -0.82175905, -0.43836743],
+                ]
+            ],
+        )
+    ]),
     with_v=st.booleans(),
     seq_v=st.booleans(),
     dtype=helpers.get_dtypes("float", full=False, none=True),
@@ -1609,36 +1607,34 @@ def test_sequential_layer(
     if with_v:
         np.random.seed(0)
         wlim = (6 / (channels + channels)) ** 0.5
-        v = Container(
-            {
-                "submodules": {
-                    "v0": {
-                        "w": _variable(
-                            ivy.array(
-                                np.random.uniform(-wlim, wlim, (channels, channels)),
-                                dtype=dtype,
-                                device=on_device,
-                            )
-                        ),
-                        "b": _variable(
-                            ivy.zeros([channels], device=on_device, dtype=dtype)
-                        ),
-                    },
-                    "v2": {
-                        "w": _variable(
-                            ivy.array(
-                                np.random.uniform(-wlim, wlim, (channels, channels)),
-                                dtype=dtype,
-                                device=on_device,
-                            )
-                        ),
-                        "b": _variable(
-                            ivy.zeros([channels], device=on_device, dtype=dtype)
-                        ),
-                    },
-                }
+        v = Container({
+            "submodules": {
+                "v0": {
+                    "w": _variable(
+                        ivy.array(
+                            np.random.uniform(-wlim, wlim, (channels, channels)),
+                            dtype=dtype,
+                            device=on_device,
+                        )
+                    ),
+                    "b": _variable(
+                        ivy.zeros([channels], device=on_device, dtype=dtype)
+                    ),
+                },
+                "v2": {
+                    "w": _variable(
+                        ivy.array(
+                            np.random.uniform(-wlim, wlim, (channels, channels)),
+                            dtype=dtype,
+                            device=on_device,
+                        )
+                    ),
+                    "b": _variable(
+                        ivy.zeros([channels], device=on_device, dtype=dtype)
+                    ),
+                },
             }
-        )
+        })
     else:
         v = None
     if seq_v:

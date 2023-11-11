@@ -123,37 +123,17 @@ def leaky_relu_(input, negative_slope=0.01):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.1.0 and below": ("float",)}, "torch")
 def local_response_norm(input, size, alpha=0.0001, beta=0.75, k=1.0):
-    dim = len(ivy.shape(input))
-    if dim < 3:
-        raise ValueError(
-            f"Expected 3D or higher dimensionality input (got {dim} dimensions)"
-        )
-    if input.size == 0:
-        return input
-    div = ivy.multiply(input, input)
-
-    if dim == 3:
-        div = ivy.expand_dims(div, axis=1)
-        div = ivy.zero_pad(div, ((0, 0), (0, 0), (size // 2, (size - 1) // 2), (0, 0)))
-        div = ivy.avg_pool2d(
-            div, (size, 1), 1, "VALID", count_include_pad=True, data_format="NCHW"
-        )
-        div = ivy.squeeze(div, axis=1)
-    else:
-        sizes = ivy.shape(input)
-        div = ivy.reshape(div, (sizes[0], 1, sizes[1], sizes[2], -1))
-        div = ivy.zero_pad(
-            div, ((0, 0), (0, 0), (size // 2, (size - 1) // 2), (0, 0), (0, 0))
-        )
-        div = ivy.avg_pool3d(
-            div, (size, 1, 1), 1, "VALID", count_include_pad=True, data_format="NCDHW"
-        )
-        div = ivy.squeeze(div, axis=1)
-        div = ivy.reshape(div, sizes)
-
-    div = ivy.pow(ivy.add(ivy.multiply(div, alpha), k), beta)
-    return ivy.divide(input, div)
+    non_batched = input.ndim == 3
+    if non_batched:
+        input = ivy.expand_dims(input, axis=2)
+    ret = ivy.local_response_norm(
+        input, size, bias=k, alpha=alpha, beta=beta, average=True, data_format="NCHW"
+    )
+    if non_batched:
+        ret = ivy.squeeze(ret, axis=2)
+    return ret
 
 
 @to_ivy_arrays_and_back
@@ -213,6 +193,7 @@ def relu6(input, inplace=False):
     return ivy.relu6(input)
 
 
+@to_ivy_arrays_and_back
 def relu_(input):
     return relu(input, inplace=True)
 

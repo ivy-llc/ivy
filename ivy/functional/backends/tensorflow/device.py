@@ -24,11 +24,14 @@ def _same_device(dev_a, dev_b):
 
 
 def dev(
-    x: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.Tensor, tf.Variable, tf.TensorArray],
     /,
     *,
     as_native: bool = False,
 ) -> Union[ivy.Device, str]:
+    if isinstance(x, tf.TensorArray):
+        # Read the underlying tensor being wrapped to get the device.
+        x = x.stack()
     dv = x.device
     if as_native:
         return dv

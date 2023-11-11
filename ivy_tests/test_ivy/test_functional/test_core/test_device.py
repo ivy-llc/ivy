@@ -289,7 +289,7 @@ def test_function_supported_devices(
         res = ivy_backend.function_supported_devices(func)
         exp = set(expected)
 
-        assert sorted(tuple(exp)) == sorted(res)
+        assert sorted(exp) == sorted(res)
 
 
 # function_unsupported_devices
@@ -308,7 +308,7 @@ def test_function_unsupported_devices(
         res = ivy_backend.function_unsupported_devices(func)
         exp = set(expected)
 
-        assert sorted(tuple(exp)) == sorted(res)
+        assert sorted(exp) == sorted(res)
 
 
 @handle_test(

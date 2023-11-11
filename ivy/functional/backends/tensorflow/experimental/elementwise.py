@@ -297,7 +297,6 @@ def gradient(
     edge_order: int = 1,
 ) -> Union[tf.Tensor, List[tf.Tensor]]:
     # https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/function_base.py#L969-L1312
-    x.device
     x = tf.experimental.numpy.asanyarray(x)
     N = x.ndim  # number of dimensions
     if axis is None:

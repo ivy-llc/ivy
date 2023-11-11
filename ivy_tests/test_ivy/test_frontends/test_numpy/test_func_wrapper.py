@@ -23,23 +23,17 @@ import ivy.functional.frontends.numpy as np_frontend
 @st.composite
 def _dtype_helper(draw):
     return draw(
-        st.sampled_from(
-            [
-                draw(st.sampled_from([int, float, bool])),
-                ivy.as_native_dtype(
-                    draw(helpers.get_dtypes("valid", full=False, prune_function=False))[
-                        0
-                    ]
-                ),
-                np_frontend.dtype(
-                    draw(helpers.get_dtypes("valid", full=False, prune_function=False))[
-                        0
-                    ]
-                ),
-                draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
-                draw(st.sampled_from(list(np_frontend.numpy_str_to_type_table.keys()))),
-            ]
-        )
+        st.sampled_from([
+            draw(st.sampled_from([int, float, bool])),
+            ivy.as_native_dtype(
+                draw(helpers.get_dtypes("valid", full=False, prune_function=False))[0]
+            ),
+            np_frontend.dtype(
+                draw(helpers.get_dtypes("valid", full=False, prune_function=False))[0]
+            ),
+            draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
+            draw(st.sampled_from(list(np_frontend.numpy_str_to_type_table.keys()))),
+        ])
     )
 
 

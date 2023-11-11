@@ -115,12 +115,10 @@ def execute_with_gradients(
     xs = xs1
     if isinstance(xs, ivy.Container):
         duplicate_indices = list(
-            chain.from_iterable(
-                [
-                    map(lambda x: x.split("/"), duplicate_index_chain[1:])
-                    for duplicate_index_chain in required_duplicate_index_chains
-                ]
-            )
+            chain.from_iterable([
+                map(lambda x: x.split("/"), duplicate_index_chain[1:])
+                for duplicate_index_chain in required_duplicate_index_chains
+            ])
         )
         xs = ivy.set_nest_at_indices(xs, duplicate_indices, None, shallow=False)
 
