@@ -431,7 +431,7 @@ def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
     row_vector = ivy.arange(0, int(maxlen), 1)
     matrix = ivy.expand_dims(lengths, axis=-1)
     result = row_vector < matrix
-    if dtype == None:
+    if dtype is None:
         return result
     else:
         return ivy.astype(result, dtype)
