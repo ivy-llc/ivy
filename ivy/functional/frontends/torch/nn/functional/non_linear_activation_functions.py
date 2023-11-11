@@ -67,7 +67,7 @@ def glu(input, dim=-1):
 def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
     gumbels = -ivy.empty_like(logits).exponential().log()
     gumbels = (logits + gumbels) / tau
-    y_soft = ivy.softmax(x=gumbels, axis=dim)
+    y_soft = ivy.softmax(gumbels, axis=dim)
 
     if hard:
         indices = y_soft.max(axis=dim, keepdims=True)[1]
