@@ -122,16 +122,18 @@ pad.partial_mixed_handler = (
 
 
 def _check_torch_pad(mode, reflect_type, pad_width, input_shape, constant_values):
-    pad_width = _to_tf_padding(pad_width, len(input_shape))
-    if mode != "constant" and (
-        len(input_shape) > 4
-        or (len(input_shape) == 4 and len(pad_width) > 3)
-        or (len(input_shape) == 3 and len(pad_width) > 2)
-        or (len(input_shape) == 2 and len(pad_width) > 1)
-    ):
+    ndim = len(input_shape)
+    pad_width = _to_tf_padding(pad_width, ndim)
+    if mode != "constant" and (ndim > 4 or (ndim > 1 and len(pad_width) > ndim - 1)):
         return False
     return _check_paddle_pad(
-        mode, reflect_type, pad_width, input_shape, constant_values, 4
+        mode,
+        reflect_type,
+        pad_width,
+        input_shape,
+        constant_values,
+        4,
+        extend=False,
     ) and (
         mode != "wrap"
         or all(

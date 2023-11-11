@@ -1172,13 +1172,11 @@ def shape_initialization(shape, axes, x):
 
 def rank_initialization(axes):
     rank = tf.size(axes)
-    with tf.control_dependencies(
-        [
-            tf.debugging.assert_less_equal(
-                rank, 3, message="N-D FFT supported only up to 3-D."
-            )
-        ]
-    ):
+    with tf.control_dependencies([
+        tf.debugging.assert_less_equal(
+            rank, 3, message="N-D FFT supported only up to 3-D."
+        )
+    ]):
         rank = tf.identity(rank)
 
     return rank
@@ -1270,9 +1268,9 @@ def static_output_shape(input_shape, shape, axes):
 def _right_pad_or_crop(tensor, shape):
     input_shape = tf.shape(tensor)
     shape = tf.convert_to_tensor(shape, dtype=tf.dtypes.int32)
-    with tf.control_dependencies(
-        [tf.debugging.assert_less_equal(tf.size(shape), tf.size(input_shape))]
-    ):
+    with tf.control_dependencies([
+        tf.debugging.assert_less_equal(tf.size(shape), tf.size(input_shape))
+    ]):
         shape = tf.identity(shape)
     shape = tf.concat([input_shape[: tf.size(input_shape) - tf.size(shape)], shape], 0)
 
