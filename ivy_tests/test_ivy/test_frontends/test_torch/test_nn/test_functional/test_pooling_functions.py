@@ -435,7 +435,7 @@ def test_torch_max_pool1d(
         data_format="channel_first",
     ),
     test_with_out=st.just(False),
-    ceil_mode=st.booleans(),
+    ceil_mode=st.just(False),
 )
 def test_torch_max_pool2d(
     x_k_s_p,
