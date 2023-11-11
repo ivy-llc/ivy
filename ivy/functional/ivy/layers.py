@@ -30,7 +30,7 @@ def _get_embed_dim(
     pre_embed_dim = query.shape[-1]
     if ivy.exists(in_proj_weights):
         embed_dim = in_proj_weights.shape[0] / 3
-    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+    elif all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]):
         embed_dim = q_proj_weights.shape[0]
     else:
         embed_dim = None
@@ -856,15 +856,15 @@ def multi_head_attention(
     if key is None and value is None:
         key = value = query
     if num_dims == 2:
-        query, key, value = [ivy.expand_dims(x, axis=0) for x in [query, key, value]]
+        query, key, value = (ivy.expand_dims(x, axis=0) for x in [query, key, value])
     elif not batch_first:
-        query, key, value = [ivy.swapaxes(x, 0, 1) for x in [query, key, value]]
+        query, key, value = (ivy.swapaxes(x, 0, 1) for x in [query, key, value])
 
     # project query, key and value
     if ivy.exists(in_proj_weights):
         q, k, v = _in_projection(query, key, value, w=in_proj_weights, b=in_proj_bias)
         emb_dim = int(in_proj_weights.shape[0] / 3)
-    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+    elif all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]):
         if ivy.exists(in_proj_bias):
             b_q, b_k, b_v = ivy.split(in_proj_bias, num_or_size_splits=3)
         else:
@@ -919,7 +919,7 @@ def multi_head_attention(
 
     # get attention scores
     attn_scores = ivy.matmul(q, ivy.swapaxes(k, 1, 2))
-    scale = 1 / (head_dim**0.5) if not scale else scale
+    scale = scale if scale else 1 / (head_dim**0.5)
     attn_scores *= scale
 
     # mask the attention scores

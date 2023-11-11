@@ -369,6 +369,8 @@ def _get_padded_values(x_shape, kernel, strides, padding, ceil_mode, dim):
             for i in range(dim)
         ]
     else:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * dim
         pad_specific = [sum(padding[i]) for i in range(dim)]
 
     c = []
@@ -392,6 +394,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(kernel, int):
@@ -1157,7 +1160,7 @@ def stft(
             windowed_frame = np.array(windowed_frame, dtype=dtype)
 
             fft_frame = np.fft.fft(windowed_frame, axis=-1)
-            slit = int((fft_length // 2 + 1))
+            slit = int(fft_length // 2 + 1)
             stft_result.append(fft_frame[..., 0:slit])
 
         stft = np.stack(stft_result, axis=0)

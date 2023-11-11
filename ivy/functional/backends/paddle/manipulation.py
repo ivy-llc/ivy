@@ -220,7 +220,7 @@ def stack(
     arrays = list(map(lambda x: x.cast(dtype), arrays))
 
     first_shape = arrays[0].shape
-    if not all(arr.shape == first_shape for arr in arrays):
+    if any(arr.shape != first_shape for arr in arrays):
         raise Exception("Shapes of all inputs must match")
     if 0 in first_shape:
         return ivy.empty(
@@ -325,7 +325,7 @@ def repeat(
         repeats = repeats.item()
 
     if axis is not None:
-        axis = axis % x.ndim
+        axis %= x.ndim
     if paddle.is_complex(x):
         return paddle.complex(
             paddle.repeat_interleave(x.real(), repeats=repeats, axis=axis),

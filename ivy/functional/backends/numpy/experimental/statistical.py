@@ -226,7 +226,7 @@ def _validate_quantile(q):
             if not (0.0 <= q[i] <= 1.0):
                 return False
     else:
-        if not (np.all(0 <= q) and np.all(q <= 1)):
+        if not (np.all(q >= 0) and np.all(q <= 1)):
             return False
     return True
 

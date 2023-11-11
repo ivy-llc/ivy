@@ -295,6 +295,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if data_format in ("NCW", "NCL"):
@@ -991,7 +992,7 @@ def stft(
             windowed_frame = jnp.asarray(windowed_frame, dtype=dtype)
 
             fft_frame = jnp.fft.fft(windowed_frame, axis=-1)
-            slit = int((fft_length // 2 + 1))
+            slit = int(fft_length // 2 + 1)
             stft_result.append(fft_frame[..., 0:slit])
 
         stft = jnp.stack(stft_result, axis=0)
