@@ -643,6 +643,7 @@ def nanquantile(
 
     return r
 
+
 @handle_jax_dtype
 @with_unsupported_dtypes({"0.4.19 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
