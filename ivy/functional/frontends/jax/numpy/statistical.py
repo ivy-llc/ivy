@@ -2,7 +2,7 @@
 
 import numpy as np
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
@@ -523,83 +523,6 @@ def nanpercentile(
     return _nanquantile_unchecked(a, q, axis, out, overwrite_input, method, keepdims)
 
 
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {"0.4.19 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
-    "jax",
-)
-def nanquantile(
-    a,
-    q,
-    /,
-    *,
-    axis=None,
-    out=None,
-    overwrite_input=False,
-    method="linear",
-    keepdims=False,
-    interpolation=None,
-):
-    # ivy.set_inplace_mode('strict')
-    # We delete nan values
-    a = a[~ivy.isnan(a)]
-
-    # We calculate and return the quantile
-    return ivy.quantile(
-        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
-    )
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {"0.4.19 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
-    "jax",
-)
-def nanquantile(
-    a,
-    q,
-    /,
-    *,
-    axis=None,
-    out=None,
-    overwrite_input=None,
-    method="linear",
-    keepdims=False,
-    interpolation=None,
-):
-    ivy.set_inplace_mode("strict")
-    # Convert q into a numpy array
-    q = np.asarray(q)
-
-    # Check if q is in the interval [0, 1]
-    if np.any(q < 0) or np.any(q > 1):
-        raise ValueError("The values of q must be between 0 and 1 inclusive.")
-
-    # Ignore NaN values
-    a = ivy.array(a)
-    mask = ~ivy.isnan(a)
-    a = ivy.where(mask, a, 0)
-
-    # If axis is None, flatten the array
-    if axis is None:
-        a = a.ravel()
-        axis = 0
-
-    # Calculate the quantile
-    sorted_a = ivy.sort(a, axis=axis)
-    indices = ivy.floor(q * (ivy.shape(sorted_a)[axis] - 1)).astype(int)
-    r = ivy.gather(sorted_a, indices, axis=axis)
-
-    # If keepdims is True, keep the reduced dimensions as dimensions of size one
-    if keepdims and axis is not None:
-        new_dims = list(a.shape)
-        for ax in np.atleast_1d(axis):
-            new_dims[ax] = 1
-        r = ivy.reshape(r, new_dims)
-
-    return r
-
-
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def nanstd(
@@ -649,41 +572,6 @@ def ptp(a, axis=None, out=None, keepdims=False):
 
 
 @to_ivy_arrays_and_back
-def ptp(a, axis=None, out=None, keepdims=False):
-    x = ivy.max(a, axis=axis, keepdims=keepdims)
-    y = ivy.min(a, axis=axis, keepdims=keepdims)
-    return ivy.subtract(x, y)
-
-
-@to_ivy_arrays_and_back
-def ptp(a, axis=None, out=None, keepdims=False):
-    x = ivy.max(a, axis=axis, keepdims=keepdims)
-    y = ivy.min(a, axis=axis, keepdims=keepdims)
-    return ivy.subtract(x, y)
-
-
-@to_ivy_arrays_and_back
-def ptp(a, axis=None, out=None, keepdims=False):
-    x = ivy.max(a, axis=axis, keepdims=keepdims)
-    y = ivy.min(a, axis=axis, keepdims=keepdims)
-    return ivy.subtract(x, y)
-
-
-@to_ivy_arrays_and_back
-def ptp(a, axis=None, out=None, keepdims=False):
-    x = ivy.max(a, axis=axis, keepdims=keepdims)
-    y = ivy.min(a, axis=axis, keepdims=keepdims)
-    return ivy.subtract(x, y)
-
-
-@to_ivy_arrays_and_back
-def ptp(a, axis=None, out=None, keepdims=False):
-    x = ivy.max(a, axis=axis, keepdims=keepdims)
-    y = ivy.min(a, axis=axis, keepdims=keepdims)
-    return ivy.subtract(x, y)
-
-
-@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"0.4.19 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
     "jax",
@@ -708,6 +596,52 @@ def quantile(
         a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
     )
 
+
+@with_supported_dtypes({"0.4.19 and below": ("float",)}, "jax")
+@to_ivy_arrays_and_back
+def nanquantile(
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=None,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    ivy.set_inplace_mode("strict")
+    # Convert q into a numpy array
+    q = np.asarray(q)
+
+    # Check if q is in the interval [0, 1]
+    if np.any(q < 0) or np.any(q > 1):
+        raise ValueError("The values of q must be between 0 and 1 inclusive.")
+
+    # Ignore NaN values
+    a = ivy.array(a)
+    mask = ~ivy.isnan(a)
+    a = ivy.where(mask, a, 0)
+
+    # If axis is None, flatten the array
+    if axis is None:
+        a = a.ravel()
+        axis = 0
+
+    # Calculate the quantile
+    sorted_a = ivy.sort(a, axis=axis)
+    indices = ivy.floor(q * (ivy.shape(sorted_a)[axis] - 1)).astype(int)
+    r = ivy.gather(sorted_a, indices, axis=axis)
+
+    # If keepdims is True, keep the reduced dimensions as dimensions of size one
+    if keepdims and axis is not None:
+        new_dims = list(a.shape)
+        for ax in np.atleast_1d(axis):
+            new_dims[ax] = 1
+        r = ivy.reshape(r, new_dims)
+
+    return r
 
 @handle_jax_dtype
 @with_unsupported_dtypes({"0.4.19 and below": ("bfloat16",)}, "jax")
