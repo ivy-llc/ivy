@@ -47,17 +47,18 @@ class FrontendTestCaseRunner(TestCaseRunner):
         self.test_values = test_values
 
     def _check_assertions(self, target_results, ground_truth_results):
-        if self.test_values:
-            assertion_checker = FrontendAssertionChecker(
-                target_results,
-                ground_truth_results,
-                self.backend_to_test,
-                self.frontend,
-                self.tolerance_dict,
-                self.rtol,
-                self.atol,
-            )
-            assertion_checker.check_assertions()
+        if not self.test_values:
+            return
+        assertion_checker = FrontendAssertionChecker(
+            target_results,
+            ground_truth_results,
+            self.backend_to_test,
+            self.frontend,
+            self.tolerance_dict,
+            self.rtol,
+            self.atol,
+        )
+        assertion_checker.check_assertions()
 
 
 class FrontendTestCaseSubRunner(TestCaseSubRunner):
