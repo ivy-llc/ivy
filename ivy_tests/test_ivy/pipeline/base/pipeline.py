@@ -6,15 +6,6 @@ from ivy_tests.test_ivy.pipeline.c_backend_handler import (
 
 
 class Pipeline(ABC):
-    mod_backend = {
-        "numpy": None,
-        "jax": None,
-        "tensorflow": None,
-        "torch": None,
-        "paddle": None,
-        "mxnet": None,
-    }
-    multiprocessing_flag = False
     traced_fn = None
     backend_handler = WithBackendHandler()
 
@@ -29,17 +20,6 @@ class Pipeline(ABC):
     @classmethod
     def set_traced_fn(cls, fn):
         cls.traced_fn = fn
-
-    @classmethod
-    def unset_mod(cls):
-        for key in cls.mod_backend:
-            cls.mod_backend[key] = None
-
-    @classmethod
-    def set_mod_backend(cls, mod_backend):
-        for key in mod_backend:
-            cls.mod_backend[key] = mod_backend[key]
-        cls.multiprocessing_flag = True
 
     @abstractmethod
     def test_function(self):
