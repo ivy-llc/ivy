@@ -12,7 +12,6 @@ from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
 from ...pipeline.base.pipeline import Pipeline
-from ...pipeline.frontend.pipeline import FrontendPipeline
 
 _dtype_kind_keys = {
     "valid",
@@ -39,16 +38,6 @@ def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"
 
 
 def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
-    if FrontendPipeline.mod_frontend[framework]:
-        proc, input_queue, output_queue = FrontendPipeline.mod_frontend[framework]
-        input_queue.put(("_get_type_dict_helper", framework, kind, is_frontend_test))
-        ret = output_queue.get()
-        return ret
-    elif Pipeline.mod_backend[framework]:
-        proc, input_queue, output_queue = Pipeline.mod_backend[framework]
-        input_queue.put(("_get_type_dict_helper", framework, kind, is_frontend_test))
-        ret = output_queue.get()
-        return ret
     return _get_type_dict_helper(framework, kind, is_frontend_test)
 
 

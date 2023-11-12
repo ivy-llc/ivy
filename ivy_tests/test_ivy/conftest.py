@@ -3,7 +3,6 @@ import os
 import pytest
 from typing import Dict
 import sys
-import multiprocessing as mp
 
 # for enabling numpy's bfloat16 behavior
 from packaging import version
@@ -18,7 +17,6 @@ import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy import set_exception_trace_mode
 from ivy_tests.test_ivy.helpers import globals as test_globals
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks  # noqa
-from ivy_tests.test_ivy.helpers.multiprocessing import backend_proc, frontend_proc
 from ivy_tests.test_ivy.helpers.pipeline_helper import (
     BackendHandler,
     BackendHandlerMode,
@@ -89,95 +87,7 @@ def pytest_configure(config):
         backend_strs = available_frameworks
     else:
         backend_strs = raw_value.split(",")
-    no_mp = config.getoption("--no-mp")
 
-    if not no_mp:
-        mod_backend = {}
-        # we go multiprocessing, if  multiversion
-        known_backends = {"tensorflow", "torch", "jax"}
-        found_backends = set()
-        for fw in backend_strs:
-            if "/" in fw:
-                # set backend to be used
-                BackendHandler._update_context(BackendHandlerMode.SetBackend)
-                multiprocessing_flag = True
-                # spin up multiprocessing
-                # build mp process, queue, initiation etc
-                input_queue = mp.Queue()
-                output_queue = mp.Queue()
-                proc = mp.Process(target=backend_proc, args=(input_queue, output_queue))
-                # start the process so that it loads the framework
-                input_queue.put(fw)
-                proc.start()
-
-                # we have the process running, the framework imported within,
-                # we now pack the queue and the process and store it in dict
-                # for future access
-                fwrk, ver = fw.split("/")
-                mod_backend[fwrk] = (proc, input_queue, output_queue)
-                # set the latest version for the rest of the test code and move on
-                default_framework_mapper(fwrk, set_too=False)
-                found_backends.add(fwrk)
-
-        if found_backends:
-            # we know it's multiversion+multiprocessing
-            # spin up processes for other backends that
-            # were not found in --backend flag
-            left_frameworks = known_backends.difference(found_backends)
-            for fw in left_frameworks:
-                # spin up multiprocessing
-                # build mp process, queue, initiation etc
-                # find the latest version of this framework
-                # and set it in the path for rest of the code
-                # to access
-                version = default_framework_mapper(fw, set_too=False)
-                # spin up process only if a version was found else don't
-                if version:
-                    input_queue = mp.Queue()
-                    proc = mp.Process(
-                        target=backend_proc, args=(input_queue, output_queue)
-                    )
-                    # start the process so that it loads the framework
-                    input_queue.put(f"{fw}/{version}")
-                    proc.start()
-
-                # we have the process running, the framework imported within,
-                # we now pack the queue and the process and store it in dict
-                # for future access
-                mod_backend[fw] = (proc, input_queue, output_queue)
-        if mod_backend != {}:
-            Pipeline.set_mod_backend(mod_backend)
-
-    else:
-        # no multiprocessing if multiversion
-        for fw in backend_strs:
-            if "/" in fw:
-                multiprocessing_flag = False
-                # multiversion, but without multiprocessing
-                sys.path.insert(1, f"/opt/fw/{fw}")
-
-    # frontend
-    frontend = config.getoption("--frontend")
-    if frontend:
-        mod_frontend = {}
-        frontend_strs = frontend.split(",")
-        # if we are passing a frontend flag, it has to have a version with it
-        for frontend in frontend_strs:
-            # spin up multiprocessing
-            fw, ver = frontend.split("/")
-            # build mp process, queue, initiation etc
-            input_queue = mp.Queue()
-            output_queue = mp.Queue()
-            proc = mp.Process(target=frontend_proc, args=(input_queue, output_queue))
-            # start the process so that it loads the framework
-            proc.start()
-            input_queue.put(f"{fw}/{ver}")
-            # we have the process running, the framework imported within,
-            # we now pack the queue and the process and store it in dict
-            # for future access
-            mod_frontend[fw] = (proc, input_queue, output_queue)
-        if mod_frontend != {}:
-            FrontendPipeline.set_mod_frontend(mod_frontend)
     # trace_graph
     raw_value = config.getoption("--trace_graph")
     if raw_value == "both":

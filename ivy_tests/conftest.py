@@ -45,9 +45,6 @@ def is_db_available(master=False, credentials=None):
 
 
 def pytest_terminal_summary(terminalreporter):
-    from .test_ivy.pipeline.base.pipeline import Pipeline
-    from .test_ivy.pipeline.frontend.pipeline import FrontendPipeline
-
     session = terminalreporter._session
 
     if session.testscollected == 0:
@@ -57,12 +54,6 @@ def pytest_terminal_summary(terminalreporter):
     text = f" {passed_ratio:.1%} of {session.testscollected} passed "
     text = text.center(terminalreporter._screen_width, "=")
     terminalreporter.write(content=Fore.GREEN + text)
-    for key in Pipeline.mod_backend:
-        if Pipeline.mod_backend[key]:
-            Pipeline.mod_backend[key][0].terminate()
-    for key in FrontendPipeline.mod_frontend:
-        if FrontendPipeline.mod_frontend[key]:
-            FrontendPipeline.mod_frontend[key][0].terminate()
 
 
 def pytest_addoption(parser):
