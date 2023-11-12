@@ -888,9 +888,9 @@ def test_vorbis_window(
     fn_tree="functional.ivy.experimental.block_diag",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        max_num_dims=2,
+        max_num_dims=2, 
         min_value=1,
-        max_value=10
+        max_value=10 
     ),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
@@ -901,7 +901,7 @@ def test_block_diag(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtype, 
         test_flags=test_flags,
         atol_=1e-02,
         backend_to_test=backend_fw,

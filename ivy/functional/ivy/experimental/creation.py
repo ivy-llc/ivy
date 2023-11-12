@@ -1224,4 +1224,4 @@ def block_diag(*tensors: Union[ivy.NativeArray, ivy.Array]):
         current_row += rows                                                            
         current_col += cols
     
-    return block_diag_matrix
+    return block_diag_matrix 
