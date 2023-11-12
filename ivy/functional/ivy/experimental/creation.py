@@ -1172,3 +1172,56 @@ def polyval(
         coeffs,
         x,
     )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_function
+@to_native_arrays_and_back
+def block_diag(*tensors: Union[ivy.NativeArray, ivy.Array]):
+    """
+    Create a block diagonal matrix from provided tensors.
+
+    Parameters
+    ----------
+    *tensors
+        One or more tensors with 0, 1, or 2 dimensions.
+
+    Returns
+    -------
+    block_diag_matrix
+        A 2 dimensional array with all the input tensors arranged in
+        order such that their upper left and lower right corners are
+        diagonally adjacent. All other elements are set to 0.
+
+    Example
+    -------
+        >>> tensor_A = ivy.array([[0, 1], [1, 0]])
+        >>> tensor_B = ivy.array([[3, 4, 5], [6, 7, 8]])
+        >>> tensor_C = ivy.array(7)
+        >>> ivy.block_diag(tensor_A, tensor_B, tensor_C)
+        array([[1., 2., 0., 0., 0., 0.],
+               [3., 4., 0., 0., 0., 0.],
+               [0., 0., 5., 6., 7., 0.],
+               [0., 0., 7., 8., 9., 0.],
+               [0., 0., 0., 0., 0., 7.]])
+
+    """
+
+    if not tensors:
+        raise ValueError("At least one tensor must be provided")
+    for tensor in tensors:
+        if tensor.ndim not in {0,1,2}:
+            raise ValueError("Tensors must have 0, 1, or 2 dimensions")
+    total_rows = sum(tensor.shape[0] if tensor.ndim > 0 else 1 for tensor in tensors)
+    total_cols = sum(tensor.shape[1] if tensor.ndim > 1 else 1 for tensor in tensors)
+
+    block_diag_matrix = ivy.zeros((total_rows, total_cols))
+    current_row, current_col = 0,0
+    for tensor in tensors:
+        rows, cols, = tensor.shape if tensor.ndim > 0 else (1,1)
+        block_diag_matrix[current_row:current_row + rows, current_col:current_col + cols] = tensor
+        current_row += rows                                                            
+        current_col += cols
+    
+    return block_diag_matrix

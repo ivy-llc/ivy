@@ -881,3 +881,32 @@ def test_vorbis_window(
         window_length=int(x[0]),
         dtype=dtype[0],
     )
+
+
+# block_diag
+@handle_test(
+    fn_tree="functional.ivy.experimental.block_diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_num_dims=2,
+        min_value=1,
+        max_value=10
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+    test_gradients=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_block_diag(
+    *, dtype_and_x, dtype, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        atol_=1e-02,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        window_length=int(x[0]),
+        dtype=dtype[0],
+    )
