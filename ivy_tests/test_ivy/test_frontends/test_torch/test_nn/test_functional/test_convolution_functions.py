@@ -3,7 +3,6 @@ import math
 from hypothesis import strategies as st, assume
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
@@ -44,7 +43,7 @@ def _fold_helper(draw, dim=2):
         )
     )
     if vals.shape[0] == 1:  # un-batched inputs are also supported
-        vals = draw(st.one_of(st.just(vals), st.just(ivy.squeeze(vals, axis=0))))
+        vals = draw(st.sampled_from([vals, vals[0]]))
     return dtype, vals, kernel_size, output_shape, dilation, stride, padding
 
 

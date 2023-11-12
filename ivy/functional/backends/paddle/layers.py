@@ -70,7 +70,7 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
         else:
             raise ValueError(f"Invalid padding format: {padding}")
 
-    if not all([p >= 0 for p in padding]):
+    if not all(p >= 0 for p in padding):
         raise ValueError(
             "Invalid padding, all values should be larger than"
             f"or equal to 0, but received: {padding}."
@@ -157,7 +157,7 @@ def conv1d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}},
+    {"2.5.2 and below": {"cpu": ("float16", "bfloat16")}},
     backend_version,
 )
 def conv1d_transpose(
@@ -216,7 +216,7 @@ def conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}},
+    {"2.5.2 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv2d_transpose(
@@ -275,7 +275,7 @@ def depthwise_conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}},
+    {"2.5.2 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv3d(
@@ -334,7 +334,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}},
+    {"2.5.2 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv_general_dilated(

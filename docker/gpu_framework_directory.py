@@ -45,7 +45,7 @@ def install_pkg(path, pkg, base="fw/"):
         )
     elif pkg.split("==")[0] if "==" in pkg else pkg == "jax":
         subprocess.run(
-            f"yes |pip install --upgrade --target {path} 'jax[cuda12_pip]' -f"
+            f"yes |pip install --upgrade --target {path} 'jax[cuda11_pip]' -f"
             " https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  "
             " --no-cache-dir",
             shell=True,
@@ -57,6 +57,11 @@ def install_pkg(path, pkg, base="fw/"):
             f" --target {path}  -f"
             " https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
             " --no-cache-dir",
+            shell=True,
+        )
+    elif pkg.split("==")[0] if "==" in pkg else pkg == "tensorflow":
+        subprocess.run(
+            f"yes |pip install tensorflow[and-cuda] --target {path}",
             shell=True,
         )
     else:

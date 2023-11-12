@@ -44,13 +44,18 @@ def _strip(line):
 
 
 # Download all relevant binaries in binaries.json
-all_tags = list(tags.sys_tags())
 binaries_dict = json.load(open("binaries.json"))
 available_configs = json.load(open("available_configs.json"))
 binaries_paths = _get_paths_from_binaries(binaries_dict)
 version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
 terminate = False
-
+fixed_tag = os.environ["TAG"] if "TAG" in os.environ else None
+all_tags = list(tags.sys_tags())
+python_tag, plat_name, options = None, None, None
+if fixed_tag:
+    python_tag, _, plat_name = str(fixed_tag).split("-")
+    options = {"bdist_wheel": {"python_tag": python_tag, "plat_name": plat_name}}
+    all_tags = [fixed_tag]
 
 # download binaries for the tag with highest precedence
 for tag in all_tags:
@@ -127,4 +132,5 @@ setup(
         "License :: OSI Approved :: Apache Software License",
     ],
     license="Apache 2.0",
+    options=options,
 )

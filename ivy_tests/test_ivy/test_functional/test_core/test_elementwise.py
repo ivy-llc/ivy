@@ -42,7 +42,7 @@ def _either_x_dx(draw):
     if rand == 0:
         either_x_dx = draw(
             helpers.dtype_and_values(
-                avaliable_dtypes=st.shared(
+                available_dtypes=st.shared(
                     helpers.get_dtypes("float"), key="trapz_dtype"
                 ),
                 min_value=-100,
@@ -1502,6 +1502,7 @@ def test_multiply(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     posinf=st.floats(min_value=5e100, max_value=5e100),
     neginf=st.floats(min_value=-5e100, max_value=-5e100),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_nan_to_num(
     *,
@@ -1774,6 +1775,8 @@ def test_sign(*, dtype_and_x, np_variant, test_flags, backend_fw, fn_name, on_de
 )
 def test_sin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
+    if "paddle" in backend_fw and input_dtype[0] == "float16":
+        assume(not test_flags.test_gradients)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -1918,6 +1921,7 @@ def test_tanh(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_
         on_device=on_device,
         x=x[0],
         complex_mode=complex_mode,
+        atol_=1e-02,  # for `test_flags.test_gradients and 'bfloat16' in input_dtype`
     )
 
 

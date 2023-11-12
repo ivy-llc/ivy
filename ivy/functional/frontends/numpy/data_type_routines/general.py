@@ -39,7 +39,7 @@ def can_cast(from_, to, casting="safe"):
     else:
         raise ivy.utils.exceptions.IvyException("to must be dtype or dtype specifier")
 
-    if casting == "no" or casting == "equiv":
+    if casting in ["no", "equiv"]:
         return from_ == to
 
     if casting == "safe" and to in np_frontend.numpy_casting_rules[from_]:

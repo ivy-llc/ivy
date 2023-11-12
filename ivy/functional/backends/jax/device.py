@@ -41,14 +41,11 @@ def dev(
 ) -> Union[ivy.Device, jaxlib.xla_extension.Device]:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return ""
-    try:
-        dv = _to_array(x).device_buffer.device
-        dv = dv()
-    except Exception:
+    if hasattr(x, "device_buffer"):
+        dv = _to_array(x).device_buffer.device()
+    else:
         dv = jax.devices()[0]
-    if as_native:
-        return dv
-    return as_ivy_dev(dv)
+    return dv if as_native else as_ivy_dev(dv)
 
 
 def to_device(
