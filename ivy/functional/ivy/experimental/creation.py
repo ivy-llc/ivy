@@ -1206,7 +1206,6 @@ def block_diag(*tensors: Union[ivy.NativeArray, ivy.Array]):
                [0., 0., 7., 8., 9., 0.],
                [0., 0., 0., 0., 0., 7.]])
     """
-
     if not tensors:
         raise ValueError("At least one tensor must be provided")
     for tensor in tensors:
