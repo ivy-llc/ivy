@@ -1205,23 +1205,29 @@ def block_diag(*tensors: Union[ivy.NativeArray, ivy.Array]):
                [0., 0., 5., 6., 7., 0.],
                [0., 0., 7., 8., 9., 0.],
                [0., 0., 0., 0., 0., 7.]])
-
     """
 
     if not tensors:
         raise ValueError("At least one tensor must be provided")
     for tensor in tensors:
-        if tensor.ndim not in {0,1,2}:
+        if tensor.ndim not in {0, 1, 2}:
             raise ValueError("Tensors must have 0, 1, or 2 dimensions")
     total_rows = sum(tensor.shape[0] if tensor.ndim > 0 else 1 for tensor in tensors)
     total_cols = sum(tensor.shape[1] if tensor.ndim > 1 else 1 for tensor in tensors)
 
     block_diag_matrix = ivy.zeros((total_rows, total_cols))
-    current_row, current_col = 0,0
+    current_row, current_col = 0, 0
     for tensor in tensors:
-        rows, cols, = tensor.shape if tensor.ndim > 0 else (1,1)
-        block_diag_matrix[current_row:current_row + rows, current_col:current_col + cols] = tensor
-        current_row += rows                                                            
+        (
+            rows,
+            cols,
+        ) = (
+            tensor.shape if tensor.ndim > 0 else (1, 1)
+        )
+        block_diag_matrix[
+            current_row : current_row + rows, current_col : current_col + cols
+        ] = tensor
+        current_row += rows
         current_col += cols
-    
-    return block_diag_matrix 
+
+    return block_diag_matrix
