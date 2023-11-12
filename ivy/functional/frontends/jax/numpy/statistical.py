@@ -2,7 +2,7 @@
 
 import numpy as np
 import ivy
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
@@ -597,8 +597,11 @@ def quantile(
     )
 
 
-@with_supported_dtypes({"0.4.19 and below": ("float",)}, "jax")
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.19 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
 def nanquantile(
     a,
     q,
