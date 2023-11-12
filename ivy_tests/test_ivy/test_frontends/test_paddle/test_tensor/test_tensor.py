@@ -4647,7 +4647,6 @@ def test_paddle_tanh_(
     )
 
 
-
 # expand
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -4698,7 +4697,6 @@ def test_paddle_tensor_expand(
     ),
 )
 def test_paddle_tensor_heaviside(
-
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4706,16 +4704,13 @@ def test_paddle_tensor_heaviside(
     frontend,
     backend_fw,
     on_device,
-
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
-
             "x": x[0],
-
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -4758,7 +4753,6 @@ def test_paddle_tensor_tile(
         init_flags=init_flags,
         backend_to_test=backend_fw,
         method_flags=method_flags,
-
         on_device=on_device,
     )
 

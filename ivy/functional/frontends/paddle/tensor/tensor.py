@@ -940,7 +940,6 @@ class Tensor:
         res = self.gather(self, y)
         return ivy.inplace_update(self, res)
 
-
     def _fill_diagonal_tensor_impl(self, x, y, offset=0, dim1=0, dim2=1, inplace=False):
         if not inplace:
             x = Tensor(
@@ -1015,4 +1014,3 @@ class Tensor:
     )
     def tile(self, repeat_times):
         return paddle_frontend.Tensor(ivy.tile(self._ivy_array, repeats=repeat_times))
-
