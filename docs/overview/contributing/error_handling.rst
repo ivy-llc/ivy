@@ -8,7 +8,7 @@ Error Handling
 .. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
 .. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
 
-This section, "Error Handling" aims to assist you in navigating through some common errors you might encounter while working with the Ivy's Functional API. We'll go through some common errors which you might encounter while working as a contributor or a developer.
+This section is for "Error Handling" aims to assist you in navigating through some common errors you might encounter while working with the Ivy's Functional API. We'll go through some common errors which you might encounter while working as a contributor or a developer.
 
 #. This is the case where we pass in a dtype to `torch` which is not actually supported by the torch's native framework itself.
 
