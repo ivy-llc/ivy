@@ -9,9 +9,9 @@ Please, follow the next process when you work on your subtask:
 1. **Choosing a Task:**
 
    - Choose a task to work on which:
-     - is not marked as completed with a tick.
-     - does not have an issue created.
-     - is not mentioned in the comments.
+     - Is not marked as completed with a tick.
+     - Does not have an issue created.
+     - Is not mentioned in the comments.
 
    Currently, there are three open tasks:
 
