@@ -974,33 +974,24 @@ def test_numpy_triangular(
     )
 
 
-# noncentral_f - numpy
+# noncentral_f
+def generate_random_data(min_value, max_value, exclude_min=True):
+    return st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=min_value,
+        max_value=max_value,
+        exclude_min=exclude_min,
+    )
+
+
 @handle_frontend_test(
     fn_tree="numpy.random.noncentral_f",
     input_dtypes=helpers.get_dtypes("float"),
-    dfnum=st.floats(
-        allow_nan=False,
-        allow_infinity=False,
-        width=32,
-        min_value=1,
-        max_value=1000,
-        exclude_min=True,
-    ),
-    dfden=st.floats(
-        allow_nan=False,
-        allow_infinity=False,
-        width=32,
-        min_value=1,
-        max_value=1000,
-        exclude_min=True,
-    ),
-    nonc=st.floats(
-        allow_nan=False,
-        allow_infinity=False,
-        width=32,
-        min_value=0,
-        max_value=1000,
-    ),
+    dfnum=generate_random_data(1, 1000),
+    dfden=generate_random_data(1, 1000),
+    nonc=generate_random_data(0, 1000, exclude_min=False),
     size=helpers.get_shape(allow_none=False),
 )
 def test_numpy_noncentral_f(
@@ -1015,7 +1006,8 @@ def test_numpy_noncentral_f(
     dfden,
     nonc,
 ):
-    test_flags.num_positional_args = 3
+    test_flags.check_output_shape = True
+
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
