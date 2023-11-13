@@ -124,7 +124,7 @@ class SourceTransformer(ast.NodeTransformer):
                     func=ast.Name(id=_not_imlpemented_exc_name, ctx=ast.Load()),
                     args=[
                         ast.Constant(
-                            value=f"{_target_backend}.{node.name} " "Not Implemented",
+                            value=f"{_target_backend}.{node.name} Not Implemented",
                             kind=None,
                         )
                     ],
@@ -269,11 +269,11 @@ def generate(config_file):
             "valid_uint_dtypes",
         ]
         for key in valids:
-            params[key + "_dict"] = {
-                "None": tuple(["ivy." + x for x in _config[key]])
+            params[f"{key}_dict"] = {
+                "None": tuple(f"ivy.{x}" for x in _config[key])
             }.__str__()
-            params["in" + key + "_dict"] = {
-                "None": tuple(["ivy." + x for x in _config["in" + key]])
+            params[f"in{key}_dict"] = {
+                "None": tuple(f"ivy.{x}" for x in _config[f"in{key}"])
             }.__str__()
         InitFileTransformer(params).visit(tree_to_write)
     except Exception as e:
@@ -289,17 +289,15 @@ def generate(config_file):
         generated_file.write(astunparse.unparse(tree_to_write))
 
     subprocess.run(["black", "-q", backend_generation_path])
-    subprocess.run(
-        [
-            "autoflake",
-            "-i",
-            "--remove-all-unused-imports",
-            "--ignore-init-module-imports",
-            "--quiet",
-            "-r",
-            backend_generation_path,
-        ]
-    )
+    subprocess.run([
+        "autoflake",
+        "-i",
+        "--remove-all-unused-imports",
+        "--ignore-init-module-imports",
+        "--quiet",
+        "-r",
+        backend_generation_path,
+    ])
 
 
 if __name__ == "__main__":

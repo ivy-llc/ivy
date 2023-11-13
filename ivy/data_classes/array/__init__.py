@@ -1,4 +1,3 @@
-# flake8: noqa
 # global
 import copy
 import functools

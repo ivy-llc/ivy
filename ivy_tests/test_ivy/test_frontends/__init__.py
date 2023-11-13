@@ -10,7 +10,7 @@ class NativeClass:
 
     def __init__(self, native_class):
         """
-        Constructs the native class object.
+        Construct the native class object.
 
         Parameters
         ----------

@@ -6,6 +6,10 @@ from typing import Optional, Callable, Sequence, Union
 
 # local
 import ivy
+from ivy.func_wrapper import (
+    outputs_to_ivy_arrays,
+    inputs_to_native_arrays,
+)
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
     _get_y_and_ret_idxs,
@@ -35,8 +39,8 @@ def _grad_func(y, xs, retain_grads):
     """Gradient calculation function."""
     # Creating a zero gradient nest for the case where no gradients are computed
     grads_ = ivy.nested_map(
-        xs,
         lambda x: ivy.to_native(ivy.zeros_like(x)),
+        xs,
         include_derived=True,
         shallow=False,
     )
@@ -66,7 +70,7 @@ def _grad_func(y, xs, retain_grads):
         # Returning zeros if no gradients are computed for consistent results
         if isinstance(grads, ivy.Container):
             grads = ivy.nested_map(
-                grads, lambda x: 0 if x is None else x, include_derived=True
+                lambda x: 0 if x is None else x, grads, include_derived=True
             )
             grads += grads_
         else:
@@ -83,7 +87,7 @@ def _grad_func(y, xs, retain_grads):
             )[0]
             return grad if grad is not None else 0
 
-        grads = ivy.nested_map(xs, grad_, include_derived=True, shallow=False)
+        grads = ivy.nested_map(grad_, xs, include_derived=True, shallow=False)
         grads = ivy.nested_multi_map(lambda x, _: (x[0] + x[1]), [grads, grads_])
     return grads
 
@@ -94,19 +98,20 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    xs_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
+    ret_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
 ):
     # Conversion of required arrays to float variables and duplicate index chains
-    xs, xs1, required_duplicate_index_chains, _ = _get_required_float_variables(
-        xs, xs_grad_idxs
+    xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
+        _get_required_float_variables(xs, xs_grad_idxs)
     )
-
     func_ret = func(xs)
     xs = xs1
 
     # Getting the relevant outputs from the function return for gradient calculation
-    y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=True)
+    ret_grad_idxs, y, ret_idxs = _get_y_and_ret_idxs(
+        func_ret, ret_grad_idxs, create_var=True
+    )
 
     if isinstance(y, ivy.NativeArray):
         # Gradient calculation for a single output
@@ -136,7 +141,8 @@ def execute_with_gradients(
 
 
 def value_and_grad(func):
-    grad_fn = lambda xs: ivy.to_native(func(xs))
+    def grad_fn(xs):
+        return ivy.to_native(func(xs))
 
     def callback_fn(xs):
         y = grad_fn(xs)
@@ -152,7 +158,7 @@ def value_and_grad(func):
             grad = ivy.to_ivy(grad)
             return grad
 
-        grads = ivy.nested_map(xs, autograd_fn, include_derived=True, shallow=False)
+        grads = ivy.nested_map(autograd_fn, xs, include_derived=True, shallow=False)
         y = ivy.to_ivy(y)
         return y, grads
 
@@ -177,20 +183,82 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
-    callback_fn = lambda x_in: ivy.to_ivy(
-        torch.autograd.functional.jacobian(grad_fn, ivy.to_native(x_in))
-    )
-    return callback_fn
-
-
-def grad(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
 
     def callback_fn(x_in):
-        x = ivy.to_native(ivy.array(x_in)).detach()
-        x.requires_grad = True
-        grad_fn(x).backward()
-        return ivy.to_ivy(x.grad)
+        return ivy.to_ivy(
+            torch.func.jacfwd(grad_fn)(ivy.to_native(x_in, nested=True)),
+            nested=True,
+            include_derived=True,
+        )
 
     return callback_fn
+
+
+def grad(f, argnums=0):
+    if grad.nth == 0:
+        grad.f_original = f
+
+    def _nth_derivative(n):
+        @outputs_to_ivy_arrays
+        @inputs_to_native_arrays
+        def _inner(*args, **kwargs):
+            max_argnum = argnums if isinstance(argnums, int) else max(argnums)
+            if max_argnum >= len(args):
+                raise TypeError(
+                    f"differentiating with respect to {argnums=} requires at least "
+                    f"{max_argnum + 1} positional arguments to be passed by the "
+                    f"caller, but got only {len(args)} positional arguments."
+                )
+            if isinstance(argnums, int):
+                x = args[argnums]
+                x.requires_grad_()
+            elif isinstance(argnums, (tuple, list)):
+                x = []
+                for i in argnums:
+                    x.append(args[i])
+                    [arr.requires_grad_() for arr in x]
+            else:
+                raise TypeError(
+                    "argnums should be passed as int or a list/tuple of ints."
+                    f" Found {type(argnums)}"
+                )
+            if n == 0:
+                ret = (
+                    grad.f_original(*args, **kwargs)
+                    if grad.f_original is not None
+                    else f(*args, **kwargs)
+                )
+                grad.nth = 0
+                return ret
+            else:
+                y = _nth_derivative(n - 1)(*args, **kwargs)
+
+                # Avoid zero gradients setting requires_grads as False
+                if isinstance(y, tuple):
+                    y_ones = tuple(torch.ones_like(y_) for y_ in y)
+                    [y_.requires_grad_() for y_ in y if y_.requires_grad is False]
+                elif y.requires_grad is False:
+                    y.requires_grad_()
+                else:
+                    y_ones = torch.ones_like(y)
+
+                dy_dx = torch.autograd.grad(
+                    y, x, create_graph=True, grad_outputs=y_ones, allow_unused=True
+                )
+                if dy_dx is None:
+                    return torch.zeros_like(y)
+                return dy_dx
+
+        return _inner
+
+    grad.nth += 1
+
+    return _nth_derivative(grad.nth)
+
+
+grad.f_original = None
+grad.nth = 0

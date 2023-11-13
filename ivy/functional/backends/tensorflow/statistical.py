@@ -1,20 +1,18 @@
 # global
-_round = round
 import tensorflow as tf
 from typing import Union, Optional, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-
+from ivy.utils.einsum_parser import legalise_einsum_expr
 
 # Array API Standard #
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
 def min(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -27,7 +25,6 @@ def min(
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def max(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -36,10 +33,25 @@ def max(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if "complex" in str(x.dtype):
+        real = tf.math.real(x)
+        img = tf.math.imag(x)
+        const = tf.constant(1j, dtype=x.dtype)
+        real_max = tf.reduce_max(real, axis=axis, keepdims=keepdims)
+        imag = tf.where(
+            real == real_max,
+            img,
+            tf.experimental.numpy.finfo(img.dtype).min,
+        )
+        # we consider the number with the biggest real and imag part
+        img_max = tf.reduce_max(imag, axis=axis, keepdims=keepdims)
+        img_max = tf.cast(img_max, x.dtype)
+        return tf.add(tf.cast(real_max, x.dtype), tf.multiply(img_max, const))
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 
 
+@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
 def mean(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -110,7 +122,7 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[tf.DType] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
@@ -132,23 +144,18 @@ def var(
     if axis is None:
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    if correction == 0:
-        return tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
     size = 1
     for a in axis:
         size *= x.shape[a]
     if size - correction <= 0:
-        ret = tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
-        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        ret = tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+        ret = tf.cast(tf.fill(ret.shape, float("nan")), ret.dtype)
         return ret
     else:
-        return ivy.astype(
-            tf.math.multiply(
-                tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
-                size / (size - correction),
-            ),
-            x.dtype,
-            copy=False,
+        return (
+            tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+            * size
+            / (size - correction)
         )
 
 
@@ -156,7 +163,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.14.0 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -200,11 +207,24 @@ def cumsum(
     return tf.math.cumsum(x, axis, exclusive, reverse)
 
 
+@with_unsupported_dtypes(
+    {"2.14.0 and below": ("unsigned", "int8", "int16")},
+    backend_version,
+)
 def einsum(
     equation: str,
     *operands: Union[tf.Tensor, tf.Variable],
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = _get_promoted_type_of_operands(operands)
-    operands = (tf.cast(operand, tf.float32) for operand in operands)
-    return tf.cast(tf.einsum(equation, *operands), dtype)
+    equation = legalise_einsum_expr(*[equation, *operands])
+    dtype_list = set(map(lambda x: x.dtype, operands))
+    dtype = dtype_list.pop()
+    if len(dtype_list) > 0:
+        for d in dtype_list:
+            dtype = ivy.promote_types(dtype, d)
+        dtype = ivy.as_native_dtype(dtype)
+        operands = list(
+            map(lambda x: tf.cast(x, dtype) if x.dtype != dtype else x, operands)
+        )
+
+    return tf.einsum(equation, *operands)

@@ -1,4 +1,3 @@
-# flake8: noqa
 from . import generating_index_arrays
 from .generating_index_arrays import *
 from . import indexing_like_operations

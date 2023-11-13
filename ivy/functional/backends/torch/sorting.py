@@ -8,7 +8,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def argsort(
     x: torch.Tensor,
     /,
@@ -29,7 +29,7 @@ def argsort(
 argsort.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def sort(
     x: torch.Tensor,
     /,
@@ -50,7 +50,18 @@ def sort(
 sort.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+# msort
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
+def msort(
+    a: Union[torch.Tensor, list, tuple], /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.msort(a, out=out)
+
+
+msort.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def searchsorted(
     x: torch.Tensor,
     v: torch.Tensor,

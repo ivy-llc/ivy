@@ -3,6 +3,7 @@ from hypothesis.internal.floats import float_of
 
 # local
 from . import general_helpers as gh, dtype_helpers
+import ivy_tests.test_ivy.helpers.globals as test_globals
 
 
 floats_info = {
@@ -28,9 +29,11 @@ def floats(
     large_abs_safety_factor=1.1,
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
+    mixed_fn_compos=True,
 ):
-    """Draws an arbitrarily sized list of floats with a safety factor applied
-        to avoid values being generated at the edge of a dtype limit.
+    """
+    Draws an arbitrarily sized list of floats with a safety factor applied to avoid
+    values being generated at the edge of a dtype limit.
 
     Parameters
     ----------
@@ -41,6 +44,8 @@ def floats(
         minimum value of floats generated.
     max_value
         maximum value of floats generated.
+    abs_smallest_val
+        the absolute smallest representable value of the data type.
     allow_nan
         if True, allow Nans in the list.
     allow_inf
@@ -73,18 +78,28 @@ def floats(
     safety_factor_scale
         The operation to use for the safety factor scaling. Can be "linear" or "log".
         Default value = "linear".
+    mixed_fn_compos
+        boolean if True, the function will generate using the float dtypes
+        of the compositional implementation for mixed partial functions and
+        if False, it will generate using the float dtypes of the
+        primary implementation.
 
     Returns
     -------
     ret
-        Float.
+        A strategy that draws floats.
     """
     # ToDo assert that if min or max can be represented
-    dtype = draw(dtype_helpers.get_dtypes("float", full=False, prune_function=False))
+    dtype = draw(
+        dtype_helpers.get_dtypes(
+            "float", mixed_fn_compos=mixed_fn_compos, full=False, prune_function=False
+        )
+    )
     dtype = dtype[0]
     # ToDo add support for not applying safety factor
     min_value, max_value, abs_smallest_val = gh.apply_safety_factor(
         dtype,
+        backend=test_globals.CURRENT_BACKEND,
         min_value=min_value,
         max_value=max_value,
         abs_smallest_val=abs_smallest_val,
@@ -139,9 +154,10 @@ def ints(
     max_value=None,
     safety_factor=1.1,
     safety_factor_scale=None,
+    mixed_fn_compos=True,
 ):
-    """Draws an arbitrarily sized list of integers with a safety factor
-    applied to values if a safety scale is specified.
+    """
+    Draws an integer with a safety factor if specified.
 
     Parameters
     ----------
@@ -164,18 +180,28 @@ def ints(
     safety_factor_scale
         The operation to use for the safety factor scaling. Can be "linear" or "log".
         Default value = "linear".
+    mixed_fn_compos
+        boolean if True, the function will generate using the integer dtypes
+        of the compositional implementation for mixed partial functions and
+        if False, it will generate using the integer dtypes of the
+        primary implementation.
 
     Returns
     -------
     ret
-        Integer.
+        A strategy that draws integers.
     """
-    dtype = draw(dtype_helpers.get_dtypes("integer", full=False, prune_function=False))
+    dtype = draw(
+        dtype_helpers.get_dtypes(
+            "integer", mixed_fn_compos=mixed_fn_compos, full=False, prune_function=False
+        )
+    )
     if min_value is None and max_value is None:
         safety_factor_scale = "linear"
     if safety_factor_scale is not None:
         min_value, max_value, _ = gh.apply_safety_factor(
             dtype[0],
+            backend=test_globals.CURRENT_BACKEND,
             min_value=min_value,
             max_value=max_value,
             large_abs_safety_factor=safety_factor,
@@ -193,9 +219,10 @@ def number(
     large_abs_safety_factor=1.1,
     small_abs_safety_factor=1.1,
     safety_factor_scale="linear",
+    mixed_fn_compos=True,
 ):
-    """Draws integers or floats with a safety factor
-    applied to values.
+    """
+    Draws integers or floats with a safety factor applied to values.
 
     Parameters
     ----------
@@ -229,11 +256,17 @@ def number(
     safety_factor_scale
         The operation to use for the safety factor scaling. Can be "linear" or "log".
         Default value = "linear".
+    mixed_fn_compos
+        boolean if True, the function will generate using the numeric dtypes
+        of the compositional implementation for mixed partial functions and
+        if False, it will generate using the numeric dtypes of the
+        primary implementation.
+
 
     Returns
     -------
     ret
-        An integer or float.
+        A strategy that draws integers or floats.
     """
     return draw(
         ints(
@@ -241,6 +274,7 @@ def number(
             max_value=max_value,
             safety_factor=large_abs_safety_factor,
             safety_factor_scale=safety_factor_scale,
+            mixed_fn_compos=mixed_fn_compos,
         )
         | floats(
             min_value=min_value,
@@ -248,5 +282,6 @@ def number(
             small_abs_safety_factor=small_abs_safety_factor,
             large_abs_safety_factor=large_abs_safety_factor,
             safety_factor_scale=safety_factor_scale,
+            mixed_fn_compos=mixed_fn_compos,
         )
     )

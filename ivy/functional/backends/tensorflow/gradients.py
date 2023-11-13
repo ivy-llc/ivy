@@ -1,5 +1,8 @@
-"""Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax and
-signature.
+"""
+Tensorflow gradient functions.
+
+Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax
+and signature.
 """
 
 # global
@@ -8,6 +11,7 @@ from typing import Sequence, Union, Optional, Callable
 
 # local
 import ivy
+from ivy.func_wrapper import outputs_to_ivy_arrays, inputs_to_native_arrays
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
     _get_y_and_ret_idxs,
@@ -34,8 +38,8 @@ def _grad_func(y, xs, xs_required, tape):
     """Gradient calculation function."""
     # Creating a zero gradient nest for the case where no gradients are computed
     grads_ = ivy.nested_map(
-        xs_required,
         lambda x: ivy.to_native(ivy.zeros_like(x)),
+        xs_required,
         include_derived=True,
         shallow=False,
     )
@@ -48,8 +52,8 @@ def _grad_func(y, xs, xs_required, tape):
         grads = grads_ if grads is None else grads
     else:
         grads = ivy.nested_map(
-            grads,
             lambda x: 0 if x is None else x,
+            grads,
             include_derived=True,
         )
         if isinstance(grads, ivy.Container):
@@ -65,12 +69,12 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    xs_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
+    ret_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
 ):
     # Conversion of required arrays to float variables and duplicate index chains
-    xs, xs_required, required_duplicate_index_chains, _ = _get_required_float_variables(
-        xs, xs_grad_idxs
+    xs, xs_grad_idxs, xs_required, required_duplicate_index_chains, _ = (
+        _get_required_float_variables(xs, xs_grad_idxs)
     )
 
     # Creating a tape to record operations
@@ -79,7 +83,9 @@ def execute_with_gradients(
         func_ret = func(xs)
 
     # Getting the relevant outputs from the function return for gradient calculation
-    y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs, reshape=False)
+    ret_grad_idxs, y, ret_idxs = _get_y_and_ret_idxs(
+        func_ret, ret_grad_idxs, reshape=False
+    )
 
     if isinstance(y, ivy.NativeArray):
         # Gradient calculation for a single output
@@ -91,8 +97,8 @@ def execute_with_gradients(
         # Gradient calculation for multiple outputs
         y = _get_native_y(y)
         grads_ = ivy.nested_map(
-            y,
             lambda x: _grad_func(x, xs, xs_required, tape),
+            y,
             include_derived=True,
             shallow=False,
         )
@@ -114,17 +120,17 @@ def execute_with_gradients(
 def value_and_grad(func):
     def grad_fn(xs):
         grads = ivy.nested_map(
-            xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
+            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
         )
         with tf.GradientTape(watch_accessed_variables=False) as tape:
-            xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
+            xs = ivy.nested_map(lambda x: ivy.to_native(x), xs, include_derived=True)
             tape.watch(xs)
             y = func(xs)
         y = y.to_native(y)
         grads_ = tape.gradient(y, xs)
         grads_ = ivy.nested_map(
-            grads_,
             lambda x: ivy.to_ivy(x),
+            grads_,
             include_derived=True,
         )
         grads_ = ivy.to_ivy(grads_)
@@ -156,26 +162,82 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
 
     def callback_fn(x_in):
-        with tf.GradientTape() as tape:
-            x_in = ivy.to_native(x_in)
+        with tf.GradientTape(persistent=True) as tape:
+            ivy.nested_map(ivy.copy_array, x_in)
+            x_in = ivy.to_native(x_in, nested=True)
             tape.watch(x_in)
             y = grad_fn(x_in)
-        return ivy.to_ivy(tape.jacobian(y, x_in))
+
+            # Deal with multiple outputs
+            if not isinstance(y, ivy.NativeArray):
+                jacobian = ivy.nested_map(
+                    lambda yi: ivy.to_ivy(
+                        tape.jacobian(yi, x_in, unconnected_gradients="zero"),
+                        nested=True,
+                    ),
+                    y,
+                    include_derived=True,
+                )
+            else:
+                jacobian = ivy.to_ivy(tape.jacobian(y, x_in))
+        return jacobian
 
     return callback_fn
 
 
-def grad(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+def grad(f, argnums=0):
+    if grad.nth == 0:
+        grad.f_original = f
 
-    def callback_fn(x_in):
-        with tf.GradientTape() as tape:
-            x_in = ivy.to_native(ivy.array(x_in))
-            tape.watch(x_in)
-            y = grad_fn(x_in)
-        return ivy.to_ivy(tape.gradient(y, x_in))
+    def _nth_derivative(n):
+        @outputs_to_ivy_arrays
+        @inputs_to_native_arrays
+        def _inner(*args, **kwargs):
+            max_argnum = argnums if isinstance(argnums, int) else max(argnums)
+            if max_argnum >= len(args):
+                raise TypeError(
+                    f"differentiating with respect to {argnums=} requires at least "
+                    f"{max_argnum + 1} positional arguments to be passed by the "
+                    f"caller, but got only {len(args)} positional arguments."
+                )
+            if isinstance(argnums, int):
+                x = args[argnums]
+            elif isinstance(argnums, (tuple, list)):
+                x = []
+                for i in argnums:
+                    x.append(args[i])
+            else:
+                raise TypeError(
+                    "argnums should be passed as int or a list/tuple of ints."
+                    f" Found {type(argnums)}"
+                )
+            if n == 0:
+                ret = (
+                    grad.f_original(*args, **kwargs)
+                    if grad.f_original is not None
+                    else f(*args, **kwargs)
+                )
+                grad.nth = 0
+                return ret
+            else:
+                with tf.GradientTape() as tape:
+                    tape.watch(x)
+                    y = _nth_derivative(n - 1)(*args, *kwargs)
+                    ret = tape.gradient(y, x)
+                return ret
 
-    return callback_fn
+        return _inner
+
+    grad.nth += 1
+
+    return _nth_derivative(grad.nth)
+
+
+grad.f_original = None
+grad.nth = 0

@@ -34,7 +34,7 @@ def native_sparse_array(
         data,
         inverse=True,
         message=(
-            "data cannot be specified, Numpy does not support sparse array" " natively"
+            "data cannot be specified, Numpy does not support sparse array natively"
         ),
     )
 

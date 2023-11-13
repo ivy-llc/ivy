@@ -1,0 +1,16 @@
+name: lint-bot
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-linting:
+    name: Fix Linting
+    uses: unifyai/workflows/.github/workflows/lint-bot.yml@main
+    secrets: inherit

@@ -4,7 +4,9 @@ from typing import Optional, Literal, Union, List
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from . import backend_version
 
 
 def argsort(
@@ -16,10 +18,12 @@ def argsort(
     stable: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
-    x = -1 * jnp.searchsorted(jnp.unique(x), x) if descending else x
     kind = "stable" if stable else "quicksort"
-    return jnp.argsort(x, axis, kind=kind)
+    return (
+        jnp.argsort(-x, axis=axis, kind=kind)
+        if descending
+        else jnp.argsort(x, axis=axis, kind=kind)
+    )
 
 
 def sort(
@@ -60,7 +64,7 @@ def searchsorted(
         x = jnp.take_along_axis(x, sorter, axis=-1)
     if x.ndim != 1:
         assert x.shape[:-1] == v.shape[:-1], RuntimeError(
-            f"the first N-1 dimensions of x array and v array "
+            "the first N-1 dimensions of x array and v array "
             f"must match, got {x.shape} and {v.shape}"
         )
         original_shape = v.shape
@@ -73,3 +77,14 @@ def searchsorted(
     else:
         ret = jnp.searchsorted(x, v, side=side)
     return ret.astype(ret_dtype)
+
+
+# msort
+@with_unsupported_dtypes({"0.4.20 and below": ("complex",)}, backend_version)
+def msort(
+    a: Union[JaxArray, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.sort(a, axis=0, kind="mergesort")

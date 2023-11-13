@@ -20,8 +20,8 @@ class Optimizer(abc.ABC):
         inplace: bool = True,
         stop_gradients: bool = True,
         init_on_first_step: bool = False,
-        compile_on_next_step: bool = False,
-        fallback_to_non_compiled: bool = False,
+        trace_on_next_step: bool = False,
+        fallback_to_non_traced: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ):
         """
@@ -42,11 +42,11 @@ class Optimizer(abc.ABC):
         init_on_first_step
             Whether the optimizer is initialized on the first step.
             Default is ``False``.
-        compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is ``False``.
-        fallback_to_non_compiled
-            Whether to fall back to non-compiled forward call in the case that an error
-            is raised during the compiled forward pass. Default is ``True``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
+        fallback_to_non_traced
+            Whether to fall back to non-traced forward call in the case that an error
+            is raised during the traced forward pass. Default is ``True``.
         device
             Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. (Default value = None)
@@ -56,12 +56,12 @@ class Optimizer(abc.ABC):
         self._stop_gradients = stop_gradients
         self._init_on_first_step = init_on_first_step
         self._initialized = not init_on_first_step
-        self._compile_on_next_step = compile_on_next_step
-        self._fallback_to_non_compiled = fallback_to_non_compiled
+        self._trace_on_next_step = trace_on_next_step
+        self._fallback_to_non_traced = fallback_to_non_traced
         self._dev = ivy.default(device, ivy.default_device())
         self._count = ivy.array([0], device=self._dev)
-        self._compiled_step_fn = None
-        self._compiled = False
+        self._traced_step_fn = None
+        self._traced = False
 
     # Private #
     # --------#
@@ -72,8 +72,7 @@ class Optimizer(abc.ABC):
     def _step(self, v: ivy.Container, grads: ivy.Container):
         """
         Update nested variables container v from update step, using nested grads
-        container. Override this abstract method with child class custom
-        implementation.
+        container. Override this abstract method with child class custom implementation.
 
         Parameters
         ----------
@@ -86,7 +85,6 @@ class Optimizer(abc.ABC):
         -------
         ret
             The updated variables, following update step.
-
         """
         raise ivy.utils.exceptions.IvyNotImplementedException
 
@@ -96,7 +94,7 @@ class Optimizer(abc.ABC):
         self, v: ivy.Container, grads: ivy.Container, ignore_missing: bool = False
     ):
         """
-        Calls the custom child step function implementation
+        Call the custom child step function implementation.
 
         Parameters
         ----------
@@ -136,7 +134,7 @@ class Optimizer(abc.ABC):
         self, v: ivy.Container, grads: ivy.Container, ignore_missing: bool = False
     ):
         """
-        Update nested variables container v from overridden private self._step
+        Update nested variables container v from overridden private self._step.
 
         Parameters
         ----------
@@ -153,7 +151,6 @@ class Optimizer(abc.ABC):
         -------
         ret
             The updated variables, following update step.
-
         """
         self._count += 1
         self._initialized = True
@@ -170,7 +167,7 @@ class SGD(Optimizer):
         lr: float = 1e-4,
         inplace: bool = True,
         stop_gradients: bool = True,
-        compile_on_next_step: bool = False,
+        trace_on_next_step: bool = False,
     ):
         """
         Construct a Stochastic-Gradient-Descent (SGD) optimizer.
@@ -187,19 +184,19 @@ class SGD(Optimizer):
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
             Default is ``True``.
-        compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is ``False``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
         """
         Optimizer.__init__(
-            self, lr, inplace, stop_gradients, compile_on_next_step=compile_on_next_step
+            self, lr, inplace, stop_gradients, trace_on_next_step=trace_on_next_step
         )
 
     # Custom Step
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
         """
-        Update nested variables container v by gradient descent step,
-        using nested gradients container.
+        Update nested variables container v by gradient descent step, using nested
+        gradients container.
 
         Parameters
         ----------
@@ -212,7 +209,6 @@ class SGD(Optimizer):
         -------
         ret
             The new updated variables container, following gradient descent step.
-
         """
         return ivy.gradient_descent_update(
             v,
@@ -234,7 +230,6 @@ class SGD(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({})
 
 
@@ -245,7 +240,7 @@ class LARS(Optimizer):
         decay_lambda: float = 0,
         inplace: bool = True,
         stop_gradients: bool = True,
-        compile_on_next_step: bool = False,
+        trace_on_next_step: bool = False,
     ):
         """
         Construct a Layer-wise Adaptive Rate Scaling (LARS) optimizer.
@@ -264,12 +259,12 @@ class LARS(Optimizer):
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
             Default is ``True``.
-        compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is ``False``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
         """
         self._decay_lambda = decay_lambda
         Optimizer.__init__(
-            self, lr, inplace, stop_gradients, compile_on_next_step=compile_on_next_step
+            self, lr, inplace, stop_gradients, trace_on_next_step=trace_on_next_step
         )
 
     # Custom Step
@@ -290,7 +285,6 @@ class LARS(Optimizer):
         -------
         ret
             The new updated variables container, following LARS step.
-
         """
         return ivy.lars_update(
             v,
@@ -313,7 +307,6 @@ class LARS(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({})
 
 
@@ -326,7 +319,7 @@ class Adam(Optimizer):
         epsilon: float = 1e-07,
         inplace: bool = True,
         stop_gradients: bool = True,
-        compile_on_next_step: bool = False,
+        trace_on_next_step: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ):
         """
@@ -351,8 +344,8 @@ class Adam(Optimizer):
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
             Default is ``True``.
-        compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is ``False``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
         device
             Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. (Default value = None)
@@ -363,18 +356,18 @@ class Adam(Optimizer):
         self._mw = None
         self._vw = None
         self._first_pass = True
-        self._should_compile = False
+        self._should_trace = False
 
         Optimizer.__init__(
-            self, lr, inplace, stop_gradients, True, compile_on_next_step, device=device
+            self, lr, inplace, stop_gradients, True, trace_on_next_step, device=device
         )
 
     # Custom Step
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
         """
-        Update nested variables container v by Adam update step,
-        using nested grads container.
+        Update nested variables container v by Adam update step, using nested grads
+        container.
 
         Parameters
         ----------
@@ -387,7 +380,6 @@ class Adam(Optimizer):
         -------
         ret
             The updated variables, following Adam update step.
-
         """
         if self._first_pass:
             self._mw = grads
@@ -422,8 +414,86 @@ class Adam(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({"mw": self._mw, "vw": self._vw})
+
+
+class AdamW(Adam):
+    def __init__(
+        self,
+        lr: float = 1e-4,
+        beta1: float = 0.9,
+        beta2: float = 0.999,
+        epsilon: float = 1e-07,
+        weight_decay: float = 0.0,
+        inplace: bool = True,
+        stop_gradients: bool = True,
+        trace_on_next_step: bool = False,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ):
+        """
+        Construct an ADAMW optimizer.
+
+        Parameters
+        ----------
+        lr
+            Learning rate, default is ``1e-4``.
+        beta1
+            gradient forgetting factor, default is ``0.9``
+        beta2
+            second moment of gradient forgetting factor, default is ``0.999``
+        epsilon
+            divisor during adamw update, preventing division by zero,
+            default is ``1e-07``
+        weight_decay
+            weight decay coefficient, default is ``0.0``
+        inplace
+            Whether to update the variables in-place, or to create new variable handles.
+            This is only relevant for frameworks with stateful variables such as
+            PyTorch.
+            Default is ``True``, provided the backend framework supports it.
+        stop_gradients
+            Whether to stop the gradients of the variables after each gradient step.
+            Default is ``True``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
+        device
+            Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. (Default value = None)
+        """
+        self._weight_decay = weight_decay
+        super().__init__(
+            lr,
+            beta1,
+            beta2,
+            epsilon,
+            inplace,
+            stop_gradients,
+            trace_on_next_step,
+            device,
+        )
+
+    def _step(self, v: ivy.Container, grads: ivy.Container):
+        """
+        Update nested variables container v by AdamW update step, using nested grads
+        container.
+
+        Parameters
+        ----------
+        v
+            Nested variables to update.
+        grads
+            Nested gradients to update.
+
+        Returns
+        -------
+        ret
+            The updated variables, following AdamW update step.
+        """
+        # Apply L2 regularization directly to the parameters
+        if self._weight_decay != 0:
+            grads += self._weight_decay * v
+
+        return super()._step(v, grads)
 
 
 class LAMB(Optimizer):
@@ -437,7 +507,7 @@ class LAMB(Optimizer):
         decay_lambda: float = 0,
         inplace: bool = True,
         stop_gradients: bool = True,
-        compile_on_next_step: bool = False,
+        trace_on_next_step: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ):
         """
@@ -467,14 +537,14 @@ class LAMB(Optimizer):
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
             Default is ``True``.
-        compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is ``False``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
         device
             Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. (Default value = None)
         """
         Optimizer.__init__(
-            self, lr, inplace, stop_gradients, True, compile_on_next_step, device=device
+            self, lr, inplace, stop_gradients, True, trace_on_next_step, device=device
         )
         self._beta1 = beta1
         self._beta2 = beta2
@@ -489,8 +559,8 @@ class LAMB(Optimizer):
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
         """
-        Update nested variables container v by LAMB update step,
-        using nested grads container.
+        Update nested variables container v by LAMB update step, using nested grads
+        container.
 
         Parameters
         ----------
@@ -526,7 +596,8 @@ class LAMB(Optimizer):
         return new_v
 
     def set_state(self, state: ivy.Container):
-        """Set state of the optimizer.
+        """
+        Set state of the optimizer.
 
         Parameters
         ----------
@@ -538,5 +609,4 @@ class LAMB(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({"mw": self._mw, "vw": self._vw})

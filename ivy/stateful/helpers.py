@@ -1,4 +1,4 @@
-"""Base class for helper module methods"""
+"""Base class for helper module methods."""
 
 # global
 import abc
@@ -12,10 +12,10 @@ import ivy
 class ModuleHelpers(abc.ABC):
     # Private #
     # --------#
-    def _top_v_fn(self, /, *, depth=None, flatten_key_chains=False):
+    def _top_v_fn(self, /, depth=None, flatten_key_chains=False):
         """
-        Returns the variables at a specific depth, with depth 1 returning the
-        variables of the current layer.
+        Return the variables at a specific depth, with depth 1 returning the variables
+        of the current layer.
 
         Parameters
         ----------
@@ -42,10 +42,10 @@ class ModuleHelpers(abc.ABC):
             return ret.cont_flatten_key_chains()
         return ret
 
-    def _top_mod_fn(self, /, *, depth=None):
+    def _top_mod_fn(self, /, depth=None):
         """
-        Find the top (parent) module at specific depth, starting with depth 1 to
-        return the current submodule.
+        Find the top (parent) module at specific depth, starting with depth 1 to return
+        the current submodule.
 
         Parameters
         ----------
@@ -68,8 +68,8 @@ class ModuleHelpers(abc.ABC):
     # noinspection PyProtectedMember
     def track_submod_rets(self):
         """
-        Returns True if the current module should have its returns tracked
-        as set by the user during the call.
+        Return True if the current module should have its returns tracked as set by the
+        user during the call.
 
         Returns
         -------
@@ -81,9 +81,8 @@ class ModuleHelpers(abc.ABC):
             return False
         top_mod = self.top_mod()
         submods = top_mod._submods_to_track
-        if ivy.exists(submods):
-            if self not in submods:
-                return False
+        if ivy.exists(submods) and self not in submods:
+            return False
         depth = top_mod._submod_depth
         if ivy.exists(depth):
             return (
@@ -95,8 +94,8 @@ class ModuleHelpers(abc.ABC):
 
     def check_submod_rets(self):
         """
-        Returns True if there is an expected submodule return value
-        set by the user during the call.
+        Return True if there is an expected submodule return value set by the user
+        during the call.
 
         Returns
         -------
@@ -114,7 +113,6 @@ class ModuleHelpers(abc.ABC):
         """
         Tracks the order in which the submodules are called.
 
-
         Returns
         -------
         ret
@@ -124,9 +122,8 @@ class ModuleHelpers(abc.ABC):
             return False
         top_mod = self.top_mod()
         submods = top_mod._submods_to_track
-        if ivy.exists(submods):
-            if self not in submods:
-                return False
+        if ivy.exists(submods) and self not in submods:
+            return False
         depth = top_mod._submod_depth
         if ivy.exists(depth):
             return (
@@ -215,8 +212,8 @@ class ModuleHelpers(abc.ABC):
 
     def get_mod_key(self, /, *, top_mod=None):
         """
-        Get the key of current module to be used when checking or tracking the
-        return values of a submodule.
+        Get the key of current module to be used when checking or tracking the return
+        values of a submodule.
 
         Parameters
         ----------
@@ -234,7 +231,7 @@ class ModuleHelpers(abc.ABC):
         full_key = self.__repr__().split(".")[-1]
         name_key = full_key.split(" ")[0]
         if name_key not in submod_dict:
-            submod_dict[name_key] = dict()
+            submod_dict[name_key] = {}
         id_str = full_key.split(" ")[-1][:-1]
         if id_str not in submod_dict[name_key]:
             submod_dict[name_key][id_str] = str(len(submod_dict[name_key]))
@@ -271,14 +268,12 @@ class ModuleHelpers(abc.ABC):
                 next_depth = depth - 1
             else:
                 next_depth = None
-            ret = ivy.Container(
-                {
-                    ivy.Container.cont_flatten_key_chain(
-                        sm.__repr__(), replacement="_"
-                    ): sm.sub_mods(show_v=show_v, depth=next_depth)
-                    for sm in self._sub_mods
-                }
-            )
+            ret = ivy.Container({
+                ivy.Container.cont_flatten_key_chain(
+                    sm.__repr__(), replacement="_"
+                ): sm.sub_mods(show_v=show_v, depth=next_depth)
+                for sm in self._sub_mods
+            })
             if flatten_key_chains:
                 return ret.cont_flatten_key_chains()
             return ret
@@ -288,8 +283,8 @@ class ModuleHelpers(abc.ABC):
 
     def show_v_in_top_v(self, /, *, depth=None):
         """
-        Show sub containers from the perspective of the top layer.
-        Will give prompt if either of `v` or `top_v` is not initialized.
+        Show sub containers from the perspective of the top layer. Will give prompt if
+        either of `v` or `top_v` is not initialized.
 
         Parameters
         ----------
@@ -301,15 +296,14 @@ class ModuleHelpers(abc.ABC):
             self.top_v(depth).cont_show_sub_container(self.v)
         else:
             print(
-                "both self.top_v and self.v must be initialized in order to show v in "
-                "top_v, "
-                "but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
+                "both self.top_v and self.v must be initialized in order to show v in"
+                f" top_v, but found\n\ntop_v: {self.top_v}\n\nv: {self.v}."
             )
 
     def v_with_top_v_key_chains(self, /, *, depth=None, flatten_key_chains=False):
         """
-        Show the network's variables from the perspective of value of top layer.
-        Will give prompt if either of `v` and `top_v` is not initialized.
+        Show the network's variables from the perspective of value of top layer. Will
+        give prompt if either of `v` and `top_v` is not initialized.
 
         Parameters
         ----------
@@ -331,9 +325,8 @@ class ModuleHelpers(abc.ABC):
             return ret
         else:
             print(
-                "both self.top_v and self.v must be initialized in order to show v in "
-                "top_v, "
-                "but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
+                "both self.top_v and self.v must be initialized in order to show v in"
+                f" top_v, but found\n\ntop_v: {self.top_v}\n\nv: {self.v}."
             )
 
     def mod_with_top_mod_key_chain(self, /, *, depth=None, flatten_key_chain=False):
@@ -361,9 +354,7 @@ class ModuleHelpers(abc.ABC):
         mods = [
             ivy.Container.cont_flatten_key_chain(top_mod.__repr__(), replacement="_")
         ]
-        while True:
-            if not ivy.exists(top_mod.top_mod):
-                break
+        while ivy.exists(top_mod.top_mod):
             top_mod = top_mod.top_mod(1)
             mods.append(
                 ivy.Container.cont_flatten_key_chain(
@@ -381,9 +372,9 @@ class ModuleHelpers(abc.ABC):
         self, /, *, upper_depth=None, lower_depth=None, flatten_key_chains=False
     ):
         """
-        Show lower submodules in the top module. `upper_depth` and `lower_depth`
-        are for controlling the coverage of upper and lower modules.
-        Will give prompt if no top module found.
+        Show lower submodules in the top module. `upper_depth` and `lower_depth` are for
+        controlling the coverage of upper and lower modules. Will give prompt if no top
+        module found.
 
         Parameters
         ----------
@@ -409,8 +400,8 @@ class ModuleHelpers(abc.ABC):
             upper_sub_mods.cont_show_sub_container(lower_sub_mods)
         else:
             print(
-                "self.top_mod must be initialized in order to show mod in top_mod,"
-                "but found\n\ntop_mod: {}".format(self.top_mod)
+                "self.top_mod must be initialized in order to show mod in top_mod,but"
+                f" found\n\ntop_mod: {self.top_mod}"
             )
 
     def _add_submod_ret(self, ret, /):
@@ -434,6 +425,7 @@ class ModuleHelpers(abc.ABC):
     def _check_submod_ret(self):
         """
         Check the actual submodule returns with the expected submodule return values.
+
         Raise AssertError if returns are not close enough.
         """
         top_mod = self.top_mod()
@@ -469,15 +461,15 @@ class ModuleHelpers(abc.ABC):
                 kwargs["rtol"] = rtol
             ivy.utils.assertions.check_true(
                 np.allclose(ret, expected_ret, **kwargs),
-                message="ret: {} and expected_ret: {} were not close enough".format(
-                    ret, expected_ret
+                message=(
+                    f"ret: {ret} and expected_ret: {expected_ret} were not close enough"
                 ),
             )
 
     # noinspection PyProtectedMember
     def _is_submod_leaf(self):
         """
-        Checks if the submodule is the leaf node of the network.
+        Check if the submodule is the leaf node of the network.
 
         Returns
         -------
@@ -508,9 +500,9 @@ class ModuleHelpers(abc.ABC):
                     ),
                 )[-1].split("/")[0]
             else:
-                max_key = key + "_0"
+                max_key = f"{key}_0"
                 sco[max_key] = ivy.Container(
-                    alphabetical_keys=False, ivyh=ivy.with_backend("numpy", cached=True)
+                    alphabetical_keys=False, ivyh=ivy.with_backend("numpy")
                 )
             sco = sco[max_key]
         final_key = key_chain[-1]
@@ -530,21 +522,21 @@ class ModuleHelpers(abc.ABC):
                     -2 if isinstance(sco[chosen_kc], np.ndarray) else -1
                 ].split("_")[-1]
             )
-            new_key = final_key + "_{}".format(max_key_idx + 1)
+            new_key = f"{final_key}_{max_key_idx + 1}"
         else:
-            new_key = final_key + "_0"
+            new_key = f"{final_key}_0"
         if self._is_submod_leaf():
             sco[new_key] = self.v_with_top_v_key_chains(
                 flatten_key_chains=True
             ).to_numpy()
         else:
             sco[new_key] = ivy.Container(
-                alphabetical_keys=False, ivyh=ivy.with_backend("numpy", cached=True)
+                alphabetical_keys=False, ivyh=ivy.with_backend("numpy")
             )
 
     def show_structure(self):
         """
-        Prints the structure of the layer network.
+        Print the structure of the layer network.
 
         Returns
         -------
@@ -556,3 +548,35 @@ class ModuleHelpers(abc.ABC):
         if sub_mod_repr == "''":
             return this_repr
         print("\n".join([this_repr, sub_mod_repr]))
+
+    def _convert_tensors_to_numpy(self):
+        """
+        Recursively traverses the _sub_mods attribute of a Module object and converts
+        every container containing tensors to numpy using the to_numpy() method.
+
+        Returns
+        -------
+        Module
+            The converted Module object.
+        """
+        if len(self._sub_mods) > 0:
+            for sub_mod in self._sub_mods:
+                sub_mod._convert_tensors_to_numpy()
+        self.v = self.v.to_numpy()
+
+    def _convert_numpy_to_tensors(self):
+        """
+        Recursively traverses the _sub_mods attribute of a Module object and converts
+        every container containing tensors to numpy using the to_numpy() method.
+
+        Returns
+        -------
+        Module
+            The converted Module object.
+        """
+        if len(self._sub_mods) > 0:
+            for sub_mod in self._sub_mods:
+                sub_mod._convert_numpy_to_tensors()
+                self.v = self.v.to_ivy()
+        else:
+            self.v = self.v.to_ivy()

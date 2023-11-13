@@ -1,12 +1,88 @@
 # Testing Function
 # global
-import numpy as np
 from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa: E501
+    put_along_axis_helper,
+)
+
+
+@handle_frontend_test(
+    fn_tree="numpy.compress",
+    dtype_arr_ax=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=10,
+        max_dim_size=100,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    condition=helpers.array_values(
+        dtype=helpers.get_dtypes("bool"),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
+        ),
+    ),
+)
+def test_numpy_compress(
+    dtype_arr_ax,
+    condition,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, arr, ax = dtype_arr_ax
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=condition,
+        a=arr[0],
+        axis=ax,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=2,
+    ),
+    k=st.integers(min_value=-1, max_value=1),
+    test_with_out=st.just(False),
+)
+def test_numpy_diag(
+    dtype_and_x,
+    k,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        v=x[0],
+        k=k,
+    )
 
 
 @handle_frontend_test(
@@ -28,12 +104,14 @@ def test_numpy_diagonal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         on_device=on_device,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
@@ -44,60 +122,31 @@ def test_numpy_diagonal(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.diag",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=2,
-        min_dim_size=2,
-    ),
-    k=st.integers(min_value=-1, max_value=1),
+    fn_tree="numpy.put_along_axis",
+    args=put_along_axis_helper(),
     test_with_out=st.just(False),
 )
-def test_numpy_diag(
-    dtype_and_x,
-    k,
+def test_numpy_put_along_axis(
+    *,
+    args,
     test_flags,
     frontend,
     fn_tree,
     on_device,
+    backend_fw,
 ):
-    input_dtype, x = dtype_and_x
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        v=x[0],
-        k=k,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.diag_indices",
-    n=helpers.ints(min_value=1, max_value=10),
-    ndim=helpers.ints(min_value=2, max_value=10),
-    dtype=helpers.get_dtypes("valid", full=False),
-    test_with_out=st.just(False),
-)
-def test_numpy_diag_indices(
-    n,
-    ndim,
-    dtype,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
-):
+    dtypes, x, indices, values, axis = args
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=dtypes,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        n=n,
-        ndim=ndim,
+        arr=x,
+        indices=indices,
+        values=values,
+        axis=axis,
     )
 
 
@@ -119,12 +168,14 @@ def test_numpy_take_along_axis(
     dtype_x_indices_axis,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -132,143 +183,4 @@ def test_numpy_take_along_axis(
         arr=x,
         indices=indices,
         axis=axis,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.tril_indices",
-    n=helpers.ints(min_value=1, max_value=10),
-    m=helpers.ints(min_value=1, max_value=10),
-    k=st.integers(min_value=-10, max_value=10),
-    test_with_out=st.just(False),
-)
-def test_tril_indices(
-    *,
-    n,
-    m,
-    k,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
-):
-    helpers.test_frontend_function(
-        input_dtypes=["int32"],
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        n=n,
-        k=k,
-        m=m,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.indices",
-    dimensions=helpers.get_shape(),
-    dtype=helpers.get_dtypes(kind="float", full=False),
-    sparse=helpers.get_dtypes(kind="bool"),
-    test_with_out=st.just(False),
-)
-def test_indices(
-    *,
-    dimensions,
-    dtype,
-    sparse,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
-):
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        dimensions=dimensions,
-        dtype=dtype[0],
-        sparse=sparse,
-    )
-
-
-# unravel_index
-@st.composite
-def max_value_as_shape_prod(draw):
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=1,
-            max_num_dims=5,
-            min_dim_size=1,
-            max_dim_size=5,
-        )
-    )
-    dtype_and_x = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_value=0,
-            max_value=np.prod(shape) - 1,
-        )
-    )
-    return dtype_and_x, shape
-
-
-@handle_frontend_test(
-    fn_tree="numpy.unravel_index",
-    dtype_x_shape=max_value_as_shape_prod(),
-    test_with_out=st.just(False),
-)
-def test_numpy_unravel_index(
-    *,
-    dtype_x_shape,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
-):
-    dtype_and_x, shape = dtype_x_shape
-    input_dtype, x = dtype_and_x[0], dtype_and_x[1]
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        indices=x[0],
-        shape=shape,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.fill_diagonal",
-    dtype_x_axis=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        min_dim_size=2,
-        max_num_dims=2,
-    ),
-    val=helpers.floats(),
-    wrap=helpers.get_dtypes(kind="bool"),
-    test_with_out=st.just(False),
-)
-def test_numpy_fill_diagonal(
-    dtype_x_axis,
-    wrap,
-    val,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_x_axis
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        on_device=on_device,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        a=x[0],
-        val=val,
-        wrap=wrap,
     )

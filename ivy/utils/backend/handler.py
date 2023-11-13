@@ -11,13 +11,18 @@ from ivy.utils import _importlib, verbosity
 
 # local
 from ivy.func_wrapper import _wrap_function
-from ivy.utils.backend.sub_backend_handler import _clear_current_sub_backends
+from ivy.utils.backend.sub_backend_handler import (
+    _clear_current_sub_backends,
+    fn_name_from_version_specific_fn_name,
+)
+from ivy.utils.exceptions import _handle_inplace_mode
 
 backend_stack = []
 compiled_backends = {}
+_compiled_backends_ids = {}
 implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
-ivy_original_fn_dict = dict()
+ivy_original_fn_dict = {}
 
 
 class ContextManager:
@@ -25,15 +30,15 @@ class ContextManager:
         self.module = module
 
     def __enter__(self):
-        set_backend(self.module)
+        return set_backend(self.module)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         previous_backend()
 
 
 _backends_subpackage_path = "ivy.functional.backends"
-_backend_dict = dict()
-_backend_reverse_dict = dict()
+_backend_dict = {}
+_backend_reverse_dict = {}
 
 for backend in os.listdir(
     os.path.join(
@@ -54,24 +59,24 @@ for backend in os.listdir(
 
 def prevent_access_locally(fn):
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _prevent_access_locally(*args, **kwargs):
         if ivy.is_local():
             raise RuntimeError(f"Calling {fn.__name__} is not allowed on this object.")
         return fn(*args, **kwargs)
 
-    return new_fn
+    return _prevent_access_locally
 
 
 @functools.lru_cache
 def _get_backend_for_arg(arg_module_name):
-    for backend in _backend_dict:
+    for backend, module_name in _backend_dict.items():
         if backend in arg_module_name:
-            module_name = _backend_dict[backend]
             return importlib.import_module(module_name)
 
 
 def _determine_backend_from_args(args):
-    """Return the appropriate Ivy backend, given some arguments.
+    """
+    Return the appropriate Ivy backend, given some arguments.
 
     Parameters
     ----------
@@ -92,7 +97,6 @@ def _determine_backend_from_args(args):
     >>> x = jnp.array([1])
     >>> print(_determine_backend_from_args(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>    # noqa
-
     """
     arg_type = type(args)
     if isinstance(args, ivy.Array):
@@ -116,57 +120,10 @@ def _determine_backend_from_args(args):
         return _get_backend_for_arg(args.__class__.__module__)
 
 
-def fn_name_from_version_specific_fn_name(name, version):
-    """
-    Parameters
-    ----------
-    name
-        the version specific name of the function for which the version support
-        is to be provided.
-    version
-        the version of the current framework for which the support is to be
-        provided, the version is inferred by importing the framework
-    Returns
-    -------
-        the name of the original function which will then point to the version
-        specific function
-
-    """
-    # TODO: add tests
-    version = str(version)
-    if version.find("+") != -1:
-        version = tuple(map(int, version[: version.index("+")].split(".")))
-    else:
-        version = tuple(map(int, version.split(".")))
-    if "_to_" in name:
-        i = name.index("_v_")
-        e = name.index("_to_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        version_end = name[e + 4 :]
-        version_end = tuple(map(int, version_end.split("p")))
-        if version_start <= version <= version_end:
-            return name[0:i]
-    elif "_and_above" in name:
-        i = name.index("_v_")
-        e = name.index("_and_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        if version >= version_start:
-            return name[0:i]
-    else:
-        i = name.index("_v_")
-        e = name.index("_and_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        if version <= version_start:
-            return name[0:i]
-
-
 def set_backend_to_specific_version(backend):
     """
-    Updates the backend dict to make the original function
-    name point to the version specific one.
+    Update the backend dict to make the original function name point to the version
+    specific one.
 
     Parameters
     ----------
@@ -189,8 +146,8 @@ def set_backend_to_specific_version(backend):
 
 
 def current_backend(*args, **kwargs):
-    """Returns the current backend. Priorities:
-    global_backend > argument's backend.
+    """
+    Return the current backend. Priorities: global_backend > argument's backend.
 
     Parameters
     ----------
@@ -221,29 +178,27 @@ def current_backend(*args, **kwargs):
     >>> print(ivy.current_backend(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
     """
-    if ivy.is_local():
-        return ivy
     global implicit_backend
     # if a global backend has been set with
     # set_backend then this will be returned
     if backend_stack:
         f = backend_stack[-1]
         if verbosity.level > 0:
-            verbosity.cprint("Using backend from stack: {}".format(f))
+            verbosity.cprint(f"Using backend from stack: {f}")
         return f
 
     # if no global backend exists, we try to infer
     # the backend from the arguments
     f = _determine_backend_from_args(list(args) + list(kwargs.values()))
     if f is not None:
+        if verbosity.level > 0:
+            verbosity.cprint(f"Using backend from type: {f}")
         implicit_backend = f.current_backend_str()
         return f
-    if verbosity.level > 0:
-        verbosity.cprint("Using backend from type: {}".format(f))
     return importlib.import_module(_backend_dict[implicit_backend])
 
 
-def _set_backend_as_ivy(
+def _set_module_backend(
     original_dict, target, backend, invalid_dtypes=None, backend_str=None
 ):
     invalid_dtypes = (
@@ -251,8 +206,10 @@ def _set_backend_as_ivy(
     )
     backend_str = backend.current_backend_str() if backend_str is None else backend_str
     for k, v in original_dict.items():
+        if k in ivy.GLOBAL_PROPS:
+            continue
         compositional = k not in backend.__dict__
-        if k not in backend.__dict__:
+        if compositional:
             if k in invalid_dtypes and k in target.__dict__:
                 del target.__dict__[k]
                 continue
@@ -265,7 +222,7 @@ def _set_backend_as_ivy(
             and "ivy.functional." in v.__name__
             and os.path.join("{}", "__init__.py").format(backend_str) not in v.__file__
         ):
-            _set_backend_as_ivy(
+            _set_module_backend(
                 v.__dict__,
                 target.__dict__[k],
                 backend.__dict__[k],
@@ -274,18 +231,28 @@ def _set_backend_as_ivy(
             )
 
 
-def _handle_backend_specific_vars(backend):
+def _handle_backend_specific_vars(target, backend):
     if backend.current_backend_str() == "numpy":
-        backend.set_default_device("cpu")
+        target.set_default_device("cpu")
     elif backend.current_backend_str() == "jax":
-        backend.set_global_attr("RNG", backend.functional.backends.jax.random.RNG)
+        target.set_global_attr("RNG", target.functional.backends.jax.random.RNG)
 
 
-def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
-    # Dynamic Backend
-    from ivy.functional.ivy.gradients import _is_variable, _variable_data
+def _data_to_new_backend(x, previous_backend):
+    device = previous_backend.dev(x.data)
+    try:
+        result = ivy.from_dlpack(previous_backend.to_dlpack(x.data))
+        result = ivy.to_device(result, device)
+    except Exception:
+        np_res = previous_backend.to_numpy(x.data)
+        result = ivy.asarray(np_res, device=device)
+    return result
 
-    def _is_var(obj):
+
+def dynamic_backend_converter(backend_stack):
+    from ivy.functional.ivy.gradients import _variable
+
+    def _is_var(obj, backend):
         if isinstance(obj, ivy.Container):
 
             def _map_fn(x):
@@ -297,7 +264,7 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
                 ):
                     return False
 
-                return _is_variable(x)
+                return backend.gradients._is_variable(x)
 
             return obj.cont_map(lambda x, kc: _map_fn(x)).cont_all_true()
 
@@ -309,98 +276,63 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
                 "jaxlib.xla_extension",
             ):
                 return False
-            return _is_variable(obj)
+            return backend.gradients._is_variable(obj)
 
-    def _remove_intermediate_arrays(arr_list, cont_list):
-        cont_list = [cont.cont_to_flat_list() for cont in cont_list]
-
-        cont_ids = [
-            id(item.data) if isinstance(item, ivy.Array) else id(item)
-            for cont in cont_list
-            for item in cont
-        ]
-        arr_ids = [
-            id(item.data) if isinstance(item, ivy.Array) else id(item)
-            for item in arr_list
-        ]
-
-        new_objs = {k: v for k, v in zip(arr_ids, arr_list) if k not in cont_ids}
-
-        return list(new_objs.values())
-
-    # get all ivy array and container instances in the project scope
-    array_list, container_list = [
-        [obj for obj in gc.get_objects() if isinstance(obj, obj_type)]
-        for obj_type in (ivy.Array, ivy.Container)
+    # get all ivy array instances in the project scope
+    container_list = [
+        obj
+        for obj in gc.get_objects()
+        if "ivy" in type(obj).__module__ and isinstance(obj, ivy.Container)
     ]
+    cont_array_idxs = ivy.nested_argwhere(
+        container_list,
+        lambda x: isinstance(x, ivy.Array) and x.backend != ivy.current_backend_str(),
+    )
+    cont_array_vals = ivy.multi_index_nest(container_list, cont_array_idxs)
+    array_list = [
+        obj
+        for obj in gc.get_objects()
+        if "ivy" in type(obj).__module__ and isinstance(obj, ivy.Array)
+    ]
+    array_list.extend(cont_array_vals)
 
-    # filter uninitialized arrays
-    array_list = [arr for arr in array_list if arr.__dict__]
-
-    # remove numpy intermediate objects
-    new_objs = _remove_intermediate_arrays(array_list, container_list)
-    new_objs += container_list
+    # filter uninitialized arrays and arrays with other backends, and ensure the order
+    array_list = [
+        arr
+        for arr in array_list
+        if arr.__dict__ and arr.backend != ivy.current_backend_str()
+    ]
+    new_objs = [obj for obj in array_list if obj.dynamic_backend]
 
     # now convert all ivy.Array and ivy.Container instances
-    # to numpy using the current backend
+    # to the new backend
+
     for obj in new_objs:
-        if obj.dynamic_backend:
-            numpy_objs.append(obj)
-            devices.append(obj.device)
-            if _is_var(obj):
-                # add variable object id to set
-                variable_ids.add(id(obj))
-                native_var = _variable_data(obj)
-                np_data = ivy.to_numpy(native_var)
+        # the following if condition avoids converting arrays that were already
+        # updated inplace i.e. are references to other arrays
+        if obj.backend != ivy.current_backend_str():
+            backend = ivy.with_backend(obj.backend, cached=True)
+            if _is_var(obj, backend):
+                native_var = backend.gradients._variable_data(obj)
+                data = _data_to_new_backend(native_var, backend)
+                new_data = _variable(data)
 
             else:
-                np_data = obj.to_numpy()
+                new_data = _data_to_new_backend(obj, backend)
 
             if isinstance(obj, ivy.Container):
-                obj.cont_inplace_update(np_data)
+                obj.cont_inplace_update(new_data)
             else:
-                obj._data = np_data
-
-    return variable_ids, numpy_objs, devices
-
-
-def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
-    # Dynamic Backend
-    from ivy.functional.ivy.gradients import _variable
-
-    # convert all ivy.Array and ivy.Container instances from numpy
-    # to native arrays using the newly set backend
-    for obj, device in zip(numpy_objs, devices):
-        np_arr = obj.data if isinstance(obj, ivy.Array) else obj
-        # check if object was originally a variable
-        if id(obj) in variable_ids:
-            native_arr = ivy.nested_map(
-                np_arr,
-                lambda x: current_backend().asarray(x, device=device),
-                include_derived=True,
-                shallow=False,
-            )
-            new_data = _variable(native_arr)
-
-        else:
-            new_data = ivy.nested_map(
-                np_arr,
-                lambda x: current_backend().asarray(x, device=device),
-                include_derived=True,
-                shallow=False,
-            )
-
-        if isinstance(obj, ivy.Container):
-            obj.cont_inplace_update(new_data)
-        else:
-            obj.data = new_data.data
+                obj.data = new_data.data
 
 
 @prevent_access_locally
 def set_backend(backend: str, dynamic: bool = False):
-    """Sets `backend` to be the global backend.
-    Will also convert all Array and Container objects \
-    to the new backend if `dynamic` = True
+    """
+    Set `backend` to be the global backend.
+
+    Will also convert all Array and Container objects to the new backend if `dynamic` =
+    True
 
     Examples
     --------
@@ -417,81 +349,110 @@ def set_backend(backend: str, dynamic: bool = False):
     >>> ivy.set_backend("jax")
     >>> native = ivy.native_array([1])
     >>> print(type(native))
-    <class 'jaxlib.xla_extension.DeviceArray'>
+    <class 'jaxlib.xla_extension.ArrayImpl'>
     """  # noqa
     ivy.utils.assertions.check_false(
         isinstance(backend, str) and backend not in _backend_dict,
-        "backend must be one from {}".format(list(_backend_dict.keys())),
+        f"backend must be one from {list(_backend_dict.keys())}",
     )
 
-    variable_ids = set()  # create an empty set to store variable object ids
-    numpy_objs = []  # create an empty list to store numpy objects
-    devices = []  # create an empty list to store device strings
-    # created during 1st conversion step
-
-    if dynamic:
-        variable_ids, numpy_objs, devices = convert_from_source_backend_to_numpy(
-            variable_ids, numpy_objs, devices
-        )
-
     # update the global dict with the new backend
-    ivy.locks["backend_setter"].acquire()
-    global ivy_original_dict
-    if not backend_stack:
-        ivy_original_dict = ivy.__dict__.copy()
+    with ivy.locks["backend_setter"]:
+        global ivy_original_dict
+        if not backend_stack:
+            ivy_original_dict = ivy.__dict__.copy()
 
-    _clear_current_sub_backends()
-    if isinstance(backend, str):
-        temp_stack = list()
-        while backend_stack:
-            temp_stack.append(previous_backend())
-        backend = importlib.import_module(_backend_dict[backend])
-        for fw in reversed(temp_stack):
-            backend_stack.append(fw)
-    if backend.current_backend_str() == "numpy":
-        ivy.set_default_device("cpu")
-    elif backend.current_backend_str() == "jax":
-        ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
-    backend_stack.append(backend)
-    set_backend_to_specific_version(backend)
-    _set_backend_as_ivy(ivy_original_dict, ivy, backend)
+        _clear_current_sub_backends()
+        if isinstance(backend, str):
+            temp_stack = []
+            while backend_stack:
+                temp_stack.append(previous_backend())
+            backend = importlib.import_module(_backend_dict[backend])
+            for fw in reversed(temp_stack):
+                backend_stack.append(fw)
+        if backend.current_backend_str() == "numpy":
+            ivy.set_default_device("cpu")
+        elif backend.current_backend_str() == "jax":
+            ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
+        backend_stack.append(backend)
+        set_backend_to_specific_version(backend)
+        _set_module_backend(ivy_original_dict, ivy, backend)
+        # following snippet is required to update the ivy.functional namespace with
+        # backend-specific functions
+        for key, _ in ivy.__dict__.items():
+            if key in ivy.functional.__dict__ and not key.startswith("__"):
+                ivy.functional.__dict__[key] = ivy.__dict__[key]
 
-    if dynamic:
-        convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
-
-    if verbosity.level > 0:
-        verbosity.cprint("backend stack: {}".format(backend_stack))
-    ivy.locks["backend_setter"].release()
+        if dynamic:
+            dynamic_backend_converter(backend_stack)
+        for sub_backend in ivy.available_sub_backends:
+            ivy.set_sub_backend(sub_backend)
+        if verbosity.level > 0:
+            verbosity.cprint(f"backend stack: {backend_stack}")
+    _handle_inplace_mode()
+    return ivy
 
 
 def set_numpy_backend():
-    """Sets NumPy to be the global backend. equivalent to `ivy.set_backend("numpy")`."""  # noqa
+    """
+    Set NumPy to be the global backend.
+
+    equivalent to `ivy.set_backend("numpy")`.
+    """  # noqa
     set_backend("numpy")
 
 
 def set_jax_backend():
-    """Sets JAX to be the global backend. equivalent to `ivy.set_backend("jax")`."""  # noqa
+    """
+    Set JAX to be the global backend.
+
+    equivalent to `ivy.set_backend("jax")`.
+    """  # noqa
     set_backend("jax")
 
 
 def set_tensorflow_backend():
     """
-    Sets TensorFlow to be the global backend. equivalent to
-    `ivy.set_backend("tensorflow")`.
+    Set TensorFlow to be the global backend.
+
+    equivalent to `ivy.set_backend("tensorflow")`.
     """
     set_backend("tensorflow")
 
 
 def set_torch_backend():
-    """Sets torch to be the global backend. equivalent to `ivy.set_backend("torch")`."""  # noqa
+    """
+    Set torch to be the global backend.
+
+    equivalent to `ivy.set_backend("torch")`.
+    """  # noqa
     set_backend("torch")
+
+
+def set_paddle_backend():
+    """
+    Set paddle to be the global backend.
+
+    equivalent to `ivy.set_backend("paddle")`.
+    """  # noqa
+    set_backend("paddle")
+
+
+def set_mxnet_backend():
+    """
+    Set MXNet to be the global backend.
+
+    equivalent to `ivy.set_backend("mx")`.
+    """  # noqa
+    set_backend("mxnet")
 
 
 @prevent_access_locally
 def previous_backend():
-    """Unsets the current global backend, and adjusts the ivy dict such that either
-    a previously set global backend is then used as the backend, otherwise we return
-    to Ivy's implementations.
+    """
+    Unset the current global backend, and adjusts the ivy dict such that either a
+    previously set global backend is then used as the backend, otherwise we return to
+    Ivy's implementations.
 
     Returns
     -------
@@ -542,12 +503,17 @@ def previous_backend():
         # wrap backend functions if there still is a backend, and add functions
         # to ivy namespace
         for k, v in new_backend_dict.items():
+            if k in ivy.GLOBAL_PROPS:
+                continue
             if backend_stack and k in ivy_original_dict:
                 v = _wrap_function(k, v, ivy_original_dict[k])
             if k in ivy_original_dict:
                 ivy.__dict__[k] = v
+            if k in ivy.functional.__dict__ and not k.startswith("__"):
+                ivy.functional.__dict__[k] = v
     if verbosity.level > 0:
-        verbosity.cprint("backend stack: {}".format(backend_stack))
+        verbosity.cprint(f"backend stack: {backend_stack}")
+    _handle_inplace_mode()
     return backend
 
 
@@ -559,7 +525,7 @@ def unset_backend():
 
 @prevent_access_locally
 def choose_random_backend(excluded=None):
-    excluded = list() if excluded is None else excluded
+    excluded = [] if excluded is None else excluded
     while True:
         ivy.utils.assertions.check_equal(
             len(excluded),
@@ -567,42 +533,55 @@ def choose_random_backend(excluded=None):
             inverse=True,
             message="""Unable to select backend, all backends are excluded,\
             or not installed.""",
+            as_array=False,
         )
-        f = np.random.choice(
-            [f_srt for f_srt in list(_backend_dict.keys()) if f_srt not in excluded]
-        )
+        f = np.random.choice([
+            f_srt for f_srt in list(_backend_dict.keys()) if f_srt not in excluded
+        ])
         if f is None:
             excluded.append(f)
             continue
         else:
-            print("\nselected backend: {}\n".format(f))
+            print(f"\nselected backend: {f}\n")
             return f
 
 
 # noinspection PyProtectedMember
 @prevent_access_locally
-def with_backend(backend: str, cached: bool = False):
+def with_backend(backend: str, cached: bool = True):
     # Use already compiled object
-    if cached and backend in compiled_backends.keys():
-        return compiled_backends[backend][-1]
+    if cached and backend in compiled_backends:
+        cached_backend = compiled_backends[backend][-1]
+        return cached_backend
     with _importlib.LocalIvyImporter():
         ivy_pack = _importlib._import_module("ivy")
         ivy_pack._is_local_pkg = True
+        ivy_pack._compiled_id = id(ivy_pack)
         backend_module = _importlib._import_module(
             ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
         )
-        _handle_backend_specific_vars(ivy_pack)
+        _handle_backend_specific_vars(ivy_pack, backend_module)
+        set_backend_to_specific_version(backend_module)
         # We know for sure that the backend stack is empty
         # no need to do backend unsetting
-        ivy_pack.utils.backend.handler._set_backend_as_ivy(
+        ivy_pack.utils.backend.handler._set_module_backend(
             ivy_pack.__dict__.copy(), ivy_pack, backend_module
         )
+        # TODO use a refactored code from ivy.set_backend
+        for key, _ in ivy_pack.__dict__.items():
+            if key in ivy_pack.functional.__dict__ and not key.startswith("__"):
+                ivy_pack.functional.__dict__[key] = ivy_pack.ivy.__dict__[key]
         ivy_pack.backend_stack.append(backend_module)
         ivy_pack.utils.backend._importlib.import_cache = copy.copy(
             _importlib.import_cache
         )
+        _compiled_backends_ids[ivy_pack._compiled_id] = ivy_pack
+        _importlib._clear_cache()
     try:
         compiled_backends[backend].append(ivy_pack)
     except KeyError:
         compiled_backends[backend] = [ivy_pack]
+    if ivy.backend != backend:
+        # to avoid warning users when not using set_backend with ivy.Array.__repr__
+        _handle_inplace_mode(ivy_pack=ivy_pack)
     return ivy_pack

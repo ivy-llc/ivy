@@ -2,11 +2,10 @@ Docstrings
 ==========
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api
+.. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/blob/main
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`docstrings channel`: https://discord.com/channels/799879767196958751/982738313897197600
-.. _`docstrings forum`: https://discord.com/channels/799879767196958751/1028297612408913982
 
 
 All functions in the Ivy API at :mod:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
@@ -14,15 +13,15 @@ In contrast, all backend implementations at :mod:`ivy/functional/backends/backen
 
 In order to explain how docstrings should be written, we will use :func:`ivy.tan` as an example.
 
-Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a template.
+Firstly, if the function exists in the `Array API Standard`_, then we start with the corresponding docstring as a template.
 These docstrings can be found under `spec/API_specification/array_api`_.
 
 Important: you should open the file in **raw** format.
-If you copy directly from the file preview on GitHub before clicking **raw**, then the newlines will **not** be copied over, and the docstring will rendering incorrectly in the online docs.
+If you copy directly from the file preview on GitHub before clicking **raw**, then the newlines will **not** be copied over, and the docstring will render incorrectly in the online docs.
 
 The `Array API Standard`_ docstring for :code:`tan` is as follows:
 
-.. code-block:: python
+.. parsed-literal::
 
     Calculates an implementation-dependent approximation to the tangent, having domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
 
@@ -82,7 +81,7 @@ Next, we add a section in the docstring which explains that it has been modified
 
     +This function conforms to the `Array API Standard
     +<https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    +`docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    +`docstring <https://data-apis.org/array-api/latest/API_specification/generated/array_api.tan.html>`_
     +in the standard.
 
 Finally, **if** the function is *nestable*, then we add a simple explanation for this as follows:
@@ -95,7 +94,7 @@ Finally, **if** the function is *nestable*, then we add a simple explanation for
 
 Following these changes, the new docstring is as follows:
 
-.. code-block:: python
+.. parsed-literal::
 
     Calculates an implementation-dependent approximation to the tangent, having
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
@@ -128,7 +127,7 @@ Following these changes, the new docstring is as follows:
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/array_api.tan.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -145,7 +144,7 @@ Therefore, these docstrings should all simply contain the following text:
 
 .. code-block:: python
 
-    ivy.<Array|Container> <instance|static|special|reverse special> method variant of ivy.<func_name>. This method simply wraps the
+    ivy.<Array|Container> <instance|special|reverse special> method variant of ivy.<func_name>. This method simply wraps the
     function, and so the docstring for ivy.<func_name> also applies to this method
     with minimal changes.
 
@@ -162,7 +161,7 @@ which should instead use the following text, as these do not *directly* wrap a f
 in Ivy's functional API, but rather wrap the pure operator functions themselves,
 which can be called on any types that support the corresponding special methods:
 
-.. code-block:: python
+.. parsed-literal::
 
     ivy.Container <special|reverse special> method for the <operator_name> operator,
     calling :code:`operator.<operator_name>` for each of the corresponding leaves of
@@ -178,11 +177,11 @@ which can be called on any types that support the corresponding special methods:
 
 Let's take :func:`ivy.add` as an example.
 The docstring for `ivy.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/functional/ivy/elementwise.py#L191>`_ is thorough, as explained above.
-However, the docstrings for `ivy.Array.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/elementwise.py#L36>`_, `ivy.Container.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L209>`_ and `ivy.Container.static_add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L125>`_ all follow the succinct pattern outlined above.
+However, the docstrings for `ivy.Array.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/elementwise.py#L36>`_, `ivy.Container.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L209>`_ all follow the succinct pattern outlined above.
 Likewise, the docstrings for the special methods `ivy.Array.__add__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L310>`_, `ivy.Array.__radd__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L359>`_, `ivy.Container.__add__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L106>`_, and `ivy.Container.__radd__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L171>`_, also follow the succinct pattern outlined above.
 Note that these docstrings all *also* include examples, which we will cover in the next section.
 
-For all other classes, such as the various layers at :code:`ivy/ivy/stateful/layers`, then we should add full and thorough docstrings for both the **contstructor** and also **all methods**.
+For all other classes, such as the various layers at :code:`ivy/ivy/stateful/layers`, then we should add full and thorough docstrings for both the **constructor** and also **all methods**.
 
 This is the case even when the class directly wraps a function in the functional API.
 For example, the class `ivy.Linear <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L13>`_ wraps the function `ivy.linear <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/layers.py#L22>`_, but does so in a stateful manner with the variables stored internally in the instance of the class.
@@ -194,13 +193,13 @@ Therefore, with the exception of the :class:`ivy.Array` and :class:`ivy.Containe
 
 These examples should hopefully give you a good understanding of what is required when adding docstings.
 
-If you have any questions,please feel free to reach out on `discord`_ in the `docstrings channel`_ or in the `docstrings forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `docstrings channel`_!
 
 
 **Video**
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/TnshJ8swuJM" class="video">
     </iframe>

@@ -1,33 +1,73 @@
 # global
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
-from math import pi
 import torch
 
 # local
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 from .. import backend_version
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float",)}, backend_version)
-def lcm(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
+@with_unsupported_dtypes(
+    {
+        "2.1.0 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amax(
+    x: torch.Tensor,
     /,
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return torch.abs(torch.lcm(x1, x2, out=out))
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return torch.amax(x, dim=axis, keepdim=keepdims)
 
 
-lcm.support_native_out = True
+amax.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.1.0 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amin(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return torch.amin(x, dim=axis, keepdim=keepdims)
+
+
+amin.support_native_out = True
+
+
+@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, backend_version)
+def lgamma(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.lgamma(x, out=out)
+
+
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def fmax(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -42,52 +82,13 @@ def fmax(
 fmax.support_native_out = True
 
 
-def fmin(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.fmin(x1, x2, out=None)
-
-
-fmin.support_native_out = True
-
-
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sinc(x, out=out)
 
 
 sinc.support_native_out = True
-
-
-def trapz(
-    y: torch.Tensor,
-    /,
-    *,
-    x: Optional[torch.Tensor] = None,
-    dx: Optional[float] = None,
-    axis: int = -1,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if x is None:
-        dx = dx if dx is not None else 1
-        return torch.trapezoid(y, dx=dx, dim=axis)
-    else:
-        if dx is not None:
-            TypeError(
-                "trapezoid() received an invalid combination of arguments - got\
-            (Tensor, Tensor, int), but expected one of: *\
-            (Tensor y, Tensor x, *, int dim) * (Tensor y, *, Number dx, int dim)"
-            )
-        else:
-            return torch.trapezoid(y, x=x, dim=axis)
-
-
-trapz.support_native_out = False
 
 
 def float_power(
@@ -104,18 +105,6 @@ def float_power(
 
 
 float_power.support_native_out = True
-
-
-def exp2(
-    x: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.exp2(x, out=out)
-
-
-exp2.support_native_out = True
 
 
 def copysign(
@@ -146,30 +135,30 @@ def count_nonzero(
 ) -> torch.Tensor:
     if isinstance(axis, list):
         axis = tuple(axis)
-
-    def _dtype_count_nonzero(a, axis, dtype):
-        if dtype is None:
-            return torch.count_nonzero(a, dim=axis)
-        return torch.tensor(
-            torch.count_nonzero(a, dim=axis), dtype=ivy.as_native_dtype(dtype)
-        )
-
-    x = _dtype_count_nonzero(a, axis, dtype)
+    if dtype is None:
+        x = torch.count_nonzero(a, dim=axis)
+    else:
+        x = torch.tensor(torch.count_nonzero(a, dim=axis), dtype=dtype)
     if not keepdims:
         return x
-    if isinstance(axis, tuple):
+    if isinstance(axis, int):
+        if axis == -1:
+            temp = x.dim() - 1
+            if temp < -1:
+                temp = 0
+            return x.unsqueeze(temp)
+        return x.unsqueeze(axis)
+    elif axis is not None:
         for d in sorted(axis):
-            x = x.unsqueeze(d - 1)
+            x = x.unsqueeze(d)
         return x
-    elif isinstance(axis, int):
-        return x.unsqueeze(axis - 1)
     return x
 
 
 count_nonzero.support_native_out = False
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def nansum(
     x: torch.Tensor,
     /,
@@ -184,20 +173,6 @@ def nansum(
 
 
 nansum.support_native_out = False
-
-
-def gcd(
-    x1: Union[torch.Tensor, int, list, tuple],
-    x2: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return torch.gcd(x1, x2, out=out)
-
-
-gcd.support_native_out = True
 
 
 def isclose(
@@ -216,72 +191,6 @@ def isclose(
 isclose.support_native_out = False
 
 
-def angle(
-    input: torch.Tensor,
-    /,
-    *,
-    deg: Optional[bool] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if deg:
-        return torch.angle(input, out=out) * (180 / pi)
-    else:
-        return torch.angle(input, out=out)
-
-
-angle.support_native_out = True
-
-
-def imag(
-    val: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if val.dtype not in (torch.complex64, torch.complex128):
-        ret = torch.imag(val.to(torch.complex64))
-        return ret.to(val.dtype)
-    return torch.imag(val)
-
-
-imag.support_native_out = False
-
-
-def nan_to_num(
-    x: torch.Tensor,
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if copy:
-        return torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf, out=out)
-    else:
-        x = torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
-        return x
-
-
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-def logaddexp2(
-    x1: Union[torch.Tensor, float, list, tuple],
-    x2: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    if not ivy.is_float_dtype(x1):
-        x1 = x1.type(ivy.default_float_dtype(as_native=True))
-        x2 = x2.type(ivy.default_float_dtype(as_native=True))
-    return torch.logaddexp2(x1, x2, out=out)
-
-
-logaddexp2.support_native_out = True
-
-
 def diff(
     x: Union[torch.Tensor, list, tuple],
     /,
@@ -292,21 +201,18 @@ def diff(
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = x if type(x) == torch.Tensor else torch.tensor(x)
+    x = x if isinstance(x, torch.Tensor) else torch.tensor(x)
     prepend = (
         prepend
-        if type(prepend) == torch.Tensor or prepend is None
+        if isinstance(prepend, torch.Tensor) or prepend is None
         else torch.tensor(prepend)
     )
     append = (
         append
-        if type(append) == torch.Tensor or append is None
+        if isinstance(append, torch.Tensor) or append is None
         else torch.tensor(append)
     )
     return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
-
-
-gcd.support_native_out = False
 
 
 def signbit(
@@ -321,7 +227,7 @@ def signbit(
 signbit.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def hypot(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -346,7 +252,7 @@ def allclose(
     return torch.tensor(ret)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def fix(
     x: torch.Tensor,
     /,
@@ -359,6 +265,7 @@ def fix(
 fix.support_native_out = True
 
 
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def nextafter(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -400,9 +307,9 @@ def gradient(
 ) -> Union[torch.Tensor, List[torch.Tensor]]:
     if axis is None:
         axis = tuple(range(len(x.shape)))
-    if type(axis) == int:
+    if isinstance(axis, int):
         axis = (axis,)
-    if type(spacing) == int:
+    if isinstance(spacing, int):
         spacing = [spacing] * len(axis)
 
     grad = torch.gradient(x, spacing=spacing, dim=axis, edge_order=edge_order)
@@ -411,6 +318,10 @@ def gradient(
     return grad
 
 
+@with_supported_dtypes(
+    {"2.1.0 and below": ("float16", "float32", "float64")},
+    backend_version,
+)
 def xlogy(
     x: torch.tensor, y: torch.tensor, /, *, out: Optional[torch.tensor] = None
 ) -> torch.tensor:
@@ -418,12 +329,8 @@ def xlogy(
     return torch.xlogy(x, y, out=out)
 
 
-def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.real(x)
-
-
 def conj(
-    x: Union[torch.Tensor],
+    x: torch.Tensor,
     /,
     *,
     out: Optional[torch.Tensor] = None,
@@ -442,10 +349,95 @@ def ldexp(
     return torch.ldexp(x1, x2, out=out)
 
 
+def _are_suitable_types_for_torch_lerp(input, end, weight):
+    suitable_types = [
+        torch.int8,
+        torch.int16,
+        torch.int32,
+        torch.int64,
+        torch.float16,
+        torch.bfloat16,
+        torch.float32,
+        torch.float64,
+    ]
+
+    if not isinstance(input, torch.Tensor) or not isinstance(end, torch.Tensor):
+        return False
+    else:
+        if input.dtype not in suitable_types or end.dtype not in suitable_types:
+            return False
+
+    if not isinstance(weight, float) and not isinstance(weight, torch.Tensor):
+        return False
+    else:
+        if isinstance(weight, torch.Tensor):
+            if weight.dtype not in [
+                torch.float16,
+                torch.bfloat16,
+                torch.float32,
+                torch.float64,
+            ]:
+                return False
+
+    return True
+
+
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+def lerp(
+    input: torch.Tensor,
+    end: torch.Tensor,
+    weight: Union[torch.Tensor, float],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.lerp(input, end, weight, out=out)
+
+
+lerp.partial_mixed_handler = lambda input, end, weight, **kwargs: (
+    _are_suitable_types_for_torch_lerp(input, end, weight)
+)
+lerp.support_native_out = True
+
+
 def frexp(
     x: torch.Tensor,
     /,
     *,
     out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    return torch.frexp(x, out=out)
+    mantissa, exponent = torch.frexp(x, out=out)
+    return mantissa, exponent
+
+
+def modf(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    modf_x = torch.modf(x)
+    return torch.resolve_modf(input=modf_x)
+
+
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+def digamma(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.digamma(x, out=out)
+
+
+digamma.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+def erfc(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.erfc(x)

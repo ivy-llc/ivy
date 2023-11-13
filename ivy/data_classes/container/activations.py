@@ -1,7 +1,7 @@
 # local
 import ivy
 from ivy.data_classes.container.base import ContainerBase
-from typing import Optional, Union, List, Dict
+from typing import Optional, Union, List, Dict, Literal
 
 
 # ToDo: implement all methods here as public instance methods
@@ -14,16 +14,17 @@ class _ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.relu also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.relu. This method simply wraps the
+        function, and so the docstring for ivy.relu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -40,6 +41,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -59,7 +63,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([1., 0.]),
             b: ivy.array([0.40000001, 0.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "relu",
@@ -68,6 +71,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -75,16 +79,17 @@ class _ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.relu also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.relu. This method simply wraps the
+        function, and so the docstring for ivy.relu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -101,6 +106,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -120,7 +128,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([1., 0.]),
             b: ivy.array([0.40000001, 0.])
         }
-
         """
         return self._static_relu(
             self,
@@ -128,6 +135,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -137,16 +145,17 @@ class _ContainerWithActivations(ContainerBase):
         /,
         *,
         alpha: ivy.Container = 0.2,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.leaky_relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.leaky_relu also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.leaky_relu. This method simply wraps
+        the function, and so the docstring for ivy.leaky_relu also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -165,6 +174,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -183,7 +195,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.38999999, -0.17]),
             b: ivy.array([1., -0.04])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "leaky_relu",
@@ -193,6 +204,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -201,16 +213,17 @@ class _ContainerWithActivations(ContainerBase):
         /,
         *,
         alpha: ivy.Container = 0.2,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.leaky_relu.
-        This method simply wraps the function, and so the docstring
-        for ivy.leaky_relu also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.leaky_relu. This method simply
+        wraps the function, and so the docstring for ivy.leaky_relu also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -229,6 +242,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -247,7 +263,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.38999999, -0.17]),
             b: ivy.array([1., -0.04])
         }
-
         """
         return self._static_leaky_relu(
             self,
@@ -256,6 +271,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -264,17 +280,18 @@ class _ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        approximate: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        approximate: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.gelu.
-        This method simply wraps the function, and so the docstring
-        for ivy.gelu also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.gelu. This method simply wraps the
+        function, and so the docstring for ivy.gelu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -293,6 +310,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -319,6 +339,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -326,17 +347,18 @@ class _ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        approximate: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        approximate: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gelu.
-        This method simply wraps the function, and so the docstring
-        for ivy.gelu also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.gelu. This method simply wraps the
+        function, and so the docstring for ivy.gelu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -355,6 +377,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -373,7 +398,6 @@ class _ContainerWithActivations(ContainerBase):
                  a: ivy.array([0.841, 1.95]),
                  b: ivy.array([-0.166, -0.159])
             }
-
         """
         return self._static_gelu(
             self,
@@ -382,6 +406,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -390,16 +415,17 @@ class _ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.sigmoid.
-        This method simply wraps the function, and so the docstring
-        for ivy.sigmoid also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.sigmoid. This method simply wraps the
+        function, and so the docstring for ivy.sigmoid also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -416,6 +442,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -434,7 +463,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
             b: ivy.array([0.62245935, 0.5, 0.4750208])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "sigmoid",
@@ -443,6 +471,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -450,16 +479,17 @@ class _ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.sigmoid.
-        This method simply wraps the function, and so the docstring
-        for ivy.sigmoid also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.sigmoid. This method simply wraps
+        the function, and so the docstring for ivy.sigmoid also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -476,6 +506,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -487,7 +520,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
+        >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = x.sigmoid()
         >>> print(y)
         {
@@ -501,6 +534,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -510,16 +544,17 @@ class _ContainerWithActivations(ContainerBase):
         /,
         *,
         axis: Optional[ivy.Container] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.softmax.
-        This method simply wraps the function, and so the docstring
-        for ivy.softmax also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.softmax. This method simply wraps the
+        function, and so the docstring for ivy.softmax also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -538,6 +573,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -556,7 +594,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.7310586, 0.2689414]),
             b: ivy.array([0.72844321, 0.19852395, 0.07303288])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "softmax",
@@ -566,6 +603,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -574,16 +612,17 @@ class _ContainerWithActivations(ContainerBase):
         /,
         *,
         axis: Optional[ivy.Container] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.softmax.
-        This method simply wraps the function, and so the docstring
-        for ivy.softmax also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.softmax. This method simply wraps
+        the function, and so the docstring for ivy.softmax also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -602,6 +641,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -620,7 +662,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.7310586, 0.2689414]),
             b: ivy.array([0.72844321, 0.19852395, 0.07303288])
         }
-
         """
         return self._static_softmax(
             self,
@@ -629,6 +670,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -637,18 +679,19 @@ class _ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        beta: Optional[Union[int, float]] = None,
-        threshold: Optional[Union[int, float]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        beta: Optional[Union[int, float, ivy.Container]] = None,
+        threshold: Optional[Union[int, float, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.softplus.
-        This method simply wraps the function, and so the docstring
-        for ivy.softplus also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.softplus. This method simply wraps
+        the function, and so the docstring for ivy.softplus also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -669,6 +712,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -704,6 +750,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -711,18 +758,19 @@ class _ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        beta: Optional[Union[int, float]] = None,
-        threshold: Optional[Union[int, float]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        beta: Optional[Union[int, float, ivy.Container]] = None,
+        threshold: Optional[Union[int, float, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.softplus.
-        This method simply wraps the function, and so the docstring
-        for ivy.softplus also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.softplus. This method simply wraps
+        the function, and so the docstring for ivy.softplus also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -743,6 +791,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -776,6 +827,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -784,17 +836,18 @@ class _ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        axis: Optional[ivy.Container] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[ivy.Container] = -1,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.log_softmax.
-        This method simply wraps the function, and so the docstring
-        for ivy.log_softmax also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.log_softmax. This method simply wraps
+        the function, and so the docstring for ivy.log_softmax also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -802,6 +855,9 @@ class _ContainerWithActivations(ContainerBase):
             input container.
         axis
             the axis or axes along which the log_softmax should be computed
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -843,6 +899,7 @@ class _ContainerWithActivations(ContainerBase):
             "log_softmax",
             x,
             axis=axis,
+            complex_mode=complex_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -854,17 +911,18 @@ class _ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[ivy.Container] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[ivy.Container] = -1,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
         """
-        ivy.Container instance method variant of ivy.log_softmax.
-        This method simply wraps the function, and so the docstring
-        for ivy.log_softmax also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.log_softmax. This method simply
+        wraps the function, and so the docstring for ivy.log_softmax also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -872,6 +930,9 @@ class _ContainerWithActivations(ContainerBase):
             input container.
         axis
             the axis or axes along which the log_softmax should be computed
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -912,6 +973,7 @@ class _ContainerWithActivations(ContainerBase):
         return self._static_log_softmax(
             self,
             axis=axis,
+            complex_mode=complex_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -924,16 +986,17 @@ class _ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.mish.
-        This method simply wraps the function, and so the docstring
-        for ivy.mish also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.mish. This method simply wraps the
+        function, and so the docstring for ivy.mish also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -950,6 +1013,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -969,7 +1035,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.86509842, -0.30883577]),
             b: ivy.array([0.28903052, -0.10714479])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "mish",
@@ -978,6 +1043,7 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -985,16 +1051,17 @@ class _ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.mish.
-        This method simply wraps the function, and so the docstring
-        for ivy.mish also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.mish. This method simply wraps the
+        function, and so the docstring for ivy.mish also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1011,6 +1078,9 @@ class _ContainerWithActivations(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1030,7 +1100,6 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.86509842, -0.30883577]),
             b: ivy.array([0.28903052, -0.10714479])
         }
-
         """
         return self._static_mish(
             self,
@@ -1038,5 +1107,136 @@ class _ContainerWithActivations(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
+            out=out,
+        )
+
+    @staticmethod
+    def _static_hardswish(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hardswish. This method simply wraps
+        the function, and so the docstring for ivy.hardswish also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the hardswish activation function applied
+            element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-3., 4., 5.]), b=ivy.array([0., 5.]))
+        >>> x = ivy.hardswish(x, out=x)
+        >>> x
+        {
+            a: ivy.array([-0.,  4.,  5.]),
+            b: ivy.array([0., 5.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "hardswish",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            complex_mode=complex_mode,
+            out=out,
+        )
+
+    def hardswish(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.hardswish. This method simply wraps
+        the function, and so the docstring for ivy.hardswish also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the hardswish activation function applied
+            element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-3., 4., 5.]), b=ivy.array([0., 5.]))
+        >>> x = ivy.hardswish(x, out=x)
+        >>> x
+        {
+            a: ivy.array([-0.,  4.,  5.]),
+            b: ivy.array([0., 5.])
+        }
+        """
+        return self._static_hardswish(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )

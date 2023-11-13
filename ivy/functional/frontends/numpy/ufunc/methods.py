@@ -5,105 +5,6 @@ from math import inf
 # local
 import ivy.functional.frontends.numpy as np_frontend
 
-# constants #
-# --------#
-ufuncs = [
-    "abs",
-    "absolute",
-    "add",
-    "arccos",
-    "arccosh",
-    "arcsin",
-    "arcsinh",
-    "arctan",
-    "arctan2",
-    "arctanh",
-    "bitwise_and",
-    "bitwise_not",
-    "bitwise_or",
-    "bitwise_xor",
-    "cbrt",
-    "ceil",
-    "conj",
-    "conjugate",
-    "copysign",
-    "cos",
-    "cosh",
-    "deg2rad",
-    "degrees",
-    "divide",
-    "divmod",
-    "equal",
-    "exp",
-    "exp2",
-    "expm1",
-    "fabs",
-    "float_power",
-    "floor",
-    "floor_divide",
-    "fmax",
-    "fmin",
-    "fmod",
-    "frexp",
-    "gcd",
-    "greater",
-    "greater_equal",
-    "heaviside",
-    "hypot",
-    "imag",
-    "invert",
-    "imag" "invert",
-    "isfinite",
-    "isinf",
-    "isnan",
-    "isnat",
-    "lcm",
-    "ldexp",
-    "left_shift",
-    "less",
-    "less_equal",
-    "log",
-    "log10",
-    "log1p",
-    "log2",
-    "logaddexp",
-    "logaddexp2",
-    "logical_and",
-    "logical_not",
-    "logical_or",
-    "logical_xor",
-    "matmul",
-    "maximum",
-    "minimum",
-    "mod",
-    "modf",
-    "multiply",
-    "negative",
-    "nextafter",
-    "not_equal",
-    "positive",
-    "power",
-    "rad2deg",
-    "radians",
-    "real",
-    "reciprocal",
-    "remainder",
-    "right_shift",
-    "rint",
-    "sign",
-    "signbit",
-    "sin",
-    "sinh",
-    "spacing",
-    "sqrt",
-    "square",
-    "subtract",
-    "tan",
-    "tanh",
-    "true_divide",
-    "trunc",
-]
-
 identities = {
     "abs": None,
     "absolute": None,
@@ -197,6 +98,102 @@ identities = {
     "true_divide": None,
     "trunc": None,
 }
+# constants #
+# --------#
+ufuncs = [
+    "abs",
+    "absolute",
+    "add",
+    "arccos",
+    "arccosh",
+    "arcsin",
+    "arcsinh",
+    "arctan",
+    "arctan2",
+    "arctanh",
+    "bitwise_and",
+    "bitwise_not",
+    "bitwise_or",
+    "bitwise_xor",
+    "cbrt",
+    "ceil",
+    "conj",
+    "conjugate",
+    "copysign",
+    "cos",
+    "cosh",
+    "deg2rad",
+    "degrees",
+    "divide",
+    "divmod",
+    "equal",
+    "exp",
+    "exp2",
+    "expm1",
+    "fabs",
+    "float_power",
+    "floor",
+    "floor_divide",
+    "fmax",
+    "fmin",
+    "fmod",
+    "frexp",
+    "gcd",
+    "greater",
+    "greater_equal",
+    "heaviside",
+    "hypot",
+    "invert",
+    "invert",
+    "isfinite",
+    "isinf",
+    "isnan",
+    "isnat",
+    "lcm",
+    "ldexp",
+    "left_shift",
+    "less",
+    "less_equal",
+    "log",
+    "log10",
+    "log1p",
+    "log2",
+    "logaddexp",
+    "logaddexp2",
+    "logical_and",
+    "logical_not",
+    "logical_or",
+    "logical_xor",
+    "matmul",
+    "maximum",
+    "minimum",
+    "mod",
+    "modf",
+    "multiply",
+    "negative",
+    "nextafter",
+    "not_equal",
+    "positive",
+    "power",
+    "rad2deg",
+    "radians",
+    "reciprocal",
+    "remainder",
+    "right_shift",
+    "rint",
+    "sign",
+    "signbit",
+    "sin",
+    "sinh",
+    "spacing",
+    "sqrt",
+    "square",
+    "subtract",
+    "tan",
+    "tanh",
+    "true_divide",
+    "trunc",
+]
 
 
 # Class #
@@ -217,24 +214,20 @@ class ufunc:
     @property
     def nargs(self):
         sig = inspect.signature(self.func)
-        return len(
-            [
-                param
-                for param in sig.parameters.values()
-                if param.kind in [param.POSITIONAL_ONLY, param.POSITIONAL_OR_KEYWORD]
-            ]
-        )
+        return len([
+            param
+            for param in sig.parameters.values()
+            if param.kind in [param.POSITIONAL_ONLY, param.POSITIONAL_OR_KEYWORD]
+        ])
 
     @property
     def nin(self):
         sig = inspect.signature(self.func)
-        return len(
-            [
-                param
-                for param in sig.parameters.values()
-                if param.kind == param.POSITIONAL_ONLY
-            ]
-        )
+        return len([
+            param
+            for param in sig.parameters.values()
+            if param.kind == param.POSITIONAL_ONLY
+        ])
 
     @property
     def nout(self):

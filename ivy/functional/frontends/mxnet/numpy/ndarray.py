@@ -3,7 +3,6 @@
 # local
 import ivy
 import ivy.functional.frontends.mxnet as mxnet_frontend
-from ivy.functional.frontends.numpy import dtype
 
 
 class ndarray:
@@ -13,7 +12,7 @@ class ndarray:
         )
 
     def __repr__(self):
-        return str(self._ivy_array.__repr__()).replace(
+        return str(self.ivy_array.__repr__()).replace(
             "ivy.array", "ivy.frontends.mxnet.numpy.array"
         )
 
@@ -26,11 +25,11 @@ class ndarray:
 
     @property
     def dtype(self):
-        return dtype(self._ivy_array.dtype)
+        return self.ivy_array.dtype
 
     @property
     def shape(self):
-        return self._ivy_array.shape
+        return self.ivy_array.shape
 
     # Instance Methods #
     # ---------------- #

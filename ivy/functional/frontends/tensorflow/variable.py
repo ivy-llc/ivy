@@ -55,6 +55,7 @@ class Variable:
         ivy.utils.assertions.check_equal(
             value.shape if hasattr(value, "ivy_array") else ivy.shape(value),
             self.shape,
+            as_array=False,
         )
         self._ivy_array = value._ivy_array
 
@@ -62,6 +63,7 @@ class Variable:
         ivy.utils.assertions.check_equal(
             delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
             self.shape,
+            as_array=False,
         )
         self._ivy_array = tf_frontend.math.add(self._ivy_array, delta._ivy_array)
 
@@ -69,6 +71,7 @@ class Variable:
         ivy.utils.assertions.check_equal(
             delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
             self.shape,
+            as_array=False,
         )
         self._ivy_array = tf_frontend.math.subtract(self._ivy_array, delta._ivy_array)
 
@@ -291,9 +294,11 @@ class IndexedSlices:
         return "IndexedSlices(\nindices=%s,\nvalues=%s%s\n)" % (
             self._indices,
             self._values,
-            (", dense_shape=%s" % (self._dense_shape,))
-            if self._dense_shape is not None
-            else "",
+            (
+                ", dense_shape=%s" % (self._dense_shape,)
+                if self._dense_shape is not None
+                else ""
+            ),
         )
 
     def __neg__(self):

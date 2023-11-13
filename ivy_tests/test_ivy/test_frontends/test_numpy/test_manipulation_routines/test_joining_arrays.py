@@ -7,7 +7,10 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
-# noinspection DuplicatedCode
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
 def _arrays_idx_n_dtypes(draw):
     num_arrays = draw(
@@ -28,11 +31,14 @@ def _arrays_idx_n_dtypes(draw):
                     shared_dtype=True,
                 )
             ],
-            get_dtypes_kind="numeric",
         ),
     )
     axis = draw(helpers.get_axis(shape=shape, force_int=True))
     return x, input_dtypes, axis, casting, dtype
+
+
+# --- Main --- #
+# ------------ #
 
 
 # concat
@@ -45,11 +51,13 @@ def test_numpy_concatenate(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     xs, input_dtypes, unique_idx, casting, dtype = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -64,61 +72,30 @@ def test_numpy_concatenate(
     )
 
 
-# stack
+# hstack
 @handle_frontend_test(
-    fn_tree="numpy.stack",
+    fn_tree="numpy.hstack",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
+        available_dtypes=helpers.get_dtypes("valid"),
+        shared_dtype=True,
+        num_arrays=helpers.ints(min_value=2, max_value=10),
+        shape=helpers.get_shape(
+            min_num_dims=1,
+        ),
     ),
-    factor=helpers.ints(min_value=2, max_value=6),
 )
-def test_numpy_stack(
+def test_numpy_hstack(
     dtype_and_x,
-    factor,
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
-    dtype, x = dtype_and_x
-    xs = [x[0]]
-    for i in range(factor):
-        xs += [x[0]]
+    input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[dtype[0]] * (factor + 1),
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        arrays=xs,
-        axis=0,
-    )
-
-
-# vstack
-@handle_frontend_test(
-    fn_tree="numpy.vstack",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-    ),
-    factor=helpers.ints(min_value=2, max_value=6),
-)
-def test_numpy_vstack(
-    dtype_and_x,
-    factor,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    xs = [x[0]]
-    for i in range(factor):
-        xs += [x[0]]
-    helpers.test_frontend_function(
-        input_dtypes=[dtype[0]] * (factor + 1),
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -127,33 +104,56 @@ def test_numpy_vstack(
     )
 
 
-# hstack
+# stack
 @handle_frontend_test(
-    fn_tree="numpy.hstack",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-    ),
-    factor=helpers.ints(min_value=2, max_value=6),
+    fn_tree="numpy.stack",
+    dtype_and_x=_arrays_idx_n_dtypes(),
 )
-def test_numpy_hstack(
+def test_numpy_stack(
     dtype_and_x,
-    factor,
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
-    dtype, x = dtype_and_x
-    xs = [
-        x[0],
-    ]
-    for i in range(factor):
-        xs += [
-            x[0],
-        ]
+    xs, input_dtypes, unique_idx, _, _ = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[dtype[0]] * (factor + 1),
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arrays=xs,
+        axis=unique_idx,
+    )
+
+
+# vstack
+@handle_frontend_test(
+    fn_tree="numpy.vstack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shared_dtype=True,
+        num_arrays=helpers.ints(min_value=2, max_value=10),
+        shape=helpers.get_shape(
+            min_num_dims=1,
+        ),
+    ),
+)
+def test_numpy_vstack(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

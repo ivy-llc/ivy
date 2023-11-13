@@ -7,21 +7,15 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
-from typing import Union, Optional
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
-    to_native_arrays_and_back,
-    handle_out_argument,
-    handle_nestable,
-    handle_array_like_without_promotion,
 )
-from ivy.utils.exceptions import handle_exceptions
 
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "0.4.20 and below": (
             "float16",
             "bfloat16",
         )
@@ -30,6 +24,20 @@ from ivy.utils.exceptions import handle_exceptions
 )
 def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out, dtype=ivy.int64)
+
+
+@to_ivy_arrays_and_back
+def argsort(a, axis=-1, kind="stable", order=None):
+    if kind != "stable":
+        logging.warning(
+            "'kind' argument to argsort is ignored; only 'stable' sorts are supported."
+        )
+    if order is not None:
+        raise ivy.utils.exceptions.IvyError(
+            "'order' argument to argsort is not supported."
+        )
+
+    return ivy.argsort(a, axis=axis)
 
 
 @to_ivy_arrays_and_back
@@ -48,29 +56,41 @@ def argwhere(a, /, *, size=None, fill_value=None):
     return result.reshape(result.shape[0], num_of_dimensions)
 
 
+@with_unsupported_dtypes(
+    {
+        "0.4.20 and below": (
+            "uint8",
+            "int8",
+            "bool",
+        )
+    },
+    "jax",
+)
 @to_ivy_arrays_and_back
-def argsort(a, axis=-1, kind="stable", order=None):
-    if kind != "stable":
-        logging.warning(
-            "'kind' argument to argsort is ignored; only 'stable' sorts "
-            "are supported."
-        )
-    if order is not None:
-        raise ivy.utils.exceptions.IvyError(
-            "'order' argument to argsort is not supported."
-        )
+def count_nonzero(a, axis=None, keepdims=False):
+    return ivy.astype(ivy.count_nonzero(a, axis=axis, keepdims=keepdims), "int64")
 
-    return ivy.argsort(a, axis=axis)
+
+@to_ivy_arrays_and_back
+def extract(condition, arr):
+    if condition.dtype is not bool:
+        condition = condition != 0
+    return arr[condition]
+
+
+@to_ivy_arrays_and_back
+def flatnonzero(a):
+    return ivy.nonzero(ivy.reshape(a, (-1,)))
+
+
+@to_ivy_arrays_and_back
+def lexsort(keys, /, *, axis=-1):
+    return ivy.lexsort(keys, axis=axis)
 
 
 @to_ivy_arrays_and_back
 def msort(a):
     return ivy.msort(a)
-
-
-@to_ivy_arrays_and_back
-def nonzero(a, *, size=None, fill_value=None):
-    return ivy.nonzero(a, size=size, fill_value=fill_value)
 
 
 @to_ivy_arrays_and_back
@@ -106,47 +126,66 @@ def nanargmin(a, /, *, axis=None, out=None, keepdims=None):
 
 
 @to_ivy_arrays_and_back
-def lexsort(keys, /, *, axis=-1):
-    return ivy.lexsort(keys, axis=axis)
+def nonzero(a, *, size=None, fill_value=None):
+    return ivy.nonzero(a, size=size, fill_value=fill_value)
 
 
 @to_ivy_arrays_and_back
-def extract(condition, arr):
-    if condition.dtype is not bool:
-        condition = condition != 0
-    return arr[condition]
+def searchsorted(a, v, side="left", sorter=None, *, method="scan"):
+    return ivy.searchsorted(a, v, side=side, sorter=sorter, ret_dtype="int32")
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-def sort(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[ivy.Array] = None,
-):
-    if axis == -1 and not descending and stable:
-        x = ivy.sort(x)
-    if axis == 1 and descending and not stable:
-        x = ivy.sort(x, axis=1, descending=True, stable=False)
-    if descending and not stable:
-        y = ivy.zeros(5)
-        x = ivy.sort(x, descending=True, stable=False, out=y)
-    if out == x:
-        x = ivy.sort(x, out=x)
-    return x
-
-
-def flatnonzero(a):
-    return ivy.nonzero(ivy.reshape(a, (-1,)))
+@to_ivy_arrays_and_back
+def sort(a, axis=-1, kind="quicksort", order=None):
+    # todo: handle case where order is not None
+    return ivy.sort(a, axis=axis)
 
 
 @to_ivy_arrays_and_back
 def sort_complex(a):
     return ivy.sort(a)
+
+
+@to_ivy_arrays_and_back
+def unique(
+    ar,
+    return_index=False,
+    return_inverse=False,
+    return_counts=False,
+    axis=None,
+    *,
+    size=None,
+    fill_value=None,
+):
+    uniques = list(ivy.unique_all(ar, axis=axis))
+    if size is not None:
+        fill_value = fill_value if fill_value is not None else 1  # default fill_value 1
+        pad_len = size - len(uniques[0])
+        if pad_len > 0:
+            # padding
+            num_dims = len(uniques[0].shape) - 1
+            padding = [(0, 0)] * num_dims + [(0, pad_len)]
+            uniques[0] = ivy.pad(uniques[0], padding, constant_values=fill_value)
+            # padding the indices and counts with zeros
+            for i in range(1, len(uniques)):
+                if i == 2:
+                    continue
+                uniques[i] = ivy.pad(uniques[i], padding[-1], constant_values=0)
+        else:
+            for i in range(len(uniques)):
+                uniques[i] = uniques[i][..., :size]
+    # constructing a list of bools for indexing
+    bools = [return_index, return_inverse, return_counts]
+    # indexing each element whose condition is True except for the values
+    uniques = [uniques[0]] + [uni for idx, uni in enumerate(uniques[1:]) if bools[idx]]
+    return uniques[0] if len(uniques) == 1 else uniques
+
+
+@to_ivy_arrays_and_back
+def where(condition, x=None, y=None, *, size=None, fill_value=0):
+    if x is None and y is None:
+        return nonzero(condition, size=size, fill_value=fill_value)
+    if x is not None and y is not None:
+        return ivy.where(condition, x, y)
+    else:
+        raise ValueError("Both x and y should be given.")

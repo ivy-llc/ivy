@@ -17,17 +17,15 @@ Ivy Frontends
 .. _`YouTube tutorial series`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
-.. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
-.. _`open task`: https://lets-unify.ai/docs/ivy/contributing/open_tasks.html#open-tasks
 .. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
 .. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
 
 Introduction
 ------------
 
-On top of the Ivy functional API and backend functional APIs, Ivy has another set of framework-specific frontend functional APIs, which play an important role in code transpilations, as explained `here <https://lets-unify.ai/docs/ivy/design/ivy_as_a_transpiler.html>`_.
+On top of the Ivy functional API and backend functional APIs, Ivy has another set of framework-specific frontend functional APIs, which play an important role in code transpilations, as explained `here <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html>`_.
 
-Let's start with some examples to have a better idea on Ivy Frontends!
+
 
 
 The Frontend Basics
@@ -46,7 +44,7 @@ In this particular case both are fine, and in fact are `aliases`_.
 
 However, sometimes an extra namespace path is necessary.
 Taking JAX as an example, the functions :func:`jax.numpy.abs` and :func:`jax.lax.abs` both exist, while :func:`jax.abs` does not exist.
-In our JAX frontend, if we add both of these to the root namespace, it would be possible to call :func:`jax.abs` in our frontend.
+In our JAX frontend, if we add both of these to the root namespace, it would not be possible to call :func:`jax.abs` in our frontend.
 
 This would result in :func:`jax.numpy.abs` or :func:`jax.lax.abs` overwriting the other one in an arbitrary manner.
 In fact, neither of these should be added to the root namespace, as it does not exist in the native :mod:`jax` framework.
@@ -63,10 +61,10 @@ Therefore, in order to avoid this potential conflict:
 * You should ensure that the tests are passing before merging any frontend PRs.
   The only exception to this rule is if the test is failing due to a bug in the Ivy functional API, which does not need to be solved as part of the frontend task.
 
-There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open task`_.
+There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs :ref:`open task <overview/contributing/open_tasks:Frontend APIs>`.
 
 
-**NOTE:** Type hints, docstrings and examples are not required when working on frontend functions.
+**NOTE:** Type hints, docstrings, and examples are not required when working on frontend functions.
 
 
 **Frontend Arrays**
@@ -74,7 +72,7 @@ There will be some implicit discussion of the locations of frontend functions in
 The native arrays of each framework have their own attributes and instance methods which differ from the attributes and instance methods of :class:`ivy.Array`.
 As such we have implemented framework-specific array classes: :class:`tf_frontend.Tensor`, :class:`torch_frontend.Tensor`, :class:`numpy_frontend.ndarray`, and :class:`jax_frontend.DeviceArray`.
 These classes simply wrap an :class:`ivy.Array`, which is stored in the :code:`ivy_array` attribute, and behave as closely as possible to the native framework array classes.
-This is explained further in the `Classes and Instance Methods <https://lets-unify.ai/docs/ivy/deep_dive/ivy_frontends.html#classes-and-instance-methods>`_ section.
+This is explained further in the :ref:`overview/deep_dive/ivy_frontends:Classes and Instance Methods` section.
 
 As we aim to replicate the frontend frameworks as closely as possible, all functions accept their frontend array class (as well as :class:`ivy.Array` and :class:`ivy.NativeArray`) and return a frontend array.
 However, since most logic in each function is handled by Ivy, the :class:`ivy.Array` must be extracted from any frontend array inputs.
@@ -84,6 +82,9 @@ There are more framework-specific classes we support in the frontends such as Nu
 All these increase the fidelity of our frontends.
 
 
+Writing Frontend Functions
+-------------------
+
 **Jax**
 
 JAX has two distinct groups of functions, those in the :mod:`jax.lax` namespace and those in the :mod:`jax.numpy` namespace.
@@ -91,12 +92,12 @@ The former set of functions map very closely to the API for the Accelerated Line
 The latter set of functions map very closely to NumPy's well known API.
 In general, all functions in the :mod:`jax.numpy` namespace are themselves implemented as a composition of the lower-level functions in the :mod:`jax.lax` namespace.
 
-When transpiling between frameworks, the first step is to compile the computation graph into low level python functions for the source framework using Ivy's graph compiler, before then replacing these nodes with the associated functions in Ivy's frontend API.
+When transpiling between frameworks, the first step is to trace a computation graph of low level python functions for the source framework using Ivy's tracer, before then replacing these nodes with the associated functions in Ivy's frontend API.
 Given that all jax code can be decomposed into :mod:`jax.lax` function calls, when transpiling JAX code it should always be possible to express the computation graph as a composition of only :mod:`jax.lax` functions.
 Therefore, arguably these are the *only* functions we should need to implement in the JAX frontend.
-However, in general we wish to be able to compile a graph in the backend framework with varying levels of dynamicism.
+However, in general we wish to be able to trace a graph in the backend framework with varying levels of dynamicism.
 A graph of only :mod:`jax.lax` functions chained together in general is more *static* and less *dynamic* than a graph which chains :mod:`jax.numpy` functions together.
-We wish to enable varying extents of dynamicism when compiling a graph with our graph compiler, and therefore we also implement the functions in the :mod:`jax.numpy` namespace in our frontend API for JAX.
+We wish to enable varying extents of dynamicism when creating a graph with our tracer, and therefore we also implement the functions in the :mod:`jax.numpy` namespace in our frontend API for JAX.
 
 Thus, both :mod:`lax` and :mod:`numpy` modules are created in the JAX frontend API.
 We start with the function :func:`lax.add` as an example.
@@ -239,7 +240,7 @@ Similar to the omitted argument in the NumPy example above, the :code:`name` arg
 Rather, this argument is added purely for the purpose of operation logging and retrieval, and also graph visualization in TensorFlow.
 Ivy does not support the unique naming of individual operations, and so we omit support for this particular argument.
 
-Additionally TensorFlow only allows explicit casting, therefore there are no promotion rules in the TensorFlow frontend, except in the case of array like or scalar inputs, which get casted to the dtype of the other argument if it's a :class:`Tensor`, or the default dtype if both arguments are array like or scalar.
+Additionally, TensorFlow only allows explicit casting, therefore there are no promotion rules in the TensorFlow frontend, except in the case of array like or scalar inputs, which get casted to the dtype of the other argument if it's a :class:`Tensor`, or the default dtype if both arguments are array like or scalar.
 The function :func:`check_tensorflow_casting` is added to functions with multiple arguments such as :func:`add`, and it ensures the second argument is the same type as the first, just as TensorFlow does.
 
 .. code-block:: python
@@ -260,7 +261,7 @@ However, these functions are specified to have key-word only arguments and in so
 In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` decorator was designed to wrap the functions that exist in the TensorFlow namespace, thus reducing unnecessary re-implementations.
 
 .. code-block:: python
-    
+
     # in ivy/functional/frontends/tensorflow/math.py
     @to_ivy_arrays_and_back
     def argmax(input, axis, output_type=None, name=None):
@@ -269,7 +270,9 @@ In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` 
         else:
             return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
-This function :func:`argmax` is implemented in the :mod:`tf.math` module of the TensorFlow framework, there exists an identical function in the :mod:`tf.raw_ops` module implemented as :func:`ArgMax`. Both the functions have identical behaviour except for the fact that all arguments are passed as key-word only for :func:`tf.raw_ops.ArgMax`. In some corner cases, arguments are renamed such as :func:`tf.math.argmax`, the :code:`dimension` argument replaces the :code:`axis` argument. 
+This function :func:`argmax` is implemented in the :mod:`tf.math` module of the TensorFlow framework, there exists an identical function in the :mod:`tf.raw_ops` module implemented as :func:`ArgMax`.
+Both the functions have identical behaviour except for the fact that all arguments are passed as key-word only for :func:`tf.raw_ops.ArgMax`.
+In some corner cases, arguments are renamed such as :func:`tf.math.argmax`, the :code:`dimension` argument replaces the :code:`axis` argument.
 Let's see how the :code:`map_raw_ops_alias` decorator can be used to tackle these variations.
 
 .. code-block:: python
@@ -283,7 +286,7 @@ Let's see how the :code:`map_raw_ops_alias` decorator can be used to tackle thes
     )
 
 The decorator :code:`map_raw_ops_alias` here, takes the existing behaviour of :func:`tf_frontend.math.argmax` as its first parameter, and changes all its arguments to key-word only. The argument :code:`kwargs_to_update` is a dictionary indicating all updates in arguments names to be made, in the case of :func:`tf.raw_ops.ArgMax`, :code:`dimension` is replacing :code:`axis`.
-The wrapper mentioned above is implemnted here `map_raw_ops_alias <https://github.com/unifyai/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_  in the ivy codebase.
+The wrapper mentioned above is implemented here `map_raw_ops_alias <https://github.com/unifyai/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_  in the ivy codebase.
 
 **PyTorch**
 
@@ -309,42 +312,18 @@ We wrap :func:`ivy.add` as usual.
 :func:`tan` is also placed under :mod:`pointwise_ops` as is the case in the `torch`_ framework.
 Looking at the `torch.tan`_ documentation, we can mimic the same arguments, and again simply wrap :func:`ivy.tan`, also making use of the :code:`out` argument in this case.
 
-Unused Arguments
-----------------
+Short Frontend Implementations
+-----------------------------
 
-As can be seen from the examples above, there are often cases where we do not add support for particular arguments in the frontend function.
-Generally, we can omit support for a particular argument only if: the argument **does not** fundamentally affect the input-output behaviour of the function in a mathematical sense.
-The only two exceptions to this rule are arguments related to either the data type or the device on which the returned array(s) should reside.
-Examples of arguments which can be omitted, on account that they do not change the mathematics of the function are arguments which relate to:
+Ideally, all frontend functions should call the equivalent Ivy function and only be one line long. This is mainly because compositional implementations are bound to be slower than direct backend implementation calls.
 
-* the algorithm or approximations used under the hood, such as :code:`precision` and :code:`preferred_element_type` in `jax.lax.conv_general_dilated <https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57>`_.
+In case a frontend function is complex and there is no equivalent Ivy function to use, it is strongly advised to add that function to our Experimental API. To do so, you are invited to open a *Missing Function Suggestion* issue as described in the `Open Tasks <../contributing/open_tasks.rst>`_ section. A member of our team will then review your issue, and if the proposed addition is deemed to be timely and sensible, we will add the function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
 
-* the specific array class in the original framework, such as :code:`subok` in `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_.
-
-* the labelling of functions for organizational purposes, such as :code:`name` in `tf.math.add <https://github.com/tensorflow/tensorflow/blob/v2.10.0/tensorflow/python/ops/math_ops.py#L3926-L4004>`_.
-
-There are likely to be many other examples of arguments which do not fundamentally affect the input-output behaviour of the function in a mathematical sense, and so can also be omitted from Ivy's frontend implementation.
-
-The reason we omit these arguments in Ivy is because Ivy is not designed to provide low-level control to functions that extend beyond the pure mathematics of the function.
-This is a requirement because Ivy abstracts the backend framework, and therefore also abstracts everything below the backend framework's functional API, including the backend array class, the low-level language compiled to, the device etc.
-Most ML frameworks do not offer per-array control of the memory layout, and control for the finer details of the algorithmic approximations under the hood, and so we cannot in general offer this level of control at the Ivy API level, nor the frontend API level as a direct result.
-As explained above, this is not a problem, as the memory layout has no bearing at all on the input-output behaviour of the function.
-In contrast, the algorithmic approximation may have a marginal bearing on the final results in some cases, but Ivy is only designed to unify to within a reasonable numeric approximation in any case, and so omitting these arguments also very much fits within Ivy's design.
-
-
-Compositions
-------------
-
-In many cases, frontend functions meet the following criteria:
-
-* the function is unique to a particular frontend framework, and does not exist in the other frameworks
-* the function has extra features and/or arguments on top of the most similar ivy function that is available
-
-In such cases, compositions are required to replicate the function behaviour. Although the second case is less common as we try and maintain a superset within Ivy functions.
+If you would rather not wait around for a member of our team to review your suggestion, you can instead go straight ahead and add the frontend function as a heavy composition of the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this frontend implementation will be simplified when :func:`ivy.func_name` is added.
 
 **Examples**
 
-The native TensorFlow function :func:`tf.reduce_logsumexp` does not have an equivalent function in Ivy, therefore its composed of multiple Ivy functions instead.
+The native TensorFlow function :func:`tf.reduce_logsumexp` does not have an equivalent function in Ivy, therefore it can be composed of multiple Ivy functions instead.
 
 **TensorFlow Frontend**
 
@@ -368,26 +347,29 @@ The native TensorFlow function :func:`tf.reduce_logsumexp` does not have an equi
 
 Through compositions, we can easily meet the required input-output behaviour for the TensorFlow frontend function.
 
-Missing Ivy Functions
----------------------
+The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the :ref:`Open Tasks <overview/contributing/open_tasks:Frontend APIs>` section.
 
-Sometimes, there is a clear omission of an Ivy function, which would make the frontend implementation much simpler.
-For example, at the time of writing, implementing :func:`median` for the NumPy frontend would require a very manual and heavily compositional implementation.
-However, if the function :func:`ivy.median` was added to Ivy's functional API, then this frontend implementation would become very simple, with some light wrapping around :func:`ivy.median`.
+Unused Arguments
+----------------
 
-Adding :func:`ivy.median` would be a sensible decision, as many frameworks support this function.
-When you come across such a function which is missing from Ivy, you should create a new issue on the Ivy repo, with the title :func:`ivy.func_name` and with the labels :code:`Suggestion`, :code:`Experimental`, :code:`Ivy API` and :code:`Next Release`.
-A member of our team will then review this issue, and if the proposed addition is deemed to be timely and sensible, then we will add this function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
-At this point in time, you can reserve the function for yourself and get it implemented in a unique PR.
-Once merged, you can then resume working on the frontend function, which will now be a much easier task with the new addition to Ivy.
+As can be seen from the examples above, there are often cases where we do not add support for particular arguments in the frontend function.
+Generally, we can omit support for a particular argument only if: the argument **does not** fundamentally affect the input-output behaviour of the function in a mathematical sense.
+The only two exceptions to this rule are arguments related to either the data type or the device on which the returned array(s) should reside.
+Examples of arguments which can be omitted, on account that they do not change the mathematics of the function are arguments which relate to:
 
-Temporary Compositions
-----------------------
+* the algorithm or approximations used under the hood, such as :code:`precision` and :code:`preferred_element_type` in `jax.lax.conv_general_dilated <https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57>`_.
 
-Alternatively, if after creating the new issue you would rather not wait around for a member of our team to review and possibly add to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_, you can instead go straight ahead add the frontend function as a heavy composition of the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this frontend implementation will be simplified if/when :func:`ivy.func_name` is add to Ivy.
+* the specific array class in the original framework, such as :code:`subok` in `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_.
 
-The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the `Open Tasks <https://lets-unify.ai/docs/ivy/contributing/open_tasks.html#frontend-apis>`_ section.
+* the labelling of functions for organizational purposes, such as :code:`name` in `tf.math.add <https://github.com/tensorflow/tensorflow/blob/v2.10.0/tensorflow/python/ops/math_ops.py#L3926-L4004>`_.
 
+There are likely to be many other examples of arguments which do not fundamentally affect the input-output behaviour of the function in a mathematical sense, and so can also be omitted from Ivy's frontend implementation.
+
+The reason we omit these arguments in Ivy is because Ivy is not designed to provide low-level control to functions that extend beyond the pure mathematics of the function.
+This is a requirement because Ivy abstracts the backend framework, and therefore also abstracts everything below the backend framework's functional API, including the backend array class, the low-level language compiled to, the device etc.
+Most ML frameworks do not offer per-array control of the memory layout, and control for the finer details of the algorithmic approximations under the hood, and so we cannot in general offer this level of control at the Ivy API level, nor the frontend API level as a direct result.
+As explained above, this is not a problem, as the memory layout has no bearing at all on the input-output behaviour of the function.
+In contrast, the algorithmic approximation may have a marginal bearing on the final results in some cases, but Ivy is only designed to unify to within a reasonable numeric approximation in any case, and so omitting these arguments also very much fits within Ivy's design.
 
 Supported Data Types and Devices
 --------------------------------
@@ -411,7 +393,7 @@ For these reasons, all frontend functions which correspond to functions with lim
 
 .. code-block:: python
 
-   logical_and.supported_dtypes = ("bool",)
+   @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 
 The same logic applies to unsupported devices.
 Even if the wrapped Ivy function supports more devices, we should still flag the frontend function supported devices to be the same as those supported by the function in the native framework.
@@ -426,7 +408,7 @@ Classes and Instance Methods
 ----------------------------
 
 Most frameworks include instance methods and special methods on their array class for common array processing functions, such as :func:`reshape`, :func:`expand_dims` and :func:`add`.
-This simple design choice comes with many advantages, some of which are explained in our :ref:`Ivy Array` section.
+This simple design choice comes with many advantages, some of which are explained in our `Ivy Array <../design/ivy_as_a_framework/ivy_array.rst>`_ section.
 
 **Important Note**
 Before implementing the instance method or special method, make sure that the regular function in the specific frontend is already implemented.
@@ -465,7 +447,7 @@ Under the hood, this simply calls the frontend :func:`np_frontend.argsort` funct
 **Special Method**
 
 Some examples referring to the special methods would make things more clear.
-For example lets take a look at how :meth:`tf_frontend.tensor.__add__` is implemented and how it's reverse :meth:`tf_frontend.tensor.__radd__` is implemented.
+For example let's take a look at how :meth:`tf_frontend.tensor.__add__` is implemented and how it's reverse :meth:`tf_frontend.tensor.__radd__` is implemented.
 
 .. code-block:: python
 
@@ -533,7 +515,7 @@ For example, :class:`numpy.matrix` has an instance method of :meth:`any`:
         return any(self.A, axis=axis, out=out)
 
 We need to create these frontend array classes and all of their instance methods and also their special methods such that we are able to transpile code which makes use of these methods.
-As explained in :ref:`Ivy as a Transpiler`, when transpiling code we first extract the computation graph in the source framework.
+As explained in `Ivy as a Transpiler <../design/ivy_as_a_transpiler.rst>`_, when transpiling code we first extract the computation graph in the source framework.
 In the case of instance methods, we then replace each of the original instance methods in the extracted computation graph with these new instance methods defined in the Ivy frontend class.
 
 Frontend Data Type Promotion Rules
@@ -552,10 +534,10 @@ The function can be accessed through calling :func:`promote_types_of_<frontend>_
         input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
         return ivy.add(input, other, alpha=alpha, out=out)
 
-Although under most cases, array operands being passed into an arithmetic operation function should be the same data type, using the data type promotion rules can add a layer of sanity check to prevent data precision losses or exceptions from further arithmetic operations.
+Although in most cases, array operands being passed into an arithmetic operation function should be the same data type, using the data type promotion rules can add a layer of sanity check to prevent data precision losses or exceptions from further arithmetic operations.
 
 TensorFlow is a framework where casting is completely explicit, except for array likes and scalars.
-As such there are not promotion rules we replicate for the TensorFlow frontend, instead we check if the two arguments of the function are the same type using :func:`check_tensorflow_casting`.
+As such there are no promotion rules we replicate for the TensorFlow frontend, instead we check if the two arguments of the function are the same type using :func:`check_tensorflow_casting`.
 
 .. code-block:: python
 
@@ -666,11 +648,11 @@ This section outlines a policy that should serve as a guide for handling duplica
 
 Essentially, there are two types of duplicate functions;
 
-1. Functions that are listed in multiple namespaces but are callable from the same path, for example :func:`asarray` is listed in `manipulation routines` and `creation routines` however this function called from the same path as :func:`np.asarray`.
+1. Functions that are listed in multiple namespaces but are callable from the same path, for example :func:`asarray` is listed in `manipulation routines` and `creation routines` however this function is called from the same path as :func:`np.asarray`.
 
 2. Functions that are listed in multiple namespaces but are callable from different paths, for example the function :func:`tf.math.tan` and :func:`tf.raw_ops.Tan`.
 
-When listing frontend functions, extra care should be taken to keep note of these two type of duplicate functions.
+When listing frontend functions, extra care should be taken to keep note of these two types of duplicate functions.
 
 * For duplicate functions of the first type, we should list the function once in any namespace where it exists and leave it out of all other namespaces.
 
@@ -681,7 +663,7 @@ When listing frontend functions, extra care should be taken to keep note of thes
 Before working on a frontend function, contributors should check if the function is designated as an alias on the ToDo list.
 If the function is an alias, you should check if there is an implementation that can be aliased.
 
-* If an implementation exist then simply create an alias of the implementation, for example many functions in `ivy/functional/frontends/tensorflow/raw_ops` are implemented as aliases `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/tensorflow/raw_ops.py>`_.
+* If an implementation exists then simply create an alias of the implementation, for example many functions in `ivy/functional/frontends/tensorflow/raw_ops` are implemented as aliases `here <https://github.com/unifyai/ivy/blob/main/ivy/functional/frontends/tensorflow/raw_ops.py>`_.
 
 * If there is no implementation to be aliased then feel free to contribute the implementation first, then go ahead to create the alias.
 
@@ -694,13 +676,13 @@ Unit tests should be written for all aliases. This is arguably a duplication, bu
 This should hopefully have given you a better grasp on what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
 We also have a short `YouTube tutorial series`_ on this as well if you prefer a video explanation!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends channel`_ or in the `ivy frontends forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends channel`_!
 
 
 **Video**
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/SdiyetRNey8" class="video">
     </iframe>

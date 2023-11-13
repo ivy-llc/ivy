@@ -15,19 +15,19 @@ class _ContainerWithSorting(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        axis: int = -1,
-        descending: bool = False,
-        stable: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Union[int, ivy.Container] = -1,
+        descending: Union[bool, ivy.Container] = False,
+        stable: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argsort. This method simply wraps the
-        function, and so the docstring for ivy.argsort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.argsort also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -111,7 +111,6 @@ class _ContainerWithSorting(ContainerBase):
             a: ivy.array([2, 0, 1]),
             b: ivy.array([[1, 0],[0,1]])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "argsort",
@@ -130,19 +129,18 @@ class _ContainerWithSorting(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: int = -1,
-        descending: bool = False,
-        stable: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Union[int, ivy.Container] = -1,
+        descending: Union[bool, ivy.Container] = False,
+        stable: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.argsort.
-        This method simply wraps the function, and
-        so the docstring for ivy.argsort also applies to this method
+        ivy.Container instance method variant of ivy.argsort. This method simply wraps
+        the function, and so the docstring for ivy.argsort also applies to this method
         with minimal changes.
 
         Parameters
@@ -215,19 +213,19 @@ class _ContainerWithSorting(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        axis: int = -1,
-        descending: bool = False,
-        stable: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Union[int, ivy.Container] = -1,
+        descending: Union[bool, ivy.Container] = False,
+        stable: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.sort. This method simply wraps the
-        function, and so the docstring for ivy.sort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.sort also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -268,19 +266,19 @@ class _ContainerWithSorting(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: int = -1,
-        descending: bool = False,
-        stable: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Union[int, ivy.Container] = -1,
+        descending: Union[bool, ivy.Container] = False,
+        stable: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.sort. This method simply wraps the
-        function, and so the docstring for ivy.sort also applies to this method
-        with minimal changes.
+        function, and so the docstring for ivy.sort also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -319,7 +317,6 @@ class _ContainerWithSorting(ContainerBase):
             a: ivy.array([0.5, 6., 8.]),
             b: ivy.array([[0.7, 9.],[0., 0.4]])
         }
-
         """
         return self._static_sort(
             self,
@@ -334,27 +331,136 @@ class _ContainerWithSorting(ContainerBase):
         )
 
     @staticmethod
+    def static_msort(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.msort. This method simply wraps the
+        function, and so the docstring for ivy.msort also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        a
+            array-like or container input.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            a container containing sorted input arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> a = ivy.Container(x = ivy.asarray([[8, 9, 6],[6, 2, 6]]),
+        ...                   y = ivy.asarray([[7, 2],[3, 4]])
+        >>> ivy.Container.static_lexsort(a)
+        {
+            x: ivy.array(
+                [[6, 2, 6],
+                 [8, 9, 6]]
+                ),
+            y: ivy.array(
+                [[3, 4],
+                 [7, 2]]
+                )
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "msort",
+            a,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def msort(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.msort. This method simply wraps the
+        function, and so the docstring for ivy.msort also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container with array-like inputs to sort.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            a container containing the sorted input arrays.
+
+        Examples
+        --------
+        >>> a = ivy.Container(x = ivy.asarray([[8, 9, 6],[6, 2, 6]]),
+        ...                   y = ivy.asarray([[7, 2],[3, 4]])
+        >>> a.msort()
+        {
+            x: ivy.array(
+                [[6, 2, 6],
+                 [8, 9, 6]]
+                ),
+            y: ivy.array(
+                [[3, 4],
+                 [7, 2]]
+                )
+        }
+        """
+        return self.static_msort(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def _static_searchsorted(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        side="left",
+        side: Union[str, ivy.Container] = "left",
         sorter: Optional[
             Union[ivy.Array, ivy.NativeArray, ivy.Container, List[int]]
         ] = None,
-        ret_dtype=ivy.int64,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        ret_dtype: Union[ivy.Dtype, ivy.Container] = ivy.int64,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.searchsorted.
-        This method simply wraps the function, and so the docstring for ivy.searchsorted
-        also applies to this method with minimal changes.
 
+        This method simply wraps the function, and so the docstring for
+        ivy.searchsorted also applies to this method with minimal
+        changes.
         """
         return ContainerBase.cont_multi_map_in_function(
             "searchsorted",
@@ -375,20 +481,23 @@ class _ContainerWithSorting(ContainerBase):
         v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        side: Literal["left", "right"] = "left",
-        sorter: Optional[Union[ivy.Array, ivy.NativeArray, List[int]]] = None,
-        ret_dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        side: Union[Literal["left", "right"], ivy.Container] = "left",
+        sorter: Optional[
+            Union[ivy.Array, ivy.NativeArray, List[int], ivy.Container]
+        ] = None,
+        ret_dtype: Union[ivy.Dtype, ivy.NativeDtype, ivy.Container] = ivy.int64,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.searchsorted.
-        This method simply wraps the function, and so the docstring for ivy.searchsorted
-        also applies to this method with minimal changes.
 
+        This method simply wraps the function, and so the docstring for
+        ivy.searchsorted also applies to this method with minimal
+        changes.
         """
         return self._static_searchsorted(
             self,

@@ -1,12 +1,16 @@
 # global
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 import math
 import torch
 
 
 # local
 import ivy
-import copy
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_unsupported_device_and_dtypes,
+)
+from .. import backend_version
 
 # noinspection PyProtectedMember
 
@@ -15,22 +19,10 @@ import copy
 # -------------------#
 
 
-def triu_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: int = 0,
-    /,
-    *,
-    device: torch.device,
-) -> Tuple[torch.Tensor]:
-    n_cols = n_rows if n_cols is None else n_cols
-    return tuple(
-        torch.triu_indices(
-            row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
-        )
-    )
-
-
+@with_unsupported_device_and_dtypes(
+    {"2.1.0 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -95,6 +87,7 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 def hann_window(
     size: int,
     /,
@@ -119,9 +112,8 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: torch.device,
+    device: torch.device = None,
 ) -> Tuple[torch.Tensor, ...]:
-
     n_cols = n_rows if n_cols is None else n_cols
 
     if n_rows <= 0 or n_cols <= 0:
@@ -134,13 +126,165 @@ def tril_indices(
     )
 
 
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[torch.dtype] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
+def unsorted_segment_min(
+    data: torch.Tensor,
+    segment_ids: torch.Tensor,
+    num_segments: Union[int, torch.Tensor],
 ) -> torch.Tensor:
-    buffer_copy = copy.deepcopy(buffer)
-    dtype = ivy.as_native_dtype(dtype)
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
+        data, segment_ids, num_segments
+    )
+    if data.dtype in [torch.float32, torch.float64, torch.float16, torch.bfloat16]:
+        init_val = torch.finfo(data.dtype).max
+    elif data.dtype in [torch.int32, torch.int64, torch.int8, torch.int16, torch.uint8]:
+        init_val = torch.iinfo(data.dtype).max
+    else:
+        raise ValueError("Unsupported data type")
 
-    return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)
+    res = torch.full(
+        (num_segments,) + data.shape[1:], init_val, dtype=data.dtype, device=data.device
+    )
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if torch.any(mask_index):
+            res[i] = torch.min(data[mask_index], 0)[0]
+
+    return res
+
+
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: bool = True,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.blackman_window(
+        size,
+        periodic=periodic,
+        dtype=dtype,
+    )
+
+
+blackman_window.support_native_out = False
+
+
+def unsorted_segment_sum(
+    data: torch.Tensor,
+    segment_ids: torch.Tensor,
+    num_segments: Union[int, torch.Tensor],
+) -> torch.Tensor:
+    # Used the same check which is used for unsorted_segment_min as the
+    # check should be same
+    # Might require to change the assertion function name to
+    # check_unsorted_segment_valid_params
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    res = torch.zeros(
+        (num_segments,) + data.shape[1:], dtype=data.dtype, device=data.device
+    )
+
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if torch.any(mask_index):
+            res[i] = torch.sum(data[mask_index], dim=0)
+
+    return res
+
+
+def trilu(
+    x: torch.Tensor,
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if upper:
+        return torch.triu(x, diagonal=k, out=out)
+    return torch.tril(x, diagonal=k, out=out)
+
+
+trilu.support_native_out = True
+
+
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 125.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    # transform the inputs to tensors
+    lower_edge_hertz = torch.tensor(lower_edge_hertz)
+    upper_edge_hertz = torch.tensor(upper_edge_hertz)
+    zero = torch.tensor(0.0)
+
+    # mel transform lambda function
+    def hz_to_mel(f):
+        return 2595 * torch.log10(1 + f / 700)
+
+    nyquist_hz = sample_rate / 2
+    # define a range of frequencies in HZ
+    linear_freqs = torch.linspace(0, nyquist_hz, dft_length)[1:]
+    # transform the frequencies from HZ to mels
+    spec_bin_mels = hz_to_mel(linear_freqs).unsqueeze(1)
+    mel_edges = torch.linspace(
+        hz_to_mel(lower_edge_hertz), hz_to_mel(upper_edge_hertz), num_mel_bins + 2
+    )
+    # create overlapping frames of size 3
+    mel_edges = mel_edges.unfold(0, size=3, step=1)
+    lower_edge_mel, center_mel, upper_edge_mel = (
+        t.reshape((1, num_mel_bins)) for t in mel_edges.split(1, dim=1)
+    )
+    lower_slopes = (spec_bin_mels - lower_edge_mel) / (center_mel - lower_edge_mel)
+    upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
+    mel_weights = torch.maximum(zero, torch.minimum(lower_slopes, upper_slopes))
+    return torch.nn.functional.pad(mel_weights, (0, 0, 1, 0))
+
+
+def unsorted_segment_mean(
+    data: torch.Tensor,
+    segment_ids: torch.Tensor,
+    num_segments: Union[int, torch.Tensor],
+) -> torch.Tensor:
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    # Initialize an array to store the sum of elements for each segment
+    segment_sum = torch.zeros(
+        (num_segments,) + data.shape[1:], dtype=data.dtype, device=data.device
+    )
+
+    # Initialize an array to keep track of the number of elements in each segment
+    counts = torch.zeros(num_segments, dtype=torch.int64, device=data.device)
+
+    for i in range(len(segment_ids)):
+        seg_id = segment_ids[i]
+        segment_sum[seg_id] += data[i]
+        counts[seg_id] += 1
+
+    return segment_sum / counts[:, None]
+
+
+@with_unsupported_dtypes({"2.0.1 and below": "float16"}, backend_version)
+def polyval(
+    coeffs: torch.Tensor,
+    x: torch.Tensor,
+) -> torch.Tensor:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
+    y = torch.zeros_like(x)
+    for coeff in coeffs:
+        y = y * x + coeff
+    if y.shape == (1,):
+        y = torch.unsqueeze(y, 0)
+    promoted_type = getattr(torch, promoted_type)
+    y = torch.tensor(y).to(dtype=promoted_type)
+    return y

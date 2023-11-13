@@ -14,18 +14,19 @@ class _ContainerWithRandom(ContainerBase):
         low: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 0.0,
         high: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
-        seed: Optional[int] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.random_uniform. This method
-        simply wraps the function, and so the docstring for ivy.random_uniform also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.random_uniform. This method simply
+        wraps the function, and so the docstring for ivy.random_uniform also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -117,18 +118,19 @@ class _ContainerWithRandom(ContainerBase):
         *,
         high: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
-        seed: Optional[int] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.random_uniform. This method
-        simply wraps the function, and so the docstring for ivy.random_uniform also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.random_uniform. This method simply
+        wraps the function, and so the docstring for ivy.random_uniform also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -303,18 +305,19 @@ class _ContainerWithRandom(ContainerBase):
         mean: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 0.0,
         std: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
-        seed: Optional[int] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.random_normal. This method
-        simply wraps the function, and so the docstring for ivy.random_normal
-        also applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.random_normal. This method simply
+        wraps the function, and so the docstring for ivy.random_normal also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -404,18 +407,19 @@ class _ContainerWithRandom(ContainerBase):
         *,
         std: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
-        seed: Optional[int] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.random_normal. This method
-        simply wraps the function, and so the docstring for ivy.random_normal also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.random_normal. This method simply
+        wraps the function, and so the docstring for ivy.random_normal also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -585,24 +589,25 @@ class _ContainerWithRandom(ContainerBase):
 
     @staticmethod
     def _static_multinomial(
-        population_size: int,
-        num_samples: int,
+        population_size: Union[int, ivy.Container],
+        num_samples: Union[int, ivy.Container],
         /,
         *,
-        batch_size: int = 1,
+        batch_size: Union[int, ivy.Container] = 1,
         probs: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        replace: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        seed: Optional[int] = None,
+        replace: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.multinomial. This method
-        simply wraps the function, and so the docstring for ivy.multinomial also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.multinomial. This method simply wraps
+        the function, and so the docstring for ivy.multinomial also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -660,23 +665,24 @@ class _ContainerWithRandom(ContainerBase):
 
     def multinomial(
         self: ivy.Container,
-        population_size: int,
-        num_samples: int,
+        population_size: Union[int, ivy.Container],
+        num_samples: Union[int, ivy.Container],
         /,
         *,
-        batch_size: int = 1,
-        replace: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        seed: Optional[int] = None,
+        batch_size: Union[int, ivy.Container] = 1,
+        replace: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.multinomial. This method
-        simply wraps the function, and so the docstring for ivy.multinomial also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.multinomial. This method simply
+        wraps the function, and so the docstring for ivy.multinomial also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -738,18 +744,19 @@ class _ContainerWithRandom(ContainerBase):
         /,
         *,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
-        seed: Optional[int] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.randint. This method
-        simply wraps the function, and so the docstring for ivy.randint also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.randint. This method simply wraps the
+        function, and so the docstring for ivy.randint also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -838,18 +845,19 @@ class _ContainerWithRandom(ContainerBase):
         /,
         *,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
-        seed: Optional[int] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.randint. This method
-        simply wraps the function, and so the docstring for ivy.randint also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.randint. This method simply wraps
+        the function, and so the docstring for ivy.randint also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1020,23 +1028,27 @@ class _ContainerWithRandom(ContainerBase):
     @staticmethod
     def _static_shuffle(
         x: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
+        axis: Optional[Union[int, ivy.Container]] = 0,
         /,
         *,
-        seed: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.shuffle. This method
-        simply wraps the function, and so the docstring for ivy.shuffle also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.shuffle. This method simply wraps the
+        function, and so the docstring for ivy.shuffle also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
         x
             Input array or container. Should have a numeric data type.
+        axis
+            The axis which input array or container is shuffled along. Default is 0.
         seed
             A python integer. Used to create a random seed distribution
         key_chains
@@ -1072,6 +1084,7 @@ class _ContainerWithRandom(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "shuffle",
             x,
+            axis,
             seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1082,23 +1095,27 @@ class _ContainerWithRandom(ContainerBase):
 
     def shuffle(
         self: ivy.Container,
+        axis: Optional[Union[int, ivy.Container]] = 0,
         /,
         *,
-        seed: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.shuffle. This method
-        simply wraps the function, and so the docstring for ivy.shuffle also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.shuffle. This method simply wraps
+        the function, and so the docstring for ivy.shuffle also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
         self
             Input container. Should have a numeric data type.
+        axis
+            The axis which input container is shuffled along. Default is 0.
         seed
             A python integer. Used to create a random seed distribution
         key_chains
@@ -1125,7 +1142,8 @@ class _ContainerWithRandom(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([5, 2, 9]),
         ...                   b=ivy.array([7, 1, 6]))
-        >>> ivy.Container.shuffle(x)
+        >>> y = ivy.Container.shuffle(x)
+        >>> print(y)
         {
             a: ivy.array([9, 5, 2]),
             b: ivy.array([6, 7, 1])
@@ -1133,6 +1151,7 @@ class _ContainerWithRandom(ContainerBase):
         """
         return self._static_shuffle(
             self,
+            axis,
             seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,

@@ -5,15 +5,13 @@ import numpy as np
 from hypothesis import strategies as st
 from typing import Optional
 
-try:
-    import jsonpickle
-except ImportError:
-    pass
 # local
 import ivy
+from ..pipeline_helper import BackendHandler, get_frontend_config
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
+from ..globals import mod_backend
 
 
 _dtype_kind_keys = {
@@ -25,65 +23,100 @@ _dtype_kind_keys = {
     "signed_integer",
     "complex",
     "real_and_complex",
+    "float_and_integer",
     "float_and_complex",
     "bool",
 }
 
 
-def _get_fn_dtypes(framework, kind="valid"):
-    return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
-        test_globals.CURRENT_DEVICE_STRIPPED
-    ][kind]
+def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"):
+    all_devices_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
+        framework
+    ]
+    if mixed_fn_dtypes in all_devices_dtypes:
+        all_devices_dtypes = all_devices_dtypes[mixed_fn_dtypes]
+    return all_devices_dtypes[test_globals.CURRENT_DEVICE_STRIPPED][kind]
 
 
-def _get_type_dict(framework, kind):
-    if kind == "valid":
-        return framework.valid_dtypes
-    elif kind == "numeric":
-        return framework.valid_numeric_dtypes
-    elif kind == "integer":
-        return framework.valid_int_dtypes
-    elif kind == "float":
-        return framework.valid_float_dtypes
-    elif kind == "unsigned":
-        return framework.valid_int_dtypes
-    elif kind == "signed_integer":
-        return tuple(
-            set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
-        )
-    elif kind == "complex":
-        return framework.valid_complex_dtypes
-    elif kind == "real_and_complex":
-        return tuple(
-            set(framework.valid_numeric_dtypes).union(framework.valid_complex_dtypes)
-        )
-    elif kind == "float_and_complex":
-        return tuple(
-            set(framework.valid_float_dtypes).union(framework.valid_complex_dtypes)
-        )
-    elif kind == "bool":
-        return tuple(
-            set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
-        )
+def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
+    if mod_backend[framework]:
+        proc, input_queue, output_queue = mod_backend[framework]
+        input_queue.put(("_get_type_dict_helper", framework, kind, is_frontend_test))
+        return output_queue.get()
     else:
-        raise RuntimeError("{} is an unknown kind!".format(kind))
+        return _get_type_dict_helper(framework, kind, is_frontend_test)
 
 
-def make_json_pickable(s):
-    s = s.replace("builtins.bfloat16", "ivy.bfloat16")
-    s = s.replace("jax._src.device_array.reconstruct_device_array", "jax.numpy.array")
-    return s
+def _get_type_dict_helper(framework, kind, is_frontend_test):
+    if is_frontend_test:
+        framework_module = get_frontend_config(framework).supported_dtypes
+    elif ivy.current_backend_str() == framework:
+        framework_module = ivy
+    else:
+        with BackendHandler.update_backend(framework) as ivy_backend:
+            framework_module = ivy_backend
+
+    if kind == "valid":
+        return framework_module.valid_dtypes
+    if kind == "numeric":
+        return framework_module.valid_numeric_dtypes
+    if kind == "integer":
+        return framework_module.valid_int_dtypes
+    if kind == "float":
+        return framework_module.valid_float_dtypes
+    if kind == "unsigned":
+        return framework_module.valid_uint_dtypes
+    if kind == "signed_integer":
+        return tuple(
+            set(framework_module.valid_int_dtypes).difference(
+                framework_module.valid_uint_dtypes
+            )
+        )
+    if kind == "complex":
+        return framework_module.valid_complex_dtypes
+    if kind == "real_and_complex":
+        return tuple(
+            set(framework_module.valid_numeric_dtypes).union(
+                framework_module.valid_complex_dtypes
+            )
+        )
+    if kind == "float_and_complex":
+        return tuple(
+            set(framework_module.valid_float_dtypes).union(
+                framework_module.valid_complex_dtypes
+            )
+        )
+    if kind == "float_and_integer":
+        return tuple(
+            set(framework_module.valid_float_dtypes).union(
+                framework_module.valid_int_dtypes
+            )
+        )
+    if kind == "bool":
+        return tuple(
+            set(framework_module.valid_dtypes).difference(
+                framework_module.valid_numeric_dtypes
+            )
+        )
+
+    raise RuntimeError(f"{kind} is an unknown kind!")
 
 
 @st.composite
 def get_dtypes(
-    draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True
+    draw,
+    kind="valid",
+    index=0,
+    mixed_fn_compos=True,
+    full=True,
+    none=False,
+    key=None,
+    prune_function=True,
 ):
     """
-    Draws a valid dtypes for the test function. For frontend tests,
-    it draws the data types from the intersection between backend
-    framework data types and frontend framework dtypes, otherwise,
-    draws it from backend framework data types.
+    Draws a valid dtypes for the test function. For frontend tests, it draws the data
+    types from the intersection between backend framework data types and frontend
+    framework dtypes, otherwise, draws it from backend framework data types.
 
     Parameters
     ----------
@@ -94,21 +127,90 @@ def get_dtypes(
         Supported types are integer, float, valid, numeric, signed_integer, complex,
         real_and_complex, float_and_complex, bool, and unsigned
     index
-        list indexing incase a test needs to be skipped for a particular dtype(s)
+        list indexing in case a test needs to be skipped for a particular dtype(s)
+    mixed_fn_compos
+        boolean if True, the function will return the dtypes of the compositional
+        implementation for mixed partial functions and if False, it will return
+        the dtypes of the primary implementation.
     full
         returns the complete list of valid types
     none
         allow none in the list of valid types
+    key
+        if provided, a shared value will be drawn from the strategy and passed to the
+        function as the keyword argument with the given name.
+    prune_function
+        if True, the function will prune the data types to only include the ones that
+        are supported by the current function. If False, the function will return all
+        the data types supported by the current backend.
 
     Returns
     -------
     ret
-        dtype string
+        A strategy that draws dtype strings
+
+    Examples
+    --------
+    >>> get_dtypes()
+    ['float16',
+        'uint8',
+        'complex128',
+        'bool',
+        'uint32',
+        'float64',
+        'int8',
+        'int16',
+        'complex64',
+        'float32',
+        'int32',
+        'uint16',
+        'int64',
+        'uint64']
+
+    >>> get_dtypes(kind='valid', full=False)
+    ['int16']
+
+    >>> get_dtypes(kind='valid', full=False)
+    ['uint16']
+
+    >>> get_dtypes(kind='numeric', full=False)
+    ['complex64']
+
+    >>> get_dtypes(kind='float', full=False, key="leaky_relu")
+    ['float16']
+
+    >>> get_dtypes(kind='float', full=False, key="searchsorted")
+    ['bfloat16']
+
+    >>> get_dtypes(kind='float', full=False, key="dtype")
+    ['float32']
+
+    >>> get_dtypes("numeric", prune_function=False)
+    ['int16']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['uint32']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['complex128']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['bool']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['float16']
     """
+    mixed_fn_dtypes = "compositional" if mixed_fn_compos else "primary"
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
-            valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND(), kind))
+            valid_dtypes = set(
+                retrieval_fn(
+                    test_globals.CURRENT_BACKEND,
+                    mixed_fn_dtypes=mixed_fn_dtypes,
+                    kind=kind,
+                )
+            )
         else:
             raise RuntimeError(
                 "No function is set to prune, calling "
@@ -116,109 +218,30 @@ def get_dtypes(
             )
     else:
         retrieval_fn = _get_type_dict
-        valid_dtypes = set(retrieval_fn(ivy, kind))
+        valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND, kind))
 
-    # The function may be called from a frontend test or an IVY api test
-    # In the case of a IVY api test, the function should make sure it returns a valid
+    # The function may be called from a frontend test or an Ivy API test
+    # In the case of an Ivy API test, the function should make sure it returns a valid
     # dtypes for the backend and also for the ground truth backend, if it is called from
     # a frontend test, we should also count for the frontend support data types
     # In conclusion, the following operations will get the intersection of
     # FN_DTYPES & BACKEND_DTYPES & FRONTEND_DTYPES & GROUND_TRUTH_DTYPES
 
     # If being called from a frontend test
+    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
+        frontend_dtypes = _get_type_dict_helper(
+            test_globals.CURRENT_FRONTEND, kind, True
+        )
+        valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
-    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval or isinstance(
-        test_globals.CURRENT_FRONTEND_STR, list
-    ):  # NOQA
-        # this piece of code below checks if the version of frontend is the same
-        # as backend, i.e eg: --backend=torch/1.13.0 --frontend=torch/1.13.0
-        # in such cases we don't need to use subprocess
-        ver = True
-        if test_globals.CURRENT_FRONTEND():
-            ver = test_globals.CURRENT_FRONTEND().backend_version["version"]
-
-            if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
-                ver = test_globals.CURRENT_FRONTEND_STR[0].split("/")[1] != ver
-
-        if isinstance(test_globals.CURRENT_FRONTEND_STR, list) and ver:
-            process = test_globals.CURRENT_FRONTEND_STR[1]
-            try:
-                if test_globals.CURRENT_RUNNING_TEST.is_method:
-                    process.stdin.write("1a" + "\n")
-                    process.stdin.write(
-                        jsonpickle.dumps(test_globals.CURRENT_RUNNING_TEST.is_method)
-                        + "\n"
-                    )
-                else:
-                    process.stdin.write("1" + "\n")
-                process.stdin.write(f"{str(retrieval_fn.__name__)}" + "\n")
-                process.stdin.write(f"{str(kind)}" + "\n")
-                process.stdin.write(f"{test_globals.CURRENT_DEVICE}" + "\n")
-                process.stdin.write(
-                    f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
-                )
-
-                process.stdin.flush()
-            except Exception as e:
-                print(
-                    "Something bad happened to the subprocess, here are the logs:\n\n"
-                )
-                print(process.stdout.readlines())
-                raise e
-
-            frontend_ret = process.stdout.readline()
-            if frontend_ret:
-                try:
-                    frontend_ret = jsonpickle.loads(make_json_pickable(frontend_ret))
-                except Exception:
-                    raise Exception(f"source of all bugs   {frontend_ret}")
-            else:
-                print(process.stderr.readlines())
-                raise Exception
-            frontend_dtypes = frontend_ret
-            valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
-
-        else:
-            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
-            valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
-
-    # Make sure we return dtypes that are compatiable with ground truth backend
+    # Make sure we return dtypes that are compatible with ground truth backend
     ground_truth_is_set = (
         test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
     )
     if ground_truth_is_set:
-        if isinstance(test_globals.CURRENT_GROUND_TRUTH_BACKEND, list):
-            process = test_globals.CURRENT_GROUND_TRUTH_BACKEND[1]
-            try:
-                if test_globals.CURRENT_RUNNING_TEST.is_method:
-                    process.stdin.write("1a" + "\n")
-                else:
-                    process.stdin.write("1" + "\n")
-                process.stdin.write(f"{str(retrieval_fn.__name__)}" + "\n")
-                process.stdin.write(f"{str(kind)}" + "\n")
-                process.stdin.write(f"{test_globals.CURRENT_DEVICE}" + "\n")
-                process.stdin.write(
-                    f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
-                )
-                process.stdin.flush()
-            except Exception as e:
-                print(
-                    "Something bad happened to the subprocess, here are the logs:\n\n"
-                )
-                print(process.stdout.readlines())
-                raise e
-            backend_ret = process.stdout.readline()
-            if backend_ret:
-                backend_ret = jsonpickle.loads(make_json_pickable(backend_ret))
-            else:
-                print(process.stderr.readlines())
-                raise Exception
-
-            valid_dtypes = valid_dtypes.intersection(backend_ret)
-        else:
-            valid_dtypes = valid_dtypes.intersection(
-                retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind)
-            )
+        valid_dtypes = valid_dtypes.intersection(
+            retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND, kind=kind)
+        )
 
     valid_dtypes = list(valid_dtypes)
     if none:
@@ -239,7 +262,8 @@ def array_dtypes(
     shared_dtype=False,
     array_api_dtypes=False,
 ):
-    """Draws a list of data types.
+    """
+    Draws a list of data types.
 
     Parameters
     ----------
@@ -258,7 +282,48 @@ def array_dtypes(
 
     Returns
     -------
-    A strategy that draws a list.
+        A strategy that draws a list of data types.
+
+    Examples
+    --------
+    >>> array_dtypes(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     shared_dtype=True,
+    ... )
+    ['float64']
+
+    >>> array_dtypes(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     shared_dtype=True,
+    ... )
+    ['int8', 'int8']
+
+    >>> array_dtypes(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     shared_dtype=True,
+    ... )
+    ['int32', 'int32', 'int32', 'int32']
+
+    >>> array_dtypes(
+    ...     num_arrays=5,
+    ...     available_dtypes=get_dtypes("valid"),
+    ...     shared_dtype=False,
+    ... )
+    ['int8', 'float64', 'complex64', 'int8', 'bool']
+
+    >>> array_dtypes(
+    ...     num_arrays=5,
+    ...     available_dtypes=get_dtypes("valid"),
+    ...     shared_dtype=False,
+    ... )
+    ['bool', 'complex64', 'bool', 'complex64', 'bool']
+
+    >>> array_dtypes(
+    ...     num_arrays=5,
+    ...     available_dtypes=get_dtypes("valid"),
+    ...     shared_dtype=False,
+    ... )
+    ['float64', 'int8', 'float64', 'int8', 'float64']
     """
     if isinstance(available_dtypes, st._internal.SearchStrategy):
         available_dtypes = draw(available_dtypes)
@@ -286,9 +351,9 @@ def array_dtypes(
         else:
             pairs = ivy.promotion_table.keys()
         # added to avoid complex dtypes from being sampled if they are not available.
-        pairs = [pair for pair in pairs if all([d in available_dtypes for d in pair])]
+        [pair for pair in pairs if all(d in available_dtypes for d in pair)]
         available_dtypes = [
-            pair for pair in pairs if not any([d in pair for d in unwanted_types])
+            pair for pair in pairs if not any(d in pair for d in unwanted_types)
         ]
         dtypes = list(draw(st.sampled_from(available_dtypes)))
         if num_arrays > 2:
@@ -318,33 +383,68 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     ret
         A tuple of inputs and castable dtype.
     """
-    bound_dtype_bits = (
-        lambda d: ivy.dtype_bits(d) / 2
-        if ivy.is_complex_dtype(d)
-        else ivy.dtype_bits(d)
+    cast_dtype = draw(
+        st.sampled_from(available_dtypes).filter(
+            lambda value: cast_filter(value, dtype=dtype, x=x)
+        )
     )
-
-    def cast_filter(d):
-        if ivy.is_int_dtype(d):
-            max_val = ivy.iinfo(d).max
-        elif ivy.is_float_dtype(d) or ivy.is_complex_dtype(d):
-            max_val = ivy.finfo(d).max
-        else:
-            max_val = 1
-        if x is None:
-            if ivy.is_int_dtype(dtype):
-                max_x = ivy.iinfo(dtype).max
-            elif ivy.is_float_dtype(dtype) or ivy.is_complex_dtype(dtype):
-                max_x = ivy.finfo(dtype).max
-            else:
-                max_x = 1
-        else:
-            max_x = np.max(np.abs(np.asarray(x)))
-        return max_x <= max_val and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
-
-    cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
     if x is None:
         return dtype, cast_dtype
-    if "uint" in cast_dtype:
-        x = np.abs(np.asarray(x))
     return dtype, x, cast_dtype
+
+
+def cast_filter(d, dtype, x):
+    if mod_backend[test_globals.CURRENT_BACKEND]:
+        proc, input_queue, output_queue = mod_backend[test_globals.CURRENT_BACKEND]
+        input_queue.put(
+            ("cast_filter_helper", d, dtype, x, test_globals.CURRENT_BACKEND)
+        )
+        return output_queue.get()
+    else:
+        return cast_filter_helper(d, dtype, x, test_globals.CURRENT_BACKEND)
+
+
+def cast_filter_helper(d, dtype, x, current_backend):
+    with BackendHandler.update_backend(current_backend) as ivy_backend:
+
+        def bound_dtype_bits(d):
+            return (
+                ivy_backend.dtype_bits(d) / 2
+                if ivy_backend.is_complex_dtype(d)
+                else ivy_backend.dtype_bits(d)
+            )
+
+        if ivy_backend.is_int_dtype(d):
+            max_val = ivy_backend.iinfo(d).max
+            min_val = ivy_backend.iinfo(d).min
+        elif ivy_backend.is_float_dtype(d) or ivy_backend.is_complex_dtype(d):
+            max_val = ivy_backend.finfo(d).max
+            min_val = ivy_backend.finfo(d).min
+        else:
+            max_val = 1
+            min_val = -1
+        if x is None:
+            if ivy_backend.is_int_dtype(dtype):
+                max_x = ivy_backend.iinfo(dtype).max
+                min_x = ivy_backend.iinfo(dtype).min
+            elif ivy_backend.is_float_dtype(dtype) or ivy_backend.is_complex_dtype(
+                dtype
+            ):
+                max_x = ivy_backend.finfo(dtype).max
+                min_x = ivy_backend.finfo(dtype).min
+            else:
+                max_x = 1
+                min_x = -1
+        else:
+            max_x = np.max(np.asarray(x))
+            min_x = np.min(np.asarray(x))
+        return (
+            max_x <= max_val
+            and min_x >= min_val
+            and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
+            and (
+                ivy_backend.is_complex_dtype(d)
+                or not ivy_backend.is_complex_dtype(dtype)
+            )
+            and (min_x > 0 or not ivy_backend.is_uint_dtype(dtype))
+        )

@@ -1,4 +1,3 @@
-# flake8: noqa
 from . import adding_and_removing_elements
 from .adding_and_removing_elements import *
 from . import basic_operations
@@ -9,6 +8,8 @@ from . import changing_kind_of_array
 from .changing_kind_of_array import *
 from . import changing_number_of_dimensions
 from .changing_number_of_dimensions import *
+from . import padding_arrays
+from .padding_arrays import *
 from . import joining_arrays
 from .joining_arrays import *
 from . import rearranging_elements

@@ -1,8 +1,0 @@
-torch-scatter # torch_scatter requires a prior existing installation of torch, hence 2 optional files
-functorch
-scipy
-dm-haiku # mod_name=haiku
-protobuf
-pydriller
-tqdm
-coverage

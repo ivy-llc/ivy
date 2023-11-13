@@ -1,46 +1,10 @@
 # global
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
-    outputs_to_numpy_arrays,
+    outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
     handle_numpy_dtype,
 )
-
-
-@handle_numpy_dtype
-@outputs_to_numpy_arrays
-def arange(start, stop=None, step=1, dtype=None, *, like=None):
-    return ivy.arange(start, stop, step, dtype=dtype)
-
-
-@handle_numpy_dtype
-@to_ivy_arrays_and_back
-def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
-    ret = ivy.linspace(start, stop, num, axis=axis, endpoint=endpoint, dtype=dtype)
-    if retstep:
-        if endpoint:
-            num -= 1
-        step = ivy.divide(ivy.subtract(stop, start), num)
-        return ret, step
-    return ret
-
-
-@handle_numpy_dtype
-@to_ivy_arrays_and_back
-def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
-    if not endpoint:
-        interval = (stop - start) / num
-        stop -= interval
-    return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
-
-
-@to_ivy_arrays_and_back
-def meshgrid(*xi, copy=True, sparse=False, indexing="xy"):
-    # Todo: add sparse check
-    ret = ivy.meshgrid(*xi, indexing=indexing)
-    if copy:
-        return [ivy.copy_array(x) for x in ret]
-    return ret
 
 
 class nd_grid:
@@ -147,12 +111,61 @@ class MGrid(nd_grid):
         super().__init__(sparse=False)
 
 
-mgrid = MGrid()
-
-
 class OGrid(nd_grid):
     def __init__(self):
         super().__init__(sparse=True)
 
 
+@handle_numpy_dtype
+@outputs_to_frontend_arrays
+def arange(start, stop=None, step=1, dtype=None, *, like=None):
+    return ivy.arange(start, stop, step, dtype=dtype)
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
+    cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
+    x = ivy.linspace(
+        0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, axis=axis
+    )
+    x = ivy.exp(x)
+    x = start * x
+    x[0] = start
+    if endpoint:
+        x[-1] = stop
+    return x.asarray(dtype=dtype)
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
+    ret = ivy.linspace(start, stop, num, axis=axis, endpoint=endpoint, dtype=dtype)
+    if retstep:
+        if endpoint:
+            num -= 1
+        step = ivy.divide(ivy.subtract(stop, start), num)
+        return ret, step
+    return ret
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
+    if not endpoint:
+        interval = (stop - start) / num
+        stop -= interval
+    return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def meshgrid(*xi, copy=True, sparse=False, indexing="xy"):
+    # Todo: add sparse check
+    ret = ivy.meshgrid(*xi, indexing=indexing)
+    if copy:
+        return [ivy.copy_array(x) for x in ret]
+    return ret
+
+
+mgrid = MGrid()
 ogrid = OGrid()

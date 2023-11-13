@@ -6,14 +6,11 @@ from ivy.functional.frontends.jax.numpy import (
     promote_types_jax,
 )
 from ivy.functional.frontends.numpy import dtype as np_dtype
+from ivy import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
 def can_cast(from_, to, casting="safe"):
-    """
-    Returns True if casting betweer two dtypes is possible according to casting rules,
-    False otherwise.
-    """
     ivy.utils.assertions.check_elem_in_list(
         casting,
         ["no", "equiv", "safe", "same_kind", "unsafe"],
@@ -40,7 +37,7 @@ def can_cast(from_, to, casting="safe"):
             "to must be one of dtype, or dtype specifier"
         )
 
-    if casting == "no" or casting == "equiv":
+    if casting in ["no", "equiv"]:
         return from_ == to
 
     if casting == "safe":
@@ -75,9 +72,32 @@ def can_cast(from_, to, casting="safe"):
     return False
 
 
+@with_supported_dtypes(
+    {"2.14.0 and below": ("float16", "float32", "float64")},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def finfo(dtype):
+    return ivy.finfo(dtype)
+
+
+@with_supported_dtypes(
+    {"2.14.0 and below": ("integer",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def iinfo(int_type):
+    return ivy.iinfo(int_type)
+
+
 def promote_types(type1, type2, /):
     if isinstance(type1, np_dtype):
         type1 = type1._ivy_dtype
     if isinstance(type2, np_dtype):
         type2 = type2._ivy_dtype
     return np_dtype(promote_types_jax(type1, type2))
+
+
+@to_ivy_arrays_and_back
+def result_type(*args):
+    return ivy.result_type(*args)

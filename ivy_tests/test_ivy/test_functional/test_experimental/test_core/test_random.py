@@ -3,12 +3,89 @@ from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
-import ivy
+from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
 
 
-# Helpers #
-# ------- #
+@handle_test(
+    fn_tree="functional.ivy.experimental.bernoulli",
+    dtype_and_probs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        min_value=0,
+        max_value=1,
+        min_num_dims=0,
+    ),
+    seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
+)
+def test_bernoulli(
+    *, dtype_and_probs, seed, test_flags, backend_fw, fn_name, on_device
+):
+    dtype, probs = dtype_and_probs
+    # torch doesn't support half precision on CPU
+    assume(
+        not ("torch" in str(backend_fw) and "float16" in dtype and on_device == "cpu")
+    )
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        test_values=False,
+        probs=probs[0],
+        logits=None,
+        shape=None,
+        seed=seed,
+    )
+
+
+# beta
+@handle_test(
+    fn_tree="functional.ivy.experimental.beta",
+    dtype_and_alpha_beta=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        min_num_dims=1,
+        max_num_dims=2,
+        num_arrays=2,
+        exclude_min=True,
+    ),
+    seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
+)
+def test_beta(
+    *,
+    dtype_and_alpha_beta,
+    seed,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_flags,
+):
+    dtype, alpha_beta = dtype_and_alpha_beta
+    if "float16" in dtype:
+        return
+    ret, ret_gt = helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        test_values=False,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        alpha=alpha_beta[0],
+        beta=alpha_beta[1],
+        shape=None,
+        dtype=dtype[0],
+        seed=seed,
+    )
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ret_gt, backend=test_flags.ground_truth_backend
+    )
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        for u, v in zip(ret, ret_gt):
+            assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
+            assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
 
 
 # dirichlet
@@ -30,26 +107,17 @@ import ivy
     test_gradients=st.just(False),
 )
 def test_dirichlet(
-    *,
-    dtype_and_alpha,
-    size,
-    seed,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_alpha, size, seed, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, alpha = dtype_and_alpha
     assume("bfloat16" not in dtype)
 
     def call():
         return helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
             test_flags=test_flags,
             test_values=False,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             on_device=on_device,
             alpha=alpha[0],
@@ -58,71 +126,21 @@ def test_dirichlet(
         )
 
     ret, ret_gt = call()
-    if seed:
-        ret1, ret_gt1 = call()
-        assert ivy.any(ret == ret1)
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        u, v = ivy.array(u), ivy.array(v)
-        assert ivy.all(ivy.sum(u, axis=-1) == ivy.sum(v, axis=-1))
-        assert ivy.all(u >= 0) and ivy.all(u <= 1)
-        assert ivy.all(v >= 0) and ivy.all(v <= 1)
-
-
-# beta
-@handle_test(
-    fn_tree="functional.ivy.experimental.beta",
-    dtype_and_alpha_beta=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        min_num_dims=1,
-        max_num_dims=2,
-        num_arrays=2,
-        exclude_min=True,
-    ),
-    seed=helpers.ints(min_value=0, max_value=100),
-    test_gradients=st.just(False),
-)
-def test_beta(
-    *,
-    dtype_and_alpha_beta,
-    seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-    test_flags,
-):
-
-    dtype, alpha_beta = dtype_and_alpha_beta
-    if "float16" in dtype:
-        return
-    ret, ret_gt = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        test_values=False,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        alpha=alpha_beta[0],
-        beta=alpha_beta[1],
-        shape=None,
-        dtype=dtype[0],
-        seed=seed,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        assert ivy.all(u >= 0) and ivy.all(u <= 1)
-        assert ivy.all(v >= 0) and ivy.all(v <= 1)
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        if seed:
+            ret1, ret_gt1 = call()
+            assert ivy_backend.any(ret == ret1)
+        ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(
+            ret=ret_gt, backend=test_flags.ground_truth_backend
+        )
+        for u, v in zip(ret, ret_gt):
+            u, v = ivy_backend.array(u), ivy_backend.array(v)
+            assert ivy_backend.all(
+                ivy_backend.sum(u, axis=-1) == ivy_backend.sum(v, axis=-1)
+            )
+            assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
+            assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
 
 
 # gamma
@@ -140,24 +158,16 @@ def test_beta(
     test_gradients=st.just(False),
 )
 def test_gamma(
-    *,
-    dtype_and_alpha_beta,
-    seed,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_alpha_beta, seed, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, alpha_beta = dtype_and_alpha_beta
     if "float16" in dtype:
         return
     ret, ret_gt = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         test_values=False,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         alpha=alpha_beta[0],
@@ -166,11 +176,14 @@ def test_gamma(
         dtype=dtype[0],
         seed=seed,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        assert ivy.all(u >= 0)
-        assert ivy.all(v >= 0)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ret_gt, backend=test_flags.ground_truth_backend
+    )
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        for u, v in zip(ret, ret_gt):
+            assert ivy_backend.all(u >= 0)
+            assert ivy_backend.all(v >= 0)
 
 
 # poisson
@@ -180,97 +193,52 @@ def test_gamma(
     fn_tree="functional.ivy.experimental.poisson",
     dtype_and_lam=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=False),
-        min_value=0,
+        min_value=-2,
         max_value=5,
         min_num_dims=0,
     ),
-    shape=helpers.get_shape(
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
+    fill_value=helpers.floats(min_value=0, max_value=1),
     test_gradients=st.just(False),
 )
 def test_poisson(
     *,
     dtype_and_lam,
-    shape,
     dtype,
     seed,
+    fill_value,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     lam_dtype, lam = dtype_and_lam
-    shape = shape + ivy.shape(lam[0])
 
     def call():
         return helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
             input_dtypes=lam_dtype,
             test_flags=test_flags,
             on_device=on_device,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             test_values=False,
             lam=lam[0],
-            shape=shape,
+            shape=None,
             dtype=dtype[0],
             seed=seed,
+            fill_value=fill_value,
         )
 
     ret, ret_gt = call()
     if seed:
         ret1, ret_gt1 = call()
-        assert ivy.any(ret == ret1)
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+        with BackendHandler.update_backend(backend_fw) as ivy_backend:
+            assert ivy_backend.any(ret == ret1)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ret_gt, backend=test_flags.ground_truth_backend
+    )
+    for u, v in zip(ret, ret_gt):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.bernoulli",
-    dtype_and_probs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False),
-        min_value=0,
-        max_value=1,
-        min_num_dims=0,
-    ),
-    seed=helpers.ints(min_value=0, max_value=100),
-    test_gradients=st.just(False),
-)
-def test_bernoulli(
-    *,
-    dtype_and_probs,
-    seed,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, probs = dtype_and_probs
-    # torch doesn't support half precision on CPU
-    assume(
-        not ("torch" in str(backend_fw) and "float16" in dtype and on_device == "cpu")
-    )
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        fw=backend_fw,
-        fn_name=fn_name,
-        test_values=False,
-        probs=probs[0],
-        logits=None,
-        shape=None,
-        seed=seed,
-    )

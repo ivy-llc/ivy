@@ -10,11 +10,13 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithDevice(ContainerBase):
     @staticmethod
-    def _static_dev(x: ivy.Container, /, *, as_native: bool = False) -> ivy.Container:
+    def _static_dev(
+        x: ivy.Container, /, *, as_native: Union[bool, ivy.Container] = False
+    ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.dev. This method simply
-        wraps the function, and so the docstring for ivy.dev also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.dev. This method simply wraps the
+        function, and so the docstring for ivy.dev also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -30,11 +32,13 @@ class _ContainerWithDevice(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function("dev", x, as_native=as_native)
 
-    def dev(self: ivy.Container, as_native: bool = False) -> ivy.Container:
+    def dev(
+        self: ivy.Container, as_native: Union[bool, ivy.Container] = False
+    ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.dev. This method simply
-        wraps the function, and so the docstring for ivy.dev also applies to this
-        method with minimal changes.
+        ivy.Container instance method variant of ivy.dev. This method simply wraps the
+        function, and so the docstring for ivy.dev also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -60,20 +64,20 @@ class _ContainerWithDevice(ContainerBase):
     @staticmethod
     def _static_to_device(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        device: Union[ivy.Device, ivy.NativeDevice],
+        device: Union[ivy.Device, ivy.NativeDevice, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        stream: Optional[Union[int, Any]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        stream: Optional[Union[int, Any, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.to_device. This method
-        simply wraps the function, and so the docstring for ivy.to_device also
-        applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.to_device. This method simply wraps
+        the function, and so the docstring for ivy.to_device also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -113,7 +117,6 @@ class _ContainerWithDevice(ContainerBase):
         >>> y = ivy.Container.static_to_device(x, 'cpu')
         >>> print(y.a.device, y.b.device)
         cpu cpu
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "to_device",
@@ -129,19 +132,19 @@ class _ContainerWithDevice(ContainerBase):
 
     def to_device(
         self: ivy.Container,
-        device: Union[ivy.Device, ivy.NativeDevice],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        device: Union[ivy.Device, ivy.NativeDevice, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
-        stream: Optional[Union[int, Any]] = None,
+        stream: Optional[Union[int, Any, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.to_device. This method
-        simply wraps the function, and so the docstring for ivy.to_device also
-        applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.to_device. This method simply wraps
+        the function, and so the docstring for ivy.to_device also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -181,7 +184,6 @@ class _ContainerWithDevice(ContainerBase):
         >>> y = x.to_device('cpu')
         >>> print(y.a.device, y.b.device)
         cpu cpu
-
         """
         return self._static_to_device(
             self,

@@ -1,8 +1,7 @@
 # global
-
+import copy
 from numbers import Number
-from typing import Union, List, Optional, Sequence
-
+from typing import Union, List, Optional, Sequence, Tuple
 import numpy as np
 import torch
 from torch import Tensor
@@ -12,14 +11,16 @@ import ivy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_unsupported_device_and_dtypes,
-    _get_first_array,
 )
 from ivy.functional.ivy.creation import (
-    asarray_to_native_arrays_and_back,
-    asarray_infer_device,
-    asarray_handle_nestable,
+    _asarray_to_native_arrays_and_back,
+    _asarray_infer_device,
+    _asarray_infer_dtype,
+    _asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    _asarray_inputs_to_native_shapes,
+    _remove_np_bfloat16,
 )
 from . import backend_version
 
@@ -46,8 +47,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-# noinspection PyUnboundLocalVariable,PyShadowingNames
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def arange(
     start: float,
     /,
@@ -55,7 +55,7 @@ def arange(
     step: float = 1,
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if stop is None:
@@ -95,14 +95,17 @@ def _stack_tensors(x, dtype):
     return x
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
-@asarray_to_native_arrays_and_back
-@asarray_infer_device
-@asarray_handle_nestable
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, backend_version)
+@_asarray_to_native_arrays_and_back
+@_asarray_infer_device
+@_asarray_handle_nestable
+@_asarray_inputs_to_native_shapes
+@_asarray_infer_dtype
 def asarray(
     obj: Union[
         torch.Tensor,
         np.ndarray,
+        torch.Size,
         bool,
         int,
         float,
@@ -113,71 +116,32 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
-    if isinstance(obj, torch.Tensor) and dtype is None:
-        if copy is True:
-            return obj.clone().detach().to(device)
-        else:
-            return obj.to(device) if obj.device != device else obj
-    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
-        contain_tensor = False
-        if isinstance(obj[0], (list, tuple)):
-            first_tensor = _get_first_array(obj)
-            if ivy.exists(first_tensor):
-                contain_tensor = True
-                dtype = first_tensor.dtype
-        if dtype is None:
-            dtype = ivy.default_dtype(item=obj, as_native=True)
-
+    obj = ivy.nested_map(_remove_np_bfloat16, obj, shallow=False)
+    if isinstance(obj, Sequence) and len(obj) != 0:
+        contain_tensor = ivy.nested_any(obj, lambda x: isinstance(x, torch.Tensor))
         # if `obj` is a list of specifically tensors or
         # a multidimensional list which contains a tensor
-        if isinstance(obj[0], torch.Tensor) or contain_tensor:
-            if copy is True:
-                return (
-                    torch.stack([torch.as_tensor(i, dtype=dtype) for i in obj])
-                    .clone()
-                    .detach()
-                    .to(device)
-                )
-            else:
-                return _stack_tensors(obj, dtype).to(device)
-
-        # if obj is a list of other objects, expected to be a numerical type.
+        if contain_tensor:
+            ret = _stack_tensors(obj, dtype).to(device)
+            return ret.clone().detach() if copy else ret
+    try:
+        ret = torch.as_tensor(obj, dtype=dtype, device=device)
+    except ValueError as e:
+        if "At least one stride in the given numpy array is negative" in str(e):
+            ret = torch.as_tensor(obj.copy(), dtype=dtype, device=device)
         else:
-            if copy is True:
-                return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
-            else:
-                return torch.as_tensor(obj, dtype=dtype).to(device)
-
-    elif isinstance(obj, np.ndarray) and dtype is None:
-        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
-    else:
-        dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
-
-    if dtype == torch.bfloat16 and isinstance(obj, np.ndarray):
-        if copy is True:
-            return (
-                torch.as_tensor(obj.tolist(), dtype=dtype).clone().detach().to(device)
-            )
-        else:
-            return torch.as_tensor(obj.tolist(), dtype=dtype).to(device)
-
-    if copy is True:
-        ret = torch.as_tensor(obj, dtype=dtype).clone().detach()
-        return ret.to(device) if ret.device != device else ret
-    else:
-        ret = torch.as_tensor(obj, dtype=dtype)
-        return ret.to(device) if ret.device != device else ret
+            raise
+    return ret.clone().detach() if copy else ret
 
 
 def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.empty(
@@ -196,13 +160,13 @@ def empty_like(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.empty_like(x, dtype=dtype, device=device)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -211,7 +175,7 @@ def eye(
     k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if n_cols is None:
@@ -264,9 +228,12 @@ def eye(
 eye.support_native_out = True
 
 
+def to_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
+    return torch.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
-    x = x.detach() if x.requires_grad else x
-    return torch.utils.dlpack.from_dlpack(x)
+    return torch.from_dlpack(x)
 
 
 def full(
@@ -274,11 +241,10 @@ def full(
     fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     if isinstance(shape, int):
         shape = (shape,)
     return torch.full(
@@ -299,10 +265,9 @@ def full_like(
     fill_value: Number,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
@@ -311,7 +276,7 @@ def _slice_at_axis(sl, axis):
 
 
 @with_unsupported_device_and_dtypes(
-    {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.1.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def linspace(
     start: Union[torch.Tensor, float],
@@ -322,7 +287,7 @@ def linspace(
     axis: Optional[int] = None,
     endpoint: bool = True,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -411,7 +376,6 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
                 linspace_method(strt, stp, num, device=device)
                 for strt, stp in zip(start, stop)
             ]
-        torch.cat(res, -1).reshape(start_shape + [num])
     elif start_is_array and not stop_is_array:
         if num < start.shape[0]:
             start = start.unsqueeze(-1)
@@ -436,7 +400,10 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
         return linspace_method(start, stop, num, dtype=dtype, device=device)
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
-        res = torch.transpose(res, axis, -1)
+        ndim = res.ndim
+        perm = list(range(0, ndim - 1))
+        perm.insert(axis % (ndim + 1), ndim - 1)
+        res = res.permute(perm)
     return res.to(device)
 
 
@@ -444,6 +411,7 @@ def meshgrid(
     *arrays: torch.Tensor,
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional[torch.Tensor] = None,
 ) -> List[torch.Tensor]:
     if not sparse:
         return list(torch.meshgrid(*arrays, indexing=indexing))
@@ -465,10 +433,10 @@ def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.ones(shape, dtype=dtype, device=device)
+    return torch.ones(shape, dtype=dtype, device=device, out=out)
 
 
 ones.support_native_out = True
@@ -479,7 +447,7 @@ def ones_like_v_0p4p0_and_above(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ones_like(x, dtype=dtype, device=device)
@@ -490,7 +458,7 @@ def ones_like_v_0p3p0_to_0p3p1(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ones_like(x, out=out)
@@ -501,7 +469,7 @@ def ones_like_v_0p1p12_to_0p2p0(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ):
     if len(x.shape) == 1:
@@ -509,7 +477,7 @@ def ones_like_v_0p1p12_to_0p2p0(
             x[i] = 1
         return x
     for i in range(x.shape[0]):
-        x[i, :] = ones_like_v_0p1p12_to_0p2p0(x[i, :])
+        x[i, :] = ones_like_v_0p1p12_to_0p2p0(x[i, :], dtype=dtype)
     return x
 
 
@@ -535,7 +503,7 @@ def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
@@ -549,7 +517,7 @@ def zeros_like(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.zeros_like(x, dtype=dtype, device=device)
@@ -582,7 +550,7 @@ def one_hot(
     off_value: Optional[torch.Tensor] = None,
     axis: Optional[int] = None,
     dtype: Optional[torch.dtype] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     on_none = on_value is None
@@ -611,3 +579,31 @@ def one_hot(
         res = torch.moveaxis(res, -1, axis)
 
     return res.to(device, dtype)
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[torch.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> torch.Tensor:
+    buffer_copy = copy.deepcopy(buffer)
+    dtype = ivy.as_native_dtype(dtype)
+
+    return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: torch.device = None,
+) -> Tuple[torch.Tensor]:
+    n_cols = n_rows if n_cols is None else n_cols
+    return tuple(
+        torch.triu_indices(
+            row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
+        )
+    )

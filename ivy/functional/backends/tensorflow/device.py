@@ -1,5 +1,8 @@
-"""Collection of TensorFlow general functions, wrapped to fit Ivy syntax and
-signature.
+"""
+Tensorflow device functions.
+
+Collection of TensorFlow general functions, wrapped to fit Ivy syntax
+and signature.
 """
 
 # global
@@ -21,11 +24,14 @@ def _same_device(dev_a, dev_b):
 
 
 def dev(
-    x: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.Tensor, tf.Variable, tf.TensorArray],
     /,
     *,
     as_native: bool = False,
 ) -> Union[ivy.Device, str]:
+    if isinstance(x, tf.TensorArray):
+        # Read the underlying tensor being wrapped to get the device.
+        x = x.stack()
     dv = x.device
     if as_native:
         return dv
@@ -45,7 +51,7 @@ def to_device(
     device = as_native_dev(device)
     current_dev = dev(x)
     if not _same_device(current_dev, device):
-        with tf.device("/" + device.upper()):
+        with tf.device(f"/{device.upper()}"):
             return tf.identity(x)
     return x
 
@@ -66,7 +72,7 @@ def as_ivy_dev(device: str, /):
 def as_native_dev(device: str, /):
     if isinstance(device, str) and "/" in device:
         return device
-    ret = "/" + ivy.Device(device).upper()
+    ret = f"/{ivy.Device(device).upper()}"
     if not ret[-1].isnumeric():
         ret += ":0"
     return ret
@@ -96,9 +102,14 @@ def tpu_is_available() -> bool:
         return False
 
 
+def handle_soft_device_variable(*args, fn, **kwargs):
+    with tf.device(ivy.default_device(as_native=True)):
+        return fn(*args, **kwargs)
+
+
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
-        super(Profiler, self).__init__(save_dir)
+        super().__init__(save_dir)
         self._options = tf.profiler.experimental.ProfilerOptions(
             host_tracer_level=3, python_tracer_level=1, device_tracer_level=1
         )

@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import numpy as np
@@ -6,7 +6,9 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+)
 from . import backend_version
 
 
@@ -15,6 +17,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[np.ndarray] = None,
 ):
     x_dtype = x.dtype
@@ -36,7 +39,6 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x, threshold = ivy.promote_types_of_inputs(x, threshold)
     return np.where(x > threshold, x, 0).astype(x.dtype)
 
 
@@ -44,42 +46,20 @@ thresholded_relu.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def relu6(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def relu6(
+    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.minimum(np.maximum(x, 0, dtype=x.dtype), 6, out=out, dtype=x.dtype)
 
 
 relu6.support_native_out = True
 
 
-def batch_norm(
-    x: np.ndarray,
-    mean: np.ndarray,
-    variance: np.ndarray,
-    /,
-    *,
-    scale: Optional[np.ndarray] = None,
-    offset: Optional[np.ndarray] = None,
-    training: bool = False,
-    eps: float = 1e-5,
-):
-    ndims = len(x.shape)
-    if training:
-        dims = (0, *range(2, ndims))
-        mean = np.mean(x, axis=dims)
-        variance = np.var(x, axis=dims)
-    x = np.transpose(x, (0, *range(2, ndims), 1))
-    inv = 1.0 / np.sqrt(variance + eps)
-    if scale is not None:
-        inv *= scale
-    ret = x * inv.astype(x.dtype, copy=False) + (
-        offset - mean * inv if offset is not None else -mean * inv
-    ).astype(x.dtype)
-    return np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
-
-
-@with_unsupported_dtypes({"1.23.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.1 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
-def logsigmoid(input: np.ndarray) -> np.ndarray:
+def logsigmoid(
+    input: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return -(np.log1p(np.exp(-(input))))
 
 
@@ -94,3 +74,131 @@ def selu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 selu.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def silu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    ret = np.asarray(x * (1 / (1 + np.exp(-x))))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    if not ivy.is_array(x):
+        return ret
+    else:
+        return np.asarray(x * (1 / (1 + np.exp(-x)))).astype(x.dtype)
+
+
+silu.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def elu(
+    x: np.ndarray, /, *, alpha: float = 1.0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    # exp = np.expm1(x)
+    ret = np.where(x > 0, x, np.multiply(alpha, np.expm1(x))).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+elu.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def celu(
+    x: np.ndarray,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return (np.maximum(0, x) + alpha * np.expm1(np.minimum(0, x) / alpha)).astype(
+        x.dtype
+    )
+
+
+@with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, backend_version)
+@_scalar_output_to_0d_array
+def hardtanh(
+    x: np.ndarray,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ret = np.where(x > max_val, max_val, np.where(x < min_val, min_val, x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+hardtanh.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def tanhshrink(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    ret = np.subtract(x, np.tanh(x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+tanhshrink.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def threshold(
+    x: np.ndarray,
+    /,
+    *,
+    threshold: float,
+    value: float,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ret = np.where(x > threshold, x, value)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+threshold.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def softshrink(
+    x: np.ndarray, /, *, lambd: float = 0.5, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    ret = np.where(x > lambd, x - lambd, np.where(x < -lambd, x + lambd, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+softshrink.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def scaled_tanh(
+    x: np.ndarray,
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return alpha * np.tanh(beta * x)
+
+
+@_scalar_output_to_0d_array
+def hardshrink(
+    x: np.ndarray, /, *, lambd: float = 0.5, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    ret = np.where(x > lambd, x, np.where(x < -lambd, x, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+hardshrink.support_native_out = True

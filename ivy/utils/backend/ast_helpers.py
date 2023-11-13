@@ -3,6 +3,7 @@ import os
 import sys
 import traceback
 from ast import parse
+from string import Template
 from importlib.util import spec_from_file_location
 from importlib.abc import Loader, MetaPathFinder
 
@@ -13,7 +14,12 @@ from importlib.abc import Loader, MetaPathFinder
 importlib_module_path = "ivy.utils._importlib"
 importlib_abs_import_fn = "_absolute_import"
 importlib_from_import_fn = "_from_import"
-_unmodified_ivy_path = sys.modules["ivy"].__path__[0].rpartition("/")[0]
+_global_import_template = Template(f"from {importlib_module_path} import $name")
+_local_import_template = Template(
+    "$name = "
+    "ivy.utils.backend.handler._compiled_backends_ids[$ivy_id].utils._importlib.$name"
+)
+_unmodified_ivy_path = sys.modules["ivy"].__path__[0].rpartition(os.path.sep)[0]
 _compiled_modules_cache = {}
 
 
@@ -22,13 +28,11 @@ def _retrive_local_modules():
     # Get Ivy package root
     wd = sys.modules["ivy"].__path__[0]
     for entry in os.scandir(wd):
-        if entry.is_file():
-            if entry.name.endswith(".py"):
-                ret.append(entry.name[:-3])
-                continue
-        if entry.is_dir():
-            if "__init__.py" in os.listdir(wd + "/" + entry.name):
-                ret.append(entry.name)
+        if entry.is_file() and entry.name.endswith(".py"):
+            ret.append(entry.name[:-3])
+            continue
+        if entry.is_dir() and "__init__.py" in os.listdir(f"{wd}/{entry.name}"):
+            ret.append(entry.name)
     return ret
 
 
@@ -47,8 +51,8 @@ def _parse_absolute_fromimport(node: ast.ImportFrom):
         value=ast.Call(
             func=ast.Name(id=importlib_from_import_fn, ctx=ast.Load()),
             args=[
-                ast.Constant(value=node.module),
-                ast.Constant(value=None),
+                ast.Constant(value=node.module, kind=None),
+                ast.Constant(value=None, kind=None),
                 ast.Call(
                     func=ast.Name(id="globals", ctx=ast.Load()), args=[], keywords=[]
                 ),
@@ -72,13 +76,13 @@ def _parse_relative_fromimport(node: ast.ImportFrom):
         value=ast.Call(
             func=ast.Name(id=importlib_from_import_fn, ctx=ast.Load()),
             args=[
-                ast.Constant(value=name),
+                ast.Constant(value=name, kind=None),
                 ast.Name(id="__package__", ctx=ast.Load()),
                 ast.Call(
                     func=ast.Name(id="globals", ctx=ast.Load()), args=[], keywords=[]
                 ),
                 _create_list(to_import),
-                ast.Constant(value=node.level),
+                ast.Constant(value=node.level, kind=None),
             ],
             keywords=[],
         ),
@@ -86,7 +90,7 @@ def _parse_relative_fromimport(node: ast.ImportFrom):
 
 
 def _create_list(elements):
-    _elts = [ast.Constant(value=element) for element in elements]
+    _elts = [ast.Constant(value=element, kind=None) for element in elements]
     return ast.List(elts=_elts, ctx=ast.Load())
 
 
@@ -101,7 +105,7 @@ def _create_fromimport_call(name):
     return ast.Call(
         func=ast.Name(id=importlib_from_import_fn, ctx=ast.Load()),
         args=[
-            ast.Constant(value=name),
+            ast.Constant(value=name, kind=None),
         ],
         keywords=[],
     )
@@ -124,8 +128,8 @@ def _parse_import(node: ast.Import):
                 ast.Call(
                     func=ast.Name(id=importlib_abs_import_fn, ctx=ast.Load()),
                     args=[
-                        ast.Constant(value=node.name),
-                        ast.Constant(value=node.asname),
+                        ast.Constant(value=node.name, kind=None),
+                        ast.Constant(value=node.asname, kind=None),
                         ast.Call(
                             func=ast.Name(id="globals", ctx=ast.Load()),
                             args=[],
@@ -151,6 +155,22 @@ def _create_attrs_from_node(node, attrs=()):
     return last_node
 
 
+def _create_node(stmnt: str):
+    """
+    Create an AST node from a given statement.
+
+    Parameters
+    ----------
+    stmnt
+        The statement to be parsed and represented as an AST node.
+
+    Returns
+    -------
+        The resulting AST node representing the given statement.
+    """
+    return ast.parse(stmnt).body[0]
+
+
 # End AST helpers ##############
 
 
@@ -174,24 +194,34 @@ class ImportTransformer(ast.NodeTransformer):
         else:
             return _parse_relative_fromimport(node)
 
-    def impersonate_import(self, tree: ast.Module):
-        if self.include_ivy_import:
-            tree.body.insert(
-                self.insert_index,
-                ast.ImportFrom(
-                    module=importlib_module_path,
-                    names=[ast.alias(name=importlib_from_import_fn)],
-                    level=0,
-                ),
+    def impersonate_import(self, tree: ast.Module, local_ivy_id=None):
+        if not self.include_ivy_import:
+            return tree
+
+        # Convenient function to insert the parse the AST import statement and insert it
+        def insert_import(node):
+            return tree.body.insert(self.insert_index, _create_node(node))
+
+        if local_ivy_id is None:
+            insert_import(
+                _global_import_template.substitute(name=importlib_abs_import_fn)
             )
-            tree.body.insert(
-                self.insert_index,
-                ast.ImportFrom(
-                    module=importlib_module_path,
-                    names=[ast.alias(name=importlib_abs_import_fn)],
-                    level=0,
-                ),
+            insert_import(
+                _global_import_template.substitute(name=importlib_from_import_fn)
             )
+        else:
+            insert_import(
+                _local_import_template.substitute(
+                    name=importlib_abs_import_fn, ivy_id=local_ivy_id
+                )
+            )
+            insert_import(
+                _local_import_template.substitute(
+                    name=importlib_from_import_fn, ivy_id=local_ivy_id
+                )
+            )
+            insert_import("import ivy")
+
         return tree
 
 
@@ -212,7 +242,7 @@ class IvyPathFinder(MetaPathFinder):
                 filename = os.path.join(entry, name, "__init__.py")
                 submodule_locations = [os.path.join(entry, name)]
             else:
-                filename = os.path.join(entry, name + ".py")
+                filename = os.path.join(entry, f"{name}.py")
                 submodule_locations = None
             if not os.path.exists(filename):
                 continue
@@ -229,17 +259,19 @@ class IvyLoader(Loader):
     def __init__(self, filename):
         self.filename = filename
 
-    def exec_module(self, module):
+    def exec_module(self, module, local_ivy_id=None):
         if self.filename in _compiled_modules_cache:
             compiled_obj = _compiled_modules_cache[self.filename]
         else:
-            with open(self.filename) as f:
+            # enforce UTF-8 for compiling when installed as a package
+            # according to PEP 686
+            with open(self.filename, encoding="utf-8") as f:
                 data = f.read()
 
             ast_tree = parse(data)
             transformer = ImportTransformer()
             transformer.visit(ast_tree)
-            transformer.impersonate_import(ast_tree)
+            transformer.impersonate_import(ast_tree, local_ivy_id)
             ast.fix_missing_locations(ast_tree)
             compiled_obj = compile(ast_tree, filename=self.filename, mode="exec")
             _compiled_modules_cache[self.filename] = compiled_obj

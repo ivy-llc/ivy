@@ -1,76 +1,88 @@
-.. include:: ../README.rst
+.. title:: Home
 
-.. toctree::
-    :hidden:
-    :maxdepth: -1
-    :caption: Overview
-
-    overview/background.rst
-    overview/design.rst
-    overview/related_work.rst
-    overview/extensions.rst
-    overview/contributing.rst
-    overview/deep_dive.rst
-    overview/faq.rst
-    overview/glossary.rst
+.. include:: ../README.md
+  :parser: myst_parser.sphinx_
 
 
 .. toctree::
-    :hidden:
-    :maxdepth: -1
-    :caption: Compiling and Transpiling
+  :hidden:
+  :maxdepth: -1
 
-    compiler/compiler.rst
-    compiler/transpiler.rst
+  Home <self>
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: The Basics
+
+  overview/get_started.rst
+  demos/quickstart.ipynb
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Demos
+
+  demos/learn_the_basics.rst
+  demos/guides.rst
+  demos/examples_and_demos.rst
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Background
+
+  overview/motivation.rst
+  overview/related_work.rst
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Contributors
+
+  overview/design.rst
+  overview/contributing.rst
+  overview/deep_dive.rst
+  overview/glossary.rst
+  overview/faq.rst
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: API Reference
+
+  overview/one_liners.rst
 
 
 .. autosummary::
   :toctree: docs/functional
   :template: top_functional_toc.rst
   :recursive:
-  :include:
+  :hide-table:
 
   ivy.functional.ivy
 
 
 .. autosummary::
   :toctree: docs/data_classes
-  :caption: Data classes
-  :template: top_data_module.rst
+  :template: top_data_toc.rst
   :recursive:
   :hide-table:
 
-  ivy.data_classes.array
-  ivy.data_classes.container
+  ivy.data_classes
+
 
 .. autosummary::
-  :toctree: docs/framework
-  :template: top_level_toc.rst
+  :toctree: docs
+  :template: top_ivy_toc.rst
   :recursive:
-  :include:
+  :hide-table:
 
   ivy.stateful
-
-.. autosummary::
-  :toctree: docs/nested-array
-  :template: top_level_toc.rst
-  :recursive:
-  :include:
-
-  ivy.nested_array
-
-.. autosummary::
-  :toctree: docs/utilities
-  :template: top_level_toc.rst
-  :recursive:
-  :include:
-
   ivy.utils
-
-.. autosummary::
-  :toctree: docs/testing
-  :template: top_level_toc.rst
-  :recursive:
-  :include:
-
   ivy_tests.test_ivy.helpers

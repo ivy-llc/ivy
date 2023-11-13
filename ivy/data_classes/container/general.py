@@ -16,16 +16,16 @@ class _ContainerWithGeneral(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        exclusive: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        exclusive: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.is_native_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.is_native_array also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.is_native_array. This method simply
+        wraps the function, and so the docstring for ivy.is_native_array also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -60,7 +60,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: false,
             b: true
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "is_native_array",
@@ -76,16 +75,16 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        exclusive: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        exclusive: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.is_native_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.ivy.is_native_array also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.is_native_array. This method simply
+        wraps the function, and so the docstring for ivy.ivy.is_native_array also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -117,8 +116,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.is_native_array()
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
         """
         return self._static_is_native_array(
@@ -135,16 +134,16 @@ class _ContainerWithGeneral(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        exclusive: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        exclusive: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.is_ivy_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.is_ivy_array also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.is_ivy_array. This method simply
+        wraps the function, and so the docstring for ivy.is_ivy_array also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -192,16 +191,16 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        exclusive: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        exclusive: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.is_native_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.ivy.is_native_array also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.is_native_array. This method simply
+        wraps the function, and so the docstring for ivy.ivy.is_native_array also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -231,8 +230,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.is_ivy_array()
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
         """
         return self._static_is_ivy_array(
@@ -249,16 +248,16 @@ class _ContainerWithGeneral(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        exclusive: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        exclusive: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.is_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.ivy.is_array also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.is_array. This method simply wraps
+        the function, and so the docstring for ivy.ivy.is_array also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -311,16 +310,16 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        exclusive: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        exclusive: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.is_array.
-        This method simply wraps the function, and so the docstring for
-        ivy.is_array also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.is_array. This method simply wraps
+        the function, and so the docstring for ivy.is_array also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -352,8 +351,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.is_array()
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: True,
+            b: True
         }
         """
         return self._static_is_array(
@@ -368,20 +367,20 @@ class _ContainerWithGeneral(ContainerBase):
     @staticmethod
     def _static_clip_vector_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        max_norm: float,
+        max_norm: Union[float, ivy.Container],
         /,
         *,
-        p: float = 2.0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        p: Union[float, ivy.Container] = 2.0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.clip_vector_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_vector_norm
-        also applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -425,7 +424,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 0.894, 1.79]),
             b: ivy.array([0.849, 1.13, 1.41])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "clip_vector_norm",
@@ -441,20 +439,20 @@ class _ContainerWithGeneral(ContainerBase):
 
     def clip_vector_norm(
         self: ivy.Container,
-        max_norm: float,
+        max_norm: Union[float, ivy.Container],
         /,
         *,
-        p: float = 2.0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        p: Union[float, ivy.Container] = 2.0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.clip_vector_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_vector_norm
-        also applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -499,7 +497,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 0.667, 1.33]),
             b: ivy.array([0.5, 0.667, 0.833])
         }
-
         """
         return self._static_clip_vector_norm(
             self,
@@ -518,18 +515,18 @@ class _ContainerWithGeneral(ContainerBase):
         val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        ensure_in_backend: bool = False,
-        keep_input_dtype: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        ensure_in_backend: Union[bool, ivy.Container] = False,
+        keep_input_dtype: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.inplace_update. This method
-        simply wraps the function, and so the docstring for ivy.inplace_update
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.inplace_update. This method simply
+        wraps the function, and so the docstring for ivy.inplace_update also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -563,7 +560,6 @@ class _ContainerWithGeneral(ContainerBase):
         -------
         ret
             An array with the vector norm downscaled to the max norm if needed.
-
         """
         # inplace update the leaves
         cont = x
@@ -588,18 +584,18 @@ class _ContainerWithGeneral(ContainerBase):
         val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        ensure_in_backend: bool = False,
-        keep_input_dtype: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        ensure_in_backend: Union[bool, ivy.Container] = False,
+        keep_input_dtype: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.inplace_update. This method
-        simply wraps the function, and so the docstring for ivy.inplace_update
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.inplace_update. This method simply
+        wraps the function, and so the docstring for ivy.inplace_update also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -646,7 +642,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([1]),
             b: ivy.array([2])
         }
-
         """
         return self._static_inplace_update(
             self,
@@ -666,15 +661,15 @@ class _ContainerWithGeneral(ContainerBase):
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.inplace_decrement. This method
-        simply wraps the function, and so the docstring for ivy.inplace_decrement
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.inplace_decrement. This method simply
+        wraps the function, and so the docstring for ivy.inplace_decrement also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -702,6 +697,7 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Decrement by a value
+
         >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))
         >>> y = ivy.inplace_decrement(x, 1.5)
         >>> print(y)
@@ -711,6 +707,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         Decrement by a Container
+
         >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> z = ivy.inplace_decrement(x, y)
@@ -728,7 +725,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([1., 1.5, 3.]),
             b: ivy.array([0., 50., 3.5])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "inplace_decrement",
@@ -745,15 +741,15 @@ class _ContainerWithGeneral(ContainerBase):
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.inplace_decrement. This method
-        simply wraps the function, and so the docstring for ivy.inplace_decrement
-        also applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.inplace_decrement also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -791,7 +787,6 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([-0.5, -2.3, -2]),
             c: ivy.array([-6.7, -7.4, 5.5])
         }
-
         """
         return self._static_inplace_decrement(
             self,
@@ -808,15 +803,15 @@ class _ContainerWithGeneral(ContainerBase):
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.inplace_increment. This method
-        simply wraps the function, and so the docstring for ivy.inplace_increment
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.inplace_increment. This method simply
+        wraps the function, and so the docstring for ivy.inplace_increment also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -844,6 +839,7 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Increment by a value
+
         >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))
         >>> y = ivy.inplace_increment(x, 1.5)
         >>> print(y)
@@ -853,6 +849,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         Increment by a Container
+
         >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> z = ivy.inplace_increment(x, y)
@@ -870,7 +867,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([5., 12.5, 17.]),
             b: ivy.array([0., 100., 7.5])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "inplace_increment",
@@ -887,15 +883,15 @@ class _ContainerWithGeneral(ContainerBase):
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.inplace_increment.
-        This method wraps the function, and so the docstring for
-        ivy.inplace_increment also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.inplace_increment. This method
+        wraps the function, and so the docstring for ivy.inplace_increment also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -933,7 +929,6 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([3.5, 1.7, 2.]),
             c: ivy.array([-2.7, -3.4, 9.5])
         }
-
         """
         return self._static_inplace_increment(
             self,
@@ -949,15 +944,15 @@ class _ContainerWithGeneral(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.assert_supports_inplace. This
-        method simply wraps the function, and so the docstring for
-        ivy.assert_supports_inplace also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.assert_supports_inplace. This method
+        simply wraps the function, and so the docstring for ivy.assert_supports_inplace
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -993,10 +988,10 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.assert_supports_inplace. This
@@ -1027,23 +1022,13 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :class:`ivy.Container` input and default backend set as `numpy`:
-
+        >>> ivy.set_backend("numpy")
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
         >>> print(x.assert_supports_inplace())
         {
             a: True,
             b: True
         }
-
-        With :class:`ivy.Container` input and default backend set as `jax`:
-
-        >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
-        >>> print(x.assert_supports_inplace())
-        IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types
-        with jax backend
-        
         """
         return self._static_assert_supports_inplace(
             self,
@@ -1056,12 +1041,12 @@ class _ContainerWithGeneral(ContainerBase):
     @staticmethod
     def _static_all_equal(
         x1: ivy.Container,
-        *xs: Iterable[Any],
-        equality_matrix: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        *xs: Union[Iterable[Any], ivy.Container],
+        equality_matrix: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.all_equal. This method simply wraps
@@ -1120,7 +1105,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([True, True, True, True]),
             b: ivy.array([True, True, False, False])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "all_equal",
@@ -1135,17 +1119,17 @@ class _ContainerWithGeneral(ContainerBase):
 
     def all_equal(
         self: ivy.Container,
-        *xs: Iterable[Any],
-        equality_matrix: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        *xs: Union[Iterable[Any], ivy.Container],
+        equality_matrix: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.all_equal.
-        This method simply wraps the function, and so the docstring for
-        ivy.all_equal also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.all_equal. This method simply wraps
+        the function, and so the docstring for ivy.all_equal also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1219,7 +1203,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: False,
             b: True
         }
-
         """
         return self._static_all_equal(
             self,
@@ -1234,21 +1217,21 @@ class _ContainerWithGeneral(ContainerBase):
     @staticmethod
     def _static_fourier_encode(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        max_freq: Union[float, ivy.Array, ivy.NativeArray],
+        max_freq: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        num_bands: int = 4,
-        linear: bool = False,
-        flatten: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        num_bands: Union[int, ivy.Container] = 4,
+        linear: Union[bool, ivy.Container] = False,
+        flatten: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.fourier_encode. This method
-        simply wraps the function, and so the docstring for ivy.fourier_encode
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.fourier_encode. This method simply
+        wraps the function, and so the docstring for ivy.fourier_encode also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1326,21 +1309,21 @@ class _ContainerWithGeneral(ContainerBase):
 
     def fourier_encode(
         self: ivy.Container,
-        max_freq: Union[float, ivy.Array, ivy.NativeArray],
+        max_freq: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        num_bands: int = 4,
-        linear: bool = False,
-        flatten: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        num_bands: Union[int, ivy.Container] = 4,
+        linear: Union[bool, ivy.Container] = False,
+        flatten: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.fourier_encode. This method
-        simply wraps the function, and so the docstring for ivy.fourier_encode
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.fourier_encode. This method simply
+        wraps the function, and so the docstring for ivy.fourier_encode also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1386,8 +1369,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = x.fourier_encode(y)
         >>> print(z)
         {
-            a: (<classivy.array.array.Array>shape=[2,9]),
-            b: (<classivy.array.array.Array>shape=[2,9])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 9]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 9])
         }
 
         >>> x = ivy.Container(a = ivy.array([3,10]),
@@ -1396,14 +1379,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = x.fourier_encode(y,num_bands=3)
         >>> print(z)
         {
-            a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,
-                    3.6739404e-16,-1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
-                    [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15,
-                    -1.2246468e-15, 1.0000000e+00,  1.0000000e+00,  1.0000000e+00]]),
-            b: ivy.array([[4.00000000e+00, -4.89858720e-16, -4.89858720e-16,
-                    -4.89858720e-16, 1.00000000e+00,  1.00000000e+00,  1.00000000e+00],
-                    [ 8.00000000e+00, -9.79717439e-16, -9.79717439e-16, -9.79717439e-16,
-                    1.00000000e+00,  1.00000000e+00,  1.00000000e+00]])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 7]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 7])
         }
         """
         return self._static_fourier_encode(
@@ -1424,18 +1401,18 @@ class _ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = -1,
-        batch_dims: int = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Union[int, ivy.Container] = -1,
+        batch_dims: Union[int, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.gather. This method simply
-        wraps the function, and so the docstring for ivy.gather also applies to
-        this method with minimal changes.
+        ivy.Container static method variant of ivy.gather. This method simply wraps the
+        function, and so the docstring for ivy.gather also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -1495,7 +1472,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 1.]),
             b: ivy.array([4., 5.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "gather",
@@ -1515,18 +1491,18 @@ class _ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = -1,
-        batch_dims: int = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Union[int, ivy.Container] = -1,
+        batch_dims: Union[int, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gather. This method simply
-        wraps the function, and so the docstring for ivy.gather also applies to
-        this method with minimal changes.
+        ivy.Container instance method variant of ivy.gather. This method simply wraps
+        the function, and so the docstring for ivy.gather also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1572,7 +1548,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0., 1.]),
             b: ivy.array([5., 6.])
         }
-
         """
         return self._static_gather(
             self,
@@ -1591,15 +1566,15 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        include_infs: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        include_infs: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        Determine whether arrays in the container contain any nans, as well as infs
-        or -infs if specified.
+        Determine whether arrays in the container contain any nans, as well as infs or
+        -infs if specified.
 
         Parameters
         ----------
@@ -1648,15 +1623,15 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        include_infs: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        include_infs: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        Determine whether arrays in the container contain any nans, as well as infs
-        or -infs if specified.
+        Determine whether arrays in the container contain any nans, as well as infs or
+        -infs if specified.
 
         Parameters
         ----------
@@ -1681,13 +1656,12 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
-        >>> y = x.has_nans(x)
+        >>> y = x.has_nans()
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
-
         """
         return self._static_has_nans(
             self,
@@ -1705,11 +1679,11 @@ class _ContainerWithGeneral(ContainerBase):
         /,
         shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         *,
-        reduction: str = "sum",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        reduction: Union[str, ivy.Container] = "sum",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1781,7 +1755,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
             b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "scatter_nd",
@@ -1802,18 +1775,17 @@ class _ContainerWithGeneral(ContainerBase):
         /,
         shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         *,
-        reduction: str = "sum",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        reduction: Union[str, ivy.Container] = "sum",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.scatter_nd.
-        This method simply wraps the function, and so the docstring
-        for ivy.scatter_nd also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.scatter_nd. This method simply
+        wraps the function, and so the docstring for ivy.scatter_nd also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1897,12 +1869,12 @@ class _ContainerWithGeneral(ContainerBase):
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        size: Optional[int] = None,
-        reduction: str = "sum",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        size: Optional[Union[int, ivy.Container]] = None,
+        reduction: Union[str, ivy.Container] = "sum",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1960,19 +1932,18 @@ class _ContainerWithGeneral(ContainerBase):
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        size: Optional[int] = None,
-        reduction: str = "sum",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        size: Optional[Union[int, ivy.Container]] = None,
+        reduction: Union[str, ivy.Container] = "sum",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.scatter_flat.
-        This method simply wraps the function, and so the docstring
-        for ivy.scatter_flat also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.scatter_flat. This method simply
+        wraps the function, and so the docstring for ivy.scatter_flat also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -2009,15 +1980,15 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` input:
-        >>> indices = ivy.Container(a=ivy.array([1, 0, 1, 0, 2, 2, 3, 3]), \
-                            b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))
-        >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]), \
-                            b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
+        >>> indices = ivy.Container(a=ivy.array([1, 0, 1, 0, 2, 2, 3, 3]),
+        ...                 b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))
+        >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]),
+        ...                 b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
         >>> size = 8
         >>> print(ivy.scatter_flat(indices, updates, size=size))
         {
-            a: ivy.array([4, 9, 5, 9, 0, 0, 0, 0]),
-            b: ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
+            a: ivy.array([2, 0, 2, 8, 0, 0, 0, 0]),
+            b: ivy.array([2, 7, 2, 3, 0, 0, 0, 0])
         }
         """
         return self._static_scatter_flat(
@@ -2038,14 +2009,15 @@ class _ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        batch_dims: int = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        batch_dims: Union[int, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Gather slices from all container params into a arrays with shape specified by
+        """
+        Gather slices from all container params into a arrays with shape specified by
         indices.
 
         Parameters
@@ -2086,7 +2058,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array(30.),
             b: ivy.array([0., 100., 200.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "gather_nd",
@@ -2105,17 +2076,16 @@ class _ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        batch_dims: int = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        batch_dims: Union[int, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gather_nd.
-        This method simply wraps the function, and so the docstring
-        for ivy.gather_nd also applies to this method
+        ivy.Container instance method variant of ivy.gather_nd. This method simply wraps
+        the function, and so the docstring for ivy.gather_nd also applies to this method
         with minimal changes.
 
         Parameters
@@ -2176,18 +2146,19 @@ class _ContainerWithGeneral(ContainerBase):
     @staticmethod
     def _static_einops_reduce(
         x: ivy.Container,
-        pattern: str,
-        reduction: str,
+        pattern: Union[str, ivy.Container],
+        reduction: Union[str, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
-        **axes_lengths: Dict[str, int],
+        **axes_lengths: Union[Dict[str, int], ivy.Container],
     ) -> ivy.Container:
-        """Perform einops reduce operation on each sub array in the container.
+        """
+        Perform einops reduce operation on each sub array in the container.
 
         Parameters
         ----------
@@ -2231,7 +2202,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([-2.29333329, 10.53000069]),
             b: ivy.array([-1.39666676, 6.20666695])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "einops_reduce",
@@ -2248,21 +2218,21 @@ class _ContainerWithGeneral(ContainerBase):
 
     def einops_reduce(
         self: ivy.Container,
-        pattern: str,
-        reduction: Union[str, Callable],
+        pattern: Union[str, ivy.Container],
+        reduction: Union[str, Callable, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
-        **axes_lengths: Dict[str, int],
+        **axes_lengths: Union[Dict[str, int], ivy.Container],
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.einops_reduce. This method simply
-        wraps the function, and so the docstring for ivy.einops_reduce also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.einops_reduce also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -2316,7 +2286,6 @@ class _ContainerWithGeneral(ContainerBase):
                         [7, 11],
                         [16, 3]])
         }
-
         """
         return self._static_einops_reduce(
             self,
@@ -2333,17 +2302,18 @@ class _ContainerWithGeneral(ContainerBase):
     @staticmethod
     def _static_einops_repeat(
         x: ivy.Container,
-        pattern: str,
+        pattern: Union[str, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
-        **axes_lengths: Dict[str, int],
+        **axes_lengths: Union[Dict[str, int], ivy.Container],
     ) -> ivy.Container:
-        """Perform einops repeat operation on each sub array in the container.
+        """
+        Perform einops repeat operation on each sub array in the container.
 
         Parameters
         ----------
@@ -2387,7 +2357,6 @@ class _ContainerWithGeneral(ContainerBase):
                         [1, 2],
                         [4, 5]])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "einops_repeat",
@@ -2403,20 +2372,20 @@ class _ContainerWithGeneral(ContainerBase):
 
     def einops_repeat(
         self: ivy.Container,
-        pattern: str,
+        pattern: Union[str, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
-        **axes_lengths: Dict[str, int],
+        **axes_lengths: Union[Dict[str, int], ivy.Container],
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.einops_repeat. This method simply
-        wraps the function, and so the docstring for ivy.einops_repeat also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.einops_repeat also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -2458,7 +2427,6 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([[1, 1, 2, 2],
                           [4, 4, 5, 5]])
         }
-
         """
         return self._static_einops_repeat(
             self,
@@ -2476,11 +2444,11 @@ class _ContainerWithGeneral(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        include_infs: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        include_infs: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.value_is_nan. This method simply
@@ -2557,11 +2525,11 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        include_infs: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        include_infs: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.value_is_nan. This method simply
@@ -2632,11 +2600,11 @@ class _ContainerWithGeneral(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        copy: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.to_numpy. This method simply wraps
@@ -2688,7 +2656,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: array([1., 0., 0., 1.], dtype=float32),
             b: array([1, 1, -1, 0], dtype=int32)
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "to_numpy",
@@ -2704,11 +2671,11 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        copy: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.to_numpy. This method simply wraps
@@ -2763,7 +2730,6 @@ class _ContainerWithGeneral(ContainerBase):
                     [1, 0, 1],
                     [1, 1, 1]], dtype=int32)
         }
-
         """
         return self._static_to_numpy(
             self,
@@ -2779,10 +2745,10 @@ class _ContainerWithGeneral(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.to_scalar. This method simply wraps
@@ -2836,10 +2802,10 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.to_scalar. This method simply wraps
@@ -2896,15 +2862,15 @@ class _ContainerWithGeneral(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.to_list. This method simply wraps
-        the function, and so the docstring for ivy.to_list also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.to_list. This method simply wraps the
+        function, and so the docstring for ivy.to_list also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -2935,7 +2901,6 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_to_list(x)
         >>> print(y)
         {a:[0,1,2]}
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "to_list",
@@ -2950,10 +2915,10 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.to_list. This method simply wraps
@@ -2990,7 +2955,6 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.to_list()
         >>> print(y)
         {a:[0,1,2]}
-
         """
         return self._static_to_list(
             self,
@@ -3009,15 +2973,15 @@ class _ContainerWithGeneral(ContainerBase):
         min_denominator: Optional[
             Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.stable_divide. This method simply
-        wraps the function, and so the docstring for ivy.stable_divide also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.stable_divide also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -3027,7 +2991,7 @@ class _ContainerWithGeneral(ContainerBase):
             Container of the denominators of the division.
         min_denominator
             Container of the minimum denominator to use,
-            use global ivy._MIN_DENOMINATOR by default.
+            use global ivy.min_denominator by default.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -3113,15 +3077,15 @@ class _ContainerWithGeneral(ContainerBase):
         min_denominator: Optional[
             Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.stable_divide. This method
-        simply wraps the function, and so the docstring for ivy.stable_divide
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.stable_divide. This method simply
+        wraps the function, and so the docstring for ivy.stable_divide also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -3131,7 +3095,7 @@ class _ContainerWithGeneral(ContainerBase):
             Container of the denominators of the division.
         min_denominator
             Container of the minimum denominator to use,
-            use global ivy._MIN_DENOMINATOR by default.
+            use global ivy.min_denominator by default.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -3181,7 +3145,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([0.5, 0.667]),
             b: ivy.array([0.75, 0.8])
         }
-
         """
         return self._static_stable_divide(
             self,
@@ -3199,16 +3162,16 @@ class _ContainerWithGeneral(ContainerBase):
         exponent: Union[Number, ivy.Array, ivy.Container],
         /,
         *,
-        min_base: Optional[float] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        min_base: Optional[Union[float, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.stable_pow. This method
-        simply wraps the function, and so the docstring for ivy.stable_pow also
-        applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.stable_pow. This method simply wraps
+        the function, and so the docstring for ivy.stable_pow also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -3217,7 +3180,7 @@ class _ContainerWithGeneral(ContainerBase):
         exponent
             Container of the exponent.
         min_base
-            The minimum base to use, use global ivy._MIN_BASE by default.
+            The minimum base to use, use global ivy.min_base by default.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -3236,6 +3199,41 @@ class _ContainerWithGeneral(ContainerBase):
             A container of elements containing the new items following the
             numerically stable power.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = ivy.Container.stable_pow(x, 2)
+        >>> print(y)
+        {
+            a: ivy.array([4.00004, 16.00008]),
+            b: ivy.array([36.00012, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = ivy.Container.stable_pow(x, 2)
+        >>> print(y)
+        {
+            a: ivy.array(16.00008),
+            b: ivy.array(64.00016)
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = ivy.asarray([1, 2])
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([4.00001, 16.00008]),
+            b: ivy.array([8.00001, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = ivy.Container(a=4, b=8)
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([16.00032, 256.00256]),
+            b: ivy.array([1679638.395, 16777383.77])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "stable_pow",
@@ -3253,16 +3251,16 @@ class _ContainerWithGeneral(ContainerBase):
         exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        min_base: Optional[float] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        min_base: Optional[Union[float, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.stable_pow. This method
-        simply wraps the function, and so the docstring for ivy.stable_pow
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.stable_pow. This method simply
+        wraps the function, and so the docstring for ivy.stable_pow also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -3271,7 +3269,7 @@ class _ContainerWithGeneral(ContainerBase):
         exponent
             Container of the exponent.
         min_base
-            The minimum base to use, use global ivy._MIN_BASE by default.
+            The minimum base to use, use global ivy.min_base by default.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -3290,6 +3288,41 @@ class _ContainerWithGeneral(ContainerBase):
             A container of elements containing the new items following the
             numerically stable power.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = x.stable_pow(2)
+        >>> print(y)
+        {
+            a: ivy.array([4.00004, 16.00008]),
+            b: ivy.array([36.00012, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = x.stable_pow(2)
+        >>> print(y)
+        {
+            a: ivy.array(16.00008),
+            b: ivy.array(64.00016)
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = ivy.asarray([1, 2])
+        >>> z = x.stable_pow(y)
+        >>> print(z)
+        {
+            a: ivy.array([4.00001, 16.00008]),
+            b: ivy.array([8.00001, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = ivy.Container(a=4, b=8)
+        >>> z = x.stable_pow(y)
+        >>> print(z)
+        {
+            a: ivy.array([16.00032, 256.00256]),
+            b: ivy.array([1679638.395, 16777383.77])
+        }
         """
         return self._static_stable_pow(
             self,
@@ -3304,20 +3337,20 @@ class _ContainerWithGeneral(ContainerBase):
     @staticmethod
     def _static_einops_rearrange(
         x: ivy.Container,
-        pattern: str,
+        pattern: Union[str, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
-        **axes_lengths: Dict[str, int],
+        **axes_lengths: Union[Dict[str, int], ivy.Container],
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.einops_rearrange. This method
-        simply wraps the function, and so the docstring for ivy.einops_rearrange
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.einops_rearrange. This method simply
+        wraps the function, and so the docstring for ivy.einops_rearrange also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -3377,7 +3410,6 @@ class _ContainerWithGeneral(ContainerBase):
         {
             a: (<class ivy.array.array.Array> shape=[4, 3])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "einops_rearrange",
@@ -3393,20 +3425,20 @@ class _ContainerWithGeneral(ContainerBase):
 
     def einops_rearrange(
         self: ivy.Container,
-        pattern: str,
+        pattern: Union[str, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
-        **axes_lengths: Dict[str, int],
+        **axes_lengths: Union[Dict[str, int], ivy.Container],
     ):
         """
         ivy.Container instance method variant of ivy.einops_rearrange. This method
-        simply wraps the function, and so the docstring for ivy.einops_rearrange
-        also applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.einops_rearrange also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3456,16 +3488,16 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.einops_rearrange("c h w -> c (h w)")
         >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[2, 6])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 6])
         }
 
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3, 4, 5, 6],
         ...               [7, 8, 9, 10, 11, 12]]))
         >>> y = x.einops_rearrange("c (h w) -> (c h) w", h=2, w=3)
+        >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[4, 3])
+            a: (<class ivy.data_classes.array.array.Array> shape=[4, 3])
         }
-
         """
         return self._static_einops_rearrange(
             self,
@@ -3481,20 +3513,20 @@ class _ContainerWithGeneral(ContainerBase):
     @staticmethod
     def _static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        max_norm: float,
+        max_norm: Union[float, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        p: float = 2.0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        p: Union[float, ivy.Container] = 2.0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.clip_matrix_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_matrix_norm
-        also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.clip_matrix_norm. This method simply
+        wraps the function, and so the docstring for ivy.clip_matrix_norm also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -3536,7 +3568,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([[0., 0.894, 1.79]]),
             b: ivy.array([[0.849, 1.13, 1.41]])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "clip_matrix_norm",
@@ -3552,20 +3583,20 @@ class _ContainerWithGeneral(ContainerBase):
 
     def clip_matrix_norm(
         self: ivy.Container,
-        max_norm: float,
+        max_norm: Union[float, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        p: float = 2.0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        p: Union[float, ivy.Container] = 2.0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.clip_matrix_norm. This method
-        simply wraps the function, and so the docstring for ivy.clip_matrix_norm
-        also applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.clip_matrix_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3607,7 +3638,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: ivy.array([[0., 1., 2.]]),
             b: ivy.array([[1.2, 1.6, 2.]])
         }
-
         """
         return self._static_clip_matrix_norm(
             self,
@@ -3625,10 +3655,10 @@ class _ContainerWithGeneral(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.supports_inplace_updates. This method
@@ -3658,7 +3688,6 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             An ivy.Container instance of bool values.
             True if nodes of x support in-place operations. False otherwise.
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "supports_inplace_updates",
@@ -3673,15 +3702,15 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.supports_inplace_updates.
-        This method simply wraps the static function, and so the docstring for
-        the static variant also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.supports_inplace_updates. This
+        method simply wraps the static function, and so the docstring for the static
+        variant also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3728,7 +3757,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: False,
             b: False
         }
-
         """
         return _ContainerWithGeneral._static_supports_inplace_updates(
             self,
@@ -3743,16 +3771,16 @@ class _ContainerWithGeneral(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        as_array: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        as_array: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.get_num_dims. This method
-        simply wraps the function, and so the docstring for ivy.get_num_dims
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.get_num_dims. This method simply
+        wraps the function, and so the docstring for ivy.get_num_dims also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -3820,16 +3848,16 @@ class _ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        as_array: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        as_array: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.get_num_dims. This method
-        simply wraps the function, and so the docstring for ivy.get_num_dims
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.get_num_dims. This method simply
+        wraps the function, and so the docstring for ivy.get_num_dims also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -3898,15 +3926,15 @@ class _ContainerWithGeneral(ContainerBase):
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.array_equal. This method
-        simply wraps the function, and so the docstring for ivy.array_equal
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.array_equal. This method simply
+        wraps the function, and so the docstring for ivy.array_equal also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -3947,7 +3975,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: true,
             b: false
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "array_equal",
@@ -3964,15 +3991,15 @@ class _ContainerWithGeneral(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.array_equal. This method
-        simply wraps the function, and so the docstring for ivy.array_equal
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.array_equal. This method simply
+        wraps the function, and so the docstring for ivy.array_equal also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -4005,15 +4032,25 @@ class _ContainerWithGeneral(ContainerBase):
         >>> b = ivy.array([[-2., 1.], [1. ,2.]])
         >>> c = ivy.array([[0., 1.], [1. ,0.]])
         >>> d = ivy.array([[2., 1.], [1. ,2.]])
-        >>> a0 = ivy.Container(a = a, b = b)
-        >>> a1 = ivy.Container(a = c, b = d)
-        >>> y = a0.array_equal(a1)
+        >>> a1 = ivy.Container(a = a, b = b)
+        >>> a2 = ivy.Container(a = c, b = d)
+        >>> y = a1.array_equal(a2)
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
 
+        >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),
+                               b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),
+                               b=ivy.array([1, 2, 3]))
+        >>> y = x1.array_equal(x2)
+        >>> print(y)
+        {
+            a: False,
+            b: True
+        }
         """
         return _ContainerWithGeneral._static_array_equal(
             self,
@@ -4030,12 +4067,13 @@ class _ContainerWithGeneral(ContainerBase):
         test_elements: ivy.Container,
         /,
         *,
-        assume_unique: bool = False,
-        invert: bool = False,
+        assume_unique: Union[bool, ivy.Container] = False,
+        invert: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.isin. This method simply
-        wraps the function, and so the docstring for ivy.isin also applies to
-        this method with minimal changes.
+        """
+        Container instance method variant of ivy.isin. This method simply wraps the
+        function, and so the docstring for ivy.isin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -4079,12 +4117,13 @@ class _ContainerWithGeneral(ContainerBase):
         test_elements: ivy.Container,
         /,
         *,
-        assume_unique: bool = False,
-        invert: bool = False,
+        assume_unique: Union[bool, ivy.Container] = False,
+        invert: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """Container instance method variant of ivy.isin. This method simply
-        wraps the function, and so the docstring for ivy.isin also applies to
-        this method with minimal changes.
+        """
+        Container instance method variant of ivy.isin. This method simply wraps the
+        function, and so the docstring for ivy.isin also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -4117,4 +4156,228 @@ class _ContainerWithGeneral(ContainerBase):
         """
         return self.static_isin(
             self, test_elements, assume_unique=assume_unique, invert=invert
+        )
+
+    @staticmethod
+    def static_itemsize(
+        x: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """
+        Container instance method variant of ivy.itemsize. This method simply wraps the
+        function, and so the docstring for ivy.itemsize also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+           The input container.
+
+        Returns
+        -------
+        ret
+            Integers specifying the element size in bytes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1,2,3], dtype=ivy.float64),\
+                                b=ivy.array([1,2,3], dtype=ivy.complex128))
+        >>> ivy.itemsize(x)
+        ivy.Container(a=8, b=16)
+        """
+        return ContainerBase.cont_multi_map_in_function("itemsize", x)
+
+    def itemsize(
+        self: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """
+        Container instance method variant of ivy.itemsize. This method simply wraps the
+        function, and so the docstring for ivy.itemsize also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+           The input container.
+
+        Returns
+        -------
+        ret
+            Integers specifying the element size in bytes.
+        """
+        return self.static_itemsize(self)
+
+    @staticmethod
+    def static_strides(
+        x: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """
+        Container instance method variant of ivy.strides. This method simply wraps the
+        function, and so the docstring for ivy.strides also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+           The input container.
+
+        Returns
+        -------
+        ret
+            A tuple containing the strides.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1, 5, 9], [2, 6, 10]]),\
+                                b=ivy.array([[1, 2, 3, 4], [5, 6, 7, 8]]))
+        >>> ivy.strides(x)
+        ivy.Container(a=(4, 12), b=(16, 4))
+        """
+        return ContainerBase.cont_multi_map_in_function("strides", x)
+
+    def strides(
+        self: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """
+        Container instance method variant of ivy.strides. This method simply wraps the
+        function, and so the docstring for ivy.strides also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+           The input container.
+
+        Returns
+        -------
+        ret
+            A tuple containing the strides.
+        """
+        return self.static_strides(self)
+
+    @staticmethod
+    def _static_exists(
+        x: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.exists. This method simply wraps
+        the function, and so the docstring for ivy.exists also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            A boolean container detailing if any of the leaf nodes are None.
+            True if not None, False if None.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0,4,5]), b=ivy.array([2,2,0]))
+        >>> y = x._static_exists(x)
+        >>> print(y)
+        { a: True, b: True }
+
+        >>> x = ivy.Container(a=[1,2], b=None)
+        >>> y = x._static_exists(x)
+        >>> print(y)
+        { a: True, b: False }
+
+        >>> x = ivy.Container(a={"d": 1, "c": 3}, b={"d": 20, "c": None})
+        >>> y = x._static_exists(x)
+        >>> print(y)
+        { a: { c: True, d: True }, b: { c: False, d: True } }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "exists",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def exists(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.exists. This method simply wraps
+        the function, and so the docstring for ivy.exists also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            A boolean container detailing if any of the leaf nodes are None.
+            True if not None, False if None.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[1,2,3,4], b=[])
+        >>> y = x.exists()
+        >>> print(y)
+        { a: True, b: True }
+
+        >>> x = ivy.Container(a=None, b=[1,2])
+        >>> y = x.exists()
+        >>> print(y)
+        { a: False, b: True }
+
+        >>> x = ivy.Container(a={"d": 1, "c": 3}, b=None)
+        >>> y = x.exists()
+        >>> print(y)
+        { a: { c: True, d: True }, b: False }
+        """
+        return self._static_exists(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )

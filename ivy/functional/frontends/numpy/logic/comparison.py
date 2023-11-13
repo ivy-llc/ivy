@@ -12,6 +12,10 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @handle_numpy_out
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
@@ -34,18 +38,6 @@ def _equal(
         where = ivy.asarray(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def array_equal(a1, a2, equal_nan=False):
-    if not equal_nan:
-        return ivy.array(ivy.array_equal(a1, a2))
-    a1nan, a2nan = ivy.isnan(a1), ivy.isnan(a2)
-
-    if not (a1nan == a2nan).all():
-        return False
-    return ivy.array(ivy.array_equal(a1 * ~a1nan, a2 * ~a2nan))
 
 
 @handle_numpy_out
@@ -168,6 +160,22 @@ def _not_equal(
     return ret
 
 
+# --- Main --- #
+# ------------ #
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def array_equal(a1, a2, equal_nan=False):
+    if not equal_nan:
+        return ivy.array(ivy.array_equal(a1, a2))
+    a1nan, a2nan = ivy.isnan(a1), ivy.isnan(a2)
+
+    if not (a1nan == a2nan).all():
+        return False
+    return ivy.array(ivy.array_equal(a1 * ~a1nan, a2 * ~a2nan))
+
+
 @inputs_to_ivy_arrays
 @from_zero_dim_arrays_to_scalar
 def array_equiv(a1, a2):
@@ -175,4 +183,4 @@ def array_equiv(a1, a2):
         a1 = ivy.broadcast_to(a1, ivy.shape(a2))
     else:
         a2 = ivy.broadcast_to(a2, ivy.shape(a1))
-    return ivy.array(ivy.array_equal(a1, a2))
+    return ivy.array_equal(a1, a2)

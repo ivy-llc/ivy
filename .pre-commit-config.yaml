@@ -1,10 +1,38 @@
 repos:
--   repo: https://github.com/psf/black
-    rev: 22.3.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
     hooks:
-    - id: black
-      language_version: python3
--   repo: https://github.com/pycqa/flake8
-    rev: 4.0.1
+      - id: check-yaml
+      - id: trailing-whitespace
+      - id: check-toml
+      - id: end-of-file-fixer
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 23.11.0
     hooks:
-    - id: flake8
+      - id: black
+        language_version: python3
+        args:
+          - "--preview"
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.2.1
+    hooks:
+      - id: autoflake
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        exclude: ^.*__init__.py$
+  - repo: https://github.com/PyCQA/docformatter
+    rev: v1.7.5
+    hooks:
+      - id: docformatter
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 6.3.0
+    hooks:
+      - id: pydocstyle
+        # Exclude everything in frontends except __init__.py, and func_wrapper.py
+        exclude: 'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'
+  - repo: https://github.com/unifyai/lint-hook
+    rev: 2ea80bc854c7f74b09620151028579083ff92ec2
+    hooks:
+      - id: ivy-lint

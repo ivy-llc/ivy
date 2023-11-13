@@ -3,7 +3,11 @@
 
 	"build": {
 		"dockerfile": "../../docker/DockerfileGPU",
-		"context": "../.."
+		"context": "../..",
+		"args": {
+            "IMAGE_NAME": "unifyai/ivy",
+            "IMAGE_TAG": "latest-gpu"
+        }
 	},
 
 	"runArgs": ["--gpus","all"],
@@ -12,12 +16,15 @@
 		"vscode": {
 			"extensions": [
 				"ms-python.python"
-			]
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/opt/miniconda/envs/multienv/bin/python3"
+			}
 		}
 	},
 
 	"postCreateCommand": {
-        "post_create": "bash .devcontainer/post_create_commands.sh", 
+        "post_create": "bash .devcontainer/post_create_commands.sh",
         "bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
     },
 
@@ -33,11 +40,23 @@
 	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
 
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode",
+	// "remoteUser": "vscode",
     "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installzsh": true,
+			"configurezshasdefaultshell": true,
+			"installohmyzsh": true,
 			"upgradePackages": false
 		},
-        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"moby": true,
+			"installdockerbuildx": true,
+			"version": "20.10",
+			"dockerdashcomposeversion": "v2"
+		},
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"installDirectlyFromGitHubRelease": true,
+			"version": "latest"
+		}
     }
 }

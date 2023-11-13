@@ -14,9 +14,9 @@ class _ArrayWithNorms(abc.ABC):
         normalized_idxs: List[int],
         /,
         *,
-        scale: Optional[Union[ivy.Array, float]] = None,
-        b: Optional[Union[ivy.Array, float]] = None,
-        epsilon: float = ivy._MIN_BASE,
+        scale: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        offset: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        eps: float = 1e-05,
         new_std: float = 1.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -34,11 +34,10 @@ class _ArrayWithNorms(abc.ABC):
         scale
             Learnable gamma variables for elementwise post-multiplication,
             default is ``None``.
-        b
+        offset
             Learnable beta variables for elementwise post-addition, default is ``None``.
-        epsilon
-            small constant to add to the denominator, use global ivy._MIN_BASE by
-            default.
+        eps
+            small constant to add to the denominator. Default is ``1e-05``.
         new_std
             The standard deviation of the new normalized values. Default is 1.
         out
@@ -55,20 +54,19 @@ class _ArrayWithNorms(abc.ABC):
         >>> x = ivy.array([[0.0976, -0.3452,  1.2740],
         ...                   [0.1047,  0.5886,  1.2732],
         ...                   [0.7696, -1.7024, -2.2518]])
-        >>> norm = x.layer_norm([0, 1], epsilon=0.001,
-        ...                     new_std=1.5, scale=0.5, b=[0.5, 0.02, 0.1])
+        >>> norm = x.layer_norm([0, 1], eps=0.001,
+        ...                     new_std=1.5, scale=0.5, offset=[0.5, 0.02, 0.1])
         >>> print(norm)
         ivy.array([[ 0.826, -0.178, 0.981 ],
                    [ 0.831,  0.421, 0.981 ],
                    [ 1.26 , -1.05 , -1.28 ]])
-
         """
         return ivy.layer_norm(
             self,
             normalized_idxs,
             scale=scale,
-            b=b,
-            epsilon=epsilon,
+            offset=offset,
+            eps=eps,
             new_std=new_std,
             out=out,
         )

@@ -1,4 +1,3 @@
-# flake8: noqa
 from . import activations
 from .activations import *
 from . import constants

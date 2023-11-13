@@ -14,12 +14,13 @@ class _ArrayWithLosses(abc.ABC):
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.cross_entropy. This method simply
-        wraps the function, and so the docstring for ivy.cross_entropy also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.cross_entropy. This method simply wraps
+        the function, and so the docstring for ivy.cross_entropy also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -61,11 +62,15 @@ class _ArrayWithLosses(abc.ABC):
         pred: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        epsilon: float = 1e-7,
-        reduction: str = "none",
+        from_logits: bool = False,
+        epsilon: float = 0.0,
+        reduction: str = "mean",
+        pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.binary_cross_entropy. This method
+        """
+        ivy.Array instance method variant of ivy.binary_cross_entropy. This method
         simply wraps the function, and so the docstring for ivy.binary_cross_entropy
         also applies to this method with minimal changes.
 
@@ -75,13 +80,25 @@ class _ArrayWithLosses(abc.ABC):
             input array containing true labels.
         pred
             input array containing Predicted labels.
+        from_logits
+            Whether `pred` is expected to be a logits tensor. By
+            default, we assume that `pred` encodes a probability distribution.
         epsilon
             a float in [0.0, 1.0] specifying the amount of smoothing when calculating
-            the loss. If epsilon is ``0``, no smoothing will be applied.
-            Default: ``1e-7``.
+            the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        pos_weight
+            a weight for positive examples. Must be an array with length equal
+            to the number of classes.
+        axis
+            Axis along which to compute crossentropy.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
 
         Returns
         -------
@@ -97,7 +114,14 @@ class _ArrayWithLosses(abc.ABC):
         ivy.array([0.357, 0.223, 0.223])
         """
         return ivy.binary_cross_entropy(
-            self._data, pred, epsilon=epsilon, reduction=reduction, out=out
+            self._data,
+            pred,
+            from_logits=from_logits,
+            epsilon=epsilon,
+            reduction=reduction,
+            pos_weight=pos_weight,
+            axis=axis,
+            out=out,
         )
 
     def sparse_cross_entropy(
@@ -107,7 +131,7 @@ class _ArrayWithLosses(abc.ABC):
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

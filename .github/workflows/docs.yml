@@ -1,48 +1,15 @@
-name: docs
-on: [push]
-permissions: 
-  contents: write
+name: Update docs
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+  workflow_dispatch:
+
 jobs:
   update-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout 🛎️Ivy
-        uses: actions/checkout@v3
-        with:
-          repository: unifyai/ivy
-          persist-credentials: false
-          fetch-depth: 0
-
-      - name: Build Docs
-        run: |
-          cd docs
-          bash make_docs.sh
-          cd ..
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          folder: docs/build
-          target-folder: ivy
-          ssh-key: ${{ secrets.SSH_GH_PAGES }}
-          branch: master
-          git-config-name: ivy-seed
-          git-config-email: ivydl.team@gmail.com
-          repository-name: unifyai/docs
-          clean: true
-      
-      - name: Get Version
-        run: |
-          echo "version_folder=`git tag | sort -V | tail -1`/ivy" >> $GITHUB_ENV
-      
-      - name: Deploy for Multi-Version
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          folder: docs/build
-          target-folder: "${{ env.version_folder }}"
-          ssh-key: ${{ secrets.SSH_GH_PAGES }}
-          branch: master
-          git-config-name: ivy-seed
-          git-config-email: ivydl.team@gmail.com
-          repository-name: unifyai/docs
-          clean: true
+    name: Update docs
+    uses: unifyai/workflows/.github/workflows/docs.yml@main
+    secrets: inherit

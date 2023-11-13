@@ -2,12 +2,12 @@
 import jax.numpy as jnp
 from typing import Union, Optional, Sequence
 
+
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
 from . import backend_version
-
 
 # Array API Standard #
 # -------------------#
@@ -37,6 +37,10 @@ def max(
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
+@with_unsupported_dtypes(
+    {"0.4.20 and below": "bfloat16"},
+    backend_version,
+)
 def mean(
     x: JaxArray,
     /,
@@ -46,7 +50,7 @@ def mean(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.mean(x, axis=axis, keepdims=keepdims)
+    return jnp.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype)
 
 
 def _infer_dtype(dtype: jnp.dtype):
@@ -91,7 +95,7 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[jnp.dtype] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
@@ -139,7 +143,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.20 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: JaxArray,
     /,

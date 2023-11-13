@@ -2,91 +2,86 @@
 import os
 import subprocess
 import sys
+import json
 
 
-def directory_generator(req, base="/opt/miniconda/fw/"):
+def directory_generator(req, base="/opt/fw/"):
     for versions in req:
-        pkg, ver = versions.split("/")
-        path = base + pkg + "/" + ver
-        if not os.path.exists(path):
-            install_pkg(path, pkg + "==" + ver)
+        if "/" in versions:
+            pkg, ver = versions.split("/")
+            path = base + pkg + "/" + ver
+            if not os.path.exists(path):
+                install_pkg(path, pkg + "==" + ver)
+        else:
+            install_pkg(base + versions, versions)
 
 
 def install_pkg(path, pkg, base="fw/"):
-    if pkg.split("==")[0] == "torch":
+    if pkg.split("==")[0] if "==" in pkg else pkg == "torch":
         subprocess.run(
-            f"pip3 install {pkg} --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cpu --target={path} --no-cache-dir",
+            f"pip3 install --upgrade {pkg} --target {path} --default-timeout=100"
+            " --extra-index-url https://download.pytorch.org/whl/cpu "
+            " --no-cache-dir",
             shell=True,
         )
-    elif pkg.split("==")[0] == "jaxlib":
+    elif pkg.split("==")[0] == "jax":
         subprocess.run(
-            f"pip3 install {pkg} --default-timeout=100 -f https://storage.googleapis.com/jax-releases/jax_releases.html  --target={path} --no-cache-dir",
-            shell=True,
-        )
-    elif pkg.split("==")[0] == "tensorflow":
-        subprocess.run(
-            f"pip3 install tensorflow-cpu=={pkg.split('==')[1]} --default-timeout=100  --target={path} --no-cache-dir",
+            f"pip install --upgrade {pkg} --target  {path}  -f"
+            " https://storage.googleapis.com/jax-releases/jax_releases.html  "
+            " --no-cache-dir",
             shell=True,
         )
     else:
         subprocess.run(
-            f"pip3 install {pkg} --default-timeout=100  --target={path} --no-cache-dir",
+            f"pip3 install --upgrade {pkg} --target {path} --default-timeout=100  "
+            " --no-cache-dir",
             shell=True,
         )
+
+
+def install_deps(pkgs, path_to_json, base="/opt/fw/"):
+    for fw in pkgs:
+        fw, ver = fw.split("/")
+        path = base + fw + "/" + ver
+        # check to see if this pkg has specific version dependencies
+        with open(path_to_json, "r") as file:
+            json_data = json.load(file)
+            for keys in json_data[fw]:
+                # check if key is dict
+                if isinstance(keys, dict):
+                    # this is a dep with just one key
+                    # being the dep
+                    dep = list(keys.keys())[0]
+                    # check if version is there in this
+                    if ver in keys[dep].keys():
+                        subprocess.run(
+                            "pip3 install --upgrade"
+                            f" {dep}=={keys[dep][ver]} --target"
+                            f" {path} --default-timeout=100 --upgrade  --no-cache-dir",
+                            shell=True,
+                        )
+                    else:
+                        subprocess.run(
+                            f"pip3 install  {dep} --target"
+                            f" {path} --default-timeout=100   --no-cache-dir",
+                            shell=True,
+                        )
+                else:
+                    subprocess.run(
+                        "pip3 install "
+                        f" {keys} {f'-f https://data.pyg.org/whl/torch-{ver}%2Bcpu.html' if keys=='torch-scatter' else ''} --target"
+                        f" {path} --default-timeout=100   --no-cache-dir",
+                        shell=True,
+                    )
 
 
 if __name__ == "__main__":
     arg_lis = sys.argv
 
-    if "backend" in arg_lis:
-        for i in arg_lis[2:]:
-            if i.split("/")[0] == "torch":
-                subprocess.run(
-                    f"pip3 install torch=={i.split('/')[1]} --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cpu  --no-cache-dir",
-                    shell=True,
-                )
-            elif i.split("/")[0] == "tensorflow":
-                print(i, "heere")
-                subprocess.run(
-                    f"pip3 install tensorflow-cpu=={i.split('/')[1]} --default-timeout=100   --no-cache-dir",
-                    shell=True,
-                )
-            elif i.split("/")[0] == "jaxlib":
-                subprocess.run(
-                    f"pip3 install {i} --default-timeout=100 -f https://storage.googleapis.com/jax-releases/jax_releases.html  --no-cache-dir",
-                    shell=True,
-                )
-            else:
-                subprocess.run(
-                    f"pip3 install {i.split('/')[0]}=={i.split('/')[1]} --default-timeout=100   --no-cache-dir",
-                    shell=True,
-                )
-        try:
-            import tensorflow
-        except:
-            subprocess.run(
-                f"pip3 install tensorflow-cpu --default-timeout=100  --no-cache-dir",
-                shell=True,
-            )
-        try:
-            import torch
-        except:
-            subprocess.run(
-                f"pip3 install torch --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cpu  --no-cache-dir",
-                shell=True,
-            )
-        try:
-            import jaxlib
-        except:
-            subprocess.run(
-                f"pip3 install jaxlib --default-timeout=100 -f https://storage.googleapis.com/jax-releases/jax_releases.html  --no-cache-dir",
-                shell=True,
-            )
-        try:
-            import jax
-        except:
-            subprocess.run(
-                f"pip3 install jax  --default-timeout=100   --no-cache-dir", shell=True
-            )
-    else:
-        directory_generator(arg_lis[1:])
+    json_path = os.path.join(  # path to the json file storing version specific deps
+        os.path.dirname(os.path.realpath(sys.argv[0])),
+        "requirement_mappings_multiversion.json",
+    )
+
+    directory_generator(arg_lis[1:])
+    install_deps(arg_lis[1:], json_path)

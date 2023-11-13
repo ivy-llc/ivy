@@ -7,7 +7,7 @@ for device in tf.config.experimental.list_physical_devices("GPU"):
     try:
         tf.config.experimental.set_memory_growth(device, True)
     except RuntimeError as e:
-        logging.warn(f"can not set {device} to dynamically allocate memory. {e}")
+        logging.warning(f"can not set {device} to dynamically allocate memory. {e}")
 
 
 from tensorflow.python.framework.dtypes import DType
@@ -27,6 +27,69 @@ else:
     _module_in_memory = sys.modules[ivy.import_module_path].import_cache[__name__]
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
+
+
+# wrap dunder methods of native tensors to return NotImplemented to prioritize Ivy array methods.
+def dunder_wrapper(func):
+    def rep_method(*args, **kwargs):
+        for arg in args:
+            if ivy.is_ivy_array(arg):
+                return NotImplemented
+        return func(*args, **kwargs)
+
+    return rep_method
+
+
+# check for previously imported tensorflow modules
+modules_to_patch = []
+tensors_to_patch = []
+tmp_globals = dict(globals())
+for name, value in tmp_globals.items():
+    if value == "tensorflow.python.framework.ops.Tensor":
+        tensors_to_patch.append(name)
+    try:
+        if value.__name__ == "tensorflow":
+            modules_to_patch.append(name)
+    except AttributeError:
+        pass
+
+methods_to_patch = [
+    "__add__",
+    "__sub__",
+    "__mul__",
+    "__div__",
+    "__truediv__",
+    "__floordiv__",
+    "__mod__",
+    "__lt__",
+    "__le__",
+    "__gt__",
+    "__ge__",
+    "__ne__",
+    "__eq__",
+    "__and__",
+    "__or__",
+    "__xor__",
+    "__pow__",
+    "__matmul__",
+]
+
+for module in modules_to_patch:
+    for method in methods_to_patch:
+        exec(
+            module
+            + ".Tensor."
+            + method
+            + " = dunder_wrapper("
+            + module
+            + ".Tensor."
+            + method
+            + ")"
+        )
+
+for tensor in tensors_to_patch:
+    for method in methods_to_patch:
+        exec(tensor + "." + method + " = dunder_wrapper(" + tensor + "." + method + ")")
 
 NativeArray = Tensor
 NativeDevice = str
@@ -63,8 +126,9 @@ native_bool = tf.bool
 # valid data types
 # ToDo: Add complex dtypes to valid_dtypes and fix all resulting failures.
 
-valid_dtypes_dict = {
-    "2.9.1 and below": (
+# update these to add new dtypes
+valid_dtypes = {
+    "2.14.0 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -82,10 +146,8 @@ valid_dtypes_dict = {
         ivy.bool,
     )
 }
-valid_dtypes = _dtype_from_version(valid_dtypes_dict, backend_version)
-
-valid_numeric_dtypes_dict = {
-    "2.9.1 and below": (
+valid_numeric_dtypes = {
+    "2.14.0 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -102,11 +164,8 @@ valid_numeric_dtypes_dict = {
         ivy.complex128,
     )
 }
-
-valid_numeric_dtypes = _dtype_from_version(valid_numeric_dtypes_dict, backend_version)
-
-valid_int_dtypes_dict = {
-    "2.9.1 and below": (
+valid_int_dtypes = {
+    "2.14.0 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -117,44 +176,38 @@ valid_int_dtypes_dict = {
         ivy.uint64,
     )
 }
-
-valid_int_dtypes = _dtype_from_version(valid_int_dtypes_dict, backend_version)
-
-valid_float_dtypes_dict = {
-    "2.9.1 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+valid_float_dtypes = {
+    "2.14.0 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 }
-
-valid_float_dtypes = _dtype_from_version(valid_float_dtypes_dict, backend_version)
-
-valid_uint_dtypes_dict = {
-    "2.9.1 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+valid_uint_dtypes = {
+    "2.14.0 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 }
-valid_uint_dtypes = _dtype_from_version(valid_uint_dtypes_dict, backend_version)
+valid_complex_dtypes = {"2.14.0 and below": (ivy.complex64, ivy.complex128)}
 
-valid_complex_dtypes_dict = {"2.9.1 and below": (ivy.complex64, ivy.complex128)}
-valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes_dict, backend_version)
+# leave these untouched
+valid_dtypes = _dtype_from_version(valid_dtypes, backend_version)
+valid_numeric_dtypes = _dtype_from_version(valid_numeric_dtypes, backend_version)
+valid_int_dtypes = _dtype_from_version(valid_int_dtypes, backend_version)
+valid_float_dtypes = _dtype_from_version(valid_float_dtypes, backend_version)
+valid_uint_dtypes = _dtype_from_version(valid_uint_dtypes, backend_version)
+valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version)
 
 # invalid data types
-invalid_dtypes_dict = {"2.9.1 and below": ()}
+# update these to add new dtypes
+invalid_dtypes = {"2.14.0 and below": ()}
+invalid_numeric_dtypes = {"2.14.0 and below": ()}
+invalid_int_dtypes = {"2.14.0 and below": ()}
+invalid_float_dtypes = {"2.14.0 and below": ()}
+invalid_uint_dtypes = {"2.14.0 and below": ()}
+invalid_complex_dtypes = {"2.14.0 and below": ()}
 
-invalid_dtypes = _dtype_from_version(invalid_dtypes_dict, backend_version)
-
-invalid_numeric_dtypes_dict = {"2.9.1 and below": ()}
-invalid_numeric_dtypes = _dtype_from_version(
-    invalid_numeric_dtypes_dict, backend_version
-)
-
-invalid_int_dtypes_dict = {"2.9.1 and below": ()}
-invalid_int_dtypes = _dtype_from_version(invalid_int_dtypes_dict, backend_version)
-invalid_float_dtypes_dict = {"2.9.1 and below": ()}
-invalid_float_dtypes = _dtype_from_version(invalid_float_dtypes_dict, backend_version)
-invalid_uint_dtypes_dict = {"2.9.1 and below": ()}
-invalid_uint_dtypes = _dtype_from_version(invalid_uint_dtypes_dict, backend_version)
-
-invalid_complex_dtypes_dict = {"2.9.1 and below": ()}
-invalid_complex_dtypes = _dtype_from_version(
-    invalid_complex_dtypes_dict, backend_version
-)
+# leave these untouched
+invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)
+invalid_numeric_dtypes = _dtype_from_version(invalid_numeric_dtypes, backend_version)
+invalid_int_dtypes = _dtype_from_version(invalid_int_dtypes, backend_version)
+invalid_float_dtypes = _dtype_from_version(invalid_float_dtypes, backend_version)
+invalid_uint_dtypes = _dtype_from_version(invalid_uint_dtypes, backend_version)
+invalid_complex_dtypes = _dtype_from_version(invalid_complex_dtypes, backend_version)
 
 native_inplace_support = False
 
