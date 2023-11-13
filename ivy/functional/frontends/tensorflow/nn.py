@@ -131,6 +131,55 @@ def bias_add(value, bias, data_format=None, name=None):
 
 
 @to_ivy_arrays_and_back
+def collapse_repeated(labels, seq_length, name=None):
+    seq_dtype = seq_length.dtype
+    labels = ivy.array(labels)
+    seq_length = ivy.array(seq_length)
+    # Mask labels that don't equal previous label.
+    label_mask = ivy.concat(
+        [
+            ivy.ones_like(labels[:, :1], dtype=ivy.bool),
+            ivy.not_equal(labels[:, 1:], labels[:, :-1]),
+        ],
+        axis=1,
+    )
+
+    # Filter labels that aren't in the original sequence.
+    maxlen = ivy.shape(labels)[1]
+    seq_mask = gen_func.sequence_mask(seq_length, maxlen=maxlen)
+    label_mask = math.logical_and(label_mask, seq_mask)._ivy_array
+
+    # # Count masks for new sequence lengths.
+    new_seq_len = math.reduce_sum(cast(label_mask, ivy.int32), axis=1)._ivy_array
+
+    # Mask indexes based on sequence length mask.
+    new_maxlen = math.reduce_max(new_seq_len)._ivy_array
+    idx_mask = gen_func.sequence_mask(new_seq_len, maxlen=new_maxlen)
+
+    # Flatten everything and mask out labels to keep and sparse indices.
+
+    flat_labels = ivy.reshape(labels, [-1])
+    flat_label_mask = ivy.reshape(label_mask, [-1])
+    flat_idx_mask = ivy.reshape(idx_mask, [-1])
+    idx = gen_func.range(int(ivy.shape(flat_idx_mask)[0]))._ivy_array
+
+    # Scatter to flat shape.
+    indices = ivy.expand_dims(
+        gen_func.boolean_mask(idx, flat_idx_mask)._ivy_array, axis=1
+    )
+    updates = gen_func.boolean_mask(flat_labels, flat_label_mask)._ivy_array
+    shape = ivy.shape(flat_idx_mask)
+    flat = ivy.zeros(list(shape), dtype=updates.dtype)
+    for i in range(len(indices)):
+        flat[int(indices[i])] += updates[i]
+
+    # Reshape back to square batch.new_seq_len
+    batch_size = int(ivy.shape(labels)[0])
+    new_shape = [batch_size, int(new_maxlen)]
+    return (ivy.reshape(flat, new_shape), ivy.astype(new_seq_len, seq_dtype))
+
+
+@to_ivy_arrays_and_back
 def conv1d(
     input, filters, stride, padding, data_format="NWC", dilations=None, name=None
 ):
@@ -628,46 +677,3 @@ def weighted_moments(x, axes, frequency_weights, keepdims=False, name=None):
         weighted_mean = ivy.squeeze(weighted_mean, axis=axes)
         weighted_variance = ivy.squeeze(weighted_variance, axis=axes)
     return weighted_mean, weighted_variance
-
-@to_ivy_arrays_and_back
-def collapse_repeated(labels, seq_length, name=None):
-  seq_dtype=seq_length.dtype
-  labels=ivy.array(labels)
-  seq_length=ivy.array(seq_length)
-  # Mask labels that don't equal previous label.
-  label_mask = ivy.concat([
-      ivy.ones_like(labels[:, :1], dtype=ivy.bool),
-      ivy.not_equal(labels[:, 1:], labels[:, :-1])
-  ], axis=1)
-
-  # Filter labels that aren't in the original sequence.
-  maxlen = ivy.shape(labels)[1]
-  seq_mask = gen_func.sequence_mask(seq_length, maxlen=maxlen)
-  label_mask = math.logical_and(label_mask, seq_mask)._ivy_array
-
-  # # Count masks for new sequence lengths.
-  new_seq_len = math.reduce_sum(cast(label_mask, ivy.int32), axis=1)._ivy_array
-
-  # Mask indexes based on sequence length mask.
-  new_maxlen = math.reduce_max(new_seq_len)._ivy_array
-  idx_mask = gen_func.sequence_mask(new_seq_len, maxlen=new_maxlen)
-
-  # Flatten everything and mask out labels to keep and sparse indices.
-
-  flat_labels = ivy.reshape(labels, [-1])
-  flat_label_mask = ivy.reshape(label_mask, [-1])
-  flat_idx_mask = ivy.reshape(idx_mask, [-1])
-  idx = gen_func.range(int(ivy.shape(flat_idx_mask)[0]))._ivy_array
-
-  # Scatter to flat shape.
-  indices=ivy.expand_dims(gen_func.boolean_mask(idx, flat_idx_mask)._ivy_array, axis=1)
-  updates=gen_func.boolean_mask(flat_labels, flat_label_mask)._ivy_array
-  shape=ivy.shape(flat_idx_mask)
-  flat = ivy.zeros(list(shape), dtype=updates.dtype)
-  for i in range(len(indices)):
-    flat[int(indices[i])]+=updates[i]
-
-  # Reshape back to square batch.new_seq_len
-  batch_size = int(ivy.shape(labels)[0]) 
-  new_shape = [batch_size, int(new_maxlen)]
-  return (ivy.reshape(flat, new_shape),ivy.astype(new_seq_len,seq_dtype))

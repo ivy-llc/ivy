@@ -107,6 +107,52 @@ def _batch_normalization_helper(draw):
 
 
 @st.composite
+def _collapse_repeated_helper(draw):
+    max_val = draw(st.integers(min_value=3, max_value=9))
+    batch = draw(st.integers(min_value=5, max_value=20))
+    l_dtype = draw(
+        st.sampled_from([
+            "uint8",
+            "complex64",
+            "complex128",
+            "float32",
+            "float64",
+            "int8",
+            "int32",
+            "int64",
+        ])
+    )
+    s_dtype = draw(
+        st.sampled_from([
+            "uint8",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        ])
+    )
+    labels_dtype, labels = draw(
+        helpers.dtype_and_values(
+            available_dtypes=[l_dtype],
+            num_arrays=1,
+            shape=(batch, max_val),
+            min_value=-max_val,
+            max_value=max_val,
+        )
+    )
+    seq_dtype, seq_length = draw(
+        helpers.dtype_and_values(
+            available_dtypes=[s_dtype],
+            num_arrays=1,
+            shape=(batch,),
+            min_value=2,
+            max_value=max_val,
+        )
+    )
+    return labels_dtype + seq_dtype, labels, seq_length
+
+
+@st.composite
 def _dropout_helper(draw):
     shape = draw(helpers.get_shape(min_num_dims=1))
     dtype_and_x = draw(
@@ -797,6 +843,35 @@ def test_tensorflow_bias_add(
         value=value[0],
         bias=bias,
         data_format=data_format,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.collapse_repeated",
+    params=_collapse_repeated_helper(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_collapse_repeated(
+    *,
+    params,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtypes, labels, seq_length = params
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
+        labels=labels[0],
+        seq_length=seq_length[0],
     )
 
 
@@ -1969,82 +2044,4 @@ def test_tensorflow_weighted_moments(
         axes=axis,
         frequency_weights=fw[0],
         keepdims=keepdims,
-    )
-
-@st.composite
-def _collapse_repeated_helper(draw):
-    max_val = draw(st.integers(min_value=3, max_value=9))
-    batch = draw(st.integers(min_value=5, max_value=20))
-    l_dtype = draw(
-        st.sampled_from(
-            [
-                "uint8",
-                "complex64",                
-                "complex128",
-                "float32",
-                "float64",
-                "int8",
-                "int32",
-                "int64",
-            ]
-        )
-    )
-    s_dtype = draw(
-        st.sampled_from(
-            [
-                "uint8",
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-            ]
-        )
-    )
-    labels_dtype, labels=draw(
-        helpers.dtype_and_values(
-            available_dtypes=[l_dtype],
-            num_arrays=1,
-            shape=(batch,max_val),
-            min_value=-max_val,
-            max_value=max_val,
-        )
-    )
-    seq_dtype, seq_length=draw(
-        helpers.dtype_and_values(
-            available_dtypes=[s_dtype],
-            num_arrays=1,
-            shape=(batch,),
-            min_value= 2,
-            max_value=max_val,
-        )
-    )
-    return labels_dtype + seq_dtype, labels, seq_length
-
-
-@handle_frontend_test(
-    fn_tree="tensorflow.nn.collapse_repeated",
-    params=_collapse_repeated_helper(),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_collapse_repeated(
-    *,
-    params,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    backend_fw,
-):
-    dtypes, labels, seq_length = params
-    helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-1,
-        atol=1e-1,
-        labels=labels[0],
-        seq_length = seq_length[0],
     )
