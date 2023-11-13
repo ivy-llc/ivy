@@ -641,7 +641,7 @@ def collapse_repeated(labels, seq_length, name=None):
   ], axis=1)
 
   # Filter labels that aren't in the original sequence.
-  maxlen = ivy.shape(labels)[1] #!!!
+  maxlen = ivy.shape(labels)[1]
   seq_mask = gen_func.sequence_mask(seq_length, maxlen=maxlen)
   label_mask = math.logical_and(label_mask, seq_mask)._ivy_array
 
@@ -650,14 +650,14 @@ def collapse_repeated(labels, seq_length, name=None):
 
   # Mask indexes based on sequence length mask.
   new_maxlen = math.reduce_max(new_seq_len)._ivy_array
-  idx_mask = gen_func.sequence_mask(new_seq_len, maxlen=new_maxlen)#._ivy_array
+  idx_mask = gen_func.sequence_mask(new_seq_len, maxlen=new_maxlen)
 
   # Flatten everything and mask out labels to keep and sparse indices.
 
   flat_labels = ivy.reshape(labels, [-1])
   flat_label_mask = ivy.reshape(label_mask, [-1])
   flat_idx_mask = ivy.reshape(idx_mask, [-1])
-  idx = gen_func.range(int(ivy.shape(flat_idx_mask)[0]))._ivy_array #!!!!
+  idx = gen_func.range(int(ivy.shape(flat_idx_mask)[0]))._ivy_array
 
   # Scatter to flat shape.
   indices=ivy.expand_dims(gen_func.boolean_mask(idx, flat_idx_mask)._ivy_array, axis=1)
@@ -668,6 +668,6 @@ def collapse_repeated(labels, seq_length, name=None):
     flat[int(indices[i])]+=updates[i]
 
   # Reshape back to square batch.new_seq_len
-  batch_size = int(ivy.shape(labels)[0]) #!!!
+  batch_size = int(ivy.shape(labels)[0]) 
   new_shape = [batch_size, int(new_maxlen)]
   return (ivy.reshape(flat, new_shape),ivy.astype(new_seq_len,seq_dtype))
