@@ -1775,6 +1775,8 @@ def test_sign(*, dtype_and_x, np_variant, test_flags, backend_fw, fn_name, on_de
 )
 def test_sin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
+    if "paddle" in backend_fw and input_dtype[0] == "float16":
+        assume(not test_flags.test_gradients)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
