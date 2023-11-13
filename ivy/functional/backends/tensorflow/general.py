@@ -59,7 +59,7 @@ def get_item(
     /,
     query: Union[tf.Tensor, tf.Variable, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return x.__getitem__(query)
 

@@ -34,7 +34,7 @@ def get_item(
     /,
     query: Union[np.ndarray, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> np.ndarray:
     return x.__getitem__(query)
 

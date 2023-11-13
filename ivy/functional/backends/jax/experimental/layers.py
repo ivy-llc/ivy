@@ -778,7 +778,7 @@ def reduce_window(
 def fft2(
     x: JaxArray,
     *,
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
     out: Optional[JaxArray] = None,
@@ -873,8 +873,8 @@ def rfft(
 @with_unsupported_dtypes({"0.4.19 and below": ("float16", "complex")}, backend_version)
 def rfftn(
     x: JaxArray,
-    s: Sequence[int] = None,
-    axes: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
+    axes: Optional[Sequence[int]] = None,
     *,
     norm: str = "backward",
     out: Optional[JaxArray] = None,
