@@ -1960,7 +1960,7 @@ class Tensor:
     )
     def quantile(self, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
         return torch_frontend.quantile(
-            self, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
+            self, q, dim=dim, keepdim=keepdim, interpolation=interpolation, out=out
         )
 
     @with_unsupported_dtypes(
