@@ -33,7 +33,7 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
         ret = ivy.mean(a, axis=axis, keepdims=keepdims)
         if axis is None:
             fill_value = int(a.size) if ivy.is_int_dtype(ret) else float(a.size)
-            weights_sum = ivy.full(shape=(), fill_value=fill_value, dtype=ret.dtype)
+            weights_sum = ivy.full((), fill_value, dtype=ret.dtype)
         else:
             if isinstance(axis, tuple):
                 # prod with axis has dtype Sequence[int]
