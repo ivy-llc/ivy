@@ -41,14 +41,13 @@ jobs:
         run:
           sudo rm -fr $GITHUB_WORKSPACE && mkdir $GITHUB_WORKSPACE
 
-      - name: Checkout Ivy🛎
-        uses: actions/checkout@v4
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
         with:
-          repository: unifyai/ivy
           path: ivy
           persist-credentials: false
           submodules: "recursive"
-          fetch-depth: 1
+          fetch-depth: 2
 
       - name: Install ivy and fetch binaries
         run: |
