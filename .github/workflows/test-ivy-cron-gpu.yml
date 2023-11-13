@@ -80,8 +80,9 @@ jobs:
     if: always() # Run this job always, regardless of the status of run-test
     steps:
         - name: Checkout Demos🛎
-          uses: actions/checkout@v2
+          uses: actions/checkout@v4
           with:
+            repository: unifyai/demos
             path: demos
             persist-credentials: false
             submodules: "recursive"
