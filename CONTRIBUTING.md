@@ -21,7 +21,7 @@ Please, follow the next process when you work on your subtask:
 
 2. **Create Issue:**
 
-   - Create a new issue with the title being just the name of the sub-task you would like to work on.
+   - Create a new issue with the title being just the name of the sub-task you would like to work on and finding solution.
 
 3. **Comment on the ToDo List:**
 
