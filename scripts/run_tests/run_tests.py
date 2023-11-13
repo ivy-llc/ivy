@@ -244,7 +244,7 @@ if __name__ == "__main__":
 
             # create a prefix str for the update query for frontend tests
             # (with frontend version)
-            test_info = dict()
+            test_info = {}
             prefix_str = ""
             if is_frontend_test:
                 frontend = test_path[test_path.find("test_frontends") :].split(os.sep)[

@@ -38,7 +38,7 @@ def current_backend_str() -> str:
 
 def _check_query(query):
     if isinstance(query, Sequence):
-        return not any([isinstance(item, (Sequence, paddle.Tensor)) for item in query])
+        return not any(isinstance(item, (Sequence, paddle.Tensor)) for item in query)
     else:
         return True
 
@@ -69,13 +69,11 @@ def _squeeze_helper(query, x_ndim):
     )
 
     if any(slice_squeeze):
-        squeeze_indices = tuple(
-            [
-                idx
-                for idx, val in enumerate(slice_squeeze)
-                if (val is False and query[idx] is not None)
-            ]
-        )
+        squeeze_indices = tuple([
+            idx
+            for idx, val in enumerate(slice_squeeze)
+            if (val is False and query[idx] is not None)
+        ])
     elif return_scalar:
         squeeze_indices = ()
     else:

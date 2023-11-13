@@ -303,7 +303,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
-    division_override: Optional[int] = None,
+    divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -327,7 +327,7 @@ def avg_pool1d(
         Whether to include padding in the averaging calculation.
     ceil_mode
         Whether to use ceil or floor for creating the output shape.
-    division_override
+    divisor_override
         If specified, it will be used as the divisor,
         otherwise kernel_size will be used.
     out
@@ -366,7 +366,7 @@ def avg_pool1d(
         data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
-        division_override=division_override,
+        divisor_override=divisor_override,
         out=out,
     )
 
@@ -1410,7 +1410,7 @@ def _tf_area_indices(dim_index, scale):
 
 
 def _tf_area_interpolate(x, size, scale, dims):
-    ret = ivy.zeros((x.shape[:2] + size))
+    ret = ivy.zeros(x.shape[:2] + size)
     area = 1.0 / ivy.prod(scale)
     for i, ba in enumerate(x):
         for j, ch in enumerate(ba):
@@ -1634,17 +1634,17 @@ def _upsample_bicubic2d_default(
         return a[N_idx, C_idx, y_idx, x_idx]
 
     def get_x_interp(y):
-        coeffs_x = tuple((load_bounded(y, x_ofs) for x_ofs in ixs_ofs))
+        coeffs_x = tuple(load_bounded(y, x_ofs) for x_ofs in ixs_ofs)
         return _upsample_cubic_interp1d(coeffs_x, t_x)
 
-    coeffs_y = tuple((get_x_interp(y_ofs) for y_ofs in iys_ofs))
+    coeffs_y = tuple(get_x_interp(y_ofs) for y_ofs in iys_ofs)
     result = _upsample_cubic_interp1d(coeffs_y, t_y)
 
     return result
 
 
 def area_interpolate(x, dims, size, scale):
-    ret = ivy.zeros((x.shape[:2] + size))
+    ret = ivy.zeros(x.shape[:2] + size)
     for i, ba in enumerate(x):
         for j, ch in enumerate(ba):
             if dims == 3:
@@ -1918,18 +1918,14 @@ def interpolate(
                     right = int(math.ceil(p_j + 2))
                     top = int(math.floor(p_i - 2))
                     bottom = int(math.ceil(p_i + 2))
-                    kernel_w = ivy.array(
-                        [
-                            _mitchellcubic_kernel((p_j - j) * scale_w)
-                            for i in range(left, right)
-                        ]
-                    )
-                    kernel_h = ivy.array(
-                        [
-                            _mitchellcubic_kernel((p_i - i) * scale_h)
-                            for j in range(top, bottom)
-                        ]
-                    )
+                    kernel_w = ivy.array([
+                        _mitchellcubic_kernel((p_j - j) * scale_w)
+                        for i in range(left, right)
+                    ])
+                    kernel_h = ivy.array([
+                        _mitchellcubic_kernel((p_i - i) * scale_h)
+                        for j in range(top, bottom)
+                    ])
                     left_pad = max(0, -left)
                     right_pad = max(0, right - in_width)
                     top_pad = max(0, -top)
@@ -2025,7 +2021,7 @@ def _output_ceil_shape(w, f, p, s):
 
 
 def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
-    remaining_pixels = (w - f + sum(p)) % s
+    remaining_pixels = (w - f + p[0]) % s
     added_padding = 0
     if s > 1 and remaining_pixels != 0 and f > 1:
         input_size = w + sum(p)
@@ -3127,10 +3123,10 @@ def stft(
 def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
     dims = {"1d": 1, "2d": 2, "3d": 3}
     if isinstance(x, int):
-        return tuple([x for _ in range(dims[pool_dims])])
+        return tuple(x for _ in range(dims[pool_dims]))
 
     if len(x) == 1:
-        return tuple([x[0] for _ in range(dims[pool_dims])])
+        return tuple(x[0] for _ in range(dims[pool_dims]))
 
     elif len(x) == dims[pool_dims]:
         return tuple(x)

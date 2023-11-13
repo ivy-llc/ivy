@@ -249,6 +249,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
@@ -643,7 +644,7 @@ def stft(
             windowed_frame = paddle.to_tensor(windowed_frame)
 
             fft_frame = fft(windowed_frame, -1)
-            slit = int((fft_length // 2 + 1))
+            slit = int(fft_length // 2 + 1)
             stft_result.append(fft_frame[..., 0:slit])
 
         stft = paddle.to_tensor(stft_result)

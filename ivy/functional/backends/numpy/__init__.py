@@ -37,7 +37,7 @@ def wrap__array_ufunc__(func):
             "subtract": "subtract",
             "add": "add",
         }
-        if ufunc.__name__ in methods.keys():
+        if ufunc.__name__ in methods:
             return eval("ivy." + methods[ufunc.__name__] + "(*inputs, **kwargs)")
         return func(self, ufunc, method, *inputs, **kwargs)
 

@@ -44,6 +44,10 @@ class Tensor:
             "ivy.array", "ivy.frontends.torch.Tensor"
         )
 
+    def __hash__(self):
+        # TODO: Need to add test. Adding for KLA demo (priority)
+        return id(self)
+
     # Properties #
     # ---------- #
 
@@ -1991,6 +1995,16 @@ class Tensor:
         )
         return self.ivy_array
 
+    def uniform_(self, from_=0, to=1, *, generator=None):
+        # TODO: Need to add test. Adding for KLA demo (priority)
+        ret = ivy.random_uniform(
+            low=from_, high=to, shape=self.shape, dtype=self.dtype, seed=generator
+        )
+        self._ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret, self._ivy_array.dtype)
+        )
+        return self
+
     @with_unsupported_dtypes(
         {
             "2.1.0 and below": (
@@ -2213,7 +2227,7 @@ class Size(tuple):
                 new_iterable.append(int(item))
             except Exception:
                 raise TypeError(f"Expected int, but got {type(item)} at index {i}")
-        return super(Size, cls).__new__(cls, tuple(new_iterable))
+        return super().__new__(cls, tuple(new_iterable))
 
     def __init__(self, shape) -> None:
         self._ivy_shape = shape if isinstance(shape, ivy.Shape) else ivy.shape(shape)

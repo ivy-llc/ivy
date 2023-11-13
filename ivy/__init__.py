@@ -441,7 +441,7 @@ class Shape(Sequence):
 
     def with_rank(self, rank):
         try:
-            return self.merge_with(unknown_shape(rank=rank))
+            return self.merge_with(self.unknown_shape(rank=rank))
         except ValueError:
             raise ValueError(f"Shape {self} must have rank {rank}")
 
@@ -480,8 +480,7 @@ class Shape(Sequence):
             shape is not None for shape in self._shape
         )
 
-    property
-
+    @property
     def num_elements(self):
         if not self.is_fully_defined():
             return None
@@ -919,48 +918,44 @@ class GlobalsDict(dict):
 
 
 # defines ivy.globals attribute
-globals_vars = GlobalsDict(
-    {
-        "backend_stack": backend_stack,
-        "default_device_stack": device.default_device_stack,
-        "valid_dtypes": valid_dtypes,
-        "valid_numeric_dtypes": valid_numeric_dtypes,
-        "valid_int_dtypes": valid_int_dtypes,
-        "valid_uint_dtypes": valid_uint_dtypes,
-        "valid_complex_dtypes": valid_complex_dtypes,
-        "valid_devices": valid_devices,
-        "invalid_dtypes": invalid_dtypes,
-        "invalid_numeric_dtypes": invalid_numeric_dtypes,
-        "invalid_int_dtypes": invalid_int_dtypes,
-        "invalid_float_dtypes": invalid_float_dtypes,
-        "invalid_uint_dtypes": invalid_uint_dtypes,
-        "invalid_complex_dtypes": invalid_complex_dtypes,
-        "invalid_devices": invalid_devices,
-        "array_significant_figures_stack": array_significant_figures_stack,
-        "array_decimal_values_stack": array_decimal_values_stack,
-        "warning_level_stack": warning_level_stack,
-        "queue_timeout_stack": general.queue_timeout_stack,
-        "array_mode_stack": general.array_mode_stack,
-        "inplace_mode_stack": general.inplace_mode_stack,
-        "soft_device_mode_stack": device.soft_device_mode_stack,
-        "shape_array_mode_stack": general.shape_array_mode_stack,
-        "show_func_wrapper_trace_mode_stack": (
-            general.show_func_wrapper_trace_mode_stack
-        ),
-        "min_denominator_stack": general.min_denominator_stack,
-        "min_base_stack": general.min_base_stack,
-        "tmp_dir_stack": general.tmp_dir_stack,
-        "precise_mode_stack": general.precise_mode_stack,
-        "nestable_mode_stack": general.nestable_mode_stack,
-        "exception_trace_mode_stack": general.exception_trace_mode_stack,
-        "default_dtype_stack": data_type.default_dtype_stack,
-        "default_float_dtype_stack": data_type.default_float_dtype_stack,
-        "default_int_dtype_stack": data_type.default_int_dtype_stack,
-        "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
-        "nan_policy_stack": nan_policy_stack,
-        "dynamic_backend_stack": dynamic_backend_stack,
-    }
-)
+globals_vars = GlobalsDict({
+    "backend_stack": backend_stack,
+    "default_device_stack": device.default_device_stack,
+    "valid_dtypes": valid_dtypes,
+    "valid_numeric_dtypes": valid_numeric_dtypes,
+    "valid_int_dtypes": valid_int_dtypes,
+    "valid_uint_dtypes": valid_uint_dtypes,
+    "valid_complex_dtypes": valid_complex_dtypes,
+    "valid_devices": valid_devices,
+    "invalid_dtypes": invalid_dtypes,
+    "invalid_numeric_dtypes": invalid_numeric_dtypes,
+    "invalid_int_dtypes": invalid_int_dtypes,
+    "invalid_float_dtypes": invalid_float_dtypes,
+    "invalid_uint_dtypes": invalid_uint_dtypes,
+    "invalid_complex_dtypes": invalid_complex_dtypes,
+    "invalid_devices": invalid_devices,
+    "array_significant_figures_stack": array_significant_figures_stack,
+    "array_decimal_values_stack": array_decimal_values_stack,
+    "warning_level_stack": warning_level_stack,
+    "queue_timeout_stack": general.queue_timeout_stack,
+    "array_mode_stack": general.array_mode_stack,
+    "inplace_mode_stack": general.inplace_mode_stack,
+    "soft_device_mode_stack": device.soft_device_mode_stack,
+    "shape_array_mode_stack": general.shape_array_mode_stack,
+    "show_func_wrapper_trace_mode_stack": general.show_func_wrapper_trace_mode_stack,
+    "min_denominator_stack": general.min_denominator_stack,
+    "min_base_stack": general.min_base_stack,
+    "tmp_dir_stack": general.tmp_dir_stack,
+    "precise_mode_stack": general.precise_mode_stack,
+    "nestable_mode_stack": general.nestable_mode_stack,
+    "exception_trace_mode_stack": general.exception_trace_mode_stack,
+    "default_dtype_stack": data_type.default_dtype_stack,
+    "default_float_dtype_stack": data_type.default_float_dtype_stack,
+    "default_int_dtype_stack": data_type.default_int_dtype_stack,
+    "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
+    "nan_policy_stack": nan_policy_stack,
+    "dynamic_backend_stack": dynamic_backend_stack,
+})
 
 _default_globals = copy.deepcopy(globals_vars)
 

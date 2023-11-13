@@ -948,6 +948,9 @@ class Tensor:
     def gather(self, y, name=None):
         return paddle_frontend.gather(self, y)
 
+    def is_complex(self):
+        return paddle_frontend.is_complex(self)
+
     @with_unsupported_dtypes(
         {"2.5.2 and below": ("float16", "uint8", "int8", "bool")}, "paddle"
     )

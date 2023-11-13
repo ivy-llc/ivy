@@ -63,7 +63,7 @@ def _get_new_padding_before_conv(
     dilations,
     x_dilations,
 ):
-    if not len(x_dilations) == x_dilations.count(1):
+    if len(x_dilations) != x_dilations.count(1):
         new_pad = [0] * dims
         x_shape = (
             list(x.shape[1 : dims + 1])
@@ -332,11 +332,11 @@ def conv3d_transpose(
 def _get_filter_dataformat(dims: int = 2, filter_format: str = "channel_last"):
     first = True if filter_format == "channel_first" else False
     if dims == 1:
-        return "WIO" if not first else "OIW"
+        return "OIW" if first else "WIO"
     if dims == 2:
-        return "HWIO" if not first else "OIHW"
+        return "OIHW" if first else "HWIO"
     elif dims == 3:
-        return "DHWIO" if not first else "OIDHW"
+        return "OIDHW" if first else "DHWIO"
 
 
 def conv_general_dilated(
@@ -361,7 +361,7 @@ def conv_general_dilated(
     if isinstance(padding, int):
         padding = [(padding, padding)] * dims
     filter_df = _get_filter_dataformat(dims, filter_format)
-    if not len(x_dilations) == x_dilations.count(1):
+    if len(x_dilations) != x_dilations.count(1):
         new_pad = [0] * dims
         x_shape = (
             list(x.shape[1 : dims + 1])
@@ -464,7 +464,7 @@ def nms(
     score_threshold=float("-inf"),
 ):
     change_id = False
-    if score_threshold is not float("-inf") and scores is not None:
+    if score_threshold != float("-inf") and scores is not None:
         keep_idx = scores > score_threshold
         boxes = boxes[keep_idx]
         scores = scores[keep_idx]
@@ -480,7 +480,7 @@ def nms(
             ret = jnp.array([], dtype=ivy.int64)
     else:
         areas = jnp.prod(boxes[:, 2:4] - boxes[:, :2], axis=1)
-        order = jnp.argsort((-1 * scores))  # get boxes with more ious first
+        order = jnp.argsort(-1 * scores)  # get boxes with more ious first
         boxes = boxes[order]
         areas = areas[order]
         size = order.size

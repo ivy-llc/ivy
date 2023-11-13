@@ -245,7 +245,7 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
     >>> print(nest)
     [[1, 2], [3, 99, 4]]
     """
-    if isinstance(nest, dict) or isinstance(nest, ivy.Container):
+    if isinstance(nest, (dict, ivy.Container)):
         if len(index) == 1:
             key = index[0]
             if isinstance(nest, dict):
@@ -1356,16 +1356,14 @@ def copy_nest(
             return class_instance(**dict(zip(nest._fields, ret_list)))
         return class_instance(tuple(ret_list))
     elif check_fn(nest, list):
-        return class_instance(
-            [
-                copy_nest(
-                    i,
-                    include_derived=include_derived,
-                    to_mutable=to_mutable,
-                )
-                for i in nest
-            ]
-        )
+        return class_instance([
+            copy_nest(
+                i,
+                include_derived=include_derived,
+                to_mutable=to_mutable,
+            )
+            for i in nest
+        ])
     elif check_fn(nest, dict):
         class_instance = type(nest)
         dict_ = {
@@ -1417,6 +1415,7 @@ def nested_multi_map(
         The configuration for the nests. Default is the same as nest0.
     to_ivy
         convert the output to ivy_arrays. Default is ``True``
+
     Returns
     -------
         nest containing the result of the function. The structure of the output is the
@@ -1480,9 +1479,9 @@ def nested_multi_map(
                 (
                     return_nest.append(ret)
                     if isinstance(return_nest, (list))
-                    else return_nest.update(
-                        {val if is_dict else list(nest)[index]: ret}
-                    )
+                    else return_nest.update({
+                        val if is_dict else list(nest)[index]: ret
+                    })
                 )
     else:
         values = nests

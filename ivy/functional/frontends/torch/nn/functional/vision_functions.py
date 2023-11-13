@@ -11,17 +11,14 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 def _handle_padding_shape(padding, n, mode):
-    padding = tuple(
-        [
-            (padding[i * 2], padding[i * 2 + 1])
-            for i in range(int(len(padding) / 2) - 1, -1, -1)
-        ]
-    )
-    while len(padding) < n:
-        if mode == "circular":
-            padding = padding + ((0, 0),)
-        else:
-            padding = ((0, 0),) + padding
+    padding = tuple([
+        (padding[i * 2], padding[i * 2 + 1])
+        for i in range(int(len(padding) / 2) - 1, -1, -1)
+    ])
+    if mode == "circular":
+        padding = padding + ((0, 0),) * (n - len(padding))
+    else:
+        padding = ((0, 0),) * (n - len(padding)) + padding
     if mode == "circular":
         padding = tuple(list(padding)[::-1])
     return padding
@@ -415,8 +412,10 @@ def pixel_shuffle(input, upscale_factor):
     ivy.utils.assertions.check_equal(
         ivy.get_num_dims(input),
         4,
-        message="pixel_shuffle expects 4D input, but got input with sizes "
-        + str(input_shape),
+        message=(
+            "pixel_shuffle expects 4D input, but got input with sizes"
+            f" {str(input_shape)}"
+        ),
         as_array=False,
     )
     b = input_shape[0]
@@ -459,7 +458,7 @@ def pixel_unshuffle(input, downscale_factor):
             f"pixel_unshuffle expects 4D input, but got input with sizes {input_shape}"
         ),
         as_array=False,
-    ),
+    )
 
     b = input_shape[0]
     c = input_shape[1]

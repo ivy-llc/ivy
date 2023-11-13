@@ -1799,17 +1799,21 @@ def arrays_for_pooling(
             else:
                 dilations.append(1)
     if explicit_or_str_padding or only_explicit_padding:
-        padding = []
-        for i in range(array_dim - 2):
-            max_pad = kernel[i] // 2
-            padding.append(
-                draw(
-                    st.tuples(
-                        st.integers(0, max_pad),
-                        st.integers(0, max_pad),
+        if draw(st.booleans()):
+            max_pad = min(kernel[i] // 2 for i in range(array_dim - 2))
+            padding = draw(st.integers(0, max_pad))
+        else:
+            padding = []
+            for i in range(array_dim - 2):
+                max_pad = kernel[i] // 2
+                padding.append(
+                    draw(
+                        st.tuples(
+                            st.integers(0, max_pad),
+                            st.integers(0, max_pad),
+                        )
                     )
                 )
-            )
         if explicit_or_str_padding:
             padding = draw(
                 st.one_of(st.just(padding), st.sampled_from(["VALID", "SAME"]))

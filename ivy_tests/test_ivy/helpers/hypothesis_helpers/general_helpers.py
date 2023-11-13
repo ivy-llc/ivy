@@ -430,7 +430,7 @@ def get_axis(
     axis = draw(
         st.one_of(*valid_strategies).filter(
             lambda x: (
-                all([i != axes + j for i in x for j in x])
+                all(i != axes + j for i in x for j in x)
                 if (isinstance(x, list) and unique and allow_neg)
                 else True
             )

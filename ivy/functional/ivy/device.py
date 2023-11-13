@@ -33,6 +33,7 @@ import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
+    inputs_to_native_arrays,
     handle_nestable,
     handle_array_like_without_promotion,
     handle_backend_invalid,
@@ -345,7 +346,7 @@ def unset_soft_device_mode() -> None:
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
-@to_native_arrays_and_back
+@inputs_to_native_arrays
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:

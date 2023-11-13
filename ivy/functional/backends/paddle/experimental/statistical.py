@@ -94,7 +94,7 @@ def _validate_quantile(q):
             if not (0.0 <= q[i] <= 1.0):
                 return False
     else:
-        if not (paddle.all(0 <= q) and paddle.all(q <= 1)):
+        if not (paddle.all(q >= 0) and paddle.all(q <= 1)):
             return False
     return True
 
@@ -607,7 +607,7 @@ def __find_cummax(
     if (
         isinstance(x.tolist()[0], list)
         and len(x[0].shape) >= 1
-        and (isinstance(x[0], paddle.Tensor) or isinstance(x[0], ivy.Array))
+        and (isinstance(x[0], (paddle.Tensor, ivy.Array)))
     ):
         if axis >= 1:
             if not isinstance(x, list):

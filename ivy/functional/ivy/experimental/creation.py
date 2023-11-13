@@ -945,6 +945,7 @@ def random_parafac2(
         the decomposed tensor is returned
      seed
         seed for generating random numbers
+
     Returns
     -------
       ivy.Parafac2Tensor
