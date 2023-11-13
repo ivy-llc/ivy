@@ -653,8 +653,8 @@ def cummin(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret.to(dtype))
     return ret.to(dtype)
-  
-  
+
+
 def average(
     a: torch.Tensor,
     /,

@@ -1024,7 +1024,8 @@ def cummin(
     return ivy.current_backend(x).cummin(
         x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
     )
-  
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1038,7 +1039,9 @@ def average(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the mean of all elements along the specified dimensions.
+    """
+    Computes the mean of all elements along the specified dimensions.
+
      Parameters
     ----------
     a
@@ -1060,7 +1063,7 @@ def average(
     Returns
     -------
     ret
-	The mean of the array elements.
+        The mean of the array elements.
 
     Examples
     --------
@@ -1077,4 +1080,3 @@ def average(
     return ivy.current_backend(a).average(
         a, axis=axis, keepdims=keepdims, dtype=dtype, out=out
     )
-  

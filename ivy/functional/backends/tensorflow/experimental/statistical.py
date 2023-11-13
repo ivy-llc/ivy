@@ -584,8 +584,8 @@ def cummin(
         return cummin_x
     else:
         return tf.cast(cummin_x, dtype)
-      
-      
+
+
 def average(
     a: Union[tf.Tensor, tf.Variable],
     /,

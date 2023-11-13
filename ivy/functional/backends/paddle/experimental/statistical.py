@@ -707,8 +707,8 @@ def cummin(
     if reverse:
         cummin_x = paddle.flip(cummin_x, axis=[axis])
     return cummin_x.cast(dtype)
-  
-  
+
+
 def average(
     a: paddle.Tensor,
     /,

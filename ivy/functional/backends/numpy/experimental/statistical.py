@@ -569,8 +569,8 @@ def igamma(
 
     igamma_vec = np.vectorize(igamma_cal)
     return igamma_vec(a, x).astype(a.dtype)
-  
-  
+
+
 def average(
     a: np.ndarray,
     /,
@@ -583,4 +583,3 @@ def average(
     if isinstance(axis, list):
         axis = tuple(axis)
     return np.average(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
-  

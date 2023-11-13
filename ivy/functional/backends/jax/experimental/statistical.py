@@ -439,7 +439,8 @@ def igamma(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jlax.igamma(a=a, x=x)
-  
+
+
 def average(
     a: JaxArray,
     /,
