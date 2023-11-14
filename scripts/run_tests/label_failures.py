@@ -2,7 +2,7 @@
 import sys
 from pymongo import MongoClient
 
-from scripts.run_tests.run_tests import (
+from helpers import (
     get_latest_package_version,
     get_submodule_and_function_name,
 )
