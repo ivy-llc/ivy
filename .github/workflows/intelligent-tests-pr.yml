@@ -41,6 +41,7 @@ jobs:
 
       - name: Display Test Failures
         run: |
+          cd ivy
           if [ -s labeled_combined_failures.txt ]
           then
               echo "The CI captured the following failing tests based on your changes:"
