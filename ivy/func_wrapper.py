@@ -12,7 +12,6 @@ import numpy as np
 
 from ivy.utils.exceptions import IvyValueError
 
-
 # for wrapping (sequence matters)
 FN_DECORATORS = [
     "handle_complex_input",
@@ -40,8 +39,6 @@ FN_DECORATORS = [
 
 
 # Helpers #
-# --------#
-
 # for casting modes, order is the hierarchy
 casting_modes_dict = {
     "uint": lambda: ivy.valid_uint_dtypes,
@@ -293,10 +290,7 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
 
 
 def _get_preferred_device(args, kwargs):
-    # When new arrays are created, they should be created on the same device as
-    # existing array inputs. If a device is specified as a kwarg, create them there.
-    # If not, scan for any other inputs which are already arrays and use the device
-    # of the first one found (unless we're in soft device mode).
+    
     device = None
     if "device" in kwargs and kwargs["device"] is not None:
         return device
@@ -307,7 +301,6 @@ def _get_preferred_device(args, kwargs):
 
 
 # Array Handling #
-# ---------------#
 
 
 def handle_array_function(fn):
