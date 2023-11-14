@@ -30,7 +30,6 @@ def min(
             return ivy.inplace_update(out, x)
         else:
             return x
-
     if where is not None:
         max_val = (
             ivy.iinfo(x.dtype).max
