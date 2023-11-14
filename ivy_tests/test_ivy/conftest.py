@@ -28,7 +28,7 @@ UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
 
 TEST_PARAMS_CONFIG = []
-SKIP_GROUND_TRUTH = True
+SKIP_GROUND_TRUTH = False
 UNSUPPORTED_FRAEMWORK_DEVICES = {"numpy": ["gpu", "tpu"]}
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
