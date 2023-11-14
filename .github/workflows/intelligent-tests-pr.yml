@@ -27,10 +27,12 @@ jobs:
       - name: Test Failures
         run: |
           find . -name "test_failures_*.txt" -exec cat {} + > combined_failures.txt
-          if [ -s combined_failures.txt ]
+          pip install pymongo
+          python3 scripts/run_tests/label_failures.py combined_failures.txt labeled_combined_failures.txt
+          if [ -s labeled_combined_failures.txt ]
           then
               echo "The CI captured the following failing tests based on your changes:"
-              cat combined_failures.txt
+              cat labeled_combined_failures.txt
           else
               echo "No test failures found based on your changes!"
           fi
@@ -83,7 +85,7 @@ jobs:
         id: tests
         run: |
           git clone -b master${{ matrix.branch }} https://github.com/unifyai/Mapping.git --depth 1
-          pip install pydriller GitPython pymongo
+          pip install pydriller GitPython
           python ivy/scripts/setup_tests/clone-mapping.py
           cp Mapping/tests.pbz2 ivy/
           cd ivy
@@ -104,6 +106,12 @@ jobs:
         with:
           name: test_failures_${{ matrix.branch }}
           path: ivy/test_failures_${{ matrix.branch }}.txt
+
+      - name: Upload Labelling Script
+        uses: actions/upload-artifact@v3
+        with:
+          name: scripts
+          path: ivy/scripts
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
