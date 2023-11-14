@@ -752,3 +752,9 @@ def zeros_initializer(shape, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def zeros_like(input, dtype=None, name=None):
     return ivy.zeros_like(input, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def scatter_nd(indices, updates, shape, name=None):
+    ivy.scatter_nd(indices, updates, shape)
+
