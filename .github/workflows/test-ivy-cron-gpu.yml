@@ -51,7 +51,6 @@ jobs:
 
       - name: Install ivy and fetch binaries
         run: |
-          conda activate py310
           cd ivy
           pip3 install -e .
           mkdir .ivy
