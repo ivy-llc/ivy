@@ -5,8 +5,8 @@ from hypothesis import strategies as st, assume
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.array_api_testing.test_array_api.array_api_tests import (
-    hypothesis_helpers as hh,
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    two_broadcastable_shapes,
 )
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
@@ -86,7 +86,7 @@ def _get_clip_inputs(draw):
 
 @st.composite
 def _masked_fill_helper(draw):
-    shape_1, shape_2 = draw(hh.two_broadcastable_shapes())
+    shape_1, shape_2 = draw(two_broadcastable_shapes())
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
