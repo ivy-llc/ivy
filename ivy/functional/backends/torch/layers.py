@@ -133,14 +133,12 @@ def linear(
 linear.partial_mixed_handler = lambda x, weight, **kwargs: weight.ndim == 2
 
 
-def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
-    if filter_format == "channel_last":
-        filters = filters.permute(-1, -2, *range(dims))
-
+def _x_dil_before_conv(x, dims, x_dilations):
     # adding dilation to input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
-    for i in range(dims):
-        if x_dilations[i] > 1:
+    x_dilations_idxs = [i for i, x_dil in enumerate(x_dilations) if x_dil > 1]
+    if x_dilations_idxs:
+        for i in x_dilations_idxs:
             h = x.shape[2 + i]
             new_height = h + (h - 1) * (x_dilations[i] - 1)
             h = torch.eye(
@@ -151,7 +149,7 @@ def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
             x = torch.swapaxes(x, 2 + i, -1)
             x = torch.matmul(x, h)
             x = torch.swapaxes(x, -1, 2 + i)
-    return x, filters
+    return x
 
 
 def _pad_before_conv(
@@ -251,7 +249,9 @@ def conv1d(
 ) -> torch.Tensor:
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
-    x, filters = _ff_xd_before_conv(x, filters, 1, filter_format, x_dilations)
+    if filter_format == "channel_last":
+        filters = filters.permute(2, 1, 0)
+    x = _x_dil_before_conv(x, 1, x_dilations)
     x, padding = _pad_before_conv(
         x, filters, strides, padding, 1, dilations, "channel_first"
     )
@@ -330,7 +330,9 @@ def conv2d(
 ) -> torch.Tensor:
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    x, filters = _ff_xd_before_conv(x, filters, 2, filter_format, x_dilations)
+    if filter_format == "channel_last":
+        filters = filters.permute(3, 2, 0, 1)
+    x = _x_dil_before_conv(x, 2, x_dilations)
     x, padding = _pad_before_conv(
         x, filters, strides, padding, 2, dilations, "channel_first"
     )
@@ -454,7 +456,9 @@ def conv3d(
 ):
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
-    x, filters = _ff_xd_before_conv(x, filters, 3, filter_format, x_dilations)
+    if filter_format == "channel_last":
+        filters = filters.permute(4, 3, 0, 1, 2)
+    x = _x_dil_before_conv(x, 3, x_dilations)
     x, padding = _pad_before_conv(
         x, filters, strides, padding, 3, dilations, "channel_first"
     )
@@ -537,20 +541,7 @@ def conv_general_dilated(
     if filter_format == "channel_last":
         filters = filters.permute(-1, -2, *range(dims))
 
-    # adding dilation to input
-    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
-    for i in range(dims):
-        if x_dilations[i] > 1:
-            h = x.shape[2 + i]
-            new_height = h + (h - 1) * (x_dilations[i] - 1)
-            h = torch.eye(
-                new_height,
-                dtype=x.dtype,
-                device=ivy.as_native_dev(ivy.default_device()),
-            )[:: x_dilations[i]]
-            x = torch.swapaxes(x, 2 + i, -1)
-            x = torch.matmul(x, h)
-            x = torch.swapaxes(x, -1, 2 + i)
+    x = _x_dil_before_conv(x, dims, x_dilations)
 
     x, padding = _pad_before_conv(
         x, filters, strides, padding, dims, dilations, "channel_first"
@@ -568,6 +559,7 @@ def conv_general_dilated(
         res = torch.nn.functional.conv3d(
             x, filters, bias, strides, padding, dilations, feature_group_count
         )
+
     if data_format == "channel_last":
         return res.permute(0, *range(2, dims + 2), 1)
     return res
