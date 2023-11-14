@@ -18,6 +18,14 @@ jobs:
       - name: Download all test results
         uses: actions/download-artifact@v3
 
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 1
+
       - name: Combined Test Results
         run: |
           find . -name "test_results_*.txt" -exec cat {} + > combined_test_results.txt
@@ -26,8 +34,9 @@ jobs:
 
       - name: Test Failures
         run: |
-          find . -name "test_failures_*.txt" -exec cat {} + > combined_failures.txt
+          find . -name "test_failures_*.txt" -exec cat {} + > ivy/combined_failures.txt
           pip install pymongo
+          cd ivy
           python3 scripts/run_tests/label_failures.py combined_failures.txt labeled_combined_failures.txt
           if [ -s labeled_combined_failures.txt ]
           then
@@ -106,12 +115,6 @@ jobs:
         with:
           name: test_failures_${{ matrix.branch }}
           path: ivy/test_failures_${{ matrix.branch }}.txt
-
-      - name: Upload Labelling Script
-        uses: actions/upload-artifact@v3
-        with:
-          name: scripts
-          path: ivy/scripts
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
