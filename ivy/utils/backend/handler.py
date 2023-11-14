@@ -535,9 +535,9 @@ def choose_random_backend(excluded=None):
             or not installed.""",
             as_array=False,
         )
-        f = np.random.choice(
-            [f_srt for f_srt in list(_backend_dict.keys()) if f_srt not in excluded]
-        )
+        f = np.random.choice([
+            f_srt for f_srt in list(_backend_dict.keys()) if f_srt not in excluded
+        ])
         if f is None:
             excluded.append(f)
             continue

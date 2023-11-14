@@ -24,15 +24,17 @@ jobs:
           echo "Test results summary:"
           cat combined_test_results.txt
 
-      - name: New Failures Introduced
+      - name: Test Failures
         run: |
-          find . -name "new_failures_*.txt" -exec cat {} + > combined_failures.txt
-          if [ -s combined_failures.txt ]
+          find . -name "test_failures_*.txt" -exec cat {} + > combined_failures.txt
+          pip install pymongo
+          python3 scripts/run_tests/label_failures.py combined_failures.txt labeled_combined_failures.txt
+          if [ -s labeled_combined_failures.txt ]
           then
-              echo "This PR introduces the following new failing tests:"
-              cat combined_failures.txt
+              echo "The CI captured the following failing tests based on your changes:"
+              cat labeled_combined_failures.txt
           else
-              echo "This PR does not introduce any new test failures! Yippee!"
+              echo "No test failures found based on your changes!"
           fi
 
   run_tests:
@@ -89,7 +91,7 @@ jobs:
           cd ivy
           python scripts/determine_tests/determine_tests.py ${{ matrix.branch }} pr
           set -o pipefail
-          python scripts/run_tests/run_tests_pr.py new_failures_${{ matrix.branch }}.txt | tee test_results_${{ matrix.branch }}.txt
+          python scripts/run_tests/run_tests_pr.py test_failures_${{ matrix.branch }}.txt | tee test_results_${{ matrix.branch }}.txt
           cd ..
         continue-on-error: true
 
@@ -102,8 +104,14 @@ jobs:
       - name: Upload New Failures
         uses: actions/upload-artifact@v3
         with:
-          name: new_failures_${{ matrix.branch }}
-          path: ivy/new_failures_${{ matrix.branch }}.txt
+          name: test_failures_${{ matrix.branch }}
+          path: ivy/test_failures_${{ matrix.branch }}.txt
+
+      - name: Upload Labelling Script
+        uses: actions/upload-artifact@v3
+        with:
+          name: scripts
+          path: ivy/scripts
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'

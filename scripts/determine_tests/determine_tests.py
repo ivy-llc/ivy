@@ -100,13 +100,13 @@ def main():
         # if it is a PR, we must check that the tests added were in the files_changes
         if len(sys.argv) >= 3 and sys.argv[2] == "pr":
             relevant_added_tests = []
-            subprocess.run(
-                ["git", "remote", "add", "upstream", "https://github.com/unifyai/ivy"]
-            )
+            subprocess.run([
+                "git", "remote", "add", "upstream", "https://github.com/unifyai/ivy"
+            ])
             subprocess.run(["git", "fetch", "upstream"])
-            lca_sha = subprocess.check_output(
-                ["git", "merge-base", "HEAD", "upstream/main"]
-            )
+            lca_sha = subprocess.check_output([
+                "git", "merge-base", "HEAD", "upstream/main"
+            ])
             lca_hash = lca_sha.decode().strip()
             for commit in Repository(".", single=lca_hash).traverse_commits():
                 lca_commit = commit._c_object

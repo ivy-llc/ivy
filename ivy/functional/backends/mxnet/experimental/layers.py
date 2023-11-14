@@ -80,7 +80,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
-    division_override: Optional[int] = None,
+    divisor_override: Optional[int] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     raise IvyNotImplementedException()
