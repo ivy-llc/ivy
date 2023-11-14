@@ -12,7 +12,9 @@ from ivy.utils.einsum_parser import legalise_einsum_expr
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("complex", "bool")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.14.0 and below": ("complex", "bool", "uint64")}, backend_version
+)
 def min(
     x: Union[tf.Tensor, tf.Variable],
     /,
