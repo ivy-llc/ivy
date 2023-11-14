@@ -25,7 +25,7 @@ jobs:
 
       - name: Start GPU VM
         run: |
-           conda activae py310
+           conda activate py310
            cd demos/tests/auth
            mkdir -p ~/.ssh
            touch ~/.ssh/id_rsa
