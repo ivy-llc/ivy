@@ -25,7 +25,6 @@ jobs:
 
       - name: Start GPU VM
         run: |
-           conda activate py310
            cd demos/tests/auth
            mkdir -p ~/.ssh
            touch ~/.ssh/id_rsa
@@ -52,6 +51,7 @@ jobs:
 
       - name: Install ivy and fetch binaries
         run: |
+          conda activate py310
           cd ivy
           pip3 install -e .
           mkdir .ivy
