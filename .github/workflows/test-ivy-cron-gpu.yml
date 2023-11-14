@@ -51,6 +51,8 @@ jobs:
 
       - name: Install ivy and fetch binaries
         run: |
+          python --version
+          python3 --version
           cd ivy
           pip3 install -e .
           mkdir .ivy
