@@ -32,12 +32,16 @@ jobs:
           echo "Test results summary:"
           cat combined_test_results.txt
 
-      - name: Test Failures
+      - name: Label Test Failures
         run: |
           find . -name "test_failures_*.txt" -exec cat {} + > ivy/combined_failures.txt
           pip install pymongo
           cd ivy
           python3 scripts/run_tests/label_failures.py combined_failures.txt labeled_combined_failures.txt
+
+      - name: Display Test Failures
+        run: |
+          cd ivy
           if [ -s labeled_combined_failures.txt ]
           then
               echo "The CI captured the following failing tests based on your changes:"
