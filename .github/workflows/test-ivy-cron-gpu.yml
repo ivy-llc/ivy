@@ -90,7 +90,7 @@ jobs:
 
         - name: Install clients for GCP/Mongo
           run: |
-            pip3 install pymongo google-api-python-client paramiko==2.7.1
+            pip3 install pymongo google-api-python-client paramiko
 
         - name: Stop GPU VM
           run: |
