@@ -8,8 +8,7 @@ if gpu == "true":
 
     main()
     with open("tests_to_run", "r") as f:
-        test_names = [line.strip().split(",")[0] for line in f.readlines()]
-    test_names = list(set(test_names))
+        test_names = [line.strip() for line in f.readlines()]
     tests_per_run = 10
 else:
     test_names = get_all_tests()
