@@ -5,6 +5,9 @@ on:
     - cron: '25 * * * *'
 permissions:
   actions: read
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 jobs:
   start-vm:
     runs-on: ubuntu-latest
