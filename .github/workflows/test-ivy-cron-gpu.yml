@@ -51,9 +51,8 @@ jobs:
 
       - name: Install ivy and fetch binaries
         run: |
-          python --version
-          python3 --version
           cd ivy
+          export TAG=cp310-cp310-manylinux_2_17_x86_64
           pip3 install -e .
           mkdir .ivy
           touch .ivy/key.pem
