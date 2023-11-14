@@ -105,13 +105,13 @@ if __name__ == "__main__":
                     device_access_str = " --gpus all"
 
                 os.system(
-                    f"docker run {device_access_str} --name test-container -v "
+                    f"docker run{device_access_str} --name test-container -v "
                     '"$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis -e '
                     f"REDIS_URL={redis_url} -e REDIS_PASSWD={redis_pass} -itd {image}"
                 )
                 command = (
                     "docker exec test-container python3 -m pytest --tb=short"
-                    f" {test_path} {device_str} --backend {backend}"
+                    f" {test_path}{device_str} --backend {backend}"
                 )
                 os.system(command)
 
