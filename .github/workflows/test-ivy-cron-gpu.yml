@@ -71,8 +71,7 @@ jobs:
         run: |
           pip3 install pymongo
           cd ivy
-          # python3 scripts/setup_tests/cron_tests.py ${{ github.run_number }}
-          echo "ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py::test_abs,torch" > tests_to_run
+          python3 scripts/setup_tests/cron_tests.py ${{ github.run_number }}
           python3 scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'true' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }}
 
   stop-vm:
