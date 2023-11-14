@@ -184,7 +184,20 @@ def _pad_before_conv(
         if all(pad[0] == pad[1] for pad in padding):
             return x, [pad[0] for pad in padding]
         pad_list = [item for sublist in padding for item in sublist[::-1]][::-1]
-    return torch.nn.functional.pad(x, pad_list), "valid"
+    return torch.nn.functional.pad(x, pad_list), 0
+
+
+def _new_pad_before_conv(x, padding):
+    if isinstance(padding, str):
+        return x, padding.lower()
+    elif isinstance(padding, int):
+        return x, padding
+    else:
+        # if symmetric padding is used, use torch's padding in conv function
+        if all(pad[0] == pad[1] for pad in padding):
+            return x, [pad[0] for pad in padding]
+        pad_list = [item for sublist in padding for item in sublist[::-1]][::-1]
+        return torch.nn.functional.pad(x, pad_list), "valid"
 
 
 def _pad_before_conv_tranpose(
@@ -255,6 +268,43 @@ def conv1d(
     x, padding = _pad_before_conv(
         x, filters, strides, padding, 1, dilations, "channel_first"
     )
+    res = torch.nn.functional.conv1d(x, filters, bias, strides, padding, dilations)
+    if data_format == "NWC":
+        res = res.permute(0, 2, 1)
+    return res
+
+
+@with_unsupported_dtypes(
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
+    backend_version,
+)
+def conv1d_v_1p9p0_and_above(
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
+    /,
+    *,
+    data_format: str = "NWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int]] = 1,
+    dilations: Union[int, Tuple[int]] = 1,
+    bias: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if data_format == "NWC":
+        x = x.permute(0, 2, 1)
+    if filter_format == "channel_last":
+        filters = filters.permute(2, 1, 0)
+    x = _x_dil_before_conv(x, 1, x_dilations)
+    if padding != "SAME" or all(
+        s == 1 for s in ([strides] if isinstance(strides, int) else strides)
+    ):
+        x, padding = _new_pad_before_conv(x, padding)
+    else:
+        x, padding = _pad_before_conv(
+            x, filters, strides, padding, 1, dilations, "channel_first"
+        )
     res = torch.nn.functional.conv1d(x, filters, bias, strides, padding, dilations)
     if data_format == "NWC":
         res = res.permute(0, 2, 1)
@@ -336,6 +386,43 @@ def conv2d(
     x, padding = _pad_before_conv(
         x, filters, strides, padding, 2, dilations, "channel_first"
     )
+    res = torch.nn.functional.conv2d(x, filters, bias, strides, padding, dilations)
+    if data_format == "NHWC":
+        return res.permute(0, 2, 3, 1)
+    return res
+
+
+@with_unsupported_dtypes(
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
+    backend_version,
+)
+def conv2d_v_1p9p0_and_above(
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int, int]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
+    /,
+    *,
+    data_format: str = "NHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int, int]] = 1,
+    dilations: Union[int, Tuple[int, int]] = 1,
+    bias: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if data_format == "NHWC":
+        x = x.permute(0, 3, 1, 2)
+    if filter_format == "channel_last":
+        filters = filters.permute(3, 2, 0, 1)
+    x = _x_dil_before_conv(x, 2, x_dilations)
+    if padding != "SAME" or all(
+        s == 1 for s in ([strides] if isinstance(strides, int) else strides)
+    ):
+        x, padding = _new_pad_before_conv(x, padding)
+    else:
+        x, padding = _pad_before_conv(
+            x, filters, strides, padding, 2, dilations, "channel_first"
+        )
     res = torch.nn.functional.conv2d(x, filters, bias, strides, padding, dilations)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
@@ -469,6 +556,42 @@ def conv3d(
 
 
 @with_unsupported_dtypes(
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")}, backend_version
+)
+def conv3d_v_1p9p0_and_above(
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int, int, int]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
+    /,
+    *,
+    data_format: str = "NDHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int, int, int]] = 1,
+    bias: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
+):
+    if data_format == "NDHWC":
+        x = x.permute(0, 4, 1, 2, 3)
+    if filter_format == "channel_last":
+        filters = filters.permute(4, 3, 0, 1, 2)
+    x = _x_dil_before_conv(x, 3, x_dilations)
+    if padding != "SAME" or all(
+        s == 1 for s in ([strides] if isinstance(strides, int) else strides)
+    ):
+        x, padding = _new_pad_before_conv(x, padding)
+    else:
+        x, padding = _pad_before_conv(
+            x, filters, strides, padding, 3, dilations, "channel_first"
+        )
+    res = torch.nn.functional.conv3d(x, filters, bias, strides, padding, dilations)
+    if data_format == "NDHWC":
+        res = res.permute(0, 2, 3, 4, 1)
+    return res
+
+
+@with_unsupported_dtypes(
     {"2.1.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
@@ -537,15 +660,67 @@ def conv_general_dilated(
     # permuting dims based on formats
     if data_format == "channel_last":
         x = x.permute(0, dims + 1, *range(1, dims + 1))
-
     if filter_format == "channel_last":
         filters = filters.permute(-1, -2, *range(dims))
 
     x = _x_dil_before_conv(x, dims, x_dilations)
-
     x, padding = _pad_before_conv(
         x, filters, strides, padding, dims, dilations, "channel_first"
     )
+
+    if dims == 1:
+        res = torch.nn.functional.conv1d(
+            x, filters, bias, strides, padding, dilations, feature_group_count
+        )
+    elif dims == 2:
+        res = torch.nn.functional.conv2d(
+            x, filters, bias, strides, padding, dilations, feature_group_count
+        )
+    else:
+        res = torch.nn.functional.conv3d(
+            x, filters, bias, strides, padding, dilations, feature_group_count
+        )
+
+    if data_format == "channel_last":
+        return res.permute(0, *range(2, dims + 2), 1)
+    return res
+
+
+@with_unsupported_dtypes(
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")},
+    backend_version,
+)
+def conv_general_dilated_v_1p9p0_and_above(
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
+    /,
+    *,
+    dims: int = 2,
+    data_format: str = "channel_last",
+    filter_format: str = "channel_last",
+    feature_group_count: int = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    bias: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
+):
+    # permuting dims based on formats
+    if data_format == "channel_last":
+        x = x.permute(0, dims + 1, *range(1, dims + 1))
+    if filter_format == "channel_last":
+        filters = filters.permute(-1, -2, *range(dims))
+
+    x = _x_dil_before_conv(x, dims, x_dilations)
+    if padding != "SAME" or all(
+        s == 1 for s in ([strides] if isinstance(strides, int) else strides)
+    ):
+        x, padding = _new_pad_before_conv(x, padding)
+    else:
+        x, padding = _pad_before_conv(
+            x, filters, strides, padding, dims, dilations, "channel_first"
+        )
 
     if dims == 1:
         res = torch.nn.functional.conv1d(

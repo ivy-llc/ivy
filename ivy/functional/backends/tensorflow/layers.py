@@ -8,7 +8,7 @@ from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.ivy.layers import (
     _deconv_length,
@@ -50,6 +50,17 @@ def _pad_before_conv(x, padding, dims):
         ),
         "VALID",
     )
+
+
+def _to_explicit_padding(padding, dims):
+    if isinstance(padding, str):
+        return padding, []
+    if isinstance(padding, int):
+        explicit_pad = [padding] * dims * 2
+    else:
+        explicit_pad = [item for sublist in padding for item in sublist]
+    explicit_pad = [0, 0] + explicit_pad + [0, 0]
+    return "EXPLICIT", explicit_pad
 
 
 def _output_shape(
@@ -134,7 +145,7 @@ def conv1d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16", "complex")}, backend_version)
+@with_supported_dtypes({"2.14.0 and below": ("float", "int32")}, backend_version)
 def conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -154,8 +165,20 @@ def conv2d(
     if filter_format == "channel_first":
         filters = tf.transpose(filters, (2, 3, 1, 0))
     x = _x_dil_before_conv(x, 2, x_dilations)
-    x, padding = _pad_before_conv(x, padding, 2)
-    res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)
+    padding, explicit_padding = _to_explicit_padding(padding, 2)
+    strides = [1] + ([strides] * 2 if isinstance(strides, int) else strides) + [1]
+    dilations = (
+        [1] + ([dilations] * 2 if isinstance(dilations, int) else dilations) + [1]
+    )
+    res = tf.raw_ops.Conv2D(
+        input=x,
+        filter=filters,
+        strides=strides,
+        padding=padding,
+        explicit_paddings=explicit_padding,
+        data_format="NHWC",
+        dilations=dilations,
+    )
     res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
@@ -319,7 +342,6 @@ def conv_general_dilated(
         filters = tf.transpose(filters, (*range(2, dims + 2), 1, 0))
 
     x = _x_dil_before_conv(x, dims, x_dilations)
-    x, padding = _pad_before_conv(x, padding, dims)
 
     df = _get_x_data_format(dims, "channel_last")
 
@@ -336,6 +358,7 @@ def conv_general_dilated(
         )
 
     if dims == 1:
+        x, padding = _pad_before_conv(x, padding, dims)
         res = tf.nn.conv1d(
             x,
             filters,
@@ -345,15 +368,22 @@ def conv_general_dilated(
             dilations,
         )
     elif dims == 2:
-        res = tf.nn.conv2d(
-            x,
-            filters,
-            strides,
-            padding,
-            df,
-            dilations,
+        padding, explicit_padding = _to_explicit_padding(padding, 2)
+        strides = [1] + ([strides] * 2 if isinstance(strides, int) else strides) + [1]
+        dilations = (
+            [1] + ([dilations] * 2 if isinstance(dilations, int) else dilations) + [1]
+        )
+        res = tf.raw_ops.Conv2D(
+            input=x,
+            filter=filters,
+            strides=strides,
+            padding=padding,
+            explicit_paddings=explicit_padding,
+            data_format="NHWC",
+            dilations=dilations,
         )
     else:
+        x, padding = _pad_before_conv(x, padding, dims)
         strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
         dilations = (
             [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
