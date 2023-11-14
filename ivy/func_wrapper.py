@@ -290,7 +290,6 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
 
 
 def _get_preferred_device(args, kwargs):
-    
     device = None
     if "device" in kwargs and kwargs["device"] is not None:
         return device
