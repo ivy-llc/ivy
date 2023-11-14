@@ -11,7 +11,7 @@ Please, follow the next process when you work on your subtask:
    - Choose a task to work on which:
      - is not marked as completed with a tick.
      - does not have an issue created.
-     
+
 
    Currently, there are three open tasks:
 
