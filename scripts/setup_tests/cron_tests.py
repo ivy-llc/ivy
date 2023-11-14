@@ -10,11 +10,11 @@ if gpu == "true":
     with open("tests_to_run", "r") as f:
         test_names = [line.strip().split(",")[0] for line in f.readlines()]
     test_names = list(set(test_names))
+    tests_per_run = 10
 else:
     test_names = get_all_tests()
-# Run 150 tests in each iteration of the cron job
+    tests_per_run = 150
 num_tests = len(test_names)
-tests_per_run = 150
 start = run_iter * tests_per_run
 end = (run_iter + 1) * tests_per_run
 print("Running Tests:")
