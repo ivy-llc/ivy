@@ -58,7 +58,7 @@ def bernoulli(
     *,
     logits: Union[float, tf.Tensor, tf.Variable] = None,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str = None,
+    device: Optional[str] = None,
     dtype: DType,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,

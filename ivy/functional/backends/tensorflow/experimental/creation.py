@@ -73,7 +73,7 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: str = None,
+    device: Optional[str] = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable], ...]:
     n_cols = n_rows if n_cols is None else n_cols
 

@@ -91,7 +91,7 @@ def get_item(
     /,
     query: Union[torch.Tensor, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> torch.Tensor:
     return x.__getitem__(query)
 

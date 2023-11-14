@@ -708,7 +708,7 @@ def fft(
     /,
     *,
     norm: str = "backward",
-    n: Union[int, Tuple[int]] = None,
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if not isinstance(dim, int):
@@ -853,7 +853,7 @@ def ifft(
     dim: int,
     *,
     norm: str = "backward",
-    n: Union[int, Tuple[int]] = None,
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if not isinstance(dim, int):
@@ -974,7 +974,7 @@ def adaptive_avg_pool2d(input, output_size):
 def fft2(
     x: torch.Tensor,
     *,
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
     out: Optional[torch.Tensor] = None,
@@ -1039,8 +1039,8 @@ def rfft(
 @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
 def rfftn(
     x: torch.Tensor,
-    s: Sequence[int] = None,
-    axes: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
+    axes: Optional[Sequence[int]] = None,
     *,
     norm: str = "backward",
     out: Optional[torch.Tensor] = None,
@@ -1250,7 +1250,7 @@ def max_unpool1d(
     kernel_size: Union[Tuple[int], int],
     /,
     *,
-    strides: Union[int, Tuple[int]] = None,
+    strides: Optional[Union[int, Tuple[int]]] = None,
     padding: Union[int, Tuple[int]] = 0,
     data_format: Optional[str] = "NCW",
 ) -> torch.Tensor:

@@ -657,7 +657,7 @@ def fft(
     /,
     *,
     norm: str = "backward",
-    n: Union[int, Tuple[int]] = None,
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     # ToDo: Remove conversion from float to complex when casting mode is working
@@ -804,7 +804,7 @@ def ifft(
     dim: int,
     *,
     norm: str = "backward",
-    n: Union[int, Tuple[int]] = None,
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not isinstance(dim, int):
@@ -947,7 +947,7 @@ interpolate.partial_mixed_handler = (
 
 def _fft2_norm(
     x: Union[tf.Tensor, tf.Variable],
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
 ):
@@ -964,7 +964,7 @@ def _fft2_norm(
 
 def trans_x_to_s(
     x: Union[tf.Tensor, tf.Variable],
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
 ) -> Union[tf.Tensor, tf.Variable]:
     """Change the shape of the input array x to the desired output shape s."""
@@ -1056,7 +1056,7 @@ def _fft2_helper(x, shape, axes):
 def fft2(
     x: Union[tf.Tensor, tf.Variable],
     *,
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
