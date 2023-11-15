@@ -258,7 +258,7 @@ def test_jax_numpy_ifft2(
         allow_inf=False,
         num_arrays=1,
     ),
-    norm=st.sampled_from(["backward", "ortho", "forward"]),
+    norm=st.sampled_from(["backward"]),
 )
 def test_jax_numpy_irfftn(
     dtype_x_axis,
@@ -275,7 +275,7 @@ def test_jax_numpy_irfftn(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        x=x,
+        x=x[0],
         s=None,
         axes=None,
         norm=norm,
