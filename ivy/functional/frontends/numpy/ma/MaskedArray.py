@@ -2,16 +2,8 @@ import ivy
 import ivy.functional.frontends.numpy as np_frontend
 import numpy as np
 
-masked = True
-nomask = False
 masked_print_options = "--"
-
-# Helpers #
-# ------- #
-
-
-def _is_masked_array(x):
-    return isinstance(x, (np.ma.MaskedArray, np_frontend.ma.MaskedArray))
+nomask = False
 
 
 # Class #
@@ -185,18 +177,26 @@ class MaskedArray(np_frontend.ndarray):
                 return masked_print_options
             return str(self._data.to_list())
         if ivy.any(self._mask):
-            return str(
-                [
-                    masked_print_options if mask else x
-                    for x, mask in zip(self._data.to_list(), self._mask.to_list())
-                ]
-            )
+            return str([
+                masked_print_options if mask else x
+                for x, mask in zip(self._data.to_list(), self._mask.to_list())
+            ])
         return str(self._data.to_list())
 
-    # Instance Methods #
-    # ---------------- #
 
-    # TODO
+# --- Helpers --- #
+# --------------- #
+
+
+def _is_masked_array(x):
+    return isinstance(x, (np.ma.MaskedArray, np_frontend.ma.MaskedArray))
+
+
+masked = True
+# Instance Methods #
+# ---------------- #
+
+# TODO
 
 
 # masked_array (alias)

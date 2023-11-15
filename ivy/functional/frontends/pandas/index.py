@@ -1,21 +1,50 @@
 import ivy
 import ivy.functional.frontends.pandas.series as series
+from typing import Iterable
 
 
 class Index:
     def __init__(self, data, dtype=None, copy=False, name=None, tupleize_cols=True):
         self.index = data
+        self.tokens = None
         if not isinstance(data, ivy.Array):
-            self.index_array = ivy.array(data, dtype=dtype)
+            try:
+                self.index_array = ivy.array(data, dtype=dtype)
+            except ivy.utils.exceptions.IvyBackendException:
+                # labels as strings
+                if isinstance(data, (list, tuple)):
+                    self.tokens = data
+                    self.index_array = Index._tokenize_1d(data)
+                else:
+                    # todo: handle other cases
+                    raise NotImplementedError
+
         else:
             self.index_array = data
+
+        self.tokens_exist = self.tokens is not None
         self.dtype = dtype
         self.name = name
         self.copy = copy
         self.tupleize_cols = tupleize_cols
 
+    @staticmethod
+    def _tokenize_1d(x: Iterable):
+        return ivy.array([v for v, _ in enumerate(x)])
+
     def __repr__(self):
-        return f"Index {self.index_array.to_list()}"
+        if self.tokens_exist:
+            return f"Index({list(self.tokens)})"
+        return f"Index({self.index_array.to_list()})"
+
+    def __getitem__(self, item):
+        if self.tokens_exist:
+            if isinstance(item, (list, tuple)):
+                return Index(self.tokens[item])
+            return self.tokens[item]
+        elif isinstance(item, (list, tuple)):
+            return Index(self.index_array[item])
+        return self.index_array[item]
 
     def __len__(self):
         return len(self.index_array)

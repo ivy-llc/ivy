@@ -18,8 +18,9 @@ class _ArrayWithDataTypes(abc.ABC):
         copy: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Copy an array to a specified data type irrespective of
-        :ref:`type-promotion` rules.
+        """
+        Copy an array to a specified data type irrespective of :ref:`type- promotion`
+        rules.
 
         .. note::
         Casting floating-point ``NaN`` and ``infinity`` values to integral data types
@@ -179,12 +180,34 @@ class _ArrayWithDataTypes(abc.ABC):
         self: ivy.Array, as_native: bool = False
     ) -> Union[ivy.Dtype, ivy.NativeDtype]:
         """
-        Examples
+        `ivy.Array` instance method variant of `ivy.dtype`. This method helps to get the
+        data type of the array.
+
+        Parameters
+        ----------
+        self
+            The input array.
+        as_native
+            Whether to return the native data type of the array.
+            If True, returns the native data type. Default is False.
+
+        Returns
         -------
+        ret
+            The data type of the array. If as_native is True,
+            returns the native data type.
+
+        Examples
+        --------
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.dtype()
         >>> print(y)
         int32
+
+        >>> x= ivy.array([1.0, 2.0, 3.0], dtype=ivy.float64)
+        >>> y = x.dtype(as_native=True)
+        >>> print(y)
+        float64
         """
         return ivy.dtype(self._data, as_native=as_native)
 
@@ -251,7 +274,7 @@ class _ArrayWithDataTypes(abc.ABC):
         Parameters
         ----------
         self
-            input array from which to check for float dtype.
+            Input array from which to check for float dtype.
 
         Returns
         -------
@@ -261,8 +284,12 @@ class _ArrayWithDataTypes(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([1, 2, 3], dtype=ivy.int8)
-        >>> x.is_float_dtype()
+        >>> print(x.is_float_dtype())
         False
+
+        >>> x = ivy.array([2.3, 4.5, 6.8], dtype=ivy.float32)
+        >>> print( x.is_float_dtype())
+        True
         """
         return ivy.is_float_dtype(self._data)
 

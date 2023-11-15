@@ -5,7 +5,7 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
             "bfloat16",
             "float16",
         )
@@ -39,9 +39,25 @@ def batch_norm(
     return normalized
 
 
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
+def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
+    return ivy.group_norm(
+        input, num_groups, scale=weight, offset=bias, data_format="NCS", eps=eps
+    )
+
+
+@with_unsupported_dtypes(
+    {
+        "2.1.0 and below": (
             "bfloat16",
             "float16",
         )
@@ -76,28 +92,12 @@ def instance_norm(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
 def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
     shape = ivy.shape(input)
     if isinstance(normalized_shape, int) and normalized_shape == shape[-1]:
         axis = [-1]
     else:
-        assert normalized_shape == shape[-len(normalized_shape) :]
+        assert ivy.all(ivy.equal(normalized_shape, shape[-len(normalized_shape) :]))
         axis = list(range(len(shape) - len(normalized_shape), len(shape)))
     return ivy.layer_norm(input, axis, scale=weight, offset=bias, eps=eps)
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "torch",
-)
-def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
-    return ivy.group_norm(
-        input, num_groups, scale=weight, offset=bias, data_format="NCS", eps=eps
-    )
