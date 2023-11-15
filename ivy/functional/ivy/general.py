@@ -183,9 +183,9 @@ def get_referrers_recursive(
     item: object,
     *,
     depth: int = 0,
-    max_depth: int = None,
-    seen_set: set = None,
-    local_set: set = None,
+    max_depth: Optional[int] = None,
+    seen_set: Optional[set] = None,
+    local_set: Optional[set] = None,
 ) -> ivy.Container:
     """
     Recursively retrieve referrers for an object.
@@ -1326,7 +1326,7 @@ def value_is_nan(
     x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
     if x_scalar != x:
         return True
-    if include_infs and (x_scalar == INF or x_scalar == -INF):
+    if include_infs and (x_scalar in [INF, -INF]):
         return True
     return False
 
@@ -2341,7 +2341,7 @@ def stable_pow(
     exponent: Union[Number, ivy.Array, ivy.NativeArray],
     /,
     *,
-    min_base: float = None,
+    min_base: Optional[float] = None,
 ) -> Any:
     """
     Raise the base by the power, with ivy.min_base added to the base when exponent > 1
@@ -2838,10 +2838,10 @@ def get_item(
     ivy.array([  4,  -2, -10])
     """
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        if not len(query.shape):
-            if not query:
-                return ivy.array([], shape=(0,), dtype=x.dtype)
-            return ivy.expand_dims(x, axis=0)
+        if query.ndim == 0:
+            if query is False:
+                return ivy.zeros(shape=(0,) + x.shape, dtype=x.dtype)
+            return x[None]  # eqivalent to ivy.expand_dims(x, axis=0)
         query = ivy.nonzero(query, as_tuple=False)
         ret = ivy.gather_nd(x, query)
     else:
@@ -3524,12 +3524,13 @@ def gather(
         The array which indicates the indices that will be gathered along
         the specified axis.
     axis
-        optional int, the axis from which to gather from.
+        Optional int, the axis from which to gather from.
         Default is ``-1``.
     batch_dims
-        optional int, lets you gather different items from each element of a batch.
+        Optional int, lets you gather different items from each element of a batch.
+        Default is ``0``.
     out
-        optional array, for writing the result to. It must have a shape
+        Optional array, for writing the result to. It must have a shape
         that the inputs broadcast to.
 
     Returns
@@ -3697,13 +3698,41 @@ def multiprocessing(context: Optional[str] = None):
     Parameters
     ----------
     context
-        The context of the multiprocessing, either fork, forkserver or spawn.
+        The context of the multiprocessing, either 'fork', 'forkserver' or 'spawn'.
         Default is ``None``.
 
     Returns
     -------
     ret
         Multiprocessing module
+
+    Examples
+    --------
+    >>> import ivy
+
+    Using the default context (None):
+
+    >>> mp_default = ivy.multiprocessing()
+    >>> print(mp_default)
+    <multiprocessing.context.DefaultContext object at 0x7f4e3193e520>
+
+    Specifying 'fork' as the context:
+
+    >>> mp_fork = ivy.multiprocessing(context='fork')
+    >>> print(mp_fork)
+    <multiprocessing.context.ForkContext object at 0x7f4e3193e580>
+
+    Specifying 'spawn' as the context:
+
+    >>> mp_spawn = ivy.multiprocessing(context='spawn')
+    >>> print(mp_spawn)
+    <multiprocessing.context.SpawnContext object at 0x7f4e3193e5e0>
+
+    Specifying 'forkserver' as the context:
+
+    >>> mp_forkserver = ivy.multiprocessing(context='forkserver')
+    >>> print(mp_forkserver)
+    <multiprocessing.context.ForkServerContext object at 0x7f4e3193e640>
     """
     return current_backend().multiprocessing(context)
 
@@ -4041,8 +4070,9 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
                 list(fn_supported_dnd.values())[0], tuple
             )
 
-        for device, dtypes in fn_supported_dnd.items():
-            fn_supported_dnd[device] = tuple(_expand_typesets(dtypes))
+        if isinstance(fn_supported_dnd, dict):
+            for device, dtypes in fn_supported_dnd.items():
+                fn_supported_dnd[device] = tuple(_expand_typesets(dtypes))
 
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
@@ -4058,8 +4088,9 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
                 list(fn_unsupported_dnd.values())[0], tuple
             )
 
-        for device, dtypes in fn_unsupported_dnd.items():
-            fn_unsupported_dnd[device] = tuple(_expand_typesets(dtypes))
+        if isinstance(fn_unsupported_dnd, dict):
+            for device, dtypes in fn_unsupported_dnd.items():
+                fn_unsupported_dnd[device] = tuple(_expand_typesets(dtypes))
 
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
@@ -4359,6 +4390,7 @@ def is_ivy_nested_array(x: Any, /) -> bool:
     ----------
     x
         The input to check
+
     Returns
     -------
     ret

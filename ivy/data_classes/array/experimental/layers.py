@@ -952,7 +952,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
     def fft2(
         self: ivy.Array,
         *,
-        s: Sequence[int] = None,
+        s: Optional[Sequence[int]] = None,
         dim: Sequence[int] = (-2, -1),
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
@@ -1143,8 +1143,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
     def rfftn(
         self: ivy.Array,
-        s: Sequence[int] = None,
-        axes: Sequence[int] = None,
+        s: Optional[Sequence[int]] = None,
+        axes: Optional[Sequence[int]] = None,
         *,
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
@@ -1350,7 +1350,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         kernel_size: Union[Tuple[int], int],
         /,
         *,
-        strides: Union[int, Tuple[int]] = None,
+        strides: Optional[Union[int, Tuple[int]]] = None,
         padding: Union[int, Tuple[int]] = 0,
         data_format: Optional[str] = "NCW",
     ) -> ivy.Array:

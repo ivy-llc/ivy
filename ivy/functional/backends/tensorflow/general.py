@@ -24,7 +24,7 @@ _round = round
 
 
 def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, (tf.Tensor, tf.Variable)):
+    if isinstance(x, (tf.Tensor, tf.Variable, tf.TensorArray)):
         if exclusive and isinstance(x, tf.Variable):
             return False
         return True
@@ -50,7 +50,7 @@ def current_backend_str() -> str:
 
 def _check_query(query):
     return not isinstance(query, list) and (
-        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
+        not (ivy.is_array(query) and ivy.is_bool_dtype(query) and bool(query.ndim > 0))
     )
 
 
@@ -59,13 +59,14 @@ def get_item(
     /,
     query: Union[tf.Tensor, tf.Variable, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return x.__getitem__(query)
 
 
 get_item.partial_mixed_handler = lambda x, query, **kwargs: (
     all(_check_query(i) for i in query)
+    and len({i.shape for i in query if ivy.is_array(i)}) == 1
     if isinstance(query, tuple)
     else _check_query(query)
 )

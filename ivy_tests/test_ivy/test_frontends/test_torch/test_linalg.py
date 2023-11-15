@@ -63,7 +63,7 @@ def _generate_multi_dot_dtype_and_arrays(draw):
 @st.composite
 def _get_axis_and_p(draw):
     p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
-    if p == "fro" or p == "nuc":
+    if p in ["fro", "nuc"]:
         max_axes_size = 2
         min_axes_size = 2
     else:
@@ -1156,10 +1156,12 @@ def test_torch_svd(
 @handle_frontend_test(
     fn_tree="torch.linalg.svdvals",
     dtype_and_x=_get_dtype_and_matrix(batch=True),
+    driver=st.sampled_from([None, "gesvd", "gesvdj", "gesvda"]),
 )
 def test_torch_svdvals(
     *,
     dtype_and_x,
+    driver,
     on_device,
     fn_tree,
     frontend,
@@ -1174,6 +1176,7 @@ def test_torch_svdvals(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        driver=driver,
         A=x[0],
     )
 

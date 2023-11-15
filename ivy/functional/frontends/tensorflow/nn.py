@@ -306,9 +306,9 @@ def depthwise_conv2d(
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     fc = filter.shape[-2]
-    filter = filter.reshape(
-        [*filter.shape[0:2], 1, filter.shape[-2] * filter.shape[-1]]
-    )
+    filter = filter.reshape([
+        *filter.shape[0:2], 1, filter.shape[-2] * filter.shape[-1]
+    ])
     return ivy.conv_general_dilated(
         input,
         filter,
@@ -342,31 +342,16 @@ def leaky_relu(features, alpha=0.2, name=None):
     return ivy.leaky_relu(features, alpha=alpha)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, "tensorflow")
+@with_supported_dtypes({"2.14.0 and below": ("float32", "float16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def local_response_normalization(
     input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
 ):
-    input_shape = ivy.shape(input)
-    depth = input_shape[-1]
-    ivy.utils.assertions.check_equal(
-        ivy.get_num_dims(input),
-        4,
-        message="4D input, but got input with sizes " + str(input_shape),
-        as_array=False,
+    return ivy.local_response_norm(
+        input, 2 * depth_radius + 1, bias=bias, alpha=alpha, beta=beta
     )
-    sqr_sum = ivy.empty(input_shape[:-1] + (0,), dtype=ivy.dtype(input))
-    for d in range(depth):
-        start = max(0, d - depth_radius)
-        end = min(d + depth_radius + 1, depth)
-        inter_channel_sum = ivy.sum(
-            input[:, :, :, start:end] ** 2, axis=3, keepdims=True
-        )
-        sqr_sum = ivy.concat([sqr_sum, inter_channel_sum], axis=-1)
-    return ivy.divide(input, ivy.pow(ivy.add(sqr_sum * alpha, bias), beta))
 
 
-# log_poisson_loss
 @to_ivy_arrays_and_back
 def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
     return ivy.log_poisson_loss(targets, log_input, compute_full_loss=compute_full_loss)

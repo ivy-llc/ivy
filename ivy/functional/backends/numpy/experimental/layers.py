@@ -97,7 +97,7 @@ def max_pool1d(
         )
     else:
         if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
+            item != 0 for sublist in padding for item in sublist
         ):
             raise NotImplementedError(
                 "Nonzero explicit padding is not supported for depthwise max pooling"
@@ -203,7 +203,7 @@ def max_pool2d(
         )
     else:
         if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
+            item != 0 for sublist in padding for item in sublist
         ):
             raise NotImplementedError(
                 "Nonzero explicit padding is not supported for depthwise max pooling"
@@ -317,7 +317,7 @@ def max_pool3d(
         )
     else:
         if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
+            item != 0 for sublist in padding for item in sublist
         ):
             raise NotImplementedError(
                 "Nonzero explicit padding is not supported for depthwise max pooling"
@@ -369,6 +369,8 @@ def _get_padded_values(x_shape, kernel, strides, padding, ceil_mode, dim):
             for i in range(dim)
         ]
     else:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * dim
         pad_specific = [sum(padding[i]) for i in range(dim)]
 
     c = []
@@ -386,12 +388,13 @@ def avg_pool1d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(kernel, int):
@@ -470,7 +473,7 @@ def avg_pool2d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -577,7 +580,7 @@ def avg_pool3d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -717,7 +720,7 @@ def fft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     if x.dtype in [np.uint64, np.int64, np.float64, np.complex128]:
         out_dtype = np.complex128
@@ -726,7 +729,7 @@ def fft(
     return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
-@with_supported_dtypes({"1.26.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"1.26.2 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -940,7 +943,7 @@ def ifft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)
 
@@ -1016,7 +1019,7 @@ def stft(
 def fft2(
     x: np.ndarray,
     *,
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
     out: Optional[np.ndarray] = None,
@@ -1059,7 +1062,7 @@ def ifftn(
     return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("complex",)}, backend_version)
 def embedding(
     weights: np.ndarray,
     indices: np.ndarray,
@@ -1106,8 +1109,8 @@ def rfft(
 
 def rfftn(
     x: np.ndarray,
-    s: Sequence[int] = None,
-    axes: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
+    axes: Optional[Sequence[int]] = None,
     *,
     norm: str = "backward",
     out: Optional[np.ndarray] = None,
@@ -1131,6 +1134,115 @@ def rfftn(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.fft.rfftn(x, s, axes, norm).astype(np.complex128)
+
+
+# stft
+def stft(
+    signals: np.ndarray,
+    frame_length: int,
+    frame_step: int,
+    /,
+    *,
+    fft_length: Optional[int] = None,
+    window_fn: Optional[Callable] = None,
+    pad_end: Optional[bool] = False,
+    name: Optional[str] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if not isinstance(frame_length, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_length)}"
+        )
+
+    if frame_length < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if not isinstance(frame_step, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_step)}"
+        )
+
+    if frame_step < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if fft_length is not None:
+        if not isinstance(fft_length, int):
+            raise ivy.utils.exceptions.IvyError(
+                f"Expecting <class 'int'> instead of {type(fft_length)}"
+            )
+
+        if fft_length < 1:
+            raise ivy.utils.exceptions.IvyError(
+                f"Invalid data points {frame_length}, expecting frame_length larger"
+                " than or equal to 1"
+            )
+
+    input_dtype = signals.dtype
+    if input_dtype == np.float32:
+        dtype = np.complex64
+    elif input_dtype == np.float64:
+        dtype = np.complex128
+
+    def stft_1D(signals, frame_length, frame_step, fft_length, pad_end):
+        if fft_length is None:
+            fft_length = 1
+            while fft_length < frame_length:
+                fft_length *= 2
+
+        num_samples = signals.shape[-1]
+
+        if pad_end:
+            num_samples = signals.shape[-1]
+            num_frames = -(-num_samples // frame_step)
+            pad_length = max(
+                0, frame_length + frame_step * (num_frames - 1) - num_samples
+            )
+
+            signals = np.pad(signals, [(0, pad_length)])
+        else:
+            num_frames = 1 + (num_samples - frame_length) // frame_step
+
+        stft_result = []
+
+        if window_fn is None:
+            window = 1
+        else:
+            window = window_fn(frame_length)
+
+        for i in range(num_frames):
+            start = i * frame_step
+            end = start + frame_length
+            frame = signals[..., start:end]
+            windowed_frame = frame * window
+            pad_length = fft_length - frame_length
+            windowed_frame = np.pad(windowed_frame, [(0, pad_length)])
+            windowed_frame = np.array(windowed_frame, dtype=dtype)
+
+            fft_frame = np.fft.fft(windowed_frame, axis=-1)
+            slit = int(fft_length // 2 + 1)
+            stft_result.append(fft_frame[..., 0:slit])
+
+        stft = np.stack(stft_result, axis=0)
+        return stft
+
+    def stft_helper(nested_list, frame_length, frame_step, fft_length):
+        nested_list = nested_list
+        if len(np.shape(nested_list)) > 1:
+            return [
+                stft_helper(sublist, frame_length, frame_step, fft_length)
+                for sublist in nested_list
+            ]
+        else:
+            return stft_1D(nested_list, frame_length, frame_step, fft_length, pad_end)
+
+    to_return = stft_helper(signals, frame_length, frame_step, fft_length)
+    return np.array(to_return, dtype=dtype)

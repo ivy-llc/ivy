@@ -15,16 +15,10 @@ ivy_dtype_dict = {
     torch.int32: "int32",
     torch.int64: "int64",
     torch.uint8: "uint8",
-    torch.qint8: "qint8",
-    torch.qint32: "qint32",
-    torch.quint8: "quint8",
-    torch.quint2x4: "quint2x4",
-    torch.quint4x2: "quint4x2",
     torch.bfloat16: "bfloat16",
     torch.float16: "float16",
     torch.float32: "float32",
     torch.float64: "float64",
-    torch.complex32: "complex32",
     torch.complex64: "complex64",
     torch.complex128: "complex128",
     torch.bool: "bool",
@@ -202,7 +196,7 @@ def as_native_dtype(
         dtype_in = dtype_in.name
     if not isinstance(dtype_in, str):
         return dtype_in
-    if dtype_in in native_dtype_dict.keys():
+    if dtype_in in native_dtype_dict:
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(

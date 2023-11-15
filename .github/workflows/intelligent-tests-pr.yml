@@ -1,12 +1,11 @@
 name: intelligent-tests-pr
 on:
   workflow_dispatch:
-  pull_request_target:
+  pull_request:
     types: [labeled, opened, synchronize, reopened, review_requested]
 
 permissions:
   actions: read
-  pull-requests: write
 
 jobs:
   display_test_results:
@@ -19,51 +18,37 @@ jobs:
       - name: Download all test results
         uses: actions/download-artifact@v3
 
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 1
+
       - name: Combined Test Results
         run: |
           find . -name "test_results_*.txt" -exec cat {} + > combined_test_results.txt
           echo "Test results summary:"
           cat combined_test_results.txt
 
-      - name: New Failures Introduced
-        id: ci_output
+      - name: Label Test Failures
         run: |
-          find . -name "new_failures_*.txt" -exec cat {} + > combined_failures.txt
-          if [ -s combined_failures.txt ]
+          find . -name "test_failures_*.txt" -exec cat {} + > ivy/combined_failures.txt
+          pip install pymongo
+          cd ivy
+          python3 scripts/run_tests/label_failures.py combined_failures.txt labeled_combined_failures.txt
+
+      - name: Display Test Failures
+        run: |
+          cd ivy
+          if [ -s labeled_combined_failures.txt ]
           then
-              echo "This PR introduces the following new failing tests:"
-              cat combined_failures.txt
-              {
-                echo 'MESSAGE<<EOF'
-                echo "# Failed tests:"
-                echo "This PR introduces the following new failing tests:"
-                cat combined_failures.txt
-                echo EOF
-              } >> "$GITHUB_OUTPUT"
+              echo "The CI captured the following failing tests based on your changes:"
+              cat labeled_combined_failures.txt
           else
-              echo "MESSAGE=This pull request does not result in any additional test failures. Congratulations!" >> "$GITHUB_OUTPUT"
+              echo "No test failures found based on your changes!"
           fi
-      - name: Find Comment
-        uses: peter-evans/find-comment@v2
-        id: fc
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: <!--- CI Output -->
-
-      - name: Create or update comment
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            Thank you for this PR, here is the CI results:
-
-            -------------
-            ${{ steps.ci_output.outputs.MESSAGE}}
-
-            <!--- CI Output -->
-          edit-mode: replace
 
   run_tests:
     runs-on: ubuntu-latest
@@ -93,20 +78,34 @@ jobs:
           submodules: "recursive"
           fetch-depth: 100
 
+      - name: Install ivy and fetch binaries
+        run: |
+          cd ivy
+          pip3 install -e .
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          cd ..
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
+
       - name: Determine and Run Tests
         id: tests
         run: |
-          git clone -b master${{ matrix.branch }} https://github.com/unifyai/Mapping.git --depth 200
+          git clone -b master${{ matrix.branch }} https://github.com/unifyai/Mapping.git --depth 1
           pip install pydriller GitPython
           python ivy/scripts/setup_tests/clone-mapping.py
           cp Mapping/tests.pbz2 ivy/
           cd ivy
-          mkdir .ivy
-          touch .ivy/key.pem
-          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python scripts/determine_tests/determine_tests.py ${{ matrix.branch }} pr
           set -o pipefail
-          python scripts/run_tests/run_tests_pr.py new_failures_${{ matrix.branch }}.txt | tee test_results_${{ matrix.branch }}.txt
+          python scripts/run_tests/run_tests_pr.py test_failures_${{ matrix.branch }}.txt | tee test_results_${{ matrix.branch }}.txt
+          cd ..
         continue-on-error: true
 
       - name: Upload test results
@@ -118,8 +117,8 @@ jobs:
       - name: Upload New Failures
         uses: actions/upload-artifact@v3
         with:
-          name: new_failures_${{ matrix.branch }}
-          path: ivy/new_failures_${{ matrix.branch }}.txt
+          name: test_failures_${{ matrix.branch }}
+          path: ivy/test_failures_${{ matrix.branch }}.txt
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'

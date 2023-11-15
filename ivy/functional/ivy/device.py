@@ -33,6 +33,7 @@ import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
+    inputs_to_native_arrays,
     handle_nestable,
     handle_array_like_without_promotion,
     handle_backend_invalid,
@@ -155,7 +156,7 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
 
 def _shift_native_arrays_on_default_device(*args, **kwargs):
     with ivy.ArrayMode(False):
-        default_device = ivy.default_device(as_native=True)
+        default_device = ivy.default_device()
         args, kwargs = ivy.nested_map(
             lambda x: (
                 ivy.to_device(x, default_device)
@@ -164,7 +165,7 @@ def _shift_native_arrays_on_default_device(*args, **kwargs):
             ),
             [args, kwargs],
         )
-    return args, kwargs, default_device
+    return args, kwargs, ivy.as_native_dev(default_device)
 
 
 # Device Queries #
@@ -345,7 +346,7 @@ def unset_soft_device_mode() -> None:
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
-@to_native_arrays_and_back
+@inputs_to_native_arrays
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -775,7 +776,7 @@ def default_device(
     /,
     *,
     item: Optional[Union[list, tuple, dict, ivy.Array, ivy.NativeArray]] = None,
-    as_native: bool = None,
+    as_native: Optional[bool] = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """
     Return the input device or the default device. If the as_native flag is set, the

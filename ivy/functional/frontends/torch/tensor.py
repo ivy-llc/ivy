@@ -44,6 +44,10 @@ class Tensor:
             "ivy.array", "ivy.frontends.torch.Tensor"
         )
 
+    def __hash__(self):
+        # TODO: Need to add test. Adding for KLA demo (priority)
+        return id(self)
+
     # Properties #
     # ---------- #
 
@@ -142,6 +146,7 @@ class Tensor:
         return torch_frontend.reshape(self)
 
     @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16",)}, "paddle")
     def reshape_as(self, other):
         return torch_frontend.reshape(self, other.shape)
 
@@ -774,6 +779,10 @@ class Tensor:
     def is_meta(self):
         return "meta" in ivy.dev(self.ivy_array)
 
+    @with_unsupported_dtypes({"2.1.0 and below": ("uint16", "bool")}, "torch")
+    def positive(self):
+        return torch_frontend.positive(self)
+
     @with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, "torch")
     def pow(self, exponent):
         return torch_frontend.pow(self, exponent)
@@ -883,7 +892,7 @@ class Tensor:
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, "torch")
     def cumsum_(self, dim, *, dtype=None):
-        self.ivy_array = self.cumsum(dim, dtype).ivy_array
+        self.ivy_array = self.cumsum(dim, dtype=dtype).ivy_array
         return self
 
     @with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
@@ -1951,7 +1960,7 @@ class Tensor:
     )
     def quantile(self, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
         return torch_frontend.quantile(
-            self, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
+            self, q, dim=dim, keepdim=keepdim, interpolation=interpolation, out=out
         )
 
     @with_unsupported_dtypes(
@@ -1985,6 +1994,16 @@ class Tensor:
             low=from_, high=to, shape=self.size(), dtype=self.dtype
         )
         return self.ivy_array
+
+    def uniform_(self, from_=0, to=1, *, generator=None):
+        # TODO: Need to add test. Adding for KLA demo (priority)
+        ret = ivy.random_uniform(
+            low=from_, high=to, shape=self.shape, dtype=self.dtype, seed=generator
+        )
+        self._ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret, self._ivy_array.dtype)
+        )
+        return self
 
     @with_unsupported_dtypes(
         {
@@ -2159,6 +2178,13 @@ class Tensor:
     def rad2deg(self, *, out=None):
         return torch_frontend.rad2deg(self, out=out)
 
+    @with_supported_dtypes(
+        {"2.1.0 and below": "valid"},
+        "torch",
+    )
+    def corrcoef(self):
+        return torch_frontend.corrcoef(self)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
@@ -2201,7 +2227,7 @@ class Size(tuple):
                 new_iterable.append(int(item))
             except Exception:
                 raise TypeError(f"Expected int, but got {type(item)} at index {i}")
-        return super(Size, cls).__new__(cls, tuple(new_iterable))
+        return super().__new__(cls, tuple(new_iterable))
 
     def __init__(self, shape) -> None:
         self._ivy_shape = shape if isinstance(shape, ivy.Shape) else ivy.shape(shape)

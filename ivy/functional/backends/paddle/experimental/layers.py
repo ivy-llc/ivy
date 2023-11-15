@@ -30,7 +30,7 @@ def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -97,7 +97,7 @@ def max_pool1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -168,7 +168,7 @@ def max_pool2d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -243,12 +243,13 @@ def avg_pool1d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
@@ -258,7 +259,7 @@ def avg_pool2d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -274,7 +275,7 @@ def avg_pool3d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -300,7 +301,7 @@ def dct(
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("bfloat16", "bool", "float16")}, backend_version
+    {"2.5.2 and below": ("bfloat16", "bool", "float16")}, backend_version
 )
 def fft(
     x: paddle.Tensor,
@@ -308,7 +309,7 @@ def fft(
     /,
     *,
     norm: Optional[str] = "backward",
-    n: Union[int, Tuple[int]] = None,
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if not isinstance(dim, int):
@@ -344,7 +345,7 @@ def fft(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -366,7 +367,7 @@ def dropout1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -388,7 +389,7 @@ def dropout2d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -413,7 +414,7 @@ def ifft(
     dim: int,
     *,
     norm: Optional[str] = "backward",
-    n: Union[int, Tuple[int]] = None,
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
@@ -421,7 +422,7 @@ def ifft(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("int8", "float32", "float64"),
             "gpu": ("int8", "bfloat16", "float16", "float32", "float64"),
         },
@@ -464,7 +465,7 @@ def interpolate(
     mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
-    align_corners: Optional[bool] = None,
+    align_corners: bool = False,
     antialias: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ):
@@ -557,7 +558,7 @@ def rfft(
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
+    {"2.5.2 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
     backend_version,
 )
 def rfftn(
@@ -574,7 +575,7 @@ def rfftn(
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
             "complex64",
             "complex128",
         )
@@ -591,6 +592,121 @@ def fft2(
 ) -> paddle.Tensor:
     res = paddle.fft.fft2(x, s, dim, norm)
     return res.astype("complex128")
+
+
+# stft
+@with_supported_dtypes(
+    {
+        "2.5.2 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def stft(
+    signals: paddle.Tensor,
+    frame_length: int,
+    frame_step: int,
+    /,
+    *,
+    fft_length: Optional[int] = None,
+    window_fn: Optional[Callable] = None,
+    pad_end: Optional[bool] = False,
+    name: Optional[str] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if not isinstance(frame_length, int):
+        raise IvyValueError(f"Expecting <class 'int'> instead of {type(frame_length)}")
+
+    if frame_length < 1:
+        raise IvyValueError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if not isinstance(frame_step, int):
+        raise IvyValueError(f"Expecting <class 'int'> instead of {type(frame_step)}")
+
+    if frame_step < 1:
+        raise IvyValueError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if fft_length is not None:
+        if not isinstance(fft_length, int):
+            raise IvyValueError(
+                f"Expecting <class 'int'> instead of {type(fft_length)}"
+            )
+
+        if fft_length < 1:
+            raise IvyValueError(
+                f"Invalid data points {frame_length}, expecting frame_length larger"
+                " than or equal to 1"
+            )
+
+    input_dtype = signals.dtype
+    if input_dtype == paddle.float32:
+        dtype = "complex64"
+    elif input_dtype == paddle.float64:
+        dtype = "complex128"
+
+    def stft_1D(signals, frame_length, frame_step, fft_length, pad_end):
+        if fft_length is None:
+            fft_length = 1
+            while fft_length < frame_length:
+                fft_length *= 2
+
+        num_samples = signals.shape[-1]
+
+        if pad_end:
+            num_samples = signals.shape[-1]
+            num_frames = -(-num_samples // frame_step)
+            pad_length = max(
+                0, frame_length + frame_step * (num_frames - 1) - num_samples
+            )
+
+            signals = paddle.nn.functional.pad(signals, (0, pad_length))
+        else:
+            num_frames = 1 + (num_samples - frame_length) // frame_step
+
+        stft_result = []
+
+        if window_fn is None:
+            window = 1
+        else:
+            window = window_fn(frame_length)
+
+        for i in range(num_frames):
+            start = i * frame_step
+            end = start + frame_length
+            frame = signals[..., start:end]
+            windowed_frame = frame * window
+            pad_length = fft_length - frame_length
+            windowed_frame = paddle.nn.functional.pad(windowed_frame, (0, pad_length))
+            windowed_frame = paddle.to_tensor(windowed_frame)
+
+            fft_frame = fft(windowed_frame, -1)
+            slit = int(fft_length // 2 + 1)
+            stft_result.append(fft_frame[..., 0:slit])
+
+        stft = paddle.to_tensor(stft_result)
+        return stft
+
+    def stft_helper(nested_list, frame_length, frame_step, fft_length):
+        nested_list = nested_list
+        if len(nested_list.shape) > 1:
+            return [
+                stft_helper(sublist, frame_length, frame_step, fft_length)
+                for sublist in nested_list
+            ]
+        else:
+            return stft_1D(nested_list, frame_length, frame_step, fft_length, pad_end)
+
+    to_return = stft_helper(signals, frame_length, frame_step, fft_length)
+    result = paddle.to_tensor(to_return)
+    return result.astype(dtype)
 
 
 def sliding_window(
