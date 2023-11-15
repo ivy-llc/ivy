@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
+<?xml version="1.0" encoding="UTF-8"?>	<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">	<project version="4">
   <component name="Black">
     <option name="sdkName" value="Remote Python 3.10.0 Docker (unifyai/ivy:latest)" />
   </component>
-  <component name="JavaScriptSettings">
-    <option name="languageLevel" value="ES6" />
-  </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.10.0 Docker (unifyai/ivy:latest)" project-jdk-type="Python SDK" />
-  <component name="PyPackaging">
-    <option name="earlyReleasesAsUpgrades" value="true" />
-  </component>
+  <component name="JavaScriptSettings">	  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />	    <option name="languageLevel" value="ES6" />
+  </component>	  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.10.0 Docker (unifyai/ivy:latest)" project-jdk-type="Python SDK" />	  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.10.0 Docker (unifyai/ivy:latest)" project-jdk-type="Python SDK" />
+  <component name="PyPackaging">	  <component name="PyPackaging">
+    <option name="earlyReleasesAsUpgrades" value="true" />	    <option name="earlyReleasesAsUpgrades" value="true" />
+  </component>	  </component>
 </project>
