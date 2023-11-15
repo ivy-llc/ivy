@@ -1242,16 +1242,12 @@ class _ContainerWithLossesExperimental(ContainerBase):
             a: ivy.array([0., 0., 1.38629436, 0.])
         }
 
-        >>> y = ivy.Container(a=ivy.array([0, 0,  1, 0]))
-        >>> x = ivy.Container(a=ivy.array([0.25, 0.25, 0.25, 0.25]))
         >>> z = x.cross_entropy(y, reduction="sum")
         >>> print(z)
         {
             a: ivy.array(1.38629436)
         }
 
-        >>> y = ivy.Container(a=ivy.array([0, 0,  1, 0]))
-        >>> x = ivy.Container(a=ivy.array([0.25, 0.25, 0.25, 0.25]))
         >>> z = x.cross_entropy(y, reduction="mean")
         >>> print(z)
         {
