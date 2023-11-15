@@ -289,7 +289,7 @@ def sigmoid(x):
 
 
 @with_supported_dtypes(
-    {"0.4.17 and below": ("complex", "float")},
+    {"0.4.20 and below": ("complex", "float")},
     "jax",
 )
 @to_ivy_arrays_and_back

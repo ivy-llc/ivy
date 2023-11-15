@@ -255,8 +255,7 @@ def gather(params, indices, validate_indices=None, axis=None, batch_dims=0, name
         axis = batch_dims
     else:
         axis = axis % len(params.shape)
-    if axis < batch_dims:
-        axis = batch_dims
+    axis = max(axis, batch_dims)
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
@@ -408,6 +407,34 @@ def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
     if out_type not in ["int32", "int64"]:
         out_type = "int64"
     return ivy.searchsorted(sorted_sequence, values, side=side, ret_dtype=out_type)
+
+
+@with_supported_dtypes(
+    {"2.14.0 and below": ("int8", "int16", "int32", "int64")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
+    if maxlen is None:
+        maxlen = ivy.maximum(
+            ivy.max(lengths), ivy.max(ivy.arange(ivy.get_num_dims(lengths)))
+        )
+        maxlen = ivy.maximum(0, maxlen)
+    else:
+        maxlen = ivy.array(maxlen)
+    if ivy.get_num_dims(maxlen) is not None and ivy.get_num_dims(maxlen) != 0:
+        raise ValueError(
+            "Argument `maxlen` must be scalar for sequence_mask, "
+            f"received `maxlen` = {maxlen} "
+            f"with shape '{maxlen.get_shape()}' instead"
+        )
+
+    row_vector = ivy.arange(0, int(maxlen), 1)
+    matrix = ivy.expand_dims(lengths, axis=-1)
+    result = row_vector < matrix
+    if dtype is None:
+        return result
+    else:
+        return ivy.astype(result, dtype)
 
 
 @to_ivy_arrays_and_back
@@ -584,6 +611,13 @@ def strided_slice(
     ]
     ret = ivy.squeeze(ret, axis=shrink_indices)
     return ret
+
+
+@to_ivy_arrays_and_back
+def tensor_scatter_nd_add(tensor, indices, updates, name=None):
+    zero_tensor = ivy.zeros_like(tensor)
+    scatter_tensor = ivy.scatter_nd(indices, updates, zero_tensor.shape)
+    return ivy.add(tensor, scatter_tensor)
 
 
 @with_unsupported_dtypes({"2.14.0 and below": ("uint16",)}, "tensorflow")

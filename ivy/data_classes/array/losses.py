@@ -73,7 +73,7 @@ class _ArrayWithLosses(abc.ABC):
         *,
         from_logits: bool = False,
         epsilon: float = 0.0,
-        reduction: str = "none",
+        reduction: str = "mean",
         pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
@@ -140,7 +140,7 @@ class _ArrayWithLosses(abc.ABC):
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

@@ -123,7 +123,6 @@ def abs(
         b: ivy.array([4.5, 5.3, 0., 2.3])
     }
     """
-
     return ivy.current_backend(x).abs(x, out=out)
 
 
@@ -515,7 +514,7 @@ def asin(
     """
     Calculate an implementation-dependent approximation of the principal value of the
     inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each
-    element ``x_i`` of the input array ``x``. Each element-wise result is expressed in
+    element ``x_i`` of the input array ``x``. Each element- wise result is expressed in
     radians.
 
     **Special cases**

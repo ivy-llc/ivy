@@ -1019,6 +1019,7 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             An ivy.Container instance of True bool values if nodes of the Container \
             support in-place operations, raises IvyBackendException otherwise
+
         Examples
         --------
         >>> ivy.set_backend("numpy")
@@ -1436,7 +1437,7 @@ class _ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional array, for writing the result to. It must have a shape
+            Optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
 
@@ -1526,7 +1527,7 @@ class _ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is
             False.
         out
-            optional array, for writing the result to. It must have a shape
+            Optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns

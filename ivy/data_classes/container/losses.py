@@ -65,20 +65,19 @@ class _ContainerWithLosses(ContainerBase):
         --------
         With :class:`ivy.Container` inputs:
 
-        >>> y = ivy.Container(a=ivy.array([0, 0, 1, 0]), b=ivy.array([1, 0, 0, 0]))
-        >>> x = ivy.Container(a=ivy.array([0.25, 0.25, 0.25, 0.25]),
-        ...                   b=ivy.array([0.7, 0.1, 0.2, 0.1]))
+        >>> x = ivy.Container(a=ivy.array([0, 0, 1]), b=ivy.array([1, 1, 0]))
+        >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
         >>> z = ivy.Container.static_cross_entropy(x, y)
         >>> print(z)
         {
-            a: ivy.array(1.3862944),
-            b: ivy.array(0.45198512)
+            a: ivy.array(1.20397282),
+            b: ivy.array(1.83258148)
         }
 
         With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
-        >>> y = ivy.array([0, 0, 1])
-        >>> x = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
+        >>> x = ivy.array([0, 0, 1])
+        >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
         >>> z = ivy.Container.static_cross_entropy(x, y)
         >>> print(z)
         {
@@ -159,28 +158,13 @@ class _ContainerWithLosses(ContainerBase):
 
         Examples
         --------
-        >>> y = ivy.Container(a=ivy.array([0, 0,  1, 0]))
-        >>> x = ivy.Container(a=ivy.array([0.25, 0.25, 0.25, 0.25]))
+        >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
+        >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
         >>> z = x.cross_entropy(y)
         >>> print(z)
         {
-            a: ivy.array([0., 0., 1.38629436, 0.])
-        }
-
-        >>> y = ivy.Container(a=ivy.array([0, 0,  1, 0]))
-        >>> x = ivy.Container(a=ivy.array([0.25, 0.25, 0.25, 0.25]))
-        >>> z = x.cross_entropy(y, reduction="sum")
-        >>> print(z)
-        {
-            a: ivy.array(1.38629436)
-        }
-
-        >>> y = ivy.Container(a=ivy.array([0, 0,  1, 0]))
-        >>> x = ivy.Container(a=ivy.array([0.25, 0.25, 0.25, 0.25]))
-        >>> z = x.cross_entropy(y, reduction="mean")
-        >>> print(z)
-        {
-            a: ivy.array(0.34657359)
+            a:ivy.array(0.5108256),
+            b:ivy.array(1.609438)
         }
         """
         return self._static_cross_entropy(
@@ -204,7 +188,7 @@ class _ContainerWithLosses(ContainerBase):
         *,
         from_logits: Union[bool, ivy.Container] = False,
         epsilon: Union[float, ivy.Container] = 0.0,
-        reduction: Union[str, ivy.Container] = "none",
+        reduction: Union[str, ivy.Container] = "mean",
         pos_weight: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
         axis: Optional[Union[int, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -306,7 +290,7 @@ class _ContainerWithLosses(ContainerBase):
         *,
         from_logits: Union[bool, ivy.Container] = False,
         epsilon: Union[float, ivy.Container] = 0.0,
-        reduction: Union[str, ivy.Container] = "none",
+        reduction: Union[str, ivy.Container] = "mean",
         pos_weight: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
         axis: Optional[Union[int, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -397,7 +381,7 @@ class _ContainerWithLosses(ContainerBase):
         *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
-        reduction: Union[str, ivy.Container] = "sum",
+        reduction: Union[str, ivy.Container] = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -487,7 +471,7 @@ class _ContainerWithLosses(ContainerBase):
         *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
-        reduction: Union[str, ivy.Container] = "sum",
+        reduction: Union[str, ivy.Container] = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,

@@ -74,7 +74,7 @@ class StratifiedKFold(KFold):
         )
 
     def _iter_test_indices(self, X=None, y=None, groups=None):
-        ivy.seed(self.random_state)
+        ivy.seed(seed_value=self.random_state)
         y = ivy.array(y)
         y = column_or_1d(y)
         _, y_idx, y_inv, _ = ivy.unique_all(y, return_index=True, return_inverse=True)
@@ -83,12 +83,10 @@ class StratifiedKFold(KFold):
 
         n_classes = len(y_idx)
         y_order = ivy.sort(y_encoded)
-        allocation = ivy.asarray(
-            [
-                ivy.bincount(y_order[i :: self.n_splits], minlength=n_classes)
-                for i in range(self.n_splits)
-            ]
-        )
+        allocation = ivy.asarray([
+            ivy.bincount(y_order[i :: self.n_splits], minlength=n_classes)
+            for i in range(self.n_splits)
+        ])
         test_folds = ivy.empty(len(y), dtype="int64")
         for k in range(n_classes):
             folds_for_class = ivy.arange(self.n_splits).repeat(allocation[:, k])
@@ -139,7 +137,7 @@ def train_test_split(
     indices = ivy.arange(0, n_train + n_test)
     if shuffle:
         if random_state is not None:
-            ivy.seed(random_state)
+            ivy.seed(seed_value=random_state)
         indices = ivy.shuffle(indices)
     train_indices = indices[:n_train]
     test_indices = indices[n_train:]

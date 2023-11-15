@@ -514,6 +514,7 @@ class ELU(Module):
             Inputs to process *[batch_shape, d]*.
         alpha
             scaler for controlling the slope of the function for x <= 0 Default: 1.0
+
         Returns
         -------
         ret

@@ -226,7 +226,7 @@ def clip(
     return x
 
 
-@with_unsupported_dtypes({"0.4.17 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"0.4.20 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,

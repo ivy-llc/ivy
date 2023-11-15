@@ -1,7 +1,7 @@
-import ivy
 import numpy as np
 from typing import Optional
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.utils.assertions import check_elem_in_list
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_supported_device_and_dtypes,
@@ -9,7 +9,7 @@ from ivy.func_wrapper import (
 from . import backend_version
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def huber_loss(
     input: np.ndarray,
@@ -33,7 +33,7 @@ def huber_loss(
 
 
 # Implementation of smooth_l1_loss in the given format
-@with_unsupported_dtypes({"1.26.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def smooth_l1_loss(
     input: np.ndarray,
@@ -57,7 +57,7 @@ def smooth_l1_loss(
         return loss
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def soft_margin_loss(
     input: np.ndarray,
@@ -179,65 +179,6 @@ def poisson_nll_loss(
     backend_version,
 )
 @_scalar_output_to_0d_array
-def binary_cross_entropy(
-    input: np.ndarray,
-    target: np.ndarray,
-    /,
-    *,
-    from_logits: bool = False,
-    epsilon: float = 1e-7,
-    reduction: str = "none",
-    pos_weight: Optional[np.ndarray] = None,
-    axis: Optional[int] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    input_arr = np.asarray(input)
-    target_arr = np.asarray(target, dtype=input.dtype)
-
-    if not (0.0 <= epsilon <= 1e-5):
-        raise ValueError("epsilon should be a float in [0, 1e-5]")
-
-    if not from_logits and pos_weight is not None:
-        raise ValueError("pos_weight is only allowed when from_logits is set to True")
-
-    if from_logits:
-        input = 1.0 / 1.0 + np.exp(-input_arr)
-        if pos_weight is not None:
-            pos_weight = np.asarray(pos_weight, dtype=input.dtype)
-            num_classes = (
-                input_arr.shape[0] if len(input_arr.shape) == 1 else input_arr.shape[1]
-            )
-            if pos_weight.shape[0] != num_classes:
-                raise ValueError(
-                    "pos_weight must have the same size as the number of classes in"
-                    " pred at non-singleton dimension 1"
-                )
-            loss = -1.0 * (
-                (pos_weight * target_arr * np.log(input_arr + epsilon))
-                + (1.0 - target_arr) * np.log(1.0 - input_arr + epsilon)
-            )
-        else:
-            loss = -1.0 * (
-                target_arr * np.log(input_arr)
-                + (1.0 - target_arr) * np.log(1.0 - input_arr)
-            )
-    else:
-        loss = -1.0 * (
-            target_arr * np.log(input_arr)
-            + (1.0 - target_arr) * np.log(1.0 - input_arr)
-        )
-    return _apply_loss_reduction(loss, reduction, axis=axis, out=out)
-
-
-@with_supported_device_and_dtypes(
-    {
-        "1.25.2 and below": {
-            "cpu": ("float16", "float32", "float64"),
-        }
-    },
-    backend_version,
-)
-@_scalar_output_to_0d_array
 def cross_entropy(
     input: np.ndarray,
     target: np.ndarray,
@@ -248,7 +189,7 @@ def cross_entropy(
     reduction: str = "none",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    check_elem_in_list(reduction, ["none", "sum", "mean"])
     input = np.clip(input, epsilon, 1 - epsilon)
     loss = np.log(input) * target
     return _apply_loss_reduction(loss, reduction, axis, out)

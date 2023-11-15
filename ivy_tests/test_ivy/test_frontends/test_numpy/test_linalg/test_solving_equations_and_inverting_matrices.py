@@ -27,9 +27,9 @@ def _get_inv_square_matrices(draw):
     )
 
     shape, ind = draw(
-        st.sampled_from(
-            [(generated_shape, generated_ind), (handpicked_shape, handpicked_ind)]
-        )
+        st.sampled_from([
+            (generated_shape, generated_ind), (handpicked_shape, handpicked_ind)
+        ])
     )
 
     input_dtype = draw(

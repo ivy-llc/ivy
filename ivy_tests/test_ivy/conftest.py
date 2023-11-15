@@ -28,7 +28,7 @@ UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
 
 TEST_PARAMS_CONFIG = []
-SKIP_GROUND_TRUTH = True
+SKIP_GROUND_TRUTH = False
 UNSUPPORTED_FRAEMWORK_DEVICES = {"numpy": ["gpu", "tpu"]}
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
@@ -191,7 +191,7 @@ def pytest_configure(config):
             if "/" in backend_str:
                 backend_str = backend_str.split("/")[0]
             if (
-                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES.keys()
+                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES
                 and device.partition(":")[0]
                 in UNSUPPORTED_FRAEMWORK_DEVICES[backend_str]
             ):
@@ -297,8 +297,8 @@ def process_cl_flags(config) -> Dict[str, bool]:
     }
 
     # whether to skip gt testing or not
-    global SKIP_GROUND_TRUTH
-    SKIP_GROUND_TRUTH = not tmp_config["transpile"][1]
+    # global SKIP_GROUND_TRUTH
+    # SKIP_GROUND_TRUTH = not tmp_config["transpile"][1]
 
     # final mapping for hypothesis value generation
     for k, v in tmp_config.items():

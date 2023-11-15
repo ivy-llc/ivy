@@ -1,4 +1,4 @@
-from typing import Callable, Optional, List, Union, Iterable, Tuple
+from typing import Callable, Optional, List, Union, Iterable, Tuple, Mapping
 
 
 def trace_graph(
@@ -16,7 +16,9 @@ def trace_graph(
     mode: Optional[str] = None,
     graph_caching: bool = False,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None
+    kwargs: Optional[Mapping] = None,
+    params_v=None,
+    v=None
 ):
     """
     Take `fn` and traces it into a more efficient composition of backend operations.
@@ -106,6 +108,8 @@ def trace_graph(
         graph_caching=graph_caching,
         args=args,
         kwargs=kwargs,
+        params_v=params_v,
+        v=v,
     )
 
 
@@ -123,7 +127,7 @@ def transpile(
     arg_stateful_idxs: Optional[List] = None,
     kwarg_stateful_idxs: Optional[List] = None,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None,
+    kwargs: Optional[Mapping] = None,
     params_v=None,
     v=None
 ):
@@ -175,7 +179,7 @@ def unify(
     source: Optional[str] = None,
     graph_caching: bool = False,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None,
+    kwargs: Optional[Mapping] = None,
     with_numpy: bool = True,
     **transpile_kwargs
 ):
