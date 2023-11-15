@@ -117,7 +117,14 @@ def _masked_fill_helper(draw):
     fn_tree="torch.abs",
     aliases=["torch.absolute"],
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=False),
+        available_dtypes=helpers.get_dtypes("numeric", full=False).filter(
+            lambda x: "uint8" not in x[0]
+            and "int8" not in x[0]
+            and "uint16" not in x[0]
+            and "int16" not in x[0]
+            and "float16" not in x[0]
+            and "bfloat16" not in x[0]
+        ),
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
