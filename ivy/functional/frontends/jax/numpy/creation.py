@@ -11,6 +11,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 
 from ivy.func_wrapper import handle_out_argument
 from ivy import with_unsupported_device_and_dtypes
+from ivy.utils.savez_helpers import _savez
 
 ndarray = Array
 
@@ -257,6 +258,11 @@ def ones_like(a, dtype=None, shape=None):
     if shape:
         return ivy.ones(shape, dtype=dtype)
     return ivy.ones_like(a, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def savez(file, *args, **kwds):
+    _savez(file, args, kwds)
 
 
 @to_ivy_arrays_and_back
