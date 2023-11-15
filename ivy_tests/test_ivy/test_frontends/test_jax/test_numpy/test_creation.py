@@ -10,6 +10,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_creation import (
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+import string
+import numpy as np
+import os
 
 
 # --- Helpers --- #
@@ -956,6 +959,50 @@ def test_jax_ones_like(
         dtype=dtype[0],
         shape=shape,
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.savez",
+    test_with_out=st.just(False),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=False),
+        num_arrays=5,
+    ),
+    file=st.sampled_from(string.ascii_lowercase),
+)
+def test_jax_savez(
+    dtype_and_x,
+    file,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    kw = {}
+    for i, (array, idtype) in enumerate(zip(x, input_dtype)):
+        kw[f"arr_{i}"] = np.asarray(array, dtype=idtype)
+    test_flags.num_positional_args = len(kw) + 1
+    # x = np.array(x).astype(input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        file=file,
+        **kw,
+    )
+    file = file + ".npz"
+    assert os.path.exists(file)
+    a = np.load(file)
+    for x, y in zip(a, kw):
+        x == y
+        a[x] == kw[y]
+    os.remove(file)
 
 
 @handle_frontend_test(
