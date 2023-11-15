@@ -41,7 +41,7 @@ torch.fx
 --------
 `FX`_ is a toolkit for developers to use to transform :code:`torch.nn.Module` instances in `PyTorch`_.
 FX consists of three main components: a symbolic tracer, an intermediate representation, and Python code generation.
-The symbolic tracer performs “symbolic execution” of the Python code.
+The symbolic tracer performs a “symbolic execution” of the Python code.
 It feeds fake values, called Proxies, through the code.
 Operations on these Proxies are recorded.
 The intermediate representation is the container for the operations that were recorded during symbolic tracing.

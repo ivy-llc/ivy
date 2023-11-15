@@ -9,13 +9,9 @@ from hypothesis.database import (
     DirectoryBasedExampleDatabase,
 )
 from hypothesis.extra.redis import RedisExampleDatabase
-from ivy_tests.test_ivy.helpers.pipeline_helper import (
-    BackendHandler,
-    BackendHandlerMode,
-)
 
 
-hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
+hypothesis_cache = f"{os.getcwd()}/.hypothesis/examples/"
 redis_connect_dev = None
 redis_connect_master = None
 try:
@@ -49,15 +45,20 @@ def is_db_available(master=False, credentials=None):
 
 
 def pytest_terminal_summary(terminalreporter):
+    from .test_ivy.conftest import mod_backend
+
     session = terminalreporter._session
 
     if session.testscollected == 0:
         return
 
     passed_ratio = 1 - (session.testsfailed / session.testscollected)
-    text = " {:.1%} of {} passed ".format(passed_ratio, session.testscollected)
+    text = f" {passed_ratio:.1%} of {session.testscollected} passed "
     text = text.center(terminalreporter._screen_width, "=")
     terminalreporter.write(content=Fore.GREEN + text)
+    for key in mod_backend:
+        if mod_backend[key]:
+            mod_backend[key][0].terminate()
 
 
 def pytest_addoption(parser):
@@ -100,21 +101,11 @@ def pytest_addoption(parser):
             "this mode should be only used during development on the testing pipeline."
         ),
     )
-    parser.addoption(
-        "--set-backend",
-        action="store_true",
-        default=False,
-        help="Force the testing pipeline to use ivy.set_backend for backend setting",
-    )
 
 
 def pytest_configure(config):
     profile_settings = {}
     getopt = config.getoption
-
-    if getopt("--set-backend"):
-        BackendHandler._update_context(BackendHandlerMode.SetBackend)
-
     max_examples = getopt("--num-examples")
     deadline = getopt("--deadline")
     if (

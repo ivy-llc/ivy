@@ -10,7 +10,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -41,7 +41,7 @@ def _get_promoted_type_of_operands(operands):
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -50,7 +50,8 @@ def min(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the minimum value of the input array ``x``.
+    """
+    Calculate the minimum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the minimum value is zero, the
@@ -149,7 +150,7 @@ def min(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -158,7 +159,8 @@ def max(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the maximum value of the input array ``x``.
+    """
+    Calculate the maximum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the maximum value is zero, the
@@ -259,7 +261,7 @@ def max(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -268,7 +270,8 @@ def mean(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the arithmetic mean of the input array ``x``.
+    """
+    Calculate the arithmetic mean of the input array ``x``.
 
     **Special Cases**
 
@@ -370,7 +373,7 @@ def mean(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -506,7 +509,7 @@ def prod(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -516,7 +519,8 @@ def std(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the standard deviation of the input array ``x``.
+    """
+    Calculate the standard deviation of the input array ``x``.
 
     **Special Cases**
 
@@ -631,7 +635,6 @@ def std(
         b: ivy.array([[1.],
                       [0.5]])
     }
-
     """
     return current_backend(x).std(
         x, axis=axis, correction=correction, keepdims=keepdims, out=out
@@ -645,7 +648,7 @@ def std(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -786,7 +789,7 @@ def sum(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -903,7 +906,7 @@ def var(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -1048,7 +1051,7 @@ def cumsum(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1186,7 +1189,7 @@ def cumprod(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],
@@ -1211,9 +1214,8 @@ def einsum(
     ret
         The array with sums computed.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])

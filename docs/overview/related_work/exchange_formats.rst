@@ -23,7 +23,7 @@ Exchange Formats
 
 Neural network exchange formats define a standardized file representation specifically for neural networks.
 The idea is that these can be used as an intermediate representation for communicating or “exchanging” neural network architectures between different ML frameworks or between ML frameworks and the target hardware.
-The focus is generally on simplifying deployment of neural networks, with a typical workflow being: train the model, save in an exchange format, use this exchange format to communicate with the target compilers and hardware for model inference.
+The focus is generally on simplifying the deployment of neural networks, with a typical workflow being: train the model, save in an exchange format, and use this exchange format to communicate with the target compilers and hardware for model inference.
 
 ONNX |onnx|
 -----------
@@ -42,5 +42,5 @@ Overall, NNEF shares a lot of similarities with ONNX, but has not reached the sa
 CoreML |coreml|
 ---------------
 `CoreML`_ itself is not an exchange format, it is a framework which enables models to be trained and deployed on `Apple`_ devices with a simple zero-code interactive interface.
-However, CoreML is built upon its own Core ML format, and Apple have open sourced :code:`coremltools`, which provides a set of tools to convert ML models from various frameworks into the Core ML format.
+However, CoreML is built upon its own Core ML format, and Apple has open sourced :code:`coremltools`, which provides a set of tools to convert ML models from various frameworks into the Core ML format.
 The Core ML format is itself an exchange format, albeit with the sole purpose of exchanging to Apple’s CoreML framework, rather than enabling exchanges between multiple different parties as is the case for the other exchange formats.
