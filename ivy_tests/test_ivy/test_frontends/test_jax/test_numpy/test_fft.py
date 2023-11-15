@@ -275,7 +275,7 @@ def test_jax_numpy_irfftn(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        x=x[0],
+        x=x,
         s=None,
         axes=None,
         norm=norm,
