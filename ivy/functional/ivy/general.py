@@ -183,9 +183,9 @@ def get_referrers_recursive(
     item: object,
     *,
     depth: int = 0,
-    max_depth: int = None,
-    seen_set: set = None,
-    local_set: set = None,
+    max_depth: Optional[int] = None,
+    seen_set: Optional[set] = None,
+    local_set: Optional[set] = None,
 ) -> ivy.Container:
     """
     Recursively retrieve referrers for an object.
@@ -2341,7 +2341,7 @@ def stable_pow(
     exponent: Union[Number, ivy.Array, ivy.NativeArray],
     /,
     *,
-    min_base: float = None,
+    min_base: Optional[float] = None,
 ) -> Any:
     """
     Raise the base by the power, with ivy.min_base added to the base when exponent > 1
@@ -3524,12 +3524,13 @@ def gather(
         The array which indicates the indices that will be gathered along
         the specified axis.
     axis
-        optional int, the axis from which to gather from.
+        Optional int, the axis from which to gather from.
         Default is ``-1``.
     batch_dims
-        optional int, lets you gather different items from each element of a batch.
+        Optional int, lets you gather different items from each element of a batch.
+        Default is ``0``.
     out
-        optional array, for writing the result to. It must have a shape
+        Optional array, for writing the result to. It must have a shape
         that the inputs broadcast to.
 
     Returns

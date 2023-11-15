@@ -18,7 +18,7 @@ ndarray = Array
 
 @with_unsupported_device_and_dtypes(
     {
-        "0.4.19 and below": {
+        "0.4.20 and below": {
             "cpu": (
                 "float16",
                 "bflooat16",
@@ -197,7 +197,7 @@ def iterable(y):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.19 and below": (
+        "0.4.20 and below": (
             "float16",
             "bfloat16",
         )
@@ -218,7 +218,7 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.19 and below": (
+        "0.4.20 and below": (
             "float16",
             "bfloat16",
         )
