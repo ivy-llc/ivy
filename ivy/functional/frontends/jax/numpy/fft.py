@@ -75,8 +75,8 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def irfftn(a, s=None, axes=None, norm=None):
-    x = ivy.array(a)
+def irfftn(x=None, s=None, axes=None, norm=None):
+    x = ivy.array(x)
 
     if axes is None:
         axes = list(range(len(x.shape)))
