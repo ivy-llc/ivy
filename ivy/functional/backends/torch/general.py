@@ -53,7 +53,7 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("complex", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("complex", "bfloat16")}, backend_version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return torch.equal(x0, x1)
@@ -352,7 +352,7 @@ def multiprocessing(context: Optional[str] = None):
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": ("bfloat16",),
+        "2.1.1 and below": ("bfloat16",),
     },
     backend_version,
 )
@@ -404,7 +404,7 @@ scatter_flat.support_native_out = True
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -511,7 +511,7 @@ def shape(
         return ivy.Shape(x.shape)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, backend_version)
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
@@ -530,7 +530,7 @@ def vmap(
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
+    {"2.1.1 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
 )
 def isin(
     elements: torch.tensor,

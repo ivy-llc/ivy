@@ -141,7 +141,7 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
 # ------------ #
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -155,7 +155,7 @@ def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -169,7 +169,7 @@ def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -183,7 +183,7 @@ def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose1d(
     input,
@@ -207,7 +207,7 @@ def conv_transpose1d(
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose2d(
     input,
@@ -231,7 +231,7 @@ def conv_transpose2d(
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose3d(
     input,
