@@ -33,6 +33,7 @@ FN_DECORATORS = [
     "handle_nestable",
     "handle_ragged",
     "handle_backend_invalid",
+    "temp_asarray_wrapper",
     "handle_exceptions",
     "handle_nans",
 ]
@@ -45,7 +46,7 @@ FN_DECORATORS = [
 casting_modes_dict = {
     "uint": lambda: ivy.valid_uint_dtypes,
     "int": lambda: sorted(
-        tuple(set(ivy.valid_int_dtypes).difference(set(ivy.valid_uint_dtypes)))
+        set(ivy.valid_int_dtypes).difference(set(ivy.valid_uint_dtypes))
     ),
     "float": lambda: ivy.valid_float_dtypes,
     "complex": lambda: ivy.valid_complex_dtypes,
@@ -187,10 +188,10 @@ def cross_caster(intersect):
     valid_float = sorted(ivy.valid_float_dtypes)
     valid_int = sorted(ivy.valid_int_dtypes)
     intersect = sorted(intersect)
-    if intersect == valid_int:
+    if set(valid_int).issubset(intersect):
         # make dtype equal to default float
         dtype = ivy.default_float_dtype()
-    elif intersect == valid_float:
+    elif set(valid_float).issubset(intersect):
         # make dtype equal to default int
         dtype = ivy.default_int_dtype()
 
@@ -203,7 +204,7 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
     for overloaded_arg in overloaded_args:
         # Note that we're only calling __ivy_array_function__ on the *first*
-        # occurence of each argument type. This is necessary for reasonable
+        # occurrence of each argument type. This is necessary for reasonable
         # performance with a possibly long list of overloaded arguments, for
         # which each __ivy_array_function__ implementation might reasonably need to
         # check all argument types.
@@ -817,7 +818,7 @@ def handle_device(fn: Callable) -> Callable:
         elif len(unique_devices) > 1:
             raise ivy.utils.exceptions.IvyException(
                 "Expected all input arrays to be on the same device, "
-                f"but found atleast two devices - {devices}, "
+                f"but found at least two devices - {devices}, "
                 "set `ivy.set_soft_device_mode(True)` to handle this problem."
             )
         return fn(*args, **kwargs)
@@ -1028,6 +1029,40 @@ def handle_partial_mixed_function(fn) -> Callable:
     return _handle_partial_mixed_function
 
 
+# Temporary asarray wrapper (Please request my review before removing)
+
+
+def temp_asarray_wrapper(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _temp_asarray_wrapper(*args, **kwargs):
+        """
+        Convert `Tensor` into `ivy.Array` instances.
+
+        Convert all `Tensor` instances in both the positional and keyword arguments
+        into `ivy.Array` instances, and then call the function with the updated
+        arguments.
+        """
+
+        def _to_ivy_array(x):
+            # if x is a frontend torch Tensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
+            if hasattr(x, "ivy_array"):
+                return x.ivy_array
+            # else just return x
+            return x
+
+        # convert all input arrays to ivy.Array instances
+        new_args = ivy.nested_map(
+            _to_ivy_array, args, include_derived={"tuple": True}, shallow=False
+        )
+        new_kwargs = ivy.nested_map(
+            _to_ivy_array, kwargs, include_derived={"tuple": True}, shallow=False
+        )
+        return fn(*new_args, **new_kwargs)
+
+    _temp_asarray_wrapper.temp_asarray_wrapper = True
+    return _temp_asarray_wrapper
+
+
 # Functions #
 
 
@@ -1125,9 +1160,13 @@ def _wrap_function(
     return to_wrap
 
 
-def casting_modes_ops(fn):
+def casting_modes_ops(fn, ret_dtype_target=None):
     @functools.wraps(fn)
     def method(*args, **kwargs):
+        # Get the function signature
+        signature = inspect.signature(fn)
+        # Extract argument names
+        arg_names = [param.name for param in signature.parameters.values()]
         # we first check if it has unsupported/supported dtypes uniquely added to it
         intersect = set(ivy.function_unsupported_dtypes(fn)).difference(
             set(ivy.invalid_dtypes)
@@ -1144,7 +1183,10 @@ def casting_modes_ops(fn):
                 # no unsupported dtype specified
                 return fn(*args, **kwargs)
 
+        # specifies which dtype to cast the output to
+        to_cast = None
         if "dtype" in kwargs and kwargs["dtype"] is not None:
+            to_cast = kwargs["dtype"]
             dtype = caster(kwargs["dtype"], intersect)
             if dtype:
                 kwargs["dtype"] = ivy.as_native_dtype(dtype)
@@ -1159,7 +1201,36 @@ def casting_modes_ops(fn):
 
         args = ivy.nested_map(mini_helper, args, include_derived=True)
         kwargs = ivy.nested_map(mini_helper, kwargs)
-        return fn(*args, **kwargs)
+
+        if not to_cast and ret_dtype_target:
+            for arg in ret_dtype_target:
+                if arg:
+                    to_cast, arg_mod = ivy.promote_types_of_inputs(
+                        to_cast,
+                        (
+                            args[arg_names.index(arg)]
+                            if arg not in kwargs
+                            else kwargs[arg]
+                        ),
+                    )
+                    if arg not in kwargs:
+                        args[arg_names.index(arg)] = (
+                            arg_mod
+                            if not ivy.is_array(args[arg_names.index(arg)])
+                            else args[arg_names.index(arg)]
+                        )
+                    else:
+                        kwargs[arg] = (
+                            arg_mod
+                            if not ivy.is_array(args[arg_names.index(arg)])
+                            else kwargs[arg]
+                        )
+
+        return (
+            ivy.astype(fn(*args, **kwargs), ivy.to_native(to_cast))
+            if to_cast
+            else fn(*args, **kwargs)
+        )
 
     return method
 
@@ -1217,7 +1288,7 @@ def _versioned_attribute_factory(attribute_function, base):
             self.attribute_function = attribute_function
 
         def __get__(self, instance=None, owner=None):
-            # version dtypes recalculated everytime it's accessed
+            # version dtypes recalculated every time it's accessed
             return self.attribute_function()
 
         def __iter__(self):
@@ -1226,6 +1297,9 @@ def _versioned_attribute_factory(attribute_function, base):
 
         def __repr__(self):
             return repr(self.__get__())
+
+        def __bool__(self):
+            return bool(self.__get__())
 
     return VersionedAttributes()
 
@@ -1249,7 +1323,7 @@ def _dtype_device_wrapper_creator(attrib, t):
     A wrapper function for the attribute.
     """
 
-    def _wrapper_outer(version_dict, version, exclusive=True):
+    def _wrapper_outer(version_dict, version, exclusive=True, ret_dtype_target=None):
         def _wrapped(func):
             val = _versioned_attribute_factory(
                 lambda: _dtype_from_version(version_dict, version), t
@@ -1259,7 +1333,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                 return func
             if not exclusive:
                 # exclusive attribute comes into existence
-                # only when exlusive is passed as true
+                # only when exclusive is passed as true
                 setattr(func, "exclusive", True)
             # set the attribute on the function and return the function as is
 
@@ -1295,12 +1369,16 @@ def _dtype_device_wrapper_creator(attrib, t):
                             # for conflicting ones we do nothing
                             pass
             else:
-                setattr(func, attrib, val)
+                if not val and attrib.startswith("supported"):
+                    setattr(func, f"un{attrib}", val)
+                else:
+                    setattr(func, attrib, val)
                 setattr(func, "dictionary_info", (version_dict, version))
             if "frontends" in func.__module__:
                 # it's a frontend func, no casting modes for this
                 return func
-            return casting_modes_ops(func)
+
+            return casting_modes_ops(func, ret_dtype_target=ret_dtype_target)
 
         return _wrapped
 
@@ -1316,7 +1394,7 @@ def _leaf_has_nans(x):
         return x.has_nans()
     elif ivy.is_array(x):
         return ivy.isnan(x).any()
-    elif x == float("nan"):
+    elif np.isnan(x):
         return True
     return False
 
@@ -1616,16 +1694,14 @@ class with_unsupported_dtypes(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "unsupported_dtypes", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator("unsupported_dtypes", tuple)(
+                                *self.args, **self.kwargs
+                            )
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class with_supported_dtypes(contextlib.ContextDecorator):
@@ -1652,16 +1728,14 @@ class with_supported_dtypes(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "supported_dtypes", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator("supported_dtypes", tuple)(
+                                *self.args, **self.kwargs
+                            )
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class with_unsupported_devices(contextlib.ContextDecorator):
@@ -1688,16 +1762,14 @@ class with_unsupported_devices(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "unsupported_devices", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator("unsupported_devices", tuple)(
+                                *self.args, **self.kwargs
+                            )
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class with_supported_devices(contextlib.ContextDecorator):
@@ -1724,16 +1796,14 @@ class with_supported_devices(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "supported_devices", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator("supported_devices", tuple)(
+                                *self.args, **self.kwargs
+                            )
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
@@ -1757,9 +1827,7 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
                         dicti[key]["all"]
                     )
                 else:
-                    nested_dic[nested_key] = dicti[key].get(nested_key, ()) + tuple(
-                        dicti[key][nested_key]
-                    )
+                    nested_dic[nested_key] = tuple(dicti[key][nested_key])
             dicti[key] = nested_dic
         args = (dicti, args[1])
 
@@ -1784,16 +1852,14 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "unsupported_device_and_dtype", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator(
+                                "unsupported_device_and_dtype", tuple
+                            )(*self.args, **self.kwargs)
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class with_supported_device_and_dtypes(contextlib.ContextDecorator):
@@ -1817,9 +1883,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
                         dicti[key]["all"]
                     )
                 else:
-                    nested_dic[nested_key] = dicti[key].get(nested_key, ()) + tuple(
-                        dicti[key][nested_key]
-                    )
+                    nested_dic[nested_key] = tuple(dicti[key][nested_key])
             dicti[key] = nested_dic
         args = (dicti, args[1])
 
@@ -1844,16 +1908,14 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "supported_device_and_dtype", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator(
+                                "supported_device_and_dtype", tuple
+                            )(*self.args, **self.kwargs)
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class override(contextlib.ContextDecorator):

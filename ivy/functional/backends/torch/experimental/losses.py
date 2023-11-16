@@ -11,7 +11,7 @@ from . import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("unit8", "int8", "int16", "int32", "int64", "bool")},
+    {"2.1.1 and below": ("unit8", "int8", "int16", "int32", "int64", "bool")},
     backend_version,
 )
 def l1_loss(
@@ -30,7 +30,7 @@ def l1_loss(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.1 and below": (
             "complex",
             "uint8",
             "int8",
@@ -59,7 +59,7 @@ def smooth_l1_loss(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("uint8", "int8", "int16", "int32", "int64", "bool")},
+    {"2.1.1 and below": ("uint8", "int8", "int16", "int32", "int64", "bool")},
     backend_version,
 )
 def huber_loss(
@@ -77,7 +77,7 @@ def huber_loss(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.1.1 and below": (
             "float16",
             "uint8",
             "int8",
@@ -104,7 +104,7 @@ def soft_margin_loss(
 
 
 @with_supported_dtypes(
-    {"2.0.1 and below": ("float",)},
+    {"2.1.1 and below": ("float",)},
     backend_version,
 )
 def kl_div(
@@ -124,7 +124,7 @@ def kl_div(
 
 @with_supported_device_and_dtypes(
     {
-        "2.13.0 and below": {
+        "2.14.0 and below": {
             "cpu": (
                 "float32",
                 "float64",

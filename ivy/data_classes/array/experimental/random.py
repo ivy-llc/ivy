@@ -177,7 +177,7 @@ class _ArrayWithRandomExperimental(abc.ABC):
         Parameters
         ----------
         self
-            Input Array of rate paramter(s). It must have a shape that is broadcastable
+            Input Array of rate parameter(s). It must have a shape that is broadcastable
             to the requested shape
         shape
             If the given shape is, e.g '(m, n, k)', then 'm * n * k' samples are drawn.

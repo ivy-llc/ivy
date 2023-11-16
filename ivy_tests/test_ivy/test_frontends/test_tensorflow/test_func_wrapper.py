@@ -22,26 +22,18 @@ import ivy.functional.frontends.numpy as np_frontend
 @st.composite
 def _dtype_helper(draw):
     return draw(
-        st.sampled_from(
-            [
-                draw(helpers.get_dtypes("valid", prune_function=False, full=False))[0],
-                ivy.as_native_dtype(
-                    draw(helpers.get_dtypes("valid", prune_function=False, full=False))[
-                        0
-                    ]
-                ),
-                draw(
-                    st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.values()))
-                ),
-                draw(st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.keys()))),
-                np_frontend.dtype(
-                    draw(helpers.get_dtypes("valid", prune_function=False, full=False))[
-                        0
-                    ]
-                ),
-                draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
-            ]
-        )
+        st.sampled_from([
+            draw(helpers.get_dtypes("valid", prune_function=False, full=False))[0],
+            ivy.as_native_dtype(
+                draw(helpers.get_dtypes("valid", prune_function=False, full=False))[0]
+            ),
+            draw(st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.values()))),
+            draw(st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.keys()))),
+            np_frontend.dtype(
+                draw(helpers.get_dtypes("valid", prune_function=False, full=False))[0]
+            ),
+            draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
+        ])
     )
 
 

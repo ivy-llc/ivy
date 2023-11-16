@@ -90,7 +90,7 @@ class DMatrix:
 
 
 class Booster:
-    def __init__(self, params=None, cache=None, model_file=None):
+    def __init__(self, params=None, cache=None, model_file=None, compile=False):
         # cache[0] refers to input data while cache[1] refers to input target
         n_feat = cache[0].shape[1]
         n_inst = cache[0].shape[0]
@@ -103,16 +103,22 @@ class Booster:
         )
 
         # add num_feature, num_target and num_instances to params
-        params.update(
-            {
-                "num_feature": n_feat,
-                "num_output_group": n_output_group - 1,
-                "num_instances": n_inst,
-            }
-        )
+        params.update({
+            "num_feature": n_feat,
+            "num_output_group": n_output_group - 1,
+            "num_instances": n_inst,
+        })
 
         # create gbm(as for now only gblinear booster is available)
-        self.gbm = GBLinear(params)
+        self.gbm = GBLinear(params, compile=compile, cache=cache)
+        self.compile = compile
+        if self.compile:
+            self._comp_binary_prediction = ivy.trace_graph(
+                _binary_prediction, backend_compile=True, static_argnums=(0,)
+            )
+
+            # invoke function to get its compiled version
+            self._comp_binary_prediction(self.gbm.obj, cache[1])
 
     def update(self, dtrain, dlabel, iteration, fobj=None):
         """
@@ -212,9 +218,20 @@ class Booster:
         # currently supports prediction for binary task
         # get raw predictions
         pred = self.gbm.pred(data)
+        args = (self.gbm.obj, pred)
 
-        # apply activation function
-        pred = self.gbm.obj.pred_transform(pred)
+        if self.compile:
+            return self._comp_binary_prediction(*args)
+        else:
+            return _binary_prediction(*args)
 
-        # apply probability thresholding
-        return ivy.where(pred >= 0.5, 1.0, 0.0)
+
+# --- Helpers --- #
+# --------------- #
+
+
+def _binary_prediction(obj, raw_pred):
+    # apply activation function
+    pred = obj.pred_transform(raw_pred)
+    # apply probability thresholding
+    return ivy.where(pred >= 0.5, 1.0, 0.0)

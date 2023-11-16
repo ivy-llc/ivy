@@ -78,8 +78,17 @@ def isrealobj(x: any):
 
 @to_ivy_arrays_and_back
 def isscalar(element):
-    return (
-        isinstance(element, (int, float, complex, bool, bytes, str, memoryview))
-        or isinstance(element, numbers.Number)
-        or isinstance(element, np_frontend.generic)
+    return isinstance(
+        element,
+        (
+            int,
+            float,
+            complex,
+            bool,
+            bytes,
+            str,
+            memoryview,
+            numbers.Number,
+            np_frontend.generic,
+        ),
     )

@@ -104,7 +104,7 @@ class Parafac2Tensor(FactorizedTensor):
 
         Returns
         -------
-            Parafac2Tensor with factor matrices and weigths extracted from a CPTensor
+            Parafac2Tensor with factor matrices and weights extracted from a CPTensor
         """
         if parafac2_tensor_ok and len(cp_tensor) == 3:
             return Parafac2Tensor(cp_tensor)
