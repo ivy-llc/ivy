@@ -16,40 +16,37 @@ from ivy.functional.ivy.layers import (
 )
 
 
-def _x_dil_before_conv(x, dims, x_dilations):
+def _x_dil_before_conv(x, dims, x_dilations, data_format):
     # adding dilation in input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
     x_dilations_idxs = [i for i, x_dil in enumerate(x_dilations) if x_dil > 1]
+    if data_format[-1] == "C" or data_format == "channel_last":
+        offset = 1
+    else:
+        offset = 2
     if x_dilations_idxs:
         for i in x_dilations_idxs:
-            h = x.shape[1 + i]
+            h = x.shape[offset + i]
             new_height = h + (h - 1) * (x_dilations[i] - 1)
             h = tf.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
-            x = tf.experimental.numpy.swapaxes(x, 1 + i, -1)
+            x = tf.experimental.numpy.swapaxes(x, offset + i, -offset)
             x = tf.matmul(x, h)
-            x = tf.experimental.numpy.swapaxes(x, -1, 1 + i)
+            x = tf.experimental.numpy.swapaxes(x, -offset, offset + i)
     return x
 
 
-def _pad_before_conv(x, padding, dims):
+def _pad_before_conv(x, padding, dims, data_format):
     if isinstance(padding, str):
         return x, padding
     elif isinstance(padding, int):
         pad_list = [(padding, padding)] * dims
     else:
         pad_list = padding
-    return (
-        tf.pad(
-            x,
-            [
-                (0, 0),
-                *pad_list,
-                (0, 0),
-            ],
-            "CONSTANT",
-        ),
-        "VALID",
-    )
+    if data_format[-1] == "C" or data_format == "channel_last":
+        pad_list = [(0, 0), *pad_list, (0, 0)]
+    else:
+        pad_list = [(0, 0), (0, 0), *pad_list]
+    return tf.pad(x, pad_list, "CONSTANT"), "VALID"
 
 
 def _to_explicit_padding(padding, dims):
@@ -63,13 +60,19 @@ def _to_explicit_padding(padding, dims):
     return "EXPLICIT", explicit_pad
 
 
-def _transpose_out_pad(x_shape, filter_shape, strides, padding, dims, dilations):
+def _transpose_out_pad(
+    x_shape, filter_shape, strides, padding, dims, dilations, data_format
+):
+    if data_format[-1] == "C" or data_format == "channel_last":
+        offset = 1
+    else:
+        offset = 2
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     strides = [strides] * dims if isinstance(strides, int) else strides
     if isinstance(padding, str):
         out_shape = [
             _deconv_length(
-                x_shape[1 + i], strides[i], filter_shape[i], padding, dilations[i]
+                x_shape[offset + i], strides[i], filter_shape[i], padding, dilations[i]
             )
             for i in range(dims)
         ]
@@ -77,7 +80,7 @@ def _transpose_out_pad(x_shape, filter_shape, strides, padding, dims, dilations)
         if isinstance(padding, int):
             padding = [[padding, padding]] * dims
         out_shape = [
-            (x_shape[1 + i] - 1) * strides[i]
+            (x_shape[offset + i] - 1) * strides[i]
             - padding[i][0]
             - padding[i][1]
             + dilations[i] * (filter_shape[i] - 1)
@@ -104,15 +107,18 @@ def conv1d(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if data_format == "NCW":
+    permuted_x = False
+    if data_format == "NCW" and ivy.dev(x) == "cpu":
         x = tf.transpose(x, (0, 2, 1))
+        data_format = "NWC"
+        permuted_x = True
     if filter_format == "channel_first":
         filters = tf.transpose(filters, (2, 1, 0))
-    x = _x_dil_before_conv(x, 1, x_dilations)
-    x, padding = _pad_before_conv(x, padding, 1)
-    res = tf.nn.conv1d(x, filters, strides, padding, "NWC", dilations)
+    x = _x_dil_before_conv(x, 1, x_dilations, data_format)
+    x, padding = _pad_before_conv(x, padding, 1, data_format)
+    res = tf.nn.conv1d(x, filters, strides, padding, data_format, dilations)
     res = tf.math.add(res, bias) if bias is not None else res
-    if data_format == "NCW":
+    if permuted_x:
         res = tf.transpose(res, (0, 2, 1))
     return res
 
@@ -137,19 +143,40 @@ def conv1d_transpose(
         raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
-    if data_format == "NCW":
+    permuted_x = False
+    if data_format == "NCW" and ivy.dev(x) == "cpu":
         x = tf.transpose(x, (0, 2, 1))
+        data_format = "NWC"
+        permuted_x = True
     filters = tf.transpose(filters, (0, 2, 1))
     output_shape, padding = _transpose_out_pad(
-        x.shape, filters.shape, strides, padding, 1, dilations
+        x.shape, filters.shape, strides, padding, 1, dilations, data_format
     )
     res = tf.nn.conv1d_transpose(
-        x, filters, output_shape, strides, padding, "NWC", dilations
+        x, filters, output_shape, strides, padding, data_format, dilations
     )
     res = tf.math.add(res, bias) if bias is not None else res
-    if data_format == "NCW":
+    if permuted_x:
         res = tf.transpose(res, (0, 2, 1))
     return res
+
+
+def _extend_strides_dilations(strides, dilations, dims, data_format):
+    if data_format[-1] == "C" or data_format == "channel_last":
+        strides = [1, *([strides] * dims if isinstance(strides, int) else strides), 1]
+        dilations = [
+            1,
+            *([dilations] * dims if isinstance(dilations, int) else dilations),
+            1,
+        ]
+    else:
+        strides = [1, 1, *([strides] * dims if isinstance(strides, int) else strides)]
+        dilations = [
+            1,
+            1,
+            *([dilations] * dims if isinstance(dilations, int) else dilations),
+        ]
+    return strides, dilations
 
 
 @with_supported_dtypes({"2.14.0 and below": ("float", "int32")}, backend_version)
@@ -167,27 +194,27 @@ def conv2d(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if data_format == "NCHW":
+    permuted_x = False
+    if data_format == "NCHW" and ivy.dev(x) == "cpu":
         x = tf.transpose(x, (0, 2, 3, 1))
+        data_format = "NHWC"
+        permuted_x = True
     if filter_format == "channel_first":
         filters = tf.transpose(filters, (2, 3, 1, 0))
-    x = _x_dil_before_conv(x, 2, x_dilations)
+    x = _x_dil_before_conv(x, 2, x_dilations, data_format)
     padding, explicit_padding = _to_explicit_padding(padding, 2)
-    strides = [1] + list([strides] * 2 if isinstance(strides, int) else strides) + [1]
-    dilations = (
-        [1] + list([dilations] * 2 if isinstance(dilations, int) else dilations) + [1]
-    )
+    strides, dilations = _extend_strides_dilations(strides, dilations, 2, data_format)
     res = tf.raw_ops.Conv2D(
         input=x,
         filter=filters,
         strides=strides,
         padding=padding,
         explicit_paddings=explicit_padding,
-        data_format="NHWC",
+        data_format=data_format,
         dilations=dilations,
     )
     res = tf.math.add(res, bias) if bias is not None else res
-    if data_format == "NCHW":
+    if permuted_x:
         return tf.transpose(res, (0, 3, 1, 2))
     return res
 
@@ -212,8 +239,11 @@ def conv2d_transpose(
         raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
-    if data_format == "NCHW":
+    permuted_x = False
+    if data_format == "NCHW" and ivy.dev(x) == "cpu":
         x = tf.transpose(x, (0, 2, 3, 1))
+        data_format = "NHWC"
+        permuted_x = True
     filters = tf.transpose(filters, (0, 1, 3, 2))
     output_shape, padding = _transpose_out_pad(
         x.shape,
@@ -222,12 +252,13 @@ def conv2d_transpose(
         padding,
         2,
         dilations,
+        data_format,
     )
     res = tf.nn.conv2d_transpose(
-        x, filters, output_shape, strides, padding, "NHWC", dilations
+        x, filters, output_shape, strides, padding, data_format, dilations
     )
     res = tf.math.add(res, bias) if bias is not None else res
-    if data_format == "NCHW":
+    if permuted_x:
         return tf.transpose(res, (0, 3, 1, 2))
     return res
 
@@ -246,15 +277,18 @@ def depthwise_conv2d(
 ) -> Union[tf.Tensor, tf.Variable]:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    if data_format == "NCHW":
+    permuted_x = False
+    if data_format == "NCHW" and ivy.dev(x) == "cpu":
         x = tf.transpose(x, (0, 2, 3, 1))
+        data_format = "NHWC"
+        permuted_x = True
     if tf.rank(filters) == 3:
         filters = tf.expand_dims(filters, -1)
-    x, padding = _pad_before_conv(x, padding, 2)
+    x, padding = _pad_before_conv(x, padding, 2, data_format)
     strides = [1, strides[0], strides[1], 1]
-    res = tf.nn.depthwise_conv2d(x, filters, strides, padding, "NHWC", dilations)
-    if data_format == "NCHW":
-        return tf.transpose(res, (0, 3, 1, 2))
+    res = tf.nn.depthwise_conv2d(x, filters, strides, padding, data_format, dilations)
+    if permuted_x:
+        res = tf.transpose(res, (0, 3, 1, 2))
     return res
 
 
@@ -273,19 +307,19 @@ def conv3d(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    if data_format == "NCDHW":
+    permuted_x = False
+    if data_format == "NCDHW" and ivy.dev(x) == "cpu":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
+        data_format = "NDHWC"
+        permuted_x = True
     if filter_format == "channel_first":
         filters = tf.transpose(filters, (2, 3, 4, 1, 0))
-    x = _x_dil_before_conv(x, 3, x_dilations)
-    x, padding = _pad_before_conv(x, padding, 3)
-    strides = [1] + list([strides] * 3 if isinstance(strides, int) else strides) + [1]
-    dilations = (
-        [1] + list([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
-    )
-    res = tf.nn.conv3d(x, filters, strides, padding, "NDHWC", dilations)
+    x = _x_dil_before_conv(x, 3, x_dilations, data_format)
+    x, padding = _pad_before_conv(x, padding, 3, data_format)
+    strides, dilations = _extend_strides_dilations(strides, dilations, 3, data_format)
+    res = tf.nn.conv3d(x, filters, strides, padding, data_format, dilations)
     res = tf.math.add(res, bias) if bias is not None else res
-    if data_format == "NCDHW":
+    if permuted_x:
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
 
@@ -310,21 +344,21 @@ def conv3d_transpose(
         raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
-    if data_format == "NCDHW":
+    permuted_x = False
+    if data_format == "NCDHW" and ivy.dev(x) == "cpu":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
+        data_format = "NDHWC"
+        permuted_x = True
     filters = tf.transpose(filters, (0, 1, 2, 4, 3))
     output_shape, padding = _transpose_out_pad(
-        x.shape, filters.shape, strides, padding, 3, dilations
+        x.shape, filters.shape, strides, padding, 3, dilations, data_format
     )
-    strides = [1] + list([strides] * 3 if isinstance(strides, int) else strides) + [1]
-    dilations = (
-        [1] + list([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
-    )
+    strides, dilations = _extend_strides_dilations(strides, dilations, 3, data_format)
     res = tf.nn.conv3d_transpose(
-        x, filters, output_shape, strides, padding, "NDHWC", dilations
+        x, filters, output_shape, strides, padding, data_format, dilations
     )
     res = tf.math.add(res, bias) if bias is not None else res
-    if data_format == "NCDHW":
+    if permuted_x:
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
 
@@ -353,7 +387,7 @@ def conv_general_dilated(
     if filter_format == "channel_first":
         filters = tf.transpose(filters, (*range(2, dims + 2), 1, 0))
 
-    x = _x_dil_before_conv(x, dims, x_dilations)
+    x = _x_dil_before_conv(x, dims, x_dilations, "channel_last")
 
     df = _get_x_data_format(dims, "channel_last")
 
@@ -370,7 +404,7 @@ def conv_general_dilated(
         )
 
     if dims == 1:
-        x, padding = _pad_before_conv(x, padding, dims)
+        x, padding = _pad_before_conv(x, padding, dims, "channel_last")
         res = tf.nn.conv1d(
             x,
             filters,
@@ -381,13 +415,8 @@ def conv_general_dilated(
         )
     elif dims == 2:
         padding, explicit_padding = _to_explicit_padding(padding, 2)
-        strides = (
-            [1] + list([strides] * 2 if isinstance(strides, int) else strides) + [1]
-        )
-        dilations = (
-            [1]
-            + list([dilations] * 2 if isinstance(dilations, int) else dilations)
-            + [1]
+        strides, dilations = _extend_strides_dilations(
+            strides, dilations, 2, "channel_last"
         )
         res = tf.raw_ops.Conv2D(
             input=x,
@@ -399,14 +428,9 @@ def conv_general_dilated(
             dilations=dilations,
         )
     else:
-        x, padding = _pad_before_conv(x, padding, dims)
-        strides = (
-            [1] + list([strides] * 3 if isinstance(strides, int) else strides) + [1]
-        )
-        dilations = (
-            [1]
-            + list([dilations] * 3 if isinstance(dilations, int) else dilations)
-            + [1]
+        x, padding = _pad_before_conv(x, padding, dims, "channel_last")
+        strides, dilations = _extend_strides_dilations(
+            strides, dilations, 3, "channel_last"
         )
         # grouped conv3d is not supported on CPU
         # ToDO: change the condition of GPU when automatic device shifting
@@ -466,8 +490,6 @@ def conv_general_transpose(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if data_format == "channel_first":
-        x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     if feature_group_count == 1:
         if dims == 1:
             res = conv1d_transpose(
@@ -476,7 +498,7 @@ def conv_general_transpose(
                 strides,
                 padding,
                 output_shape=output_shape,
-                data_format="NWC",
+                data_format="NWC" if data_format == "channel_last" else "NCW",
                 dilations=dilations,
                 bias=bias,
             )
@@ -487,7 +509,7 @@ def conv_general_transpose(
                 strides,
                 padding,
                 output_shape=output_shape,
-                data_format="NHWC",
+                data_format="NHWC" if data_format == "channel_last" else "NCHW",
                 dilations=dilations,
                 bias=bias,
             )
@@ -498,11 +520,13 @@ def conv_general_transpose(
                 strides,
                 padding,
                 output_shape=output_shape,
-                data_format="NDHWC",
+                data_format="NDHWC" if data_format == "channel_last" else "NCDHW",
                 dilations=dilations,
                 bias=bias,
             )
     else:
+        if data_format == "channel_first":
+            x = tf.transpose(x, (0, *range(2, dims + 2), 1))
         if dims == 1:
             res = tf.concat(
                 [
@@ -564,8 +588,8 @@ def conv_general_transpose(
                 axis=-1,
             )
         res = tf.math.add(res, bias) if bias is not None else res
-    if data_format == "channel_first":
-        res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
+        if data_format == "channel_first":
+            res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
 
 
