@@ -16,9 +16,23 @@ def fft(x, n=None, axis=-1.0, norm="backward", name=None):
     return ivy.astype(ret, x.dtype)
 
 
+@with_supported_dtypes(
+    {
+        "2.5.2 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
 def fft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
-    ret = ivy.fft2(ivy.astype(x, "complex128"), s, axes, norm)
-    return ivy.astype(ret, x.dtype)
+    if axes is None:
+        axes = (-2, -1)
+    ret = ivy.fft2(x, s=s, dim=axes, norm=norm)
+    return ret
 
 
 @with_supported_dtypes(
