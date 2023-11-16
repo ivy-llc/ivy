@@ -221,7 +221,7 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
 
 These examples cover points 1, 2, 3, 4 and 5.
 
-Please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be seperated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
+Please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be separated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
 
 Point 1 is simple to satisfy.
 Ignoring the union over :class:`ivy.Array` and :class:`ivy.NativeArray` which is covered by points 6 and 7, and ignoring the *nestable* nature of the function which is covered by points 8 and 9, then as far as point 1 is concerned, the input :code:`x` only has one possible variation.
@@ -349,7 +349,7 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
 
 These examples cover points 1, 2, 3, 4 and 5.
 
-Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be seperated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
+Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be separated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
 
 Point 1 is a bit less trivial to satisfy than it was for :func:`ivy.tan` above.
 While :code:`x` again only has one variation (for the same reason as explained in the :func:`ivy.tan` example above), :code:`shift` has two variations (:code:`int` or sequence of :code:`int`), and :code:`axis` has three variations (:code:`int`, :sequence of :code:`int`, or :code:`None`).
@@ -497,7 +497,7 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
 
 These examples cover points 1, 2, 3, 4 and 5.
 
-Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be seperated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
+Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be separated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
 
 Point 1 is again trivial to satisfy, as was the case for :func:`ivy.tan`.
 Ignoring the union over :class:`ivy.Array` and :class:`ivy.NativeArray` which is covered by points 6 and 7, and also ignoring the *nestable* nature of the function which is covered by points 8 and 9, then as far as point 1 is concerned, inputs :code:`x1` and :code:`x2` both only have one possible variation.
@@ -533,7 +533,7 @@ We then also add an example with an :class:`ivy.Container` for one of the inputs
                       [8.1, 9.3, 3.4]])
     }
 
-Again, unlike :func:`ivy.tan`, point 7 is relevant in this case, as there are two function inputs in total (exluding :code:`out`).
+Again, unlike :func:`ivy.tan`, point 7 is relevant in this case, as there are two function inputs in total (excluding :code:`out`).
 We can therefore add an example with multiple :class:`ivy.Container` inputs, in order to satisfy point 7.
 
 .. parsed-literal::

@@ -1,4 +1,5 @@
 """Collection of Ivy neural network layers as stateful classes."""
+
 # flake8: noqa
 # local
 import ivy
@@ -2045,7 +2046,7 @@ class AdaptiveAvgPool2d(Module):
         )
 
     def extra_repr(self):
-        return "output_size={}".format(self._output_size)
+        return f"output_size={self._output_size}"
 
 
 class AdaptiveAvgPool1d(Module):
@@ -2091,7 +2092,7 @@ class AdaptiveAvgPool1d(Module):
         )
 
     def extra_repr(self):
-        return "output_size={}".format(self._output_size)
+        return f"output_size={self._output_size}"
 
 
 class FFT(Module):
@@ -2236,7 +2237,7 @@ class Dct(Module):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The length of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal length,
             then x is truncated, if n is larger then x is zero-padded.
         axis
             The axis to compute the DCT along.

@@ -7,6 +7,7 @@ import torch
 import ivy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
+    with_supported_dtypes,
     handle_numpy_arrays_in_specific_backend,
 )
 from ivy import promote_types_of_inputs
@@ -37,7 +38,7 @@ def add(
 add.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def bitwise_xor(
     x1: Union[int, bool, torch.Tensor],
@@ -53,21 +54,20 @@ def bitwise_xor(
 bitwise_xor.support_native_out = True
 
 
+@with_supported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def imag(
     val: torch.Tensor,
     /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if val.dtype not in (torch.complex64, torch.complex128):
-        return torch.zeros_like(val, dtype=val.dtype)
     return torch.imag(val)
 
 
 imag.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -77,7 +77,7 @@ def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
 expm1.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def bitwise_invert(
     x: Union[int, bool, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
@@ -129,7 +129,7 @@ def equal(
 equal.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def less_equal(
     x1: Union[float, torch.Tensor],
@@ -145,7 +145,7 @@ def less_equal(
 less_equal.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def bitwise_and(
     x1: Union[int, bool, torch.Tensor],
@@ -161,7 +161,7 @@ def bitwise_and(
 bitwise_and.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def ceil(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -175,7 +175,7 @@ def ceil(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 ceil.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def floor(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -189,7 +189,7 @@ def floor(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
 floor.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 def fmin(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -203,7 +203,7 @@ def fmin(
 fmin.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def asin(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -213,7 +213,7 @@ def asin(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 asin.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def asinh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -223,7 +223,7 @@ def asinh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
 asinh.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def sign(
     x: torch.Tensor,
@@ -245,7 +245,7 @@ def sign(
 sign.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def sqrt(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -255,7 +255,7 @@ def sqrt(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 sqrt.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def cosh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -265,7 +265,7 @@ def cosh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 cosh.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def log10(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -275,14 +275,14 @@ def log10(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
 log10.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def log2(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.log2(x, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def log1p(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -298,7 +298,7 @@ def isnan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
     return torch.isnan(x)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def less(
     x1: Union[float, torch.Tensor],
@@ -329,7 +329,7 @@ def multiply(
 multiply.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def cos(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -370,7 +370,7 @@ def divide(
 divide.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def greater(
     x1: Union[float, torch.Tensor],
@@ -386,7 +386,7 @@ def greater(
 greater.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def greater_equal(
     x1: Union[float, torch.Tensor],
@@ -402,7 +402,7 @@ def greater_equal(
 greater_equal.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def acos(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -412,7 +412,7 @@ def acos(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 acos.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def lcm(
     x1: torch.Tensor,
@@ -458,7 +458,7 @@ def logical_or(
 logical_or.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def acosh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -468,7 +468,7 @@ def acosh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
 acosh.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def sin(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -504,7 +504,7 @@ def not_equal(
 not_equal.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def tanh(
     x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
@@ -516,7 +516,7 @@ def tanh(
 tanh.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def floor_divide(
     x1: Union[float, torch.Tensor],
@@ -537,7 +537,7 @@ def floor_divide(
 floor_divide.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def bitwise_or(
     x1: Union[int, bool, torch.Tensor],
@@ -553,7 +553,7 @@ def bitwise_or(
 bitwise_or.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def sinh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -618,7 +618,7 @@ def pow(
 pow.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def round(
     x: torch.Tensor, /, *, decimals: int = 0, out: Optional[torch.Tensor] = None
@@ -647,7 +647,7 @@ def trapz(
         return torch.trapezoid(y, dx=dx, dim=axis)
     else:
         if dx is not None:
-            TypeError(
+            raise TypeError(
                 "trapezoid() received an invalid combination of arguments - got "
                 "(Tensor, Tensor, int), but expected one of: *(Tensor "
                 "y, Tensor x, *, int dim) * (Tensor y, *, Number dx, int dim)"
@@ -659,7 +659,7 @@ def trapz(
 trapz.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def trunc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -692,7 +692,7 @@ def abs(
 abs.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def logaddexp(
     x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
@@ -704,7 +704,7 @@ def logaddexp(
 logaddexp.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def logaddexp2(
     x1: Union[torch.Tensor, float, list, tuple],
@@ -723,7 +723,7 @@ def logaddexp2(
 logaddexp2.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -733,7 +733,7 @@ def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 tan.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def atan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -744,7 +744,7 @@ atan.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")}, backend_version
+    {"2.1.0 and below": ("float16", "bfloat16", "complex")}, backend_version
 )  # TODO Fixed in PyTorch 1.12.1 (this note excludes complex)
 @handle_numpy_arrays_in_specific_backend
 def atan2(
@@ -757,7 +757,7 @@ def atan2(
 atan2.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def log(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -767,7 +767,7 @@ def log(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 log.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def exp(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -808,7 +808,7 @@ def subtract(
 subtract.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def remainder(
     x1: Union[float, torch.Tensor],
@@ -836,7 +836,7 @@ def remainder(
 remainder.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def atanh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -846,7 +846,7 @@ def atanh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
 atanh.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def bitwise_right_shift(
     x1: Union[int, bool, torch.Tensor],
@@ -863,7 +863,7 @@ def bitwise_right_shift(
 bitwise_right_shift.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def bitwise_left_shift(
     x1: Union[int, bool, torch.Tensor],
@@ -883,7 +883,7 @@ bitwise_left_shift.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def erf(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -893,7 +893,7 @@ def erf(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 erf.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def minimum(
     x1: Union[float, torch.Tensor],
@@ -912,7 +912,7 @@ def minimum(
 minimum.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def maximum(
     x1: Union[float, torch.Tensor],
@@ -931,7 +931,7 @@ def maximum(
 maximum.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def reciprocal(
     x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
@@ -944,7 +944,7 @@ reciprocal.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("complex64", "complex128")}, backend_version
+    {"2.1.0 and below": ("complex64", "complex128")}, backend_version
 )
 @handle_numpy_arrays_in_specific_backend
 def deg2rad(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -955,7 +955,7 @@ deg2rad.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("complex64", "complex128")}, backend_version
+    {"2.1.0 and below": ("complex64", "complex128")}, backend_version
 )
 @handle_numpy_arrays_in_specific_backend
 def rad2deg(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -965,7 +965,7 @@ def rad2deg(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
 rad2deg.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def trunc_divide(
     x1: Union[float, torch.Tensor],
@@ -989,7 +989,7 @@ def isreal(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.T
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("bfloat16", "complex")},
+    {"2.1.0 and below": ("bfloat16", "complex")},
     backend_version,
 )
 @handle_numpy_arrays_in_specific_backend

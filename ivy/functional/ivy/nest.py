@@ -132,7 +132,7 @@ def set_nest_at_index(
         Whether to inplace update the input nest or not
         Only works if nest is a mutable type. Default is ``True``.
     _result
-        Placeholder for the result of the update. do not set this paramter.
+        Placeholder for the result of the update. do not set this parameter.
 
     Returns
     -------
@@ -245,14 +245,27 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
     >>> print(nest)
     [[1, 2], [3, 99, 4]]
     """
-    if len(index) == 1:
-        idx = index[0]
-        if isinstance(nest, list):
-            nest.insert(idx, value)
+    if isinstance(nest, (dict, ivy.Container)):
+        if len(index) == 1:
+            key = index[0]
+            if isinstance(nest, dict):
+                nest[key] = value
         else:
-            nest[index[0]] = value
+            key = index[0]
+            if key in nest:
+                insert_into_nest_at_index(nest[key], index[1:], value)
+            else:
+                nest[key] = {}
+                insert_into_nest_at_index(nest[key], index[1:], value)
     else:
-        insert_into_nest_at_index(nest[index[0]], index[1:], value)
+        if len(index) == 1:
+            idx = index[0]
+            if isinstance(nest, list):
+                nest.insert(idx, value)
+            else:
+                nest[index[0]] = value
+        else:
+            insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
 @handle_exceptions
@@ -279,7 +292,7 @@ def map_nest_at_index(
         Whether to inplace update the input nest or not
         Only works if nest is a mutable type. Default is ``True``.
     _result
-        Placeholder for the result of the update. do not set this paramter.
+        Placeholder for the result of the update. do not set this parameter.
 
     Returns
     -------
@@ -664,7 +677,7 @@ def nested_argwhere(
     nest
         The nest to check the leaves of.
     fn
-        The conditon function, returning True or False.
+        The condition function, returning True or False.
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
         Default is ``False``.
@@ -1238,7 +1251,7 @@ def nested_any(
     nest
         The nest to check the leaves of.
     fn
-        The conditon function, returning True or False.
+        The condition function, returning True or False.
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
         Default is ``False``.
@@ -1343,16 +1356,14 @@ def copy_nest(
             return class_instance(**dict(zip(nest._fields, ret_list)))
         return class_instance(tuple(ret_list))
     elif check_fn(nest, list):
-        return class_instance(
-            [
-                copy_nest(
-                    i,
-                    include_derived=include_derived,
-                    to_mutable=to_mutable,
-                )
-                for i in nest
-            ]
-        )
+        return class_instance([
+            copy_nest(
+                i,
+                include_derived=include_derived,
+                to_mutable=to_mutable,
+            )
+            for i in nest
+        ])
     elif check_fn(nest, dict):
         class_instance = type(nest)
         dict_ = {
@@ -1404,6 +1415,7 @@ def nested_multi_map(
         The configuration for the nests. Default is the same as nest0.
     to_ivy
         convert the output to ivy_arrays. Default is ``True``
+
     Returns
     -------
         nest containing the result of the function. The structure of the output is the
@@ -1467,9 +1479,9 @@ def nested_multi_map(
                 (
                     return_nest.append(ret)
                     if isinstance(return_nest, (list))
-                    else return_nest.update(
-                        {val if is_dict else list(nest)[index]: ret}
-                    )
+                    else return_nest.update({
+                        val if is_dict else list(nest)[index]: ret
+                    })
                 )
     else:
         values = nests

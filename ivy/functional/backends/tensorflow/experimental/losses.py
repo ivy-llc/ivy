@@ -68,11 +68,11 @@ def soft_margin_loss(
         return loss
 
 
-def _apply_loss_reduction(loss: tf.Tensor, reduction: str) -> tf.Tensor:
+def _apply_loss_reduction(loss: tf.Tensor, reduction: str, axis) -> tf.Tensor:
     if reduction == "sum":
-        return tf.math.reduce_sum(loss)
+        return tf.math.reduce_sum(loss, axis=axis)
     elif reduction == "mean":
-        return tf.reduce_mean(loss)
+        return tf.reduce_mean(loss, axis=axis)
     else:  # reduction == "none"
         return loss
 

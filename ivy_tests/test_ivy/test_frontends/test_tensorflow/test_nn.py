@@ -1343,14 +1343,13 @@ def test_tensorflow_leaky_relu(
 @handle_frontend_test(
     fn_tree="tensorflow.nn.local_response_normalization",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-20,
-        max_value=20,
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=4,
         max_num_dims=4,
         min_dim_size=1,
-        large_abs_safety_factor=25,
-        small_abs_safety_factor=25,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     depth_radius=st.integers(min_value=1, max_value=5),
     bias=st.floats(min_value=0.1, max_value=1.5),
@@ -1379,8 +1378,7 @@ def test_tensorflow_local_response_normalization(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-1,
-        atol=1e-1,
+        atol=1e-2,
         input=x[0],
         depth_radius=depth_radius,
         bias=bias,
@@ -1471,6 +1469,40 @@ def test_tensorflow_max_pool1d(
     test_with_out=st.just(False),
 )
 def test_tensorflow_max_pool2d(
+    *,
+    x_k_s_p,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+    )
+
+
+# max_pool3d
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.max_pool3d",
+    data_format=st.sampled_from(["NDHWC", "NCDHW"]),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_max_pool3d(
     *,
     x_k_s_p,
     data_format,

@@ -91,12 +91,10 @@ def _divmod(
         ret = ivy.where(
             where,
             ret,
-            (
-                [
-                    ivy.default(out, ivy.zeros_like(ret[0])),
-                    ivy.default(out, ivy.zeros_like(ret[1])),
-                ]
-            ),
+            ([
+                ivy.default(out, ivy.zeros_like(ret[0])),
+                ivy.default(out, ivy.zeros_like(ret[1])),
+            ]),
             out=out,
         )
     return ret

@@ -337,7 +337,7 @@ def invert_permutation(x, name=None):
 
 @with_supported_dtypes(
     {
-        "2.11.0 and below": ("bfloat16", "half", "float32", "float64"),
+        "2.14.0 and below": ("bfloat16", "half", "float32", "float64"),
     },
     "tensorflow",
 )
@@ -394,6 +394,13 @@ def less_equal(x, y, name="LessEqual"):
     return ivy.less_equal(x, y)
 
 
+# lgamma
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.14.0 and below": ("float32", "float64")}, "tensorflow")
+def lgamma(x, name=None):
+    return ivy.lgamma(x)
+
+
 @to_ivy_arrays_and_back
 def log(x, name=None):
     return ivy.log(x)
@@ -447,7 +454,7 @@ def minimum(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16",)}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("bfloat16",)}, "paddle")
 def mod(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.remainder(x, y)
@@ -765,6 +772,22 @@ def unsorted_segment_mean(
 
 
 @to_ivy_arrays_and_back
+def unsorted_segment_min(data, segment_ids, num_segments, name="unsorted_segment_min"):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
+
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    min_array = ivy.zeros(
+        tuple([num_segments.item()] + (list(data.shape))[1:]), dtype=ivy.int32
+    )
+    for i in range((segment_ids).shape[0]):
+        min_array[segment_ids[i]] = ivy.minimum(min_array[segment_ids[i]], data[i])
+    return min_array
+
+
+@to_ivy_arrays_and_back
 def unsorted_segment_sqrt_n(
     data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):
@@ -822,7 +845,7 @@ def xlogy(x, y, name=None):
 
 @to_ivy_arrays_and_back
 def zero_fraction(value, name="zero_fraction"):
-    zero = ivy.zeros(tuple(list(value.shape)), dtype=ivy.float32)
+    zero = ivy.zeros(tuple(value.shape), dtype=ivy.float32)
     x = ivy.array(value, dtype=ivy.float32)
     count_zero = ivy.sum(ivy.equal(x, zero))
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))
@@ -832,7 +855,7 @@ def zero_fraction(value, name="zero_fraction"):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.11.0 and below": ("float32", "float64"),
+        "2.14.0 and below": ("float32", "float64"),
     },
     "tensorflow",
 )

@@ -685,7 +685,7 @@ def kronecker(
     return res
 
 
-# The code has been adapated from tensorly.khatri_rao
+# The code has been adapted from tensorly.khatri_rao
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/_khatri_rao.py#L9
 @handle_nestable
 @handle_exceptions
@@ -881,7 +881,7 @@ def mode_dot(
         return ivy.fold(res, fold_mode, new_shape, out=out)
 
 
-# The following code has been adapated from TensorLy
+# The following code has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/n_mode_product.py#L81
 @handle_nestable
 @handle_exceptions
@@ -1006,7 +1006,7 @@ def _svd_checks(x, n_eigenvecs=None):
     return n_eigenvecs, min_dim, max_dim
 
 
-# This function has been adapated from TensorLy
+# This function has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L12
 @handle_nestable
 @handle_exceptions
@@ -1160,8 +1160,8 @@ def make_svd_non_negative(
         H = ivy.soft_thresholding(H, eps)
     elif nntype == "nndsvda":
         avg = ivy.mean(x)
-        W = ivy.where(W < eps, ivy.ones(ivy.shape(W)) * avg, W)
-        H = ivy.where(H < eps, ivy.ones(ivy.shape(H)) * avg, H)
+        W = ivy.where(eps > W, ivy.ones(ivy.shape(W)) * avg, W)
+        H = ivy.where(eps > H, ivy.ones(ivy.shape(H)) * avg, H)
     else:
         raise ValueError(
             f'Invalid nntype parameter: got {nntype} instead of one of ("nndsvd",'
@@ -1217,7 +1217,86 @@ def truncated_svd(
         return S[:n_eigenvecs]
 
 
-# TODO uncommment the code below when these svd
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def tensor_train(
+    input_tensor: Union[ivy.Array, ivy.NativeArray],
+    rank: Union[int, Sequence[int]],
+    /,
+    *,
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    verbose: Optional[bool] = False,
+) -> ivy.TTTensor:
+    """
+    TT decomposition via recursive SVD.
+
+    Decomposes the input into a sequence of order-3 tensors (factors)
+    Also known as Tensor-Train decomposition [1]_
+
+    Parameters
+    ----------
+    input_tensor
+        tensor to decompose
+    rank
+        maximum allowable TT rank of the factors
+        if int, then this is the same for all the factors
+        if int list, then rank[k] is the rank of the kth factor
+    svd
+        function to use to compute the SVD
+    verbose
+        level of verbosity
+
+    Returns
+    -------
+    factors
+        order-3 tensors of the TT decomposition
+
+    [1]: Ivan V. Oseledets. "Tensor-train decomposition",
+    SIAM J. Scientific Computing, 33(5):2295–2317, 2011.
+    """
+    rank = ivy.TTTensor.validate_tt_rank(ivy.shape(input_tensor), rank=rank)
+    tensor_size = input_tensor.shape
+    n_dim = len(tensor_size)
+
+    unfolding = input_tensor
+    factors = [None] * n_dim
+
+    for k in range(n_dim - 1):
+        n_row = int(rank[k] * tensor_size[k])
+        unfolding = ivy.reshape(unfolding, (n_row, -1))
+
+        (n_row, n_column) = unfolding.shape
+        current_rank = min(n_row, n_column, rank[k + 1])
+        U, S, V = _svd_interface(unfolding, n_eigenvecs=current_rank, method=svd)
+
+        rank[k + 1] = current_rank
+        factors[k] = ivy.reshape(U, (rank[k], tensor_size[k], rank[k + 1]))
+
+        if verbose is True:
+            print(
+                "TT factor " + str(k) + " computed with shape " + str(factors[k].shape)
+            )
+
+        unfolding = ivy.reshape(S, (-1, 1)) * V
+
+    (prev_rank, last_dim) = unfolding.shape
+    factors[-1] = ivy.reshape(unfolding, (prev_rank, last_dim, 1))
+
+    if verbose is True:
+        print(
+            "TT factor "
+            + str(n_dim - 1)
+            + " computed with shape "
+            + str(factors[n_dim - 1].shape)
+        )
+
+    return ivy.TTTensor(factors)
+
+
+# TODO uncomment the code below when these svd
 # methods have been added
 def _svd_interface(
     matrix,
@@ -1325,7 +1404,7 @@ def initialize_tucker(
         assert len(x.shape) >= 2
     except ValueError:
         raise ValueError(
-            "expected x to have atleast 2 dimensions but it has only"
+            "expected x to have at least 2 dimensions but it has only"
             f" {len(x.shape)} dimension(s)"
         )
 
@@ -1374,7 +1453,7 @@ def initialize_tucker(
     return (core, factors)
 
 
-# This function has been adpated from TensorLy
+# This function has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/_tucker.py#L98
 @handle_nestable
 @handle_exceptions
@@ -1616,13 +1695,13 @@ def tucker(
             return ivy.TuckerTensor((core, factors))
 
         fixed_factors = sorted(fixed_factors)
-        modes_fixed, factors_fixed = zip(
-            *[(i, f) for (i, f) in enumerate(factors) if i in fixed_factors]
-        )
+        modes_fixed, factors_fixed = zip(*[
+            (i, f) for (i, f) in enumerate(factors) if i in fixed_factors
+        ])
         core = multi_mode_dot(core, factors_fixed, modes=modes_fixed)
-        modes, factors = zip(
-            *[(i, f) for (i, f) in enumerate(factors) if i not in fixed_factors]
-        )
+        modes, factors = zip(*[
+            (i, f) for (i, f) in enumerate(factors) if i not in fixed_factors
+        ])
         init = (core, list(factors))
 
         rank = ivy.TuckerTensor.validate_tucker_rank(x.shape, rank=rank)
