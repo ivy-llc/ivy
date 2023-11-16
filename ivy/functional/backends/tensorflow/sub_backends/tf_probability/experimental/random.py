@@ -81,7 +81,7 @@ def bernoulli(
 # dirichlet
 @with_unsupported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "blfoat16",
             "float16",
         )
