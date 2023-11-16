@@ -166,9 +166,9 @@ def conv2d(
         filters = tf.transpose(filters, (2, 3, 1, 0))
     x = _x_dil_before_conv(x, 2, x_dilations)
     padding, explicit_padding = _to_explicit_padding(padding, 2)
-    strides = [1] + ([strides] * 2 if isinstance(strides, int) else strides) + [1]
+    strides = [1] + list([strides] * 2 if isinstance(strides, int) else strides) + [1]
     dilations = (
-        [1] + ([dilations] * 2 if isinstance(dilations, int) else dilations) + [1]
+        [1] + list([dilations] * 2 if isinstance(dilations, int) else dilations) + [1]
     )
     res = tf.raw_ops.Conv2D(
         input=x,
@@ -267,9 +267,9 @@ def conv3d(
         filters = tf.transpose(filters, (2, 3, 4, 1, 0))
     x = _x_dil_before_conv(x, 3, x_dilations)
     x, padding = _pad_before_conv(x, padding, 3)
-    strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
+    strides = [1] + list([strides] * 3 if isinstance(strides, int) else strides) + [1]
     dilations = (
-        [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
+        [1] + list([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
     )
     res = tf.nn.conv3d(x, filters, strides, padding, "NDHWC", dilations)
     res = tf.math.add(res, bias) if bias is not None else res
@@ -298,9 +298,9 @@ def conv3d_transpose(
         raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
-    strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
+    strides = [1] + list([strides] * 3 if isinstance(strides, int) else strides) + [1]
     dilations = (
-        [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
+        [1] + list([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
     )
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
@@ -369,9 +369,13 @@ def conv_general_dilated(
         )
     elif dims == 2:
         padding, explicit_padding = _to_explicit_padding(padding, 2)
-        strides = [1] + ([strides] * 2 if isinstance(strides, int) else strides) + [1]
+        strides = (
+            [1] + list([strides] * 2 if isinstance(strides, int) else strides) + [1]
+        )
         dilations = (
-            [1] + ([dilations] * 2 if isinstance(dilations, int) else dilations) + [1]
+            [1]
+            + list([dilations] * 2 if isinstance(dilations, int) else dilations)
+            + [1]
         )
         res = tf.raw_ops.Conv2D(
             input=x,
@@ -384,9 +388,13 @@ def conv_general_dilated(
         )
     else:
         x, padding = _pad_before_conv(x, padding, dims)
-        strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
+        strides = (
+            [1] + list([strides] * 3 if isinstance(strides, int) else strides) + [1]
+        )
         dilations = (
-            [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
+            [1]
+            + list([dilations] * 3 if isinstance(dilations, int) else dilations)
+            + [1]
         )
         # grouped conv3d is not supported on CPU
         # ToDO: change the condition of GPU when automatic device shifting
