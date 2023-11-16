@@ -307,7 +307,7 @@ def repeat(
     /,
     repeats: Union[int, Iterable[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     # handle the case when repeats contains 0 as paddle doesn't support it

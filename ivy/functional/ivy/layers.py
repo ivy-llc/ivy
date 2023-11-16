@@ -856,9 +856,9 @@ def multi_head_attention(
     if key is None and value is None:
         key = value = query
     if num_dims == 2:
-        query, key, value = [ivy.expand_dims(x, axis=0) for x in [query, key, value]]
+        query, key, value = (ivy.expand_dims(x, axis=0) for x in [query, key, value])
     elif not batch_first:
-        query, key, value = [ivy.swapaxes(x, 0, 1) for x in [query, key, value]]
+        query, key, value = (ivy.swapaxes(x, 0, 1) for x in [query, key, value])
 
     # project query, key and value
     if ivy.exists(in_proj_weights):
@@ -2439,7 +2439,6 @@ def _validate_max_pool_params(
             kernel = [1, 1, *kernel]
         else:
             kernel = [1, *kernel, 1]
-    new_kernel = tuple(dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel)))
     new_kernel = tuple(dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel)))
     if isinstance(padding, list) and len(padding) == len(new_kernel):
         ivy.utils.assertions.check_kernel_padding_size(new_kernel, padding)

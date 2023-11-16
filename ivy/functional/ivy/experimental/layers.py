@@ -303,7 +303,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
-    division_override: Optional[int] = None,
+    divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -327,7 +327,7 @@ def avg_pool1d(
         Whether to include padding in the averaging calculation.
     ceil_mode
         Whether to use ceil or floor for creating the output shape.
-    division_override
+    divisor_override
         If specified, it will be used as the divisor,
         otherwise kernel_size will be used.
     out
@@ -366,7 +366,7 @@ def avg_pool1d(
         data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
-        division_override=division_override,
+        divisor_override=divisor_override,
         out=out,
     )
 
@@ -1918,18 +1918,14 @@ def interpolate(
                     right = int(math.ceil(p_j + 2))
                     top = int(math.floor(p_i - 2))
                     bottom = int(math.ceil(p_i + 2))
-                    kernel_w = ivy.array(
-                        [
-                            _mitchellcubic_kernel((p_j - j) * scale_w)
-                            for i in range(left, right)
-                        ]
-                    )
-                    kernel_h = ivy.array(
-                        [
-                            _mitchellcubic_kernel((p_i - i) * scale_h)
-                            for j in range(top, bottom)
-                        ]
-                    )
+                    kernel_w = ivy.array([
+                        _mitchellcubic_kernel((p_j - j) * scale_w)
+                        for i in range(left, right)
+                    ])
+                    kernel_h = ivy.array([
+                        _mitchellcubic_kernel((p_i - i) * scale_h)
+                        for j in range(top, bottom)
+                    ])
                     left_pad = max(0, -left)
                     right_pad = max(0, right - in_width)
                     top_pad = max(0, -top)
@@ -2025,7 +2021,7 @@ def _output_ceil_shape(w, f, p, s):
 
 
 def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
-    remaining_pixels = (w - f + sum(p)) % s
+    remaining_pixels = (w - f + p[0]) % s
     added_padding = 0
     if s > 1 and remaining_pixels != 0 and f > 1:
         input_size = w + sum(p)
@@ -2708,7 +2704,7 @@ reduce_window.mixed_backend_wrappers = {
 def fft2(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
     out: Optional[ivy.Array] = None,
@@ -3166,7 +3162,7 @@ def max_unpool1d(
     kernel_size: Union[Tuple[int], int],
     /,
     *,
-    strides: Union[int, Tuple[int]] = None,
+    strides: Optional[Union[int, Tuple[int]]] = None,
     padding: Union[int, Tuple[int]] = 0,
     data_format: Optional[str] = "NCW",
 ) -> ivy.Array:

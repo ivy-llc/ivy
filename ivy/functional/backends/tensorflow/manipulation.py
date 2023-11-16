@@ -32,26 +32,25 @@ def concat(
     axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    is_tuple = type(xs) is tuple
-    is_axis_none = axis is None
-    if is_tuple:
-        xs = list(xs)
-    highest_dtype = xs[0].dtype
-    for i in xs:
-        highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
-
-    for i in range(len(xs)):
-        if is_axis_none:
-            xs[i] = tf.reshape(xs[i], -1)
-        xs[i] = ivy.astype(xs[i], highest_dtype, copy=False).to_native()
-    if is_axis_none:
-        axis = 0
-        if is_tuple:
-            xs = tuple(xs)
-    try:
-        return tf.concat(xs, axis)
-    except (tf.errors.InvalidArgumentError, np.AxisError) as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+    if axis is not None:
+        try:
+            return tf.concat(xs, axis)
+        except tf.errors.InvalidArgumentError as error:
+            if "(zero-based) was expected to be" in error.message:
+                highest_dtype = xs[0].dtype
+                for i in xs:
+                    highest_dtype = ivy.promote_types(highest_dtype, i.dtype)
+                highest_dtype = ivy.as_native_dtype(highest_dtype)
+                return tf.concat(
+                    [
+                        tf.cast(x, highest_dtype) if x.dtype != highest_dtype else x
+                        for x in xs
+                    ],
+                    axis,
+                )
+            else:
+                raise
+    return concat([tf.reshape(x, -1) for x in xs], axis=0)
 
 
 def expand_dims(
@@ -245,7 +244,7 @@ def repeat(
     /,
     repeats: Union[int, List[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.repeat(x, repeats, axis)

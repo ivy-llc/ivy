@@ -33,12 +33,10 @@ def check_for_binaries():
         for path in binaries_paths:
             if not os.path.exists(path):
                 if initial:
-                    config_str = "\n".join(
-                        [
-                            f"{module} : {', '.join(configs)}"
-                            for module, configs in available_configs.items()
-                        ]
-                    )
+                    config_str = "\n".join([
+                        f"{module} : {', '.join(configs)}"
+                        for module, configs in available_configs.items()
+                    ])
                     logging.warning(
                         "\tSome binaries seem to be missing in your system. This could "
                         "be either because we don't have compatible binaries for your "

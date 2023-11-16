@@ -109,12 +109,10 @@ class Module(ivy.Module):
     def _build(self, *args, **kwargs):
         self._native_params = ivy.Container(
             OrderedDict(
-                sorted(
-                    [
-                        (k.replace(".", "/"), v)
-                        for k, v in dict(self.named_parameters()).items()
-                    ]
-                )
+                sorted([
+                    (k.replace(".", "/"), v)
+                    for k, v in dict(self.named_parameters()).items()
+                ])
             ),
             dynamic_backend=False,
         )

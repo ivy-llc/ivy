@@ -262,8 +262,8 @@ class Array(
     def size(self) -> Optional[int]:
         """Number of elements in the array."""
         if self._size is None:
-            if hasattr(self._data, "size") and callable(self._data.size):
-                self._size = self._data.size()
+            if ivy.current_backend_str() in ["numpy", "jax"]:
+                self._size = self._data.size
                 return self._size
             self._size = (
                 functools.reduce(mul, self._data.shape)

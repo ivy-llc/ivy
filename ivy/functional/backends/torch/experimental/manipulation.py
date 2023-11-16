@@ -1,5 +1,6 @@
 # global
 from typing import (
+    Iterable,
     Optional,
     Union,
     Sequence,
@@ -64,21 +65,29 @@ heaviside.support_native_out = True
 )
 def pad(
     input: torch.Tensor,
-    pad_width: Union[Sequence[Sequence[int]], torch.Tensor, int],
+    pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
     mode: Union[
         Literal[
             "constant",
+            "dilated",
             "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
             "reflect",
+            "symmetric",
             "wrap",
+            "empty",
         ],
         Callable,
     ] = "constant",
-    stat_length: Union[Sequence[torch.Tensor], int] = 1,
-    constant_values: Number = 0,
-    end_values: Number = 0,
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> torch.Tensor:
@@ -122,16 +131,18 @@ pad.partial_mixed_handler = (
 
 
 def _check_torch_pad(mode, reflect_type, pad_width, input_shape, constant_values):
-    pad_width = _to_tf_padding(pad_width, len(input_shape))
-    if mode != "constant" and (
-        len(input_shape) > 4
-        or (len(input_shape) == 4 and len(pad_width) > 3)
-        or (len(input_shape) == 3 and len(pad_width) > 2)
-        or (len(input_shape) == 2 and len(pad_width) > 1)
-    ):
+    ndim = len(input_shape)
+    pad_width = _to_tf_padding(pad_width, ndim)
+    if mode != "constant" and (ndim > 4 or (ndim > 1 and len(pad_width) > ndim - 1)):
         return False
     return _check_paddle_pad(
-        mode, reflect_type, pad_width, input_shape, constant_values, 4
+        mode,
+        reflect_type,
+        pad_width,
+        input_shape,
+        constant_values,
+        4,
+        extend=False,
     ) and (
         mode != "wrap"
         or all(

@@ -466,7 +466,7 @@ class ModuleConverters:
                         name=kc, shape=x.shape, dtype=x.dtype, trainable=True
                     )
                 )
-                model_weights = list()
+                model_weights = []
                 self._ivy_module.v.cont_map(
                     lambda x, kc: model_weights.append(ivy.to_numpy(x))
                 )
