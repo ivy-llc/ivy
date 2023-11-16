@@ -42,6 +42,15 @@ def _convolution_broadcast_helper(
         return [1] + arg + [1]
 
 
+def _reduce_padding(padding, data_format):
+    if not isinstance(padding, str):
+        if data_format[1] == "C":
+            padding = padding[2:]
+        else:
+            padding = padding[1:-1]
+    return padding
+
+
 def _reduce_strides_dilations(dim, stride, dilations):
     if not isinstance(stride, int):
         if len(stride) > dim:
@@ -169,6 +178,7 @@ def conv2d(
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    padding = _reduce_padding(padding, data_format)
     return ivy.conv2d(
         input, filters, strides, padding, data_format=data_format, dilations=dilations
     )
@@ -187,6 +197,7 @@ def conv2d_transpose(
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    padding = _reduce_padding(padding, data_format)
     filters = filters.swapaxes(-2, -1)
     return ivy.conv2d_transpose(
         input,

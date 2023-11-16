@@ -78,6 +78,19 @@ def _conv_transpose(
     return ret
 
 
+def _get_transpose_pad(padding, output_padding, dims):
+    (
+        padding,
+        output_padding,
+    ) = map(
+        lambda x: [x] * dims if isinstance(x, int) else x, [padding, output_padding]
+    )
+    asymmetric_padding = [
+        [pad, pad - output_pad] for pad, output_pad in zip(padding, output_padding)
+    ]
+    return asymmetric_padding
+
+
 def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False):
     in_channels = input.shape[1]
     out_channels = weight.shape[0] if not transpose else weight.shape[1] * groups
@@ -219,15 +232,17 @@ def conv_transpose2d(
     groups=1,
     dilation=1,
 ):
-    return _conv_transpose(
+    weight = ivy.permute_dims(weight, axes=(2, 3, 0, 1))
+    return ivy.conv_general_transpose(
         input,
         weight,
+        stride,
+        _get_transpose_pad(padding, output_padding, 2),
+        dims=2,
+        data_format="channel_first",
+        dilations=dilation,
+        feature_group_count=groups,
         bias=bias,
-        stride=stride,
-        padding=padding,
-        output_padding=output_padding,
-        groups=groups,
-        dilation=dilation,
     )
 
 

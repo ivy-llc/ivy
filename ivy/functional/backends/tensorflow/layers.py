@@ -63,22 +63,30 @@ def _to_explicit_padding(padding, dims):
     return "EXPLICIT", explicit_pad
 
 
-def _output_shape(
-    x_shape, filter_shape, output_shape, strides, padding, dims, dilations
-):
+def _transpose_out_pad(x_shape, filter_shape, strides, padding, dims, dilations):
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     strides = [strides] * dims if isinstance(strides, int) else strides
-    if output_shape is None:
+    if isinstance(padding, str):
         out_shape = [
             _deconv_length(
-                x_shape[i + 1], strides[i], filter_shape[i], padding, dilations[i]
+                x_shape[1 + i], strides[i], filter_shape[i], padding, dilations[i]
             )
             for i in range(dims)
         ]
-        output_shape = [x_shape[0], *out_shape, filter_shape[-2]]
-    elif len(output_shape) == dims:
-        output_shape = [x_shape[0]] + output_shape + [filter_shape[-2]]
-    return output_shape
+    else:
+        if isinstance(padding, int):
+            padding = [[padding, padding]] * dims
+        out_shape = [
+            (x_shape[1 + i] - 1) * strides[i]
+            - padding[i][0]
+            - padding[i][1]
+            + dilations[i] * (filter_shape[i] - 1)
+            + 1
+            for i in range(dims)
+        ]
+        padding = [[0, 0], *padding, [0, 0]]
+    out_shape = [x_shape[0], *out_shape, filter_shape[-2]]
+    return out_shape, padding
 
 
 @with_unsupported_dtypes({"2.14.0 and below": ("bfloat16", "complex")}, backend_version)
@@ -132,9 +140,8 @@ def conv1d_transpose(
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
     filters = tf.transpose(filters, (0, 2, 1))
-
-    output_shape = _output_shape(
-        x.shape, filters.shape, output_shape, strides, padding, 1, dilations
+    output_shape, padding = _transpose_out_pad(
+        x.shape, filters.shape, strides, padding, 1, dilations
     )
     res = tf.nn.conv1d_transpose(
         x, filters, output_shape, strides, padding, "NWC", dilations
@@ -190,7 +197,7 @@ def conv2d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
@@ -208,8 +215,13 @@ def conv2d_transpose(
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     filters = tf.transpose(filters, (0, 1, 3, 2))
-    output_shape = _output_shape(
-        x.shape, filters.shape, output_shape, strides, padding, 2, dilations
+    output_shape, padding = _transpose_out_pad(
+        x.shape,
+        filters.shape,
+        strides,
+        padding,
+        2,
+        dilations,
     )
     res = tf.nn.conv2d_transpose(
         x, filters, output_shape, strides, padding, "NHWC", dilations
@@ -298,15 +310,15 @@ def conv3d_transpose(
         raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
-    strides = [1] + list([strides] * 3 if isinstance(strides, int) else strides) + [1]
-    dilations = (
-        [1] + list([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
-    )
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
     filters = tf.transpose(filters, (0, 1, 2, 4, 3))
-    output_shape = _output_shape(
-        x.shape, filters.shape, output_shape, strides[1:], padding, 3, dilations
+    output_shape, padding = _transpose_out_pad(
+        x.shape, filters.shape, strides, padding, 3, dilations
+    )
+    strides = [1] + list([strides] * 3 if isinstance(strides, int) else strides) + [1]
+    dilations = (
+        [1] + list([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
     )
     res = tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, "NDHWC", dilations
@@ -456,61 +468,102 @@ def conv_general_transpose(
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "channel_first":
         x = tf.transpose(x, (0, *range(2, dims + 2), 1))
-    if dims == 1:
-        res = tf.concat(
-            [
-                conv1d_transpose(
-                    x[..., j : j + filters.shape[-2] // feature_group_count],
-                    filters[..., j : j + filters.shape[-2] // feature_group_count, :],
-                    strides,
-                    padding,
-                    output_shape=output_shape,
-                    data_format="NWC",
-                    dilations=dilations,
-                )
-                for j in range(
-                    0, filters.shape[-2], filters.shape[-2] // feature_group_count
-                )
-            ],
-            axis=-1,
-        )
-    elif dims == 2:
-        res = tf.concat(
-            [
-                conv2d_transpose(
-                    x[..., j : j + filters.shape[-2] // feature_group_count],
-                    filters[..., j : j + filters.shape[-2] // feature_group_count, :],
-                    strides,
-                    padding,
-                    output_shape=output_shape,
-                    data_format="NHWC",
-                    dilations=dilations,
-                )
-                for j in range(
-                    0, filters.shape[-2], filters.shape[-2] // feature_group_count
-                )
-            ],
-            axis=-1,
-        )
+    if feature_group_count == 1:
+        if dims == 1:
+            res = conv1d_transpose(
+                x,
+                filters,
+                strides,
+                padding,
+                output_shape=output_shape,
+                data_format="NWC",
+                dilations=dilations,
+                bias=bias,
+            )
+        elif dims == 2:
+            res = conv2d_transpose(
+                x,
+                filters,
+                strides,
+                padding,
+                output_shape=output_shape,
+                data_format="NHWC",
+                dilations=dilations,
+                bias=bias,
+            )
+        else:
+            res = conv3d_transpose(
+                x,
+                filters,
+                strides,
+                padding,
+                output_shape=output_shape,
+                data_format="NDHWC",
+                dilations=dilations,
+                bias=bias,
+            )
     else:
-        res = tf.concat(
-            [
-                conv3d_transpose(
-                    x[..., j : j + filters.shape[-2] // feature_group_count],
-                    filters[..., j : j + filters.shape[-2] // feature_group_count, :],
-                    strides,
-                    padding,
-                    output_shape=output_shape,
-                    data_format="NDHWC",
-                    dilations=dilations,
-                )
-                for j in range(
-                    0, filters.shape[-2], filters.shape[-2] // feature_group_count
-                )
-            ],
-            axis=-1,
-        )
-    res = tf.math.add(res, bias) if bias is not None else res
+        if dims == 1:
+            res = tf.concat(
+                [
+                    conv1d_transpose(
+                        x[..., j : j + filters.shape[-2] // feature_group_count],
+                        filters[
+                            ..., j : j + filters.shape[-2] // feature_group_count, :
+                        ],
+                        strides,
+                        padding,
+                        output_shape=output_shape,
+                        data_format="NWC",
+                        dilations=dilations,
+                    )
+                    for j in range(
+                        0, filters.shape[-2], filters.shape[-2] // feature_group_count
+                    )
+                ],
+                axis=-1,
+            )
+        elif dims == 2:
+            res = tf.concat(
+                [
+                    conv2d_transpose(
+                        x[..., j : j + filters.shape[-2] // feature_group_count],
+                        filters[
+                            ..., j : j + filters.shape[-2] // feature_group_count, :
+                        ],
+                        strides,
+                        padding,
+                        output_shape=output_shape,
+                        data_format="NHWC",
+                        dilations=dilations,
+                    )
+                    for j in range(
+                        0, filters.shape[-2], filters.shape[-2] // feature_group_count
+                    )
+                ],
+                axis=-1,
+            )
+        else:
+            res = tf.concat(
+                [
+                    conv3d_transpose(
+                        x[..., j : j + filters.shape[-2] // feature_group_count],
+                        filters[
+                            ..., j : j + filters.shape[-2] // feature_group_count, :
+                        ],
+                        strides,
+                        padding,
+                        output_shape=output_shape,
+                        data_format="NDHWC",
+                        dilations=dilations,
+                    )
+                    for j in range(
+                        0, filters.shape[-2], filters.shape[-2] // feature_group_count
+                    )
+                ],
+                axis=-1,
+            )
+        res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
