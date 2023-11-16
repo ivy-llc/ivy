@@ -232,18 +232,31 @@ def conv_transpose2d(
     groups=1,
     dilation=1,
 ):
-    weight = ivy.permute_dims(weight, axes=(2, 3, 0, 1))
-    return ivy.conv_general_transpose(
-        input,
-        weight,
-        stride,
-        _get_transpose_pad(padding, output_padding, 2),
-        dims=2,
-        data_format="channel_first",
-        dilations=dilation,
-        feature_group_count=groups,
-        bias=bias,
-    )
+    if ivy.current_backend_str() in ["torch", "tensorflow"]:
+        # these two backends support explicit padding, no need for conv_general_dilated
+        weight = ivy.permute_dims(weight, axes=(2, 3, 0, 1))
+        return ivy.conv_general_transpose(
+            input,
+            weight,
+            stride,
+            _get_transpose_pad(padding, output_padding, 2),
+            dims=2,
+            data_format="channel_first",
+            dilations=dilation,
+            feature_group_count=groups,
+            bias=bias,
+        )
+    else:
+        _conv_transpose(
+            input,
+            weight,
+            bias=bias,
+            stride=stride,
+            padding=padding,
+            output_padding=output_padding,
+            groups=groups,
+            dilation=dilation,
+        )
 
 
 @with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")

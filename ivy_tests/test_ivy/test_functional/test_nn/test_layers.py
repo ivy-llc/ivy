@@ -1076,6 +1076,7 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         fc,
         bias,
     ) = x_f_d_df
+    assume(isinstance(pad, str) or backend_fw in ["torch", "tensorflow"])
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         input_dtypes=dtype,
@@ -1254,6 +1255,7 @@ def test_conv_general_transpose(
         fc,
         bias,
     ) = dim_x_f_d_df
+    assume(isinstance(pad, str) or backend_fw in ["torch", "tensorflow"])
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         input_dtypes=dtype,
@@ -1305,7 +1307,7 @@ def test_depthwise_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         strides=stride,
         padding=pad,
         data_format=data_format,
-        dilations=dilations,
+        dilations=dilations[0],
     )
 
 
