@@ -124,7 +124,7 @@ def kl_div(
 
 @with_supported_device_and_dtypes(
     {
-        "2.14.0 and below": {
+        "2.15.0 and below": {
             "cpu": (
                 "float32",
                 "float64",
