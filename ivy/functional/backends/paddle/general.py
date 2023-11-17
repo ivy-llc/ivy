@@ -95,7 +95,7 @@ def get_item(
     /,
     query: Union[paddle.Tensor, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> paddle.Tensor:
     if copy:
         x = paddle.clone(x)

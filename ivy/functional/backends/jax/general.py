@@ -66,7 +66,7 @@ def get_item(
     /,
     query: Union[JaxArray, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> JaxArray:
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
