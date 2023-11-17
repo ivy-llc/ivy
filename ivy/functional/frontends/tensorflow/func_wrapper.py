@@ -1,6 +1,6 @@
 # global
 import inspect
-from typing import Callable, Dict
+from typing import Callable, Dict, Optional
 import functools
 
 # local
@@ -135,11 +135,13 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
 
-    _inputs_to_ivy_arrays_tf.inputs_to_ivy_arrays = True
+    _inputs_to_ivy_arrays_tf.inputs_to_ivy_arrays_tf = True
     return _inputs_to_ivy_arrays_tf
 
 
-def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callable:
+def map_raw_ops_alias(
+    alias: callable, kwargs_to_update: Optional[Dict] = None
+) -> callable:
     """
     Map the raw_ops function with its respective frontend alias function, as the
     implementations of raw_ops is way similar to that of frontend functions, except that
@@ -190,6 +192,7 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
         _wraped_fn.__signature__ = new_signature
         return _wraped_fn
 
+    _wrap_raw_ops_alias.wrap_raw_ops_alias = True
     return _wrap_raw_ops_alias(alias, kwargs_to_update)
 
 
@@ -220,7 +223,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             _ivy_array_to_tensorflow, ret, include_derived={"tuple": True}
         )
 
-    _outputs_to_frontend_arrays_tf.outputs_to_frontend_arrays = True
+    _outputs_to_frontend_arrays_tf.outputs_to_frontend_arrays_tf = True
     return _outputs_to_frontend_arrays_tf
 
 

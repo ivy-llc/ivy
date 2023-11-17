@@ -18,6 +18,19 @@ from ivy.stateful.helpers import ModuleHelpers
 from ivy.stateful.converters import ModuleConverters
 
 
+# helpers
+def _addindent(s_, numSpaces):
+    s = s_.split("\n")
+    # don't do anything for single-line stuff
+    if len(s) == 1:
+        return s_
+    first = s.pop(0)
+    s = [(numSpaces * " ") + line for line in s]
+    s = "\n".join(s)
+    s = first + "\n" + s
+    return s
+
+
 # Base #
 # -----#
 
@@ -53,12 +66,12 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         v=None,
         buffers=None,
         build_mode="on_init",
-        compile_on_next_step=False,
+        trace_on_next_step=False,
         store_vars=True,
         stateful=None,
         arg_stateful_idxs=None,
         kwarg_stateful_idxs=None,
-        fallback_to_non_compiled=False,
+        fallback_to_non_traced=False,
         with_partial_v=False,
         devices=None,
         dtype=None,
@@ -81,8 +94,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             How the Module is built, either on initialization (now),
             explicitly by the user by calling build(), or the first
             time the __call__ method is run. Default is on initialization.
-        compile_on_next_step
-            Whether to compile the network on the next forward pass.
+        trace_on_next_step
+            Whether to trace the network in a graph on the next forward pass.
             Default is ``False``.
         store_vars
             Whether or not to store the variables created. Default is ``True``.
@@ -96,9 +109,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         kwarg_stateful_idxs
             The nested keyword argument indices of stateful items to track as part of
             the forward pass. Used when graph compiling, default is ``None``.
-        fallback_to_non_compiled
-            Whether to fall back to non-compiled forward call in the case that an error
-            is raised during the compiled forward pass. Default is ``True``.
+        fallback_to_non_traced
+            Whether to fall back to non-traced forward call in the case that an error
+            is raised during the traced forward pass. Default is ``True``.
         with_partial_v
             Whether to allow partial specification of variables. Default is ``False``.
         training
@@ -123,13 +136,13 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._stateful = stateful
         self._arg_stateful_idxs = arg_stateful_idxs
         self._kwarg_stateful_idxs = kwarg_stateful_idxs
-        self._fallback_to_non_compiled = fallback_to_non_compiled
+        self._fallback_to_non_traced = fallback_to_non_traced
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
         self._built = False
-        self._compiled = False
-        self._compiled_fn = None
-        self._compile_on_next_step = compile_on_next_step
+        self._traced = False
+        self._traced_fn = None
+        self._trace_on_next_step = trace_on_next_step
         self._v_in = v if isinstance(v, Container) or v is None else Container(v)
         self.v = v
         self.top_v = None
@@ -139,7 +152,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._submods_to_track = None
         self._track_submod_call_order = False
         self.expected_submod_rets = None
-        self.submod_dict = dict()
+        self.submod_dict = {}
         backend = ivy.with_backend("numpy")
         self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
@@ -149,7 +162,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._kwargs = kwargs
         self._module_graph = None
         self._target = None
-        self._lazy_compiled = False
+        self._lazy_traced = False
         self._dynamic_backend = dynamic_backend
         self.training = training
         if build_mode != "on_init":
@@ -204,7 +217,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     def _fn_with_var_arg_wrapper(
         self, *a, fn, v_fn, keychain_mappings, orig_key_chain, **kw
     ):
-        if "v" in kw.keys():
+        if "v" in kw:
             del kw["v"]
         v = v_fn(self.v, keychain_mappings, orig_key_chain)
         return fn(*a, **kw, v=v)
@@ -273,7 +286,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                     without_initialisation=without_initialisation,
                 )
                 if ret:
-                    vs["v" + str(i)] = ret
+                    vs[f"v{str(i)}"] = ret
             return vs
         elif isinstance(obj, dict):
             for k, v in obj.items():
@@ -383,14 +396,14 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             for i, val in enumerate(obj):
                 self._wrap_call_methods(
                     keychain_mappings,
-                    key=key + "/v" + str(i),
+                    key=f"{key}/v{str(i)}",
                     obj=val,
                     _visited=_visited,
                 )
             return
         elif isinstance(obj, dict):
             for k, val in obj.items():
-                k = (key + "/" + k) if key != "" and isinstance(k, str) else k
+                k = f"{key}/{k}" if key != "" and isinstance(k, str) else k
                 self._wrap_call_methods(
                     keychain_mappings, key=k, obj=val, _visited=_visited
                 )
@@ -400,7 +413,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         for k, val in obj.__dict__.items():
             if k[0:2] == "__":
                 continue
-            k = (key + "/" + k) if key != "" else k
+            k = f"{key}/{k}" if key != "" else k
             if val is not None:
                 self._wrap_call_methods(
                     keychain_mappings, key=k, obj=val, _visited=_visited
@@ -428,9 +441,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         """
         created_ids = created.cont_map(lambda x, kc: id(x))
         vs_ids = vs.cont_map(lambda x, kc: id(x))
-        ids = dict()
-        duplicate_keychains = list()
-        keychain_mappings = dict()
+        ids = {}
+        duplicate_keychains = []
+        keychain_mappings = {}
 
         def unique_callback(x, kc):
             ids[x] = kc
@@ -611,7 +624,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         Parameters
         ----------
         v
-            If given, use this container as internal varibles temporarily.
+            If given, use this container as internal variables temporarily.
             Default is ``None``.
         track_submod_rets
             If True, will track the returns of submodules.
@@ -629,17 +642,17 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         -------
         ret
         """
-        if self._lazy_compiled:
-            # we are compiling since we want to transpile module,
+        if self._lazy_traced:
+            # we are creating graph since we want to transpile module,
             # so set the appropriate backend
             if self._target:
                 ivy.set_backend(self._target)
-            self.compile(args=args, kwargs=kwargs)
+            self.trace_graph(args=args, kwargs=kwargs)
             if self._target:
                 ivy.previous_backend()
 
         if self._module_graph:
-            # we need `v` in kwargs, since this is a compiled call
+            # we need `v` in kwargs, since this is a traced call
             v = v if v else self.v
             return self._module_graph(*args, v=v, **kwargs)
 
@@ -841,14 +854,46 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         for key, obj in self.state_dict().items():
             if isinstance(obj, ivy.Module):
                 obj.to_device(device)
-            elif ivy.is_ivy_array(obj) or isinstance(obj, ivy.Container):
-                obj.to_device(device, out=obj)
-
-            else:
-                ivy.to_device(obj, device=device, obj=obj)
+            elif ivy.is_array(obj) or ivy.is_ivy_container(obj):
+                ivy.to_device(obj, device, out=obj)
+        return self
 
     def __repr__(self):
-        return object.__repr__(self)
+        extra_lines = []
+        extra_repr = self.extra_repr()
+        if extra_repr:
+            extra_lines = extra_repr.split("\n")
+        child_lines = []
+        for key, module in self.v.items():
+            if isinstance(getattr(self, key, None), Module):
+                mod_str = repr(getattr(self, key))
+                mod_str = _addindent(mod_str, 2)
+                child_lines.append(f"({key}): {mod_str}")
+        lines = extra_lines + child_lines
+
+        main_str = f"{self._get_name()}("
+        if lines:
+            # simple one-liner info, which most builtin Modules will use
+            if len(extra_lines) == 1 and not child_lines:
+                main_str += extra_lines[0]
+            else:
+                main_str += "\n  " + "\n  ".join(lines) + "\n"
+
+        main_str += ")"
+        return main_str
+
+    def extra_repr(self) -> str:
+        r"""
+        Set the extra representation of the module.
+
+        To print customized extra information, you should re-implement
+        this method in your own modules. Both single-line and multi-line
+        strings are acceptable.
+        """
+        return ""
+
+    def _get_name(self):
+        return self.__class__.__name__
 
     # Properties #
     # -----------#
@@ -862,7 +907,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return self._built
 
     @property
-    def device_(self):
+    def device(self):
         return self._device
 
     def show_graph(
@@ -878,7 +923,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         fname: Optional[str] = None,
     ):
         if not ivy.exists(self._module_graph):
-            raise ValueError("You must compile the module to display the graph.")
+            raise ValueError("You must trace the module to display the graph.")
 
         return self._module_graph.show(
             save_to_disk=save_to_disk,
@@ -899,16 +944,14 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                     *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
         if name != "buffers":
-            if hasattr(self, "buffers"):
-                if name in self.buffers:
-                    return self.buffers[name]
+            if hasattr(self, "buffers") and name in self.buffers:
+                return self.buffers[name]
         return super().__getattribute__(name)
 
     def __setattr__(self, name, value):
-        if hasattr(self, "buffers"):
-            if name in self.buffers:
-                self.buffers[name] = value
-                return
+        if hasattr(self, "buffers") and name in self.buffers:
+            self.buffers[name] = value
+            return
         return super().__setattr__(name, value)
 
     def __delattr__(self, name):
@@ -921,45 +964,45 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     def state_dict(self):
         return {**self.v, **getattr(self, "buffers", {})}
 
-    def compile(
+    def trace_graph(
         self,
         args: Optional[Tuple] = None,
         kwargs: Optional[Dict] = None,
-        **compile_kwargs,
+        **trace_kwargs,
     ):
         """
-        Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the target
+        Trace the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the target
         backend.
 
         Parameters
         ----------
         args:
-            arguments used to compile. Defaults to None.
+            arguments used to trace. Defaults to None.
         kwargs:
-            keyword arguments used to compile. Defaults to None.
-        compile_kwargs:
-            keyword arguments passed to the compile function.
+            keyword arguments used to trace. Defaults to None.
+        trace_kwargs:
+            keyword arguments passed to the trace function.
         """
-        # no arguments given to compile, so delay the compilation
+        # no arguments given to trace, so delay the compilation
         if not (args or kwargs):
-            self._lazy_compiled = True
+            self._lazy_traced = True
             return
 
         # we do not need convert the args to source
-        args = ivy.default(args, tuple())
-        kwargs = ivy.default(kwargs, dict())
+        args = ivy.default(args, ())
+        kwargs = ivy.default(kwargs, {})
 
         # shallow copy the kwargs dict
         kwargs = copy.copy(kwargs)
         kwargs["v"] = self.v
 
-        fn_to_compile = ivy.default(self._module_graph, self._call)
+        fn_to_trace = ivy.default(self._module_graph, self._call)
 
-        self._module_graph = ivy.compile(
-            fn_to_compile, **compile_kwargs, args=args, kwargs=kwargs
+        self._module_graph = ivy.trace_graph(
+            fn_to_trace, **trace_kwargs, args=args, kwargs=kwargs
         )
 
-        self._lazy_compiled = False
+        self._lazy_traced = False
 
     def save(self, filename):
         """
@@ -1035,14 +1078,13 @@ class _HaikuIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         params_hk = self._dict_to_hk_flat_map(self.v.cont_to_dict())
         ret = self._native_module.apply(params_hk, 0, *a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
     def _hk_flat_map_to_dict(self, hk_flat_map):
         from haiku._src.data_structures import FlatMapping
 
-        ret_dict = dict()
+        ret_dict = {}
         for k, v in hk_flat_map.items():
             new_k = k.replace("/", "|")
             if isinstance(v, FlatMapping):
@@ -1054,7 +1096,7 @@ class _HaikuIvyModule(Module):
     def _dict_to_hk_flat_map(self, dict_in):
         from haiku._src.data_structures import FlatMapping
 
-        ret_flat_map = dict()
+        ret_flat_map = {}
         for k, v in dict_in.items():
             new_k = k.replace("|", "/")
             if isinstance(v, dict):
@@ -1099,9 +1141,8 @@ class _FlaxIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         params_fx = flax.core.freeze(self.v.cont_to_dict())
         ret = self._native_module.apply(params_fx, *a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _KerasIvyModule(Module):
@@ -1126,9 +1167,8 @@ class _KerasIvyModule(Module):
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _PaddleIvyModule(Module):
@@ -1145,12 +1185,10 @@ class _PaddleIvyModule(Module):
     def _build(self, *args, **kwargs):
         self._native_params = ivy.Container(
             OrderedDict(
-                sorted(
-                    [
-                        (k.replace(".", "/"), v)
-                        for k, v in dict(self._native_module.named_parameters()).items()
-                    ]
-                )
+                sorted([
+                    (k.replace(".", "/"), v)
+                    for k, v in dict(self._native_module.named_parameters()).items()
+                ])
             ),
             dynamic_backend=False,
         )
@@ -1158,9 +1196,8 @@ class _PaddleIvyModule(Module):
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _TorchIvyModule(Module):
@@ -1179,12 +1216,10 @@ class _TorchIvyModule(Module):
     def _build(self, *args, **kwargs):
         self._native_params = ivy.Container(
             OrderedDict(
-                sorted(
-                    [
-                        (k.replace(".", "/"), v)
-                        for k, v in dict(self._native_module.named_parameters()).items()
-                    ]
-                )
+                sorted([
+                    (k.replace(".", "/"), v)
+                    for k, v in dict(self._native_module.named_parameters()).items()
+                ])
             ),
             dynamic_backend=False,
         )
@@ -1212,11 +1247,13 @@ class _TorchIvyModule(Module):
                 native.__setattr__(k, v)
             elif isinstance(v, torch.Tensor):
                 # noinspection PyProtectedMember
-                native.__setattr__(k, torch.nn.Parameter(v))
+                native.__setattr__(
+                    k, torch.nn.Parameter(v, requires_grad=v.requires_grad)
+                )
             else:
                 raise ivy.utils.exceptions.IvyException(
-                    "found item in variable container {} which was neither a "
-                    "sub ivy.Container nor a variable.".format(v)
+                    f"found item in variable container {v} which was neither a sub"
+                    " ivy.Container nor a variable."
                 )
         return native
 
@@ -1224,6 +1261,5 @@ class _TorchIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         self._update_v(self.v)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)

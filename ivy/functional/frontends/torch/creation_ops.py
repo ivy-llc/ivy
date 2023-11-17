@@ -4,12 +4,15 @@ from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
     to_ivy_shape,
 )
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, "torch")
 def arange(
     start=0,
     end=None,
@@ -71,6 +74,24 @@ def asarray(
     return ivy.asarray(obj, copy=copy, dtype=dtype, device=device)
 
 
+@with_supported_dtypes({"2.1.1 and below": ("float32", "float64")}, "torch")
+@to_ivy_arrays_and_back
+def complex(
+    real,
+    imag,
+    *,
+    out=None,
+):
+    assert real.dtype == imag.dtype, ValueError(
+        "Expected real and imag to have the same dtype, "
+        f" but got real.dtype = {real.dtype} and imag.dtype = {imag.dtype}."
+    )
+
+    complex_dtype = ivy.complex64 if real.dtype != ivy.float64 else ivy.complex128
+    complex_array = real + imag * 1j
+    return complex_array.astype(complex_dtype, out=out)
+
+
 @to_ivy_arrays_and_back
 def empty(
     *args,
@@ -102,6 +123,24 @@ def empty_like(
 ):
     ret = ivy.empty_like(input, dtype=dtype, device=device)
     return ret
+
+
+@to_ivy_arrays_and_back
+def empty_strided(
+    size,
+    stride,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    pin_memory=False,
+):
+    max_offsets = [(s - 1) * st for s, st in zip(size, stride)]
+    items = sum(max_offsets) + 1
+    empty_array = empty(items, dtype=dtype, device=device)
+    strided_array = as_strided(empty_array, size, stride)
+    return strided_array
 
 
 @to_ivy_arrays_and_back
@@ -169,7 +208,7 @@ def heaviside(input, values, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, "torch")
 def linspace(
     start,
     end,
@@ -186,7 +225,7 @@ def linspace(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, "torch")
 def logspace(
     start,
     end,
@@ -234,8 +273,19 @@ def ones_like_v_0p4p0_and_above(
     return ret
 
 
+@with_supported_dtypes({"2.1.1 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def polar(
+    abs,
+    angle,
+    *,
+    out=None,
+):
+    return complex(abs * angle.cos(), abs * angle.sin(), out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, "torch")
 def range(
     *args,
     dtype=None,

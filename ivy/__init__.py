@@ -2,6 +2,7 @@
 import copy
 import re
 import warnings
+import logging
 import builtins
 import numpy as np
 import sys
@@ -11,6 +12,7 @@ from collections.abc import Sequence
 
 
 import ivy.utils.backend.handler
+from ivy.utils import check_for_binaries
 from ivy._version import __version__ as __version__
 
 _not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
@@ -83,6 +85,18 @@ class CPTensor:
     pass
 
 
+class TRTensor:
+    pass
+
+
+class Parafac2Tensor:
+    pass
+
+
+class TTTensor:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
@@ -91,7 +105,7 @@ class Device(str):
                 # ivy.assertions.check_equal(dev_str[3], ":")
                 ivy.utils.assertions.check_true(
                     dev_str[4:].isnumeric(),
-                    message="{} must be numeric".format(dev_str[4:]),
+                    message=f"{dev_str[4:]} must be numeric",
                 )
         return str.__new__(cls, dev_str)
 
@@ -240,10 +254,15 @@ class Shape(Sequence):
         pattern = r"\d+(?:,\s*\d+)*"
         shape_repr = re.findall(pattern, self._shape.__str__())
         shape_repr = ", ".join([str(i) for i in shape_repr])
-        shape_repr = shape_repr + "," if len(shape_repr) == 1 else shape_repr
+        shape_repr = f"{shape_repr}," if len(shape_repr) == 1 else shape_repr
         return (
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
+
+    def __deepcopy__(self, memo):
+        ret = self.__class__.__new__(self.__class__)
+        ret._shape = self.shape
+        return ret
 
     def __iter__(self):
         return iter(self._shape)
@@ -364,27 +383,6 @@ class Shape(Sequence):
     def __dir__(self):
         return self._shape.__dir__()
 
-    def __pow__(self, power, modulo=None):
-        pass
-
-    def __index__(self):
-        pass
-
-    def __rdivmod__(self, other):
-        pass
-
-    def __truediv__(self, other):
-        pass
-
-    def __rtruediv__(self, other):
-        pass
-
-    def __rfloordiv__(self, other):
-        pass
-
-    def __ne__(self, other):
-        pass
-
     @property
     def shape(self):
         return self._shape
@@ -406,10 +404,6 @@ class Shape(Sequence):
         else:
             return self._shape[index]
 
-    @property
-    def shape(self):
-        return self._shape
-
     def as_dimension(self):
         if isinstance(self._shape, Shape):
             return self._shape
@@ -429,11 +423,11 @@ class Shape(Sequence):
     def assert_same_rank(self, other):
         other = Shape(other)
         if self.rank != other.rank:
-            raise ValueError("Shapes %s and %s must have the same rank" % (self, other))
+            raise ValueError(f"Shapes {self} and {other} must have the same rank")
 
     def assert_has_rank(self, rank):
         if self.rank not in (None, rank):
-            raise ValueError("Shape %s must have rank %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank {rank}")
 
     def unknown_shape(rank=None, **kwargs):
         if rank is None and "ndims" in kwargs:
@@ -447,19 +441,19 @@ class Shape(Sequence):
 
     def with_rank(self, rank):
         try:
-            return self.merge_with(unknown_shape(rank=rank))
+            return self.merge_with(self.unknown_shape(rank=rank))
         except ValueError:
-            raise ValueError("Shape %s must have rank %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank {rank}")
 
     def with_rank_at_least(self, rank):
         if self.rank is not None and self.rank < rank:
-            raise ValueError("Shape %s must have rank at least %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank at least {rank}")
         else:
             return self
 
     def with_rank_at_most(self, rank):
         if self.rank is not None and self.rank > rank:
-            raise ValueError("Shape %s must have rank at most %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank at most {rank}")
         else:
             return self
 
@@ -486,8 +480,7 @@ class Shape(Sequence):
             shape is not None for shape in self._shape
         )
 
-    property
-
+    @property
     def num_elements(self):
         if not self.is_fully_defined():
             return None
@@ -495,14 +488,14 @@ class Shape(Sequence):
     @property
     def assert_is_fully_defined(self):
         if not self.is_fully_defined():
-            raise ValueError("Shape %s is not fully defined" % self)
+            raise ValueError(f"Shape {self} is not fully defined")
 
     def as_list(self):
         if self._shape is None:
             raise ivy.utils.exceptions.IvyException(
                 "Cannot convert a partially known Shape to a list"
             )
-        return [dim for dim in self._shape]
+        return list(self._shape)
 
 
 class IntDtype(Dtype):
@@ -590,11 +583,11 @@ class Node(str):
     pass
 
 
-array_significant_figures_stack = list()
-array_decimal_values_stack = list()
-warning_level_stack = list()
-nan_policy_stack = list()
-dynamic_backend_stack = list()
+array_significant_figures_stack = []
+array_decimal_values_stack = []
+warning_level_stack = []
+nan_policy_stack = []
+dynamic_backend_stack = []
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
@@ -758,7 +751,13 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
-from .data_classes.factorized_tensor import TuckerTensor, CPTensor
+from .data_classes.factorized_tensor import (
+    TuckerTensor,
+    CPTensor,
+    TRTensor,
+    TTTensor,
+    Parafac2Tensor,
+)
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
@@ -791,12 +790,12 @@ _imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
     from .engines import XLA as xla
     from .engines import ivy2xla
-except:
+except:  # noqa: E722
     pass
 try:
-    from .compiler.compiler import transpile, compile, unify
+    from .compiler.compiler import transpile, trace_graph, unify
 except:  # noqa: E722
-    pass  # Added for the finally statment
+    pass  # Added for the finally statement
 finally:
     # Skip framework imports done by Ivy compiler for now
     for backend_framework in _not_imported_backends.copy():
@@ -919,48 +918,44 @@ class GlobalsDict(dict):
 
 
 # defines ivy.globals attribute
-globals_vars = GlobalsDict(
-    {
-        "backend_stack": backend_stack,
-        "default_device_stack": device.default_device_stack,
-        "valid_dtypes": valid_dtypes,
-        "valid_numeric_dtypes": valid_numeric_dtypes,
-        "valid_int_dtypes": valid_int_dtypes,
-        "valid_uint_dtypes": valid_uint_dtypes,
-        "valid_complex_dtypes": valid_complex_dtypes,
-        "valid_devices": valid_devices,
-        "invalid_dtypes": invalid_dtypes,
-        "invalid_numeric_dtypes": invalid_numeric_dtypes,
-        "invalid_int_dtypes": invalid_int_dtypes,
-        "invalid_float_dtypes": invalid_float_dtypes,
-        "invalid_uint_dtypes": invalid_uint_dtypes,
-        "invalid_complex_dtypes": invalid_complex_dtypes,
-        "invalid_devices": invalid_devices,
-        "array_significant_figures_stack": array_significant_figures_stack,
-        "array_decimal_values_stack": array_decimal_values_stack,
-        "warning_level_stack": warning_level_stack,
-        "queue_timeout_stack": general.queue_timeout_stack,
-        "array_mode_stack": general.array_mode_stack,
-        "inplace_mode_stack": general.inplace_mode_stack,
-        "soft_device_mode_stack": device.soft_device_mode_stack,
-        "shape_array_mode_stack": general.shape_array_mode_stack,
-        "show_func_wrapper_trace_mode_stack": (
-            general.show_func_wrapper_trace_mode_stack
-        ),
-        "min_denominator_stack": general.min_denominator_stack,
-        "min_base_stack": general.min_base_stack,
-        "tmp_dir_stack": general.tmp_dir_stack,
-        "precise_mode_stack": general.precise_mode_stack,
-        "nestable_mode_stack": general.nestable_mode_stack,
-        "exception_trace_mode_stack": general.exception_trace_mode_stack,
-        "default_dtype_stack": data_type.default_dtype_stack,
-        "default_float_dtype_stack": data_type.default_float_dtype_stack,
-        "default_int_dtype_stack": data_type.default_int_dtype_stack,
-        "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
-        "nan_policy_stack": nan_policy_stack,
-        "dynamic_backend_stack": dynamic_backend_stack,
-    }
-)
+globals_vars = GlobalsDict({
+    "backend_stack": backend_stack,
+    "default_device_stack": device.default_device_stack,
+    "valid_dtypes": valid_dtypes,
+    "valid_numeric_dtypes": valid_numeric_dtypes,
+    "valid_int_dtypes": valid_int_dtypes,
+    "valid_uint_dtypes": valid_uint_dtypes,
+    "valid_complex_dtypes": valid_complex_dtypes,
+    "valid_devices": valid_devices,
+    "invalid_dtypes": invalid_dtypes,
+    "invalid_numeric_dtypes": invalid_numeric_dtypes,
+    "invalid_int_dtypes": invalid_int_dtypes,
+    "invalid_float_dtypes": invalid_float_dtypes,
+    "invalid_uint_dtypes": invalid_uint_dtypes,
+    "invalid_complex_dtypes": invalid_complex_dtypes,
+    "invalid_devices": invalid_devices,
+    "array_significant_figures_stack": array_significant_figures_stack,
+    "array_decimal_values_stack": array_decimal_values_stack,
+    "warning_level_stack": warning_level_stack,
+    "queue_timeout_stack": general.queue_timeout_stack,
+    "array_mode_stack": general.array_mode_stack,
+    "inplace_mode_stack": general.inplace_mode_stack,
+    "soft_device_mode_stack": device.soft_device_mode_stack,
+    "shape_array_mode_stack": general.shape_array_mode_stack,
+    "show_func_wrapper_trace_mode_stack": general.show_func_wrapper_trace_mode_stack,
+    "min_denominator_stack": general.min_denominator_stack,
+    "min_base_stack": general.min_base_stack,
+    "tmp_dir_stack": general.tmp_dir_stack,
+    "precise_mode_stack": general.precise_mode_stack,
+    "nestable_mode_stack": general.nestable_mode_stack,
+    "exception_trace_mode_stack": general.exception_trace_mode_stack,
+    "default_dtype_stack": data_type.default_dtype_stack,
+    "default_float_dtype_stack": data_type.default_float_dtype_stack,
+    "default_int_dtype_stack": data_type.default_int_dtype_stack,
+    "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
+    "nan_policy_stack": nan_policy_stack,
+    "dynamic_backend_stack": dynamic_backend_stack,
+})
 
 _default_globals = copy.deepcopy(globals_vars)
 
@@ -994,7 +989,7 @@ def _assert_array_significant_figures_formatting(sig_figs):
     ivy.utils.assertions.check_greater(sig_figs, 0, as_array=False)
 
 
-# ToDo: SF formating for complex number
+# ToDo: SF formatting for complex number
 def vec_sig_fig(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
@@ -1204,12 +1199,11 @@ from ivy.utils.backend.sub_backend_handler import (
     set_sub_backend,
     unset_sub_backend,
     clear_sub_backends,
-    available_sub_backends,
 )
 
 
-def current_sub_backends():
-    return []
+available_sub_backends = []
+current_sub_backends = []
 
 
 # casting modes
@@ -1498,14 +1492,14 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         internal = internal and _is_from_internal(filename)
         if not internal and name in GLOBAL_PROPS:
             raise ivy.utils.exceptions.IvyException(
-                "Property: {} is read only! Please use the setter: set_{}() for setting"
-                " its value!".format(name, name)
+                f"Property: {name} is read only! Please use the setter: set_{name}()"
+                " for setting its value!"
             )
         self.__dict__[name] = value
 
 
 if (
-    "ivy" in sys.modules.keys()
+    "ivy" in sys.modules
     and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND
 ):
     # Required for ivy.with_backend internal compilation
@@ -1514,3 +1508,8 @@ if (
     ].__class__ = IvyWithGlobalProps
 else:
     sys.modules[__name__].__class__ = IvyWithGlobalProps
+
+    # check if all expected binaries are present
+    # in this else block to avoid raising the same warning again
+    # on using with_backend
+    check_for_binaries()

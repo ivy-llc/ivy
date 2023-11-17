@@ -72,9 +72,8 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
             targets_batch,
             pred_batch,
             message=(
-                "first dim of predictions: {} must match targets length: {}".format(
-                    pred_batch, targets_batch
-                )
+                f"first dim of predictions: {pred_batch} must match targets length:"
+                f" {targets_batch}"
             ),
             as_array=False,
         )
@@ -97,15 +96,10 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
 
         labels = ivy.shape(predictions)[1]
         # float comparison?
-        return ivy.array(
-            [
-                (
-                    0 <= res < labels
-                    and ivy.min(top_k[ind] - predictions[ind, res]) <= 1e-9
-                )
-                for ind, res in enumerate(targets)
-            ]
-        )
+        return ivy.array([
+            (0 <= res < labels and ivy.min(top_k[ind] - predictions[ind, res]) <= 1e-9)
+            for ind, res in enumerate(targets)
+        ])
 
     reshape = False
     y_true = ivy.array(y_true)

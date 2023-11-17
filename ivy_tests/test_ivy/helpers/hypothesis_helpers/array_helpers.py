@@ -16,7 +16,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtypes
 from . import general_helpers as gh
 from . import dtype_helpers, number_helpers
-from ...conftest import mod_backend
+from ..globals import mod_backend
 
 
 @st.composite
@@ -278,10 +278,10 @@ def lists(
             if size_bounds
             else number_helpers.ints()
         )
-        if not isinstance(min_size, int):
-            min_size = draw(st.shared(integers, key=min_size))
-        if not isinstance(max_size, int):
-            max_size = draw(st.shared(integers, key=max_size))
+    if not isinstance(min_size, int):
+        min_size = draw(st.shared(integers, key=min_size))
+    if not isinstance(max_size, int):
+        max_size = draw(st.shared(integers, key=max_size))
 
     return draw(st.lists(x, min_size=min_size, max_size=max_size))
 
@@ -1335,7 +1335,7 @@ def arrays_and_axes(
     ([array([-6.72e-05, -6.72e-05, -6.72e-05, -6.72e-05, -6.72e-05],
         dtype=float16)], 0)
     """
-    shapes = list()
+    shapes = []
     for _ in range(num):
         shape = draw(
             gh.get_shape(
@@ -1353,7 +1353,7 @@ def arrays_and_axes(
     dtype = draw(
         dtype_helpers.array_dtypes(num_arrays=num, available_dtypes=available_dtypes)
     )
-    arrays = list()
+    arrays = []
     for shape in shapes:
         arrays.append(
             draw(array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20))
@@ -1367,7 +1367,7 @@ def arrays_and_axes(
         else:
             axes = draw(st.integers(0, len(shape) - 1))
     else:
-        all_axes_ranges = list()
+        all_axes_ranges = []
         for shape in shapes:
             if None in all_axes_ranges:
                 all_axes_ranges.append(st.integers(0, len(shape) - 1))
@@ -1790,30 +1790,30 @@ def arrays_for_pooling(
         )
     if array_dim == 3:
         kernel = draw(st.tuples(st.integers(1, in_shape[1])))
-    new_kernel = kernel
     if return_dilation:
-        new_kernel = []
         dilations = []
         for i in range(len(kernel)):
             if kernel[i] > 1:
                 max_dilation = (in_shape[i + 1] - kernel[i]) // (kernel[i] - 1) + 1
                 dilations.append(draw(st.integers(1, max_dilation)))
-                new_kernel.append(kernel[i] + (kernel[i] - 1) * (dilations[i] - 1))
             else:
                 dilations.append(1)
-                new_kernel.append(kernel[i])
     if explicit_or_str_padding or only_explicit_padding:
-        padding = []
-        for i in range(array_dim - 2):
-            max_pad = new_kernel[i] // 2
-            padding.append(
-                draw(
-                    st.tuples(
-                        st.integers(0, max_pad),
-                        st.integers(0, max_pad),
+        if draw(st.booleans()):
+            max_pad = min(kernel[i] // 2 for i in range(array_dim - 2))
+            padding = draw(st.integers(0, max_pad))
+        else:
+            padding = []
+            for i in range(array_dim - 2):
+                max_pad = kernel[i] // 2
+                padding.append(
+                    draw(
+                        st.tuples(
+                            st.integers(0, max_pad),
+                            st.integers(0, max_pad),
+                        )
                     )
                 )
-            )
         if explicit_or_str_padding:
             padding = draw(
                 st.one_of(st.just(padding), st.sampled_from(["VALID", "SAME"]))
@@ -2226,7 +2226,7 @@ def create_concatenable_arrays_dtypes(
         for i in range(num_arrays):
             array_shapes[i][concat_dim] = unique_dims[i]
 
-    xs = list()
+    xs = []
 
     for sh, dt in zip(array_shapes, input_dtypes):
         x = draw(
@@ -2237,3 +2237,135 @@ def create_concatenable_arrays_dtypes(
         )
         xs.append(x)
     return xs, input_dtypes
+
+
+# helpers for tests (core and frontend) related to solve function
+@st.composite
+def get_first_solve_batch_matrix(draw, choose_adjoint=False):
+    """
+    Generate non-singular left hand side of equation system possibly with a single batch
+    dimension at the beginning. Use get_second_solve_batch_matrix to get the right hand
+    side.
+
+    Parameters
+    ----------
+    choose_adjoint
+        if True, randomly generates boolean
+        value for adjoint output,
+        otherwise this output is False
+
+    Returns
+    -------
+        dtype
+            Data type of the array
+        matrix
+            Generated array
+        adjoint
+            boolean value specifying whether the system should be solved for
+            adjoint of array
+    """
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    batch_size = draw(
+        st.shared(helpers.ints(min_value=0, max_value=3), key="shared_batch_size")
+    )
+
+    # adjoint of a regular matrix is also regular
+    matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple(
+                ([] if batch_size == 0 else [batch_size]) + [shared_size, shared_size]
+            ),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.all(np.linalg.cond(x) < 1 / sys.float_info.epsilon))
+    )
+
+    adjoint = False
+    if choose_adjoint:
+        adjoint = draw(st.booleans())
+
+    return input_dtype, matrix, adjoint
+
+
+@st.composite
+def get_second_solve_batch_matrix(draw, allow_simplified=True, choose_side=False):
+    """
+    Generate right hand side of equation system. Possible with a batch dimension and
+    possibly with several columns of values. Use get_first_solve_batch_matrix to
+    generate the left hand side.
+
+    Parameters
+    ----------
+    allow_simplified
+        if True, a 1D vector with correct length can be returned as the right hand side
+    choose_side
+        Randomly choose if the system to be solved is AX=B or XA=B,
+        where X is the unknown solution
+
+    Returns
+    -------
+    dtype
+        Data type of the generated array
+    matrix
+        Generated array
+    left
+        If True, the system is AX=B, otherwise it is XA=B
+    """
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    batch_size = draw(
+        st.shared(helpers.ints(min_value=0, max_value=3), key="shared_batch_size")
+    )
+    num_systems = draw(st.shared(helpers.ints(min_value=1, max_value=4)))
+    left = True
+    if choose_side:
+        left = draw(st.booleans())
+    shape = []
+    if batch_size > 0:
+        shape += [batch_size]
+    if left:
+        if (
+            allow_simplified
+            and batch_size == 0
+            and num_systems == 1
+            and draw(st.booleans())
+        ):
+            shape = tuple(shape + [shared_size])
+        else:
+            shape = tuple(shape + [shared_size, num_systems])
+    else:
+        shape = tuple(shape + [num_systems, shared_size])
+
+    return (
+        input_dtype,
+        draw(
+            helpers.array_values(
+                dtype=input_dtype, shape=shape, min_value=2, max_value=5
+            )
+        ),
+        left,
+    )
