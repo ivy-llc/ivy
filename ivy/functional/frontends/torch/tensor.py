@@ -45,7 +45,6 @@ class Tensor:
         )
 
     def __hash__(self):
-        # TODO: Need to add test. Adding for KLA demo (priority)
         return id(self)
 
     # Properties #
@@ -1995,8 +1994,19 @@ class Tensor:
         )
         return self.ivy_array
 
+    @with_unsupported_dtypes(
+        {
+            "2.1.1 and below": (
+                "integer",
+                "unsigned",
+                "bfloat16",
+                "bool",
+                "complex",
+            )
+        },
+        "torch",
+    )
     def uniform_(self, from_=0, to=1, *, generator=None):
-        # TODO: Need to add test. Adding for KLA demo (priority)
         ret = ivy.random_uniform(
             low=from_, high=to, shape=self.shape, dtype=self.dtype, seed=generator
         )
