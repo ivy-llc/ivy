@@ -2,7 +2,7 @@ import importlib
 
 
 versions = {
-    "torch": "2.1.0",
+    "torch": "2.1.1",
     "tensorflow": "2.15.0",
     "numpy": "1.25.2",
     "jax": "0.4.14",
