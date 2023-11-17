@@ -526,7 +526,7 @@ def depthwise_conv2d(
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    filters = ivy.squeeze(filters, 3).to_native() if filters.ndim == 4 else filters
+    filters = ivy.squeeze(filters, axis=3).to_native() if filters.ndim == 4 else filters
     filters = torch.unsqueeze(filters, -1)
     dims_in = filters.shape[-2]
     filters = filters.permute(2, 3, 0, 1)
