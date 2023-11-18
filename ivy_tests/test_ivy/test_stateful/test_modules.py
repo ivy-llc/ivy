@@ -149,15 +149,13 @@ class ModuleWithTrainEval(ivy.Module):
 
 
 @given(
-    buffer=st.just(
-        [
-            {
-                "var1": [
-                    ivy.ones((1, 2)),
-                ]
-            }
-        ]
-    )
+    buffer=st.just([
+        {
+            "var1": [
+                ivy.ones((1, 2)),
+            ]
+        }
+    ])
 )
 def test_get_buffers(buffer, backend_fw):
     with ivy.utils.backend.ContextManager(backend_fw):
@@ -403,7 +401,7 @@ def test_module_to_device(dummy, on_device, backend_fw):
             for key, obj in mod.v.items():
                 if isinstance(obj, ivy.Module):
                     return model_assert(obj, on_device)
-                if isinstance(obj, ivy.Container) or isinstance(obj, dict):
+                if isinstance(obj, (ivy.Container, dict)):
                     for item1, item2 in obj.items():
                         assertion(item2.device, on_device)
 
@@ -411,7 +409,7 @@ def test_module_to_device(dummy, on_device, backend_fw):
                     assertion(obj.device, on_device)
             if getattr(mod, "buffers", None):
                 for key, obj in mod.buffers.items():
-                    if isinstance(obj, ivy.Container) or isinstance(obj, dict):
+                    if isinstance(obj, (ivy.Container, dict)):
                         ivy.nested_map(lambda x: assertion(x.device, on_device), obj)
                     else:
                         assertion(obj.device, on_device)
@@ -479,24 +477,18 @@ def test_module_track_submod_call_order(
         assert dl1_key_0 in sm_co[root_key_0]
         assert dl1_key_1 in sm_co[root_key_0]
 
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl0_key_0],
-                module._dl0.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl1_key_0],
-                module._dl1.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl1_key_1],
-                module._dl1.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl0_key_0],
+            module._dl0.v.cont_flatten_key_chains().to_numpy(),
+        ])
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl1_key_0],
+            module._dl1.v.cont_flatten_key_chains().to_numpy(),
+        ])
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl1_key_1],
+            module._dl1.v.cont_flatten_key_chains().to_numpy(),
+        ])
 
         # depth 2 (full)
         ret = module(x, track_submod_call_order=True)
@@ -517,42 +509,30 @@ def test_module_track_submod_call_order(
         assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_1]
         assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_1]
 
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
-                module._dl0._l0.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl0_key_0][dl0_l1_key_0],
-                module._dl0._l1.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl1_key_0][dl1_l0_key_0],
-                module._dl1._l0.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl1_key_0][dl1_l1_key_0],
-                module._dl1._l1.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl1_key_1][dl1_l0_key_0],
-                module._dl1._l0.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl1_key_1][dl1_l1_key_0],
-                module._dl1._l1.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
+            module._dl0._l0.v.cont_flatten_key_chains().to_numpy(),
+        ])
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl0_key_0][dl0_l1_key_0],
+            module._dl0._l1.v.cont_flatten_key_chains().to_numpy(),
+        ])
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl1_key_0][dl1_l0_key_0],
+            module._dl1._l0.v.cont_flatten_key_chains().to_numpy(),
+        ])
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl1_key_0][dl1_l1_key_0],
+            module._dl1._l1.v.cont_flatten_key_chains().to_numpy(),
+        ])
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl1_key_1][dl1_l0_key_0],
+            module._dl1._l0.v.cont_flatten_key_chains().to_numpy(),
+        ])
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl1_key_1][dl1_l1_key_0],
+            module._dl1._l1.v.cont_flatten_key_chains().to_numpy(),
+        ])
 
         # partial submodules
         ret = module(
@@ -572,25 +552,19 @@ def test_module_track_submod_call_order(
 
         assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
         assert dl0_l1_key_0 not in sm_co[root_key_0][dl0_key_0]
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl1_key_0],
-                module._dl1.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl1_key_1],
-                module._dl1.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl1_key_0],
+            module._dl1.v.cont_flatten_key_chains().to_numpy(),
+        ])
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl1_key_1],
+            module._dl1.v.cont_flatten_key_chains().to_numpy(),
+        ])
 
-        assert ivy.Container.cont_identical(
-            [
-                sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
-                module._dl0._l0.v.cont_flatten_key_chains().to_numpy(),
-            ]
-        )
+        assert ivy.Container.cont_identical([
+            sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
+            module._dl0._l0.v.cont_flatten_key_chains().to_numpy(),
+        ])
 
 
 # track submod returns
@@ -936,23 +910,21 @@ def test_module_w_partial_v(
             ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
             "float32",
         )
-        v = ivy.Container(
-            {
-                "linear0": {
-                    "b": _variable(ivy.random_uniform(shape=[64])),
-                    "w": _variable(ivy.random_uniform(shape=[64, 4])),
-                },
-                "linear1": {
-                    "b": _variable(ivy.random_uniform(shape=[64])),
-                    "w": _variable(ivy.random_uniform(shape=[64, 64])),
-                    "extra": _variable(ivy.random_uniform(shape=[64, 64])),
-                },
-                "linear2": {
-                    "b": _variable(ivy.random_uniform(shape=[5])),
-                    "w": _variable(ivy.random_uniform(shape=[5, 64])),
-                },
-            }
-        )
+        v = ivy.Container({
+            "linear0": {
+                "b": _variable(ivy.random_uniform(shape=[64])),
+                "w": _variable(ivy.random_uniform(shape=[64, 4])),
+            },
+            "linear1": {
+                "b": _variable(ivy.random_uniform(shape=[64])),
+                "w": _variable(ivy.random_uniform(shape=[64, 64])),
+                "extra": _variable(ivy.random_uniform(shape=[64, 64])),
+            },
+            "linear2": {
+                "b": _variable(ivy.random_uniform(shape=[5])),
+                "w": _variable(ivy.random_uniform(shape=[5, 64])),
+            },
+        })
         try:
             TrainableModule(
                 input_channels,
@@ -967,17 +939,13 @@ def test_module_w_partial_v(
             )
         except ivy.utils.exceptions.IvyException:
             pass
-        v = ivy.Container(
-            {
-                "linear0": {
-                    "b": _variable(ivy.random_uniform(shape=[64])),
-                },
-                "linear1": {"w": _variable(ivy.random_uniform(shape=[64, 64]))},
-                "linear2": {
-                    "b": _variable(ivy.random_uniform(shape=[output_channels]))
-                },
-            }
-        )
+        v = ivy.Container({
+            "linear0": {
+                "b": _variable(ivy.random_uniform(shape=[64])),
+            },
+            "linear1": {"w": _variable(ivy.random_uniform(shape=[64, 64]))},
+            "linear2": {"b": _variable(ivy.random_uniform(shape=[output_channels]))},
+        })
         try:
             TrainableModule(input_channels, output_channels, device=on_device, v=v)
             raise Exception(
