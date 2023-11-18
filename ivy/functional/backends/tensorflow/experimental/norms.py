@@ -5,7 +5,7 @@ from . import backend_version
 import math
 
 
-@with_unsupported_dtypes({"2.14.0 and below": "uint8"}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": "uint8"}, backend_version)
 def l1_normalize(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -30,7 +30,7 @@ def l2_normalize(
     return tf.math.divide(x, denorm)
 
 
-@with_supported_dtypes({"2.14.0 and below": ("float32", "float16")}, backend_version)
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float16")}, backend_version)
 def local_response_norm(
     x: Union[tf.Tensor, tf.Variable],
     size,
@@ -66,7 +66,7 @@ def local_response_norm(
 local_response_norm.partial_mixed_handler = lambda x, size, **kwargs: size % 2 != 0
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def batch_norm(
     x: Union[tf.Tensor, tf.Variable],
     mean: Union[tf.Tensor, tf.Variable],

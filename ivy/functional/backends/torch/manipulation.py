@@ -239,7 +239,7 @@ def split(
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("int8", "int16", "uint8")}, backend_version
+    {"2.1.1 and below": ("int8", "int16", "uint8")}, backend_version
 )
 def repeat(
     x: torch.Tensor,
@@ -308,7 +308,7 @@ def swapaxes(
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("bool", "float16", "complex")}, backend_version
+    {"2.1.1 and below": ("bool", "float16", "complex")}, backend_version
 )
 def clip(
     x: torch.Tensor,
