@@ -164,7 +164,7 @@ def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable, np.ndarray], /) -> np.
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
 ) -> ivy.Dtype:
@@ -239,7 +239,7 @@ def as_native_dtype(
         dtype_in = dtype_in.name
     if not isinstance(dtype_in, str):
         return dtype_in
-    if dtype_in in native_dtype_dict.keys():
+    if dtype_in in native_dtype_dict:
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(

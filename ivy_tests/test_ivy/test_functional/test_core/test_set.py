@@ -78,9 +78,9 @@ def test_unique_counts(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devic
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_unique_inverse(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    dtype, x = dtype_and_x
-    assume(not np.any(np.isclose(x, 0.0)))
+def test_unique_inverse(*, dtype_x_axis, test_flags, backend_fw, fn_name, on_device):
+    dtype, x, axis = dtype_x_axis
+    assume(not np.any(np.isclose(x, 0.0), axis=axis))
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -88,6 +88,7 @@ def test_unique_inverse(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devi
         on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
+        axis=axis,
         x=x[0],
     )
 

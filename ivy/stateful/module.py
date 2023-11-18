@@ -624,7 +624,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         Parameters
         ----------
         v
-            If given, use this container as internal varibles temporarily.
+            If given, use this container as internal variables temporarily.
             Default is ``None``.
         track_submod_rets
             If True, will track the returns of submodules.
@@ -868,10 +868,10 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             if isinstance(getattr(self, key, None), Module):
                 mod_str = repr(getattr(self, key))
                 mod_str = _addindent(mod_str, 2)
-                child_lines.append("(" + key + "): " + mod_str)
+                child_lines.append(f"({key}): {mod_str}")
         lines = extra_lines + child_lines
 
-        main_str = self._get_name() + "("
+        main_str = f"{self._get_name()}("
         if lines:
             # simple one-liner info, which most builtin Modules will use
             if len(extra_lines) == 1 and not child_lines:
@@ -1078,9 +1078,8 @@ class _HaikuIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         params_hk = self._dict_to_hk_flat_map(self.v.cont_to_dict())
         ret = self._native_module.apply(params_hk, 0, *a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
     def _hk_flat_map_to_dict(self, hk_flat_map):
         from haiku._src.data_structures import FlatMapping
@@ -1142,9 +1141,8 @@ class _FlaxIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         params_fx = flax.core.freeze(self.v.cont_to_dict())
         ret = self._native_module.apply(params_fx, *a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _KerasIvyModule(Module):
@@ -1169,9 +1167,8 @@ class _KerasIvyModule(Module):
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _PaddleIvyModule(Module):
@@ -1188,12 +1185,10 @@ class _PaddleIvyModule(Module):
     def _build(self, *args, **kwargs):
         self._native_params = ivy.Container(
             OrderedDict(
-                sorted(
-                    [
-                        (k.replace(".", "/"), v)
-                        for k, v in dict(self._native_module.named_parameters()).items()
-                    ]
-                )
+                sorted([
+                    (k.replace(".", "/"), v)
+                    for k, v in dict(self._native_module.named_parameters()).items()
+                ])
             ),
             dynamic_backend=False,
         )
@@ -1201,9 +1196,8 @@ class _PaddleIvyModule(Module):
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)
 
 
 class _TorchIvyModule(Module):
@@ -1222,12 +1216,10 @@ class _TorchIvyModule(Module):
     def _build(self, *args, **kwargs):
         self._native_params = ivy.Container(
             OrderedDict(
-                sorted(
-                    [
-                        (k.replace(".", "/"), v)
-                        for k, v in dict(self._native_module.named_parameters()).items()
-                    ]
-                )
+                sorted([
+                    (k.replace(".", "/"), v)
+                    for k, v in dict(self._native_module.named_parameters()).items()
+                ])
             ),
             dynamic_backend=False,
         )
@@ -1269,6 +1261,5 @@ class _TorchIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         self._update_v(self.v)
         ret = self._native_module(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
+        nested = True if isinstance(ret, tuple) else False
+        return ivy.to_native(ret, nested=nested)

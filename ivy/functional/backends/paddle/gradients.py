@@ -21,8 +21,6 @@ from ivy.functional.ivy.gradients import (
 
 
 def variable(x, /):
-    if ivy.is_int_dtype(x.dtype):
-        x = x.astype(ivy.default_float_dtype())
     if not x.is_leaf:
         ret = x.detach()
         ret.stop_gradient = False
@@ -104,10 +102,10 @@ def _grad_func(y, xs, retain_grads):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=[[0]], ret_grad_idxs=[[0]]
+    func, xs, /, *, retain_grads=False, xs_grad_idxs=((0,),), ret_grad_idxs=((0,),)
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
@@ -117,12 +115,10 @@ def execute_with_gradients(
     xs = xs1
     if isinstance(xs, ivy.Container):
         duplicate_indices = list(
-            chain.from_iterable(
-                [
-                    map(lambda x: x.split("/"), duplicate_index_chain[1:])
-                    for duplicate_index_chain in required_duplicate_index_chains
-                ]
-            )
+            chain.from_iterable([
+                map(lambda x: x.split("/"), duplicate_index_chain[1:])
+                for duplicate_index_chain in required_duplicate_index_chains
+            ])
         )
         xs = ivy.set_nest_at_indices(xs, duplicate_indices, None, shallow=False)
 

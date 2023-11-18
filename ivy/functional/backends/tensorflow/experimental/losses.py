@@ -8,7 +8,7 @@ from ivy.func_wrapper import (
 from . import backend_version
 
 
-@with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
 def huber_loss(
     input: tf.Tensor,
     target: tf.Tensor,
@@ -30,7 +30,7 @@ def huber_loss(
         return loss
 
 
-@with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
 def smooth_l1_loss(
     input: tf.Tensor,
     target: tf.Tensor,
@@ -50,7 +50,7 @@ def smooth_l1_loss(
         return loss
 
 
-@with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
 def soft_margin_loss(
     input: tf.Tensor,
     target: tf.Tensor,
@@ -68,11 +68,11 @@ def soft_margin_loss(
         return loss
 
 
-def _apply_loss_reduction(loss: tf.Tensor, reduction: str) -> tf.Tensor:
+def _apply_loss_reduction(loss: tf.Tensor, reduction: str, axis) -> tf.Tensor:
     if reduction == "sum":
-        return tf.math.reduce_sum(loss)
+        return tf.math.reduce_sum(loss, axis=axis)
     elif reduction == "mean":
-        return tf.reduce_mean(loss)
+        return tf.reduce_mean(loss, axis=axis)
     else:  # reduction == "none"
         return loss
 
@@ -118,7 +118,7 @@ def _validate_poisson_nll_params(
 
 @with_supported_device_and_dtypes(
     {
-        "2.13.0 and below": {
+        "2.15.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("float32", "float64"),
         }

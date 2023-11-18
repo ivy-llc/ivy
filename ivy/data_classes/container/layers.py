@@ -807,7 +807,7 @@ class _ContainerWithLayers(ContainerBase):
             Default is None. The shape of mask input array leaves should be in
             *[batch_shape,num_queries,num_keys]*.
         dropout_p
-            Specifies the dropout probablity, if greater than 0.0, dropout is applied
+            Specifies the dropout probability, if greater than 0.0, dropout is applied
         is_causal
             If true, assumes causal attention masking and errors if both `mask` and
             `is_causal` are set.
@@ -930,7 +930,7 @@ class _ContainerWithLayers(ContainerBase):
             Default is None. The shape of mask input array leaves should be in
             *[batch_shape,num_queries,num_keys]*.
         dropout_p
-            Specifies the dropout probablity, if greater than 0.0, dropout is applied
+            Specifies the dropout probability, if greater than 0.0, dropout is applied
         is_causal
             If true, assumes causal attention masking and errors if both `mask` and
             `is_causal` are set.

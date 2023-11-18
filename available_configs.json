@@ -1,9 +1,11 @@
 {
     "compiler": [
-        "cp38-none-manylinux_2_17_x86_64",
-        "cp310-none-manylinux_2_17_x86_64"
+        "cp38-cp38-manylinux_2_17_x86_64",
+        "cp39-cp39-manylinux_2_17_x86_64",
+        "cp310-cp310-manylinux_2_17_x86_64",
+        "cp311-cp311-manylinux_2_17_x86_64"
     ],
     "engines": [
-        "cp310-none-manylinux_2_17_x86_64"
+        "cp310-cp310-manylinux_2_17_x86_64"
     ]
 }

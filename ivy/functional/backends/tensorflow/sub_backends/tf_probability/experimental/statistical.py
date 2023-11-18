@@ -75,7 +75,7 @@ def histogram(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float",
             "complex",
         )
