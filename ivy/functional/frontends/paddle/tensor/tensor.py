@@ -75,6 +75,70 @@ class Tensor:
     def __mul__(self, y, /, name=None):
         return paddle_frontend.multiply(self, y)
 
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def __gt__(self, y, /, name=None):
+        return paddle_frontend.logic.greater_than(self, y)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def __ge__(self, y, /, name=None):
+        return paddle_frontend.logic.greater_equal(self, y)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def __le__(self, y, /, name=None):
+        return paddle_frontend.logic.less_equal(self, y)
+
+    @with_supported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "paddle",
+    )
+    def __or__(self, y, /, name=None):
+        return paddle_frontend.logic.bitwise_or(self, y)
+
     def __getitem__(self, item):
         ivy_args = ivy.nested_map(_to_ivy_array, [self, item])
         ret = ivy.get_item(*ivy_args)
