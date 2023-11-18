@@ -83,6 +83,7 @@ class Tensor:
         for i in range(self.shape[0]):
             yield self[i]
 
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def __pow__(self, y, name=None):
         return paddle_frontend.pow(self, y)
 
