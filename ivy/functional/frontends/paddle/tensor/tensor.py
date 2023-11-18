@@ -68,6 +68,13 @@ class Tensor:
     def __add__(self, y, /, name=None):
         return paddle_frontend.add(self, y)
 
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __sub__(self, y, /, name=None):
+        return paddle_frontend.subtract(self, y)
+
     def __getitem__(self, item):
         ivy_args = ivy.nested_map(_to_ivy_array, [self, item])
         ret = ivy.get_item(*ivy_args)
