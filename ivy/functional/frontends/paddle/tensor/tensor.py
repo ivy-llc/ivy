@@ -72,6 +72,13 @@ class Tensor:
         {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
         "paddle",
     )
+    def __radd__(self, x, /, name=None):
+        return paddle_frontend.add(self, x)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
     def __sub__(self, y, /, name=None):
         return paddle_frontend.subtract(self, y)
 
