@@ -15,7 +15,7 @@ from ivy.functional.ivy.random import (
 # dirichlet
 @with_unsupported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "blfoat16",
             "float16",
         )
@@ -65,7 +65,7 @@ def gamma(
     # TODO: Implement purely in tensorflow
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, tf.Tensor, tf.Variable],
     *,
