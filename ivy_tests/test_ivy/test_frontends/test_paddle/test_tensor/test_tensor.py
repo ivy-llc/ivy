@@ -307,16 +307,16 @@ def test_paddle___add__(
     )
 
 
-# __gt__
+# __ge__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
-    method_name="__gt__",
+    method_name="__ge__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle___gt__(
+def test_paddle___ge__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -344,16 +344,16 @@ def test_paddle___gt__(
     )
 
 
-# __ge__
+# __gt__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
-    method_name="__ge__",
+    method_name="__gt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle___ge__(
+def test_paddle___gt__(
     dtype_and_x,
     frontend_method_data,
     init_flags,

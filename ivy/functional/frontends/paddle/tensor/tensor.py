@@ -67,7 +67,7 @@ class Tensor:
     )
     def __add__(self, y, /, name=None):
         return paddle_frontend.add(self, y)
- 
+
     @with_unsupported_dtypes(
         {
             "2.5.2 and below": (
