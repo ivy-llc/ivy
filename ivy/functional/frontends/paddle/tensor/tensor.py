@@ -69,6 +69,13 @@ class Tensor:
         return paddle_frontend.add(self, y)
 
     @with_unsupported_dtypes(
+        {"2.5.2 and below": ("uint8", "int8", "int16", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __mul__(self, y, /, name=None):
+        return paddle_frontend.multiply(self, y)
+
+    @with_unsupported_dtypes(
         {
             "2.5.2 and below": (
                 "bool",
