@@ -305,8 +305,8 @@ def test_paddle___add__(
         frontend=frontend,
         on_device=on_device,
     )
-    
-    
+
+
 # __le__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
