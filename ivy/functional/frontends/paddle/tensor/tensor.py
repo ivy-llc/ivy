@@ -68,6 +68,22 @@ class Tensor:
     def __add__(self, y, /, name=None):
         return paddle_frontend.add(self, y)
 
+    @with_supported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "paddle",
+    )
+    def __or__(self, y, /, name=None):
+        return paddle_frontend.logic.bitwise_or(self, y)
+
     def __getitem__(self, item):
         ivy_args = ivy.nested_map(_to_ivy_array, [self, item])
         ret = ivy.get_item(*ivy_args)
