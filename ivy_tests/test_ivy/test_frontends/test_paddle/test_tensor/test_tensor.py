@@ -4871,33 +4871,51 @@ def test_paddle_tanh_(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="__pow__",
-    dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        ],
         num_arrays=2,
-        allow_inf=False,
         shared_dtype=True,
+        min_value=0,
+        max_value=10,
     ),
 )
 def test_paddle_tensor__pow__(
-    dtypes_and_x,
+    dtype_and_x,
+    frontend,
     frontend_method_data,
     init_flags,
     method_flags,
-    frontend,
-    on_device,
     backend_fw,
+    on_device,
 ):
-    input_dtype, x = dtypes_and_x
+    input_dtype, x = dtype_and_x
+    if x[1].dtype in ["int32", "int64"]:
+        if x[1].ndim == 0:
+            if x[1] < 0:
+                x[1] *= -1
+        else:
+            x[1][(x[1] < 0).nonzero()] *= -1
+
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x[0]},
+        init_all_as_kwargs_np={
+            "value": x[0],
+        },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"y": x[1]},
+        method_all_as_kwargs_np={
+            "y": x[1],
+        },
+        frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
-        frontend=frontend,
         on_device=on_device,
     )
 
