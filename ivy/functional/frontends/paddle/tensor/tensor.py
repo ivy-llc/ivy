@@ -83,6 +83,9 @@ class Tensor:
         for i in range(self.shape[0]):
             yield self[i]
 
+    def __pow__(self, y, name=None):
+        return paddle_frontend.pow(self, y)
+
     # Instance Methods #
     # ---------------- #
 
