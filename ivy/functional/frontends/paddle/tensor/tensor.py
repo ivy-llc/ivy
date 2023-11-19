@@ -191,6 +191,9 @@ class Tensor:
     def __rmul__(self, y, /, name=None):
         return paddle_frontend.multiply(self, y)
 
+    def __len__(self):
+        return len(self._ivy_array)
+    
     # Instance Methods #
     # ---------------- #
 
