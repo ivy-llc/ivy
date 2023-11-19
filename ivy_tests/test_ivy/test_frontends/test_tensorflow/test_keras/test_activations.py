@@ -6,6 +6,7 @@ import sys
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from typing import Optional
 
 try:
     import tensorflow as tf
@@ -34,7 +35,7 @@ def simple_test_two_function(
     frontend: str,
     fn_str: str,
     dtype_data: str,
-    rtol_: float = None,
+    rtol_: Optional[float] = None,
     atol_: float = 1e-06,
     ivy_submodules: list = [],
     framework_submodules: list = [],

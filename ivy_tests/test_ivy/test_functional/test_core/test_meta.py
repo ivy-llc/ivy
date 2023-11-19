@@ -45,36 +45,32 @@ def test_fomaml_step_overlapping_vars(
 
         # create variables
         if batched:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[0.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
-                    ),
-                    "weight": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[1.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
-                    ),
-                }
-            )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(
+                    ivy_backend.repeat(
+                        ivy_backend.array([[0.0]], device=on_device),
+                        num_tasks,
+                        axis=0,
+                    )
+                ),
+                "weight": variable_fn(
+                    ivy_backend.repeat(
+                        ivy_backend.array([[1.0]], device=on_device),
+                        num_tasks,
+                        axis=0,
+                    )
+                ),
+            })
         else:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(ivy_backend.array([0.0], device=on_device)),
-                    "weight": variable_fn(ivy_backend.array([1.0], device=on_device)),
-                }
-            )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(ivy_backend.array([0.0], device=on_device)),
+                "weight": variable_fn(ivy_backend.array([1.0], device=on_device)),
+            })
 
         # batch
-        batch = ivy_backend.Container(
-            {"x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")}
-        )
+        batch = ivy_backend.Container({
+            "x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")
+        })
 
         # inner cost function
         def inner_cost_fn(batch_in, v):
@@ -106,16 +102,14 @@ def test_fomaml_step_overlapping_vars(
         # true gradient
         all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            all_outer_grads.append(
-                [
-                    (
-                        -i * inner_learning_rate * weight_np * sub_batch["x"][0] ** 2
-                        - sub_batch["x"][0] * latent_np
-                    )
-                    * (-1 if with_outer_cost_fn else 1)
-                    for i in range(inner_grad_steps + 1)
-                ]
-            )
+            all_outer_grads.append([
+                (
+                    -i * inner_learning_rate * weight_np * sub_batch["x"][0] ** 2
+                    - sub_batch["x"][0] * latent_np
+                )
+                * (-1 if with_outer_cost_fn else 1)
+                for i in range(inner_grad_steps + 1)
+            ])
         if average_across_steps:
             true_weight_grad = (
                 sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
@@ -124,9 +118,9 @@ def test_fomaml_step_overlapping_vars(
             true_weight_grad = sum(og[-1] for og in all_outer_grads) / num_tasks
 
         # true latent gradient
-        true_latent_grad = np.array(
-            [(-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)]
-        )
+        true_latent_grad = np.array([
+            (-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)
+        ])
 
         # true cost
         true_cost_dict = {
@@ -218,26 +212,24 @@ def test_fomaml_step_shared_vars(
 
         # create variable
         if batched:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[1.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(
+                    ivy_backend.repeat(
+                        ivy_backend.array([[1.0]], device=on_device),
+                        num_tasks,
+                        axis=0,
                     )
-                }
-            )
+                )
+            })
         else:
-            variables = ivy_backend.Container(
-                {"latent": variable_fn(ivy_backend.array([1.0], device=on_device))}
-            )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(ivy_backend.array([1.0], device=on_device))
+            })
 
         # batch
-        batch = ivy_backend.Container(
-            {"x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")}
-        )
+        batch = ivy_backend.Container({
+            "x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")
+        })
 
         # inner cost function
         def inner_cost_fn(batch_in, v):
@@ -409,36 +401,32 @@ def test_fomaml_step_unique_vars(
 
         # create variables
         if batched:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[0.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
-                    ),
-                    "weight": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[1.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
-                    ),
-                }
-            )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(
+                    ivy_backend.repeat(
+                        ivy_backend.array([[0.0]], device=on_device),
+                        num_tasks,
+                        axis=0,
+                    )
+                ),
+                "weight": variable_fn(
+                    ivy_backend.repeat(
+                        ivy_backend.array([[1.0]], device=on_device),
+                        num_tasks,
+                        axis=0,
+                    )
+                ),
+            })
         else:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(ivy_backend.array([0.0], device=on_device)),
-                    "weight": variable_fn(ivy_backend.array([1.0], device=on_device)),
-                }
-            )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(ivy_backend.array([0.0], device=on_device)),
+                "weight": variable_fn(ivy_backend.array([1.0], device=on_device)),
+            })
 
         # batch
-        batch = ivy_backend.Container(
-            {"x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")}
-        )
+        batch = ivy_backend.Container({
+            "x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")
+        })
 
         # inner cost function
         def inner_cost_fn(batch_in, v):
@@ -470,16 +458,14 @@ def test_fomaml_step_unique_vars(
         # true gradient
         all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            all_outer_grads.append(
-                [
-                    (
-                        -i * inner_learning_rate * weight_np * sub_batch["x"][0] ** 2
-                        - sub_batch["x"][0] * latent_np
-                    )
-                    * (-1 if with_outer_cost_fn else 1)
-                    for i in range(inner_grad_steps + 1)
-                ]
-            )
+            all_outer_grads.append([
+                (
+                    -i * inner_learning_rate * weight_np * sub_batch["x"][0] ** 2
+                    - sub_batch["x"][0] * latent_np
+                )
+                * (-1 if with_outer_cost_fn else 1)
+                for i in range(inner_grad_steps + 1)
+            ])
         if average_across_steps:
             true_weight_grad = (
                 sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
@@ -573,36 +559,32 @@ def test_maml_step_overlapping_vars(
 
         # create variables
         if batched:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[0.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
-                    ),
-                    "weight": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[1.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
-                    ),
-                }
-            )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(
+                    ivy_backend.repeat(
+                        ivy_backend.array([[0.0]], device=on_device),
+                        num_tasks,
+                        axis=0,
+                    )
+                ),
+                "weight": variable_fn(
+                    ivy_backend.repeat(
+                        ivy_backend.array([[1.0]], device=on_device),
+                        num_tasks,
+                        axis=0,
+                    )
+                ),
+            })
         else:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(ivy_backend.array([0.0], device=on_device)),
-                    "weight": variable_fn(ivy_backend.array([1.0], device=on_device)),
-                }
-            )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(ivy_backend.array([0.0], device=on_device)),
+                "weight": variable_fn(ivy_backend.array([1.0], device=on_device)),
+            })
 
         # batch
-        batch = ivy_backend.Container(
-            {"x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")}
-        )
+        batch = ivy_backend.Container({
+            "x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")
+        })
 
         # inner cost function
         def inner_cost_fn(batch_in, v):
@@ -634,20 +616,14 @@ def test_maml_step_overlapping_vars(
         # true weight gradient
         all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            all_outer_grads.append(
-                [
-                    (
-                        -2
-                        * i
-                        * inner_learning_rate
-                        * weight_np
-                        * sub_batch["x"][0] ** 2
-                        - sub_batch["x"][0] * latent_np
-                    )
-                    * (-1 if with_outer_cost_fn else 1)
-                    for i in range(inner_grad_steps + 1)
-                ]
-            )
+            all_outer_grads.append([
+                (
+                    -2 * i * inner_learning_rate * weight_np * sub_batch["x"][0] ** 2
+                    - sub_batch["x"][0] * latent_np
+                )
+                * (-1 if with_outer_cost_fn else 1)
+                for i in range(inner_grad_steps + 1)
+            ])
         if average_across_steps:
             true_weight_grad = (
                 sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
@@ -656,9 +632,9 @@ def test_maml_step_overlapping_vars(
             true_weight_grad = sum(og[-1] for og in all_outer_grads) / num_tasks
 
         # true latent gradient
-        true_latent_grad = np.array(
-            [(-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)]
-        )
+        true_latent_grad = np.array([
+            (-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)
+        ])
 
         # true cost
         true_cost_dict = {
@@ -748,26 +724,24 @@ def test_maml_step_shared_vars(
 
         # create variable
         if batched:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[1.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(
+                    ivy_backend.repeat(
+                        ivy_backend.array([[1.0]], device=on_device),
+                        num_tasks,
+                        axis=0,
                     )
-                }
-            )
+                )
+            })
         else:
-            variables = ivy_backend.Container(
-                {"latent": variable_fn(ivy_backend.array([1.0], device=on_device))}
-            )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(ivy_backend.array([1.0], device=on_device))
+            })
 
         # batch
-        batch = ivy_backend.Container(
-            {"x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")}
-        )
+        batch = ivy_backend.Container({
+            "x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")
+        })
 
         # inner cost function
         def inner_cost_fn(batch_in, v):
@@ -980,36 +954,32 @@ def test_maml_step_unique_vars(
 
         # create variables
         if batched:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[0.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
-                    ),
-                    "weight": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[1.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
-                    ),
-                }
-            )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(
+                    ivy_backend.repeat(
+                        ivy_backend.array([[0.0]], device=on_device),
+                        num_tasks,
+                        axis=0,
+                    )
+                ),
+                "weight": variable_fn(
+                    ivy_backend.repeat(
+                        ivy_backend.array([[1.0]], device=on_device),
+                        num_tasks,
+                        axis=0,
+                    )
+                ),
+            })
         else:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(ivy_backend.array([0.0], device=on_device)),
-                    "weight": variable_fn(ivy_backend.array([1.0], device=on_device)),
-                }
-            )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(ivy_backend.array([0.0], device=on_device)),
+                "weight": variable_fn(ivy_backend.array([1.0], device=on_device)),
+            })
 
         # batch
-        batch = ivy_backend.Container(
-            {"x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")}
-        )
+        batch = ivy_backend.Container({
+            "x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")
+        })
 
         # inner cost function
         def inner_cost_fn(batch_in, v):
@@ -1041,20 +1011,14 @@ def test_maml_step_unique_vars(
         # true gradient
         all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            all_outer_grads.append(
-                [
-                    (
-                        -2
-                        * i
-                        * inner_learning_rate
-                        * weight_np
-                        * sub_batch["x"][0] ** 2
-                        - sub_batch["x"][0] * latent_np
-                    )
-                    * (-1 if with_outer_cost_fn else 1)
-                    for i in range(inner_grad_steps + 1)
-                ]
-            )
+            all_outer_grads.append([
+                (
+                    -2 * i * inner_learning_rate * weight_np * sub_batch["x"][0] ** 2
+                    - sub_batch["x"][0] * latent_np
+                )
+                * (-1 if with_outer_cost_fn else 1)
+                for i in range(inner_grad_steps + 1)
+            ])
         if average_across_steps:
             true_outer_grad = (
                 sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
@@ -1143,26 +1107,24 @@ def test_reptile_step(
 
         # create variable
         if batched:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[1.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(
+                    ivy_backend.repeat(
+                        ivy_backend.array([[1.0]], device=on_device),
+                        num_tasks,
+                        axis=0,
                     )
-                }
-            )
+                )
+            })
         else:
-            variables = ivy_backend.Container(
-                {"latent": variable_fn(ivy_backend.array([1.0], device=on_device))}
-            )
+            variables = ivy_backend.Container({
+                "latent": variable_fn(ivy_backend.array([1.0], device=on_device))
+            })
 
         # batch
-        batch = ivy_backend.Container(
-            {"x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")}
-        )
+        batch = ivy_backend.Container({
+            "x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")
+        })
 
         # inner cost function
         def inner_cost_fn(batch_in, v):
