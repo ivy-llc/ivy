@@ -1,5 +1,6 @@
 # global
 from typing import (
+    Iterable,
     Optional,
     Union,
     Sequence,
@@ -201,7 +202,7 @@ def _interior_pad(operand, padding_value, padding_config):
 
 def pad(
     input: np.ndarray,
-    pad_width: Union[Sequence[Sequence[int]], np.ndarray, int],
+    pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
     mode: Union[
@@ -221,9 +222,9 @@ def pad(
         ],
         Callable,
     ] = "constant",
-    stat_length: Union[Sequence[Sequence[int]], int] = 1,
-    constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
-    end_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> np.ndarray:

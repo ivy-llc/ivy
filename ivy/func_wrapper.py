@@ -1694,16 +1694,14 @@ class with_unsupported_dtypes(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "unsupported_dtypes", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator("unsupported_dtypes", tuple)(
+                                *self.args, **self.kwargs
+                            )
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class with_supported_dtypes(contextlib.ContextDecorator):
@@ -1730,16 +1728,14 @@ class with_supported_dtypes(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "supported_dtypes", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator("supported_dtypes", tuple)(
+                                *self.args, **self.kwargs
+                            )
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class with_unsupported_devices(contextlib.ContextDecorator):
@@ -1766,16 +1762,14 @@ class with_unsupported_devices(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "unsupported_devices", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator("unsupported_devices", tuple)(
+                                *self.args, **self.kwargs
+                            )
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class with_supported_devices(contextlib.ContextDecorator):
@@ -1802,16 +1796,14 @@ class with_supported_devices(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "supported_devices", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator("supported_devices", tuple)(
+                                *self.args, **self.kwargs
+                            )
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
@@ -1860,16 +1852,14 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "unsupported_device_and_dtype", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator(
+                                "unsupported_device_and_dtype", tuple
+                            )(*self.args, **self.kwargs)
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class with_supported_device_and_dtypes(contextlib.ContextDecorator):
@@ -1918,16 +1908,14 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
             if globals_getter_func().get(item, None):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
-                    globals_getter_func(
-                        [
-                            item,
-                            (
-                                _dtype_device_wrapper_creator(
-                                    "supported_device_and_dtype", tuple
-                                )(*self.args, **self.kwargs)
-                            )(globals_getter_func()[item]),
-                        ]
-                    )
+                    globals_getter_func([
+                        item,
+                        (
+                            _dtype_device_wrapper_creator(
+                                "supported_device_and_dtype", tuple
+                            )(*self.args, **self.kwargs)
+                        )(globals_getter_func()[item]),
+                    ])
 
 
 class override(contextlib.ContextDecorator):

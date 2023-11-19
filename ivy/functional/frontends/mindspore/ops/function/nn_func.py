@@ -336,7 +336,7 @@ def interpolate(
 ):
     return ivy.interpolate(
         input,
-        size=size,
+        size,
         scale_factor=scale_factor,
         mode=mode,
         align_corners=align_corners,

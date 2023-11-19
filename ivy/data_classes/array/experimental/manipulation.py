@@ -217,7 +217,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: bool = None,
+        copy: Optional[bool] = None,
         k: int = 1,
         axes: Tuple[int, int] = (0, 1),
         out: Optional[ivy.Array] = None,
