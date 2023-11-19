@@ -624,11 +624,11 @@ def test_paddle__eq__(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
-            "value": x[0],
+            "value": abs(x[0]),
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "other": x[1],
+            "other": abs(x[1]),
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
