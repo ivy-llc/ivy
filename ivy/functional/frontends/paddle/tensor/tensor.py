@@ -160,6 +160,7 @@ class Tensor:
     def __rsub__(self, x, /, name=None):
         return paddle_frontend.subtract(x, self)
 
+    @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
     def __eq__(self, y, /, name=None):
         return paddle_frontend.equal(self, y)
 
