@@ -62,7 +62,7 @@ def random_normal(
 random_normal.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
