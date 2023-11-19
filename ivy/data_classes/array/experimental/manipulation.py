@@ -1521,7 +1521,6 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         /,
         *,
         name: Optional[str] = None,
-        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         Add the elements of the input tensor with value tensor by selecting the indices
@@ -1555,4 +1554,4 @@ class _ArrayWithManipulationExperimental(abc.ABC):
                [1, 1, 1],
                [2, 2, 2]])
         """
-        return ivy.index_add(self._data, index, axis, value, out=out)
+        return ivy.index_add(self._data, index, axis, value)

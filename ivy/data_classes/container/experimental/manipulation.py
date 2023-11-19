@@ -4150,7 +4150,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "index_add",
@@ -4162,7 +4161,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def index_add(
@@ -4173,7 +4171,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         /,
         *,
         name: Optional[str] = None,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         Add the elements of the input tensor with value tensor by selecting the indices
@@ -4207,7 +4204,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                [1, 1, 1],
                [2, 2, 2]])
         """
-        return self.static_index_add(self, index, axis, value, out=out)
+        return self.static_index_add(self, index, axis, value)
 
 
 def concat_from_sequence(
