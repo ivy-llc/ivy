@@ -11,7 +11,7 @@ from ivy.functional.frontends.torch.func_wrapper import (
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.1 and below": (
             "bfloat16",
             "float16",
         )
@@ -25,7 +25,7 @@ def adaptive_avg_pool1d(input, output_size):
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -39,7 +39,7 @@ def adaptive_avg_pool2d(input, output_size):
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.1 and below": (
             "bfloat16",
             "float16",
         )
@@ -57,7 +57,7 @@ def adaptive_max_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("float16",)},
+    {"2.1.1 and below": ("float16",)},
     "torch",
 )
 @to_ivy_arrays_and_back
@@ -83,7 +83,7 @@ def avg_pool1d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("float16",)},
+    {"2.1.1 and below": ("float16",)},
     "torch",
 )
 @to_ivy_arrays_and_back
@@ -111,7 +111,7 @@ def avg_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("float16", "bfloat16")},
+    {"2.1.1 and below": ("float16", "bfloat16")},
     "torch",
 )
 @to_ivy_arrays_and_back
@@ -140,7 +140,7 @@ def avg_pool3d(
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -172,7 +172,7 @@ def lp_pool1d(input, norm_type, kernel_size, stride=None, ceil_mode=False):
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -201,7 +201,7 @@ def lp_pool2d(input, norm_type, kernel_size, stride=None, ceil_mode=False):
     return ivy.pow(ivy.multiply(out, kernel_mul), p).astype(input.dtype)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def max_pool1d(
     input,
@@ -227,7 +227,7 @@ def max_pool1d(
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def max_pool2d(
     input,
@@ -253,7 +253,7 @@ def max_pool2d(
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def max_pool3d(
     input,

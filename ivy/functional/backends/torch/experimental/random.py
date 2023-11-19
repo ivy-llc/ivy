@@ -13,7 +13,7 @@ from ivy.functional.ivy.random import (
 
 
 # dirichlet
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, backend_version)
 def dirichlet(
     alpha: Union[torch.tensor, float, Sequence[float]],
     /,
@@ -32,7 +32,7 @@ def dirichlet(
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, backend_version)
 def beta(
     alpha: Union[float, torch.Tensor],
     beta: Union[float, torch.Tensor],
@@ -53,7 +53,7 @@ def beta(
     return ret
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, backend_version)
 def gamma(
     alpha: Union[float, torch.Tensor],
     beta: Union[float, torch.Tensor],
