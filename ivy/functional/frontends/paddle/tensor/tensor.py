@@ -197,7 +197,7 @@ class Tensor:
     )
     def __rpow__(self, y, /, name=None):
         return paddle_frontend.pow(y, self)
-    
+
     # Instance Methods #
     # ---------------- #
 
