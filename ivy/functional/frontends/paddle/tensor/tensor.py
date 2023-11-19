@@ -80,7 +80,7 @@ class Tensor:
 
     def __ne__(self, y, /, name=None):
         return paddle_frontend.not_equal(self, y)
-    
+
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d tensor not supported")
