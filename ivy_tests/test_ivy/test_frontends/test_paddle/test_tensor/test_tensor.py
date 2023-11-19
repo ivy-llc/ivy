@@ -607,6 +607,7 @@ def test_paddle___sub__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_paddle__eq__(

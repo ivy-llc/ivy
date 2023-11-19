@@ -161,7 +161,7 @@ class Tensor:
         return paddle_frontend.subtract(x, self)
 
     def __eq__(self, y, /, name=None):
-        return paddle_frontend.logic.equal(self, y)
+        return paddle_frontend.equal(self, y)
 
     def __getitem__(self, item):
         ivy_args = ivy.nested_map(_to_ivy_array, [self, item])
