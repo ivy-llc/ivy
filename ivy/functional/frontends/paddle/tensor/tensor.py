@@ -174,6 +174,10 @@ class Tensor:
     def __floordiv__(self, y, /, name=None):
         return paddle_frontend.floor_divide(self, y)
 
+    @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+    def __ne__(self, y, /, name=None):
+        return paddle_frontend.not_equal(self, y)
+
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d tensor not supported")
