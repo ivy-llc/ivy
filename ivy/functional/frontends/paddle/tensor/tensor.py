@@ -78,6 +78,16 @@ class Tensor:
             "ivy.functional.frontends.paddle.Tensor object doesn't support assignment"
         )
 
+    def __bool__(self, name="bool"):
+        temp = ivy.squeeze(self.ivy_array, axis=None)
+        if temp.shape != ():
+            raise ValueError(
+                "The truth value of an array with more than one element is ambiguous. "
+                "Use a.any() or a.all()"
+            )
+        return temp != 0
+    
+
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d tensor not supported")
