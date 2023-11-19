@@ -30,6 +30,50 @@ CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
 # --------------- #
 
 
+@st.composite
+def _array_and_shape(
+    draw,
+    *,
+    min_num_dims=1,
+    max_num_dims=3,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    if isinstance(min_dim_size, st._internal.SearchStrategy):
+        min_dim_size = draw(min_dim_size)
+    if isinstance(max_dim_size, st._internal.SearchStrategy):
+        max_dim_size = draw(max_dim_size)
+
+    available_dtypes = draw(helpers.get_dtypes("numeric"))
+    dtype = draw(
+        helpers.array_dtypes(
+            num_arrays=1,
+            available_dtypes=available_dtypes,
+        )
+    )
+    dtype.append("int32")
+    shape = draw(
+        st.shared(
+            helpers.get_shape(
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            ),
+            key="shape",
+        )
+    )
+    array = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=shape,
+        )
+    )
+    to_shape = [(None if draw(st.booleans()) else _) for _ in shape]
+
+    return dtype, [array, to_shape]
+
+
 def _filter_query(query):
     return (
         query.ndim > 1
@@ -602,6 +646,43 @@ def test_paddle___sub__(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
+    method_name="__float__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        max_num_dims=0,
+    ),
+)
+def test_paddle__float__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+    # Numpy doesn't support complex to float conversion
+    assume(not np.issubdtype(input_dtypes[0], np.complexfloating))
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        method_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
     method_name="__floordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -671,6 +752,42 @@ def test_paddle__getitem__(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# __len__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="__len__",
+    dtype_and_x=_array_and_shape(
+        min_num_dims=1,
+        max_num_dims=5,
+    ),
+)
+def test_paddle__len__(
+    dtype_and_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "value": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         on_device=on_device,
     )
 
@@ -862,6 +979,45 @@ def test_paddle__rsub__(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "x": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# __xor__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="__xor__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_paddle__xor__(
+    dtype_and_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "value": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
