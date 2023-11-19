@@ -1,13 +1,11 @@
-import sys
 from pymongo import MongoClient
 from get_all_tests import BACKENDS
 
 
 def main():
     # connect to the database
-    mongo_key = sys.argv[1]
     cluster = MongoClient(
-        f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
+        "mongodb+srv://readonly-user:hvpwV5yVeZdgyTTm@cluster0.qdvf8q3.mongodb.net"
     )
     ci_dashboard_db = cluster["ci_dashboard"]
     ivy_tests_collection = ci_dashboard_db["ivy_tests"]

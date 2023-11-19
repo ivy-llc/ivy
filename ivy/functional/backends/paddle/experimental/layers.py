@@ -309,7 +309,7 @@ def fft(
     /,
     *,
     norm: Optional[str] = "backward",
-    n: Union[int, Tuple[int]] = None,
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if not isinstance(dim, int):
@@ -414,7 +414,7 @@ def ifft(
     dim: int,
     *,
     norm: Optional[str] = "backward",
-    n: Union[int, Tuple[int]] = None,
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
