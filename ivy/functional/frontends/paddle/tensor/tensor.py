@@ -152,7 +152,10 @@ class Tensor:
     )
     def __or__(self, y, /, name=None):
         return paddle_frontend.logic.bitwise_or(self, y)
-
+    
+    def __eq__ (self, y, /, name=None):
+        return paddle_frontend.logic.equal(self, y)
+    
     def __getitem__(self, item):
         ivy_args = ivy.nested_map(_to_ivy_array, [self, item])
         ret = ivy.get_item(*ivy_args)
@@ -168,6 +171,9 @@ class Tensor:
             raise TypeError("iteration over a 0-d tensor not supported")
         for i in range(self.shape[0]):
             yield self[i]
+
+
+
 
     # Instance Methods #
     # ---------------- #
