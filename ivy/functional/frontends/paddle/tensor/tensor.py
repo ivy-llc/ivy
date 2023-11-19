@@ -86,7 +86,6 @@ class Tensor:
                 "Use a.any() or a.all()"
             )
         return temp != 0
-    
 
     def __iter__(self):
         if self.ndim == 0:
