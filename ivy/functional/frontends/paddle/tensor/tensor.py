@@ -204,6 +204,9 @@ class Tensor:
     def __len__(self):
         return len(self._ivy_array)
 
+    def __neg__(self):
+        return paddle_frontend.neg(self)
+
     # Instance Methods #
     # ---------------- #
 
