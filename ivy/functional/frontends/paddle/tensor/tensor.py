@@ -190,12 +190,12 @@ class Tensor:
     )
     def __rmul__(self, y, /, name=None):
         return paddle_frontend.multiply(self, y)
-    
+
     @with_unsupported_dtypes(
         {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
         "paddle",
     )
-    def __rdiv__ (self, y, /, name=None):
+    def __rdiv__(self, y, /, name=None):
         return paddle_frontend.divide(y, self)
 
     # Instance Methods #
