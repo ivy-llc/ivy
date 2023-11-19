@@ -646,6 +646,43 @@ def test_paddle___sub__(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
+    method_name="__float__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        max_num_dims=0,
+    ),
+)
+def test_paddle__float__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+    # Numpy doesn't support complex to float conversion
+    assume(not np.issubdtype(input_dtypes[0], np.complexfloating))
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        method_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
     method_name="__floordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -868,6 +905,45 @@ def test_paddle__rsub__(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "x": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# __xor__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="__xor__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_paddle__xor__(
+    dtype_and_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "value": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
