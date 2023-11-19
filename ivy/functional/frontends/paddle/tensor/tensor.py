@@ -153,6 +153,13 @@ class Tensor:
     def __or__(self, y, /, name=None):
         return paddle_frontend.logic.bitwise_or(self, y)
 
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __rsub__(self, x, /, name=None):
+        return paddle_frontend.subtract(x, self)
+
     def __eq__(self, y, /, name=None):
         return paddle_frontend.logic.equal(self, y)
 
