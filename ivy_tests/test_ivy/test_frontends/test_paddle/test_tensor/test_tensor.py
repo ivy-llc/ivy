@@ -598,7 +598,8 @@ def test_paddle___sub__(
         on_device=on_device,
     )
 
-#__eq__
+
+# __eq__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -634,6 +635,7 @@ def test_paddle__eq__(
         method_flags=method_flags,
         on_device=on_device,
     )
+
 
 # __getitem__
 @handle_frontend_method(
