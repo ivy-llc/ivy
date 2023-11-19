@@ -201,6 +201,9 @@ class Tensor:
     def __xor__(self, y, /, name=None):
         return paddle_frontend.logic.bitwise_xor(self, y)
 
+    def __len__(self):
+        return len(self._ivy_array)
+    
     # Instance Methods #
     # ---------------- #
 
