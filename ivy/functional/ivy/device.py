@@ -776,7 +776,7 @@ def default_device(
     /,
     *,
     item: Optional[Union[list, tuple, dict, ivy.Array, ivy.NativeArray]] = None,
-    as_native: bool = None,
+    as_native: Optional[bool] = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """
     Return the input device or the default device. If the as_native flag is set, the
