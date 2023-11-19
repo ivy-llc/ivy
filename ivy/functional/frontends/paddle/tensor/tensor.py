@@ -158,7 +158,7 @@ class Tensor:
         "paddle",
     )
     def __rsub__(self, x, /, name=None):
-        return paddle_frontend.subtract(self, x)
+        return paddle_frontend.subtract(x, self)
 
     def __getitem__(self, item):
         ivy_args = ivy.nested_map(_to_ivy_array, [self, item])
