@@ -88,7 +88,7 @@ class Tensor:
         {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
         "paddle",
     )
-    def __rmul__ (self, y, /, name=None):
+    def __rmul__(self, y, /, name=None):
         return paddle_frontend.multiply(self, y)
 
     # Instance Methods #
