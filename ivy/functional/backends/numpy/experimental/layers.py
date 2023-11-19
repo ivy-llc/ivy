@@ -951,7 +951,7 @@ def ifft(
 def fft2(
     x: np.ndarray,
     *,
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
     out: Optional[np.ndarray] = None,
@@ -1041,8 +1041,8 @@ def rfft(
 
 def rfftn(
     x: np.ndarray,
-    s: Sequence[int] = None,
-    axes: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
+    axes: Optional[Sequence[int]] = None,
     *,
     norm: str = "backward",
     out: Optional[np.ndarray] = None,

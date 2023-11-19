@@ -95,21 +95,23 @@ if __name__ == "__main__":
 
             else:
                 device_str = ""
+                device_access_str = ""
                 image = "unifyai/ivy:latest"
 
                 # gpu tests
                 if device == "gpu":
                     image = "unifyai/ivy:latest-gpu"
                     device_str = " --device=gpu:0"
+                    device_access_str = " --gpus all"
 
                 os.system(
-                    'docker run --name test-container -v "$(pwd)":/ivy -v '
-                    f'"$(pwd)"/.hypothesis:/.hypothesis -e REDIS_URL={redis_url} '
-                    f"-e REDIS_PASSWD={redis_pass} -itd {image}"
+                    f"docker run{device_access_str} --name test-container -v "
+                    '"$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis -e '
+                    f"REDIS_URL={redis_url} -e REDIS_PASSWD={redis_pass} -itd {image}"
                 )
                 command = (
                     "docker exec test-container python3 -m pytest --tb=short"
-                    f" {test_path} {device_str} --backend {backend}"
+                    f" {test_path}{device_str} --backend {backend}"
                 )
                 os.system(command)
 
