@@ -203,7 +203,7 @@ class Tensor:
 
     def __len__(self):
         return len(self._ivy_array)
-    
+
     # Instance Methods #
     # ---------------- #
 
