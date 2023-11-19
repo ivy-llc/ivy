@@ -206,7 +206,14 @@ class Tensor:
 
     def __neg__(self):
         return paddle_frontend.neg(self)
-
+    
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __int__ (self):
+        return int(self._ivy_array)
+    
     # Instance Methods #
     # ---------------- #
 
