@@ -297,8 +297,8 @@ def process_cl_flags(config) -> Dict[str, bool]:
     }
 
     # whether to skip gt testing or not
-    global SKIP_GROUND_TRUTH
-    SKIP_GROUND_TRUTH = not tmp_config["transpile"][1]
+    # global SKIP_GROUND_TRUTH
+    # SKIP_GROUND_TRUTH = not tmp_config["transpile"][1]
 
     # final mapping for hypothesis value generation
     for k, v in tmp_config.items():

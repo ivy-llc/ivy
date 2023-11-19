@@ -5,7 +5,7 @@ import pytest
 import importlib
 import inspect
 import functools
-from typing import List
+from typing import List, Optional
 
 from hypothesis import given, strategies as st
 
@@ -90,7 +90,7 @@ def num_positional_args_method(draw, *, method):
 
 
 @st.composite
-def num_positional_args(draw, *, fn_name: str = None):
+def num_positional_args(draw, *, fn_name: Optional[str] = None):
     """
     Draws an integers randomly from the minimum and maximum number of positional
     arguments a given function can take.
@@ -331,7 +331,7 @@ def _partition_dtypes_into_kinds(framework: str, dtypes):
 
 def handle_test(
     *,
-    fn_tree: str = None,
+    fn_tree: Optional[str] = None,
     ground_truth_backend: str = "tensorflow",
     number_positional_args=None,
     test_instance_method=BuiltInstanceStrategy,
@@ -475,8 +475,8 @@ def handle_test(
 def handle_frontend_test(
     *,
     fn_tree: str,
-    gt_fn_tree: str = None,
-    aliases: List[str] = None,
+    gt_fn_tree: Optional[str] = None,
+    aliases: Optional[List[str]] = None,
     number_positional_args=None,
     test_with_out=BuiltWithOutStrategy,
     test_with_copy=BuiltWithCopyStrategy,
@@ -626,7 +626,7 @@ def _import_method(method_tree: str):
 def handle_method(
     *,
     init_tree: str = "",
-    method_tree: str = None,
+    method_tree: Optional[str] = None,
     ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
     test_trace=BuiltTraceStrategy,
