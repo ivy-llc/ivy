@@ -18,19 +18,34 @@ jobs:
       - name: Download all test results
         uses: actions/download-artifact@v3
 
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 1
+
       - name: Combined Test Results
         run: |
           find . -name "test_results_*.txt" -exec cat {} + > combined_test_results.txt
           echo "Test results summary:"
           cat combined_test_results.txt
 
-      - name: Test Failures
+      - name: Label Test Failures
         run: |
-          find . -name "test_failures_*.txt" -exec cat {} + > combined_failures.txt
-          if [ -s combined_failures.txt ]
+          find . -name "test_failures_*.txt" -exec cat {} + > ivy/combined_failures.txt
+          pip install pymongo
+          cd ivy
+          python3 scripts/run_tests/label_failures.py combined_failures.txt labeled_combined_failures.txt
+
+      - name: Display Test Failures
+        run: |
+          cd ivy
+          if [ -s labeled_combined_failures.txt ]
           then
               echo "The CI captured the following failing tests based on your changes:"
-              cat combined_failures.txt
+              cat labeled_combined_failures.txt
           else
               echo "No test failures found based on your changes!"
           fi
@@ -83,7 +98,7 @@ jobs:
         id: tests
         run: |
           git clone -b master${{ matrix.branch }} https://github.com/unifyai/Mapping.git --depth 1
-          pip install pydriller GitPython pymongo
+          pip install pydriller GitPython
           python ivy/scripts/setup_tests/clone-mapping.py
           cp Mapping/tests.pbz2 ivy/
           cd ivy

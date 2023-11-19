@@ -53,7 +53,7 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("complex", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("complex", "bfloat16")}, backend_version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return torch.equal(x0, x1)
@@ -91,7 +91,7 @@ def get_item(
     /,
     query: Union[torch.Tensor, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> torch.Tensor:
     return x.__getitem__(query)
 
@@ -187,9 +187,7 @@ def gather(
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
-        result = params[
-            (slice(None),) * (axis % params.ndim) + (indices.type(torch.int64),)
-        ]
+        result = torch.gather(params, axis, indices, sparse_grad=False, out=out)
     else:
         for b in range(batch_dims):
             if b == 0:
@@ -200,12 +198,15 @@ def gather(
                 ]
         for z in zip_list:
             p, i = z
-            r = p[
-                (slice(None),) * ((axis - batch_dims) % p.ndim) + (i.type(torch.int64),)
-            ]
+            r = torch.gather(
+                p, (axis - batch_dims) % p.ndim, i, sparse_grad=False, out=False
+            )
+
             result.append(r)
         result = torch.stack(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+        if out:
+            out[:] = result
     return result
 
 
@@ -351,7 +352,7 @@ def multiprocessing(context: Optional[str] = None):
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": ("bfloat16",),
+        "2.1.1 and below": ("bfloat16",),
     },
     backend_version,
 )
@@ -403,7 +404,7 @@ scatter_flat.support_native_out = True
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.1 and below": (
             "float16",
             "bfloat16",
         )
@@ -510,7 +511,7 @@ def shape(
         return ivy.Shape(x.shape)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, backend_version)
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
@@ -529,7 +530,7 @@ def vmap(
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
+    {"2.1.1 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
 )
 def isin(
     elements: torch.tensor,
