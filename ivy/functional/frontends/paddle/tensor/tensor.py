@@ -195,6 +195,22 @@ class Tensor:
         {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
         "paddle",
     )
+    def __float__(self):
+        return float(self._ivy_array)
+
+    def __xor__(self, y, /, name=None):
+        return paddle_frontend.logic.bitwise_xor(self, y)
+
+    def __len__(self):
+        return len(self._ivy_array)
+
+    def __neg__(self):
+        return paddle_frontend.neg(self)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
     def __rdiv__(self, y, /, name=None):
         return paddle_frontend.divide(y, self)
 
