@@ -191,9 +191,9 @@ class Tensor:
     def __rmul__(self, y, /, name=None):
         return paddle_frontend.multiply(self, y)
 
-    
     def __xor__(self, y, /, name=None):
         return paddle_frontend.logic.bitwise_xor(self, y)
+
     # Instance Methods #
     # ---------------- #
 
