@@ -72,6 +72,91 @@ class Tensor:
         {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
         "paddle",
     )
+    def __radd__(self, x, /, name=None):
+        return paddle_frontend.add(self, x)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __sub__(self, y, /, name=None):
+        return paddle_frontend.subtract(self, y)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("uint8", "int8", "int16", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __mul__(self, y, /, name=None):
+        return paddle_frontend.multiply(self, y)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def __gt__(self, y, /, name=None):
+        return paddle_frontend.logic.greater_than(self, y)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def __ge__(self, y, /, name=None):
+        return paddle_frontend.logic.greater_equal(self, y)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def __le__(self, y, /, name=None):
+        return paddle_frontend.logic.less_equal(self, y)
+
+    @with_supported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "paddle",
+    )
+    def __or__(self, y, /, name=None):
+        return paddle_frontend.logic.bitwise_or(self, y)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
     def __rsub__(self, x, /, name=None):
         return paddle_frontend.subtract(self, x)
 
@@ -977,3 +1062,21 @@ class Tensor:
     )
     def tile(self, repeat_times):
         return paddle_frontend.Tensor(ivy.tile(self._ivy_array, repeats=repeat_times))
+
+    @with_supported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "float16",
+                "float32",
+                "float64",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "paddle",
+    )
+    def chunk(self, chunks, axis=0, name=None):
+        return paddle_frontend.split(self._ivy_array, num_or_sections=chunks, axis=axis)
