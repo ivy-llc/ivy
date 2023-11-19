@@ -191,6 +191,9 @@ class Tensor:
     def __rmul__(self, y, /, name=None):
         return paddle_frontend.multiply(self, y)
 
+    def __neg__(self):
+        return paddle_frontend.neg(self)
+
     # Instance Methods #
     # ---------------- #
 
