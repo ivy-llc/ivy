@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict
+from typing import Optional, Union, List, Dict, Literal
 
 # local
 import ivy
@@ -9,7 +9,7 @@ from ivy.data_classes.container.base import ContainerBase
 class _ContainerWithElementwise(ContainerBase):
     @staticmethod
     def _static_abs(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray, ivy.Container],
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -59,7 +59,6 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([4.5, 5.3, 0, 2.3])
         }
         """
-
         return ContainerBase.cont_multi_map_in_function(
             "abs",
             x,
@@ -1620,7 +1619,8 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, True])
         }
 
-        >>> x = ivy.Container(a=[1, 2, 3], b=[4, 5, 6])
+        >>> x = ivy.Container(a = ivy.array([1, 2, 3]),
+        ...                   b = ivy.array([4, 5, 6]))
         >>> y = x.bitwise_invert()
         >>> print(y)
         {
@@ -5166,6 +5166,21 @@ class _ContainerWithElementwise(ContainerBase):
             a container containing the evaluated base ``2`` logarithm for
             each element in ``x``. The returned array must have a real-valued
             floating-point data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
+                              b=ivy.array([-0., -4.9, float('+inf')]),\
+                              c=ivy.array([8.9, 2.1, 1.]))
+        >>> y = ivy.Container.static_log2(x)
+        >>> print(y)
+        {
+            a: ivy.array([-inf, nan]),
+            b: ivy.array([-inf, nan, inf]),
+            c: ivy.array([3.15, 1.07, 0.])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "log2",
@@ -5216,6 +5231,21 @@ class _ContainerWithElementwise(ContainerBase):
             a container containing the evaluated base ``2`` logarithm for each
             element in ``self``. The returned array must have a real-valued
             floating-point data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+        ...                   b=ivy.array([-0., -5.9, float('+inf')]),
+        ...                   c=ivy.array([8.9, 2.1, 1.]))
+        >>> y = ivy.log2(x)
+        >>> print(y)
+        {
+            a: ivy.array([-inf, nan]),
+            b: ivy.array([-inf, nan, inf]),
+            c: ivy.array([3.15, 1.07, 0.])
+        }
         """
         return self._static_log2(
             self,
@@ -6242,7 +6272,7 @@ class _ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
-        
+
         Examples
         --------
         With :code:`ivy.Container` inputs:
@@ -6754,7 +6784,7 @@ class _ContainerWithElementwise(ContainerBase):
     @staticmethod
     def _static_pow(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[int, float, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -6822,7 +6852,7 @@ class _ContainerWithElementwise(ContainerBase):
 
     def pow(
         self: ivy.Container,
-        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -8272,6 +8302,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -8295,6 +8326,9 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -8323,6 +8357,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -8333,6 +8368,7 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -8356,6 +8392,9 @@ class _ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -8384,6 +8423,7 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 

@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal, Sequence, Callable
+from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
@@ -11,48 +11,30 @@ from ivy import output_to_native_arrays
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
-from ivy.functional.ivy.layers import _handle_padding
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _validate_max_pool_params,
+    _depth_max_pooling_helper,
+)
+from ivy.functional.ivy.experimental.layers import (
+    _padding_ceil_mode,
+    _get_size,
+)
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.backends.jax.experimental.manipulation import _to_nested_tuple
 
 
-def _determine_depth_max_pooling(x, kernel, strides, dims):
+def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_last"):
     # determine depth pooling
-    depth_pooling = False
-    if len(kernel) == dims + 2:
-        spatial_kernel = kernel[1:-1]
-        if kernel[-1] != 1:
-            depth_pooling = True
-            if any(jnp.array(spatial_kernel) != 1):
-                raise NotImplementedError(
-                    "MaxPooling supports exactly one of pooling across"
-                    " depth or pooling across width/height."
-                )
-            if len(strides) != dims + 2 or strides[-1] != kernel[-1]:
-                raise NotImplementedError(
-                    "Depthwise max pooling requires the depth window to equal the depth"
-                    " stride"
-                )
-            if x.shape[-1] % kernel[-1] != 0:
-                raise NotImplementedError(
-                    "Depthwise max pooling requires the depth window to evenly divide"
-                    " the input depth"
-                )
-            # x = jnp.transpose(x, (0, dims + 1, *range(1, dims + 1)))
-            kernel = [1, 1, 1, kernel[-1]]
-            strides = [1, 1, 1, strides[-1]]
+    _, _, depth_pooling = _depth_max_pooling_helper(
+        x.shape, kernel, strides, dims=dims, data_format=data_format
+    )
+    if depth_pooling:
+        kernel = [1, 1, 1, kernel[-1]]
+        strides = [1, 1, 1, strides[-1]]
     return x, kernel, strides, depth_pooling
-
-
-def _from_int_to_tuple(arg, dim):
-    if isinstance(arg, int):
-        return (arg,) * dim
-    if isinstance(arg, (tuple, list)) and len(arg) == 1:
-        return (arg[0],) * dim
-    return arg
 
 
 def _pad_str_to_list(inputs, dims, padding, strides, new_window_shape):
@@ -81,27 +63,14 @@ def general_pool(
     ceil_mode=False,
     count_include_pad=False,
 ):
-    window_shape = _from_int_to_tuple(window_shape, dim)
-    strides = _from_int_to_tuple(strides, dim)
-    dilation = _from_int_to_tuple(dilation, dim)
-    if isinstance(padding, int):
-        padding = [(padding,) * 2] * dim
-    elif isinstance(padding, tuple) and len(padding) == 1:
-        padding = [(padding[0],) * 2] * dim
-    elif isinstance(padding, tuple) and len(padding) == 2:
-        padding = [(padding[0],) * 2, (padding[1],) * 2]
-
-    if isinstance(padding, (tuple, list)):
-        ivy.utils.assertions.check_kernel_padding_size(window_shape, padding)
-
-    assert len(window_shape) == len(
-        strides
-    ), f"len({window_shape}) must equal len({strides})"
-
+    # This function assumes that param validation is already done
     window_shape = tuple(window_shape)
     strides = (1,) + strides + (1,) if len(strides) == dim else strides
     dims = (1,) + window_shape + (1,) if len(window_shape) == dim else window_shape
-    dilation = (1,) + tuple(dilation) + (1,)
+    if isinstance(dilation, int):
+        dilation = (1,) + (dilation,) * dim + (1,)
+    else:
+        dilation = (1,) + tuple(dilation) + (1,)
 
     is_single_input = False
     if inputs.ndim == len(dims) - 1:
@@ -114,13 +83,11 @@ def general_pool(
 
     # shape of window after dilation
     new_window_shape = tuple(
-        [
-            window_shape[i - 1] + (dilation[i] - 1) * (window_shape[i - 1] - 1)
-            for i in range(1, len(dims) - 1)
-        ]
+        window_shape[i - 1] + (dilation[i] - 1) * (window_shape[i - 1] - 1)
+        for i in range(1, len(dims) - 1)
     )
     inputs, window_shape, strides, depth_pooling = _determine_depth_max_pooling(
-        inputs, window_shape, strides, 2
+        inputs, window_shape, strides, dim, data_format="channel_last"
     )
     if not depth_pooling:
         # manually creating padding list
@@ -167,6 +134,12 @@ def general_pool(
                 # because they are counted in average calculation
                 inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
             pad_list = [(0, 0)] * len(pad_list)
+    elif isinstance(padding, list) and any(
+        item != 0 for sublist in padding for item in sublist
+    ):
+        raise NotImplementedError(
+            "Nonzero explicit padding is not supported for depthwise max pooling"
+        )
     else:
         pad_list = [(0, 0)] * (dim + 2)
 
@@ -174,7 +147,7 @@ def general_pool(
         # if dtype is not set here, jax casts it to float64
         inputs = jnp.array(inputs, dtype=jnp.float32)
     if not ivy.is_array(init):
-        init = jnp.array(init, dtype=jnp.float32)
+        init = jnp.array(init, dtype=inputs.dtype)
     promoted_type = jnp.promote_types(inputs.dtype, init.dtype)
     inputs = inputs.astype(promoted_type)
     init = init.astype(promoted_type)
@@ -188,77 +161,126 @@ def general_pool(
 
 def max_pool1d(
     x: JaxArray,
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dims = 1
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
+    )
+
     if data_format == "NCW":
         x = jnp.transpose(x, (0, 2, 1))
+        kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == (dims + 2) else kernel
+        strides = (
+            [strides[i] for i in [0, 2, 1]] if len(strides) == (dims + 2) else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
 
-    if isinstance(strides, int):
-        strides = (strides,)
-    elif len(strides) == 1:
-        strides = (strides[0],)
-
-    if isinstance(kernel, int):
-        kernel = (kernel,)
-    elif len(kernel) == 1:
-        kernel = (kernel[0],)
-
-    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding, 1)
+    res = general_pool(
+        x, -jnp.inf, jlax.max, kernel, strides, padding, dims, dilation, ceil_mode
+    )
 
     if data_format == "NCW":
-        res = jnp.transpose(x, (0, 2, 1))
+        res = jnp.transpose(res, (0, 2, 1))
     return res
 
 
 def max_pool2d(
     x: JaxArray,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: Union[str, int, Tuple[int], Tuple[int, int]],
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
-    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, ...]] = 1,
     ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if data_format == "NCHW":
-        x = jnp.transpose(x, (0, 2, 3, 1))
-
-    res = general_pool(
-        x, -jnp.inf, jlax.max, kernel, strides, padding, 2, dilation, ceil_mode
+    dims = 2
+    odtype = x.dtype
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
     if data_format == "NCHW":
-        return jnp.transpose(res, (0, 3, 1, 2))
+        x = jnp.transpose(x, (0, 2, 3, 1))
+        kernel = (
+            [kernel[i] for i in [0, 2, 3, 1]] if len(kernel) == (dims + 2) else kernel
+        )
+        strides = (
+            [strides[i] for i in [0, 2, 3, 1]]
+            if len(strides) == (dims + 2)
+            else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 3, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
 
-    return res
+    res = general_pool(
+        x, -jnp.inf, jlax.max, kernel, strides, padding, dims, dilation, ceil_mode
+    )
+
+    if data_format == "NCHW":
+        res = jnp.transpose(res, (0, 3, 1, 2))
+
+    return res.astype(odtype)
 
 
 def max_pool3d(
     x: JaxArray,
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int, ...]] = 1,
+    ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dims = 3
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims, data_format
+    )
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
-    if isinstance(kernel, int):
-        kernel = (kernel,) * 3
-    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding, 3)
+        kernel = (
+            [kernel[i] for i in [0, 2, 3, 4, 1]]
+            if len(kernel) == (dims + 2)
+            else kernel
+        )
+        strides = (
+            [strides[i] for i in [0, 2, 3, 4, 1]]
+            if len(strides) == (dims + 2)
+            else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 3, 4, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
+
+    res = general_pool(
+        x, -jnp.inf, jlax.max, kernel, strides, padding, dims, dilation, ceil_mode
+    )
 
     if data_format == "NCDHW":
-        res = jnp.transpose(x, (0, 2, 3, 4, 1))
+        res = jnp.transpose(res, (0, 4, 1, 2, 3))
 
     return res
 
@@ -267,12 +289,13 @@ def avg_pool1d(
     x: JaxArray,
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if data_format in ("NCW", "NCL"):
@@ -317,7 +340,7 @@ def avg_pool2d(
     x: JaxArray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -369,7 +392,7 @@ def avg_pool3d(
     x: JaxArray,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -417,7 +440,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.13 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.20 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -431,7 +454,7 @@ def dct(
     if norm not in (None, "ortho"):
         raise ValueError("Norm must be either None or 'ortho'")
     if axis < 0:
-        axis = axis + len(x.shape)
+        axis += len(x.shape)
     if n is not None:
         signal_len = x.shape[axis]
         if n <= signal_len:
@@ -534,7 +557,7 @@ def fft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.fft(x, n, dim, norm)
 
@@ -646,7 +669,7 @@ def ifft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.ifft(x, n, dim, norm)
 
@@ -665,7 +688,8 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
-        "bicubic_tensorflow" "bicubic",
+        "tf_bicubic",
+        "bicubic",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -673,29 +697,35 @@ def interpolate(
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
-    align_corners: Optional[bool] = None,
+    align_corners: bool = False,
     antialias: bool = False,
     out: Optional[JaxArray] = None,
 ):
-    dims = len(x.shape) - 2
-    size = _get_size(scale_factor, size, dims, x.shape)
-    mode = (
-        "nearest"
-        if mode == "nearest-exact"
-        else "bicubic" if mode == "bicubic_tensorflow" else mode
-    )
+    input_size = ivy.shape(x)[2:]
+    dims = len(input_size)
+    size, _ = _get_size(scale_factor, size, dims, input_size)
+    if all(a == b for a, b in zip(size, input_size)):
+        ret = x
+    else:
+        mode = (
+            "nearest"
+            if mode == "nearest-exact"
+            else "bicubic" if mode == "tf_bicubic" else mode
+        )
 
-    size = [x.shape[0], *size, x.shape[1]]
-    x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
-    return jnp.transpose(
-        jax.image.resize(x, shape=size, method=mode, antialias=antialias),
-        (0, dims + 1, *range(1, dims + 1)),
-    )
+        size = [x.shape[0], *size, x.shape[1]]
+        x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
+        ret = jnp.transpose(
+            jax.image.resize(x, shape=size, method=mode, antialias=antialias),
+            (0, dims + 1, *range(1, dims + 1)),
+        )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-    (align_corners is None or not align_corners)
-    and mode
+interpolate.partial_mixed_handler = (
+    lambda *args, mode="linear", recompute_scale_factor=None, align_corners=None, **kwargs: mode  # noqa: E501
     not in [
         "area",
         "nearest",
@@ -705,6 +735,8 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
         "gaussian",
         "bicubic",
     ]
+    and not align_corners
+    and recompute_scale_factor
 )
 
 
@@ -746,11 +778,16 @@ def reduce_window(
 def fft2(
     x: JaxArray,
     *,
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.utils.assertions.check_elem_in_list(
+        norm,
+        ["backward", "ortho", "forward"],
+        message=f"Unrecognized normalization mode {norm}",
+    )
     if not all(isinstance(j, int) for j in dim):
         raise ivy.utils.exceptions.IvyError(
             f"Expecting {dim} to be a sequence of integers <class integer>"
@@ -770,8 +807,6 @@ def fft2(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.fft2(x, s, dim, norm).astype(jnp.complex128)
 
 
@@ -787,7 +822,7 @@ def ifftn(
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("bfloat16", "float16", "complex")}, backend_version
+    {"0.4.20 and below": ("bfloat16", "float16", "complex")}, backend_version
 )
 def embedding(
     weights: JaxArray,
@@ -797,6 +832,10 @@ def embedding(
     max_norm: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d", as_array=False
+    )
+
     embeddings = jnp.take(weights, indices, axis=0)
     if max_norm is not None:
         norms = jnp.linalg.norm(embeddings, axis=-1, keepdims=True)
@@ -809,11 +848,33 @@ def embedding(
     return embeddings
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("float16", "complex")}, backend_version)
+def rfft(
+    x: JaxArray,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Literal["backward", "ortho", "forward"] = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    x = x.real
+    if x.dtype == jnp.float16:
+        x = x.astype(jnp.float32)
+
+    ret = jnp.fft.rfft(x, n=n, axis=axis, norm=norm)
+
+    if x.dtype != jnp.float64:
+        ret = ret.astype(jnp.complex64)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+@with_unsupported_dtypes({"0.4.20 and below": ("float16", "complex")}, backend_version)
 def rfftn(
     x: JaxArray,
-    s: Sequence[int] = None,
-    axes: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
+    axes: Optional[Sequence[int]] = None,
     *,
     norm: str = "backward",
     out: Optional[JaxArray] = None,
@@ -837,6 +898,115 @@ def rfftn(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.rfftn(x, s, axes, norm).astype(jnp.complex128)
+
+
+# stft
+def stft(
+    signals: JaxArray,
+    frame_length: int,
+    frame_step: int,
+    /,
+    *,
+    fft_length: Optional[int] = None,
+    window_fn: Optional[Callable] = None,
+    pad_end: Optional[bool] = False,
+    name: Optional[str] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if not isinstance(frame_length, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_length)}"
+        )
+
+    if frame_length < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if not isinstance(frame_step, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_step)}"
+        )
+
+    if frame_step < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if fft_length is not None:
+        if not isinstance(fft_length, int):
+            raise ivy.utils.exceptions.IvyError(
+                f"Expecting <class 'int'> instead of {type(fft_length)}"
+            )
+
+        if fft_length < 1:
+            raise ivy.utils.exceptions.IvyError(
+                f"Invalid data points {frame_length}, expecting frame_length larger"
+                " than or equal to 1"
+            )
+
+    input_dtype = signals.dtype
+    if input_dtype == jnp.float32:
+        dtype = jnp.complex64
+    elif input_dtype == jnp.float64:
+        dtype = jnp.complex128
+
+    def stft_1D(signals, frame_length, frame_step, fft_length, pad_end):
+        if fft_length is None:
+            fft_length = 1
+            while fft_length < frame_length:
+                fft_length *= 2
+
+        num_samples = signals.shape[-1]
+
+        if pad_end:
+            num_samples = signals.shape[-1]
+            num_frames = -(-num_samples // frame_step)
+            pad_length = max(
+                0, frame_length + frame_step * (num_frames - 1) - num_samples
+            )
+
+            signals = jnp.pad(signals, [(0, pad_length)])
+        else:
+            num_frames = 1 + (num_samples - frame_length) // frame_step
+
+        stft_result = []
+
+        if window_fn is None:
+            window = 1
+        else:
+            window = window_fn(frame_length)
+
+        for i in range(num_frames):
+            start = i * frame_step
+            end = start + frame_length
+            frame = signals[..., start:end]
+            windowed_frame = frame * window
+            pad_length = fft_length - frame_length
+            windowed_frame = jnp.pad(windowed_frame, [(0, pad_length)])
+            windowed_frame = jnp.asarray(windowed_frame, dtype=dtype)
+
+            fft_frame = jnp.fft.fft(windowed_frame, axis=-1)
+            slit = int(fft_length // 2 + 1)
+            stft_result.append(fft_frame[..., 0:slit])
+
+        stft = jnp.stack(stft_result, axis=0)
+        return stft
+
+    def stft_helper(nested_list, frame_length, frame_step, fft_length):
+        nested_list = nested_list
+        if len(jnp.shape(nested_list)) > 1:
+            return [
+                stft_helper(sublist, frame_length, frame_step, fft_length)
+                for sublist in nested_list
+            ]
+        else:
+            return stft_1D(nested_list, frame_length, frame_step, fft_length, pad_end)
+
+    to_return = stft_helper(signals, frame_length, frame_step, fft_length)
+    return jnp.asarray(to_return, dtype=dtype)

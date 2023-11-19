@@ -4,13 +4,17 @@ from typing import Optional, Tuple, Union, Any
 
 # local
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+)
 from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("int8", "int16", "uint8", "float16", "bfloat16")}},
+    backend_version,
 )
 def diagflat(
     x: paddle.Tensor,
@@ -43,7 +47,7 @@ def diagflat(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
 )
 def kron(
     a: paddle.Tensor,
@@ -86,6 +90,27 @@ def adjoint(
     return paddle.moveaxis(x, -2, -1).conj()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.2 and below": {"cpu": ("int8", "uint8", "int16", "float16")}},
+    backend_version,
+)
+def solve_triangular(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # Paddle does not support complex tensors for this operation (cpu and gpu),
+    # so adjoint always equals transpose.
+    return paddle.linalg.triangular_solve(
+        x1, x2, upper=upper, transpose=adjoint, unitriangular=unit_diagonal
+    )
+
+
 def cond(
     x: paddle.Tensor,
     /,
@@ -104,3 +129,63 @@ def lu_factor(
     out: Optional[paddle.Tensor] = None,
 ) -> Any:
     raise IvyNotImplementedException()
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.2 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            ),
+            "gpu": (
+                "float16",
+                "float32",
+                "float64",
+            ),
+        }
+    },
+    backend_version,
+)
+def dot(
+    a: paddle.Tensor,
+    b: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if len(a.shape) == 0 or len(b.shape) == 0:
+        return paddle.multiply(a, b)
+    if (
+        len(a.shape) in [1, 2]
+        and len(b.shape) in [1, 2]
+        or (len(a.shape) >= 1 and len(b.shape) == 1)
+    ):
+        return paddle.matmul(a, b)
+
+    return paddle.tensordot(a, b, axes=[[-1], [-2]])
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.2 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            ),
+            "gpu": (
+                "float16",
+                "float32",
+                "float64",
+            ),
+        }
+    },
+    backend_version,
+)
+def multi_dot(
+    x: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.linalg.multi_dot(x)

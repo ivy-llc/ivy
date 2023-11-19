@@ -2,7 +2,6 @@ Continuous Integration
 ======================
 
 .. _`continuous integration channel`: https://discord.com/channels/799879767196958751/1028268051776413759
-.. _`continuous integration forum`: https://discord.com/channels/799879767196958751/1028298018438520862
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
 We follow the practice of Continuous Integration (CI), in order to regularly build and test code at Ivy.
@@ -17,10 +16,10 @@ In order to incorporate Continuous Integration in the Ivy Repository, we follow 
 #. Periodic Testing
 #. Manual Testing
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/CI.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/continuous_integration/CI.png?raw=true
    :alt: CI Overview
 
-We use GitHub Actions in order to implement and automate the process of testing. GitHub Actions allow implementing custom workflows that can build the code in the repository and run the tests. All the workflows used by Ivy are defined in the `.github/workflows <https://github.com/unifyai/ivy/tree/master/.github/workflows>`_ directory.
+We use GitHub Actions in order to implement and automate the process of testing. GitHub Actions allow implementing custom workflows that can build the code in the repository and run the tests. All the workflows used by Ivy are defined in the `.github/workflows <https://github.com/unifyai/ivy/tree/main/.github/workflows>`_ directory.
 
 Commit (Push/PR) Triggered Testing
 ----------------------------------
@@ -37,7 +36,7 @@ A test is defined as the triplet of (submodule, function, backend). We follow th
 
 For example, :code:`ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,numpy`
 
-The Number of such Ivy tests running on the Repository (without taking any Framework/Python Versioning into account) is 12500 (as of writing this documentation), and we are adding tests daily. Therefore, triggering all the tests on each commit is neither desirable (as it will consume a huge lot of Compute Resources, as well take a large amount of time to run) nor feasible (as Each Job in Github Actions has a time Limit of 360 Minutes, and a Memory Limit as well).
+The Number of such Ivy tests running on the Repository (without taking any Framework/Python Versioning into account) is 12500 (as of writing this documentation), and we are adding tests daily. Therefore, triggering all the tests on each commit is neither desirable (as it will consume a huge lot of Compute Resources, as well as take a large amount of time to run) nor feasible (as Each Job in Github Actions has a time Limit of 360 Minutes, and a Memory Limit as well).
 
 Further, When we consider versioning, for a single Python version, and ~40 frontend and backend versions, the tests would shoot up to 40 * 40 * 12500 = 20,000,000, and we obviously don't have resources as well as time to run those many tests on each commit.
 
@@ -91,7 +90,7 @@ But, there’s a fundamental issue here, Computing the Mapping requires determin
 
 Now assume that we had some way to update the Mapping for a commit from the previous Mapping without having to run all the tests. Then, Given the Mapping for a single commit, we could follow this to determine and run the relevant tests for each commit as follows:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/ITRoadmap.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/continuous_integration/ITRoadmap.png?raw=true
    :alt: Intelligent Testing Roadmap
 This is exactly what we do in order to implement Intelligent Testing. The “Update Mapping” Logic works as follows for each changed file:
 
@@ -153,7 +152,7 @@ Once the Mapping has been updated, the “Determine & Run Tests” Logic works a
        tests_to_run = determine_tests_line(tests_file, line, tests_to_run)
 
 4. Further, All the new tests added in a commit are collected (up to a max limit of 10, any more tests added are taken up in subsequent commits).
-5. Finally, All the collected tests are triggered by the run_tests.py script, and the corresponding entry in the MongoDB Database is updated with the Test Result (Details on this in the Dashboard Section below).
+5. Finally, All the collected tests are triggered by the scripts/run_tests/run_tests.py script, and the corresponding entry in the MongoDB Database is updated with the Test Result (Details on this in the Dashboard Section below).
 
 Storing (and retrieving) the Mapping
 ------------------------------------
@@ -175,7 +174,7 @@ For Push triggered testing (intelligent-tests.yml Workflow), we use the SSH Clon
 
 .. code-block::
 
-    source ./ivy/clone_mapping.sh master
+    source ./ivy/scripts/shell/clone_mapping.sh master
     Determine and Run Tests, and Update the Mapping ...
     git add .
     git commit -m "Update Mapping"
@@ -187,8 +186,8 @@ Now, that the SSH key of the Runner has permissions to push and clone the Mappin
 
 .. code-block::
 
-    USER_EMAIL="rashul.chutani@gmail.com"
-    USER_NAME="Rashul Chutani"
+    USER_EMAIL="ivy.branch@lets-unify.ai"
+    USER_NAME="ivy-branch"
     TARGET_BRANCH=$1
     GITHUB_SERVER="github.com"
     mkdir --parents "$HOME/.ssh"
@@ -207,7 +206,7 @@ Now, that the SSH key of the Runner has permissions to push and clone the Mappin
 
     git clone --single-branch --depth 1 --branch "$TARGET_BRANCH" git@github.com:unifyai/Mapping.git
 
-In case of, Pull Requests, we do not have access to :code:`SSH_DEPLOY_KEY` secret (and we don’t even want to give PRs that access), and thus we don’t use the SSH Clone Methodology and instead use the HTTP Clone Method, as follows:
+In the case of, Pull Requests, we do not have access to :code:`SSH_DEPLOY_KEY` secret (and we don’t even want to give PRs that access), and thus we don’t use the SSH Clone Methodology and instead use the HTTP Clone Method, as follows:
 
 .. code-block::
 
@@ -274,7 +273,7 @@ The Determine Test Coverage Workflow and the Intelligent Tests Workflow can run 
 Consider the following Case for Runner 2:
 
 #. The Determine Test Coverage workflow has been running, and is about to complete for Runner 2. Meanwhile, a commit made on the master triggers the intelligent-tests workflow.
-#. The runner 2 in the intelligent-tests workflow, pulls the Mapping from the master2 branch of unifyai/Mapping repository, and starts running the determined tests (based on changes made in the commit).
+#. The runner 2 in the intelligent-tests workflow, pulls the Mapping from the master2 branch of the unifyai/Mapping repository, and starts running the determined tests (based on changes made in the commit).
 #. The det-test-coverage workflow completes for runner2, which makes a push to the corresponding branch in the unifyai/Mapping Repository.
 #. The runner 2 in the intelligent-tests workflow also completes, and pushes the updated repository
 
@@ -288,14 +287,14 @@ We handle the Race Condition as follows:
 
 Array API Tests
 ---------------
-The `array-api-intelligent-tests.yml (Push) <https://github.com/unifyai/ivy/blob/master/.github/workflows/array-api-intelligent-tests.yml>`_ and the `array-api-intelligent-tests-pr.yml (Pull Request) <https://github.com/unifyai/ivy/blob/master/.github/workflows/array-api-intelligent-tests-pr.yml>`_ workflows run the Array API Tests. Similar to Ivy Tests, The Array API tests are also determined intelligently and only relevant tests are triggered on each commit.
+The `array-api-intelligent-tests.yml (Push) <https://github.com/unifyai/ivy/blob/main/.github/workflows/array-api-intelligent-tests.yml>`_ and the `array-api-intelligent-tests-pr.yml (Pull Request) <https://github.com/unifyai/ivy/blob/main/.github/workflows/array-api-intelligent-tests-pr.yml>`_ workflows run the Array API Tests. Similar to Ivy Tests, The Array API tests are also determined intelligently and only relevant tests are triggered on each commit.
 
-More details about the Array API Tests are available `here <https://unify.ai/docs/ivy/overview/deep_dive/array_api_tests.html>`_.
+More details about the Array API Tests are available `here <array_api_tests.rst>`_.
 
 Periodic Testing
 ----------------
 In order to make sure that none of the Ivy Tests are left ignored for a long time, and to decouple the rate of testing to the rate of committing to the repository, we implement periodic testing on the Ivy Repository.
-The `Test Ivy Cron Workflow <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-cron.yml>`_  is responsible for implementing this behavior by running Ivy tests every hour. In Each Run, It triggers 150 Ivy Tests, cycling through all of the tests.
+The `Test Ivy Cron Workflow <https://github.com/unifyai/ivy/blob/main/.github/workflows/test-ivy-cron.yml>`_  is responsible for implementing this behavior by running Ivy tests every hour. In Each Run, It triggers 150 Ivy Tests, cycling through all of the tests.
 This number of 150 is chosen in order to make sure that the Action completes in 1 hour most of the time.
 The Test Results update the corresponding cell on the Dashboards.
 
@@ -315,8 +314,7 @@ follow the following steps:
 Manual Tests are also available for PRs.
 You can also run the Manual Tests Workflow on a Fork Repository (while reviewing PRs), as follows:
 
-1. Visit https://github.com/RashulChutani/ivy/actions/workflows/manual-tests-pr.yml by going to the
-“Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
+1. Visit the “Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
 2. Trigger the Workflow by following Steps 2-4 described above.
 
 This might take some time to run as the Fork may have limited runners.
@@ -331,18 +329,18 @@ Whenever a push is made to the repository, a variety of workflows are triggered 
 This can be seen on the GitHub Repository Page, with the commit message followed by a yellow dot, indicating that some workflows have been queued to run following this commit, as shown below:
 
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/push.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/continuous_integration/push.png?raw=true
    :alt: Push
 
 Clicking on the yellow dot (🟡) (which changes to a tick (✔) or cross (❌), when the tests have been completed) yields a view of the test-suite results as shown below:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/push1.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/continuous_integration/push1.png?raw=true
    :alt: Test-Suite
 
 Click on the "Details" link corresponding to the failing tests, in order to identify the cause of the failure.
 It redirects to the Actions Tab, showing details of the failure, as shown below:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/push2.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/continuous_integration/push2.png?raw=true
    :alt: Workflow Result
 
 Click on the "Run Tests" section in order to see the logs of the failing tests for Array API Tests. For Ivy Tests, head to the "Combined Test Results" Section of the display-test-results Job, which shows the Test Logs for each of the tests in the following format:
@@ -381,7 +379,7 @@ Pull Request
 In case of a pull request, the test suite is available on the Pull Request Page on Github, as shown below:
 
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/pull-request1.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/continuous_integration/pull-request1.png?raw=true
    :alt: PR Test-Suite
 
 Clicking on the "Details" link redirects to the Action Log.
@@ -392,15 +390,14 @@ As an added feature, the Intelligent Tests for PR Workflow has a section on "New
 Dashboard
 ---------
 In order to view the status of the tests, at any point in time, we have implemented a dashboard application that shows the results of the latest Workflow that ran each test.
-The Dashboards are available on the link: https://ivy-dynamical-dashboards.onrender.com
+The Dashboards are available at the link: https://ivy-dynamical-dashboards.onrender.com
 You can filter tests by selecting choices from the various dropdowns. The link can also be saved for redirecting straight to the filtered tests in the future. The status badges are clickable, and will take you directly to the Action log of the latest workflow that ran the corresponding test.
 
 **Round Up**
 
 This should have hopefully given you a good feel for how Continuous Integration works in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `continuous integration channel`_
-or in the `continuous integration forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `continuous integration channel`_!
 
 **Video**
 

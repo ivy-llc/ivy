@@ -2,27 +2,9 @@ import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes
 
-# Helpers #
-# ------- #
 
-
-def _type_conversion(x):
-    # Does type conversion, floats maps to float,
-    # 64bit dtype to float64, everything else to float32
-    x = ivy.asarray(x)
-    dtype = ivy.as_ivy_dtype(x.dtype)
-    if "float" not in dtype:
-        dtype = "float64" if "64" in dtype[-2:] else "float32"
-
-    return ivy.astype(x, dtype)
-
-
-def _type_conversion_64(x):
-    # Does type conversion, floats maps to float,
-    # everything else to float64
-    x = ivy.asarray(x)
-    dtype = ivy.as_ivy_dtype(x.dtype)
-    return ivy.astype(x, dtype) if "float" in dtype else ivy.astype(x, "float64")
+# --- Helpers --- #
+# --------------- #
 
 
 def _batch_promotion(*args, default_dtype="float64"):
@@ -73,6 +55,20 @@ def _len(x):
     return 0 if len(shape) == 0 else shape[0]
 
 
+def _mean(x, axis=None, keepdims=False, where=None):
+    # Mean with support for where
+    if where is None:
+        return ivy.mean(x, axis=axis, keepdims=keepdims)
+
+    filtered_x = ivy.where(where, ivy.array(x), ivy.zeros_like(x))
+    counter_x = ivy.where(where, ivy.ones_like(x), ivy.zeros_like(x))
+
+    sums = ivy.sum(filtered_x, axis=axis, keepdims=keepdims)
+    counts = ivy.sum(counter_x, axis=axis, keepdims=keepdims)
+
+    return ivy.divide(sums, counts)
+
+
 def _reduction_dims(a, axis):
     ndims = len(ivy.shape(a))
     if axis is None:
@@ -97,25 +93,34 @@ def _reduction_dims(a, axis):
         return canon_axis, canon_axis
 
 
-def _mean(x, axis=None, keepdims=False, where=None):
-    # Mean with support for where
-    if where is None:
-        return ivy.mean(x, axis=axis, keepdims=keepdims)
+def _type_conversion(x):
+    # Does type conversion, floats maps to float,
+    # complex maps to complex,
+    # 64bit dtype to float64, everything else to float32
+    x = ivy.asarray(x)
+    dtype = ivy.as_ivy_dtype(x.dtype)
+    if not ("float" in dtype or "complex" in dtype):
+        dtype = "float64" if "64" in dtype[-2:] else "float32"
+    return ivy.astype(x, dtype)
 
-    filtered_x = ivy.where(where, ivy.array(x), ivy.zeros_like(x))
-    counter_x = ivy.where(where, ivy.ones_like(x), ivy.zeros_like(x))
 
-    sums = ivy.sum(filtered_x, axis=axis, keepdims=keepdims)
-    counts = ivy.sum(counter_x, axis=axis, keepdims=keepdims)
+def _type_conversion_64(x):
+    # Does type conversion, floats maps to float,
+    # complex maps to complex, everything else to float64
+    x = ivy.asarray(x)
+    dtype = ivy.as_ivy_dtype(x.dtype)
+    if not ("float" in dtype or "complex" in dtype):
+        dtype = "float64"
+    return ivy.astype(x, dtype)
 
-    return ivy.divide(sums, counts)
+
+# --- Main --- #
+# ------------ #
 
 
 @to_ivy_arrays_and_back
 def celu(x, alpha=1.0):
-    ret = ivy.where(x > 0, x, alpha * ivy.expm1(x / alpha))
-    dtype = _batch_promotion(x, alpha, default_dtype="float64")
-    return ivy.asarray(ret, dtype=dtype)
+    return ivy.celu(x, alpha=alpha)
 
 
 @to_ivy_arrays_and_back
@@ -127,7 +132,7 @@ def elu(x, alpha=1.0):
 
 @to_ivy_arrays_and_back
 def gelu(x, approximate=True):
-    return ivy.gelu(x, approximate=approximate)
+    return ivy.gelu(x, approximate=approximate, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back
@@ -138,6 +143,19 @@ def glu(x, axis=-1):
     )
     x1, x2 = ivy.split(x, num_or_size_splits=2, axis=axis)
     return ivy.multiply(x1, ivy.sigmoid(x2))
+
+
+@to_ivy_arrays_and_back
+def hard_sigmoid(x):
+    dtype = _batch_promotion(x, default_dtype="float64")
+    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6).astype(dtype)
+
+
+@to_ivy_arrays_and_back
+def hard_silu(x):
+    dtype = _batch_promotion(x, default_dtype="float64")
+    sig = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6)
+    return ivy.multiply(x, sig).astype(dtype)
 
 
 @to_ivy_arrays_and_back
@@ -160,13 +178,13 @@ def hard_tanh(x):
 @to_ivy_arrays_and_back
 def leaky_relu(x, negative_slope=0.01):
     x = _type_conversion_64(x)
-    return ivy.leaky_relu(x, alpha=negative_slope)
+    return ivy.leaky_relu(x, alpha=negative_slope, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back
 def log_sigmoid(x):
     x = _type_conversion(x)
-    return ivy.negative(ivy.softplus(ivy.negative(x))).astype(x.dtype)
+    return ivy.logsigmoid(x, complex_mode="jax").astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -248,24 +266,30 @@ def one_hot(x, num_classes, *, dtype=None, axis=-1):
 
 @to_ivy_arrays_and_back
 def relu(x):
-    return ivy.relu(x)
+    return ivy.relu(x, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back
 def relu6(x):
-    res = ivy.relu6(x)
+    res = ivy.relu6(x, complex_mode="jax")
     return _type_conversion_64(res)
+
+
+@to_ivy_arrays_and_back
+def selu(x):
+    x = _type_conversion_64(x)
+    return ivy.selu(x)
 
 
 @to_ivy_arrays_and_back
 def sigmoid(x):
     x = _type_conversion(x)
-    ret = ivy.sigmoid(x)
+    ret = ivy.sigmoid(x, complex_mode="jax")
     return ivy.astype(ret, x.dtype)
 
 
 @with_supported_dtypes(
-    {"0.4.13 and below": ("complex", "float")},
+    {"0.4.20 and below": ("complex", "float")},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -289,29 +313,10 @@ def softmax(x, axis=-1, where=None, initial=None):
 @to_ivy_arrays_and_back
 def softplus(x):
     x = _type_conversion(x)
-    return ivy.softplus(x).astype(x.dtype)
-
-
-@to_ivy_arrays_and_back
-def selu(x):
-    x = _type_conversion_64(x)
-    return ivy.selu(x)
+    return ivy.softplus(x, complex_mode="jax").astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
 def swish(x):
     ret = x / (1 + ivy.exp(-x))
     return ivy.asarray(ret, dtype=x.dtype)
-
-
-@to_ivy_arrays_and_back
-def hard_silu(x):
-    dtype = _batch_promotion(x, default_dtype="float64")
-    sig = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6)
-    return ivy.multiply(x, sig).astype(dtype)
-
-
-@to_ivy_arrays_and_back
-def hard_sigmoid(x):
-    dtype = _batch_promotion(x, default_dtype="float64")
-    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6).astype(dtype)

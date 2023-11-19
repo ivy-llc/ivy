@@ -24,7 +24,7 @@ def random_uniform(
     high: Union[float, np.ndarray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int], np.ndarray]] = None,
     dtype: np.dtype,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[np.ndarray] = None,
     seed: Optional[int] = None,
 ) -> np.ndarray:
@@ -39,7 +39,7 @@ def random_normal(
     mean: Union[float, np.ndarray] = 0.0,
     std: Union[float, np.ndarray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str,
+    device: Optional[str] = None,
     dtype: np.dtype,
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
@@ -51,7 +51,7 @@ def random_normal(
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
 
-@with_unsupported_dtypes({"1.25.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -60,7 +60,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[np.ndarray] = None,
     replace: bool = True,
-    device: str,
+    device: Optional[str] = None,
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -95,7 +95,7 @@ def randint(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str,
+    device: Optional[str] = None,
     dtype: Optional[Union[np.dtype, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,

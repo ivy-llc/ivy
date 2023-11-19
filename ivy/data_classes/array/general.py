@@ -41,11 +41,6 @@ class _ArrayWithGeneral(abc.ABC):
         >>> ret = x.is_native_array()
         >>> print(ret)
         False
-
-        >>> x = ivy.native_array([9.1, -8.3])
-        >>> ret = x.is_native_array(exclusive=True)
-        >>> print(ret)
-        True
         """
         return ivy.is_native_array(self, exclusive=exclusive)
 
@@ -74,11 +69,6 @@ class _ArrayWithGeneral(abc.ABC):
         >>> ret = x.is_ivy_array()
         >>> print(ret)
         True
-
-        >>> x = ivy.native_array([9.1, -8.3])
-        >>> ret = x.is_ivy_array(exclusive=True)
-        >>> print(ret)
-        False
         """
         return ivy.is_ivy_array(self, exclusive=exclusive)
 
@@ -105,10 +95,6 @@ class _ArrayWithGeneral(abc.ABC):
         --------
         >>> x = ivy.array([0, 1, 2])
         >>> print(x.is_array())
-        True
-
-        >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
-        >>> print(x.is_array(exclusive=True))
         True
         """
         return ivy.is_array(self, exclusive=exclusive)
@@ -233,9 +219,10 @@ class _ArrayWithGeneral(abc.ABC):
         axis
             The axis from which the indices will be gathered. Default is ``-1``.
         batch_dims
-            optional int, lets you gather different items from each element of a batch.
+            Optional int, lets you gather different items from each element of a batch.
+            Default is ``0``.
         out
-            optional array, for writing the result to. It must have a shape
+            Optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
@@ -251,6 +238,33 @@ class _ArrayWithGeneral(abc.ABC):
         >>> gather = x.gather(y)
         >>> print(gather)
         ivy.array([0., 1.])
+
+        >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
+        >>> y = ivy.array([[0, 1],[1, 2]])
+        >>> z = ivy.zeros((2, 2, 2))
+        >>> gather = x.gather(y, out=z)
+        >>> print(z)
+        ivy.array([[[0., 1.],[1., 2.]],[[3., 4.],[4., 5.]]])
+
+        >>> x = ivy.array([[[0., 1.], [2., 3.]],
+        ...                [[8., 9.], [10., 11.]]])
+        >>> y = ivy.array([[0, 1]])
+        >>> z = ivy.zeros((1, 2, 2, 2))
+        >>> gather = x.gather(y, axis=0, out=z)
+        >>> print(z)
+        ivy.array(
+            [[[[ 0.,  1.],
+            [ 2.,  3.]],
+            [[ 8.,  9.],
+            [10., 11.]]]])
+
+        >>> x = ivy.array([[0, 10, 20, 0, 0],
+        ...                [0, 0, 0, 30, 40],
+        ...                [0, 10, 0, 0, 40]])
+        >>> y = ivy.array([[1, 2],[3, 4],[1, 4]])
+        >>> gather = x.gather(y, batch_dims=1)
+        >>> print(gather)
+        ivy.array([[10, 20], [30, 40],[10, 40]])
         """
         return ivy.gather(self, indices, axis=axis, batch_dims=batch_dims, out=out)
 
@@ -821,6 +835,12 @@ class _ArrayWithGeneral(abc.ABC):
         >>> c = a.array_equal(b)
         >>> print(c)
         True
+
+        >>> i = ivy.array([1, 2])
+        >>> j = ivy.array([1, 2, 3])
+        >>> k = i.array_equal(j)
+        >>> print(k)
+        False
         """
         return ivy.array_equal(self, x)
 
@@ -842,19 +862,19 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :class:`ivy.Array` input and default backend set as `numpy`:
+        With :class:`ivy.Array` input and default backend set as `torch`:
 
+        >>> ivy.set_backend("torch")
         >>> x = ivy.array([1, 2, 3])
         >>> print(x.assert_supports_inplace())
         True
 
-        With :class:`ivy.Array` input and default backend set as `jax`:
+        With :class:`ivy.Array` input and default backend set as `numpy`:
 
+        >>> ivy.set_backend("numpy")
         >>> x = ivy.array([1, 2, 3])
         >>> print(x.assert_supports_inplace())
-        IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types 
-        with jax backend
+        True
         """
         return ivy.assert_supports_inplace(self)
 
@@ -913,7 +933,7 @@ class _ArrayWithGeneral(abc.ABC):
             Default is ``False``.
         concat
             Whether to concatenate the position, sin and cos values, or return
-            seperately. Default is ``True``.
+            separately. Default is ``True``.
         flatten
             Whether to flatten the position dimension into the batch dimension.
             Default is ``False``.
@@ -1002,7 +1022,7 @@ class _ArrayWithGeneral(abc.ABC):
         """
         return ivy.value_is_nan(self, include_infs=include_infs)
 
-    def exists(self: ivy.Array) -> bool:
+    def exists(self: ivy.Array, /) -> bool:
         """
         ivy.Array instance method variant of ivy.exists. This method simply wraps the
         function, and so the docstring for ivy.exists also applies to this method with
@@ -1016,7 +1036,7 @@ class _ArrayWithGeneral(abc.ABC):
         Returns
         -------
         ret
-            True if x is not None, else False.
+            True if input is not None, else False.
 
         Examples
         --------
@@ -1025,7 +1045,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> print(y)
         True
 
-        >>> x = ivy.array(None)
+        >>> x = ivy.array([])
         >>> y = x.exists()
         >>> print(y)
         True
@@ -1105,6 +1125,22 @@ class _ArrayWithGeneral(abc.ABC):
         -------
         ret
             The new item following the numerically stable power.
+
+        Examples
+        --------
+        With :class:`ivy.Array` instance method:
+
+        >>> x = ivy.asarray([2, 4])
+        >>> y = x.stable_pow(2)
+        >>> print(y)
+        ivy.array([ 4.00004, 16.00008])
+
+        >>> x = ivy.asarray([[2., 4.], [6., 8.]])
+        >>> y = ivy.asarray([2., 4.])
+        >>> z = x.stable_pow(y)
+        >>> print(z)
+        ivy.array([[4.00004000e+00, 2.56002560e+02],
+                [3.60001200e+01, 4.09602048e+03]])
         """
         return ivy.stable_pow(self, exponent, min_base=min_base)
 
@@ -1155,14 +1191,14 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([1, 2, 3], dtype=ivy.float32)
         >>> y = ivy.array([0, 0, 0], dtype=ivy.int32)
         >>> x.inplace_update(y, keep_input_dtype=True)
-        >>> print(x, x.dtype)
-        ivy.array([0., 0., 0.]) float32
+        >>> print(x)
+        ivy.array([0., 0., 0.])
 
         With :class:`ivy.Array` input and default backend set as `torch`:
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([0])
-        >>> x.inplace_update(y, ensure_in_backend=True)
+        >>> x.inplace_update(y)
         >>> print(x)
         ivy.array([0])
 
@@ -1170,7 +1206,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         >>> x = ivy.array([4, 5, 6])
         >>> y = ivy.array([1])
-        >>> x.inplace_update(y, ensure_in_backend=True)
+        >>> x.inplace_update(y)
         IvyBackendException: jax: inplace_update: JAX does not natively
         support inplace updates
         """
@@ -1301,7 +1337,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> size = 8
         >>> out = indices.scatter_flat(updates, size=size)
         >>> print(out)
-        ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
+        ivy.array([2, 7, 2, 3, 0, 0, 0, 0])
 
 
         With :class:`ivy.Array` input:
@@ -1345,7 +1381,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> b = x.get_num_dims(as_array=False)
         >>> print(b)
         3
-        
+
         >>> b = x.get_num_dims(as_array=True)
         >>> print(b)
         ivy.array(3)

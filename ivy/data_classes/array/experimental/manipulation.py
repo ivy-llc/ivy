@@ -46,10 +46,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning a view
+             of the input array.
         out
             optional output array, for writing the result to.
 
@@ -129,10 +128,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+            a view of the input array.
         out
             optional output array, for writing the result to.
 
@@ -219,7 +217,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: bool = None,
+        copy: Optional[bool] = None,
         k: int = 1,
         axes: Tuple[int, int] = (0, 1),
         out: Optional[ivy.Array] = None,
@@ -233,6 +231,12 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ----------
         self
             Input array of two or more dimensions.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         k
             Number of times the array is rotated by 90 degrees.
         axes
@@ -290,7 +294,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self
             The array to compute top_k for.
         k
-            Number of top elements to retun must not exceed the array size.
+            Number of top elements to return must not exceed the array size.
         axis
             The axis along which we must return the top elements default value is 1.
         largest
@@ -337,10 +341,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning a
+             view of the input array.
         out
             optional output array, for writing the result to.
 
@@ -413,10 +416,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning a
+             view of the input array.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -576,10 +578,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
@@ -629,10 +630,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -673,10 +673,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+            a view of the input array.
 
         Returns
         -------
@@ -745,10 +744,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -785,10 +783,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -878,10 +875,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -930,10 +926,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         out
             optional output array, for writing the result to.
 
@@ -1080,3 +1075,440 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ivy.fill_diag also applies to this method with minimal changes.
         """
         return ivy.fill_diagonal(self._data, v, wrap=wrap)
+
+    def take(
+        self: ivy.Array,
+        indices: Union[int, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: Optional[int] = None,
+        mode: str = "fill",
+        fill_value: Optional[Number] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.take.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.take also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        indices
+            array indices. Must have an integer data type.
+        axis
+            axis over which to select values. If `axis` is negative,
+            the function must determine the axis along which to select values
+            by counting from the last dimension.
+            By default, the flattened input array is used.
+        mode
+            specifies how out-of-bounds `indices` will behave.
+            -   ‘raise’ – raise an error
+            -   ‘wrap’ – wrap around
+            -   ‘clip’ – clip to the range (all indices that are too large are
+            replaced by the index that addresses the last element along that axis.
+            Note that this disables indexing with negative numbers.)
+            -   'fill' (default) = returns invalid values (e.g. NaN)
+            for out-of bounds indices (see also fill_value below)
+        fill_value
+            fill value to return for out-of-bounds slices
+            (Defaults to NaN for inexact types,
+            the largest negative value for signed types,
+            the largest positive value for unsigned types, and True for booleans.)
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+            ret
+                an array having the same data type as `x`.
+                The output array must have the same rank
+                (i.e., number of dimensions) as `x` and
+                must have the same shape as `x`, except
+                for the axis specified by `axis`
+                whose size must equal the number of elements in `indices`.
+
+        Examples
+        --------
+        With `ivy.Array` input:
+
+        >>> x = ivy.array([4,5,6])
+        >>> indices = ivy.array([2,1,0])
+        >>> y = x.take(indices)
+        >>> print(y)
+        ivy.array([6, 5, 4])
+
+        >>> x = ivy.array([4.7,5.2,6.5])
+        >>> indices = ivy.array([[0,1]])
+        >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+        >>> x.take(indices, out=y)
+        >>> print(y)
+        ivy.array([[4.7, 5.2]])
+
+        >>> x = ivy.array([False, False, True])
+        >>> indices = ivy.array([[4,3,2]])
+        >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+        >>> x.take(indices, out=y, mode="wrap")
+        >>> print(y)
+        ivy.array([[False, False, True]])
+        """
+        return ivy.take(
+            self, indices, axis=axis, mode=mode, fill_value=fill_value, out=out
+        )
+
+    def trim_zeros(
+        self: ivy.Array,
+        /,
+        *,
+        trim: Optional[str] = "fb",
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.trim_zeros.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.trim_zeros also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self : 1-D array
+            Input array.
+        trim : str, optional
+            A string with 'f' representing trim from front and 'b' to trim from
+            back. Default is 'fb', trim zeros from both front and back of the
+            array.
+
+        Returns
+        -------
+            1-D array
+            The result of trimming the input. The input data type is preserved.
+
+        Examples
+        --------
+        >>> a = ivy.array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1, 0])
+        >>> ivy.trim_zeros(a)
+        array([8, 3, 0, 0, 7, 1])
+
+        >>> ivy.trim_zeros(a, 'b')
+        array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1])
+
+        >>> ivy.trim_zeros([0, 8, 3, 0, 0])
+        [8, 3]
+        """
+        return ivy.trim_zeros(self, trim=trim)
+
+    def unfold(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        mode: Optional[int] = 0,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.unfold. This method simply wraps the
+        function, and so the docstring for ivy.unfold also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input tensor to be unfolded
+        mode
+            indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            unfolded_tensor of shape ``(tensor.shape[mode], -1)``
+        """
+        return ivy.unfold(self._data, mode, out=out)
+
+    def fold(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        mode: int,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.fold. This method simply wraps the
+        function, and so the docstring for ivy.fold also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        input
+            unfolded tensor of shape ``(shape[mode], -1)``
+        mode
+            the mode of the unfolding
+        shape
+            shape of the original tensor before unfolding
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            folded_tensor of shape `shape`
+        """
+        return ivy.fold(self._data, mode, shape, out=out)
+
+    def partial_unfold(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        mode: Optional[int] = 0,
+        skip_begin: Optional[int] = 1,
+        skip_end: Optional[int] = 0,
+        ravel_tensors: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.partial_unfold. This method simply
+        wraps the function, and so the docstring for ivy.partial_unfold also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            tensor of shape n_samples x n_1 x n_2 x ... x n_i
+        mode
+            indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        skip_end
+            number of dimensions to leave untouched at the end
+        ravel_tensors
+            if True, the unfolded tensors are also flattened
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            partially unfolded tensor
+        """
+        return ivy.partial_unfold(
+            self._data,
+            mode=mode,
+            skip_begin=skip_begin,
+            skip_end=skip_end,
+            ravel_tensors=ravel_tensors,
+            out=out,
+        )
+
+    def partial_fold(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        mode: int,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        skip_begin: Optional[int] = 1,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.partial_fold. This method simply wraps
+        the function, and so the docstring for ivy.partial_fold also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            a partially unfolded tensor
+        mode
+            indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions left untouched at the beginning
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+            partially re-folded tensor
+        """
+        return ivy.partial_fold(self._data, mode, shape, skip_begin, out=out)
+
+    def partial_tensor_to_vec(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        skip_begin: Optional[int] = 1,
+        skip_end: Optional[int] = 0,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.partial_tensor_to_vec. This method
+        simply wraps the function, and so the docstring for ivy.partial_tensor_to_vec
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            tensor to partially vectorise
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        skip_end
+            number of dimensions to leave untouched at the end
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+            partially vectorised tensor with the
+            `skip_begin` first and `skip_end` last dimensions untouched
+        """
+        return ivy.partial_tensor_to_vec(self._data, skip_begin, skip_end, out=out)
+
+    def partial_vec_to_tensor(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        skip_begin: Optional[int] = 1,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.partial_vec_to_tensor. This method
+        simply wraps the function, and so the docstring for ivy.partial_vec_to_tensor
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            a partially vectorised tensor
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            full tensor
+        """
+        return ivy.partial_vec_to_tensor(self._data, shape, skip_begin, out=out)
+
+    def matricize(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        row_modes: Sequence[int],
+        column_modes: Optional[Sequence[int]] = None,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.matricize. This method simply wraps the
+        function, and so the docstring for ivy.matricize also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the input tensor
+        row_modes
+            modes to use as row of the matrix (in the desired order)
+        column_modes
+            modes to use as column of the matrix, in the desired order
+            if None, the modes not in `row_modes` will be used in ascending order
+        out
+            optional output array, for writing the result to.
+
+        ret
+        -------
+            ivy.Array : tensor of size (ivy.prod(x.shape[i] for i in row_modes), -1)
+        """
+        return ivy.matricize(self._data, row_modes, column_modes, out=out)
+
+    def soft_thresholding(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        threshold: Union[float, ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.soft_thresholding. This method simply
+        wraps the function, and so the docstring for ivy.soft_thresholding also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array
+        threshold
+            float or array with shape tensor.shape
+            * If float the threshold is applied to the whole tensor
+            * If array, one threshold is applied per elements, 0 values are ignored
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ivy.Array
+            thresholded tensor on which the operator has been applied
+        """
+        return ivy.soft_thresholding(self._data, threshold, out=out)
+
+    def column_stack(
+        self: ivy.Array,
+        arrays: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.column_stack.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.column_stack also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            Array that will be stacked at the beginning of the provided array iterable.
+        arrays
+            Arrays to be stacked.
+        out
+            Output array.
+
+        Returns
+        -------
+        ret
+            Stacked input.
+        """
+        if not isinstance(arrays, (list, tuple)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.column_stack(x, out=out)
+
+    def put_along_axis(
+        self: ivy.Array,
+        indices: ivy.Array,
+        values: ivy.Array,
+        axis: int,
+        /,
+        *,
+        mode: Literal["sum", "min", "max", "mul", "mean", "replace"] = "replace",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.put_along_axis.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.put_along_axis also applies to this method with minimal
+        changes.
+        """
+        return ivy.put_along_axis(self._data, indices, values, axis, mode=mode, out=out)

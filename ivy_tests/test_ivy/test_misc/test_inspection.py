@@ -6,6 +6,10 @@ from typing import List, Tuple, Dict, Optional, Union
 import ivy
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _fn0(xs: Optional[List[ivy.Array]] = None):
     return xs
 
@@ -13,7 +17,7 @@ def _fn0(xs: Optional[List[ivy.Array]] = None):
 def _fn1(
     a: Union[ivy.Array, ivy.NativeArray],
     b: str = "hello",
-    c: int = None,
+    c: Optional[int] = None,
     d: ivy.NativeArray = None,
 ):
     return a, b, c, d
@@ -22,9 +26,13 @@ def _fn1(
 def _fn2(
     a: Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
     bs: Tuple[str] = ("a", "b", "c"),
-    cs: Dict[str, ivy.Array] = None,
+    cs: Optional[Dict[str, ivy.Array]] = None,
 ):
     return a, bs, cs
+
+
+# --- Main --- #
+# ------------ #
 
 
 @pytest.mark.parametrize(
