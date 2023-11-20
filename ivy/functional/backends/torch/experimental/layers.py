@@ -1056,7 +1056,12 @@ def stft(
     if window.shape[0] != win_length:
         win_length = window.shape[0]
 
+    frame_step = hop_length + 1 
+    if isinstance(frame_step, int):
+        hop_length = frame_step
+
     return_complex = True
+    
     return torch.stft(
         signal,
         n_fft,
