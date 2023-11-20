@@ -354,6 +354,35 @@ def test_paddle_concat(
 
 
 @handle_frontend_test(
+    fn_tree="paddle.crop",
+    dt_x_shape_offsets=_split_helper(),
+    number_positional_args=st.just(2),
+    test_with_out=st.just(False),
+)
+def test_paddle_crop(
+    *,
+    dt_x_shape_offsets,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    x_dtype, x, shape, offsets = dt_x_shape_offsets
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        shape=shape,
+        offsets=offsets,
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.expand",
     dtype_x_and_shape=_expand_helper(),
 )

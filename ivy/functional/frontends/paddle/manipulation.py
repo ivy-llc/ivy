@@ -51,6 +51,40 @@ def concat(x, axis, name=None):
 
 
 @with_supported_dtypes(
+    {
+        "2.5.2 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def crop(x, shape=None, offsets=None):
+    if len(x.shape) == len(shape):
+        raise ValueError(
+            f"The input shape, {x.shape}  "
+            f"and the provided output shape, {shape} are incompatible. "
+            "Both length of the shape must be same."
+        )
+
+    if len(offsets) == len(shape):
+        raise ValueError(
+            f"The lenght of the offsets, {len(offsets)} "
+            f"must match with the lenght of the shape, {len(shape)}"
+        )
+
+    slices = [slice(offset, offset + length) for offset, length in zip(offsets, shape)]
+
+    # Use advanced indexing to crop the tensor
+    cropped_x = x[tuple(slices)]
+
+    return cropped_x
+
+
+@with_supported_dtypes(
     {"2.5.2 and below": ("bool", "float32", "float64", "int32", "int64")},
     "paddle",
 )
