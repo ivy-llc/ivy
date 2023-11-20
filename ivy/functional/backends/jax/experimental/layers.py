@@ -895,7 +895,7 @@ def stft(
     noverlap = win_length - frame_step
     if isinstance(noverlap, int):
         hop_length = noverlap - 1
-        
+
     _, _, stft = jax.scipy.signal.stft(
         signal,
         fs,
