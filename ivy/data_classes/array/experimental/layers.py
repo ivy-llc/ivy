@@ -1239,7 +1239,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             center of t-th frame. Default: True.
         pad_mode
             Choose padding pattern when center is True. See paddle.
-            nn.functional.pad for all padding options. Default: “reflect”.
+            nn.functional.pad for all padding options. Default:'reflect'.
         normalized
             Control whether to scale the output by 1/sqrt(n_fft).
             Default: False
