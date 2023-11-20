@@ -4,6 +4,9 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    _x_and_ifftn,
+)
 
 
 # Custom Hypothesis strategy for generating sequences of 2 integers
@@ -47,6 +50,54 @@ def test_paddle_fft(
         x=x[0],
         n=n,
         axis=axis,
+        norm=norm,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.fft.fft2",
+    dtypes_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=2,
+        min_dim_size=2,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    s=st.one_of(
+        st.none(),
+        st.lists(st.integers(min_value=2, max_value=10), min_size=2, max_size=2),
+    ),
+    axes=st.one_of(
+        st.none(),
+        st.tuples(
+            st.integers(min_value=-2, max_value=2),
+            st.integers(min_value=-1, max_value=2),
+        ),
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
+)
+def test_paddle_fft2(
+    dtypes_x_axis,
+    s,
+    axes,
+    norm,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    input_dtypes, x, _ = dtypes_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        s=s,
+        axes=axes,
         norm=norm,
     )
 
@@ -221,6 +272,32 @@ def test_paddle_ifft(
         x=x[0],
         n=n,
         axis=axis,
+        norm=norm,
+    )
+
+
+# ifftn
+@handle_frontend_test(
+    fn_tree="paddle.fft.ifftn",
+    dtype_and_x=_x_and_ifftn(),
+)
+def test_paddle_ifftn(
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    dtype, x, s, axes, norm = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x,
+        s=s,
+        axes=axes,
         norm=norm,
     )
 

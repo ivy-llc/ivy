@@ -194,7 +194,7 @@ def _matricize_data(draw):
         )
     )
     ndims = len(shape)
-    dims = set([*range(ndims)])
+    dims = {*range(ndims)}
     row_modes = set(
         draw(st.lists(helpers.ints(min_value=0, max_value=ndims - 1), min_size=1))
     )
@@ -205,21 +205,19 @@ def _matricize_data(draw):
 @st.composite
 def _pad_helper(draw):
     mode = draw(
-        st.sampled_from(
-            [
-                "constant",
-                "dilated",
-                "edge",
-                "linear_ramp",
-                "maximum",
-                "mean",
-                "median",
-                "minimum",
-                "reflect",
-                "symmetric",
-                "wrap",
-            ]
-        )
+        st.sampled_from([
+            "constant",
+            "dilated",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+        ])
     )
     if mode in ["median", "minimum", "maximum", "linear_ramp"]:
         dtypes = "float"
@@ -505,6 +503,7 @@ def st_tuples(elements, *, min_size=0, max_size=None, unique_by=None, unique=Fal
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     ground_truth_backend="numpy",
+    test_with_copy=st.just(True),
 )
 def test_as_strided(*, all_args, test_flags, backend_fw, fn_name, on_device):
     dtype, x, shape, strides = all_args
@@ -555,6 +554,7 @@ def test_associative_scan(
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_atleast_1d(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
@@ -581,6 +581,7 @@ def test_atleast_1d(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_atleast_2d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
@@ -607,6 +608,7 @@ def test_atleast_2d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_atleast_3d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
@@ -694,6 +696,7 @@ def test_concat_from_sequence(
 # dsplit
 @handle_test(
     fn_tree="functional.ivy.experimental.dsplit",
+    test_with_copy=st.just(True),
 )
 def test_dsplit(
     dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device
@@ -763,6 +766,7 @@ def test_dstack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_expand(*, dtype_and_x, shape, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
@@ -824,6 +828,7 @@ def test_fill_diagonal(
 @handle_test(
     fn_tree="functional.ivy.experimental.flatten",
     data=_flatten_data_helper(),
+    test_with_copy=st.just(True),
 )
 def test_flatten(
     *,
@@ -855,6 +860,7 @@ def test_flatten(
         min_num_dims=2,
     ),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_fliplr(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
     input_dtype, m = dtype_and_m
@@ -881,6 +887,7 @@ def test_fliplr(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
         max_dim_size=3,
     ),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_flipud(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
     input_dtype, m = dtype_and_m
@@ -955,6 +962,7 @@ def test_heaviside(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     indices_or_sections=_get_splits(allow_none=False, min_num_dims=2, axis=1),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_hsplit(
     dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device
@@ -1096,6 +1104,7 @@ def test_matricize(*, data, test_flags, backend_fw, fn_name, on_device):
         force_int=True,
     ),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_moveaxis(
     *, dtype_and_a, source, destination, test_flags, backend_fw, fn_name, on_device
@@ -1283,6 +1292,7 @@ def test_put_along_axis(
         max_dim_size=10,
     ),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_rot90(dtype_m_k_axes, test_flags, backend_fw, fn_name, on_device):
     input_dtype, m, k, axes = dtype_m_k_axes
@@ -1527,6 +1537,7 @@ def test_unique_consecutive(
     indices_or_sections=_get_splits(allow_none=False, min_num_dims=2, axis=0),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_vsplit(
     dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device

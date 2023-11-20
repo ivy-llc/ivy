@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statist
 @st.composite
 def _get_axis_and_p(draw, kind="valid"):
     p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
-    if p == "fro" or p == "nuc":
+    if p in ["fro", "nuc"]:
         max_axes_size = 2
         min_axes_size = 2
     else:

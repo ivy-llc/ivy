@@ -30,7 +30,7 @@ def _get_embed_dim(
     pre_embed_dim = query.shape[-1]
     if ivy.exists(in_proj_weights):
         embed_dim = in_proj_weights.shape[0] / 3
-    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+    elif all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]):
         embed_dim = q_proj_weights.shape[0]
     else:
         embed_dim = None
@@ -44,9 +44,10 @@ def _in_projection(
     w,
     b=None,
 ):
-    """Projects query, key and value efficiently, depending on whether we are
-    doing self- attention (query is key is value) or cross-attention (key is
-    value) or an attention where query, key and value are all different.
+    """
+    Projects query, key and value efficiently, depending on whether we are doing self-
+    attention (query is key is value) or cross-attention (key is value) or an attention
+    where query, key and value are all different.
 
     it is only used in
     multi_head_attention layer.
@@ -263,7 +264,8 @@ def dropout(
     noise_shape: Optional[Sequence[int]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Randomly setting a fraction of input tensor to zeroes with probability.
+    """
+    Randomly setting a fraction of input tensor to zeroes with probability.
 
     `prob` at each update during training time to prevent possible overfitting.
     The inputs not set to 0 are scaled up `1 / (1 - prob)` by default, so that
@@ -447,7 +449,8 @@ def scaled_dot_product_attention(
     training: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply scaled dot product attention to inputs x using optional mask.
+    """
+    Apply scaled dot product attention to inputs x using optional mask.
 
     Parameters
     ----------
@@ -748,20 +751,20 @@ def multi_head_attention(
     training: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Apply multi-head attention to inputs x. This is an implementation of
-    multi-headed attention as described in the paper "Attention is all you
-    Need" (Vaswani et al., 2017). If `query`, `key`, `value` are the same, then
-    this is self-attention. Each timestep in `query` attends to the
-    corresponding sequence in `key`, and returns a fixed-width vector. This
-    layer first projects `query`, `key` and `value`. These are (effectively) a
-    list of tensors of length `num_attention_heads`, where the corresponding
-    shapes are `(batch_size, <query dimensions>, key_dim)`, `(batch_size,
+    """
+    Apply multi-head attention to inputs x. This is an implementation of multi-headed
+    attention as described in the paper "Attention is all you Need" (Vaswani et al.,
+    2017). If `query`, `key`, `value` are the same, then this is self-attention. Each
+    timestep in `query` attends to the corresponding sequence in `key`, and returns a
+    fixed-width vector. This layer first projects `query`, `key` and `value`. These are
+    (effectively) a list of tensors of length `num_attention_heads`, where the
+    corresponding shapes are `(batch_size, <query dimensions>, key_dim)`, `(batch_size,
     <key/value dimensions>, key_dim)`, `(batch_size, <key/value dimensions>,
-    value_dim)`. Then, the query and key tensors are dot-producted and scaled.
-    These are softmaxed to obtain attention probabilities. The value tensors
-    are then interpolated by these probabilities, then concatenated back to a
-    single tensor. Finally, the result tensor with the last dimension as
-    value_dim can take a linear projection and return.
+    value_dim)`. Then, the query and key tensors are dot-producted and scaled. These are
+    softmaxed to obtain attention probabilities. The value tensors are then interpolated
+    by these probabilities, then concatenated back to a single tensor. Finally, the
+    result tensor with the last dimension as value_dim can take a linear projection and
+    return.
 
     Parameters
     ----------
@@ -853,15 +856,15 @@ def multi_head_attention(
     if key is None and value is None:
         key = value = query
     if num_dims == 2:
-        query, key, value = [ivy.expand_dims(x, axis=0) for x in [query, key, value]]
+        query, key, value = (ivy.expand_dims(x, axis=0) for x in [query, key, value])
     elif not batch_first:
-        query, key, value = [ivy.swapaxes(x, 0, 1) for x in [query, key, value]]
+        query, key, value = (ivy.swapaxes(x, 0, 1) for x in [query, key, value])
 
     # project query, key and value
     if ivy.exists(in_proj_weights):
         q, k, v = _in_projection(query, key, value, w=in_proj_weights, b=in_proj_bias)
         emb_dim = int(in_proj_weights.shape[0] / 3)
-    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+    elif all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]):
         if ivy.exists(in_proj_bias):
             b_q, b_k, b_v = ivy.split(in_proj_bias, num_or_size_splits=3)
         else:
@@ -916,7 +919,7 @@ def multi_head_attention(
 
     # get attention scores
     attn_scores = ivy.matmul(q, ivy.swapaxes(k, 1, 2))
-    scale = 1 / (head_dim**0.5) if not scale else scale
+    scale = scale if scale else 1 / (head_dim**0.5)
     attn_scores *= scale
 
     # mask the attention scores
@@ -1020,7 +1023,8 @@ def conv1d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 1-D convolution given 3-D input x and filters arrays.
+    """
+    Compute a 1-D convolution given 3-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1129,8 +1133,8 @@ def conv1d_transpose(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 1-D transpose convolution given 3-D input x and filters
-    arrays.
+    """
+    Compute a 1-D transpose convolution given 3-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1275,7 +1279,8 @@ def conv2d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 2-D convolution given 4-D input x and filters arrays.
+    """
+    Compute a 2-D convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1414,8 +1419,8 @@ def conv2d_transpose(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 2-D transpose convolution given 4-D input x and filters
-    arrays.
+    """
+    Compute a 2-D transpose convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1550,8 +1555,8 @@ def depthwise_conv2d(
     dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 2-D depthwise convolution given 4-D input ``x`` and filters
-    arrays.
+    """
+    Compute a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
 
     Parameters
     ----------
@@ -1692,7 +1697,8 @@ def conv3d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 3-D convolution given 5-D input x and filters arrays.
+    """
+    Compute a 3-D convolution given 5-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1812,8 +1818,8 @@ def conv3d_transpose(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 3-D transpose convolution given 5-D input x and filters
-    arrays.
+    """
+    Compute a 3-D transpose convolution given 5-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1852,15 +1858,15 @@ def conv3d_transpose(
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-    >>> y = ivy.conv3d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 6, 56, 56, 6)
 
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32])
-    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID')
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
-    ivy.Shape(1, 9, 258, 258, 32)
+    ivy.Shape(1, 7, 129, 129, 6)
 
     With :class:`ivy.Container` inputs:
 
@@ -1870,7 +1876,7 @@ def conv3d_transpose(
     >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
     >>> x = ivy.Container(a=a, b=b)
     >>> filters = ivy.Container(c=c, d=d)
-    >>> y = ivy.conv3d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
     >>> print(y.shape)
     {
         a: {
@@ -1894,22 +1900,21 @@ def conv3d_transpose(
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.full((1, 6, 6, 6, 1), 2.7)
-    >>> a =  ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
-    >>> b =  ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
-    >>> filters = ivy.Container(a = a, b = b)
-    >>> y = ivy.conv3d_transpose(x, filters, 1, 'VALID', dilations=1)
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
     {
         a: ivy.Shape(1, 8, 8, 8, 1),
         b: ivy.Shape(1, 8, 8, 8, 1)
     }
 
-
     >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
-    >>> a =  ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> b =  ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> filters = ivy.Container(a = a, b = b)
-    >>> y = ivy.conv3d_transpose(x, filters, 1, 'VALID', dilations=1)
+    >>> a = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> b = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
     {
         a: ivy.Shape(1, 8, 8, 8, 1),
@@ -1953,8 +1958,9 @@ def conv_general_dilated(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x
-    respectively and filters arrays.
+    """
+    Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x respectively
+    and filters arrays.
 
     Parameters
     ----------
@@ -2036,8 +2042,9 @@ def conv_general_transpose(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D
-    input x respectively and filters arrays.
+    """
+    Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D input x
+    respectively and filters arrays.
 
     Parameters
     ----------
@@ -2072,6 +2079,68 @@ def conv_general_transpose(
     -------
     ret
         The result of the transpose convolution operation.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
+    >>> print(y.shape)
+    ivy.Shape(1, 6, 56, 56, 6)
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    ivy.Shape(1, 7, 129, 129, 6)
+    With :class: 'ivy.Container' inputs:
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
+    >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
+    >>> x = ivy.Container(a=a, b=b)
+    >>> filters = ivy.Container(c=c, d=d)
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
+    >>> print(y.shape)
+    {
+        a: {
+            c: ivy.Shape(1, 6, 28, 28, 3),
+            d: ivy.Shape(1, 6, 28, 28, 3)
+        },
+        b: {
+            c: ivy.Shape(1, 6, 56, 56, 3),
+            d: ivy.Shape(1, 6, 56, 56, 3)
+        },
+        c: {
+            c: ivy.Shape(6, 6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 6, 3)
+        },
+        d: {
+            c: ivy.Shape(6, 6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 6, 3)
+        }
+    }
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+    >>> x = ivy.full((1, 6, 6, 6, 1), 2.7)
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    {
+        a: ivy.Shape(1, 8, 8, 8, 1),
+        b: ivy.Shape(1, 8, 8, 8, 1)
+    }
+    >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
+    >>> a = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> b = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    {
+        a: ivy.Shape(1, 8, 8, 8, 1),
+        b: ivy.Shape(1, 8, 8, 8, 1)
+    }
     """
     return current_backend(x).conv_general_transpose(
         x,
@@ -2111,8 +2180,9 @@ def conv(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D,
-    4-D and 5-D input x respectively and filters arrays.
+    """
+    Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
@@ -2209,8 +2279,8 @@ def lstm_update(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """Perform long-short term memory update by unrolling time dimension of
-    input array.
+    """
+    Perform long-short term memory update by unrolling time dimension of input array.
 
     Parameters
     ----------
@@ -2369,9 +2439,6 @@ def _validate_max_pool_params(
             kernel = [1, 1, *kernel]
         else:
             kernel = [1, *kernel, 1]
-    new_kernel = tuple(
-        [dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel))]
-    )
     new_kernel = tuple(dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel)))
     if isinstance(padding, list) and len(padding) == len(new_kernel):
         ivy.utils.assertions.check_kernel_padding_size(new_kernel, padding)
@@ -2443,7 +2510,8 @@ def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
 
 
 def _get_num_padded_values(i, p, n, k, s):
-    """Get number of padded values in a specific window.
+    """
+    Get number of padded values in a specific window.
 
     Parameters
     ----------

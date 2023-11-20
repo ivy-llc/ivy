@@ -42,14 +42,21 @@ def _to_tf_padding(pad_width, ndim):
     if isinstance(pad_width, Number):
         pad_width = [[pad_width] * 2] * ndim
     elif len(pad_width) == 2 and isinstance(pad_width[0], Number):
+        pad_width = [pad_width] * ndim
+    elif (
+        isinstance(pad_width, (list, tuple))
+        and isinstance(pad_width[0], (list, tuple))
+        and len(pad_width) < ndim
+    ):
         pad_width = pad_width * ndim
     return pad_width
 
 
 def _check_paddle_pad(
-    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit
+    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit, extend=True
 ):
-    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    if extend:
+        pad_width = _to_tf_padding(pad_width, len(input_shape))
     return isinstance(constant_values, Number) and (
         mode == "constant"
         or (
@@ -74,7 +81,7 @@ def _to_paddle_padding(pad_width, ndim):
         pad_width = [pad_width] * (2 * ndim)
     else:
         if len(pad_width) == 2 and isinstance(pad_width[0], Number) and ndim != 1:
-            pad_width = pad_width * ndim
+            pad_width = [pad_width] * ndim
         pad_width = [item for sublist in pad_width for item in sublist[::-1]][::-1]
     return pad_width
 
@@ -96,10 +103,10 @@ def flatten(
     order: Optional[str] = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Flattens input by reshaping it into a one-dimensional tensor. If
-    start_dim or end_dim are passed, only dimensions starting with start_dim
-    and ending with end_dim are flattened. The order of elements in input is
-    unchanged.
+    """
+    Flattens input by reshaping it into a one-dimensional tensor. If start_dim or
+    end_dim are passed, only dimensions starting with start_dim and ending with end_dim
+    are flattened. The order of elements in input is unchanged.
 
     Parameters
     ----------
@@ -253,7 +260,8 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Move axes of an array to new positions..
+    """
+    Move axes of an array to new positions..
 
     Parameters
     ----------
@@ -302,7 +310,8 @@ def heaviside(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the Heaviside step function for each element in x1.
+    """
+    Compute the Heaviside step function for each element in x1.
 
     Parameters
     ----------
@@ -350,9 +359,9 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Flip array in the up/down direction. Flip the entries in each column in
-    the up/down direction. Rows are preserved, but appear in a different order
-    than before.
+    """
+    Flip array in the up/down direction. Flip the entries in each column in the up/down
+    direction. Rows are preserved, but appear in a different order than before.
 
     Parameters
     ----------
@@ -394,7 +403,8 @@ def vstack(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Stack arrays in sequence vertically (row wise).
+    """
+    Stack arrays in sequence vertically (row wise).
 
     Parameters
     ----------
@@ -438,7 +448,8 @@ def hstack(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Stack arrays in sequence horizotally (column wise).
+    """
+    Stack arrays in sequence horizotally (column wise).
 
     Parameters
     ----------
@@ -484,8 +495,9 @@ def rot90(
     axes: Tuple[int, int] = (0, 1),
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Rotate an array by 90 degrees in the plane specified by axes. Rotation
-    direction is from the first towards the second axis.
+    """
+    Rotate an array by 90 degrees in the plane specified by axes. Rotation direction is
+    from the first towards the second axis.
 
     Parameters
     ----------
@@ -571,8 +583,8 @@ def top_k(
     sorted: bool = True,
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
-    """Return the `k` largest elements of the given input array along a given
-    axis.
+    """
+    Return the `k` largest elements of the given input array along a given axis.
 
     Parameters
     ----------
@@ -650,9 +662,10 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Flip array in the left/right direction. Flip the entries in each column
-    in the left/right direction. Columns are preserved, but appear in a
-    different order than before.
+    """
+    Flip array in the left/right direction. Flip the entries in each column in the
+    left/right direction. Columns are preserved, but appear in a different order than
+    before.
 
     Parameters
     ----------
@@ -695,7 +708,8 @@ def i0(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the Bessel i0 function of x element-wise.
+    """
+    Compute the Bessel i0 function of x element-wise.
 
     Parameters
     ----------
@@ -888,29 +902,30 @@ def _set_wrap_both(padded, axis, width_pair):
     return padded
 
 
-def _pad_simple(array, pad_width, fill_value=None):
+def _init_pad(array, pad_width, fill_value=None):
     new_shape = tuple(
         left + size + right for size, (left, right) in zip(array.shape, pad_width)
     )
-    padded = ivy.zeros(new_shape, dtype=array.dtype)
     if fill_value is not None:
-        padded = ivy.ones_like(padded) * fill_value
+        padded = ivy.ones(new_shape, dtype=array.dtype) * fill_value
+    else:
+        padded = ivy.zeros(new_shape, dtype=array.dtype)
     original_area_slice = tuple(
         slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
     )
     padded[original_area_slice] = array
-    return padded, original_area_slice
+    return padded
 
 
-def _to_pairs(x, n):
+def _to_pairs(x, n, m=2):
     if ivy.isscalar(x):
-        return ((x, x),) * n
-    elif len(x) == 2 and ivy.isscalar(x[0]):
-        return ((x[0], x[1]),) * n
+        return ((x,) * m,) * n
+    elif len(x) == m and ivy.isscalar(x[0]):
+        return ((*x[:m],),) * n
     elif len(x) != n:
         ivy.utils.assertions.check_equal(
             ivy.asarray(list(x)).shape,
-            (n, 2),
+            (n, m),
             message=(
                 "tuple argument should contain "
                 "ndim pairs where ndim is the number of "
@@ -921,47 +936,40 @@ def _to_pairs(x, n):
     return x
 
 
-def _to_dilated(x, n):
-    if ivy.isscalar(x):
-        return ((x, x, x),) * n
-    elif len(x) == 3 and ivy.isscalar(x[0]):
-        return ((x[0], x[1], x[2]),) * n
-    elif len(x) != n:
-        ivy.utils.assertions.check_equal(
-            ivy.asarray(list(x)).shape,
-            (n, 3),
-            message=(
-                "tuple argument should contain "
-                "ndim groups where ndim is the number of "
-                "the input's dimensions"
-            ),
-            as_array=False,
+def check_scalar(x, force_integer, force_positive):
+    return (
+        ivy.isscalar(x)
+        and (ivy.is_int_dtype(x) if force_integer else True)
+        and (x >= 0 if force_positive else True)
+    )
+
+
+def _check_tuple_arg(arg, arg_name, force_integer=False, force_positive=False):
+    if not (
+        check_scalar(arg, force_integer, force_positive)
+        or (
+            isinstance(arg, (tuple, list))
+            and (
+                all(check_scalar(elem, force_integer, force_positive) for elem in arg)
+                or (
+                    isinstance(elem, (tuple, list))
+                    and all(
+                        check_scalar(sub_elem, force_integer, force_positive)
+                        for sub_elem in elem
+                    )
+                )
+                for elem in arg
+            )
         )
-    return x
-
-
-def _check_tuple_arg(arg, name, force_integer=True):
-    is_scalar = ivy.is_int_dtype if force_integer else ivy.isscalar
-    flag_assert = False
-    if isinstance(arg, (tuple, list)):
-        for nested in arg:
-            if isinstance(nested, (tuple, list)):
-                for sub_nested in nested:
-                    if not is_scalar(sub_nested):
-                        flag_assert = True
-                        break
-            elif not is_scalar(nested):
-                flag_assert = True
-    elif not is_scalar(arg):
-        flag_assert = True
-    if flag_assert:
+    ):
         if force_integer:
             raise ivy.utils.exceptions.IvyException(
-                f"{name} should be int, tuple of ints or tuple of int tuples"
+                f"{arg_name} should be int, tuple of ints or tuple of int tuples"
             )
         else:
             raise ivy.utils.exceptions.IvyException(
-                f"{name} should be scalar, tuple of scalars or tuple of scalar tuples"
+                f"{arg_name} should be scalar, tuple of scalars or tuple of scalar"
+                " tuples"
             )
 
 
@@ -973,45 +981,42 @@ def _check_arguments(
     end_values,
     reflect_type,
 ):
+    supported_modes = [
+        "constant",
+        "dilated",
+        "edge",
+        "linear_ramp",
+        "maximum",
+        "mean",
+        "median",
+        "minimum",
+        "reflect",
+        "symmetric",
+        "wrap",
+        "empty",
+    ]
     ivy.utils.assertions.check_true(
-        callable(mode)
-        or mode
-        in [
-            "constant",
-            "dilated",
-            "edge",
-            "linear_ramp",
-            "maximum",
-            "mean",
-            "median",
-            "minimum",
-            "reflect",
-            "symmetric",
-            "wrap",
-            "empty",
-        ],
-        message="the provided mode is not supported",
+        callable(mode) or mode in supported_modes,
+        message=f"Only modes {supported_modes} are supported. Got {mode}.",
     )
-    _check_tuple_arg(pad_width, "pad_width")
-    if mode not in ["dilated"]:
-        ivy.utils.assertions.check_true(
-            all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
-            message="the pad_widths must be greater or equal to zero",
-        )
+    _check_tuple_arg(
+        pad_width, "pad_width", force_positive=mode != "dilated", force_integer=True
+    )
     if mode in ["maximum", "mean", "median", "minimum"]:
-        _check_tuple_arg(stat_length, "stat_length")
-        ivy.utils.assertions.check_true(
-            all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
-            message="the stat lengths must be greater than zero",
+        _check_tuple_arg(
+            stat_length, "stat_length", force_positive=True, force_integer=True
         )
-    elif mode == "constant":
-        _check_tuple_arg(constant_values, "constant_values", force_integer=False)
+    elif mode in ["constant", "dilated"]:
+        _check_tuple_arg(constant_values, "constant_values")
     elif mode == "linear_ramp":
-        _check_tuple_arg(end_values, "end_values", force_integer=False)
-    ivy.utils.assertions.check_true(
-        reflect_type in ["even", "odd"],
-        message="the provided reflect_type is not supported",
-    )
+        _check_tuple_arg(end_values, "end_values")
+    elif mode in ["reflect", "symmetric"]:
+        ivy.utils.assertions.check_true(
+            reflect_type in ["even", "odd"],
+            message=(
+                f"Only reflect types ['even', 'odd'] are supported. Got {reflect_type}."
+            ),
+        )
 
 
 @handle_exceptions
@@ -1048,7 +1053,8 @@ def pad(
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> ivy.Array:
-    """Pad an array.
+    """
+    Pad an array.
 
     Parameters
     ----------
@@ -1196,23 +1202,23 @@ def pad(
         end_values,
         reflect_type,
     )
+    ndim = input.ndim
     if mode == "dilated":
-        pad_width = _to_dilated(pad_width, input.ndim)
+        pad_width = _to_pairs(pad_width, ndim, m=3)
         if not ivy.is_array(constant_values) or constant_values.dtype != input.dtype:
             constant_values = ivy.asarray(constant_values, dtype=input.dtype)
         return _interior_pad(input, constant_values, pad_width)
     pad_width = _to_pairs(pad_width, len(input.shape))
     if callable(mode):
         func = mode
-        padded, _ = _pad_simple(input, pad_width, fill_value=0)
-        for axis in range(padded.ndim):
+        padded = _init_pad(input, pad_width, fill_value=0)
+        for axis in range(ndim):
             padded = ivy.moveaxis(padded, axis, -1)
             inds = ivy.ndindex(padded.shape[:-1])
             for ind in inds:
                 padded[ind] = func(padded[ind], pad_width[axis], axis, kwargs)
         return padded
-    padded, original_area_slice = _pad_simple(input, pad_width)
-    axes = range(padded.ndim)
+    padded = _init_pad(input, pad_width)
     stat_functions = {
         "maximum": ivy.max,
         "minimum": ivy.min,
@@ -1220,35 +1226,31 @@ def pad(
         "median": ivy.median,
     }
     if mode == "constant":
-        constant_values = _to_pairs(constant_values, padded.ndim)
-        constant_values = tuple(tuple(map(ivy.array, pair)) for pair in constant_values)
-        for axis, width_pair, value_pair in zip(axes, pad_width, constant_values):
+        constant_values = _to_pairs(constant_values, ndim)
+        for axis, (width_pair, value_pair) in enumerate(
+            zip(pad_width, constant_values)
+        ):
             padded = _set_pad_area(padded, axis, width_pair, value_pair)
     elif mode == "empty":
         pass
     elif mode == "edge":
-        for axis, width_pair in zip(axes, pad_width):
+        for axis, width_pair in enumerate(pad_width):
             edge_pair = _get_edges(padded, axis, width_pair)
             padded = _set_pad_area(padded, axis, width_pair, edge_pair)
     elif mode == "linear_ramp":
-        end_values = _to_pairs(end_values, padded.ndim)
-        for axis, width_pair, value_pair in zip(axes, pad_width, end_values):
+        end_values = _to_pairs(end_values, ndim)
+        for axis, (width_pair, value_pair) in enumerate(zip(pad_width, end_values)):
             ramp_pair = _get_linear_ramps(padded, axis, width_pair, value_pair)
             padded = _set_pad_area(padded, axis, width_pair, ramp_pair)
     elif mode in stat_functions:
         func = stat_functions[mode]
-        stat_length = _to_pairs(stat_length, padded.ndim)
-        if mode == "median":
-            ivy.utils.assertions.check_true(
-                ivy.is_float_dtype(input),
-                message="median interpolation is only supported for floats",
-            )
-        for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
+        stat_length = _to_pairs(stat_length, ndim)
+        for axis, (width_pair, length_pair) in enumerate(zip(pad_width, stat_length)):
             stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
             padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
-        for axis, (left_index, right_index) in zip(axes, pad_width):
+        for axis, (left_index, right_index) in enumerate(pad_width):
             if input.shape[axis] == 1 and (left_index > 0 or right_index > 0):
                 edge_pair = _get_edges(padded, axis, (left_index, right_index))
                 padded = _set_pad_area(
@@ -1260,7 +1262,7 @@ def pad(
                     padded, axis, (left_index, right_index), reflect_type, include_edge
                 )
     elif mode == "wrap":
-        for axis, (left_index, right_index) in zip(axes, pad_width):
+        for axis, (left_index, right_index) in enumerate(pad_width):
             padded = _set_wrap_both(padded, axis, (left_index, right_index))
     return padded
 
@@ -1291,7 +1293,8 @@ def vsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Split an array vertically into multiple sub-arrays.
+    """
+    Split an array vertically into multiple sub-arrays.
 
     Parameters
     ----------
@@ -1341,7 +1344,8 @@ def dsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Split an array into multiple sub-arrays along the 3rd axis.
+    """
+    Split an array into multiple sub-arrays along the 3rd axis.
 
     Parameters
     ----------
@@ -1391,9 +1395,9 @@ def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Convert inputs to arrays with at least one dimension. Scalar inputs are
-    converted to 1-dimensional arrays, whilst higher-dimensional inputs are
-    preserved.
+    """
+    Convert inputs to arrays with at least one dimension. Scalar inputs are converted to
+    1-dimensional arrays, whilst higher-dimensional inputs are preserved.
 
     Parameters
     ----------
@@ -1436,7 +1440,8 @@ def dstack(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Stack arrays in sequence depth wise (along third axis).
+    """
+    Stack arrays in sequence depth wise (along third axis).
 
     Parameters
     ----------
@@ -1476,9 +1481,9 @@ def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Convert inputs to arrays with at least two dimension. Scalar inputs are
-    converted to 2-dimensional arrays, whilst higher-dimensional inputs are
-    preserved.
+    """
+    Convert inputs to arrays with at least two dimension. Scalar inputs are converted to
+    2-dimensional arrays, whilst higher-dimensional inputs are preserved.
 
     Parameters
     ----------
@@ -1522,9 +1527,9 @@ def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Convert inputs to arrays with at least three dimension. Scalar inputs
-    are converted to 3-dimensional arrays, whilst higher-dimensional inputs are
-    preserved.
+    """
+    Convert inputs to arrays with at least three dimension. Scalar inputs are converted
+    to 3-dimensional arrays, whilst higher-dimensional inputs are preserved.
 
     Parameters
     ----------
@@ -1583,7 +1588,8 @@ def take_along_axis(
     mode: str = "fill",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Take values from the input array by matching 1d index and data slices.
+    """
+    Take values from the input array by matching 1d index and data slices.
 
     Parameters
     ----------
@@ -1633,7 +1639,8 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """Split an array into multiple sub-arrays horizontally.
+    """
+    Split an array into multiple sub-arrays horizontally.
 
     Parameters
     ----------
@@ -1679,7 +1686,8 @@ def hsplit(
 @handle_exceptions
 @inputs_to_native_shapes
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
-    """Broadcasts shapes.
+    """
+    Broadcasts shapes.
 
     Parameters
     ----------
@@ -1720,8 +1728,8 @@ def expand(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Broadcast the input Array following the given shape and the broadcast
-    rule.
+    """
+    Broadcast the input Array following the given shape and the broadcast rule.
 
     Parameters
     ----------
@@ -1762,8 +1770,9 @@ def put_along_axis(
     mode: Literal["sum", "min", "max", "mul", "mean", "replace"] = "replace",
     out: Optional[ivy.Array] = None,
 ) -> None:
-    """Put values into the input array by matching 1d index and data slices
-    along a specified axis.
+    """
+    Put values into the input array by matching 1d index and data slices along a
+    specified axis.
 
     Parameters
     ----------
@@ -1856,7 +1865,8 @@ def as_strided(
     strides: Sequence[int],
     /,
 ) -> ivy.Array:
-    """Create a copy of the input array with the given shape and strides.
+    """
+    Create a copy of the input array with the given shape and strides.
 
     Parameters
     ----------
@@ -1937,7 +1947,8 @@ def concat_from_sequence(
     axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Concatenate a sequence of arrays along a new or an existing axis.
+    """
+    Concatenate a sequence of arrays along a new or an existing axis.
 
     Parameters
     ----------
@@ -2043,7 +2054,8 @@ def associative_scan(
     reverse: bool = False,
     axis: int = 0,
 ) -> ivy.Array:
-    """Perform an associative scan over the given array.
+    """
+    Perform an associative scan over the given array.
 
     Parameters
     ----------
@@ -2128,8 +2140,9 @@ def unique_consecutive(
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """Eliminates all but the first element from every consecutive group of
-    equivalent elements in ``x``.
+    """
+    Eliminates all but the first element from every consecutive group of equivalent
+    elements in ``x``.
 
     Parameters
     ----------
@@ -2175,7 +2188,8 @@ def fill_diagonal(
     *,
     wrap: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Fill the main diagonal of the given array of any dimensionality..
+    """
+    Fill the main diagonal of the given array of any dimensionality..
 
     Parameters
     ----------
@@ -2241,7 +2255,8 @@ def unfold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the mode-`mode` unfolding of `tensor` with modes starting at `0`.
+    """
+    Return the mode-`mode` unfolding of `tensor` with modes starting at `0`.
 
     Parameters
     ----------
@@ -2274,9 +2289,9 @@ def fold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Refolds the mode-`mode` unfolding into a tensor of shape `shape` In
-    other words, refolds the n-mode unfolded tensor into the original tensor of
-    the specified shape.
+    """
+    Refolds the mode-`mode` unfolding into a tensor of shape `shape` In other words,
+    refolds the n-mode unfolded tensor into the original tensor of the specified shape.
 
     Parameters
     ----------
@@ -2316,11 +2331,11 @@ def partial_unfold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Partial unfolding of a tensor while ignoring the specified number of
-    dimensions at the beginning and the end. For instance, if the first
-    dimension of the tensor is the number of samples, to unfold each sample,
-    set skip_begin=1. This would, for each i in ``range(tensor.shape[0])``,
-    unfold ``tensor[i, ...]``.
+    """
+    Partial unfolding of a tensor while ignoring the specified number of dimensions at
+    the beginning and the end. For instance, if the first dimension of the tensor is the
+    number of samples, to unfold each sample, set skip_begin=1. This would, for each i
+    in ``range(tensor.shape[0])``, unfold ``tensor[i, ...]``.
 
     Parameters
     ----------
@@ -2373,7 +2388,8 @@ def partial_fold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Re-folds a partially unfolded tensor.
+    """
+    Re-folds a partially unfolded tensor.
 
     Parameters
     ----------
@@ -2415,8 +2431,9 @@ def partial_tensor_to_vec(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Partial vectorization of a tensor while ignoring the specified dimension
-    at the beginning and the end.
+    """
+    Partial vectorization of a tensor while ignoring the specified dimension at the
+    beginning and the end.
 
     Parameters
     ----------
@@ -2459,7 +2476,8 @@ def partial_vec_to_tensor(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Refolds a partially vectorised tensor into a full one.
+    """
+    Refolds a partially vectorised tensor into a full one.
 
     Parameters
     ----------
@@ -2494,7 +2512,8 @@ def matricize(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Matricizes the given tensor.
+    """
+    Matricizes the given tensor.
 
     Parameters
     ----------
@@ -2551,7 +2570,8 @@ def soft_thresholding(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Soft-thresholding operator.
+    """
+    Soft-thresholding operator.
 
         sign(tensor) * max[abs(tensor) - threshold, 0]
 
@@ -2611,7 +2631,8 @@ def choose(
     out: None = None,
     mode: Union[str, None] = None,
 ) -> ivy.Array:
-    """Take values from the input array by matching 1d index and data slices.
+    """
+    Take values from the input array by matching 1d index and data slices.
 
     Parameters
     ----------
@@ -2657,7 +2678,8 @@ def column_stack(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Create a new array by horizontally stacking the arrays in arrays.
+    """
+    Create a new array by horizontally stacking the arrays in arrays.
 
     Equivalent to `ivy.hstack(arrays)`, except each zero or one dimensional
     array `x` in arrays is first reshaped into a `(x.size(), 1)` column
@@ -2729,7 +2751,8 @@ def take(
     fill_value: Optional[Number] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return elements of an array along an axis.
+    """
+    Return elements of an array along an axis.
 
     .. note::
         Conceptually, take(x, indices, axis=3) is equivalent to x[:,:,:,indices,...];
@@ -2836,9 +2859,10 @@ def trim_zeros(
     *,
     trim: Optional[str] = "fb",
 ) -> ivy.Array:
-    """ivy.Container instance method variant of ivy.trim_zeros. This method
-    simply wraps the function, and so the docstring for ivy.trim_zeros also
-    applies to this method with minimal changes.
+    """
+    ivy.Container instance method variant of ivy.trim_zeros. This method simply wraps
+    the function, and so the docstring for ivy.trim_zeros also applies to this method
+    with minimal changes.
 
     Parameters
     ----------
