@@ -83,6 +83,10 @@ class Tensor:
         for i in range(self.shape[0]):
             yield self[i]
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def __div__(self, y, name=None):
+        return paddle_frontend.divide(self, y)
+
     # Instance Methods #
     # ---------------- #
 
