@@ -151,19 +151,19 @@ class ContainerBase(dict, abc.ABC):
                 "dict_in and **kwargs cannot both be specified for ivy.Container "
                 "constructor, please specify one or the other, not both."
             )
-        self._config_in = dict(
-            print_limit=print_limit,
-            print_indent=print_indent,
-            key_length_limit=key_length_limit,
-            print_line_spacing=print_line_spacing,
-            ivyh=ivyh,
-            default_key_color=default_key_color,
-            keyword_color_dict=keyword_color_dict,
-            rebuild_child_containers=rebuild_child_containers,
-            build_callable=build_callable,
-            types_to_iteratively_nest=types_to_iteratively_nest,
-            alphabetical_keys=alphabetical_keys,
-        )
+        self._config_in = {
+            "print_limit": print_limit,
+            "print_indent": print_indent,
+            "key_length_limit": key_length_limit,
+            "print_line_spacing": print_line_spacing,
+            "ivyh": ivyh,
+            "default_key_color": default_key_color,
+            "keyword_color_dict": keyword_color_dict,
+            "rebuild_child_containers": rebuild_child_containers,
+            "build_callable": build_callable,
+            "types_to_iteratively_nest": types_to_iteratively_nest,
+            "alphabetical_keys": alphabetical_keys,
+        }
         self._config = {}
         self.cont_inplace_update(dict_in, **self._config_in)
 
@@ -848,6 +848,7 @@ class ContainerBase(dict, abc.ABC):
         assert_and_assign
             if true, then the container being compared with is updated with the value
             in the container being compared to given that the structures are congruent
+
         Returns
         -------
         Boolean
@@ -1009,6 +1010,7 @@ class ContainerBase(dict, abc.ABC):
         assert_and_assign
             if true, then the container being compared with is updated with the value in
             the container being compared to given that the structures are congruent
+
         Returns
         -------
             Boolean
@@ -1386,17 +1388,15 @@ class ContainerBase(dict, abc.ABC):
         if below_depth and num_keys > below_depth:
             pre_keys = flat_keys[0:below_depth]
             del flat_keys[0:below_depth]
-        return "/".join(
-            [
-                k
-                for k in [
-                    "/".join(pre_keys),
-                    replacement.join(flat_keys),
-                    "/".join(post_keys),
-                ]
-                if k
+        return "/".join([
+            k
+            for k in [
+                "/".join(pre_keys),
+                replacement.join(flat_keys),
+                "/".join(post_keys),
             ]
-        )
+            if k
+        ])
 
     @staticmethod
     def cont_trim_key(key, max_length):
@@ -1510,9 +1510,9 @@ class ContainerBase(dict, abc.ABC):
         if not sub_shapes:
             return sub_shapes
         min_num_dims = min(len(sub_shape) for sub_shape in sub_shapes)
-        sub_shapes_array = np.asarray(
-            [sub_shape[0:min_num_dims] for sub_shape in sub_shapes]
-        )
+        sub_shapes_array = np.asarray([
+            sub_shape[0:min_num_dims] for sub_shape in sub_shapes
+        ])
         sub_shapes_array = np.where(sub_shapes_array == 0, -1, sub_shapes_array)
         mask = np.prod(sub_shapes_array / sub_shapes_array[0:1], 0) == 1
         # noinspection PyTypeChecker
@@ -1720,18 +1720,16 @@ class ContainerBase(dict, abc.ABC):
             Boolean, whether all entries are boolean True.
         """
         return bool(
-            np.prod(
-                [
-                    v
-                    for k, v in self.cont_as_bools(
-                        assert_is_bool,
-                        key_chains,
-                        to_apply,
-                        prune_unapplied,
-                        map_sequences,
-                    ).cont_to_iterator()
-                ]
-            )
+            np.prod([
+                v
+                for k, v in self.cont_as_bools(
+                    assert_is_bool,
+                    key_chains,
+                    to_apply,
+                    prune_unapplied,
+                    map_sequences,
+                ).cont_to_iterator()
+            ])
         )
 
     def cont_all_false(
@@ -1767,18 +1765,16 @@ class ContainerBase(dict, abc.ABC):
             Boolean, whether all entries are boolean False.
         """
         return not bool(
-            np.sum(
-                [
-                    v
-                    for k, v in self.cont_as_bools(
-                        assert_is_bool,
-                        key_chains,
-                        to_apply,
-                        prune_unapplied,
-                        map_sequences,
-                    ).cont_to_iterator()
-                ]
-            )
+            np.sum([
+                v
+                for k, v in self.cont_as_bools(
+                    assert_is_bool,
+                    key_chains,
+                    to_apply,
+                    prune_unapplied,
+                    map_sequences,
+                ).cont_to_iterator()
+            ])
         )
 
     def cont_slice_via_key(self, slice_key):
@@ -2052,9 +2048,9 @@ class ContainerBase(dict, abc.ABC):
                 value_shape = value_as_np.shape
                 this_batch_size = value_shape[0]
                 max_bs = (
-                    starting_index + this_batch_size
-                    if not max_batch_size
-                    else max_batch_size
+                    max_batch_size
+                    if max_batch_size
+                    else starting_index + this_batch_size
                 )
                 if key not in h5_obj.keys():
                     dataset_shape = [max_bs] + list(value_shape[1:])
@@ -2130,16 +2126,14 @@ class ContainerBase(dict, abc.ABC):
              Container data in its raw form.
         """
         return_item = {}
-        for i, (key, value) in enumerate(self.items()):
+        for key, value in self.items():
             if isinstance(value, ivy.Container):
                 return_item[key] = value.cont_to_raw()
             elif key[0:3] == "it_" and tuple(self._types_to_iteratively_nest):
-                return_item = list(
-                    [
-                        v.cont_to_raw() if isinstance(v, ivy.Container) else v
-                        for v in self.values()
-                    ]
-                )
+                return_item = [
+                    v.cont_to_raw() if isinstance(v, ivy.Container) else v
+                    for v in self.values()
+                ]
                 break
             else:
                 return_item[key] = value
@@ -2249,7 +2243,7 @@ class ContainerBase(dict, abc.ABC):
         ret
             Container as flat list.
         """
-        return list([item for key, item in self.cont_to_iterator()])
+        return [item for key, item in self.cont_to_iterator()]
 
     def cont_from_flat_list(self, flat_list):
         """
@@ -3736,9 +3730,9 @@ class ContainerBase(dict, abc.ABC):
         # prepend these lines to the sub-container
         sub_repr = (
             "\n"
-            + "\n".join(
-                [" " * num_spaces_to_add + s for s in sub_repr[1:-1].split("\n")]
-            )
+            + "\n".join([
+                " " * num_spaces_to_add + s for s in sub_repr[1:-1].split("\n")
+            ])
             + "\n"
         )
 
@@ -3773,12 +3767,10 @@ class ContainerBase(dict, abc.ABC):
                 padded = True
                 return "\\n" + indent_str + indented_key_str + str_in
 
-            leading_str_to_keep = ", ".join(
-                [
-                    _pre_pad_alpha_line(s) if s[0].isalpha() and i != 0 else s
-                    for i, s in enumerate(leading_str_to_keep.split(", "))
-                ]
-            )
+            leading_str_to_keep = ", ".join([
+                _pre_pad_alpha_line(s) if s[0].isalpha() and i != 0 else s
+                for i, s in enumerate(leading_str_to_keep.split(", "))
+            ])
             local_indent_str = "" if padded else indent_str
             leading_str = leading_str_to_keep.split("\\n")[-1].replace('"', "")
             remaining_str = array_str_in_split[1]
@@ -3795,32 +3787,30 @@ class ContainerBase(dict, abc.ABC):
             uniform_indent_wo_overflow_list = list(
                 filter(None, uniform_indent_wo_overflow.split("\\n"))
             )
-            uniform_indent = "\n".join(
-                [
-                    (
-                        local_indent_str + extra_indent + " " + s
-                        if (
-                            s[0].isnumeric()
-                            or s[0] == "-"
-                            or s[0:3] == "..."
-                            or max([ss in s[0:6] for ss in ["nan, ", "inf, "]])
-                        )
-                        else (
-                            indent_str + indented_key_str + s
-                            if (not s[0].isspace() and s[0] != '"')
-                            else s
-                        )
+            uniform_indent = "\n".join([
+                (
+                    local_indent_str + extra_indent + " " + s
+                    if (
+                        s[0].isnumeric()
+                        or s[0] == "-"
+                        or s[0:3] == "..."
+                        or max(ss in s[0:6] for ss in ["nan, ", "inf, "])
                     )
-                    for s in uniform_indent_wo_overflow_list
-                ]
-            )
+                    else (
+                        indent_str + indented_key_str + s
+                        if (not s[0].isspace() and s[0] != '"')
+                        else s
+                    )
+                )
+                for s in uniform_indent_wo_overflow_list
+            ])
             indented = uniform_indent
             # 10 dimensions is a sensible upper bound for the number in a single array
             for i in range(2, 10):
                 indented = indented.replace(" " * (i - 1) + "[" * i, "[" * i)
-                indented = "\n".join(
-                    [s for s in indented.split("\n") if bool(s) and not s.isspace()]
-                )
+                indented = "\n".join([
+                    s for s in indented.split("\n") if bool(s) and not s.isspace()
+                ])
             return indented
 
         def _align_arrays(str_in):
@@ -3919,32 +3909,27 @@ class ContainerBase(dict, abc.ABC):
             def _add_newline(str_in):
                 str_in_split = str_in.split("\n")
                 str_split_size = len(str_in_split)
-                return "\n".join(
-                    [
-                        (
-                            ("\n" * self._print_line_spacing + ss)
-                            if i == (str_split_size - 1)
-                            else ss
-                        )
-                        for i, ss in enumerate(str_in_split)
-                    ]
-                )
+                return "\n".join([
+                    (
+                        ("\n" * self._print_line_spacing + ss)
+                        if i == (str_split_size - 1)
+                        else ss
+                    )
+                    for i, ss in enumerate(str_in_split)
+                ])
 
-            json_dumped_str = '":'.join(
-                [_add_newline(s) for s in json_dumped_str.split('":')]
-            )
+            json_dumped_str = '":'.join([
+                _add_newline(s) for s in json_dumped_str.split('":')
+            ])
             # improve tf formatting
             if ivy.backend_stack and ivy.current_backend_str() == "tensorflow":
                 json_dumped_str_split = json_dumped_str.split("'Variable:")
                 json_dumped_str = (
                     json_dumped_str_split[0]
                     + ", "
-                    + ", ".join(
-                        [
-                            "'".join(ss.split("'")[1:])
-                            for ss in json_dumped_str_split[1:]
-                        ]
-                    )
+                    + ", ".join([
+                        "'".join(ss.split("'")[1:]) for ss in json_dumped_str_split[1:]
+                    ])
                 )
                 json_dumped_str = (
                     json_dumped_str.replace(":shape", ", shape")
@@ -3955,26 +3940,24 @@ class ContainerBase(dict, abc.ABC):
             # color keys
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)
-            json_dumped_str = '":'.join(
-                [
-                    (
-                        ' "'.join(
-                            sub_str.split(' "')[:-1]
-                            + [
-                                termcolor.colored(
-                                    ivy.Container.cont_trim_key(
-                                        sub_str.split(' "')[-1], self._key_length_limit
-                                    ),
-                                    self._default_key_color,
-                                )
-                            ]
-                        )
-                        if i < split_size - 1
-                        else sub_str
+            json_dumped_str = '":'.join([
+                (
+                    ' "'.join(
+                        sub_str.split(' "')[:-1]
+                        + [
+                            termcolor.colored(
+                                ivy.Container.cont_trim_key(
+                                    sub_str.split(' "')[-1], self._key_length_limit
+                                ),
+                                self._default_key_color,
+                            )
+                        ]
                     )
-                    for i, sub_str in enumerate(json_dumped_str_split)
-                ]
-            )
+                    if i < split_size - 1
+                    else sub_str
+                )
+                for i, sub_str in enumerate(json_dumped_str_split)
+            ])
             # remove quotation marks, shape tuple, and color other elements of the dict
             ret = (
                 json_dumped_str.replace('"', "")
@@ -4099,7 +4082,7 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = value[query]
             else:
                 # noinspection PyBroadException
-                if isinstance(value, list) or isinstance(value, tuple):
+                if isinstance(value, (list, tuple)):
                     if len(value) == 0:
                         return_dict[key] = value
                     else:
@@ -4279,7 +4262,7 @@ class ContainerBase(dict, abc.ABC):
         kcs = [kc for kc in self.cont_to_iterator_keys(include_empty=True)]
         if not kcs:
             return 0
-        return max([len(kc.split("/")) for kc in kcs])
+        return max(len(kc.split("/")) for kc in kcs)
 
     @property
     def dynamic_backend(self):

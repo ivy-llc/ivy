@@ -599,7 +599,6 @@ class _ContainerWithCreationExperimental(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
     ) -> ivy.Container:
         return self.static_tril_indices(
-            self,
             n_rows,
             n_cols,
             k,
@@ -1200,3 +1199,193 @@ class _ContainerWithCreationExperimental(ContainerBase):
             lower_edge_hertz,
             upper_edge_hertz,
         )
+
+    @staticmethod
+    def static_unsorted_segment_mean(
+        data: ivy.Container,
+        segment_ids: Union[ivy.Array, ivy.Container],
+        num_segments: Union[int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        Compute the mean of values in the input data based on segment identifiers.
+
+        Parameters
+        ----------
+        data : ivy.Container
+            Input array or container from which to gather the input.
+        segment_ids : ivy.Container
+            An array of integers indicating the segment identifier for each element in
+            'data'.
+        num_segments : Union[int, ivy.Container]
+            An integer or array representing the total number of distinct segment IDs.
+        key_chains : Optional[Union[List[str], Dict[str, str], ivy.Container]], optional
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply : Union[bool, ivy.Container], optional
+            If True, the method will be applied to key-chains, otherwise key-chains will
+            be skipped. Default is True.
+        prune_unapplied : Union[bool, ivy.Container], optional
+            Whether to prune key-chains for which the function was not applied.
+            Default is False.
+        map_sequences : Union[bool, ivy.Container], optional
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ivy.Container
+            A container representing the result of a segmented mean operation.
+            For each segment, it computes the mean of values in 'data' where
+            'segment_ids' equals the segment ID.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "unsorted_segment_mean",
+            data,
+            segment_ids,
+            num_segments,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def static_polyval(
+        coeffs: ivy.Container,
+        x: Union[ivy.Container, int, float],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        r"""
+        ivy.Container static method variant of ivy.polyval. This method simply wraps the
+        function, and so the docstring for ivy.polyval also applies to this method with
+        minimal changes.
+
+        Evaluate and return a polynomial at specific given values.
+
+        Parameters
+        ----------
+        coeffs
+            Polynomial coefficients (including zero) from highest degree
+            to constant term.
+        x
+            The value of the indeterminate variable at which to evaluate the polynomial.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            Output container containing simplified result of substituing x in the
+            coefficients - final value of polynomial.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "polyval",
+            coeffs,
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def unsorted_segment_mean(
+        self: ivy.Container,
+        segment_ids: Union[ivy.Array, ivy.Container],
+        num_segments: Union[int, ivy.Container],
+    ) -> ivy.Container:
+        """
+        Compute the mean of values in the input array or container based on segment
+        identifiers.
+
+        Parameters
+        ----------
+        self : ivy.Container
+            Input array or container from which to gather the input.
+        segment_ids : ivy.Container
+            An array of integers indicating the segment identifier for each element
+            in 'self'.
+        num_segments : Union[int, ivy.Container]
+            An integer or array representing the total number of distinct segment IDs.
+
+        Returns
+        -------
+        ivy.Container
+            A container representing the result of a segmented mean operation.
+            For each segment, it computes the mean of values in 'self' where
+            'segment_ids' equals the segment ID.
+
+        Example
+        --------
+        >>> data = ivy.Container(a=ivy.array([0., 1., 2., 4.]),
+        ...                      b=ivy.array([3., 4., 5., 6.]))
+        >>> segment_ids = ivy.array([0, 0, 1, 1])
+        >>> num_segments = 2
+        >>> result = ivy.unsorted_segment_mean(data, segment_ids, num_segments)
+        >>> print(result)
+        {
+            a: ivy.array([0.5, 3.0]),
+            b: ivy.array([3.5, 5.5])
+        }
+
+        >>> data = ivy.Container(a=ivy.array([0., 1., 2., 4., 5., 6.]),
+        ...                      b=ivy.array([3., 4., 5., 6., 7., 8.]))
+        >>> segment_ids = ivy.array([0, 0, 1, 1, 2, 2])
+        >>> num_segments = 3
+        >>> result = ivy.unsorted_segment_mean(data, segment_ids, num_segments)
+        >>> print(result)
+        {
+            a: ivy.array([0.5, 3.0, 5.5]),
+            b: ivy.array([3.5, 5.5, 7.5])
+        }
+        """
+        return self.static_unsorted_segment_mean(
+            self,
+            segment_ids,
+            num_segments,
+        )
+
+    def polyval(
+        self: ivy.Container,
+        coeffs: ivy.Container,
+        x: ivy.Container,
+    ) -> ivy.Container:
+        r"""
+        ivy.Container instance method variant of ivy.polyval. This method simply wraps
+        the function, and so the docstring for ivy.polyval also applies to this method
+        with minimal changes.
+
+        Evaluate and return a polynomial at specific given values.
+
+        Parameters
+        ----------
+        self
+            Arbitrary input container
+        coeffs
+            Polynomial coefficients (including zero) from highest degree to
+            constant term.
+        x
+            The value of the indeterminate variable at which to
+            evaluate the polynomial.
+
+        Returns
+        -------
+        ret
+            Output container containing simplified result of substituing x in the
+            coefficients - final value of polynomial.
+        """
+        return self.static_polyval(self, coeffs, x)

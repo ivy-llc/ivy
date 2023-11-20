@@ -46,14 +46,12 @@ def _asarray_helper(draw):
     )[-1]
     dtype = draw(st.sampled_from([dtype, None]))
     x = draw(
-        st.sampled_from(
-            [
-                x,
-                x_list,
-                sh,
-                # nested_values,
-            ]
-        )
+        st.sampled_from([
+            x,
+            x_list,
+            sh,
+            # nested_values,
+        ])
     )
     return x_dtype, x, dtype
 
@@ -185,6 +183,7 @@ def test_arange(
     x_dtype_x_and_dtype=_asarray_helper(),
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_asarray(
     *,
@@ -218,6 +217,7 @@ def test_asarray(
     fn_tree="functional.ivy.copy_array",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     to_ivy_array_bool=st.booleans(),
+    test_with_copy=st.just(True),
 )
 def test_copy_array(
     *,

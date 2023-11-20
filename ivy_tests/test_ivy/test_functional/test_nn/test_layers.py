@@ -68,6 +68,22 @@ def _dropout_helper(draw):
 
 
 @st.composite
+def _general_transpose_helper(draw):
+    dims = draw(st.integers(1, 3))
+    padding = st.sampled_from(["SAME", "VALID"]) if dims != 2 else None
+    x_f_d_df = draw(
+        _x_and_filters(
+            dim=dims,
+            general=True,
+            transpose=True,
+            bias=True,
+            padding=padding,
+        )
+    )
+    return dims, x_f_d_df
+
+
+@st.composite
 def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
     _qkv_same_dim = draw(st.booleans())
     _self_attention = draw(st.booleans())
@@ -307,7 +323,7 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
     average_attention_weights = draw(st.booleans())
 
     if len(q.shape) == 3 and not batch_first:
-        q, k, v = [np.swapaxes(x, 0, 1) if x is not None else x for x in [q, k, v]]
+        q, k, v = (np.swapaxes(x, 0, 1) if x is not None else x for x in [q, k, v])
 
     ret = (
         q,
@@ -366,6 +382,35 @@ def _nms_helper(draw):
     )
 
 
+# Convolutions #
+# -------------#
+
+
+def _output_shape(dims, dilation, stride, padding, x_shape, filter_shape):
+    if isinstance(padding, str):
+        return [
+            _deconv_length(
+                x_shape[i],
+                stride[i],
+                filter_shape[i],
+                padding,
+                dilation[i],
+            )
+            for i in range(dims)
+        ]
+    else:
+        if isinstance(padding, int):
+            padding = [[padding, padding]] * dims
+        return [
+            (x_shape[i] - 1) * stride[i]
+            - padding[i][0]
+            - padding[i][1]
+            + dilation[i] * (filter_shape[i] - 1)
+            + 1
+            for i in range(dims)
+        ]
+
+
 @st.composite
 def _roi_align_helper(draw):
     dtype = draw(helpers.get_dtypes("float", full=False))[0]
@@ -411,14 +456,11 @@ def _roi_align_helper(draw):
     )
 
 
-# Convolutions #
-# -------------#
-
-
 @st.composite
 def _x_and_filters(
     draw,
     dim: int = 2,
+    padding=None,
     transpose: bool = False,
     depthwise=False,
     general=False,
@@ -462,48 +504,45 @@ def _x_and_filters(
         data_format = draw(st.sampled_from(["NWC", "NCW"]))
     else:
         data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
-
-    full_strides = [strides] * dim if isinstance(strides, int) else strides
-    full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
+    fdilations = [dilations] * dim if isinstance(dilations, int) else dilations
+    if padding is None:
+        padding = st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=dim,
+                max_size=dim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
+            st.integers(min_value=0, max_value=3),
+        )
+    padding = draw(padding)
     if transpose:
-        padding = draw(st.sampled_from(["SAME", "VALID"]))
+        fstrides = [strides] * dim if isinstance(strides, int) else strides
+        if isinstance(padding, list):
+            assume(
+                all(
+                    max(pad) - min(pad) < min(stride, dilation)
+                    for pad, stride, dilation in zip(padding, fstrides, fdilations)
+                )
+            )
         x_dim = draw(
             helpers.get_shape(
                 min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
             )
         )
+        output_shape = _output_shape(
+            dim, fdilations, fstrides, padding, x_dim, filter_shape
+        )
+        assume(all(s > 0 for s in output_shape))
         if draw(st.booleans()):
-            output_shape = []
-            for i in range(dim):
-                output_shape.append(
-                    _deconv_length(
-                        x_dim[i],
-                        full_strides[i],
-                        filter_shape[i],
-                        padding,
-                        full_dilations[i],
-                    )
-                )
-        else:
             output_shape = None
     else:
-        padding = draw(
-            st.one_of(
-                st.lists(
-                    st.tuples(
-                        st.integers(min_value=0, max_value=3),
-                        st.integers(min_value=0, max_value=3),
-                    ),
-                    min_size=dim,
-                    max_size=dim,
-                ),
-                st.sampled_from(["SAME", "VALID"]),
-                st.integers(min_value=0, max_value=3),
-            )
-        )
         x_dim = []
         for i in range(dim):
-            min_x = filter_shape[i] + (filter_shape[i] - 1) * (full_dilations[i] - 1)
+            min_x = filter_shape[i] + (filter_shape[i] - 1) * (fdilations[i] - 1)
             x_dim.append(draw(st.integers(min_x, min_x + 1)))
         x_dim = tuple(x_dim)
     if not depthwise:
@@ -931,8 +970,9 @@ def test_conv1d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
         dim=1,
         transpose=True,
         bias=True,
+        padding=st.sampled_from(["SAME", "VALID"]),
     ),
-    ground_truth_backend="jax",
+    ground_truth_backend="torch",
 )
 def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     (
@@ -947,7 +987,8 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         fc,
         bias,
     ) = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
+    # tensorflow does not work with dilations > 1 on cpu
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -956,14 +997,13 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        # tensorflow does not work with dilations > 1 on cpu
         x=x,
         filters=filters,
         strides=stride,
         padding=pad,
         output_shape=output_shape,
         data_format=data_format,
-        dilations=dilations[0],
+        dilations=dilations,
         bias=bias,
     )
 
@@ -1021,8 +1061,7 @@ def test_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
         transpose=True,
         bias=True,
     ),
-    # tensorflow does not work with dilations > 1 on cpu
-    ground_truth_backend="jax",
+    ground_truth_backend="torch",
 )
 def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     (
@@ -1037,8 +1076,8 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         fc,
         bias,
     ) = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
-
+    assume(isinstance(pad, str) or backend_fw in ["torch", "tensorflow"])
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -1053,7 +1092,7 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         padding=pad,
         output_shape=output_shape,
         data_format=data_format,
-        dilations=dilations[0],
+        dilations=dilations,
         bias=bias,
     )
 
@@ -1109,8 +1148,9 @@ def test_conv3d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
         dim=3,
         transpose=True,
         bias=True,
+        padding=st.sampled_from(["SAME", "VALID"]),
     ),
-    ground_truth_backend="jax",
+    ground_truth_backend="torch",
 )
 def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     (
@@ -1125,7 +1165,7 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         fc,
         bias,
     ) = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -1140,7 +1180,7 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         padding=pad,
         output_shape=output_shape,
         data_format=data_format,
-        dilations=dilations[0],
+        dilations=dilations,
         bias=bias,
     )
 
@@ -1197,19 +1237,13 @@ def test_conv_general_dilated(
 
 @handle_test(
     fn_tree="functional.ivy.conv_general_transpose",
-    dims=st.shared(st.integers(1, 3), key="dims"),
-    x_f_d_df=_x_and_filters(
-        dim=st.shared(st.integers(1, 3), key="dims"),
-        general=True,
-        transpose=True,
-        bias=True,
-    ),
-    ground_truth_backend="jax",
+    dim_x_f_d_df=_general_transpose_helper(),
+    ground_truth_backend="torch",
 )
 def test_conv_general_transpose(
-    *, dims, x_f_d_df, test_flags, backend_fw, fn_name, on_device
+    *, dim_x_f_d_df, test_flags, backend_fw, fn_name, on_device
 ):
-    (
+    dims, (
         dtype,
         x,
         filters,
@@ -1220,7 +1254,8 @@ def test_conv_general_transpose(
         output_shape,
         fc,
         bias,
-    ) = x_f_d_df
+    ) = dim_x_f_d_df
+    assume(isinstance(pad, str) or backend_fw in ["torch", "tensorflow"])
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         input_dtypes=dtype,
@@ -1272,7 +1307,7 @@ def test_depthwise_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         strides=stride,
         padding=pad,
         data_format=data_format,
-        dilations=dilations,
+        dilations=dilations[0],
     )
 
 
@@ -1460,6 +1495,7 @@ def test_multi_head_attention(
     inputs=_nms_helper(),
     test_instance_method=st.just(False),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_nms(
     *,

@@ -2552,9 +2552,9 @@ def test_array_property_strides(dtype_x, backend_fw):
         min_value=3.0,
         max_value=10.0,
     ),
-    op=st.sampled_from(
-        ["!=", ">", "<", ">=", "<=", "*", "/", "%", "==", "&", "@", "**", "/"]
-    ),
+    op=st.sampled_from([
+        "!=", ">", "<", ">=", "<=", "*", "/", "%", "==", "&", "@", "**", "/"
+    ]),
 )
 def test_dunder_wrapping(
     dtype_x,

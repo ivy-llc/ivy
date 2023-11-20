@@ -51,8 +51,7 @@ def _helper_r_(draw):
         to_mat = draw(st.booleans())
         if to_mat:
             elem = draw(st.sampled_from(["c", "r"]))
-            if dim > 2:
-                dim = 2
+            dim = min(dim, 2)
         else:
             num = draw(st.integers(1, 3))
             elem = ""

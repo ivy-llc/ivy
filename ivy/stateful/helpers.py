@@ -268,14 +268,12 @@ class ModuleHelpers(abc.ABC):
                 next_depth = depth - 1
             else:
                 next_depth = None
-            ret = ivy.Container(
-                {
-                    ivy.Container.cont_flatten_key_chain(
-                        sm.__repr__(), replacement="_"
-                    ): sm.sub_mods(show_v=show_v, depth=next_depth)
-                    for sm in self._sub_mods
-                }
-            )
+            ret = ivy.Container({
+                ivy.Container.cont_flatten_key_chain(
+                    sm.__repr__(), replacement="_"
+                ): sm.sub_mods(show_v=show_v, depth=next_depth)
+                for sm in self._sub_mods
+            })
             if flatten_key_chains:
                 return ret.cont_flatten_key_chains()
             return ret

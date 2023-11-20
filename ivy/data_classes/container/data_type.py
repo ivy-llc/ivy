@@ -23,7 +23,7 @@ class _ContainerWithDataTypes(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Copy an array to a specified data type irrespective of :ref:`type-promotion`
+        Copy an array to a specified data type irrespective of :ref:`type- promotion`
         rules.
 
         .. note::
@@ -94,7 +94,7 @@ class _ContainerWithDataTypes(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        Copy an array to a specified data type irrespective of :ref:`type-promotion`
+        Copy an array to a specified data type irrespective of :ref:`type- promotion`
         rules.
 
         .. note::
@@ -156,7 +156,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
     @staticmethod
     def _static_broadcast_arrays(
-        *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray, ivy.Container],
+        *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -232,7 +232,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
     def broadcast_arrays(
         self: ivy.Container,
-        *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray, ivy.Container],
+        *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
