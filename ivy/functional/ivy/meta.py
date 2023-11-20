@@ -26,7 +26,8 @@ def _compute_cost_and_update_grads(
     batched,
     num_tasks,
 ):
-    """Compute cost and update gradients.
+    """
+    Compute cost and update gradients.
 
     This function computes the cost and updates gradients for optimization.
 
@@ -88,12 +89,10 @@ def _compute_cost_and_update_grads(
             else variables.cont_prune_key_chains(outer_v, ignore_none=True)
         )
 
-        inner_grads = ivy.Container(
-            {
-                k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
-                for k, v in var.cont_to_iterator()
-            }
-        )
+        inner_grads = ivy.Container({
+            k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
+            for k, v in var.cont_to_iterator()
+        })
 
         if batched:
             inner_grads = ivy.multiply(inner_grads, num_tasks)
@@ -153,16 +152,14 @@ def _train_task(
             if keep_innver_v
             else variables.cont_prune_key_chains(inner_v, ignore_none=True)
         )
-        inner_update_grads = ivy.Container(
-            {
-                k: (
-                    ivy.zeros_like(v)
-                    if k not in inner_update_grads
-                    else inner_update_grads[k]
-                )
-                for k, v in var.cont_to_iterator()
-            }
-        )
+        inner_update_grads = ivy.Container({
+            k: (
+                ivy.zeros_like(v)
+                if k not in inner_update_grads
+                else inner_update_grads[k]
+            )
+            for k, v in var.cont_to_iterator()
+        })
         if batched:
             inner_update_grads = ivy.multiply(inner_update_grads, num_tasks)
 
@@ -477,7 +474,8 @@ def fomaml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """Perform step of first order MAML.
+    """
+    Perform step of first order MAML.
 
     Parameters
     ----------
@@ -592,7 +590,8 @@ def reptile_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """Perform a step of Reptile.
+    """
+    Perform a step of Reptile.
 
     Parameters
     ----------
@@ -741,7 +740,8 @@ def maml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """Perform step of vanilla second order MAML.
+    """
+    Perform step of vanilla second order MAML.
 
     Parameters
     ----------

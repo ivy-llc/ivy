@@ -6,6 +6,9 @@ import warnings
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.numpy.func_wrapper import _to_ivy_array
+from ivy.func_wrapper import (
+    with_supported_device_and_dtypes,
+)
 
 
 # --- Classes ---#
@@ -409,6 +412,31 @@ class ndarray:
 
     def tolist(self) -> list:
         return self._ivy_array.to_list()
+
+    @with_supported_device_and_dtypes(
+        {
+            "1.26.2 and below": {
+                "cpu": (
+                    "int64",
+                    "float32",
+                    "float64",
+                    "bfloat16",
+                    "complex64",
+                    "complex128",
+                    "uint64",
+                )
+            }
+        },
+        "numpy",
+    )
+    def trace(self, *, offset=0, axis1=0, axis2=1, out=None):
+        return np_frontend.trace(
+            self,
+            offset=offset,
+            axis1=axis1,
+            axis2=axis2,
+            out=out,
+        )
 
     def view(self):
         return np_frontend.reshape(self, tuple(self.shape))

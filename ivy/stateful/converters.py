@@ -1,5 +1,7 @@
 """Converters from Native Modules to Ivy Modules."""
+
 # global
+import functools
 from typing import Optional, Dict, List
 import re  # noqa
 import inspect
@@ -19,8 +21,9 @@ def to_ivy_module(
     devices=None,
     inplace_update=False,
 ):
-    """Convert an instance of a trainable module from a native framework into a
-    trainable ivy.Module instance.
+    """
+    Convert an instance of a trainable module from a native framework into a trainable
+    ivy.Module instance.
 
     Parameters
     ----------
@@ -73,7 +76,8 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """Convert a Haiku module instance to an Ivy module instance.
+        """
+        Convert a Haiku module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -166,7 +170,8 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """Convert a Flax module instance to an Ivy module instance.
+        """
+        Convert a Flax module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -255,7 +260,8 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """Convert a Keras module instance to an Ivy module instance.
+        """
+        Convert a Keras module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -317,7 +323,8 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """Convert a Paddle layer instance to an Ivy module instance.
+        """
+        Convert a Paddle layer instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -373,7 +380,8 @@ class ModuleConverters:
         devices=None,
         inplace_update=False,
     ):
-        """Convert a Torch module instance to an Ivy module instance.
+        """
+        Convert a Torch module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -430,3 +438,110 @@ class ModuleConverters:
             inplace_update=inplace_update,
             **i_kwargs,
         )
+
+    def to_keras_module(self):
+        """
+        Convert a `ivy.Module` module instance to a `tf.keras.Model` instance.
+
+        Returns
+        -------
+        ret
+            The new trainable `tf.keras.Model` instance.
+        """
+        try:
+            import tensorflow as tf
+        except ModuleNotFoundError as exc:
+            raise ModuleNotFoundError(
+                "`tensorflow` was not found installed on your system. Please proceed "
+                "to install it and restart your interpreter to see the changes."
+            ) from exc
+
+        class KerasModel(tf.keras.Model):
+            def __init__(self, ivy_module):
+                super(KerasModel, self).__init__()
+                self._ivy_module = ivy_module
+                self._parameters = {}
+                self._assign_variables()
+                self._populate_params()
+                self._propagate_params()
+
+            def _assign_variables(self):
+                ivy.set_backend("tensorflow")
+
+                self._ivy_module.v = self._ivy_module.v.cont_map(
+                    lambda x, kc: (
+                        ivy.to_new_backend(x.ivy_array.data, native=True)
+                        if hasattr(x, "_ivy_array")
+                        else ivy.to_new_backend(x, native=True)
+                    ),
+                )
+                self._ivy_module.v.cont_map(
+                    lambda x, kc: self.add_weight(
+                        name=kc, shape=x.shape, dtype=x.dtype, trainable=True
+                    )
+                )
+                model_weights = []
+                self._ivy_module.v.cont_map(
+                    lambda x, kc: model_weights.append(ivy.to_numpy(x))
+                )
+                self.set_weights(model_weights)
+
+                ivy.previous_backend()
+
+            def _populate_params(self):
+                self._parameters = {
+                    re.sub(r":([0-9]+)$", "", param.name).replace(
+                        f"{self.name}/", ""
+                    ): param
+                    for param in self.variables
+                }
+
+            def _propagate_params(self):
+                def __update_param(ivy_module, x, kc):
+                    # Update param in the underneath ivy module
+                    module = ivy_module
+                    keys = re.split("[/.]", kc)
+                    for key in keys[:-1]:
+                        module = module.__getattribute__(key)
+                    if hasattr(module, "_update_v"):
+                        module._update_v({keys[-1]: self._parameters[kc]})
+                    return self._parameters[kc]
+
+                self._ivy_module.v = self._ivy_module.v.cont_map(
+                    functools.partial(__update_param, self._ivy_module),
+                    inplace=True,
+                )
+
+            def call(self, *args, training=None, **kwargs):
+                ret = self._ivy_module(*args, **kwargs)
+                ret = ivy.nested_map(
+                    lambda x: (
+                        x.ivy_array.data
+                        if hasattr(x, "_ivy_array")
+                        else ivy.to_native(x)
+                    ),
+                    ret,
+                )
+                return ret
+
+            def __call__(self, *args, **kwargs):
+                ivy.set_backend("tensorflow")
+                args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
+                ivy.previous_backend()
+
+                return super(KerasModel, self).__call__(*args, **kwargs)
+
+            def to_device(self, device):
+                self._ivy_module._module_graph.to_device(device)
+                model_weights = ivy.nested_map(
+                    lambda x: (
+                        ivy.to_native(ivy.to_device(x, device))
+                        if ivy.is_array(x)
+                        else x
+                    ),
+                    self.weights,
+                )
+                self.set_weights(model_weights)
+
+        keras_module = KerasModel(self)
+        return keras_module

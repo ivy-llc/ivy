@@ -1,5 +1,4 @@
-"""Collection of PyTorch gradient functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of PyTorch gradient functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import torch
@@ -240,7 +239,7 @@ def grad(f, argnums=0):
 
                 # Avoid zero gradients setting requires_grads as False
                 if isinstance(y, tuple):
-                    y_ones = tuple([torch.ones_like(y_) for y_ in y])
+                    y_ones = tuple(torch.ones_like(y_) for y_ in y)
                     [y_.requires_grad_() for y_ in y if y_.requires_grad is False]
                 elif y.requires_grad is False:
                     y.requires_grad_()

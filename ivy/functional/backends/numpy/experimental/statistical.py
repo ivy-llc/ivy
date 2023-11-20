@@ -9,7 +9,7 @@ from copy import deepcopy
 
 
 @with_unsupported_dtypes(
-    {"1.26.0 and below": ("bfloat16",)},
+    {"1.26.2 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -226,7 +226,7 @@ def _validate_quantile(q):
             if not (0.0 <= q[i] <= 1.0):
                 return False
     else:
-        if not (np.all(0 <= q) and np.all(q <= 1)):
+        if not (np.all(q >= 0) and np.all(q <= 1)):
             return False
     return True
 
@@ -534,7 +534,7 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_unsupported_dtypes({"1.26.0 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": "bfloat16"}, backend_version)
 def cummin(
     x: np.ndarray,
     /,

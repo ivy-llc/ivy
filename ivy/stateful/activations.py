@@ -13,7 +13,8 @@ class GELU(Module):
         approximate: bool = False,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the GELU activation function.
+        """
+        Apply the GELU activation function.
 
         Parameters
         ----------
@@ -28,7 +29,8 @@ class GELU(Module):
         Module.__init__(self)
 
     def _forward(self, x):
-        """Perform forward pass of the GELU activation.
+        """
+        Perform forward pass of the GELU activation.
 
         Parameters
         ----------
@@ -53,7 +55,8 @@ class GEGLU(Module):
         Module.__init__(self)
 
     def _forward(self, inputs):
-        """Perform forward pass of the GEGLU activation.
+        """
+        Perform forward pass of the GEGLU activation.
 
         Parameters
         ----------
@@ -74,7 +77,8 @@ class ReLU(Module):
         self,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the RELU activation function.
+        """
+        Apply the RELU activation function.
 
         Parameters
         ----------
@@ -107,7 +111,8 @@ class LeakyReLU(Module):
         alpha: float = 0.2,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the LEAKY RELU activation function.
+        """
+        Apply the LEAKY RELU activation function.
 
         Parameters
         ----------
@@ -147,7 +152,8 @@ class LogSoftmax(Module):
         axis: Optional[int] = -1,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the LOG SOFTMAX activation function.
+        """
+        Apply the LOG SOFTMAX activation function.
 
         Parameters
         ----------
@@ -183,7 +189,8 @@ class Softmax(Module):
         axis: int = -1,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the SOFTMAX activation function.
+        """
+        Apply the SOFTMAX activation function.
 
         Parameters
         ----------
@@ -289,7 +296,8 @@ class SiLU(Module):
 
 class Sigmoid(Module):
     def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
-        """Apply the SIGMOID activation function.
+        """
+        Apply the SIGMOID activation function.
 
         Parameter
         ----------
@@ -318,7 +326,8 @@ class Sigmoid(Module):
 
 class Tanh(Module):
     def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
-        """Apply the TANH activation function.
+        """
+        Apply the TANH activation function.
 
         Parameters
         ----------
@@ -347,7 +356,8 @@ class Tanh(Module):
 
 class ReLU6(Module):
     def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
-        """Apply the TANH activation function.
+        """
+        Apply the TANH activation function.
 
         Parameters
         ----------
@@ -376,7 +386,8 @@ class ReLU6(Module):
 
 class Hardswish(Module):
     def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
-        """Apply the HARDSWISH activation function.
+        """
+        Apply the HARDSWISH activation function.
 
         Parameters
         ----------
@@ -409,7 +420,8 @@ class Logit(Module):
         eps=None,
         complex_mode="jax",
     ):
-        """Apply the LOGIT activation function.
+        """
+        Apply the LOGIT activation function.
 
         Parameters
         ----------
@@ -502,6 +514,7 @@ class ELU(Module):
             Inputs to process *[batch_shape, d]*.
         alpha
             scaler for controlling the slope of the function for x <= 0 Default: 1.0
+
         Returns
         -------
         ret
@@ -512,7 +525,8 @@ class ELU(Module):
 
 class LogSigmoid(Module):
     def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
-        """Apply the LogSigmoid activation function.
+        """
+        Apply the LogSigmoid activation function.
 
         Parameter
         ----------

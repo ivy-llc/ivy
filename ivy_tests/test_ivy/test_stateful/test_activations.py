@@ -32,12 +32,14 @@ def test_elu(
     class_name,
     method_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -167,12 +169,14 @@ def test_hardswish(
     class_name,
     method_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -307,12 +311,14 @@ def test_logit(
     class_name,
     method_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -351,12 +357,14 @@ def test_logsigmoid(
     class_name,
     method_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -437,12 +445,14 @@ def test_prelu(
     class_name,
     method_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -521,12 +531,14 @@ def test_relu6(
     class_name,
     method_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -563,12 +575,14 @@ def test_selu(
     class_name,
     method_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -605,12 +619,14 @@ def test_sigmoid(
     class_name,
     method_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -781,12 +797,14 @@ def test_tanh(
     class_name,
     method_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
