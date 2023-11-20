@@ -1012,7 +1012,7 @@ def stft(
         frame = signal[start:end]
         frame = frame * window
         stft = np.fft.rfft(frame, n=n_fft)
-        stft= np.expand_dims(stft_matrix, axis=axis)
+        stft = np.expand_dims(stft_matrix, axis=axis)
 
     return stft
 
