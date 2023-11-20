@@ -340,6 +340,33 @@ def repeat_interleave(input, repeats, dim=None, *, output_size=None):
     return ivy.repeat(input, repeats, axis=dim)
 
 
+@with_supported_dtypes(
+    {
+        "2.1.0 and below": (
+            "complex64",
+            "complex128",
+            "float32",
+            "int64",
+            "int32",
+            "int8",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def resolve_neg(input):
+    if ivy.is_array(input):
+        if ivy.is_complex_dtype(input):
+            neg_bit = ivy.imag(input) < 0
+        else:
+            neg_bit = input < 0
+        if not ivy.is_array(input):
+            input = ivy.array(input)
+        if ivy.any(neg_bit):
+            return input
+    return input
+
+
 @to_ivy_arrays_and_back
 def roll(input, shifts, dims=None):
     return ivy.roll(input, shifts, axis=dims)
