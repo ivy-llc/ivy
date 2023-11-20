@@ -224,7 +224,7 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
     def __mod__(self, y, name=None):
         return paddle_frontend.Tensor(ivy.fmod(self._ivy_array, _to_ivy_array(y)))
-      
+
     # Instance Methods #
     # ---------------- #
 
