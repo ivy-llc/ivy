@@ -187,7 +187,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
     def __pow__(self, y, name=None):
         return paddle_frontend.pow(self, y)
-      
+
     @with_unsupported_dtypes(
         {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
         "paddle",
