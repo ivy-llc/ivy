@@ -1255,7 +1255,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             windowed segment on the first input point. This has the benefit of
             enabling reconstruction of the first input point when the employed
             window function starts at zero. Valid options are ['even', 'odd',
-            'constant','zeros', None]. Defaults to ‘zeros’, for zero padding
+            'constant','zeros', None]. Defaults to 'zeros', for zero padding
             extension. I.e. [1, 2, 3, 4] is extended to [0, 1, 2, 3, 4, 0]
             for nperseg=3.
         out
