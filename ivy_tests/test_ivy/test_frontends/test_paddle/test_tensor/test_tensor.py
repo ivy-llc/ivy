@@ -1109,43 +1109,6 @@ def test_paddle__xor__(
     )
 
 
-# __div__
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="__div__",
-    dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        shared_dtype=True,
-        safety_factor_scale="log",
-        small_abs_safety_factor=32,
-    ),
-)
-def test_paddle_tensor__div__(
-    dtypes_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-    backend_fw,
-):
-    input_dtype, x = dtypes_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x[0]},
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"y": x[1]},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
 # abs
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -5334,6 +5297,43 @@ def test_paddle_tanh_(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# __div__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="__div__",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
+    ),
+)
+def test_paddle_tensor__div__(
+    dtypes_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtypes_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"y": x[1]},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
