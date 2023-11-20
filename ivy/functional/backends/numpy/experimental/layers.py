@@ -1011,7 +1011,8 @@ def stft(
         end = start + win_length
         frame = signal[start:end]
         frame = frame * window
-        stft[:, i] = np.fft.rfft(frame, n=n_fft)
+        stft = np.fft.rfft(frame, n=n_fft)
+        stft= np.expand_dims(stft_matrix, axis=axis)
 
     return stft
 
