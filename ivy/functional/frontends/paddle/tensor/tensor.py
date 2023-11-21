@@ -235,7 +235,8 @@ class Tensor:
                 return paddle_frontend.reshape(self, shape)
             else:
                 return paddle_frontend.reshape(self, args)
-        return paddle_frontend.reshape(self)
+        else:
+            raise ValueError("reshape() got no values for argument 'shape'")
 
     def dim(self):
         return self.ivy_array.ndim
