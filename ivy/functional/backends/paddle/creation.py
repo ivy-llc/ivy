@@ -468,6 +468,8 @@ def ones(
     device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if isinstance(shape, int):
+        shape = [shape]
     return paddle.ones(shape=shape).cast(dtype)
 
 

@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, List, Dict, Tuple, Sequence, Literal
+from typing import Union, Optional, List, Dict, Tuple, Sequence, Literal, Callable
 
 # local
 from ivy.data_classes.container.base import ContainerBase
@@ -1964,6 +1964,594 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             tol=tol,
             verbose=verbose,
             return_errors=return_errors,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_initialize_cp(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        seed: Optional[Union[int, ivy.Container]] = None,
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        non_negative: Optional[Union[bool, ivy.Container]] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """
+        ivy.Container static method variant of ivy.cp_initialize. This method simply
+        wraps the function, and so the docstring for ivy.cp_initialize also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            size of the core tensor, ``(len(ranks) == tensor.ndim)``
+            if int, the same rank is used for all modes
+        init
+            {'svd', 'random'}, or TuckerTensor optional
+            if a TuckerTensor is provided, this is used for initialization
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+        normalize_factors
+            if True, the factors are normalized.
+        svd
+            str, default is 'truncated_svd'
+            function to use to compute the SVD,
+        non_negative
+            if True, non-negative factors are returned
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True).
+        svd_mask_repeats
+            number of iterations for imputing the values in the SVD matrix when
+            mask is not None
+        Returns
+        -------
+        factors : CPTensor
+            An initial cp tensor.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "initialize_cp",
+            x,
+            rank,
+            init=init,
+            seed=seed,
+            normalize_factors=normalize_factors,
+            svd=svd,
+            non_negative=non_negative,
+            mask=mask,
+            svd_mask_repeats=svd_mask_repeats,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def initialize_cp(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        seed: Optional[Union[int, ivy.Container]] = None,
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        non_negative: Optional[Union[bool, ivy.Container]] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """
+        ivy.Container instance method variant of ivy.cp_initialize. This method simply
+        wraps the function, and so the docstring for ivy.cp_initialize also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            size of the core tensor, ``(len(ranks) == tensor.ndim)``
+            if int, the same rank is used for all modes
+        init
+            {'svd', 'random'}, or TuckerTensor optional
+            if a TuckerTensor is provided, this is used for initialization
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+        normalize_factors
+            if True, the factors are normalized.
+        svd
+            str, default is 'truncated_svd'
+            function to use to compute the SVD,
+        non_negative
+            if True, non-negative factors are returned
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True).
+        svd_mask_repeats
+            number of iterations for imputing the values in the SVD matrix when
+            mask is not None
+        Returns
+        -------
+        factors : CPTensor
+            An initial cp tensor.
+        """
+        return self.static_initialize_cp(
+            self,
+            rank,
+            init=init,
+            seed=seed,
+            normalize_factors=normalize_factors,
+            svd=svd,
+            non_negative=non_negative,
+            mask=mask,
+            svd_mask_repeats=svd_mask_repeats,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_parafac(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        orthogonalise: Optional[Union[bool, ivy.Container]] = False,
+        tol: Optional[Union[float, ivy.Container]] = 1e-8,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        sparsity: Optional[Union[float, int, ivy.Container]] = None,
+        l2_reg=0,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        cvg_criterion: Optional[
+            Union[Literal["abs_rec_error", "rec_error"], ivy.Container]
+        ] = "abs_rec_error",
+        fixed_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        linesearch: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[ivy.CPTensor, Tuple[ivy.CPTensor, List], ivy.Container]:
+        """
+        CANDECOMP/PARAFAC decomposition via alternating least squares (ALS) Computes a
+        rank-`rank` decomposition of `x` [1]_ such that:
+
+        ``x = [|weights; factors[0], ..., factors[-1] |]``.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            Number of components.
+        n_iter_max
+            Maximum number of iterations for the ALS algorithm.
+        init
+            Type of factor matrix initialization.
+            If a CPTensor is passed, this is directly used for initalization.
+        svd
+            function to use to compute the SVD
+        normalize_factors
+            if True, aggregate the weights of each factor in a 1D-tensor
+            of shape (rank, ), which will contain the norms of the factors
+        tol
+            (Default: 1e-6) Relative reconstruction error tolerance. The
+            algorithm is considered to have found the global minimum when the
+            reconstruction error is less than `tol`.
+        seed
+            seed to use for random number generation.
+        verbose
+            Level of verbosity
+        return_errors
+            Activate return of iteration errors
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True). Allows for missing values [2]_
+        cvg_criterion
+        Stopping criterion for ALS, works if `tol` is not None.
+        If 'rec_error',  ALS stops at current iteration if
+        ``(previous rec_error - current rec_error) < tol``.
+        If 'abs_rec_error', ALS terminates when
+            `|previous rec_error - current rec_error| < tol`.
+        sparsity
+            If `sparsity` is not None, we approximate tensor
+            as a sum of low_rank_component and sparse_component,
+            where low_rank_component = cp_to_tensor((weights, factors)).
+            `sparsity` denotes desired fraction or number of non-zero
+            elements in the sparse_component of the `tensor`.
+        fixed_modes
+            A list of modes for which the initial value is not modified.
+            The last mode cannot be fixed due to error computation.
+        svd_mask_repeats
+            If using a tensor with masked values,
+            this initializes using SVD multiple times to
+            remove the effect of these missing values on
+            the initialization.
+        linesearch
+            Whether to perform line search as proposed by Bro [3].
+
+        Returns
+        -------
+        CPTensor : (weight, factors)
+            * weights : 1D array of shape (rank, )
+
+            * all ones if normalize_factors is False (default)
+            * weights of the (normalized) factors otherwise
+
+            * factors : List of factors of the CP decomposition element
+            `i` is of shape ``(tensor.shape[i], rank)`` * sparse_component
+            ivy.array of shape x.shape. Returns only if `sparsity` is not None.
+
+        errors : list
+            A list of reconstruction errors at each iteration of the algorithms.
+
+        References
+        ----------
+        .. [1] T.G.Kolda and B.W.Bader, "Tensor Decompositions and Applications", SIAM
+            REVIEW, vol. 51, n. 3, pp. 455-500, 2009.
+        .. [2] Tomasi, Giorgio, and Rasmus Bro. "PARAFAC and missing values."
+            Chemometrics and Intelligent Laboratory Systems 75.2 (2005): 163-180.
+        .. [3] R. Bro, "Multi-Way Analysis in the Food Industry: Models, Algorithms, and
+            Applications", PhD., University of Amsterdam, 1998
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "parafac",
+            x,
+            rank,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            normalize_factors=normalize_factors,
+            orthogonalise=orthogonalise,
+            tol=tol,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            sparsity=sparsity,
+            l2_reg=l2_reg,
+            mask=mask,
+            cvg_criterion=cvg_criterion,
+            fixed_modes=fixed_modes,
+            svd_mask_repeats=svd_mask_repeats,
+            linesearch=linesearch,
+            callback=callback,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def parafac(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        orthogonalise: Optional[Union[bool, ivy.Container]] = False,
+        tol: Optional[Union[float, ivy.Container]] = 1e-8,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        sparsity: Optional[Union[float, int, ivy.Container]] = None,
+        l2_reg=0,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        cvg_criterion: Optional[
+            Union[Literal["abs_rec_error", "rec_error"], ivy.Container]
+        ] = "abs_rec_error",
+        fixed_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        linesearch: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[ivy.CPTensor, Tuple[ivy.CPTensor, List], ivy.Container]:
+        """
+        CANDECOMP/PARAFAC decomposition via alternating least squares (ALS) Computes a
+        rank-`rank` decomposition of `x` [1]_ such that:
+
+        ``x = [|weights; factors[0], ..., factors[-1] |]``.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            Number of components.
+        n_iter_max
+            Maximum number of iterations for the ALS algorithm.
+        init
+            Type of factor matrix initialization.
+            If a CPTensor is passed, this is directly used for initalization.
+        svd
+            function to use to compute the SVD
+        normalize_factors
+            if True, aggregate the weights of each factor in a 1D-tensor
+            of shape (rank, ), which will contain the norms of the factors
+        tol
+            (Default: 1e-6) Relative reconstruction error tolerance. The
+            algorithm is considered to have found the global minimum when the
+            reconstruction error is less than `tol`.
+        seed
+            seed to use for random number generation.
+        verbose
+            Level of verbosity
+        return_errors
+            Activate return of iteration errors
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True). Allows for missing values [2]_
+        cvg_criterion
+        Stopping criterion for ALS, works if `tol` is not None.
+        If 'rec_error',  ALS stops at current iteration if
+        ``(previous rec_error - current rec_error) < tol``.
+        If 'abs_rec_error', ALS terminates when
+            `|previous rec_error - current rec_error| < tol`.
+        sparsity
+            If `sparsity` is not None, we approximate tensor
+            as a sum of low_rank_component and sparse_component,
+            where low_rank_component = cp_to_tensor((weights, factors)).
+            `sparsity` denotes desired fraction or number of non-zero
+            elements in the sparse_component of the `tensor`.
+        fixed_modes
+            A list of modes for which the initial value is not modified.
+            The last mode cannot be fixed due to error computation.
+        svd_mask_repeats
+            If using a tensor with masked values,
+            this initializes using SVD multiple times to
+            remove the effect of these missing values on
+            the initialization.
+        linesearch
+            Whether to perform line search as proposed by Bro [3].
+
+        Returns
+        -------
+        CPTensor : (weight, factors)
+            * weights : 1D array of shape (rank, )
+
+            * all ones if normalize_factors is False (default)
+            * weights of the (normalized) factors otherwise
+
+            * factors : List of factors of the CP decomposition element
+            `i` is of shape ``(tensor.shape[i], rank)`` * sparse_component
+            ivy.array of shape x.shape. Returns only if `sparsity` is not None.
+
+        errors : list
+            A list of reconstruction errors at each iteration of the algorithms.
+
+        References
+        ----------
+        .. [1] T.G.Kolda and B.W.Bader, "Tensor Decompositions and Applications", SIAM
+            REVIEW, vol. 51, n. 3, pp. 455-500, 2009.
+        .. [2] Tomasi, Giorgio, and Rasmus Bro. "PARAFAC and missing values."
+            Chemometrics and Intelligent Laboratory Systems 75.2 (2005): 163-180.
+        .. [3] R. Bro, "Multi-Way Analysis in the Food Industry: Models, Algorithms, and
+            Applications", PhD., University of Amsterdam, 1998
+        """
+        return self.static_parafac(
+            self,
+            rank,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            normalize_factors=normalize_factors,
+            orthogonalise=orthogonalise,
+            tol=tol,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            sparsity=sparsity,
+            l2_reg=l2_reg,
+            mask=mask,
+            cvg_criterion=cvg_criterion,
+            fixed_modes=fixed_modes,
+            svd_mask_repeats=svd_mask_repeats,
+            linesearch=linesearch,
+            callback=callback,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_randomised_parafac(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        n_samples: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        max_stagnation: Optional[Union[int, ivy.Container]] = 0,
+        tol: Optional[Union[float, ivy.Container]] = 10e-9,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ):
+        """
+        Randomised CP decomposition via sampled ALS [3]_
+
+        Parameters
+        ----------
+        x
+            Input tensor
+        rank
+            number of components
+        n_samples
+            number of samples per ALS step
+        n_iter_max
+            maximum number of iteration
+        init
+
+        svd
+            function to use to compute the SVD, acceptable values in tensorly.SVD_FUNS
+        tol
+            tolerance: the algorithm stops when the variation in
+            the reconstruction error is less than the tolerance
+        max_stagnation
+            if not zero, the maximum allowed number
+            of iterations with no decrease in fit
+        seed
+            seed to use for random number generation.
+        return_errors
+            if True, return a list of all errors
+        verbose
+            level of verbosity
+
+        Returns
+        -------
+        factors
+            list of positive factors of the CP decomposition
+            element `i` is of shape ``(tensor.shape[i], rank)``
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "randomised_parafac",
+            x,
+            rank,
+            n_samples,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            max_stagnation=max_stagnation,
+            tol=tol,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            callback=callback,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def randomised_parafac(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        n_samples: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        max_stagnation: Optional[Union[int, ivy.Container]] = 0,
+        tol: Optional[Union[float, ivy.Container]] = 10e-9,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ):
+        """
+        Randomised CP decomposition via sampled ALS [3]_
+
+        Parameters
+        ----------
+        self
+            Input tensor
+        rank
+            number of components
+        n_samples
+            number of samples per ALS step
+        n_iter_max
+            maximum number of iteration
+        init
+
+        svd
+            function to use to compute the SVD, acceptable values in tensorly.SVD_FUNS
+        tol
+            tolerance: the algorithm stops when the variation in
+            the reconstruction error is less than the tolerance
+        max_stagnation
+            if not zero, the maximum allowed number
+            of iterations with no decrease in fit
+        seed
+            seed to use for random number generation.
+        return_errors
+            if True, return a list of all errors
+        verbose
+            level of verbosity
+
+        Returns
+        -------
+        factors
+            list of positive factors of the CP decomposition
+            element `i` is of shape ``(tensor.shape[i], rank)``
+        """
+        return self.static_randomised_parafac(
+            self,
+            rank,
+            n_samples,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            max_stagnation=max_stagnation,
+            tol=tol,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            callback=callback,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
