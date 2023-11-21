@@ -599,7 +599,6 @@ class _ContainerWithCreationExperimental(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
     ) -> ivy.Container:
         return self.static_tril_indices(
-            self,
             n_rows,
             n_cols,
             k,
