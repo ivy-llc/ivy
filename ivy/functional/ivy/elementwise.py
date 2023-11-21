@@ -3273,125 +3273,48 @@ def multiply(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""
-    Calculate the product for each element x1_i of the input array x1 with the
-    respective element x2_i of the input array x2.
+    Calculates the product for each element ``x1_i`` of the input array ``x1`` with the
+    respective element ``x2_i`` of the input array ``x2``.
 
-    .. note::
-       Floating-point multiplication is not always associative due to finite precision.
+    **Special cases**
 
-    **Special Cases**
-
-    For real-valued floating-point operands,
+    For floating-point operands,
 
     - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and
-      ``x2_i`` is either ``+0`` or ``-0``, the result is ``NaN``.
-    - If ``x1_i`` is either ``+0`` or ``-0`` and
-      ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
-    - If ``x1_i`` and ``x2_i`` have the same mathematical sign,
-      the result has a positive mathematical sign, unless the result is ``NaN``.
-      If the result is ``NaN``, the "sign" of ``NaN`` is implementation-defined.
-    - If ``x1_i`` and ``x2_i`` have different mathematical signs,
-      the result has a negative mathematical sign,
-      unless the result is ``NaN``. If the result is ``NaN``,
-      the "sign" of ``NaN`` is implementation-defined.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and
-      ``x2_i`` is either ``+infinity`` or ``-infinity``,
-      the result is a signed infinity with the mathematical sign determined by
-      the rule already stated above.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i``
-      is a nonzero finite number, the result is a signed infinity with
-      the mathematical sign determined by the rule already stated above.
-    - If ``x1_i`` is a nonzero finite number and ``x2_i``
-      is either ``+infinity`` or ``-infinity``, the result is a signed infinity with
-      the mathematical sign determined by the rule already stated above.
-    - In the remaining cases, where neither ``infinity`` nor ``NaN``
-      is involved, the product must be computed and rounded to the nearest
-      representable value according to IEEE 754-2019 and a supported
-      rounding mode. If the magnitude is too large to represent,
-      the result is an `infinity` of appropriate mathematical sign.
-      If the magnitude is too small to represent, the result is a zero of
-      appropriate mathematical sign.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either ``+0`` or ``-0``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+    - If ``x1_i`` and ``x2_i`` have the same mathematical sign, the result has a positive mathematical sign, unless the result is ``NaN``. If the result is ``NaN``, the "sign" of ``NaN`` is implementation-defined.
+    - If ``x1_i`` and ``x2_i`` have different mathematical signs, the result has a negative mathematical sign, unless the result is ``NaN``. If the result is ``NaN``, the "sign" of ``NaN`` is implementation-defined.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is a signed infinity with the mathematical sign determined by the rule already stated above.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is a nonzero finite number, the result is a signed infinity with the mathematical sign determined by the rule already stated above.
+    - If ``x1_i`` is a nonzero finite number and ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is a signed infinity with the mathematical sign determined by the rule already stated above.
+    - In the remaining cases, where neither ``infinity`` nor ``NaN`` is involved, the product must be computed and rounded to the nearest representable value according to IEEE 754-2019 and a supported rounding mode. If the magnitude is too large to represent, the result is an `infinity` of appropriate mathematical sign. If the magnitude is too small to represent, the result is a zero of appropriate mathematical sign.
 
-    For complex floating-point operands, multiplication is defined according to the
-    following table. For real components ``a`` and ``c`` and
-    imaginary components ``b`` and ``d``,
-
-    +------------+----------------+-----------------+--------------------------+
-    |            | c              | dj              | c + dj                   |
-    +============+================+=================+==========================+
-    | **a**      | a * c          | (a*d)j          | (a*c) + (a*d)j           |
-    +------------+----------------+-----------------+--------------------------+
-    | **bj**     | (b*c)j         | -(b*d)          | -(b*d) + (b*c)j          |
-    +------------+----------------+-----------------+--------------------------+
-    | **a + bj** | (a*c) + (b*c)j | -(b*d) + (a*d)j | special rules            |
-    +------------+----------------+-----------------+--------------------------+
-
-    In general, for complex floating-point operands, real-valued floating-point
-    special cases must independently apply to the real and imaginary component
-    operations involving real numbers as described in the above table.
-
-    When ``a``, ``b``, ``c``, or ``d`` are all finite numbers
-    (i.e., a value other than ``NaN``, ``+infinity``, or ``-infinity``),
-    multiplication of complex floating-point operands should be computed
-    as if calculated according to the textbook formula for complex number multiplication
-
-    .. math::
-       (a + bj) \cdot (c + dj) = (ac - bd) + (bc + ad)j
-
-    When at least one of ``a``, ``b``, ``c``, or ``d`` is ``NaN``,
-    ``+infinity``, or ``-infinity``,
-
-    - If ``a``, ``b``, ``c``, and ``d`` are all ``NaN``,
-      the result is ``NaN + NaN j``.
-    - In the remaining cases, the result is implementation dependent.
-
-    .. note::
-       For complex floating-point operands, the results of special cases may be
-       implementation dependent depending on how an implementation chooses
-       to model complex numbers and complex infinity
-       (e.g., complex plane versus Riemann sphere).
-       For those implementations following C99 and its one-infinity model,
-       when at least one component is infinite,
-       even if the other component is ``NaN``,
-       the complex value is infinite, and the usual arithmetic
-       rules do not apply to complex-complex multiplication.
-       In the interest of performance, other implementations
-       may want to avoid the complex branching logic necessary
-       to implement the one-infinity model and choose to implement
-       all complex-complex multiplication according to the textbook formula.
-       Accordingly, special case behavior is unlikely
-       to be consistent across implementations.
+    note::
+       Floating-point multiplication is not always associative due to finite precision.
 
     Parameters
     ----------
-    x1
+    x1:
         first input array. Should have a numeric data type.
-
-    x2
-        second input array. Must be compatible with ``x1``
-        (see :ref'`broadcasting`). Should have a numeric data type
-
+    x2:
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
     out
-        optional output array, for writing the array result to.
-        It must have a shape that the inputs broadcast to.
-
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+    Returns
+    -------
+    ret:
+        an array containing the element-wise products. The returned array must have a data type determined by :ref:`type-promotion`.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.multiply.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/array_api.tan.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    instances in place of the arguments.
 
-    Returns
-    -------
-    ret
-        an array containing the element-wise products. The returned array must have a
-        data type determined by :ref:`Type Promotion Rules`.
 
     Examples
     --------
@@ -3409,7 +3332,7 @@ def multiply(
     >>> x2 = ivy.native_array([4., 7.2, 1.])
     >>> y = ivy.multiply(x1, x2)
     >>> print(y)
-    ivy.array([ 4. , 21.6,  9. ])
+    ivy.array([ 4., 21.6, 9.])
 
     With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
@@ -3441,6 +3364,7 @@ def multiply(
         b: ivy.array([2.,4.,3.])
     }
     """
+
     return ivy.current_backend(x1, x2).multiply(x1, x2, out=out)
 
 
