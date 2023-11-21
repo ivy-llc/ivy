@@ -6,6 +6,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
     _x_and_ifftn,
+    _x_and_rfftn,
 )
 
 
@@ -565,6 +566,34 @@ def test_paddle_rfftfreq(
         test_values=True,
         n=n,
         d=d,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.fft.rfftn",
+    dtype_and_x=_x_and_rfftn(),
+)
+def test_paddle_rfftn(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtypes, x, s, axes, norm = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=True,
+        on_device=on_device,
+        x=x,
+        s=s,
+        axes=axes,
+        norm=norm,
     )
 
 

@@ -337,3 +337,26 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
     pos_max = n // 2 + 1
     indices = ivy.arange(0, pos_max, dtype=dtype)
     return indices * val
+
+
+@with_supported_dtypes(
+    {
+        "2.5.2 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def rfftn(x, s=None, axes=None, norm="backward", name=None):
+    x = ivy.astype(x, ivy.float64)
+    if axes is None:
+        axes = list(range(len(x.shape)))
+    if s is None:
+        s = [x.shape[axis] for axis in axes]
+    ret = ivy.rfftn(x=x, s=s, axes=axes, norm=norm)
+
+    return ivy.astype(ret, ivy.complex128)
