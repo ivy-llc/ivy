@@ -366,7 +366,7 @@ def test_paddle_max_pool3d(
 
     if padding == "VALID" and ceil_mode:
         ceil_mode = False
-        
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
