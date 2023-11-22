@@ -2240,7 +2240,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             center of t-th frame. Default: True.
         pad_mode
             Choose padding pattern when center is True. See paddle.
-            nn.functional.pad for all padding options. Default: “reflect”.
+            nn.functional.pad for all padding options. Default: 'reflect'.
         normalized
             Control whether to scale the output by 1/sqrt(n_fft).
             Default: False
@@ -2256,7 +2256,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             windowed segment on the first input point. This has the benefit of
             enabling reconstruction of the first input point when the employed
             window function starts at zero. Valid options are ['even', 'odd',
-            'constant','zeros', None]. Defaults to ‘zeros’, for zero padding
+            'constant','zeros', None]. Defaults to 'zeros', for zero padding
             extension. I.e. [1, 2, 3, 4] is extended to [0, 1, 2, 3, 4, 0]
             for nperseg=3.
         out
@@ -2355,7 +2355,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             center of t-th frame. Default: True.
         pad_mode
             Choose padding pattern when center is True. See paddle.
-            nn.functional.pad for all padding options. Default: “reflect”.
+            nn.functional.pad for all padding options. Default: 'reflect'.
         normalized
             Control whether to scale the output by 1/sqrt(n_fft).
             Default: False
@@ -2371,7 +2371,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             windowed segment on the first input point. This has the benefit of
             enabling reconstruction of the first input point when the employed
             window function starts at zero. Valid options are ['even', 'odd',
-            'constant','zeros', None]. Defaults to ‘zeros’, for zero padding
+            'constant','zeros', None]. Defaults to 'zeros', for zero padding
             extension. I.e. [1, 2, 3, 4] is extended to [0, 1, 2, 3, 4, 0]
             for nperseg=3.
         out
@@ -2688,132 +2688,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             s=s,
             axes=axes,
             norm=norm,
-            out=out,
-        )
-
-    @staticmethod
-    def static_stft(
-        signals: ivy.Container,
-        frame_length: Union[int, ivy.Container],
-        frame_step: Union[int, ivy.Container],
-        /,
-        *,
-        fft_length: Optional[Union[int, ivy.Container]] = None,
-        window_fn: Optional[Union[Callable, ivy.Container]] = None,
-        pad_end: Optional[Union[bool, ivy.Container]] = False,
-        name: Optional[Union[str, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.stft.
-
-        This method simply wraps the function, and so the docstring for
-        ivy.stft also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        signals
-            Input Arrays.
-        frame_length
-           An integer scalar Tensor. The window length in samples.
-        frame_step
-            An integer scalar Tensor. The number of samples to step.
-        fft_length, optional
-            An integer scalar Tensor. The size of the FFT to apply.
-            If not provided, uses the smallest power of 2 enclosing frame_length.
-        window_fn, optional
-            A callable that takes a window length
-            and a dtype keyword argument and returns a [window_length]
-            Tensor of samples in the provided datatype.
-            If set to None, no windowing is used.
-        pad_end, optional
-            Whether to pad the end of signals with zeros when the provided frame length
-            and step produces a frame that lies partially past its end.
-        name, optional
-            An optional name for the operation.
-        out, optional
-            Optional output array for writing the result.
-
-        Returns
-        -------
-        ret
-            A [..., frames, fft_unique_bins] Tensor of
-            complex64/complex128 STFT values where fft_unique_bins is
-            fft_length // 2 + 1 (the unique components of the FFT).
-        """
-        return ContainerBase.cont_multi_map_in_function(
-            "stft",
-            signals,
-            frame_length,
-            frame_step,
-            fft_length=fft_length,
-            window_fn=window_fn,
-            pad_end=pad_end,
-            name=name,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def stft(
-        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        frame_length: Union[int, ivy.Container],
-        frame_step: Union[int, ivy.Container],
-        /,
-        *,
-        fft_length: Optional[Union[int, ivy.Container]] = None,
-        window_fn: Optional[Union[Callable, ivy.Container]] = None,
-        pad_end: Optional[Union[bool, ivy.Container]] = False,
-        name: Optional[Union[str, ivy.Container]] = None,
-        out: Optional[Union[ivy.Array, ivy.Container]] = None,
-    ) -> ivy.Container:
-        """
-        Compute the Short-time Fourier Transform of signals.
-
-        Parameters
-        ----------
-        self
-            Input Arrays.
-        frame_length
-           An integer scalar Tensor. The window length in samples.
-        frame_step
-            An integer scalar Tensor. The number of samples to step.
-        fft_length
-            An integer scalar Tensor. The size of the FFT to apply.
-            If not provided, uses the smallest power of 2 enclosing frame_length.
-        window_fn
-            A callable that takes a window length and
-            a dtype keyword argument and returns a [window_length] Tensor of
-            samples in the provided datatype. If set to None, no windowing is used.
-        pad_end
-            Whether to pad the end of signals with zeros when the provided frame length
-            and step produces a frame that lies partially past its end.
-        name
-            An optional name for the operation.
-        out
-            Optional output array for writing the result.
-
-        Returns
-        -------
-        ret
-            A [..., frames, fft_unique_bins] Tensor of
-            complex64/complex128 STFT values where fft_unique_bins is
-            fft_length // 2 + 1 (the unique components of the FFT).
-        """
-        return self.static_stft(
-            self,
-            frame_length,
-            frame_step,
-            fft_length=fft_length,
-            window_fn=window_fn,
-            pad_end=pad_end,
-            name=name,
             out=out,
         )
 
