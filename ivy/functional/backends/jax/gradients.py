@@ -38,7 +38,7 @@ def _forward_fn(
 ):
     """Forward function for gradient calculation."""
     # Setting x(relevant variables) into xs(all variables)
-    x = ivy.nested_map(x, ivy.to_ivy, include_derived=True)
+    x = ivy.nested_map(ivy.to_ivy, x, include_derived=True)
     x_arr_idxs = ivy.nested_argwhere(x, ivy.is_array)
     x_arr_values = ivy.multi_index_nest(x, x_arr_idxs)
     if xs_grad_idxs is not None:
@@ -48,7 +48,7 @@ def _forward_fn(
                 ivy.index_nest(xs, grad_idx), ivy.is_array
             )
             for idx in xs_grad_arr_idx:
-                xs_grad_arr_idxs.append(grad_idx + idx)
+                xs_grad_arr_idxs.append(list(grad_idx) + idx)
         ivy.set_nest_at_indices(xs, xs_grad_arr_idxs, x_arr_values)
     elif ivy.is_array(xs):
         xs = x
@@ -74,12 +74,13 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    xs_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
+    ret_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     (
         xs,
+        xs_grad_idxs,
         xs_required,
         required_duplicate_index_chains,
         duplicate_index_chains,
@@ -88,7 +89,7 @@ def execute_with_gradients(
     func_ret = func(xs)
 
     # Getting the relevant outputs from the function return for gradient calculation
-    y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs)
+    ret_grad_idxs, y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs)
 
     if isinstance(y, ivy.NativeArray):
         # Gradient calculation for a single output
@@ -127,10 +128,11 @@ def execute_with_gradients(
 
 
 def value_and_grad(func):
-    grad_fn = lambda xs: ivy.to_native(func(xs))
+    def grad_fn(xs):
+        return ivy.to_native(func(xs))
 
     def callback_fn(xs):
-        xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
+        xs = ivy.nested_map(lambda x: ivy.to_native(x), xs, include_derived=True)
         value, grad = jax.value_and_grad(grad_fn)(xs)
         return ivy.to_ivy(value), ivy.to_ivy(grad)
 
@@ -144,14 +146,26 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
-    callback_fn = lambda x_in: ivy.to_ivy(jax.jacfwd(grad_fn)((ivy.to_native(x_in))))
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
+
+    def callback_fn(x_in):
+        return ivy.to_ivy(
+            jax.jacfwd(grad_fn)(ivy.to_native(x_in, nested=True)),
+            nested=True,
+            include_derived=True,
+        )
+
     return callback_fn
 
 
 def grad(func: Callable, argnums: Union[int, Tuple[int]] = 0):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
-    callback_fn = lambda x_in: ivy.to_ivy(
-        jax.grad(grad_fn, argnums)(ivy.to_native(x_in))
-    )
+    def grad_fn(x_in):
+        return ivy.to_native(func(x_in))
+
+    def callback_fn(x_in):
+        return ivy.to_ivy(jax.grad(grad_fn, argnums)(ivy.to_native(x_in)))
+
     return callback_fn

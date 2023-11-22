@@ -3,6 +3,7 @@
 
 
 def if_else(cond, body_fn, orelse_fn, vars):
+    cond = cond(*vars)
     if cond:
         return body_fn(*vars)
     else:

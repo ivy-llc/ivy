@@ -6,11 +6,13 @@ import torch
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 import ivy
+from ..statistical import _infer_dtype
+from copy import deepcopy
 
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "2.1.1 and below": (
             "uint8",
             "int8",
             "int16",
@@ -26,8 +28,8 @@ def histogram(
     a: torch.Tensor,
     /,
     *,
-    bins: Optional[Union[int, torch.Tensor, str]] = None,
-    axis: Optional[torch.Tensor] = None,
+    bins: Optional[Union[int, torch.Tensor]] = None,
+    axis: Optional[int] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
     dtype: Optional[torch.dtype] = None,
@@ -137,7 +139,7 @@ def histogram(
 histogram.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bool")}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("float16", "bool")}, backend_version)
 def median(
     input: torch.Tensor,
     /,
@@ -157,11 +159,11 @@ def median(
         interpolation="midpoint",
     )
     if input.dtype in [torch.int64, torch.float64]:
-        ret = torch.asarray(ret, dtype=torch.float64)
+        ret = ret.to(torch.float64)
     elif input.dtype in [torch.float16, torch.bfloat16]:
-        ret = torch.asarray(ret, dtype=input.dtype)
+        ret = ret.to(input.dtype)
     else:
-        ret = torch.asarray(ret, dtype=torch.float32)
+        ret = ret.to(torch.float32)
     return ret
 
 
@@ -183,9 +185,186 @@ def nanmean(
 nanmean.support_native_out = True
 
 
-@with_unsupported_dtypes(
-    {"1.11.0 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
-)
+def nanmin(
+    a: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+    where: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    nan_mask = torch.isnan(a)
+    if where is not None:
+        nan_mask = torch.logical_or(nan_mask, torch.logical_not(where))
+    a_copy = a.clone()
+    a_copy[nan_mask] = float("inf")
+    if axis is None:
+        result, _ = a_copy.min(), None
+    else:
+        result, _ = a_copy.min(dim=axis, keepdim=keepdims)
+    if initial is not None:
+        initial = torch.tensor(initial)
+        result = torch.minimum(result, initial)
+    return result
+
+
+def nanprod(
+    a: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+    initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+    where: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    if initial is None:
+        initial = 1
+    a = a.type(dtype)
+    a = torch.nan_to_num(a, nan=1.0)
+    if a.dtype == torch.float16:
+        a = a.type(torch.float32)
+    if axis == ():
+        return a.type(dtype)
+    if axis is None:
+        return torch.prod(input=a, out=out).type(dtype) * initial
+    if isinstance(axis, (tuple, list)):
+        for i in axis:
+            a = torch.prod(a, dim=i, keepdim=keepdims, out=out).type(dtype)
+            if a.dtype == torch.float16:
+                a = a.type(torch.float32)
+        return a.type(dtype) * initial
+    return torch.prod(a, dim=axis, keepdim=keepdims, out=out).type(dtype) * initial
+
+
+nanprod.support_native_out = True
+
+
+def _validate_quantile(q):
+    if isinstance(q, float):
+        q = torch.as_tensor(q)
+    if q.ndim == 1 and torch.numel(q) < 10:
+        for i in range(torch.numel(q)):
+            if not (0.0 <= q[i] <= 1.0):
+                return False
+    else:
+        if not (torch.all(q >= 0) and torch.all(q <= 1)):
+            return False
+    return True
+
+
+def _to_positive_axis(axis, ndim):
+    if not isinstance(axis, (list, tuple)):
+        axis = [axis]
+
+    if len(axis) == 0:
+        raise ValueError("Axis can't be empty!")
+
+    if len(set(axis)) != len(axis):
+        raise ValueError("Duplicated axis!")
+
+    for i in range(len(axis)):
+        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
+            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
+        if axis[i] < 0:
+            axis[i] += ndim
+    return axis
+
+
+def _handle_axis(a, q, fn, keepdims=False, axis=None):
+    nd = a.ndim
+    axis_arg = deepcopy(axis)
+    if axis is not None:
+        axis = _to_positive_axis(axis, nd)
+
+        if len(axis) == 1:
+            axis_arg = axis[0]
+        else:
+            keep = set(range(nd)) - set(axis)
+            nkeep = len(keep)
+
+            for i, s in enumerate(sorted(keep)):
+                a = torch.moveaxis(a, s, i)
+            a = a.view([
+                *a.shape[:nkeep],
+                -1,
+            ])
+            axis_arg = -1
+
+    ret = fn(a, q, axis=axis_arg)
+
+    if keepdims:
+        if axis is None:
+            index_ret = (None,) * nd
+        else:
+            index_ret = tuple(None if i in axis else slice(None) for i in range(nd))
+        ret = ret[(Ellipsis,) + index_ret]
+
+    return ret
+
+
+def _quantile(a, q, axis=None):
+    ret_dtype = a.dtype
+    if isinstance(q, float):
+        q = torch.as_tensor(q)
+    if isinstance(q, torch.Tensor) and q.ndim > 1:
+        raise ValueError("q argument must be a scalar or 1-dimensional!")
+    if axis is None:
+        axis = 0
+        a = a.flatten()
+
+    n = a.shape[axis]
+
+    indices = q * (n - 1)
+
+    a = torch.sort(a, axis)[axis]
+    indices_below = torch.floor(indices).to(torch.int64)
+    indices_upper = torch.ceil(indices).to(torch.int64)
+
+    weights = indices - indices_below.to(torch.float64)
+
+    indices_below = torch.clip(indices_below, 0, n - 1)
+    indices_upper = torch.clip(indices_upper, 0, n - 1)
+    tensor_upper = torch.index_select(a, 0, indices_upper)
+    tensor_below = torch.index_select(a, 0, indices_below)
+
+    pred = weights <= 0.5
+    out = torch.where(pred, tensor_below, tensor_upper)
+    return out.to(ret_dtype)
+
+
+def _compute_quantile_wrapper(
+    x, q, axis=None, keepdims=False, interpolation="linear", out=None
+):
+    if not _validate_quantile(q):
+        raise ValueError("Quantiles must be in the range [0, 1]")
+    if interpolation in [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]:
+        if interpolation == "nearest_jax":
+            return _handle_axis(x, q, _quantile, keepdims=keepdims, axis=axis)
+        else:
+            return torch.quantile(
+                x, q, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+            )
+    else:
+        raise ValueError(
+            "Interpolation must be 'linear', 'lower', 'higher', 'midpoint' or 'nearest'"
+        )
+
+
+@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16", "float16")}, backend_version)
 def quantile(
     a: torch.Tensor,
     q: Union[torch.Tensor, float],
@@ -196,38 +375,15 @@ def quantile(
     interpolation: str = "linear",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    temp = a.to(torch.float64)
-    num_dim = len(temp.size())
-    keepdim_shape = list(temp.size())
-    if isinstance(axis, int):
-        axis = [axis]
-    if isinstance(axis, tuple):
-        axis = list(axis)
-    if isinstance(q, torch.Tensor):
-        qt = q.to(torch.float64)
-    else:
-        qt = q
-    for i in axis:
-        keepdim_shape[i] = 1
-    axis = [num_dim + x if x < 0 else x for x in axis]
-    axis.sort()
-    dimension = len(a.size())
-    while len(axis) > 0:
-        axis1 = axis[0]
-        for axis2 in range(axis1 + 1, dimension):
-            temp = torch.transpose(temp, axis1, axis2)
-            axis1 = axis2
-        axis = [x - 1 for x in axis]
-        axis.pop(0)
-        dimension = dimension - 1
-    temp = torch.flatten(temp, start_dim=dimension - len(axis))
-    ret = torch.quantile(
-        temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
+    # added the nearest_jax mode to enable jax-like calculations for method="nearest"
+    return _compute_quantile_wrapper(
+        a,
+        q,
+        axis=axis,
+        keepdims=keepdims,
+        interpolation=interpolation,
+        out=out,
     )
-    if keepdims:
-        keepdim_shape = tuple(keepdim_shape)
-        ret = ret.reshape(keepdim_shape)
-    return ret
 
 
 quantile.support_native_out = True
@@ -251,7 +407,45 @@ def corrcoef(
     return torch.corrcoef(xarr)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+def _nanmedian(input, axis, keepdims):
+    dtype = input.dtype
+    temp = input.to(torch.float64)
+    num_dim = len(temp.size())
+    keepdim_shape = list(temp.size())
+    q = 0.5
+
+    axis = [axis] if isinstance(axis, int) else list(axis)
+
+    for i in axis:
+        keepdim_shape[i] = 1
+    axis = [num_dim + x if x < 0 else x for x in axis]
+    axis.sort()
+    dimension = len(temp.size())
+    while len(axis) > 0:
+        axis1 = axis[0]
+        for axis2 in range(axis1 + 1, dimension):
+            temp = torch.transpose(temp, axis1, axis2)
+            axis1 = axis2
+        axis = [x - 1 for x in axis]
+        axis.pop(0)
+        dimension = dimension - 1
+    temp = torch.flatten(temp, start_dim=dimension - len(axis))
+    ret = torch.nanquantile(temp, q, dim=-1, keepdim=keepdims, interpolation="midpoint")
+    if keepdims:
+        keepdim_shape = tuple(keepdim_shape)
+        ret = ret.reshape(keepdim_shape)
+
+    if dtype in [torch.int32, torch.int64, torch.float64]:
+        ret = torch.asarray(ret, dtype=torch.float64)
+    elif dtype in [torch.float16, torch.bfloat16]:
+        ret = torch.asarray(ret, dtype=torch.float16)
+    else:
+        ret = torch.asarray(ret, dtype=torch.float32)
+
+    return ret
+
+
+@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16", "float16")}, backend_version)
 def nanmedian(
     input: torch.Tensor,
     /,
@@ -263,74 +457,44 @@ def nanmedian(
 ) -> torch.Tensor:
     if overwrite_input:
         copied_input = input.clone()
-        dtype = copied_input.dtype
-        result = input.double()
-        if axis is not None:
-            if isinstance(axis, int):
-                axis = (axis,)
-            axis = list(axis)
-            for i in axis:
-                if result.dim() == 1:
-                    result = torch.quantile(
-                        result,
-                        0.5,
-                        interpolation="midpoint",
-                        keepdim=keepdims,
-                    )
-                    break
-                else:
-                    result = torch.quantile(
-                        result,
-                        0.5,
-                        dim=i,
-                        interpolation="midpoint",
-                        keepdim=keepdims,
-                    )
-        else:
-            result = torch.quantile(
-                input.double(),
+        if axis is None:
+            copied_input = copied_input.flatten()
+
+            ret = torch.nanquantile(
+                copied_input.double(),
                 0.5,
-                interpolation="midpoint",
+                dim=-1,
                 keepdim=keepdims,
+                interpolation="midpoint",
             )
 
-        result = result.to(dtype)
-
-        return result
-    dtype = input.dtype
-    result = input.double()
-    if axis is not None:
-        if isinstance(axis, int):
-            axis = (axis,)
-        axis = list(axis)
-        for i in axis:
-            if result.dim() == 1:
-                result = torch.quantile(
-                    result,
-                    0.5,
-                    interpolation="midpoint",
-                    keepdim=keepdims,
-                )
-                break
+            if input.dtype in [torch.int32, torch.int64, torch.float64]:
+                ret = ret.to(torch.float64)
+            elif input.dtype in [torch.float16, torch.bfloat16]:
+                ret = ret.to(torch.float16)
             else:
-                result = torch.quantile(
-                    result,
-                    0.5,
-                    dim=i,
-                    interpolation="midpoint",
-                    keepdim=keepdims,
-                )
+                ret = ret.to(torch.float32)
+            return ret
+
+        return _nanmedian(copied_input, axis, keepdims)
+
     else:
-        result = torch.quantile(
-            input.double(),
-            0.5,
-            interpolation="midpoint",
-            keepdim=keepdims,
-        )
+        if axis is None:
+            input = input.flatten()
 
-    result = result.to(dtype)
+            ret = torch.nanquantile(
+                input.double(), 0.5, dim=-1, keepdim=keepdims, interpolation="midpoint"
+            )
 
-    return result
+            if input.dtype in [torch.int32, torch.int64, torch.float64]:
+                ret = ret.to(torch.float64)
+            elif input.dtype in [torch.float16, torch.bfloat16]:
+                ret = ret.to(torch.float16)
+            else:
+                ret = ret.to(torch.float32)
+            return ret
+
+        return _nanmedian(input, axis, keepdims)
 
 
 nanmedian.support_native_out = True
@@ -354,3 +518,138 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def igamma(
+    a: torch.Tensor,
+    /,
+    *,
+    x: torch.Tensor,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.gammainc(a, x, out=out)
+
+
+igamma.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, backend_version)
+def cov(
+    x1: torch.Tensor,
+    x2: torch.Tensor = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[torch.Tensor] = None,
+    aweights: Optional[torch.Tensor] = None,
+    dtype: Optional[torch.dtype] = None,
+) -> torch.Tensor:
+    # dtype casts separately
+    if fweights is not None:
+        fweights = fweights.type(torch.int64)
+    if aweights is not None:
+        aweights = aweights.type(torch.float64)
+
+    if x1.dim() > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+
+    if x2 is not None:
+        if x2.dim() > 2:
+            raise ValueError("x2 has more than 2 dimensions")
+
+    if ddof is None:
+        if bias == 0:
+            ddof = 1
+        else:
+            ddof = 0
+
+    if dtype is None:
+        x1 = x1.type(torch.float64)
+        if x2 is not None:
+            x2 = x2.type(torch.float64)
+    else:
+        x1 = x1.type(dtype)
+        if x2 is not None:
+            x2 = x2.type(dtype)
+
+    X = x1
+    if not rowVar and len(x1.shape) != 1:
+        X = torch.t(x1)
+
+    if x2 is not None:
+        if not rowVar and len(x2.shape) != 1:
+            x2 = torch.t(x2)
+        X = torch.vstack((X, x2))
+
+    return torch.cov(X, correction=ddof, fweights=fweights, aweights=aweights)
+
+
+cov.support_native_out = False
+
+
+@with_unsupported_dtypes(
+    {"2.1.1 and below": ("float16", "complex")},
+    backend_version,
+)
+def cummax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x1, x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)
+            x1, x2 = torch.transpose(x1, axis, -1), torch.transpose(x2, axis, -1)
+            x1, x2 = torch.concat(
+                (torch.zeros_like(x1[..., -1:]), x1[..., :-1]), -1
+            ), torch.concat((torch.zeros_like(x2[..., -1:]), x2[..., :-1]), -1)
+            x1, x2 = torch.transpose(x1, axis, -1), torch.transpose(x2, axis, -1)
+            res1, res2 = torch.flip(x1, dims=(axis,)), torch.flip(x2, dims=(axis,))
+        elif exclusive:
+            x = torch.transpose(x, axis, -1)
+            x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x1, x2 = torch.cummax(x, -1)
+            res1, res2 = torch.transpose(x1, axis, -1), torch.transpose(x2, axis, -1)
+        else:
+            x1, x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)
+            res1, res2 = torch.flip(x1, dims=(axis,)), torch.flip(x2, dims=(axis,))
+        return res1, res2
+
+    return torch.cummax(x, axis, out=out)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.1.1 and below": ("uint8", "float16", "bfloat16"),
+        "1.12.1 and above": ("uint8", "float16"),
+    },
+    backend_version,
+)
+def cummin(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if not (reverse):
+        ret = torch.cummin(x, axis)[0]
+    else:
+        ret = torch.cummin(torch.flip(x, dims=(axis,)), axis)[0]
+        ret = torch.flip(ret, (axis,))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret.to(dtype))
+    return ret.to(dtype)

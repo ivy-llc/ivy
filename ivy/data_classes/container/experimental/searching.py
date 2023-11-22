@@ -10,14 +10,14 @@ class _ContainerWithSearchingExperimental(ContainerBase):
     @staticmethod
     def static_unravel_index(
         indices: ivy.Container,
-        shape: Tuple[int],
+        shape: Union[Tuple[int], ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.unravel_index. This method simply
@@ -62,7 +62,7 @@ class _ContainerWithSearchingExperimental(ContainerBase):
 
     def unravel_index(
         self: ivy.Container,
-        shape: Tuple[int],
+        shape: Union[Tuple[int], ivy.Container],
         /,
         *,
         out: Optional[ivy.Container] = None,

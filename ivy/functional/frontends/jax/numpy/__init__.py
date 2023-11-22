@@ -399,6 +399,7 @@ def promote_types_jax(
         the first of the two types to promote
     type2
         the second of the two types to promote
+
     Returns
     -------
     ret
@@ -460,7 +461,7 @@ from . import fft
 from . import linalg
 from . import creation
 from .creation import *
-from .dtype import can_cast, promote_types
+from .dtype import *
 from .scalars import *
 from . import indexing
 from .indexing import *

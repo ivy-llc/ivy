@@ -1,20 +1,17 @@
-versions = {
-    "torch": "1.11.0",
-    "tensorflow": "2.9.0",
-    "numpy": "1.23.2",
-    "jax": "0.3.16",
-    "scipy": "1.10.1",
-    "paddle": "2.4.2",
-}
-
 import importlib
 
-from . import numpy
-from . import jax
-from . import paddle
-from . import scipy
-from . import tensorflow
-from . import torch
+
+versions = {
+    "torch": "2.1.1",
+    "tensorflow": "2.15.0",
+    "numpy": "1.25.2",
+    "jax": "0.4.14",
+    "scipy": "1.10.1",
+    "paddle": "2.5.2",
+    "sklearn": "1.3.0",
+    "xgboost": "1.7.6",
+    "torchvision": "0.15.2.",
+}
 
 
 def fn_name_from_version_specific_fn_name(name, version):
@@ -30,6 +27,7 @@ def fn_name_from_version_specific_fn_name(name, version):
         the version is inferred by importing the framework in the case of frontend
         version support and defaults to the highest available version in case of import
         failure
+
     Returns
     -------
         the name of the original function which will then point to the version specific
@@ -96,10 +94,4 @@ def set_frontend_to_specific_version(frontend):
             if orig_name:
                 frontend.__dict__[orig_name] = frontend.__dict__[i]
 
-
-set_frontend_to_specific_version(torch)
-set_frontend_to_specific_version(tensorflow)
-set_frontend_to_specific_version(jax)
-set_frontend_to_specific_version(numpy)
-set_frontend_to_specific_version(scipy)
-set_frontend_to_specific_version(paddle)
+    return f_version

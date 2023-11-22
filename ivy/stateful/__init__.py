@@ -6,6 +6,8 @@ from . import initializers
 from .initializers import *
 from . import layers
 from .layers import *
+from . import losses
+from .losses import *
 from . import module
 from .module import *
 from . import norms

@@ -1,24 +1,13 @@
-import ivy
-from ivy.utils.exceptions import handle_exceptions
-
 # global
+import sys
 from numbers import Number
 from typing import Union, Tuple, Iterable
 
-# Constructing dtypes are required as ivy.<dtype>
-# will change dynamically on the backend and may not be available
-int8 = ivy.IntDtype("int8")
-int16 = ivy.IntDtype("int16")
-int32 = ivy.IntDtype("int32")
-int64 = ivy.IntDtype("int64")
-uint8 = ivy.UintDtype("uint8")
-bfloat16 = ivy.FloatDtype("bfloat16")
-float16 = ivy.FloatDtype("float16")
-float32 = ivy.FloatDtype("float32")
-float64 = ivy.FloatDtype("float64")
-complex64 = ivy.ComplexDtype("complex64")
-complex128 = ivy.ComplexDtype("complex128")
-bool = ivy.Dtype("bool")
+# local
+import ivy
+from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
+
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -218,7 +207,9 @@ def promote_types_torch(
         The type that both input types promote to
     """
     try:
-        ret = torch_promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
+        ret = torch_frontend.torch_promotion_table[
+            (ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))
+        ]
     except KeyError:
         raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
     return ret
@@ -240,31 +231,36 @@ def promote_types_of_torch_inputs(
     used as inputs only for those functions that expect an array-like or
     tensor-like objects, otherwise it might give unexpected results.
     """
-    # Ignore type of 0-dim arrays to mimic torch
-    x1 = ivy.asarray(x1)
-    x2 = ivy.asarray(x2)
+    if ivy.isscalar(x1) and ivy.is_int_dtype(x1):
+        x1 = ivy.asarray(x1, dtype="int64")
+    elif ivy.isscalar(x1):
+        x1 = ivy.asarray(x1)
+    if ivy.isscalar(x2) and ivy.is_int_dtype(x2):
+        x2 = ivy.asarray(x2, dtype="int64")
+    elif ivy.isscalar(x2):
+        x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
-    if not x1.shape == () and x2.shape == () and type1 == type2:
-        x1 = ivy.asarray(x1)
+    if x1.shape != () and x2.shape == () and type1 == type2:
         x2 = ivy.asarray(
             x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
         )
-    elif x1.shape == () and not x2.shape == () and type1 == type2:
+    elif x1.shape == () and x2.shape != () and type1 == type2:
         x1 = ivy.asarray(
             x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
         )
-        x2 = ivy.asarray(x2)
-    else:
-        x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2)
+    elif x1.dtype != x2.dtype:
         promoted = promote_types_torch(x1.dtype, x2.dtype)
-        x1 = ivy.asarray(x1, dtype=promoted)
-        x2 = ivy.asarray(x2, dtype=promoted)
+        if x1.dtype != promoted:
+            x1 = x1.astype(promoted)
+        if x2.dtype != promoted:
+            x2 = x2.astype(promoted)
     return x1, x2
 
 
+from . import utils
 from . import nn
+from .nn.functional import softmax, relu, lstm
 from . import tensor
 from .tensor import *
 from . import blas_and_lapack_ops
@@ -297,4 +293,15 @@ from . import linalg
 from . import func
 from .func import *
 
+
 _frontend_array = tensor
+
+# setting to specific version #
+# --------------------------- #
+
+if ivy.is_local():
+    module = ivy.utils._importlib.import_cache[__name__]
+else:
+    module = sys.modules[__name__]
+
+__version__ = set_frontend_to_specific_version(module)

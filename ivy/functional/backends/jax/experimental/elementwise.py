@@ -1,5 +1,5 @@
 import operator
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
 
 from ivy import (
@@ -7,20 +7,53 @@ from ivy import (
     default_float_dtype,
     is_float_dtype,
 )
+from ivy.func_wrapper import (
+    with_supported_dtypes,
+)
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 import jax.scipy as js
+import jax.lax as jlax
+from .. import backend_version
 
 jax_ArrayLike = Union[JaxArray, Number]
 
 
-def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.lcm(x1, x2)
+def amax(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = jnp.amax(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    return jnp.asarray(ret) if jnp.isscalar(ret) else ret
+
+
+def amin(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = jnp.amin(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    return jnp.asarray(ret) if jnp.isscalar(ret) else ret
 
 
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
+
+
+@with_supported_dtypes(
+    {"0.4.20 and below": ("float16", "float32", "float64")}, backend_version
+)
+def lgamma(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jlax.lgamma(x)
 
 
 def fmax(
@@ -32,28 +65,6 @@ def fmax(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.fmax(x1, x2)
-
-
-def fmin(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.fmin(x1, x2)
-
-
-def trapz(
-    y: JaxArray,
-    /,
-    *,
-    x: Optional[JaxArray] = None,
-    dx: float = 1.0,
-    axis: int = -1,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.trapz(y, x=x, dx=dx, axis=axis)
 
 
 def float_power(
@@ -69,15 +80,6 @@ def float_power(
     else:
         out_dtype = jnp.float64
     return jnp.float_power(x1, x2).astype(out_dtype)
-
-
-def exp2(
-    x: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.power(2, x)
 
 
 def copysign(
@@ -124,17 +126,6 @@ def nansum(
     return jnp.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
-def gcd(
-    x1: Union[JaxArray, float, list, tuple],
-    x2: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.gcd(x1, x2)
-
-
 def isclose(
     a: JaxArray,
     b: JaxArray,
@@ -146,33 +137,6 @@ def isclose(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-
-
-def nan_to_num(
-    x: JaxArray,
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
-
-
-def logaddexp2(
-    x1: Union[JaxArray, float, list, tuple],
-    x2: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    if not is_float_dtype(x1):
-        x1 = x1.astype(default_float_dtype(as_native=True))
-        x2 = x2.astype(default_float_dtype(as_native=True))
-    return jnp.logaddexp2(x1, x2)
 
 
 def signbit(
@@ -244,25 +208,6 @@ def nextafter(
     return jnp.nextafter(x1, x2)
 
 
-def angle(
-    z: JaxArray,
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.angle(z, deg=deg)
-
-
-def imag(
-    val: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.imag(val)
-
-
 def zeta(
     x: JaxArray,
     q: JaxArray,
@@ -308,7 +253,7 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
             axis = [operator.index(axis)]
         except TypeError:
             pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
     if len(set(axis)) != len(axis):
         raise ValueError("repeated axis")
     return axis
@@ -508,10 +453,6 @@ def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> Jax
     return js.special.xlogy(x, y)
 
 
-def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.real(x)
-
-
 def conj(
     x: JaxArray,
     /,
@@ -531,3 +472,30 @@ def frexp(
     x: JaxArray, /, *, out: Optional[Tuple[JaxArray, JaxArray]] = None
 ) -> Tuple[JaxArray, JaxArray]:
     return jnp.frexp(x)
+
+
+def modf(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.modf(x)
+
+
+def digamma(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return js.special.digamma(x)
+
+
+def erfc(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return js.special.erfc(x)

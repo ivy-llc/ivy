@@ -2,44 +2,19 @@ import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes
 
-# Helpers #
-# ------- #
 
-
-def _type_conversion(x):
-    # Does type conversion, floats maps to float,
-    # 64bit dtype to float64, everything else to float32
-    x = ivy.asarray(x)
-    dtype = ivy.as_ivy_dtype(x.dtype)
-    if "float" not in dtype:
-        if "64" in dtype[-2:]:
-            dtype = "float64"
-        else:
-            dtype = "float32"
-
-    return ivy.astype(x, dtype)
-
-
-def _type_conversion_64(x):
-    # Does type conversion, floats maps to float,
-    # everything else to float64
-    x = ivy.asarray(x)
-    dtype = ivy.as_ivy_dtype(x.dtype)
-    if "float" in dtype:
-        return ivy.astype(x, dtype)
-
-    return ivy.astype(x, "float64")
+# --- Helpers --- #
+# --------------- #
 
 
 def _batch_promotion(*args, default_dtype="float64"):
     # Promote all types
-
     promote_types = set()
 
     for arg in args:
         if args is None:
             continue
-        if isinstance(arg, float) or isinstance(arg, int):
+        if isinstance(arg, (float, int)):
             continue
         promote_types.add(ivy.dtype(arg))
 
@@ -49,11 +24,8 @@ def _batch_promotion(*args, default_dtype="float64"):
     if "float32" in promote_types:
         return "float32"
 
-    if "float16" in promote_types and "bfloat16" in promote_types:
-        return "float32"
-
     if "float16" in promote_types:
-        return "float16"
+        return "float32" if "bfloat16" in promote_types else "float16"
 
     if "bfloat16" in promote_types:
         return "bfloat16"
@@ -80,32 +52,7 @@ def _canonicalize_axis(axis, ndim):
 
 def _len(x):
     shape = ivy.shape(x)
-    if len(shape) == 0:
-        return 0
-    return shape[0]
-
-
-def _reduction_dims(a, axis):
-    ndims = len(ivy.shape(a))
-    if axis is None:
-        return (tuple(range(ndims)),) * 2
-    if not isinstance(axis, (tuple, list)):
-        axis = (axis,)
-    canon_axis = tuple(_canonicalize_axis(ax, ndims) for ax in axis)
-    ivy.utils.assertions.check_equal(
-        len(canon_axis),
-        len(set(canon_axis)),
-        message=f"duplicate value in 'axis': {axis}",
-    )
-
-    # TODO: deal with named axis
-
-    canon_pos_axis = tuple(x for x in canon_axis if isinstance(x, int))
-
-    if len(canon_pos_axis) != len(canon_axis):
-        return canon_pos_axis, canon_axis
-    else:
-        return canon_axis, canon_axis
+    return 0 if len(shape) == 0 else shape[0]
 
 
 def _mean(x, axis=None, keepdims=False, where=None):
@@ -122,11 +69,58 @@ def _mean(x, axis=None, keepdims=False, where=None):
     return ivy.divide(sums, counts)
 
 
+def _reduction_dims(a, axis):
+    ndims = len(ivy.shape(a))
+    if axis is None:
+        return (tuple(range(ndims)),) * 2
+    if not isinstance(axis, (tuple, list)):
+        axis = (axis,)
+    canon_axis = tuple(_canonicalize_axis(ax, ndims) for ax in axis)
+    ivy.utils.assertions.check_equal(
+        len(canon_axis),
+        len(set(canon_axis)),
+        message=f"duplicate value in 'axis': {axis}",
+        as_array=False,
+    )
+
+    # TODO: deal with named axis
+
+    canon_pos_axis = tuple(x for x in canon_axis if isinstance(x, int))
+
+    if len(canon_pos_axis) != len(canon_axis):
+        return canon_pos_axis, canon_axis
+    else:
+        return canon_axis, canon_axis
+
+
+def _type_conversion(x):
+    # Does type conversion, floats maps to float,
+    # complex maps to complex,
+    # 64bit dtype to float64, everything else to float32
+    x = ivy.asarray(x)
+    dtype = ivy.as_ivy_dtype(x.dtype)
+    if not ("float" in dtype or "complex" in dtype):
+        dtype = "float64" if "64" in dtype[-2:] else "float32"
+    return ivy.astype(x, dtype)
+
+
+def _type_conversion_64(x):
+    # Does type conversion, floats maps to float,
+    # complex maps to complex, everything else to float64
+    x = ivy.asarray(x)
+    dtype = ivy.as_ivy_dtype(x.dtype)
+    if not ("float" in dtype or "complex" in dtype):
+        dtype = "float64"
+    return ivy.astype(x, dtype)
+
+
+# --- Main --- #
+# ------------ #
+
+
 @to_ivy_arrays_and_back
 def celu(x, alpha=1.0):
-    ret = ivy.where(x > 0, x, alpha * ivy.expm1(x / alpha))
-    dtype = _batch_promotion(x, alpha, default_dtype="float64")
-    return ivy.asarray(ret, dtype=dtype)
+    return ivy.celu(x, alpha=alpha)
 
 
 @to_ivy_arrays_and_back
@@ -138,17 +132,30 @@ def elu(x, alpha=1.0):
 
 @to_ivy_arrays_and_back
 def gelu(x, approximate=True):
-    return ivy.gelu(x, approximate=approximate)
+    return ivy.gelu(x, approximate=approximate, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back
 def glu(x, axis=-1):
     size = x.shape[axis]
     ivy.utils.assertions.check_equal(
-        size % 2, 0, message="axis size must be divisible by 2"
+        size % 2, 0, message="axis size must be divisible by 2", as_array=False
     )
     x1, x2 = ivy.split(x, num_or_size_splits=2, axis=axis)
     return ivy.multiply(x1, ivy.sigmoid(x2))
+
+
+@to_ivy_arrays_and_back
+def hard_sigmoid(x):
+    dtype = _batch_promotion(x, default_dtype="float64")
+    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6).astype(dtype)
+
+
+@to_ivy_arrays_and_back
+def hard_silu(x):
+    dtype = _batch_promotion(x, default_dtype="float64")
+    sig = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6)
+    return ivy.multiply(x, sig).astype(dtype)
 
 
 @to_ivy_arrays_and_back
@@ -159,26 +166,25 @@ def hard_swish(x):
 
 @to_ivy_arrays_and_back
 def hard_tanh(x):
-    x = ivy.asarray(x)
     n1 = -1
     if "uint" in str(x.dtype):
         dtype = x.dtype
         # tensorflow can't use -1 for uint
         n1 = ivy.asarray((1 << ivy.dtype_bits(dtype)) - 1, dtype=dtype)
 
-    return ivy.where(x > 1, 1, ivy.where(x < n1, n1, x))
+    return ivy.where(x > 1, 1, ivy.where(x < n1, n1, x)).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
 def leaky_relu(x, negative_slope=0.01):
     x = _type_conversion_64(x)
-    return ivy.leaky_relu(x, alpha=negative_slope)
+    return ivy.leaky_relu(x, alpha=negative_slope, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back
 def log_sigmoid(x):
     x = _type_conversion(x)
-    return ivy.negative(ivy.softplus(ivy.negative(x))).astype(x.dtype)
+    return ivy.logsigmoid(x, complex_mode="jax").astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -194,9 +200,8 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
         a = ivy.astype(a, dtype)
         b = ivy.asarray(b, dtype=dtype)
         a = ivy.where(b != 0, a, -ivy.inf)
-
+        a = ivy.astype(a, dtype)
     out_dtype = _batch_promotion(a, b, default_dtype="float32")
-
     pos_dims, dims = _reduction_dims(a, axis)
 
     amax = ivy.max(a, axis=pos_dims, keepdims=keepdims)
@@ -225,7 +230,6 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
         sumexp = ivy.sum(expsub, axis=dims, keepdims=keepdims)
         sign = ivy.stop_gradient(ivy.sign(sumexp))
         out = ivy.add(ivy.log(ivy.abs(sumexp)), amax)
-
     if return_sign:
         return out, sign
 
@@ -256,34 +260,36 @@ def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
 
 @to_ivy_arrays_and_back
 def one_hot(x, num_classes, *, dtype=None, axis=-1):
-    if dtype is None:
-        dtype = ivy.float64
-    else:
-        dtype = ivy.as_ivy_dtype(dtype)
-    ret = ivy.one_hot(x, num_classes, axis=axis, dtype=dtype)
-    return ret
+    dtype = ivy.float64 if dtype is None else ivy.as_ivy_dtype(dtype)
+    return ivy.one_hot(x, num_classes, axis=axis, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
 def relu(x):
-    return ivy.relu(x)
+    return ivy.relu(x, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back
 def relu6(x):
-    res = ivy.relu6(x)
+    res = ivy.relu6(x, complex_mode="jax")
     return _type_conversion_64(res)
+
+
+@to_ivy_arrays_and_back
+def selu(x):
+    x = _type_conversion_64(x)
+    return ivy.selu(x)
 
 
 @to_ivy_arrays_and_back
 def sigmoid(x):
     x = _type_conversion(x)
-    ret = ivy.sigmoid(x)
+    ret = ivy.sigmoid(x, complex_mode="jax")
     return ivy.astype(ret, x.dtype)
 
 
 @with_supported_dtypes(
-    {"0.3.14 and below": ("complex", "float")},
+    {"0.4.20 and below": ("complex", "float")},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -307,28 +313,10 @@ def softmax(x, axis=-1, where=None, initial=None):
 @to_ivy_arrays_and_back
 def softplus(x):
     x = _type_conversion(x)
-    return ivy.softplus(x).astype(x.dtype)
-
-
-@to_ivy_arrays_and_back
-def selu(x):
-    return ivy.selu(x)
+    return ivy.softplus(x, complex_mode="jax").astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
 def swish(x):
     ret = x / (1 + ivy.exp(-x))
     return ivy.asarray(ret, dtype=x.dtype)
-
-
-@to_ivy_arrays_and_back
-def hard_silu(x):
-    dtype = _batch_promotion(x, default_dtype="float64")
-    sig = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6)
-    return ivy.multiply(x, sig).astype(dtype)
-
-
-@to_ivy_arrays_and_back
-def hard_sigmoid(x):
-    dtype = _batch_promotion(x, default_dtype="float64")
-    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6).astype(dtype)

@@ -29,7 +29,7 @@ class _ArrayWithSearching(abc.ABC):
             input array. Should have a numeric data type.
         axis
             axis along which to search. If None, the function must return the index of
-            the maximum value of the flattened array. Deafult: ``None``.
+            the maximum value of the flattened array. Default: ``None``.
         keepdims
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
@@ -90,7 +90,7 @@ class _ArrayWithSearching(abc.ABC):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
-        output_dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
+        dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
         select_last_index: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
@@ -111,7 +111,7 @@ class _ArrayWithSearching(abc.ABC):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
-        output_dtype
+        dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
         select_last_index
             If this is set to True, the index corresponding to the
@@ -138,18 +138,18 @@ class _ArrayWithSearching(abc.ABC):
         ivy.array(2)
 
         >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
-        >>> y= ivy.zeros((1,3), dtype=ivy.int64)
+        >>> y= ivy.zeros((3,1), dtype=ivy.int64)
         >>> x.argmin(axis=1, keepdims=True, out=y)
         >>> print(y)
         ivy.array([[2],
-                   [0],
-                   [1]])
+               [0],
+               [1]])
         """
         return ivy.argmin(
             self._data,
             axis=axis,
             keepdims=keepdims,
-            output_dtype=output_dtype,
+            dtype=dtype,
             select_last_index=select_last_index,
             out=out,
         )
@@ -232,7 +232,8 @@ class _ArrayWithSearching(abc.ABC):
         >>> x2 = ivy.array([[5, 6], [7, 8]])
         >>> res = x1.where(condition,x2)
         >>> print(res)
-        ivy.array([[1, 6], [3, 4]])
+        ivy.array([[1, 0],
+               [1, 1]])
         """
         return ivy.where(self._data, x1._data, x2._data, out=out)
 

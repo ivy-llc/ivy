@@ -4,7 +4,10 @@ from typing import Optional, Tuple, Union
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_supported_dtypes,
+    with_unsupported_dtypes,
+)
 from . import backend_version
 from .elementwise import _elementwise_helper
 
@@ -12,8 +15,8 @@ from .elementwise import _elementwise_helper
 # ------------------ #
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16", "complex64", "complex128")},
+@with_supported_dtypes(
+    {"2.5.2 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
     backend_version,
 )
 def argmax(
@@ -27,29 +30,25 @@ def argmax(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = dtype if dtype is not None else paddle.int64
-    if x.dtype in [paddle.int8, paddle.float16, paddle.bool]:
-        x = x.cast("float32")
     if select_last_index:
         x = paddle_backend.flip(x, axis=axis)
-        ret = paddle.argmax(x, axis=axis)
+        ret = paddle.argmax(x, axis=axis, keepdim=keepdims)
         if axis is not None:
             ret = paddle.to_tensor(x.shape[axis] - ret - 1)
         else:
             ret = paddle.to_tensor(x.size - ret - 1)
     else:
-        ret = paddle.argmax(x, axis=axis)
+        ret = paddle.argmax(x, axis=axis, keepdim=keepdims)
 
-    if keepdims:
-        shape = [1] * x.ndim
-        ret = paddle_backend.reshape(ret, shape)
-    elif axis is None or x.ndim == 1:
+    if keepdims and axis is None:
+        ret = ret.reshape([1] * x.ndim)
+    if not keepdims and (x.ndim == 1 or axis is None):
         ret = paddle_backend.squeeze(ret, axis=-1)
-
     return ret.astype(dtype)
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16", "complex64", "complex128")},
+    {"2.5.2 and below": ("bfloat16", "bool", "complex", "float16", "int8")},
     backend_version,
 )
 def argmin(
@@ -58,35 +57,30 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[paddle.dtype] = None,
+    dtype: Optional[paddle.dtype] = None,
     select_last_index: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = output_dtype if output_dtype is not None else paddle.int64
-    if x.dtype in [paddle.int8, paddle.float16, paddle.bool]:
-        x = x.cast("float32")
+    dtype = dtype if dtype is not None else paddle.int64
     if select_last_index:
         x = paddle_backend.flip(x, axis=axis)
-        ret = paddle.argmin(x, axis=axis)
+        ret = paddle.argmin(x, axis=axis, keepdim=keepdims)
         if axis is not None:
             ret = paddle.to_tensor(x.shape[axis] - ret - 1)
         else:
             ret = paddle.to_tensor(x.size - ret - 1)
     else:
-        ret = paddle.argmin(x, axis=axis)
+        ret = paddle.argmin(x, axis=axis, keepdim=keepdims)
 
-    if keepdims:
-        shape = [1] * x.ndim
-        ret = paddle_backend.reshape(ret, shape)
-    elif axis is None or x.ndim == 1:
+    if keepdims and axis is None:
+        ret = ret.reshape([1] * x.ndim)
+    if not keepdims and (x.ndim == 1 or axis is None):
         ret = paddle_backend.squeeze(ret, axis=-1)
-
     return ret.astype(dtype)
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16")},
-    backend_version,
+    {"2.5.2 and below": ("float16", "int8", "uint8")}, backend_version
 )
 def nonzero(
     x: paddle.Tensor,
@@ -96,20 +90,11 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor]]:
-    if x.dtype in [
-        paddle.int8,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-    ]:
-        if paddle.is_complex(x):
-            real_idx = paddle.nonzero(x.real())
-            imag_idx = paddle.nonzero(x.imag())
-            idx = paddle.concat([real_idx, imag_idx], axis=0)
-            res = paddle.unique(idx, axis=0)
-        else:
-            res = paddle.nonzero(x.cast("float32"))
+    if paddle.is_complex(x):
+        real_idx = paddle.nonzero(x.real())
+        imag_idx = paddle.nonzero(x.imag())
+        idx = paddle.concat([real_idx, imag_idx], axis=0)
+        res = paddle.unique(idx, axis=0)
     else:
         res = paddle.nonzero(x)
 
@@ -134,10 +119,6 @@ def nonzero(
     return res.T
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16")},
-    backend_version,
-)
 def where(
     condition: paddle.Tensor,
     x1: Union[float, int, paddle.Tensor],
@@ -153,6 +134,7 @@ def where(
         if array.ndim == 0:
             arrays[i] = paddle_backend.expand_dims(array, axis=0)
     condition, x1, x2 = arrays
+    condition = condition.cast("bool") if condition.dtype != paddle.bool else condition
 
     if ret_dtype in [
         paddle.int8,
@@ -179,25 +161,16 @@ def where(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16")},
-    backend_version,
+    {"2.5.2 and below": ("float16", "int8", "uint8")}, backend_version
 )
 def argwhere(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if x.ndim == 0:
         return paddle.zeros(shape=[int(bool(x.item())), 0], dtype="int64")
-    if x.dtype in [
-        paddle.int8,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-    ]:
-        if paddle.is_complex(x):
-            real_idx = paddle.nonzero(x.real())
-            imag_idx = paddle.nonzero(x.imag())
-            idx = paddle.concat([real_idx, imag_idx], axis=0)
-            return paddle.unique(idx, axis=0)
-        return paddle.nonzero(x.cast("float32"))
+    if paddle.is_complex(x):
+        real_idx = paddle.nonzero(x.real())
+        imag_idx = paddle.nonzero(x.imag())
+        idx = paddle.concat([real_idx, imag_idx], axis=0)
+        return paddle.unique(idx, axis=0)
     return paddle.nonzero(x)

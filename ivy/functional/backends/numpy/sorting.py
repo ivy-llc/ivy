@@ -17,9 +17,12 @@ def argsort(
     stable: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x = -1 * np.searchsorted(np.unique(x), x) if descending else x
     kind = "stable" if stable else "quicksort"
-    return np.argsort(x, axis, kind=kind)
+    return (
+        np.argsort(-x, axis=axis, kind=kind)
+        if descending
+        else np.argsort(x, axis=axis, kind=kind)
+    )
 
 
 def sort(
@@ -34,12 +37,12 @@ def sort(
     kind = "stable" if stable else "quicksort"
     ret = np.asarray(np.sort(x, axis=axis, kind=kind))
     if descending:
-        ret = np.asarray((np.flip(ret, axis)))
+        ret = np.asarray(np.flip(ret, axis))
     return ret
 
 
 # msort
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[np.ndarray, list, tuple], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:

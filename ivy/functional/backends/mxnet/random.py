@@ -4,6 +4,7 @@ MXNet random functions.
 Collection of MXNet random functions, wrapped to fit Ivy syntax and
 signature.
 """
+
 import mxnet as mx
 from typing import Optional, Union, Sequence
 import ivy
@@ -72,6 +73,7 @@ def seed(*, seed_value: int = 0) -> None:
 
 def shuffle(
     x: Union[(None, mx.ndarray.NDArray)],
+    axis: Optional[int] = 0,
     /,
     *,
     seed: Optional[int] = None,

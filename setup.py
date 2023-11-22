@@ -16,97 +16,122 @@
 __version__ = None
 
 import setuptools
+from setuptools import setup
 from pathlib import Path
-from distutils.core import setup
+from urllib import request
+import os
+import json
+import re
+
+
+def _get_paths_from_binaries(binaries, root_dir=""):
+    """Get all the paths from the binaries.json into a list."""
+    paths = []
+    if isinstance(binaries, str):
+        return [os.path.join(root_dir, binaries)]
+    elif isinstance(binaries, dict):
+        for k, v in binaries.items():
+            paths += _get_paths_from_binaries(v, os.path.join(root_dir, k))
+    else:
+        for i in binaries:
+            paths += _get_paths_from_binaries(i, root_dir)
+    return paths
 
 
 def _strip(line):
     return line.split(" ")[0].split("#")[0].split(",")[0]
 
 
-def _replace_logos_html(txt):
-    # html-containing chunks
-    chunks = txt.split(".. raw:: html")
+# Download all relevant binaries in binaries.json
+binaries_dict = json.load(open("binaries.json"))
+available_configs = json.load(open("available_configs.json"))
+binaries_paths = _get_paths_from_binaries(binaries_dict)
+version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
+terminate = False
+fixed_tag = os.environ["TAG"] if "TAG" in os.environ else None
+all_tags, python_tag, plat_name, options = None, None, None, None
+if fixed_tag:
+    python_tag, _, plat_name = str(fixed_tag).split("-")
+    options = {"bdist_wheel": {"python_tag": python_tag, "plat_name": plat_name}}
+    all_tags = [fixed_tag]
+else:
+    from pip._vendor.packaging import tags
 
-    # light-dark logo
-    chunks[0] = _remove_dark_logo(chunks[0])
+    all_tags = list(tags.sys_tags())
 
-    # backend logos
-    backends_chunk = chunks[2]
-    bc = backends_chunk.split("\n\n")
-    img_str = (
-        ".. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true\n"  # noqa
-        "   :width: 100%\n"
-        "   :class: dark-light"
-    )
-    backends_chunk = "\n\n".join(bc[0:1] + [img_str] + bc[2:])
-
-    # re-join
-    return "".join(
-        [
-            ".. raw:: html".join(chunks[0:2]),
-            backends_chunk,
-            ".. raw:: html".join(chunks[3:]),
-        ]
-    )
-
-
-def _remove_dark_logo(txt):
-    return txt.split("\n\n")[0]
-
-
-def _is_html(line):
-    line_squashed = line.replace(" ", "")
-    if not line_squashed:
-        return False
-    if line_squashed[0] == "<" and line_squashed[-1] == ">":
-        return True
-    return False
-
-
-def _is_raw_block(line):
-    line_squashed = line.replace(" ", "")
-    if len(line_squashed) < 11:
-        return False
-    if line_squashed[-11:] == "..raw::html":
-        return True
-    return False
-
-
-def read_description(path):
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
+# download binaries for the tag with highest precedence
+for tag in all_tags:
+    if terminate:
+        break
+    for path in binaries_paths:
+        module = path.split(os.sep)[1]
+        if os.path.exists(path) or str(tag) not in available_configs[module]:
+            continue
+        folders = path.split(os.sep)
+        folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
+        file_name = f"{file_path[:-3]}_{tag}.so"
+        search_path = f"{module}/{file_name}"
+        try:
+            response = request.urlopen(
+                f"https://github.com/unifyai/binaries/raw/{version}/{search_path}",
+                timeout=40,
+            )
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, "wb") as f:
+                f.write(response.read())
+            terminate = path == binaries_paths[-1]
+        except request.HTTPError:
+            break
 
 
 this_directory = Path(__file__).parent
-text = read_description("README.rst")
-lines = _replace_logos_html(text).split("\n")
-lines = [line for line in lines if not (_is_html(line) or _is_raw_block(line))]
-long_description = "\n".join(lines)
+long_description = (this_directory / "README.md").read_text(encoding="utf-8")
+
+# Remove img tags that have class "only-dark"
+long_description = re.sub(
+    r"<img [^>]*class=\"only-dark\"[^>]*>",
+    "",
+    long_description,
+    flags=re.MULTILINE,
+)
+
+# Remove a tags that have class "only-dark"
+long_description = re.sub(
+    r"<a [^>]*class=\"only-dark\"[^>]*>((?:(?!<\/a>).)|\s)*<\/a>\n",
+    "",
+    long_description,
+    flags=re.MULTILINE,
+)
+
+# Apply version
 with open("ivy/_version.py") as f:
     exec(f.read(), __version__)
 
 setup(
-    name="ivy-core",
+    name="ivy",
     version=__version__,
-    author="Ivy Team",
-    author_email="ivydl.team@gmail.com",
+    author="Unify",
+    author_email="hello@unify.ai",
     description=(
         "The unified machine learning framework, enabling framework-agnostic "
         "functions, layers and libraries."
     ),
     long_description=long_description,
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     url="https://unify.ai/ivy",
     project_urls={
         "Docs": "https://unify.ai/docs/ivy/",
         "Source": "https://github.com/unifyai/ivy",
     },
+    include_package_data=True,
     packages=setuptools.find_packages(),
     install_requires=[
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
-    classifiers=["License :: OSI Approved :: Apache Software License"],
+    classifiers=[
+        "License :: OSI Approved :: Apache Software License",
+    ],
     license="Apache 2.0",
+    options=options,
 )

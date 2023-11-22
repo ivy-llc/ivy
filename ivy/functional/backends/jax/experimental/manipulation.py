@@ -1,5 +1,6 @@
 # local
 from typing import (
+    Iterable,
     Optional,
     Union,
     Sequence,
@@ -146,7 +147,7 @@ def _to_nested_tuple(nested_list):
 
 def pad(
     input: JaxArray,
-    pad_width: Union[Sequence[Sequence[int]], JaxArray, int],
+    pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
     mode: Union[
@@ -166,9 +167,9 @@ def pad(
         ],
         Callable,
     ] = "constant",
-    stat_length: Union[Sequence[Sequence[int]], int] = 1,
-    constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
-    end_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> JaxArray:
@@ -179,13 +180,9 @@ def pad(
     input_dtype = input.dtype
 
     if mode == "dilated":
-        if ivy.as_ivy_dtype(type(constant_values)) != input_dtype:
-            padding_value = ivy.native_array(constant_values, dtype=input_dtype)
-        else:
-            padding_value = constant_values
-        padded = jlax.pad(input, padding_value, pad_width)
-        return padded
-
+        if not ivy.is_array(constant_values) or constant_values.dtype != input_dtype:
+            constant_values = jnp.array(constant_values, dtype=input_dtype)
+        return jlax.pad(input, constant_values, pad_width)
     if callable(mode):
         ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
@@ -234,26 +231,30 @@ def pad(
 
 def vsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], JaxArray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[JaxArray]:
-    return jnp.vsplit(ary, indices_or_sections)
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], JaxArray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[JaxArray]:
-    if len(ary.shape) < 3:
+    if ary.ndim < 3:
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
-    return jnp.dsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
@@ -305,7 +306,9 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[JaxArray]:
-    return jnp.hsplit(ary, indices_or_sections)
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
@@ -321,6 +324,8 @@ def expand(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     shape = list(shape)
+    if len(shape) > len(x.shape):
+        x = jnp.expand_dims(x, range(len(shape) - len(x.shape)))
     for i, dim in enumerate(shape):
         if dim < 0:
             shape[i] = x.shape[i]
@@ -387,3 +392,79 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def fill_diagonal(
+    a: JaxArray,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> JaxArray:
+    shape = jnp.array(a.shape)
+    end = None
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (jnp.cumprod(shape[:-1])).sum()
+    a = jnp.reshape(a, (-1,))
+    a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
+    a = jnp.reshape(a, shape)
+    return a
+
+
+def take(
+    x: Union[int, JaxArray],
+    indices: Union[int, JaxArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+    mode: str = "fill",
+    fill_value: Optional[Number] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if mode not in ["raise", "wrap", "clip", "fill"]:
+        raise ValueError("mode must be one of 'clip', 'raise', 'wrap', or 'fill'")
+    if not isinstance(x, JaxArray):
+        x = jnp.array(x)
+    if len(x.shape) == 0:
+        x = jnp.array([x])
+    if not isinstance(indices, JaxArray):
+        indices = jnp.array(indices)
+    if jnp.issubdtype(indices.dtype, jnp.floating):
+        indices = indices.astype(jnp.int64)
+
+    # raise
+    if mode == "raise":
+        mode = "fill"
+        if ivy.exists(axis):
+            try:
+                x_shape = x.shape[axis]
+            except Exception:
+                raise ValueError(
+                    f"axis {axis} is out of bounds for array of dimension"
+                    f" {len(x.shape)}"
+                )
+        else:
+            x_shape = jnp.prod(x.shape)
+
+        bound_check = (indices < -x_shape) | (indices >= x_shape)
+        if jnp.any(bound_check):
+            if len(indices.shape) != 0:
+                indices = indices[bound_check].flatten()[0]
+            raise IndexError(
+                f"index {indices} is out of bounds for axis "
+                f"{axis if axis else 0} with size {x_shape}"
+            )
+
+    # clip, wrap, fill
+    ret = jnp.take(x, indices, axis=axis, mode=mode, fill_value=fill_value)
+    if ivy.exists(out):
+        ivy.inplace_update(out)
+    return ret
+
+
+def trim_zeros(a: JaxArray, /, *, trim: Optional[str] = "bf") -> JaxArray:
+    return jnp.trim_zeros(a, trim=trim)

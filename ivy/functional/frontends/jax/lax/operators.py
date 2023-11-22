@@ -3,15 +3,67 @@ from typing import Any
 import itertools
 import string
 import builtins
-import math
 
 # local
 import ivy
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
-_min = builtins.min
+from ivy.func_wrapper import with_unsupported_dtypes, frontend_outputs_to_ivy_arrays
+
 _slice = builtins.slice
-_max = builtins.max
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+def _argsort_tuple(the_tuple):
+    return tuple(i for i, _ in sorted(enumerate(the_tuple), key=lambda x: x[1]))
+
+
+def _conv_transpose_padding(k, s, padding):
+    if padding == "SAME":
+        pad_len = k + s - 2
+        if s > k - 1:
+            pad_a = k - 1
+        else:
+            pad_a = int(ivy.to_scalar(ivy.ceil(pad_len / 2)))
+    elif padding == "VALID":
+        pad_len = k + s - 2 + ivy.to_scalar(ivy.maximum(k - s, 0))
+        pad_a = k - 1
+    else:
+        raise ValueError("Padding mode must be `SAME` or `VALID`.")
+    pad_b = pad_len - pad_a
+    return pad_a, pad_b
+
+
+def _dimension_numbers(dimension_numbers, lhs_len, transp=False):
+    if dimension_numbers is None:
+        if transp:
+            iota = (0, lhs_len - 1, *range(1, lhs_len - 1))
+            iotb = (lhs_len - 1, lhs_len - 2, *range(0, lhs_len - 2))
+            return iota, iotb, iota
+        else:
+            iota = tuple(range(lhs_len))
+            return iota, iota, iota
+    elif isinstance(dimension_numbers[0], (tuple, list)):
+        return dimension_numbers
+    else:
+        lhs_spec, rhs_spec, out_spec = dimension_numbers
+
+        def getperm(spec, charpair):
+            spatial = (i for i, c in enumerate(spec) if c not in charpair)
+            if spec is not rhs_spec:
+                spatial = sorted(spatial, key=lambda i: rhs_spec.index(spec[i]))
+            return (spec.index(charpair[0]), spec.index(charpair[1])) + tuple(spatial)
+
+        charpairs = ("N", "C"), ("O", "I"), ("N", "C")
+        lhs_spec, rhs_spec, out_spec = map(getperm, dimension_numbers, charpairs)
+        return lhs_spec, rhs_spec, out_spec
+
+
+# --- Main --- #
+# ------------ #
 
 
 @to_ivy_arrays_and_back
@@ -45,6 +97,11 @@ def asin(x):
 
 
 @to_ivy_arrays_and_back
+def asinh(x):
+    return ivy.asinh(x)
+
+
+@to_ivy_arrays_and_back
 def atan(x):
     return ivy.atan(x)
 
@@ -52,6 +109,24 @@ def atan(x):
 @to_ivy_arrays_and_back
 def atan2(x, y):
     return ivy.atan2(x, y)
+
+
+@to_ivy_arrays_and_back
+def atanh(x):
+    return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
+def batch_matmul(lhs, rhs, precision=None):
+    if lhs.ndim < 2 or rhs.ndim < 2:
+        raise ValueError(
+            f"Arguments to batch_matmul must be at least 2D, got {lhs.ndim}, {rhs.ndim}"
+        )
+    if lhs.ndim != rhs.ndim:
+        raise ValueError(
+            f"Arguments to batch_matmul must have same ndim, got {lhs.ndim}, {rhs.ndim}"
+        )
+    return ivy.matmul(lhs, rhs).astype(lhs.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -80,6 +155,21 @@ def broadcast(operand, sizes):
     return ret + operand
 
 
+@with_supported_dtypes(
+    {
+        "0.4.20 and below": (
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "jax",
+)
+@to_ivy_arrays_and_back
+def cbrt(x):
+    return ivy.pow(x, 1 / 3)
+
+
 @to_ivy_arrays_and_back
 def ceil(x):
     return ivy.ceil(x)
@@ -91,8 +181,18 @@ def clamp(min, x, max):
 
 
 @to_ivy_arrays_and_back
+def complex(x, y):
+    return ivy.complex(x, y)
+
+
+@to_ivy_arrays_and_back
 def concatenate(operands, dimension):
     return ivy.concat(operands, axis=dimension)
+
+
+@to_ivy_arrays_and_back
+def conj(x):
+    return ivy.conj(x)
 
 
 @to_ivy_arrays_and_back
@@ -103,7 +203,6 @@ def conv(
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
-    rhs = ivy.permute_dims(rhs, axes=(*range(2, dims + 2), 1, 0))
     return ivy.conv_general_dilated(
         lhs,
         rhs,
@@ -111,52 +210,45 @@ def conv(
         padding,
         dims=dims,
         data_format="channel_first",
+        filter_format="channel_first",
     )
 
 
-def _dimension_numbers(dimension_numbers, lhs_len, transp=False):
-    if dimension_numbers is None:
-        if transp:
-            iota = (0, lhs_len - 1, *range(1, lhs_len - 1))
-            iotb = (lhs_len - 1, lhs_len - 2, *range(0, lhs_len - 2))
-            return iota, iotb, iota
-        else:
-            iota = tuple(range(lhs_len))
-            return iota, iota, iota
-    elif isinstance(dimension_numbers[0], (tuple, list)):
-        return dimension_numbers
-    else:
-        lhs_spec, rhs_spec, out_spec = dimension_numbers
-
-        def getperm(spec, charpair):
-            spatial = (i for i, c in enumerate(spec) if c not in charpair)
-            if spec is not rhs_spec:
-                spatial = sorted(spatial, key=lambda i: rhs_spec.index(spec[i]))
-            return (spec.index(charpair[0]), spec.index(charpair[1])) + tuple(spatial)
-
-        charpairs = ("N", "C"), ("O", "I"), ("N", "C")
-        lhs_spec, rhs_spec, out_spec = map(getperm, dimension_numbers, charpairs)
-        return lhs_spec, rhs_spec, out_spec
-
-
-def _argsort_tuple(the_tuple):
-    return tuple([i for i, _ in sorted(enumerate(the_tuple), key=lambda x: x[1])])
-
-
-def _conv_transpose_padding(k, s, padding):
-    if padding == "SAME":
-        pad_len = k + s - 2
-        if s > k - 1:
-            pad_a = k - 1
-        else:
-            pad_a = int(ivy.to_scalar(ivy.ceil(pad_len / 2)))
-    elif padding == "VALID":
-        pad_len = k + s - 2 + ivy.to_scalar(ivy.maximum(k - s, 0))
-        pad_a = k - 1
-    else:
-        raise ValueError("Padding mode must be `SAME` or `VALID`.")
-    pad_b = pad_len - pad_a
-    return pad_a, pad_b
+@to_ivy_arrays_and_back
+def conv_general_dilated(
+    lhs,
+    rhs,
+    window_strides,
+    padding,
+    lhs_dilation=None,
+    rhs_dilation=None,
+    dimension_numbers=None,
+    feature_group_count=1,
+    batch_group_count=1,
+    precision=None,
+    preferred_element_type=None,
+):
+    # TODO: add support for batch_group_count
+    if preferred_element_type:
+        lhs = ivy.astype(lhs, preferred_element_type)
+        rhs = ivy.astype(rhs, preferred_element_type)
+    dims = len(lhs.shape) - 2
+    dim_nums = _dimension_numbers(dimension_numbers, dims + 2)
+    rhs_spec = tuple(dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0))
+    return ivy.permute_dims(
+        ivy.conv_general_dilated(
+            ivy.permute_dims(lhs, axes=dim_nums[0]),
+            ivy.permute_dims(rhs, axes=rhs_spec),
+            window_strides,
+            padding,
+            dims=dims,
+            data_format="channel_first",
+            x_dilations=1 if lhs_dilation is None else lhs_dilation,
+            dilations=1 if rhs_dilation is None else rhs_dilation,
+            feature_group_count=feature_group_count,
+        ),
+        axes=_argsort_tuple(dim_nums[2]),
+    )
 
 
 @to_ivy_arrays_and_back
@@ -177,7 +269,7 @@ def conv_transpose(
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
     dim_nums = _dimension_numbers(dimension_numbers, dims + 2, transp=True)
-    rhs_spec = tuple([dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0)])
+    rhs_spec = tuple(dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0))
     rhs_dilation = 1 if rhs_dilation is None else rhs_dilation
     if isinstance(padding, str):
         k_sdims = [rhs.shape[i] for i in rhs_spec[:-2]]
@@ -202,43 +294,6 @@ def conv_transpose(
 
 
 @to_ivy_arrays_and_back
-def conv_general_dilated(
-    lhs,
-    rhs,
-    window_strides,
-    padding,
-    lhs_dilation=None,
-    rhs_dilation=None,
-    dimension_numbers=None,
-    feature_group_count=1,
-    batch_group_count=1,
-    precision=None,
-    preferred_element_type=None,
-):
-    # TODO: add support for batch_group_count
-    if preferred_element_type:
-        lhs = ivy.astype(lhs, preferred_element_type)
-        rhs = ivy.astype(rhs, preferred_element_type)
-    dims = len(lhs.shape) - 2
-    dim_nums = _dimension_numbers(dimension_numbers, dims + 2)
-    rhs_spec = tuple([dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0)])
-    return ivy.permute_dims(
-        ivy.conv_general_dilated(
-            ivy.permute_dims(lhs, axes=dim_nums[0]),
-            ivy.permute_dims(rhs, axes=rhs_spec),
-            window_strides,
-            padding,
-            dims=dims,
-            data_format="channel_first",
-            x_dilations=1 if lhs_dilation is None else lhs_dilation,
-            dilations=1 if rhs_dilation is None else rhs_dilation,
-            feature_group_count=feature_group_count,
-        ),
-        axes=_argsort_tuple(dim_nums[2]),
-    )
-
-
-@to_ivy_arrays_and_back
 def convert_element_type(operand, new_dtype):
     return ivy.astype(operand, new_dtype, copy=False)
 
@@ -251,6 +306,15 @@ def cos(x):
 @to_ivy_arrays_and_back
 def cosh(x):
     return ivy.cosh(x)
+
+
+@with_unsupported_dtypes(
+    {"0.4.20 and below": ("bfloat16", "float16", "bool", "complex64", "complex128")},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def cummin(operand, axis=0, reverse=False):
+    return ivy.cummin(operand, axis=axis, reverse=reverse, dtype=operand.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -279,13 +343,17 @@ def dot(lhs, rhs, precision=None, preferred_element_type=None):
     return ret
 
 
+@with_unsupported_dtypes({"0.4.5 and below": ("bool",)}, "jax")
 @to_ivy_arrays_and_back
 def dot_general(
     lhs, rhs, dimension_numbers, precision=None, preferred_element_type=None
 ):
     (lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch) = dimension_numbers
     ivy.utils.assertions.check_less(
-        len(lhs.shape), 52, "number of dimensions greater than 52 is not supported"
+        len(lhs.shape),
+        52,
+        "number of dimensions greater than 52 is not supported",
+        as_array=False,
     )
     new_id = itertools.count()
     lhs_axis_ids = [next(new_id) for _ in lhs.shape]
@@ -330,6 +398,23 @@ def erf(x):
     return ivy.erf(x)
 
 
+@with_supported_dtypes(
+    {
+        "0.4.20 and below": (
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "jax",
+)
+@to_ivy_arrays_and_back
+def erfc(x):
+    value = ivy.erf(x)
+    value = (1.0 - value) if value is not None else None
+    return value
+
+
 @to_ivy_arrays_and_back
 def exp(x):
     return ivy.exp(x)
@@ -369,6 +454,31 @@ def gt(x, y):
     return ivy.greater(x, y)
 
 
+@to_ivy_arrays_and_back
+def igamma(a, x):
+    return ivy.igamma(a, x=x)
+
+
+@to_ivy_arrays_and_back
+def imag(x):
+    return ivy.imag(x)
+
+
+@with_unsupported_dtypes(
+    {"0.4.20 and below": ("bool", "bfloat16")},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def iota(dtype, size):
+    return ivy.arange(0, size, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def is_finite(x):
+    return ivy.isfinite(x)
+
+
+@with_unsupported_dtypes({"0.4.5 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def le(x, y):
     return ivy.less_equal(x, y)
@@ -415,8 +525,8 @@ def neg(x):
 
 
 @to_ivy_arrays_and_back
-def pow(x, y):
-    return ivy.pow(x, y)
+def nextafter(x1, x2):
+    return ivy.nextafter(x1, x2)
 
 
 @to_ivy_arrays_and_back
@@ -427,8 +537,42 @@ def pad(operand, padding_value, padding_config):
 
 
 @to_ivy_arrays_and_back
+def pow(x, y):
+    return ivy.pow(x, y)
+
+
+@to_ivy_arrays_and_back
+def real(x):
+    return ivy.real(x)
+
+
+@to_ivy_arrays_and_back
 def reciprocal(x):
     return ivy.reciprocal(x)
+
+
+@to_ivy_arrays_and_back
+def reduce_window(
+    operand,
+    init_value,
+    computation,
+    window_dimensions,
+    window_strides,
+    padding,
+    base_dilation=None,
+    window_dilation=None,
+):
+    computation = frontend_outputs_to_ivy_arrays(computation)
+    return ivy.reduce_window(
+        operand,
+        init_value,
+        computation,
+        window_dimensions,
+        window_strides=window_strides,
+        padding=padding,
+        base_dilation=base_dilation,
+        window_dilation=window_dilation,
+    )
 
 
 @to_ivy_arrays_and_back
@@ -468,13 +612,23 @@ def rsqrt(x):
 
 
 @to_ivy_arrays_and_back
+def select(pred, on_true, on_false):
+    return ivy.where(pred, on_true, on_false)
+
+
+@to_ivy_arrays_and_back
 def shift_left(x, y):
     return ivy.bitwise_left_shift(x, y)
 
 
 @to_ivy_arrays_and_back
+def shift_right_logical(x, y):
+    return ivy.bitwise_right_shift(x, y)
+
+
+@to_ivy_arrays_and_back
 def sign(x):
-    return ivy.sign(x)
+    return ivy.sign(x, np_variant=False)
 
 
 @to_ivy_arrays_and_back
@@ -538,6 +692,11 @@ def square(x):
 
 
 @to_ivy_arrays_and_back
+def squeeze(array, dimensions):
+    return ivy.squeeze(array, axis=dimensions)
+
+
+@to_ivy_arrays_and_back
 def sub(x, y):
     return ivy.subtract(x, y)
 
@@ -548,28 +707,8 @@ def tan(x):
 
 
 @to_ivy_arrays_and_back
-def transpose(operand, permutation):
-    return ivy.permute_dims(operand, permutation)
-
-
-@to_ivy_arrays_and_back
-def shift_right_logical(x, y):
-    return ivy.bitwise_right_shift(x, y)
-
-
-@to_ivy_arrays_and_back
-def asinh(x):
-    return ivy.asinh(x)
-
-
-@to_ivy_arrays_and_back
-def atanh(x):
-    return ivy.atanh(x)
-
-
-@to_ivy_arrays_and_back
-def select(pred, on_true, on_false):
-    return ivy.where(pred, on_true, on_false)
+def tie_in(x, y):
+    return y
 
 
 # top_k
@@ -580,152 +719,6 @@ def top_k(operand, k):
     return [values, indices]
 
 
-def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value=0):
-    def _pad(arr, pads, pad_value):
-        out = ivy.astype(
-            ivy.pad(
-                arr,
-                ivy.maximum(0, pads).to_list(),
-                mode="constant",
-                constant_values=pad_value,
-            ),
-            arr.dtype,
-        )
-        slices = tuple(
-            _slice(abs(lo) if lo < 0 else 0, hi % dim if hi < 0 else None)
-            for (lo, hi), dim in zip(pads, arr.shape)
-        )
-        return out[slices]
-
-    if (
-        _min(lhs.ndim, len(rhs_shape)) < 2
-        or lhs.ndim != len(rhs_shape)
-        or lhs.shape[1] != rhs_shape[1]
-    ):
-        raise ValueError("Dimension mismatch")
-    if len(window_strides) != len(rhs_shape) - 2:
-        raise ValueError("Wrong number of strides for spatial dimensions")
-    if len(pads) != len(rhs_shape) - 2:
-        raise ValueError("Wrong number of pads for spatial dimensions")
-
-    lhs = _pad(lhs, [(0, 0)] * 2 + list(pads), pad_value)
-    in_shape = lhs.shape[2:]
-    filter_shape = rhs_shape[2:]
-    dim = len(filter_shape)
-
-    out_strides = ivy.multiply(window_strides, lhs.strides[2:]).to_list()
-    view_strides = lhs.strides[:1] + tuple(out_strides) + lhs.strides[1:]
-
-    out_shape = [
-        (in_shape[i] - filter_shape[i]) // s + 1 for i, s in enumerate(window_strides)
-    ]
-    view_shape = list(lhs.shape[:1]) + out_shape + rhs_shape[1:]
-
-    view = ivy.as_strided(lhs, view_shape, view_strides)
-
-    view_axes = list(range(view.ndim))
-    sum_axes = view_axes[-dim - 1 :]
-    rhs_axes = [view.ndim] + sum_axes
-    out_axes = [0, view.ndim] + list(range(1, dim + 1))
-
-    return view, view_axes, rhs_axes, out_axes
-
-
-def _dilate(operand, factors, fill_value=0):
-    outspace = list(operand.shape[:2]) + [
-        shape + (factors[i] - 1) * (shape - 1)
-        for i, shape in enumerate(operand.shape[2:])
-    ]
-    out = ivy.full(
-        outspace,
-        ivy.to_scalar(ivy.array(fill_value, dtype=operand.dtype)),
-        dtype=operand.dtype,
-    )
-    lhs_slices = tuple(_slice(None, None, step) for step in factors)
-    out[(_slice(None),) * 2 + lhs_slices] = operand
-    return out
-
-
-def _padtype_to_pads(in_shape, filter_shape, window_strides, padding):
-    if padding.upper() == "SAME":
-        out_shape = [
-            math.ceil(in_size / stride)
-            for in_size, stride in zip(in_shape, window_strides)
-        ]
-        pad_sizes = [
-            _max((out_size - 1) * stride + filter_size - in_size, 0)
-            for out_size, stride, filter_size, in_size in zip(
-                out_shape, window_strides, filter_shape, in_shape
-            )
-        ]
-        return [(pad_size // 2, pad_size - pad_size // 2) for pad_size in pad_sizes]
-    else:
-        return [(0, 0)] * len(in_shape)
-
-
-def _make_reducer(py_binop, init_val):
-    def _delete(seq, pos):
-        return [v for i, v in enumerate(seq) if i != pos]
-
-    def _reducer(operand, axis=0):
-        axis = len(operand.shape) + axis if axis < 0 else axis
-        axis = range(operand.ndim) if axis is None else axis
-        result = ivy.full(
-            _delete(operand.shape, axis),
-            ivy.to_scalar(init_val),
-            dtype=operand.dtype,
-        )
-        operand, result = operand.to_numpy(), result.to_numpy()
-        for idx, _ in ivy.ndenumerate(operand):
-            out_idx = tuple(_delete(idx, axis))
-            result[out_idx] = py_binop(result[out_idx], operand[idx])
-        return result
-
-    return _reducer
-
-
 @to_ivy_arrays_and_back
-def reduce_window(
-    operand,
-    init_value,
-    computation,
-    window_dimensions,
-    window_strides,
-    padding,
-    base_dilation=None,
-    window_dilation=None,
-):
-    # ToDo: add support for window_dilation
-    op, dims, strides = operand, window_dimensions, window_strides
-
-    if isinstance(padding, str):
-        pads = _padtype_to_pads(op.shape, dims, strides, padding)
-    else:
-        pads = padding
-    op = op.reshape((1, 1) + op.shape)
-    if base_dilation:
-        op = _dilate(op, base_dilation)
-    view = _conv_view(op, [1, 1] + list(dims), strides, pads)[0]
-    view = view.reshape((*view.shape[1 : 1 + len(dims)], -1))
-    reducer = _make_reducer(computation, init_value)
-    return ivy.array(reducer(view, axis=-1))
-
-
-@to_ivy_arrays_and_back
-def squeeze(array, dimensions):
-    return ivy.squeeze(array, dimensions)
-
-
-@to_ivy_arrays_and_back
-def real(x):
-    return ivy.real(x)
-
-
-@to_ivy_arrays_and_back
-def nextafter(x1, x2):
-    return ivy.nextafter(x1, x2)
-
-
-@to_ivy_arrays_and_back
-def conj(x):
-    return ivy.conj(x)
+def transpose(operand, permutation):
+    return ivy.permute_dims(operand, permutation)

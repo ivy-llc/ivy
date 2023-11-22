@@ -1,7 +1,8 @@
 # global
 import os
 import redis
-from hypothesis import settings, HealthCheck
+from colorama import Fore
+from hypothesis import settings, HealthCheck, Phase
 from hypothesis.database import (
     MultiplexedDatabase,
     ReadOnlyDatabase,
@@ -10,7 +11,7 @@ from hypothesis.database import (
 from hypothesis.extra.redis import RedisExampleDatabase
 
 
-hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
+hypothesis_cache = f"{os.getcwd()}/.hypothesis/examples/"
 redis_connect_dev = None
 redis_connect_master = None
 try:
@@ -43,6 +44,23 @@ def is_db_available(master=False, credentials=None):
     return True
 
 
+def pytest_terminal_summary(terminalreporter):
+    from .test_ivy.conftest import mod_backend
+
+    session = terminalreporter._session
+
+    if session.testscollected == 0:
+        return
+
+    passed_ratio = 1 - (session.testsfailed / session.testscollected)
+    text = f" {passed_ratio:.1%} of {session.testscollected} passed "
+    text = text.center(terminalreporter._screen_width, "=")
+    terminalreporter.write(content=Fore.GREEN + text)
+    for key in mod_backend:
+        if mod_backend[key]:
+            mod_backend[key][0].terminate()
+
+
 def pytest_addoption(parser):
     parser.addoption(
         "-N",
@@ -65,6 +83,23 @@ def pytest_addoption(parser):
         default="full",
         type=str,
         help="ivy traceback",
+    )
+    parser.addoption(
+        "--reuse-only",
+        default=False,
+        action="store_true",
+        help="Only reuse stored examples from database",
+    )
+    parser.addoption(
+        "-R",
+        "--robust",
+        action="store_true",
+        default=False,
+        help=(
+            "Disable Hypothesis Shrinking. Allow all Hypothesis HealthChecks."
+            "Disabling the HealthChecks will most likely introduce new failures, "
+            "this mode should be only used during development on the testing pipeline."
+        ),
     )
 
 
@@ -107,10 +142,32 @@ def pytest_configure(config):
     if deadline:
         profile_settings["deadline"] = deadline
 
+    if getopt("--reuse-only"):
+        profile_settings["phases"] = [Phase.explicit, Phase.reuse]
+
     settings.register_profile(
         "ivy_profile",
         **profile_settings,
         suppress_health_check=(HealthCheck(3), HealthCheck(2), HealthCheck(1)),
         print_blob=True,
     )
-    settings.load_profile("ivy_profile")
+
+    settings.register_profile(
+        "robust",
+        phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.target],
+    )
+
+    settings.register_profile(
+        "diff",
+        database=None,
+        derandomize=True,
+        max_examples=100,
+        deadline=5000,
+        phases=[Phase.generate],
+        suppress_health_check=(HealthCheck(3), HealthCheck(2), HealthCheck(1)),
+    )
+
+    if getopt("robust"):
+        settings.load_profile("robust")
+    else:
+        settings.load_profile("ivy_profile")

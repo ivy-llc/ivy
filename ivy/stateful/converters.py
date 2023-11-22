@@ -1,14 +1,14 @@
 """Converters from Native Modules to Ivy Modules."""
+
 # global
+import functools
 from typing import Optional, Dict, List
 import re  # noqa
 import inspect
-from collections import OrderedDict
-import importlib
 
 # local
 import ivy
-from ivy.functional.ivy.gradients import _is_variable
+
 from ivy.utils.backend import current_backend
 
 
@@ -111,78 +111,21 @@ class ModuleConverters:
         ret
             The new trainable torch module instance.
         """
-        hk_spec = importlib.util.find_spec("hk")
-        flat_mapping_spec = importlib.util.find_spec(
-            "FlatMapping", "haiku._src.data_structures"
-        )
-        if not hk_spec:
+        try:
             import haiku as hk
-        else:
-            hk = importlib.util.module_from_spec(hk_spec)
-        if not flat_mapping_spec:
-            from haiku._src.data_structures import FlatMapping
-        else:
-            FlatMapping = importlib.util.module_from_spec(flat_mapping_spec)
+        except ModuleNotFoundError as exc:
+            raise ModuleNotFoundError(
+                "`haiku` was not found installed on your system. Please proceed "
+                "to install it and restart your interpreter to see the changes."
+            ) from exc
 
-        def _hk_flat_map_to_dict(hk_flat_map):
-            ret_dict = dict()
-            for k, v in hk_flat_map.items():
-                new_k = k.replace("/", "|")
-                if isinstance(v, FlatMapping):
-                    ret_dict[new_k] = _hk_flat_map_to_dict(v)
-                else:
-                    ret_dict[new_k] = v
-            return ret_dict
-
-        def _dict_to_hk_flat_map(dict_in):
-            ret_flat_map = dict()
-            for k, v in dict_in.items():
-                new_k = k.replace("|", "/")
-                if isinstance(v, dict):
-                    ret_flat_map[new_k] = _dict_to_hk_flat_map(v)
-                else:
-                    ret_flat_map[new_k] = v
-            return FlatMapping(ret_flat_map)
-
-        class HaikuIvyModule(ivy.Module):
-            def __init__(
-                self, *args, params_hk, native_module, device, devices, **kwargs
-            ):
-                self._native_module = native_module
-                self._args = args
-                self._kwargs = kwargs
-                ivy.Module.__init__(
-                    self,
-                    params_hk,
-                    *args,
-                    build_mode="on_init",
-                    device=device,
-                    devices=devices,
-                    **kwargs,
-                )
-
-            def _create_variables(self, device, dtype):
-                return self._hk_params
-
-            def _build(self, params_hk, *args, **kwargs):
-                args, kwargs = ivy.args_to_native(*args, **kwargs)
-                # noinspection PyUnresolvedReferences
-                params_dict = _hk_flat_map_to_dict(params_hk)
-                self._hk_params = ivy.Container(params_dict, dynamic_backend=False)
-                param_iterator = self._hk_params.cont_to_iterator()
-                _, param0 = next(param_iterator)
-                if hasattr(param0, "device"):
-                    self._dev = ivy.as_ivy_dev(param0.device())
-                else:
-                    self._dev = ivy.as_ivy_dev("cpu")
-
-            def _forward(self, *a, **kw):
-                a, kw = ivy.args_to_native(*a, **kw)
-                params_hk = _dict_to_hk_flat_map(self.v.cont_to_dict())
-                ret = self._native_module.apply(params_hk, 0, *a, **kw)
-                if isinstance(ret, tuple):
-                    return ivy.args_to_native(*ret)
-                return ivy.to_native(ret)
+        try:
+            from haiku._src.data_structures import FlatMapping  # noqa
+        except (ImportError, AttributeError) as exc:
+            raise ImportError(
+                "Unable to import `FlatMapping` from `haiku`. Please check if the "
+                "requested attribute exists."
+            ) from exc
 
         c_args = ivy.default(constructor_args, [])
         c_kwargs = ivy.default(constructor_kwargs, {})
@@ -204,8 +147,9 @@ class ModuleConverters:
 
             transformed_module = hk.transform(forward_fn)
             params_hk = transformed_module.init(rng_seed, *i_args, **i_kwargs)
+        from ivy.stateful.module import _HaikuIvyModule
 
-        return HaikuIvyModule(
+        return _HaikuIvyModule(
             *i_args,
             params_hk=params_hk,
             native_module=transformed_module,
@@ -261,56 +205,21 @@ class ModuleConverters:
         ret
             The new trainable ivy.Module instance.
         """
-        flax_spec = importlib.util.find_spec("flax")
-        if not flax_spec:
-            import flax
-        else:
-            flax = importlib.util.module_from_spec(flax_spec)
-            flax_spec.loader.exec_module(flax)
+        try:
+            import flax  # noqa
+        except ModuleNotFoundError as exc:
+            raise ModuleNotFoundError(
+                "`flax` was not found installed on your system. Please proceed "
+                "to install it and restart your interpreter to see the changes."
+            ) from exc
 
-        jax_spec = importlib.util.find_spec("jax")
-        if not jax_spec:
+        try:
             import jax
-        else:
-            jax = importlib.util.module_from_spec(jax_spec)
-            jax_spec.loader.exec_module(jax)
-
-        class FlaxIvyModule(ivy.Module):
-            def __init__(
-                self, *args, params_fx, native_module, device, devices, **kwargs
-            ):
-                self._native_module = native_module
-                self._args = args
-                self._kwargs = kwargs
-                ivy.Module.__init__(
-                    self,
-                    params_fx,
-                    *args,
-                    build_mode="on_init",
-                    device=device,
-                    devices=devices,
-                    **kwargs,
-                )
-
-            def _create_variables(self, device, dtype):
-                return self._fx_params
-
-            def _build(self, params_fx, *args, **kwargs):
-                args, kwargs = ivy.args_to_native(*args, **kwargs)
-                # noinspection PyUnresolvedReferences
-                params_dict = flax.core.unfreeze(params_fx)
-                self._fx_params = ivy.Container(params_dict, dynamic_backend=False)
-                param_iterator = self._fx_params.cont_to_iterator()
-                _, param0 = next(param_iterator)
-                self._dev = ivy.as_ivy_dev(ivy.dev(param0))
-
-            def _forward(self, *a, **kw):
-                a, kw = ivy.args_to_native(*a, **kw)
-                params_fx = flax.core.freeze(self.v.cont_to_dict())
-                ret = self._native_module.apply(params_fx, *a, **kw)
-                if isinstance(ret, tuple):
-                    return ivy.args_to_native(*ret)
-                return ivy.to_native(ret)
+        except ModuleNotFoundError as exc:
+            raise ModuleNotFoundError(
+                "`jax` was not found installed on your system. Please proceed "
+                "to install it and restart your interpreter to see the changes."
+            ) from exc
 
         c_args = ivy.default(constructor_args, [])
         c_kwargs = ivy.default(constructor_kwargs, {})
@@ -330,8 +239,9 @@ class ModuleConverters:
 
             native_module = native_module(*c_args, **c_kwargs)
             params_fx = native_module.init(rng_seed, *i_args, **i_kwargs)
+        from ivy.stateful.module import _FlaxIvyModule
 
-        return FlaxIvyModule(
+        return _FlaxIvyModule(
             *i_args,
             params_fx=params_fx,
             native_module=native_module,
@@ -379,40 +289,6 @@ class ModuleConverters:
         ret
             The new trainable ivy.Module instance.
         """
-
-        class KerasIvyModule(ivy.Module):
-            def __init__(self, *args, native_module, device, devices, **kwargs):
-                self._native_module = native_module
-                self._args = args
-                self._kwargs = kwargs
-
-                ivy.Module.__init__(
-                    self, *args, device=device, devices=devices, **kwargs
-                )
-
-            def _create_variables(self, device=None, dtype=None):
-                return self._native_params
-
-            def _build(self, *args, **kwargs):
-                self._native_params = ivy.Container(
-                    OrderedDict(
-                        sorted(
-                            [
-                                (param.name, param)
-                                for param in self._native_module.variables
-                            ]
-                        )
-                    ),
-                    dynamic_backend=False,
-                )
-
-            def _forward(self, *a, **kw):
-                a, kw = ivy.args_to_native(*a, **kw)
-                ret = self._native_module(*a, **kw)
-                if isinstance(ret, tuple):
-                    return ivy.args_to_native(*ret)
-                return ivy.to_native(ret)
-
         c_args = ivy.default(constructor_args, [])
         c_kwargs = ivy.default(constructor_kwargs, {})
         i_args = ivy.default(instance_args, [])
@@ -427,8 +303,9 @@ class ModuleConverters:
             native_module = native_module(*c_args, **c_kwargs)
             input_shape = i_args[0].shape
             native_module.build((input_shape[-1],))
+        from ivy.stateful.module import _KerasIvyModule
 
-        return KerasIvyModule(
+        return _KerasIvyModule(
             *i_args,
             native_module=native_module,
             device=device,
@@ -475,42 +352,6 @@ class ModuleConverters:
         ret
             The new trainable ivy.Module instance.
         """
-
-        class PaddleIvyModule(ivy.Module):
-            def __init__(self, *args, native_module, device, devices, **kwargs):
-                self._native_module = native_module
-                self._args = args
-                self._kwargs = kwargs
-
-                ivy.Module.__init__(
-                    self, *args, device=device, devices=devices, **kwargs
-                )
-
-            def _create_variables(self, device=None, dtype=None):
-                return self._native_params
-
-            def _build(self, *args, **kwargs):
-                self._native_params = ivy.Container(
-                    OrderedDict(
-                        sorted(
-                            [
-                                (k.replace(".", "/"), v)
-                                for k, v in dict(
-                                    self._native_module.named_parameters()
-                                ).items()
-                            ]
-                        )
-                    ),
-                    dynamic_backend=False,
-                )
-
-            def _forward(self, *a, **kw):
-                a, kw = ivy.args_to_native(*a, **kw)
-                ret = self._native_module(*a, **kw)
-                if isinstance(ret, tuple):
-                    return ivy.args_to_native(*ret)
-                return ivy.to_native(ret)
-
         c_args = ivy.default(constructor_args, [])
         c_kwargs = ivy.default(constructor_kwargs, {})
         i_args = ivy.default(instance_args, [])
@@ -518,8 +359,9 @@ class ModuleConverters:
 
         if inspect.isclass(native_module):
             native_module = native_module(*c_args, **c_kwargs)
+        from ivy.stateful.module import _PaddleIvyModule
 
-        return PaddleIvyModule(
+        return _PaddleIvyModule(
             *i_args,
             native_module=native_module,
             device=device,
@@ -570,82 +412,13 @@ class ModuleConverters:
         ret
             The new trainable ivy.Module instance.
         """
-        torch_spec = importlib.util.find_spec("torch")
-        if not torch_spec:
-            import torch
-        else:
-            torch = importlib.util.module_from_spec(torch_spec)
-
-        class TorchIvyModule(ivy.Module):
-            def __init__(
-                self, *args, native_module, device, devices, inplace_update, **kwargs
-            ):
-                self._native_module = native_module
-                self._args = args
-                self._kwargs = kwargs
-                self._update_v = (
-                    self._inplace_update_v if inplace_update else self._replace_update_v
-                )
-                ivy.Module.__init__(
-                    self, *args, device=device, devices=devices, **kwargs
-                )
-
-            def _create_variables(self, device=None, dtype=None):
-                return self._native_params
-
-            def _build(self, *args, **kwargs):
-                self._native_params = ivy.Container(
-                    OrderedDict(
-                        sorted(
-                            [
-                                (k.replace(".", "/"), v)
-                                for k, v in dict(
-                                    self._native_module.named_parameters()
-                                ).items()
-                            ]
-                        )
-                    ),
-                    dynamic_backend=False,
-                )
-
-            @staticmethod
-            def _inplace_update(p, v):
-                p.data = v.data
-
-            def _inplace_update_v(self, new_v):
-                ivy.Container.cont_multi_map(
-                    lambda xs, kc: self._inplace_update(xs[0], xs[1]),
-                    [self._native_params, new_v],
-                )
-
-            def _replace_update_v(self, new_v, native=None):
-                native = ivy.default(native, self._native_module)
-                for k, v in new_v.items():
-                    if isinstance(v, ivy.Container):
-                        # noinspection PyProtectedMember
-                        native._modules[k] = self._replace_update_v(
-                            v, native._modules[k]
-                        )
-                    elif _is_variable(v):
-                        # noinspection PyProtectedMember
-                        native.__setattr__(k, v)
-                    elif isinstance(v, torch.Tensor):
-                        # noinspection PyProtectedMember
-                        native.__setattr__(k, torch.nn.Parameter(v))
-                    else:
-                        raise ivy.utils.exceptions.IvyException(
-                            "found item in variable container {} which was neither a "
-                            "sub ivy.Container nor a variable.".format(v)
-                        )
-                return native
-
-            def _forward(self, *a, **kw):
-                a, kw = ivy.args_to_native(*a, **kw)
-                self._update_v(self.v)
-                ret = self._native_module(*a, **kw)
-                if isinstance(ret, tuple):
-                    return ivy.args_to_native(*ret)
-                return ivy.to_native(ret)
+        try:
+            import torch  # noqa
+        except ModuleNotFoundError as exc:
+            raise ModuleNotFoundError(
+                "`torch` was not found installed on your system. Please proceed "
+                "to install it and restart your interpreter to see the changes."
+            ) from exc
 
         c_args = ivy.default(constructor_args, [])
         c_kwargs = ivy.default(constructor_kwargs, {})
@@ -655,7 +428,9 @@ class ModuleConverters:
         if inspect.isclass(native_module):
             native_module = native_module(*c_args, **c_kwargs)
 
-        return TorchIvyModule(
+        from ivy.stateful.module import _TorchIvyModule
+
+        return _TorchIvyModule(
             *i_args,
             native_module=native_module,
             device=device,
@@ -663,3 +438,110 @@ class ModuleConverters:
             inplace_update=inplace_update,
             **i_kwargs,
         )
+
+    def to_keras_module(self):
+        """
+        Convert a `ivy.Module` module instance to a `tf.keras.Model` instance.
+
+        Returns
+        -------
+        ret
+            The new trainable `tf.keras.Model` instance.
+        """
+        try:
+            import tensorflow as tf
+        except ModuleNotFoundError as exc:
+            raise ModuleNotFoundError(
+                "`tensorflow` was not found installed on your system. Please proceed "
+                "to install it and restart your interpreter to see the changes."
+            ) from exc
+
+        class KerasModel(tf.keras.Model):
+            def __init__(self, ivy_module):
+                super(KerasModel, self).__init__()
+                self._ivy_module = ivy_module
+                self._parameters = {}
+                self._assign_variables()
+                self._populate_params()
+                self._propagate_params()
+
+            def _assign_variables(self):
+                ivy.set_backend("tensorflow")
+
+                self._ivy_module.v = self._ivy_module.v.cont_map(
+                    lambda x, kc: (
+                        ivy.to_new_backend(x.ivy_array.data, native=True)
+                        if hasattr(x, "_ivy_array")
+                        else ivy.to_new_backend(x, native=True)
+                    ),
+                )
+                self._ivy_module.v.cont_map(
+                    lambda x, kc: self.add_weight(
+                        name=kc, shape=x.shape, dtype=x.dtype, trainable=True
+                    )
+                )
+                model_weights = []
+                self._ivy_module.v.cont_map(
+                    lambda x, kc: model_weights.append(ivy.to_numpy(x))
+                )
+                self.set_weights(model_weights)
+
+                ivy.previous_backend()
+
+            def _populate_params(self):
+                self._parameters = {
+                    re.sub(r":([0-9]+)$", "", param.name).replace(
+                        f"{self.name}/", ""
+                    ): param
+                    for param in self.variables
+                }
+
+            def _propagate_params(self):
+                def __update_param(ivy_module, x, kc):
+                    # Update param in the underneath ivy module
+                    module = ivy_module
+                    keys = re.split("[/.]", kc)
+                    for key in keys[:-1]:
+                        module = module.__getattribute__(key)
+                    if hasattr(module, "_update_v"):
+                        module._update_v({keys[-1]: self._parameters[kc]})
+                    return self._parameters[kc]
+
+                self._ivy_module.v = self._ivy_module.v.cont_map(
+                    functools.partial(__update_param, self._ivy_module),
+                    inplace=True,
+                )
+
+            def call(self, *args, training=None, **kwargs):
+                ret = self._ivy_module(*args, **kwargs)
+                ret = ivy.nested_map(
+                    lambda x: (
+                        x.ivy_array.data
+                        if hasattr(x, "_ivy_array")
+                        else ivy.to_native(x)
+                    ),
+                    ret,
+                )
+                return ret
+
+            def __call__(self, *args, **kwargs):
+                ivy.set_backend("tensorflow")
+                args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
+                ivy.previous_backend()
+
+                return super(KerasModel, self).__call__(*args, **kwargs)
+
+            def to_device(self, device):
+                self._ivy_module._module_graph.to_device(device)
+                model_weights = ivy.nested_map(
+                    lambda x: (
+                        ivy.to_native(ivy.to_device(x, device))
+                        if ivy.is_array(x)
+                        else x
+                    ),
+                    self.weights,
+                )
+                self.set_weights(model_weights)
+
+        keras_module = KerasModel(self)
+        return keras_module

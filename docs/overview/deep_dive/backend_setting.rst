@@ -2,14 +2,13 @@ Backend Setting
 ===============
 
 .. _`this function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L154
-.. _`implicit_backend`: https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16
+.. _`implicit_backend`: https://github.com/unifyai/ivy/blob/3358b5bbadbe4cbc0509cad4ea8f05f178dfd8b8/ivy/utils/backend/handler.py
 .. _`import the backend module`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L184
 .. _`writing the function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L212
 .. _`wrap the functions`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`backend setting channel`: https://discord.com/channels/799879767196958751/982737886963187772
-.. _`backend setting forum`: https://discord.com/channels/799879767196958751/982737886963187772
 
 The backend framework can either be set by calling :code:`ivy.set_backend(backend_name)` or it can inferred from the arguments.
 For the latter, a global variable `implicit_backend`_ is located in the file which is initialized as numpy, and is always used to infer the backend in cases where: (a) no backend has been set using the :code:`set_backend` function and (b) the backend cannot be inferred from the inputs.
@@ -24,36 +23,86 @@ When calling `this function`_ for setting the backend, the following steps are p
 #. loop through the original :code:`ivy_original_dict` (which has all functions, including compositional), and (a) add the primary function from the backend if it exists, (b) else add the compositional function from :code:`ivy_original_dict`.
 #. `wrap the functions`_ where necessary, extending them with shared repeated functionality and `writing the function`_ to :attr:`ivy.__dict__`.
    Wrapping is used in order to avoid excessive code duplication in every backend function implementation.
-   This is explained in more detail in the next section: :ref:`Function Wrapping`.
+   This is explained in more detail in the next section: `Function Wrapping <function_wrapping.rst>`_.
 
 It's helpful to look at an example:
 
 .. code-block:: python
 
    x = ivy.array([[2., 3.]])
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.numpy' from '/opt/project/ivy/functional/backends/numpy/__init__.py'>
 
 .. code-block:: python
 
    y = ivy.multiply(torch.Tensor([3.]), torch.Tensor([4.]))
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
 
 .. code-block:: python
 
    ivy.set_backend('jax')
    z = ivy.matmul(jax.numpy.array([[2.,3.]]), jax.numpy.array([[5.],[6.]]))
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.jax' from '/opt/project/ivy/functional/backends/jax/__init__.py'>
    ivy.previous_backend()
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
 
 In the last example above, the moment any backend is set, it will be used over the `implicit_backend`_.
 However when the current backend is set to the previous using the :func:`ivy.previous_backend`, the `implicit_backend`_ will be used as a fallback, which will assume the backend from the last run.
-While the `implicit_backend`_ functionality gives more freedom to the user, the recommended way of doing things would be set the backend explicitly.
+While the `implicit_backend`_ functionality gives more freedom to the user, the recommended way of doing things would be to set the backend explicitly.
 In addition, all the previously set backends can be cleared by calling :func:`ivy.unset_backend`.
+
+Dynamic Backend Setting
+-----------------------
+
+.. _`ivy.set_dynamic_backend`: https://github.com/unifyai/ivy/blob/e2b0b1d7fcd454f12bfae94b03213457460276c8/ivy/__init__.py#L1150.
+.. _`ivy.unset_dynamic_backend`: https://github.com/unifyai/ivy/blob/e2b0b1d7fcd454f12bfae94b03213457460276c8/ivy/__init__.py#L1187.
+.. _`ivy.dynamic_backend_as`: https://github.com/unifyai/ivy/blob/e2b0b1d7fcd454f12bfae94b03213457460276c8/ivy/__init__.py#L1190.
+.. _`ivy.Array`: https://github.com/unifyai/ivy/blob/e2b0b1d7fcd454f12bfae94b03213457460276c8/ivy/data_classes/array/array.py#L190.
+.. _`ivy.Container`: https://github.com/unifyai/ivy/blob/e2b0b1d7fcd454f12bfae94b03213457460276c8/ivy/data_classes/container/base.py#L4285.
+.. _`dynamic_backend_converter`: https://github.com/unifyai/ivy/blob/e2b0b1d7fcd454f12bfae94b03213457460276c8/ivy/utils/backend/handler.py#L252.
+
+Working with different backends in Ivy can be challenging, especially when you need to switch between backends frequently.
+To make this easier, users can make use of the dynamic backend attribute of :class:`ivy.Array` and :class:`ivy.Container` classes which allow you to automatically convert ivy arrays to the new backend whenever the backend is changed.
+Essentially, when the user calls :code:`ivy.set_backend(<backend>, dynamic=True)`, the following steps are performed:
+
+#. First, all live objects in the current project scope are found and then filtered to only include :class:`ivy.Array`/:class:`ivy.Container` objects.
+#. Then, these objects are iterated through and converted to the target backend using DLPack or numpy as an intermediary.
+
+By default, the dynamic backend attribute is set to True when you create an ivy array (e.g., :code:`x = ivy.array([1,2,3])`), but the attribute is mutable and can be changed after the ivy array is created (e.g., :code:`x.dynamic_backend= True`).
+Here's an example to illustrate how this works in practice:
+
+.. code-block:: python
+
+   ivy.set_backend('torch')
+   x = ivy.array([1,2,3])
+   y = ivy.array([1,2,3])
+   y.dynamic_backend=False
+   x.dynamic_backend=True
+   x.data # torch tensor
+   y.data # torch.tensor
+
+   ivy.set_backend('jax')
+   x.data # will be a jax array
+   y.data # will still be a torch tensor since dynamic_backend=False
+
+Setting the attribute to True converts the array to the current backend even if the backend was set with `dynamic=False`. In addition to setting the dynamic backend attribute for individual ivy arrays, you can also set or unset the dynamic backend feature globally for all such instances using `ivy.set_dynamic_backend`_ and `ivy.unset_dynamic_backend`_ respectively.
+
+Another useful feature of the dynamic backend is the `ivy.dynamic_backend_as`_ context manager. This allows you to write code like this:
+
+.. code-block:: python
+
+   with ivy.dynamic_backend_as(True):
+     a = ivy.array([0., 1.])
+     b = ivy.array([2., 3.])
+
+   with ivy.dynamic_backend_as(False):
+     c = ivy.array([4., 5.])
+     d = ivy.array([6., 7.])
+
+This makes it easy to define different sections of your project with different settings, without having to explicitly call :code:`ivy.set_<something>` and :code:`ivy.unset_<something>` etc.
 
 
 Backend and Frontend Version Support
@@ -80,13 +129,13 @@ If the user's system doesn't have the backend framework installed, we default to
 
 This should have hopefully given you a good feel for how the backend framework is set.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `backend setting channel`_ or in the `backend setting forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `backend setting channel`_!
 
 
 **Video**
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/ROt5E8aHgww" class="video">
     </iframe>

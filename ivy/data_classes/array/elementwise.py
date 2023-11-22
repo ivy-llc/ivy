@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # local
 import ivy
@@ -8,7 +8,12 @@ import ivy
 
 # noinspection PyUnresolvedReferences
 class _ArrayWithElementwise(abc.ABC):
-    def abs(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def abs(
+        self: Union[float, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:  # noqa
         """
         ivy.Array instance method variant of ivy.abs. This method simply wraps the
         function, and so the docstring for ivy.abs also applies to this method with
@@ -964,6 +969,46 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.floor_divide(self._data, x2, out=out)
 
+    def fmin(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.fmin. This method simply wraps the
+        function, and so the docstring for ivy.fmin also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        x2
+            Second input array
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with element-wise minimums.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([2, 3, 4])
+        >>> x2 = ivy.array([1, 5, 2])
+        >>> ivy.fmin(x1, x2)
+        ivy.array([1, 3, 2])
+
+        >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+        >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+        >>> x1.fmin(x2)
+        ivy.array([ 0.,  0., nan])
+        """
+        return ivy.fmin(self._data, x2, out=out)
+
     def greater(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
@@ -1361,7 +1406,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([1 , 2 ,3 ])
+        >>> x = ivy.array([1., 2., 3.])
         >>> y = x.log1p()
         >>> print(y)
         ivy.array([0.693, 1.1  , 1.39 ])
@@ -1393,6 +1438,27 @@ class _ArrayWithElementwise(abc.ABC):
             an array containing the evaluated base ``2`` logarithm for each element
             in ``self``. The returned array must have a real-valued floating-point
             data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([5.0, 1, -0.0, -6.0])
+        >>> y = ivy.log2(x)
+        >>> print(y)
+        ivy.array([2.32, 0., -inf, nan])
+
+        >>> x = ivy.array([float('nan'), -5.0, -0.0, 1.0, 5.0, float('+inf')])
+        >>> y = x.log2()
+        >>> print(y)
+        ivy.array([nan, nan, -inf, 0., 2.32, inf])
+
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
+                            [+0, -2.0, -5, float('-inf')]])
+        >>> y = x.log2()
+        >>> print(y)
+        ivy.array([[nan, 0., 2.32, inf],
+                   [-inf, nan, nan, nan]])
         """
         return ivy.log2(self._data, out=out)
 
@@ -1480,6 +1546,41 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([ 3.31,  5.05, 15.  ])
         """
         return ivy.logaddexp(self._data, x2, out=out)
+
+    def logaddexp2(
+        self: Union[ivy.Array, float, list, tuple],
+        x2: Union[ivy.Array, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.logaddexp2. This method simply wraps
+        the function, and so the docstring for ivy.logaddexp2 also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First array-like input.
+        x2
+            Second array-like input
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise logaddexp2 of x1 and x2.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.array([4, 5, 6])
+        >>> x1.logaddexp2(x2)
+        ivy.array([4.169925, 5.169925, 6.169925])
+        """
+        return ivy.logaddexp2(self._data, x2, out=out)
 
     def logical_and(
         self: ivy.Array,
@@ -1587,13 +1688,14 @@ class _ArrayWithElementwise(abc.ABC):
             must have a data type of ``bool``.
 
         This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-        `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+        the `docstring <https://data-apis.org/array-api/latest/
+        API_specification/generated/array_api.logical_or.html>`_
         in the standard.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-        instances in place of any of the arguments.
+        Both the description and the type hints above assumes an array input for
+        simplicity, but this function is *nestable*, and therefore also
+        accepts :class:`ivy.Container` instances in place of any of the arguments.
 
         Examples
         --------
@@ -1974,7 +2076,7 @@ class _ArrayWithElementwise(abc.ABC):
 
     def pow(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[int, float, ivy.Array, ivy.NativeArray],
         /,
         *,
         out: Optional[ivy.Array] = None,
@@ -2020,6 +2122,35 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([2.25, 0.64, 0.09])
         """
         return ivy.pow(self._data, x2, out=out)
+
+    def real(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.real. This method simply wraps the
+        function, and so the docstring for ivy.real also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a real-valued floating-point data type.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing test results. If input in an
+            array is real then, it is returned unchanged. on the
+            other hand, if it is complex then, it returns real part from it
+
+        Examples
+        --------
+        >>> x = ivy.array([4+3j, 6+2j, 1-6j])
+        >>> x.real()
+        ivy.array([4., 6., 1.])
+        """
+        return ivy.real(self._data, out=out)
 
     def remainder(
         self: ivy.Array,
@@ -2129,7 +2260,12 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.round(self._data, decimals=decimals, out=out)
 
-    def sign(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def sign(
+        self: ivy.Array,
+        *,
+        np_variant: Optional[bool] = True,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sign. This method simply wraps the
         function, and so the docstring for ivy.sign also applies to this method with
@@ -2167,7 +2303,7 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([[-1., -1.,  0.,  1.,  1.],
         [ 1., -1.,  1., -1.,  1.]])
         """
-        return ivy.sign(self._data, out=out)
+        return ivy.sign(self._data, np_variant=np_variant, out=out)
 
     def sin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
@@ -2354,6 +2490,58 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.subtract(self._data, x2, alpha=alpha, out=out)
 
+    def trapz(
+        self: ivy.Array,
+        /,
+        *,
+        x: Optional[ivy.Array] = None,
+        dx: float = 1.0,
+        axis: int = -1,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.trapz. This method simply wraps the
+        function, and so the docstring for ivy.trapz also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The array that should be integrated.
+        x
+            The sample points corresponding to the input array values.
+            If x is None, the sample points are assumed to be evenly spaced
+            dx apart. The default is None.
+        dx
+            The spacing between sample points when x is None. The default is 1.
+        axis
+            The axis along which to integrate.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Definite integral of n-dimensional array as approximated along
+            a single axis by the trapezoidal rule. If the input array is a
+            1-dimensional array, then the result is a float. If n is greater
+            than 1, then the result is an n-1 dimensional array.
+
+        Examples
+        --------
+        >>> y = ivy.array([1, 2, 3])
+        >>> ivy.trapz(y)
+        4.0
+        >>> y = ivy.array([1, 2, 3])
+        >>> x = ivy.array([4, 6, 8])
+        >>> ivy.trapz(y, x=x)
+        8.0
+        >>> y = ivy.array([1, 2, 3])
+        >>> ivy.trapz(y, dx=2)
+        8.0
+        """
+        return ivy.trapz(self._data, x=x, dx=dx, axis=axis, out=out)
+
     def tan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tan. This method simply wraps the
@@ -2385,7 +2573,12 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.tan(self._data, out=out)
 
-    def tanh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def tanh(
+        self: ivy.Array,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tanh. This method simply wraps the
         function, and so the docstring for ivy.tanh also applies to this method with
@@ -2396,6 +2589,9 @@ class _ArrayWithElementwise(abc.ABC):
         self
             input array whose elements each represent a hyperbolic angle.
             Should have a real-valued floating-point data type.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -2414,7 +2610,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([0., 0.762, 0.964])
         """
-        return ivy.tanh(self._data, out=out)
+        return ivy.tanh(self._data, complex_mode=complex_mode, out=out)
 
     def trunc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
@@ -2471,6 +2667,210 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([0., 0.328, 0.677, 0.842])
         """
         return ivy.erf(self._data, out=out)
+
+    def exp2(
+        self: Union[ivy.Array, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.exp2. This method simply wraps the
+        function, and so the docstring for ivy.exp2 also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array-like input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise 2 to the power x. This is a scalar if x is a scalar.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> x.exp2()
+        ivy.array([2.,    4.,   8.])
+        >>> x = [5, 6, 7]
+        >>> x.exp2()
+        ivy.array([32.,   64.,  128.])
+        """
+        return ivy.exp2(self._data, out=out)
+
+    def gcd(
+        self: Union[ivy.Array, int, list, tuple],
+        x2: Union[ivy.Array, int, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.gcd. This method simply wraps the
+        function, and so the docstring for ivy.gcd also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            First array-like input.
+        x2
+            Second array-like input
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise gcd of |x1| and |x2|.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.array([4, 5, 6])
+        >>> x1.gcd(x2)
+        ivy.array([1.,    1.,   3.])
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x1.gcd(10)
+        ivy.array([1.,   2.,  1.])
+        """
+        return ivy.gcd(self._data, x2, out=out)
+
+    def nan_to_num(
+        self: ivy.Array,
+        /,
+        *,
+        copy: bool = True,
+        nan: Union[float, int] = 0.0,
+        posinf: Optional[Union[float, int]] = None,
+        neginf: Optional[Union[float, int]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.nan_to_num. This method simply wraps
+        the function, and so the docstring for ivy.nan_to_num also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array input.
+        copy
+            Whether to create a copy of x (True) or to replace values in-place (False).
+            The in-place operation only occurs if casting to an array does not require
+            a copy. Default is True.
+        nan
+            Value to be used to fill NaN values. If no value is passed then NaN values
+            will be replaced with 0.0.
+        posinf
+            Value to be used to fill positive infinity values. If no value is passed
+            then positive infinity values will be replaced with a very large number.
+        neginf
+            Value to be used to fill negative infinity values.
+            If no value is passed then negative infinity values
+            will be replaced with a very small (or negative) number.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with the non-finite values replaced.
+            If copy is False, this may be x itself.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, nan])
+        >>> x.nan_to_num()
+        ivy.array([1.,    1.,   3.,   0.0])
+        >>> x = ivy.array([1, 2, 3, inf])
+        >>> x.nan_to_num(posinf=5e+100)
+        ivy.array([1.,   2.,   3.,   5e+100])
+        """
+        return ivy.nan_to_num(
+            self._data, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
+        )
+
+    def imag(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.imag. This method simply wraps the
+        function, and so the docstring for ivy.imag also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array-like input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns an array with the imaginary part of complex numbers.
+
+        Examples
+        --------
+        >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
+        >>> b
+        ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+        >>> ivy.imag(b)
+        ivy.array([2., 4., 6.])
+        >>> b.imag()
+        ivy.array([2., 4., 6.])
+        """
+        return ivy.imag(self._data, out=out)
+
+    def angle(
+        self: ivy.Array,
+        /,
+        *,
+        deg: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.angle. This method simply wraps the
+        function, and so the docstring for ivy.angle also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        z
+            Array-like input.
+        deg
+            optional bool.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns an array of angles for each complex number in the input.
+            If def is False(default), angle is calculated in radian and if
+            def is True, then angle is calculated in degrees.
+
+        Examples
+        --------
+        >>> ivy.set_backend('tensorflow')
+        >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
+        >>> z
+        ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
+        >>> ivy.angle(z)
+        ivy.array([ 2.35619449,  2.35619449, -0.78539816])
+        >>> ivy.set_backend('numpy')
+        >>> ivy.angle(z,deg=True)
+        ivy.array([135., 135., -45.])
+        """
+        return ivy.angle(self._data, deg=deg, out=out)
 
     def reciprocal(
         self: ivy.Array,
@@ -2558,7 +2958,7 @@ class _ArrayWithElementwise(abc.ABC):
         --------
         With :class:`ivy.Array` input:
 
-        >>> x=ivy.array([1,5,8,10])
+        >>> x=ivy.array([1., 5., 8., 10.])
         >>> y=x.rad2deg()
         >>> print(y)
         ivy.array([ 57.3, 286. , 458. , 573. ])
@@ -2636,3 +3036,35 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([False, False, False])
         """
         return ivy.isreal(self._data, out=out)
+
+    def lcm(
+        self: ivy.Array, x2: ivy.Array, *, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.lcm. This method simply wraps the
+        function, and so the docstring for ivy.lcm also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array.
+        x2
+            second input array
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            an array that includes the element-wise least common multiples
+            of 'self' and x2
+
+        Examples
+        --------
+        >>> x1=ivy.array([2, 3, 4])
+        >>> x2=ivy.array([5, 8, 15])
+        >>> x1.lcm(x2)
+        ivy.array([10, 21, 60])
+        """
+        return ivy.lcm(self, x2, out=out)

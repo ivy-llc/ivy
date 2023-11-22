@@ -1,22 +1,21 @@
 """Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
+
 # global
 from numbers import Number
 from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
+import multiprocessing as _multiprocessing
 
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.functional.ivy.general import _broadcast_to
+from ivy.utils.exceptions import _check_inplace_update_support
 from . import backend_version
-import multiprocessing as _multiprocessing
-from ivy.functional.ivy.general import _parse_ellipsis, _parse_index
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def is_native_array(x, /, *, exclusive=False):
     if isinstance(x, paddle.Tensor):
         if exclusive and not x.stop_gradient:
@@ -25,9 +24,6 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def array_equal(x0: paddle.Tensor, x1: paddle.Tensor, /) -> bool:
     return bool(paddle_backend.all(paddle_backend.equal(x0, x1)))
 
@@ -40,60 +36,99 @@ def current_backend_str() -> str:
     return "paddle"
 
 
+def _check_query(query):
+    if isinstance(query, Sequence):
+        return not any(isinstance(item, (Sequence, paddle.Tensor)) for item in query)
+    else:
+        return True
+
+
+def _squeeze_helper(query, x_ndim):
+    # as of paddle v2.5, paddle returns 1d tensors instead of scalars
+    return_scalar = (
+        (isinstance(query, Number) and x_ndim == 1)
+        or (
+            isinstance(query, tuple)
+            and all(isinstance(index, int) for index in query)
+            and len(query) == x_ndim
+        )
+        or (isinstance(query, paddle.Tensor) and query.ndim == x_ndim)
+    )
+
+    # checks if any slice has step > 1, this keeps all the dimensions
+    # in the paddle array which is not desirable
+    if not isinstance(query, Sequence):
+        query = [query]
+    slice_squeeze = list(
+        map(
+            lambda idx: isinstance(idx, slice)
+            and idx.step is not None
+            and idx.step != 1,
+            query,
+        )
+    )
+
+    if any(slice_squeeze):
+        squeeze_indices = tuple([
+            idx
+            for idx, val in enumerate(slice_squeeze)
+            if (val is False and query[idx] is not None)
+        ])
+    elif return_scalar:
+        squeeze_indices = ()
+    else:
+        squeeze_indices = None
+
+    return squeeze_indices
+
+
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {
+        "2.5.2 and below": {
+            "cpu": ("int8", "int16", "float16", "complex64", "complex128")
+        }
+    },
+    backend_version,
 )
 def get_item(
-    x: paddle.Tensor, query: Union[paddle.Tensor, Tuple], *, copy: bool = None
+    x: paddle.Tensor,
+    /,
+    query: Union[paddle.Tensor, Tuple],
+    *,
+    copy: Optional[bool] = None,
 ) -> paddle.Tensor:
-    print(query)
+    if copy:
+        x = paddle.clone(x)
+
+    if (
+        isinstance(query, paddle.Tensor)
+        and query.dtype == paddle.bool
+        and query.ndim == 0
+    ) or isinstance(query, bool):
+        # special case to handle scalar boolean indices
+        if query is True:
+            return x[None]
+        else:
+            return paddle.zeros(shape=[0] + x.shape, dtype=x.dtype)
+
+    if isinstance(query, paddle.Tensor) and query.dtype == paddle.bool:
+        # # masked queries x[bool_1,bool_2,...,bool_i]
+        return paddle.gather_nd(x, paddle.nonzero(query))
+    if isinstance(query, paddle.Tensor):
+        query = query.cast("int64")
+
+    squeeze_indices = _squeeze_helper(query, x.ndim)
     # regular queries x[idx_1,idx_2,...,idx_i]
-    if not isinstance(query, paddle.Tensor):
-        if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-            return x.cast("float32").__getitem__(query).cast(x.dtype)
-        return x.__getitem__(query)
-
-    # masked queries x[bool_1,bool_2,...,bool_i]
-    if query.dtype == paddle.bool:
-        if x.dtype in [
-            paddle.int8,
-            paddle.int16,
-            paddle.uint8,
-            paddle.float16,
-            paddle.complex64,
-            paddle.complex128,
-            paddle.bool,
-        ]:
-            if paddle.is_complex(x):
-                return paddle.complex(
-                    paddle.masked_select(x.real(), query),
-                    paddle.masked_select(x.imag(), query),
-                )
-            return paddle.masked_select(x.cast("float32"), query).cast(x.dtype)
-        return paddle.masked_select(x, query)
-
-    query = query.cast("int64")
     # array queries idx = Tensor(idx_1,idx_2,...,idx_i), x[idx]
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            return paddle.complex(
-                x.real().__getitem__(query), x.imag().__getitem__(query)
-            )
-        return x.cast("float32").__getitem__(query).cast(x.dtype)
-    return x.__getitem__(query)
+    ret = x.__getitem__(query)
+    return ret.squeeze(squeeze_indices) if squeeze_indices else ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+get_item.partial_mixed_handler = (
+    lambda x, query, **kwargs: _check_query(query) and 0 not in x.shape
 )
+
+
 def to_numpy(
     x: Union[paddle.Tensor, List[paddle.Tensor]], /, *, copy: bool = True
 ) -> Union[np.ndarray, List[np.ndarray]]:
@@ -105,34 +140,28 @@ def to_numpy(
         else:
             return x
     elif paddle.is_tensor(x):
+        dtype = ivy.as_ivy_dtype(x.dtype)
+        if dtype == "bfloat16":
+            x = x.astype("float32")
         if copy:
-            return np.array(x)
+            return np.array(x).astype(dtype)
         else:
-            return np.asarray(x)
+            return np.asarray(x).astype(dtype)
     elif isinstance(x, list):
         return [ivy.to_numpy(u) for u in x]
     raise ivy.utils.exceptions.IvyException("Expected a Paddle Tensor.")
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def to_scalar(x: paddle.Tensor, /) -> Number:
     if isinstance(x, (Number, complex)):
         return x
     return x.item()
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def to_list(x: paddle.Tensor, /) -> list:
     return x.tolist()
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def gather(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -178,8 +207,10 @@ def gather(
         )
         return paddle_backend.reshape(result, shape=new_shape)
 
-    axis = axis % params.ndim
-    batch_dims = batch_dims % params.ndim
+    if axis is not None:
+        axis = axis % params.ndim
+    if batch_dims is not None:
+        batch_dims = batch_dims % params.ndim
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     if params.dtype in [
         paddle.int8,
@@ -195,9 +226,6 @@ def gather(
     return _gather(params)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def gather_nd(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -233,10 +261,13 @@ def gather_nd(
         indices = paddle_backend.expand_dims(indices, axis=0)
         batch_dims = 1
 
+    if indices.dtype not in [paddle.int32, paddle.int64]:
+        indices = indices.cast(paddle.int32)
+
     params_shape = paddle.to_tensor(params.shape)
     indices_shape = indices.shape
     batch_shape = params_shape[:batch_dims]
-    batch_size = paddle.prod(batch_shape, [0])
+    batch_size = paddle.prod(batch_shape, [0]).numpy().tolist()
     index_internal_ndims = indices.ndim - batch_dims - 1
     indices_internal_shape = indices_shape[batch_dims:-1]
 
@@ -259,7 +290,9 @@ def gather_nd(
         mesh_list = []
     # Then we flatten and stack the tensors to form a (B1.B2) by 2 matrix.
     flat_list = [paddle_backend.reshape(x, shape=(-1,)) for x in mesh_list]
-    stacked_list = paddle_backend.stack(flat_list, axis=0)
+    stacked_list = (
+        paddle_backend.stack(flat_list, axis=0) if flat_list else paddle.to_tensor([])
+    )
     index_grid = paddle_backend.permute_dims(
         stacked_list, axes=[axis for axis in range(stacked_list.ndim)][::-1]
     )
@@ -287,7 +320,7 @@ def gather_nd(
     )
     index_grid = paddle_backend.tile(index_grid, repeats=paddle.to_tensor(tile_shape))
     # index_grid now has shape [(B1.B2), i1, ..., iK, 2]
-    flat_shape = [batch_size] + indices_shape[batch_dims:]
+    flat_shape = batch_size + indices_shape[batch_dims:]
     flat_indices = paddle_backend.reshape(indices, shape=flat_shape)
     # flat_indices now has shape [(B1.B2), i1, ..., iK, C]
     indices = paddle_backend.concat((index_grid, flat_indices), axis=-1)
@@ -316,9 +349,6 @@ def gather_nd(
     return out
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def get_num_dims(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[paddle.Tensor, int]:
@@ -331,9 +361,6 @@ def inplace_arrays_supported():
     return False
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def inplace_decrement(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
@@ -346,9 +373,6 @@ def inplace_decrement(
     return paddle.assign(paddle_backend.subtract(x_native, val_native), target)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def inplace_increment(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
@@ -361,9 +385,6 @@ def inplace_increment(
     return paddle.assign(paddle_backend.add(x_native, val_native), target)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def inplace_update(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
@@ -372,6 +393,7 @@ def inplace_update(
     ensure_in_backend: bool = False,
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
+    _check_inplace_update_support(x, ensure_in_backend)
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
 
@@ -381,6 +403,8 @@ def inplace_update(
             paddle.assign(val_native, x_native)
         else:
             x_native = val_native
+        if ivy.is_native_array(x):
+            return x_native
         if ivy.is_ivy_array(x):
             x.data = x_native
         else:
@@ -390,9 +414,6 @@ def inplace_update(
         return val
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def inplace_variables_supported():
     return False
 
@@ -403,9 +424,6 @@ def multiprocessing(context=None):
     )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def scatter_flat(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -418,77 +436,13 @@ def scatter_flat(
     if indices.dtype not in [paddle.int32, paddle.int64]:
         indices = indices.cast("int64")
     if ivy.exists(size) and ivy.exists(out):
-        ivy.utils.assertions.check_equal(out.ndim, 1)
-        ivy.utils.assertions.check_equal(out.shape[0], size)
+        ivy.utils.assertions.check_equal(out.ndim, 1, as_array=False)
+        ivy.utils.assertions.check_equal(out.shape[0], size, as_array=False)
     return paddle_backend.scatter_nd(
         indices.unsqueeze(-1), updates, shape=[size], reduction=reduction, out=out
     )
 
 
-def _scatter_nd_replace(data, indices, updates, reduce):
-    """
-    `scatter_nd` with `reduce`.
-
-    An implementation for scatter_nd using put_along_axis since
-    paddle.scatter_nd only supports "sum" reduction mode.
-    """
-    if data.dtype != updates.dtype:
-        data = data.cast(updates.dtype)
-
-    target_idx = paddle.to_tensor([])
-    idx_range = paddle.arange(paddle.prod(paddle.to_tensor(data.shape))).reshape(
-        data.shape
-    )
-
-    for i in indices:
-        target_idx = paddle.concat(
-            [target_idx, paddle_backend.get_item(idx_range, tuple(i)).flatten()], -1
-        )
-
-    if data.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(data):
-            result_real = paddle.put_along_axis(
-                data.reshape([-1]).real(),
-                target_idx,
-                updates.real().flatten(),
-                -1,
-                reduce=reduce,
-            )
-            result_imag = paddle.put_along_axis(
-                data.reshape([-1]).imag(),
-                target_idx,
-                updates.imag().flatten(),
-                -1,
-                reduce=reduce,
-            )
-            return paddle.complex(result_real, result_imag).reshape(data.shape)
-        return (
-            paddle.put_along_axis(
-                data.reshape([-1]).cast("float32"),
-                target_idx,
-                updates.cast("float32").flatten(),
-                -1,
-                reduce=reduce,
-            )
-            .cast(data.dtype)
-            .reshape(data.shape)
-        )
-    return paddle.put_along_axis(
-        data.reshape([-1]), target_idx, updates.flatten(), -1, reduce=reduce
-    ).reshape(data.shape)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def scatter_nd(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -498,238 +452,119 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if ivy.exists(out) and not isinstance(updates, (Number, list, tuple)):
-        out = (
-            out.cast(updates.dtype)
-            if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(out.dtype)
-            else out
-        )
-    # handle numeric updates
     updates = paddle.to_tensor(
         updates,
         dtype=(
-            ivy.dtype(out, as_native=True)
+            ivy.promote_types(out.dtype, updates.dtype)
             if ivy.exists(out)
             else ivy.default_dtype(item=updates)
         ),
     )
-    contains_slices = (
-        any(isinstance(idx, slice) for idx in indices)
-        if isinstance(indices, (tuple, list))
-        else isinstance(indices, slice)
-    )
 
-    # hanle non-tensor indices
-    if isinstance(indices, (Sequence, paddle.Tensor)) and len(indices) == 0:
-        return updates
+    if indices.dtype not in [paddle.int32, paddle.int64]:
+        indices = indices.cast(paddle.int32)
 
-    elif (
-        indices is Ellipsis
-        or (isinstance(indices, tuple) and indices == (Ellipsis,))
-        or (isinstance(indices, slice) and indices == slice(None, None, None))
-    ):
-        if updates.shape == () and ivy.exists(out) and out.shape == ():
-            return updates
-        shape = out.shape if ivy.exists(out) else updates.shape
-        indices = paddle_backend.stack(
-            [
-                paddle.flatten(value)
-                for value in paddle_backend.meshgrid(
-                    *[paddle.arange(shape[0])], indexing="ij"
-                )
-            ],
-            axis=-1,
-        )
-    elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
-        shape = (
-            shape
-            if ivy.exists(shape)
-            else out.shape if ivy.exists(out) else updates.shape
-        )
-        indices = _parse_ellipsis(indices, len(shape))
-        indices = paddle_backend.stack(
-            [
-                paddle.flatten(value)
-                for value in paddle_backend.meshgrid(
-                    *[
-                        (
-                            paddle.arange(s)
-                            if idx == slice(None, None, None)
-                            else (
-                                paddle.arange(
-                                    ivy.default(idx.start, 0),
-                                    ivy.default(idx.stop, s),
-                                    ivy.default(idx.step, 1),
-                                )
-                                if isinstance(idx, slice)
-                                and (idx != slice(None, None, None))
-                                else paddle.to_tensor([idx % s])
-                            )
-                        )
-                        for s, idx in zip(shape, indices)
-                    ],
-                    indexing="ij",
-                )
-            ],
-            axis=-1,
-        )
-    elif contains_slices:
-        shape = (
-            shape
-            if ivy.exists(shape)
-            else out.shape if ivy.exists(out) else updates.shape
-        )
-        if isinstance(indices, (tuple, list)):
-            indices = _parse_index(indices, len(shape)) if -1 in indices else indices
-            indices = paddle_backend.stack(
-                [
-                    paddle.flatten(value)
-                    for value in paddle_backend.meshgrid(
-                        *[
-                            (
-                                paddle.arange(s)
-                                if idx == slice(None, None, None)
-                                else (
-                                    paddle.arange(
-                                        ivy.default(idx.start, 0),
-                                        ivy.default(idx.stop, s),
-                                        ivy.default(idx.step, 1),
-                                    )
-                                    if isinstance(idx, slice)
-                                    and (idx != slice(None, None, None))
-                                    else paddle.to_tensor([idx % s])
-                                )
-                            )
-                            for s, idx in zip(shape, indices)
-                        ],
-                        indexing="ij",
-                    )
-                ],
-                axis=-1,
-            )
-        else:
-            indices = paddle_backend.stack(
-                [
-                    paddle.flatten(value)
-                    for value in paddle_backend.meshgrid(
-                        *[
-                            paddle.arange(
-                                ivy.default(indices.start, 0),
-                                ivy.default(indices.stop, shape[0]),
-                                ivy.default(indices.step, 1),
-                            )
-                        ],
-                        indexing="ij",
-                    )
-                ],
-                axis=-1,
-            )
-    else:
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = paddle.to_tensor(indices)
-        if len(indices.shape) < 2:
-            indices = paddle_backend.expand_dims(indices, axis=0)
-        if paddle_backend.any(indices < 0):
-            shape = list(shape) if ivy.exists(shape) else list(out.shape)
-            indices = _parse_index(indices, shape)
-            indices = [
-                paddle_backend.stack(
-                    [
-                        paddle.flatten(value)
-                        for value in paddle_backend.meshgrid(
-                            *[
-                                (
-                                    paddle.arange(s)
-                                    if idx == slice(None, None, None)
-                                    else (
-                                        paddle.arange(
-                                            ivy.default(idx.start, 0),
-                                            ivy.default(idx.stop, s),
-                                            ivy.default(idx.step, 1),
-                                        )
-                                        if isinstance(idx, slice)
-                                        and idx != slice(None, None, None)
-                                        else paddle.to_tensor([idx % s])
-                                    )
-                                )
-                                for s, idx in zip(shape, index)
-                            ],
-                            indexing="xy",
-                        )
-                    ],
-                    axis=-1,
-                )
-                for index in indices
-            ]
-            indices = paddle_backend.concat(indices, axis=0)
-    # broadcast updates to correct shape
-    shape = list(shape) if shape is not None else None
     expected_shape = (
-        indices.shape[:-1] + list(out.shape[indices.shape[-1] :])
+        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
         if ivy.exists(out)
-        else indices.shape[:-1] + shape[indices.shape[-1] :]
+        else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
-    if sum(updates.shape) < sum(expected_shape):
-        updates = paddle_backend.broadcast_to(updates, expected_shape)
-    elif sum(updates.shape) >= sum(expected_shape):
-        indices_shape = updates.shape[:1] + indices.shape[-1:]
-        if sum(indices.shape) < sum(indices_shape):
-            indices = paddle_backend.broadcast_to(indices, indices_shape)
-        else:
-            updates = paddle_backend.broadcast_to(updates, expected_shape)
-    # implementation
-    target = out
-    target_given = ivy.exists(target)
-    if ivy.exists(shape) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
-    shape = list(shape) if ivy.exists(shape) else out.shape
-    if not target_given:
-        target = paddle.zeros(shape=shape).astype(updates.dtype)
-        ret = _scatter_nd_replace(target, indices, updates, reduce="assign")
-    else:
-        if reduction == "sum":
-            ret = _scatter_nd_replace(target, indices, updates, reduce="add")
+    updates = _broadcast_to(updates, expected_shape).data
 
-        elif reduction == "min":
-            new_updates = paddle.to_tensor([], dtype=target.dtype)
-            for i in indices:
-                new_updates = paddle_backend.concat(
-                    [
-                        new_updates,
-                        paddle_backend.get_item(target, tuple(i)).reshape([-1]),
-                    ],
-                    axis=-1,
-                )
-            new_updates = paddle_backend.minimum(new_updates, updates.reshape([-1]))
-            ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
-
-        elif reduction == "max":
-            new_updates = paddle.to_tensor([], dtype=target.dtype)
-            for i in indices:
-                new_updates = paddle_backend.concat(
-                    [
-                        new_updates,
-                        paddle_backend.get_item(target, tuple(i)).reshape([-1]),
-                    ],
-                    axis=-1,
-                )
-            new_updates = paddle_backend.maximum(new_updates, updates.reshape([-1]))
-            ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
-        elif reduction == "replace":
-            ret = _scatter_nd_replace(target, indices, updates, reduce="assign")
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "reduction is {}, but it must be one of "
-                '"sum", "min", "max" or "replace"'.format(reduction)
+    # remove duplicate indices
+    # necessary because we will be using scatter_nd_add
+    if indices.ndim > 1 and reduction != "sum":
+        indices_shape = indices.shape
+        indices = paddle.reshape(indices, (-1, indices.shape[-1]))
+        num_indices = indices.shape[0]
+        # use flip to keep the last occurrence of each value
+        indices, unique_idxs = ivy.unique_all(
+            ivy.flip(indices, axis=[0]), axis=0, by_value=True
+        )[:2]
+        indices = indices.data
+        if len(unique_idxs) < num_indices:
+            updates = paddle.reshape(
+                updates, (-1, *updates.shape[len(indices_shape) - 1 :])
             )
+            updates = ivy.gather(ivy.flip(updates, axis=[0]), unique_idxs, axis=0).data
+            expected_shape = (
+                list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
+                if ivy.exists(out)
+                else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
+            )
+        else:
+            indices = paddle.reshape(indices, indices_shape)
+
+    # implementation
+    target_given = ivy.exists(out)
+    if target_given:
+        target = out.data
+    else:
+        shape = list(shape) if ivy.exists(shape) else out.shape
+        target = paddle.zeros(shape=shape).astype(updates.dtype)
+    if ivy.exists(shape) and target_given:
+        ivy.utils.assertions.check_equal(
+            ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
+        )
+    if reduction not in ["sum", "replace", "min", "max"]:
+        raise ivy.utils.exceptions.IvyException(
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
+        )
+    if reduction == "min":
+        updates = ivy.minimum(ivy.gather_nd(target, indices), updates).data
+    elif reduction == "max":
+        updates = ivy.maximum(ivy.gather_nd(target, indices), updates).data
+    elif reduction == "sum":
+        updates = ivy.add(ivy.gather_nd(target, indices), updates).data
+    if indices.ndim <= 1:
+        indices = ivy.expand_dims(indices, axis=0).data
+        updates = ivy.expand_dims(updates, axis=0).data
+    updates_ = _broadcast_to(ivy.gather_nd(target, indices), expected_shape).data
+    target_dtype = target.dtype
+    if target_dtype in [
+        paddle.complex64,
+        paddle.complex128,
+    ]:
+        result_real = paddle.scatter_nd_add(
+            paddle.scatter_nd_add(target.real(), indices, -updates_.real()),
+            indices,
+            updates.real(),
+        )
+        result_imag = paddle.scatter_nd_add(
+            paddle.scatter_nd_add(target.imag(), indices, -updates_.imag()),
+            indices,
+            updates.imag(),
+        )
+        ret = paddle.complex(result_real, result_imag)
+    elif target_dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        target, updates, updates_ = (
+            target.cast("float32"),
+            updates.cast("float32"),
+            updates_.cast("float32"),
+        )
+        ret = paddle.scatter_nd_add(
+            paddle.scatter_nd_add(target, indices, -updates_),
+            indices,
+            updates,
+        ).cast(target_dtype)
+    else:
+        ret = paddle.scatter_nd_add(
+            paddle.scatter_nd_add(target, indices, -updates_),
+            indices,
+            updates,
+        )
     if ivy.exists(out):
-        return inplace_update(out, ret)
+        return ivy.inplace_update(out, ret)
     return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def shape(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[ivy.Shape, ivy.Array]:
@@ -739,9 +574,6 @@ def shape(
         return ivy.Shape(x.shape)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
@@ -761,6 +593,7 @@ def vmap(
                 message="""in_axes should have a length equivalent to the number
                 of positional arguments to the function being vectorized or it
                 should be an integer""",
+                as_array=False,
             )
 
         # checking axis_size consistency
@@ -784,6 +617,7 @@ def vmap(
             ivy.utils.assertions.check_any(
                 [ivy.exists(ax) for ax in in_axes],
                 message="At least one of the axes should be specified (not None)",
+                as_array=False,
             )
         else:
             ivy.utils.assertions.check_exists(
@@ -792,7 +626,7 @@ def vmap(
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
-            none_axis_index = list()
+            none_axis_index = []
             for index, axis in enumerate(in_axes):
                 if axis is None:
                     none_axis_index.append(index)
@@ -813,7 +647,7 @@ def vmap(
         # vectorisation - applying map_fn if only one arg provided as reduce requires
         # two elements to begin with.
         arr_results = [func(*arrays) for arrays in zip(*args)]
-        res = paddle_backend.stack(arr_results)
+        res = paddle_backend.concat(arr_results)
 
         if out_axes:
             res = paddle_backend.moveaxis(res, 0, out_axes)
@@ -823,9 +657,6 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def isin(
     elements: paddle.Tensor,
     test_elements: paddle.Tensor,
@@ -858,7 +689,3 @@ def isin(
 
 def itemsize(x: paddle.Tensor) -> int:
     return x.element_size()
-
-
-def strides(x: paddle.Tensor) -> Tuple[int]:
-    return x.numpy().strides
