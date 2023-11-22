@@ -60,7 +60,7 @@ heaviside.support_native_out = True
 
 
 @with_supported_dtypes(
-    {"2.1.0 and below": ("float32", "float64", "complex64", "complex128")},
+    {"2.1.1 and below": ("float32", "float64", "complex64", "complex128")},
     backend_version,
 )
 def pad(
@@ -238,7 +238,7 @@ def fliplr(
 fliplr.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, backend_version)
 def i0(
     x: torch.Tensor,
     /,
@@ -331,7 +331,7 @@ def atleast_3d(
     return transformed
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, backend_version)
 def take_along_axis(
     arr: torch.Tensor,
     indices: torch.Tensor,
@@ -409,7 +409,7 @@ def expand(
 expand.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("complex", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("complex", "float16")}, backend_version)
 def unique_consecutive(
     x: torch.Tensor,
     /,
@@ -439,7 +439,7 @@ def column_stack(
     return torch.column_stack(arrays)
 
 
-@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.1.1 and below": ("float32", "float64")}, backend_version)
 def put_along_axis(
     arr: torch.Tensor,
     indices: torch.Tensor,
