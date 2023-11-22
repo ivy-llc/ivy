@@ -14,6 +14,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_
 from ivy_tests.array_api_testing.test_array_api.array_api_tests import (
     hypothesis_helpers as hh,
 )
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa: E501
+    put_along_axis_helper,
+)
 
 
 # --- Helpers --- #
@@ -1236,6 +1239,36 @@ def test_torch_row_stack(
         fn_tree=fn_tree,
         on_device=on_device,
         tensors=value,
+    )
+
+
+# scatter
+@handle_frontend_test(
+    fn_tree="torch.scatter",
+    args=put_along_axis_helper(),
+    test_with_out=st.just(False),
+)
+def test_torch_scatter(
+    *,
+    args,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    dtypes, x, indices, value, axis = args
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        input=x,
+        dim=axis,
+        index=indices,
+        src=value,
     )
 
 
