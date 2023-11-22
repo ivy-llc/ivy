@@ -75,6 +75,29 @@ def test_jax_iinfo(*, dtype, test_flags, on_device, fn_tree, frontend, backend_f
     )
 
 
+@handle_frontend_test(
+    fn_tree="jax.numpy.issubdtype",
+    arg1=helpers.get_dtypes("numeric", full=False),
+    arg2=helpers.get_dtypes("numeric", full=False),
+    test_with_out=st.just(False),
+)
+@settings(max_examples=200)
+def test_jax_issubtype(
+    *, arg1, arg2, test_flags, on_device, fn_tree, frontend, backend_fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arg1=arg1[0],
+        arg22=arg2[0],
+        test_values=False,
+    )
+
+
 # promote_types
 @handle_frontend_test(
     fn_tree="jax.numpy.promote_types",

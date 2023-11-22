@@ -90,6 +90,18 @@ def iinfo(int_type):
     return ivy.iinfo(int_type)
 
 
+@with_supported_dtypes(
+    {"2.15.0 and below": ("integer",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def issubdtype(arg1, arg2) -> bool:
+    arg1_dtype = ivy.dtype(arg1)
+    arg2_dtype = ivy.dtype(arg2)
+
+    return issubclass(arg1_dtype, arg2_dtype)
+
+
 def promote_types(type1, type2, /):
     if isinstance(type1, np_dtype):
         type1 = type1._ivy_dtype
