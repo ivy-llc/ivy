@@ -235,24 +235,6 @@ def _valid_dct(draw):
 
 
 @st.composite
-def _valid_stft(draw):
-    dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
-            max_value=65280,
-            min_value=-65280,
-            min_num_dims=1,
-            min_dim_size=2,
-            shared_dtype=True,
-        )
-    )
-    frame_length = draw(helpers.ints(min_value=16, max_value=100))
-    frame_step = draw(helpers.ints(min_value=1, max_value=50))
-
-    return dtype, x, frame_length, frame_step
-
-
-@st.composite
 def _x_and_fft(draw):
     min_fft_points = 2
     dtype = draw(helpers.get_dtypes("valid", full=False))
