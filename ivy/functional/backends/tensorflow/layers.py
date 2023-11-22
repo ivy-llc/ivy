@@ -20,11 +20,11 @@ def _x_dil_before_conv(x, dims, x_dilations, data_format):
     # adding dilation in input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
     x_dilations_idxs = [i for i, x_dil in enumerate(x_dilations) if x_dil > 1]
-    if data_format[-1] == "C" or data_format == "channel_last":
-        offset = 1
-    else:
-        offset = 2
     if x_dilations_idxs:
+        if data_format[-1] == "C":
+            offset = 1
+        else:
+            offset = 2
         for i in x_dilations_idxs:
             h = x.shape[offset + i]
             new_height = h + (h - 1) * (x_dilations[i] - 1)
@@ -42,28 +42,29 @@ def _pad_before_conv(x, padding, dims, data_format):
         pad_list = [(padding, padding)] * dims
     else:
         pad_list = padding
-    if data_format[-1] == "C" or data_format == "channel_last":
+    if data_format[-1] == "C":
         pad_list = [(0, 0), *pad_list, (0, 0)]
     else:
         pad_list = [(0, 0), (0, 0), *pad_list]
     return tf.pad(x, pad_list, "CONSTANT"), "VALID"
 
 
-def _to_explicit_padding(padding, dims):
+def _extend_2d_padding(padding, data_format):
     if isinstance(padding, str):
-        return padding, []
+        return padding
     if isinstance(padding, int):
-        explicit_pad = [padding] * dims * 2
+        padding = [(padding, padding)] * 2
+    if data_format[-1] == "C":
+        padding = [(0, 0)] + padding + [(0, 0)]
     else:
-        explicit_pad = [item for sublist in padding for item in sublist]
-    explicit_pad = [0, 0] + explicit_pad + [0, 0]
-    return "EXPLICIT", explicit_pad
+        padding = [(0, 0), (0, 0)] + padding
+    return padding
 
 
 def _transpose_out_pad(
     x_shape, filter_shape, strides, padding, dims, dilations, data_format
 ):
-    if data_format[-1] == "C" or data_format == "channel_last":
+    if data_format[-1] == "C":
         offset = 1
     else:
         offset = 2
@@ -161,20 +162,20 @@ def conv1d_transpose(
     return res
 
 
-def _extend_strides_dilations(strides, dilations, dims, data_format):
-    if data_format[-1] == "C" or data_format == "channel_last":
-        strides = [1, *([strides] * dims if isinstance(strides, int) else strides), 1]
+def _extend_3d_strides_dilations(strides, dilations, data_format):
+    if data_format[-1] == "C":
+        strides = [1, *([strides] * 3 if isinstance(strides, int) else strides), 1]
         dilations = [
             1,
-            *([dilations] * dims if isinstance(dilations, int) else dilations),
+            *([dilations] * 3 if isinstance(dilations, int) else dilations),
             1,
         ]
     else:
-        strides = [1, 1, *([strides] * dims if isinstance(strides, int) else strides)]
+        strides = [1, 1, *([strides] * 3 if isinstance(strides, int) else strides)]
         dilations = [
             1,
             1,
-            *([dilations] * dims if isinstance(dilations, int) else dilations),
+            *([dilations] * 3 if isinstance(dilations, int) else dilations),
         ]
     return strides, dilations
 
@@ -202,17 +203,8 @@ def conv2d(
     if filter_format == "channel_first":
         filters = tf.transpose(filters, (2, 3, 1, 0))
     x = _x_dil_before_conv(x, 2, x_dilations, data_format)
-    padding, explicit_padding = _to_explicit_padding(padding, 2)
-    strides, dilations = _extend_strides_dilations(strides, dilations, 2, data_format)
-    res = tf.raw_ops.Conv2D(
-        input=x,
-        filter=filters,
-        strides=strides,
-        padding=padding,
-        explicit_paddings=explicit_padding,
-        data_format=data_format,
-        dilations=dilations,
-    )
+    padding = _extend_2d_padding(padding, data_format)
+    res = tf.nn.conv2d(x, filters, strides, padding, data_format, dilations)
     res = tf.math.add(res, bias) if bias is not None else res
     if permuted_x:
         return tf.transpose(res, (0, 3, 1, 2))
@@ -284,7 +276,7 @@ def depthwise_conv2d(
         permuted_x = True
     if tf.rank(filters) == 3:
         filters = tf.expand_dims(filters, -1)
-    x, padding = _pad_before_conv(x, padding, 2, data_format)
+    padding = _extend_2d_padding(padding, data_format)
     strides = [1, strides[0], strides[1], 1]
     res = tf.nn.depthwise_conv2d(x, filters, strides, padding, data_format, dilations)
     if permuted_x:
@@ -316,7 +308,7 @@ def conv3d(
         filters = tf.transpose(filters, (2, 3, 4, 1, 0))
     x = _x_dil_before_conv(x, 3, x_dilations, data_format)
     x, padding = _pad_before_conv(x, padding, 3, data_format)
-    strides, dilations = _extend_strides_dilations(strides, dilations, 3, data_format)
+    strides, dilations = _extend_3d_strides_dilations(strides, dilations, data_format)
     res = tf.nn.conv3d(x, filters, strides, padding, data_format, dilations)
     res = tf.math.add(res, bias) if bias is not None else res
     if permuted_x:
@@ -353,7 +345,7 @@ def conv3d_transpose(
     output_shape, padding = _transpose_out_pad(
         x.shape, filters.shape, strides, padding, 3, dilations, data_format
     )
-    strides, dilations = _extend_strides_dilations(strides, dilations, 3, data_format)
+    strides, dilations = _extend_3d_strides_dilations(strides, dilations, data_format)
     res = tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, data_format, dilations
     )
@@ -380,81 +372,52 @@ def conv_general_dilated(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    # permuting dims based on formats
-    if data_format == "channel_first":
-        x = tf.transpose(x, (0, *range(2, dims + 2), 1))
-
     if filter_format == "channel_first":
         filters = tf.transpose(filters, (*range(2, dims + 2), 1, 0))
 
-    x = _x_dil_before_conv(x, dims, x_dilations, "channel_last")
-
-    df = _get_x_data_format(dims, "channel_last")
-
-    if filters.shape[-2] != (x.shape[-1] // feature_group_count):
+    num_channels = x.shape[1] if data_format == "channel_first" else x.shape[-1]
+    if filters.shape[-2] != (num_channels // feature_group_count):
         raise ivy.utils.exceptions.IvyError(
             f"given feature_group_count {feature_group_count} expected input channel of"
-            f" the filter to be {x.shape[-1] // feature_group_count} but got"
+            f" the filter to be {num_channels // feature_group_count} but got"
             f" {filters.shape[-2]}"
         )
-    if x.shape[-1] % feature_group_count != 0:
+    if num_channels % feature_group_count != 0:
         raise ivy.utils.exceptions.IvyError(
             "input channel should be divisible by feature group count"
-            f" {feature_group_count} but got input channel {x.shape[-1]}"
+            f" {feature_group_count} but got input channel {num_channels}"
         )
 
-    if dims == 1:
-        x, padding = _pad_before_conv(x, padding, dims, "channel_last")
-        res = tf.nn.conv1d(
-            x,
-            filters,
-            strides,
-            padding,
-            df,
-            dilations,
-        )
-    elif dims == 2:
-        padding, explicit_padding = _to_explicit_padding(padding, 2)
-        strides, dilations = _extend_strides_dilations(
-            strides, dilations, 2, "channel_last"
-        )
-        res = tf.raw_ops.Conv2D(
-            input=x,
-            filter=filters,
-            strides=strides,
-            padding=padding,
-            explicit_paddings=explicit_padding,
-            data_format="NHWC",
-            dilations=dilations,
-        )
-    else:
-        x, padding = _pad_before_conv(x, padding, dims, "channel_last")
-        strides, dilations = _extend_strides_dilations(
-            strides, dilations, 3, "channel_last"
-        )
-        # grouped conv3d is not supported on CPU
-        # ToDO: change the condition of GPU when automatic device shifting
-        #  is implemented in ivy
-        if feature_group_count == 1 or tf.test.is_gpu_available():
-            res = tf.nn.conv3d(
+    permuted_x = False
+    if data_format == "channel_first" and ivy.dev(x) == "cpu":
+        x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+        data_format = "channel_last"
+        permuted_x = True
+
+    data_format = _get_x_data_format(dims, data_format)
+
+    x = _x_dil_before_conv(x, dims, x_dilations, data_format)
+
+    if dims == 2:
+        padding = _extend_2d_padding(padding, data_format)
+        if feature_group_count == 1:
+            res = tf.nn.conv2d(
                 x,
                 filters,
                 strides,
                 padding,
-                df,
-                dilations,
+                data_format=data_format,
+                dilations=dilations,
             )
         else:
             res = tf.concat(
                 [
-                    tf.nn.conv3d(
-                        x[:, :, :, :, i : i + filters.shape[-2]],
-                        filters[
-                            :, :, :, :, j : j + filters.shape[-1] // feature_group_count
-                        ],
+                    tf.nn.conv2d(
+                        x[..., i : i + filters.shape[-2]],
+                        filters[..., j : j + filters.shape[-1] // feature_group_count],
                         strides,
                         padding,
-                        df,
+                        data_format,
                         dilations,
                     )
                     for i, j in zip(
@@ -468,9 +431,82 @@ def conv_general_dilated(
                 ],
                 axis=-1,
             )
+    else:
+        x, padding = _pad_before_conv(x, padding, dims, data_format)
+        if dims == 1:
+            if feature_group_count == 1:
+                res = tf.nn.conv1d(
+                    x,
+                    filters,
+                    strides,
+                    padding,
+                    data_format=data_format,
+                    dilations=dilations,
+                )
+            else:
+                res = tf.concat(
+                    [
+                        tf.nn.conv2d(
+                            x[..., i : i + filters.shape[-2]],
+                            filters[
+                                ..., j : j + filters.shape[-1] // feature_group_count
+                            ],
+                            strides,
+                            padding,
+                            data_format,
+                            dilations,
+                        )
+                        for i, j in zip(
+                            range(0, x.shape[-1], filters.shape[-2]),
+                            range(
+                                0,
+                                filters.shape[-1],
+                                filters.shape[-1] // feature_group_count,
+                            ),
+                        )
+                    ],
+                    axis=-1,
+                )
+        else:
+            strides, dilations = _extend_3d_strides_dilations(
+                strides, dilations, data_format
+            )
+            if feature_group_count == 1:
+                res = tf.nn.conv3d(
+                    x,
+                    filters,
+                    strides,
+                    padding,
+                    data_format=data_format,
+                    dilations=dilations,
+                )
+            else:
+                res = tf.concat(
+                    [
+                        tf.nn.conv3d(
+                            x[..., i : i + filters.shape[-2]],
+                            filters[
+                                ..., j : j + filters.shape[-1] // feature_group_count
+                            ],
+                            strides,
+                            padding,
+                            data_format,
+                            dilations,
+                        )
+                        for i, j in zip(
+                            range(0, x.shape[-1], filters.shape[-2]),
+                            range(
+                                0,
+                                filters.shape[-1],
+                                filters.shape[-1] // feature_group_count,
+                            ),
+                        )
+                    ],
+                    axis=-1,
+                )
     res = tf.math.add(res, bias) if bias is not None else res
-    if data_format == "channel_first":
-        res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
+    if permuted_x:
+        return tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
 
 
@@ -492,7 +528,7 @@ def conv_general_transpose(
 ) -> Union[tf.Tensor, tf.Variable]:
     if feature_group_count == 1:
         if dims == 1:
-            res = conv1d_transpose(
+            return conv1d_transpose(
                 x,
                 filters,
                 strides,
@@ -503,7 +539,7 @@ def conv_general_transpose(
                 bias=bias,
             )
         elif dims == 2:
-            res = conv2d_transpose(
+            return conv2d_transpose(
                 x,
                 filters,
                 strides,
@@ -514,7 +550,7 @@ def conv_general_transpose(
                 bias=bias,
             )
         else:
-            res = conv3d_transpose(
+            return conv3d_transpose(
                 x,
                 filters,
                 strides,
@@ -525,12 +561,22 @@ def conv_general_transpose(
                 bias=bias,
             )
     else:
-        if data_format == "channel_first":
+        permuted_x = False
+        if data_format == "channel_first" and ivy.dev(x) == "cpu":
             x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+            data_format = "channel_last"
+            permuted_x = True
+
+        data_format = _get_x_data_format(dims, data_format)
+
+        output_shape, padding = _transpose_out_pad(
+            x.shape, filters.shape, strides, padding, dims, dilations, data_format
+        )
+
         if dims == 1:
             res = tf.concat(
                 [
-                    conv1d_transpose(
+                    tf.nn.conv1d_transpose(
                         x[..., j : j + filters.shape[-2] // feature_group_count],
                         filters[
                             ..., j : j + filters.shape[-2] // feature_group_count, :
@@ -538,7 +584,7 @@ def conv_general_transpose(
                         strides,
                         padding,
                         output_shape=output_shape,
-                        data_format="NWC",
+                        data_format=data_format,
                         dilations=dilations,
                     )
                     for j in range(
@@ -550,7 +596,7 @@ def conv_general_transpose(
         elif dims == 2:
             res = tf.concat(
                 [
-                    conv2d_transpose(
+                    tf.nn.conv2d_transpose(
                         x[..., j : j + filters.shape[-2] // feature_group_count],
                         filters[
                             ..., j : j + filters.shape[-2] // feature_group_count, :
@@ -558,7 +604,7 @@ def conv_general_transpose(
                         strides,
                         padding,
                         output_shape=output_shape,
-                        data_format="NHWC",
+                        data_format=data_format,
                         dilations=dilations,
                     )
                     for j in range(
@@ -568,9 +614,12 @@ def conv_general_transpose(
                 axis=-1,
             )
         else:
+            strides, dilations = _extend_3d_strides_dilations(
+                strides, dilations, data_format
+            )
             res = tf.concat(
                 [
-                    conv3d_transpose(
+                    tf.nn.conv3d_transpose(
                         x[..., j : j + filters.shape[-2] // feature_group_count],
                         filters[
                             ..., j : j + filters.shape[-2] // feature_group_count, :
@@ -578,7 +627,7 @@ def conv_general_transpose(
                         strides,
                         padding,
                         output_shape=output_shape,
-                        data_format="NDHWC",
+                        data_format=data_format,
                         dilations=dilations,
                     )
                     for j in range(
@@ -587,10 +636,11 @@ def conv_general_transpose(
                 ],
                 axis=-1,
             )
+
         res = tf.math.add(res, bias) if bias is not None else res
-        if data_format == "channel_first":
-            res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
-    return res
+        if permuted_x:
+            return tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
+        return res
 
 
 def nms(
