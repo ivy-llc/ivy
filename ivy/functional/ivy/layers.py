@@ -396,7 +396,7 @@ def dropout(
     }
     """
     if prob == 0 or not training:
-        if dtype is not None:
+        if dtype is not None and x.dtype != dtype:
             x = ivy.astype(x, dtype)
         return ivy.inplace_update(out, x) if ivy.exists(out) else x
     if noise_shape is None:
