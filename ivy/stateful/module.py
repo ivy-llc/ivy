@@ -875,7 +875,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return self._build_mode
 
     @property
-    def built_(self):
+    def built(self):
         return self._built
 
     @property
