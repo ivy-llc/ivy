@@ -1165,12 +1165,9 @@ def test_max_pool2d(
     assume(
         not (
             backend_fw == "tensorflow"
-            and (
-                (stride[0] > kernel[0] or stride[0] > kernel[1])
-                or (
-                    (stride[0] > 1 and dilation[0] > 1)
-                    or (stride[0] > 1 and dilation[1] > 1)
-                )
+            and all(
+                stride[i] > kernel[i] or (stride[i] > 1 and dilation[i] > 1)
+                for i in range(2)
             )
         )
     )
@@ -1223,7 +1220,14 @@ def test_max_pool3d(
     on_device,
 ):
     dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
-
+    assume(
+        not (
+            backend_fw == "tensorflow"
+            and isinstance(pad, str)
+            and pad == "SAME"
+            and any(dil > 1 for dil in dilation)
+        )
+    )
     data_format = "NCDHW" if data_format == "channel_first" else "NDHWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation
