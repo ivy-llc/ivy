@@ -66,11 +66,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         v=None,
         buffers=None,
         build_mode="on_init",
-        trace_on_next_step=False,
         store_vars=True,
-        stateful=None,
-        arg_stateful_idxs=None,
-        kwarg_stateful_idxs=None,
         fallback_to_non_traced=False,
         with_partial_v=False,
         devices=None,
@@ -94,21 +90,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             How the Module is built, either on initialization (now),
             explicitly by the user by calling build(), or the first
             time the __call__ method is run. Default is on initialization.
-        trace_on_next_step
-            Whether to trace the network in a graph on the next forward pass.
-            Default is ``False``.
         store_vars
             Whether or not to store the variables created. Default is ``True``.
-        stateful
-            The constant id stateful items to track as part of the forward pass.
-            Used when graph compiling, default is ``None``.
-        arg_stateful_idxs
-            The nested argument indices of stateful items to track as part of
-            the forward pass.
-            Used when graph compiling, default is ``None``.
-        kwarg_stateful_idxs
-            The nested keyword argument indices of stateful items to track as part of
-            the forward pass. Used when graph compiling, default is ``None``.
         fallback_to_non_traced
             Whether to fall back to non-traced forward call in the case that an error
             is raised during the traced forward pass. Default is ``True``.
@@ -133,16 +116,10 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         )
         self._devices = ivy.default(devices, [self._device])
         self._build_mode = build_mode
-        self._stateful = stateful
-        self._arg_stateful_idxs = arg_stateful_idxs
-        self._kwarg_stateful_idxs = kwarg_stateful_idxs
         self._fallback_to_non_traced = fallback_to_non_traced
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
         self._built = False
-        self._traced = False
-        self._traced_fn = None
-        self._trace_on_next_step = trace_on_next_step
         self._v_in = v if isinstance(v, Container) or v is None else Container(v)
         self.v = v
         self.top_v = None
