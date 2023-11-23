@@ -1441,7 +1441,6 @@ def test_stft(
         pad_mode,
         normalized,
         detrend,
-        return_complex,
         boundary,
     ) = stft_args
     helpers.test_function(
@@ -1462,6 +1461,5 @@ def test_stft(
         pad_mode=pad_mode,
         normalized=normalized,
         detrend=detrend,
-        return_complex=return_complex,
         boundary=boundary,
     )
