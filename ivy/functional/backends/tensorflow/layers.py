@@ -16,6 +16,21 @@ from ivy.functional.ivy.layers import (
 )
 
 
+@with_supported_dtypes(
+    {"2.15.0 and below": ("float", "int32", "int64", "complex")},
+    backend_version,
+)
+def linear(
+    x: Union[tf.Tensor, tf.Variable],
+    weight: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.einsum("...i,...ji->...j", x, weight) + bias
+
+
 def _x_dil_before_conv(x, dims, x_dilations, data_format):
     # adding dilation in input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations

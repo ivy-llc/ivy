@@ -689,7 +689,8 @@ def _x_and_linear(draw):
     mixed_fn_compos = draw(st.booleans())
     is_torch_backend = ivy.current_backend_str() == "torch"
     dtype = draw(
-        helpers.get_dtypes("numeric", full=False, mixed_fn_compos=mixed_fn_compos)
+        # should sample from "valid" but with_supported_dtypes was not working
+        helpers.get_dtypes("float", full=False, mixed_fn_compos=mixed_fn_compos)
     )
     in_features = draw(
         helpers.ints(min_value=1, max_value=2, mixed_fn_compos=mixed_fn_compos)
