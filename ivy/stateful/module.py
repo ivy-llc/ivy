@@ -67,7 +67,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         buffers=None,
         build_mode="on_init",
         store_vars=True,
-        fallback_to_non_traced=False,
         with_partial_v=False,
         devices=None,
         dtype=None,
@@ -92,9 +91,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             time the __call__ method is run. Default is on initialization.
         store_vars
             Whether or not to store the variables created. Default is ``True``.
-        fallback_to_non_traced
-            Whether to fall back to non-traced forward call in the case that an error
-            is raised during the traced forward pass. Default is ``True``.
         with_partial_v
             Whether to allow partial specification of variables. Default is ``False``.
         training
@@ -116,7 +112,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         )
         self._devices = ivy.default(devices, [self._device])
         self._build_mode = build_mode
-        self._fallback_to_non_traced = fallback_to_non_traced
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
         self._built = False
