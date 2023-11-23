@@ -68,7 +68,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         build_mode="on_init",
         store_vars=True,
         with_partial_v=False,
-        devices=None,
         dtype=None,
         dynamic_backend=None,
         training=True,
@@ -96,21 +95,10 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         training
             specifies whether the module is in training or evaluation mode. Default is
             ``True``.
-        devices
-            devices on which to distribute the module's variables
-            'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
         """
         valid_build_modes = ["on_init", "explicit", "on_call"]
         ivy.utils.assertions.check_elem_in_list(build_mode, valid_build_modes)
-        self._device = ivy.default(
-            device,
-            ivy.default(
-                lambda: devices[0],
-                default_val=ivy.default_device(),
-                catch_exceptions=True,
-            ),
-        )
-        self._devices = ivy.default(devices, [self._device])
+        self._device = ivy.default(device, ivy.default_device())
         self._build_mode = build_mode
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
