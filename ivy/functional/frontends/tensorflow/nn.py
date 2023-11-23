@@ -333,7 +333,7 @@ def depthwise_conv2d(
 
 @to_ivy_arrays_and_back
 def dropout(x, rate, noise_shape=None, seed=None, name=None):
-    return ivy.dropout(x, rate, noise_shape=noise_shape, seed=seed)
+    return ivy.dropout(x, rate, noise_shape=noise_shape, training=True, seed=seed)
 
 
 @with_unsupported_dtypes({"2.11.1 and below": ("complex",)}, "tensorflow")

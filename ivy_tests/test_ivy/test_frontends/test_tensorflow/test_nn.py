@@ -1186,24 +1186,37 @@ def test_tensorflow_dropout(
     on_device,
 ):
     (x_dtype, x), noise_shape, seed, rate = dtype_x_noiseshape
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=x_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        x=x[0],
-        rate=rate,
-        noise_shape=noise_shape,
-        seed=seed,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    frontend_ret = helpers.flatten_and_to_np(ret=frontend_ret)
-    for u, v, w in zip(ret, frontend_ret, x):
-        # cardinality test
-        assert u.shape == v.shape == w.shape
+    if rate == 0:
+        helpers.test_frontend_function(
+            input_dtypes=x_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            x=x[0],
+            rate=rate,
+            noise_shape=noise_shape,
+            seed=seed,
+        )
+    else:
+        ret = helpers.test_frontend_function(
+            input_dtypes=x_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            x=x[0],
+            rate=rate,
+            noise_shape=noise_shape,
+            seed=seed,
+        )
+        ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+        for u in ret:
+            # cardinality test
+            assert u.shape == x[0].shape
 
 
 # embedding_lookup
