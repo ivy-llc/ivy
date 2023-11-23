@@ -726,8 +726,10 @@ def dropout(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x = ivy.astype(x, dtype) if dtype and x.dtype != dtype else x
-    res = tf.nn.dropout(x, prob, noise_shape=noise_shape, seed=seed) if training else x
-    res = res if scale else tf.multiply(res, (1.0 - prob))
+    if prob == 0 or not training:
+        return x
+    res = tf.nn.dropout(x, prob, noise_shape=noise_shape, seed=seed)
+    res = tf.multiply(res, (1.0 - prob)) if not scale else res
     return res
 
 

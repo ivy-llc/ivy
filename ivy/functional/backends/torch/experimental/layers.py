@@ -762,8 +762,10 @@ def dropout(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = ivy.astype(x, dtype) if dtype and x.dtype != dtype else x
-    res = torch.nn.functional.dropout(x, prob, training=training)
-    res = res if scale else torch.multiply(res, (1.0 - prob))
+    if prob == 0 or not training:
+        return x
+    res = torch.nn.functional.dropout(x, prob, training=True)
+    res = torch.multiply(res, (1.0 - prob)) if not scale else res
     return res
 
 
