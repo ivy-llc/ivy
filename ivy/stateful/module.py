@@ -103,7 +103,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
         self._built = False
-        self._v_in = v if isinstance(v, Container) or v is None else Container(v)
+        self._v_from_constructor = (
+            v if isinstance(v, Container) or v is None else Container(v)
+        )
         self.v = v
         self.top_v = None
         self.top_mod = None
@@ -704,15 +706,13 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         )
 
         # build variables based on locally built layers, if v not passed in constructor
-        v_from_constructor = self._v_in
-
         created_n_found = Container(
             dict(
                 **self._find_variables(
                     obj=self,
                     without_initialisation=(
                         True
-                        if v_from_constructor and not self._with_partial_v
+                        if self._v_from_constructor and not self._with_partial_v
                         else False
                     ),
                 ),
@@ -721,20 +721,22 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             dynamic_backend=dynamic_backend,
         )
         created_n_found.cont_config["build_callable"] = True
-        if ivy.exists(v_from_constructor):
+        if ivy.exists(self._v_from_constructor):
             if self._with_partial_v:
-                if v_from_constructor:
+                if self._v_from_constructor:
                     created_n_found.cont_assert_contains_sub_structure(
-                        v_from_constructor, partial=True
+                        self._v_from_constructor, partial=True
                     )
-                self.v = created_n_found.cont_set_at_key_chains(v_from_constructor)
+                self.v = created_n_found.cont_set_at_key_chains(
+                    self._v_from_constructor
+                )
             else:
                 created_n_found, _ = self._remove_duplicate_variables(
                     created_n_found, created
                 )
 
                 ivy.Container.cont_assert_identical_structure(
-                    [created_n_found, v_from_constructor],
+                    [created_n_found, self._v_from_constructor],
                     assert_and_assign=True,
                 )
 
@@ -755,7 +757,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
             # re-build variables based on additional child on-call layers, if v not
             # passed in constructor
-            if not ivy.exists(v_from_constructor):
+            if not ivy.exists(self._v_from_constructor):
                 created_n_found = Container(
                     dict(
                         **self._find_variables(obj=self),
