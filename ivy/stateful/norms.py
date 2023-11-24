@@ -88,6 +88,12 @@ class LayerNorm(Module):
             new_std=self._new_std,
         )
 
+    def _extra_repr(self) -> str:
+        return (
+            f"normalized_idxs={self._normalized_idxs}, epsilon={self._epsilon}, "
+            f"elementwise_affine={self._elementwise_affine}, new_std={self._new_std}"
+        )
+
 
 class BatchNorm2D(Module):
     def __init__(
@@ -203,3 +209,11 @@ class BatchNorm2D(Module):
             self.v.running_var = running_var
 
         return normalized
+
+    def _extra_repr(self) -> str:
+        return (
+            f"num_features={self._num_features}, affine={self._affine}, "
+            f"data_format={self._data_format}, epsilon={self._epsilon} "
+            f"momentum={self._momentum}, "
+            f"track_running_stats={self._track_running_stats}"
+        )

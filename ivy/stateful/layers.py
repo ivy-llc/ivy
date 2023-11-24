@@ -448,6 +448,15 @@ class MultiHeadAttention(Module):
             training=self.training,
         )
 
+    def _extra_repr(self) -> str:
+        return (
+            f"embed_dim={self._embed_dim}, key_dim={self._key_dim}, "
+            f"value_dim={self._value_dim}, num_heads={self.num_heads}, "
+            f"head_dim={self._head_dim}, dropout_rate={self.dropout_rate}, "
+            f"use_proj_bias={self._use_proj_bias}, "
+            f"attention_axes={self._attention_axes}, scale={self._scale}"
+        )
+
 
 # Convolutions #
 # -------------#
@@ -2479,3 +2488,11 @@ class IFFT(Module):
             n=self._n,
             out=self._out,
         )
+
+    def _extra_repr(self):
+        s = "dim={_dim}"
+        if self._norm != "backward":
+            s += ", norm={_norm}"
+        if self._n is not False:
+            s += ", n={_n}"
+        return s.format(**self.__dict__)

@@ -48,12 +48,6 @@ class Sequential(Module):
     def __iter__(self):
         return iter(self._submodules)
 
-    def _extra_repr(self):
-        submods = []
-        for i, submod in enumerate(self._submodules):
-            submods.append(f"v{i}={submod}")
-        return ", ".join(submods)
-
     def _forward(self, inputs):
         """
         Perform forward pass of the Sequential container.
@@ -81,3 +75,9 @@ class Sequential(Module):
                     )
                 x = submod(x)
         return x
+
+    def _extra_repr(self):
+        submods = []
+        for i, submod in enumerate(self._submodules):
+            submods.append(f"v{i}={submod}")
+        return ", ".join(submods)
