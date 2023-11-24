@@ -689,7 +689,8 @@ def _x_and_linear(draw):
     mixed_fn_compos = draw(st.booleans())
     is_torch_backend = ivy.current_backend_str() == "torch"
     dtype = draw(
-        helpers.get_dtypes("numeric", full=False, mixed_fn_compos=mixed_fn_compos)
+        # should sample from "valid" but with_supported_dtypes was not working
+        helpers.get_dtypes("float", full=False, mixed_fn_compos=mixed_fn_compos)
     )
     in_features = draw(
         helpers.ints(min_value=1, max_value=2, mixed_fn_compos=mixed_fn_compos)
@@ -1326,28 +1327,44 @@ def test_dropout(
     on_device,
 ):
     (x_dtype, x), noise_shape, seed, dtype, prob, scale, training = data
-    ret, gt_ret = helpers.test_function(
-        input_dtypes=x_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        test_values=False,
-        x=x[0],
-        prob=prob,
-        scale=scale,
-        noise_shape=noise_shape,
-        dtype=dtype[0],
-        training=training,
-        seed=seed,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
-    gt_ret = helpers.flatten_and_to_np(
-        ret=gt_ret, backend=test_flags.ground_truth_backend
-    )
-    for u, v, w in zip(ret, gt_ret, x):
-        # cardinality test
-        assert u.shape == v.shape == w.shape
+    if not training or prob == 0:
+        helpers.test_function(
+            input_dtypes=x_dtype,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            x=x[0],
+            prob=prob,
+            scale=scale,
+            noise_shape=noise_shape,
+            dtype=dtype[0],
+            training=training,
+            seed=seed,
+        )
+    else:
+        ret, gt_ret = helpers.test_function(
+            input_dtypes=x_dtype,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            test_values=False,
+            x=x[0],
+            prob=prob,
+            scale=scale,
+            noise_shape=noise_shape,
+            dtype=dtype[0],
+            training=training,
+            seed=seed,
+        )
+        ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+        gt_ret = helpers.flatten_and_to_np(
+            ret=gt_ret, backend=test_flags.ground_truth_backend
+        )
+        for u, v, w in zip(ret, gt_ret, x):
+            # cardinality test
+            assert u.shape == v.shape == w.shape
 
 
 # linear
