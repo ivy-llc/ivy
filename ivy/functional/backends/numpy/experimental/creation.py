@@ -6,6 +6,7 @@ import numpy as np
 # local
 import ivy
 
+
 # Array API Standard #
 # -------------------#
 
@@ -237,3 +238,8 @@ def polyval(coeffs: np.ndarray, x: np.ndarray) -> np.ndarray:
     result = np.polyval(coeffs, x)
     result = np.asarray(result, np.dtype(promoted_type))
     return result
+
+
+def polymul(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    result = np.polymul(a1=a, a2=a)
+    return np.asarray(result)

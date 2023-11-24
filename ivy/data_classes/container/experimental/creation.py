@@ -1389,3 +1389,30 @@ class _ContainerWithCreationExperimental(ContainerBase):
             coefficients - final value of polynomial.
         """
         return self.static_polyval(self, coeffs, x)
+
+    @staticmethod
+    def static_polymul(
+        a: Union[ivy.Array, ivy.Container],
+        b: Union[ivy.Array, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "polymul",
+            a,
+            b,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def polymul(
+        self,
+        b: Union[ivy.Array, ivy.Container],
+    ) -> ivy.Container:
+        return self.static_polymul(self, b)

@@ -9,6 +9,7 @@ import jaxlib.xla_extension
 from ivy.functional.backends.jax import JaxArray
 import ivy
 
+
 # Array API Standard #
 # ------------------ #
 
@@ -194,3 +195,10 @@ def polyval(
         y = y * x + pv
     y = jnp.array(y, dtype=jnp.dtype(promoted_type))
     return y
+
+
+def polymul(a: JaxArray, b: JaxArray) -> JaxArray:
+    return jnp.polymul(
+        a1=a,
+        a2=b,
+    )

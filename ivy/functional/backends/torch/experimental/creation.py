@@ -3,7 +3,6 @@ from typing import Optional, Tuple, Union
 import math
 import torch
 
-
 # local
 import ivy
 from ivy.func_wrapper import (
@@ -11,6 +10,7 @@ from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
 )
 from .. import backend_version
+
 
 # noinspection PyProtectedMember
 
@@ -288,3 +288,9 @@ def polyval(
     promoted_type = getattr(torch, promoted_type)
     y = torch.tensor(y).to(dtype=promoted_type)
     return y
+
+
+@with_unsupported_dtypes({"2.0.1 and below": "float16"}, backend_version)
+def polymul(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
+    result = a * b
+    return torch.sum(result, dim=0)

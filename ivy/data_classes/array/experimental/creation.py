@@ -350,3 +350,14 @@ def polyval(
         dtype=dtype,
         device=device,
     )
+
+
+def polymul(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> ivy.Array:
+    return ivy.polymul(a, b, dtype=dtype, device=device)

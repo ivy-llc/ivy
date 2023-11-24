@@ -1209,3 +1209,29 @@ def polyval(
         coeffs,
         x,
     )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_function
+@to_native_arrays_and_back
+def polymul(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+):
+    """
+
+    Parameters
+    ----------
+    a
+        Polynomial coefficients
+    b
+        Polynomial coefficients
+
+    Returns
+    -------
+    ret
+        Result of two polynomial multiplications
+
+    """
+    return ivy.current_backend().polymul(a, b)

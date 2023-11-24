@@ -177,3 +177,11 @@ def polyval(coeffs: tf.Tensor, x: tf.Tensor):
         x,
     )
     return result
+
+
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("bool", "bfloat16", "float16", "complex")}, backend_version
+)
+def polymul(a: tf.Tensor, b: tf.Tensor) -> tf.Tensor:
+    result = a * b
+    return tf.reduce_sum(result, axis=0)

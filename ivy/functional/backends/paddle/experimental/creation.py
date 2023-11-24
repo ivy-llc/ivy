@@ -276,3 +276,10 @@ def polyval(
     y = paddle.to_tensor(y)
     y = y.astype(promoted_type)
     return y
+
+
+def polymul(a: paddle.Tensor, b: paddle.Tensor) -> paddle.Tensor:
+    a = paddle.to_tensor(a)
+    b = paddle.to_tensor(b)
+    result = a * b
+    return paddle.sum(result, axis=0)
