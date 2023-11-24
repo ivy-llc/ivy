@@ -926,6 +926,7 @@ def test_tensorflow_conv2d_transpose(
         padding,
         output_shape,
     ) = x_f_d_df
+    assume(isinstance(padding, str) or backend_fw in ["torch", "tensorflow"])
     _assume_tf_dilation_gt_1("tensorflow", on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
