@@ -596,9 +596,9 @@ def conv_general_transpose(
                         filters[
                             ..., j : j + filters.shape[-2] // feature_group_count, :
                         ],
+                        output_shape,
                         strides,
                         padding,
-                        output_shape=output_shape,
                         data_format=data_format,
                         dilations=dilations,
                     )
@@ -616,9 +616,9 @@ def conv_general_transpose(
                         filters[
                             ..., j : j + filters.shape[-2] // feature_group_count, :
                         ],
+                        output_shape,
                         strides,
                         padding,
-                        output_shape=output_shape,
                         data_format=data_format,
                         dilations=dilations,
                     )
@@ -639,9 +639,9 @@ def conv_general_transpose(
                         filters[
                             ..., j : j + filters.shape[-2] // feature_group_count, :
                         ],
+                        output_shape,
                         strides,
                         padding,
-                        output_shape=output_shape,
                         data_format=data_format,
                         dilations=dilations,
                     )
