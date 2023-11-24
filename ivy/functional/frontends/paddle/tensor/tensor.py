@@ -221,9 +221,12 @@ class Tensor:
     def __int__(self):
         return int(self._ivy_array)
 
-    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-    def __div__(self, y, name=None):
-        return paddle_frontend.divide(self, y)
+    @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+    def __div__(self, y, name="div"):
+        if "int" in self._ivy_array.dtype:
+            return paddle_frontend.math.floor_divide(x=self, y=y, name=name)
+        ret = paddle_frontend.math.divide(self, y, name=name)
+        return paddle_frontend.cast(ret, self.dtype)
 
     # Instance Methods #
     # ---------------- #
