@@ -65,7 +65,7 @@ class Linear(Module):
         self._with_bias = with_bias
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """
         Create internal variables for the layer.
 
@@ -78,6 +78,8 @@ class Linear(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -303,7 +305,7 @@ class MultiHeadAttention(Module):
             training=training,
         )
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """
         Parameters
         ----------
@@ -314,6 +316,8 @@ class MultiHeadAttention(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = dict(
             out_proj_weights=GlorotUniform().create_variables(
                 (self._embed_dim, self._inner_dim),
@@ -533,7 +537,7 @@ class Conv1D(Module):
         self._dilations = dilations
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """
         Create internal variables for the layer.
 
@@ -546,6 +550,8 @@ class Conv1D(Module):
             the desired data type of the internal variables to be created.
              Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -693,6 +699,8 @@ class Conv1DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -841,6 +849,8 @@ class Conv2D(Module):
             the desired data type of the internal variables to be created.
             Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -990,6 +1000,8 @@ class Conv2DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -1134,6 +1146,8 @@ class DepthwiseConv2D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -1279,6 +1293,8 @@ class Conv3D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -1430,6 +1446,8 @@ class Conv3DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -1563,6 +1581,7 @@ class LSTM(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        dtype = ivy.default(dtype, self.dtype)
         batch_shape = list(batch_shape)
         return (
             [
@@ -1577,7 +1596,7 @@ class LSTM(Module):
 
     # Overridden
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """
         Create internal variables for the layer.
 
@@ -1590,6 +1609,8 @@ class LSTM(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         input_weights = dict(
             zip(
                 [f"layer_{str(i)}" for i in range(self._num_layers)],
@@ -2344,7 +2365,7 @@ class Embedding(Module):
         self._weight_initializer = weight_initializer
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """
         Create internal variables for the layer.
 
@@ -2357,6 +2378,8 @@ class Embedding(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._weight_initializer.create_variables(
                 (self._num_embeddings, self._embedding_dim),
