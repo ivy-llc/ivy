@@ -126,6 +126,24 @@ However, such rigorous testing is not necessary for standalone functions (those 
 These kinds of functions may only require standard Pytest testing using :code:`parametrize`, e.g. `test_default_int_dtype`_.
 For further clarity on the various `Function Types`_ in ivy.
 
+To run the examples and test data generation, you can follow these steps:
+
+1. Install the necessary library:
+
+   ```bash
+   !pip install hypothesis
+
+2. Import the required modules in your test script:
+
+   import hypothesis.strategies as st
+
+3. Use Hypothesis strategies to generate data for your tests. For example:
+
+   # Example: Generating random data types using a custom strategy
+   dtypes = ("int32", "uint32", "float32", "bool")
+   custom_strategy = st.sampled_from(dtypes)
+   print_hypothesis_examples(custom_strategy)
+
 The way data is generated is described by the :code:`hypothesis.strategies` module which contains a variety of `methods`_ that have been used widely in each of Ivy's functional and stateful submodule tests.
 An initialized strategy is an object that is used by Hypothesis to generate data for the test.
 For example, let's write a strategy that generates a random data type -:
