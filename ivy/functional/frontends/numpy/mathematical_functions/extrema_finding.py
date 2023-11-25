@@ -291,3 +291,19 @@ def nanmin(
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
     return ivy.astype(res, out_dtype, out=out, copy=False)
+
+
+@handle_numpy_out
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def min(
+        a,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=True,
+):
+    return amin(a, axis=axis, out=out, keepdims=keepdims, initial=initial, where=where)
