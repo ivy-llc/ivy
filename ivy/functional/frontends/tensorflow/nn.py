@@ -160,7 +160,6 @@ def conv1d_transpose(
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(1, strides, dilations)
-    filters = filters.swapaxes(-2, -1)
     return ivy.conv1d_transpose(
         input,
         filters,
@@ -198,7 +197,6 @@ def conv2d_transpose(
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     padding = _reduce_padding(padding, data_format)
-    filters = filters.swapaxes(-2, -1)
     return ivy.conv2d_transpose(
         input,
         filters,
@@ -235,7 +233,6 @@ def conv3d_transpose(
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(3, strides, dilations)
-    filters = filters.swapaxes(-2, -1)
     return ivy.conv3d_transpose(
         input,
         filters,
