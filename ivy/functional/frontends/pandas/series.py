@@ -85,3 +85,17 @@ class Series(NDFrame):
 
     def keys(self):
         return self.index
+
+ def sub(self, other, level=None, fill_value=None, axis=0):
+        # todo add level (with multiindex) and fill_value (with wrapper)
+        # todo handle data alignment
+        new_array = ivy.sub(self.array, other.array)
+        return Series(new_array)
+
+    def get(self, key, default=None):
+        if key in self.index:
+            return self[key]
+        return default
+
+    def keys(self):
+        return self.index
