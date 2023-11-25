@@ -32,7 +32,7 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: str = None,
+    device: Optional[str] = None,
 ) -> Tuple[np.ndarray, ...]:
     return tuple(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)))
 

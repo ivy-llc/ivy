@@ -17,10 +17,6 @@ import ivy
 # --------#
 
 
-# TODO: Need to find a better way to do this.
-# Temporarily adding as is for the
-# `ivy.Module.to_keras_module`method
-# for the KLA demo. Do not move/remove.
 ARRAY_TO_BACKEND = {
     "ndarray": "numpy",
     "Tensor": ["torch", "paddle"],
@@ -32,6 +28,79 @@ ARRAY_TO_BACKEND = {
     "ArrayImpl": "jax",
     "EagerParamBase": "paddle",
 }
+
+
+def _array_to_new_backend(
+    x: Union[ivy.Array, ivy.NativeArray], native: bool = False
+) -> Union[ivy.Array, ivy.NativeArray]:
+    # Frontend instances
+    if hasattr(x, "_ivy_array"):
+        return x
+
+    # ivy.Array instances
+    native_x = x.data if isinstance(x, ivy.Array) else x
+    native_x_type = type(native_x).__name__
+
+    # Modify native_type here since @tf.function converts tf.EagerTensor into
+    # tf.Tensor when running @tf.function enclosed function
+    if ivy.backend == "tensorflow":
+        import tensorflow as tf
+
+        native_x_type = (
+            "EagerTensor"
+            if not tf.executing_eagerly() and isinstance(native_x, tf.Tensor)
+            else native_x_type
+        )
+
+    if native_x_type not in ARRAY_TO_BACKEND:
+        return x
+
+    # Check if the other possible backends match with the native data type
+    native_x_backend = ARRAY_TO_BACKEND[native_x_type]
+
+    # Handle the `Tensor` name clash in paddle and torch
+    if not isinstance(native_x_backend, str):
+        native_x_backend = "torch" if "torch" in str(native_x.__class__) else "paddle"
+
+    # If the current backend and the backend for the given array match,
+    # simply return the array as is
+    if ivy.backend == native_x_backend:
+        if native:
+            return native_x
+        np_intermediary = ivy.to_numpy(native_x)
+        return ivy.array(np_intermediary)
+
+    # Otherwise, convert to the new backend
+    else:
+        native_x_backend = ivy.with_backend(native_x_backend)
+        # Handle native variable instances here
+        if native_x_backend.gradients._is_variable(native_x):
+            x_data = native_x_backend.gradients._variable_data(native_x)
+            # x_data = _array_to_new_backend(x_data, native=True)
+            from ivy.functional.ivy.gradients import _variable
+
+            return _variable(x_data).data if native else _variable(x_data)
+
+        np_intermediary = native_x_backend.to_numpy(native_x)
+        ret = ivy.array(np_intermediary)
+        return ret.data if native else ret
+
+
+def _to_new_backend(
+    x: Any,
+    native: bool = False,
+    inplace: bool = False,
+    to_ignore: tuple = (),
+) -> Any:
+    if isinstance(x, ivy.Container):
+        to_ignore = ivy.default(to_ignore, ())
+        return x.cont_map(
+            lambda x_, _: _to_new_backend(
+                x_, native=native, inplace=inplace, to_ignore=to_ignore
+            ),
+            inplace=inplace,
+        )
+    return _array_to_new_backend(x, native=native)
 
 
 def _to_native(x: Any, inplace: bool = False, to_ignore: tuple = ()) -> Any:
@@ -174,7 +243,7 @@ def to_native(
 
 def args_to_native(
     *args: Iterable[Any],
-    include_derived: Dict[str, bool] = None,
+    include_derived: Optional[Dict[str, bool]] = None,
     cont_inplace: bool = False,
     to_ignore: Optional[Union[type, Tuple[type]]] = None,
     **kwargs: Dict[str, Any],
@@ -219,105 +288,110 @@ def args_to_native(
     return native_args, native_kwargs
 
 
-# TODO: Need to find a better way to do this.
-# Temporarily adding as is for the
-# `ivy.Module.to_keras_module`method
-# for the . Do not move/remove.
-def array_to_new_backend(
-    x: Union[ivy.Array, ivy.NativeArray],
-    native: bool = False,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    native_x = x.data if isinstance(x, ivy.Array) else x
-    native_x_type = type(native_x).__name__
-
-    # Modify native_type here since @tf.function converts tf.EagerTensor into
-    # tf.Tensor when running @tf.function on a transpiled graph
-    if ivy.current_backend_str() == "tensorflow":
-        import importlib
-
-        native_x_type = (
-            "EagerTensor"
-            if not importlib.import_module("tensorflow").executing_eagerly()
-            and isinstance(native_x, importlib.import_module("tensorflow").Tensor)
-            else native_x_type
-        )
-
-    # Check for paddle first, as it shares the 'Tensor' native_x_type with torch
-    if "paddle" in str(native_x.__class__) and ivy.current_backend_str() == "paddle":
-        if native:
-            return native_x
-        else:
-            return x
-
-    if hasattr(x, "_ivy_array"):
-        return x
-
-    # Check if the other possible backends match with the native data type
-    if (
-        native_x_type in ARRAY_TO_BACKEND
-        and ivy.current_backend_str() in ARRAY_TO_BACKEND[native_x_type]
-    ):
-        if ivy.current_backend_str() == "torch":
-            if "torch" in str(native_x.__class__):
-                # torch and paddle both use 'Tensor', return if this is torch
-                return x
-            else:
-                # if it's actually a paddle tensor, convert to an ivy array
-                ret = ivy.array(native_x.numpy())
-                return ret.data if native else ret
-        if ivy.current_backend_str() == "paddle":
-            if "paddle" in str(native_x.__class__):
-                # torch and paddle both use 'Tensor', return if this is paddle
-                return x
-            else:
-                # if it's actually a torch tensor, convert to an ivy array
-                ret = ivy.array(native_x.numpy())
-                return ret.data if native else ret
-        return x
-
-    if native_x_type not in ARRAY_TO_BACKEND:
-        return x
-    native_x = (
-        native_x.detach().cpu()
-        if native_x_type in ["Parameter", "Tensor"]
-        else native_x
-    )
-    np_intermediary = np.array(native_x)
-    ret = ivy.array(np_intermediary)
-    return ret.data if native else ret
-
-
-# TODO: Need to find a better way to do this.
-# Temporarily adding as is for the
-# `ivy.Module.to_keras_module()`method
-# for the KLA demo. Do not move/remove.
-def nest_array_to_new_backend(
-    nest: Iterable[Union[ivy.Array, ivy.NativeArray]],
+def to_new_backend(
+    x: Union[ivy.Array, ivy.NativeArray, Iterable],
     native: bool = True,
-    shallow: bool = True,
-) -> Iterable[Union[ivy.Array, ivy.NativeArray]]:
+    nested: bool = False,
+    include_derived: Optional[Dict[str, bool]] = None,
+    cont_inplace: bool = False,
+    to_ignore: Optional[Union[type, Tuple[type]]] = None,
+) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """
-    Convert a given ivy.Array or ivy.NativeArray to a new backend framework.
+    Return the input array converted to new backend framework form if it is an
+    `ivy.Array`, `ivy.NativeArray` or NativeVariable instance. If nested is set, the
+    check is applied to all nested leaves of tuples, lists and dicts contained within
+    ``x``.
 
     Parameters
     ----------
-    nest
-        Input nest with the leaves to be converted to a new backend.
+    x
+        The input to maybe convert.
     native
-        Whether to return the new array as a ivy.NativeArray or an ivy.Array.
-        Default is ``True``.
+        Whether to return the new array as a `ivy.NativeArray`, NativeVariable
+        or an `ivy.Array`. Default is ``True``.
+    nested
+        Whether to apply the conversion on arguments in a nested manner. If so, all
+        dicts, lists and tuples will be traversed to their lowest leaves in search of
+        ivy.Array instances. Default is ``False``.
+    include_derived
+        Whether to also recursive for classes derived from tuple, list and dict.
+        Default is ``False``.
+    cont_inplace
+        Whether to update containers in place. Default is ``False``
+    to_ignore
+        Types to ignore when deciding whether to go deeper into the nest or not
+
+    Returns
+    -------
+     ret
+        the input in the new backend framework form in the case of array instances.
+    """
+    if nested:
+        return ivy.nested_map(
+            lambda x: _to_new_backend(
+                x, native=native, inplace=cont_inplace, to_ignore=to_ignore
+            ),
+            x,
+            include_derived,
+            shallow=False,
+        )
+    return _to_new_backend(x, native=native, inplace=cont_inplace, to_ignore=to_ignore)
+
+
+def args_to_new_backend(
+    *args: Iterable[Any],
+    native: bool = True,
+    shallow: bool = True,
+    include_derived: Dict[str, bool] = None,
+    cont_inplace: bool = False,
+    to_ignore: Optional[Union[type, Tuple[type]]] = None,
+    **kwargs: Dict[str, Any],
+) -> Tuple[Iterable[Any], Dict[str, Any]]:
+    """
+    Return args and keyword args in the new current backend framework for all nested
+    ivy.Array, ivy.NativeArray or NativeVariable instances.
+
+    Parameters
+    ----------
+    args
+        The positional arguments to check
+    native
+        Whether to return the new array as a ivy.NativeArray, NativeVariable
+        or an ivy.Array. Default is ``True``.
+    include_derived
+        Whether to also recursive for classes derived from tuple, list and dict.
+        Default is ``False``.
+    cont_inplace
+        Whether to update containers in place.
+        Default is ``False``
+    to_ignore
+        Types to ignore when deciding whether to go deeper into the nest or not
     shallow
         Whether to inplace update the input nest or not
         Only works if nest is a mutable type. Default is ``True``.
+    kwargs
+        The key-word arguments to check
 
     Returns
     -------
     ret
-        The input nest with leaves converted to the new backend framework.
+        The same arguments, with any nested array instances converted
+        to the new backend.
     """
-    return ivy.nested_map(
-        lambda x: array_to_new_backend(x, native=native),
-        nest,
-        include_derived=True,
+    new_args = ivy.nested_map(
+        lambda x: _to_new_backend(
+            x, native=native, inplace=cont_inplace, to_ignore=to_ignore
+        ),
+        args,
+        include_derived,
         shallow=shallow,
     )
+    new_kwargs = ivy.nested_map(
+        lambda x: _to_new_backend(
+            x, native=native, inplace=cont_inplace, to_ignore=to_ignore
+        ),
+        kwargs,
+        include_derived,
+        shallow=shallow,
+    )
+    return new_args, new_kwargs

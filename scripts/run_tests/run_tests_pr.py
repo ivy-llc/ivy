@@ -8,13 +8,13 @@ if __name__ == "__main__":
     with open(sys.argv[1], "w") as f_write:
         with open("tests_to_run", "r") as f:
             for line in f:
-                test, backend = line.split(",")
+                test_path, backend = line.strip().split(",")
                 print(f"\n{'*' * 100}")
                 print(f"{line[:-1]}")
                 print(f"{'*' * 100}\n")
                 sys.stdout.flush()
                 ret = os.system(
-                    f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --skip-trace-testing --backend {backend}'  # noqa
+                    f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test_path} --skip-trace-testing --backend {backend}'  # noqa
                 )
                 if ret != 0:
                     failed = True

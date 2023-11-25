@@ -81,14 +81,14 @@ def _fold_unfold_helper(draw, dim):
 def _output_shape(
     dims, dilation, stride, padding, output_padding, input_shape, weight_shape
 ):
-    dilation, stride, padding, output_padding = map(
+    padding, output_padding = map(
         lambda x: [x] * dims if isinstance(x, int) else x,
-        [dilation, stride, padding, output_padding],
+        [padding, output_padding],
     )
     return [
-        (input_shape[2 + i] - 1) * stride[i]
+        (input_shape[i] - 1) * stride[i]
         - 2 * padding[i]
-        + dilation[i] * (weight_shape[2 + i] - 1)
+        + dilation[i] * (weight_shape[i] - 1)
         + output_padding[i]
         + 1
         for i in range(dims)
@@ -119,7 +119,7 @@ def _unfold_helper(draw, dim=2):
 
 
 @st.composite
-def _x_and_filters(draw, dim: int = 2, transpose: bool = False):
+def _x_and_filters(draw, dim: int = 2, transpose: bool = False, max_dilation=3):
     if not isinstance(dim, int):
         dim = draw(dim)
     strides = draw(
@@ -152,7 +152,7 @@ def _x_and_filters(draw, dim: int = 2, transpose: bool = False):
             )
         )
     batch_size = draw(st.integers(1, 5))
-    filter_shape = draw(
+    filter_dim = draw(
         helpers.get_shape(
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
         )
@@ -168,11 +168,15 @@ def _x_and_filters(draw, dim: int = 2, transpose: bool = False):
     fc = draw(st.sampled_from(group_list))
     dilations = draw(
         st.one_of(
-            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
-            st.integers(min_value=1, max_value=3),
+            st.lists(
+                st.integers(min_value=1, max_value=max_dilation),
+                min_size=dim,
+                max_size=dim,
+            ),
+            st.integers(min_value=1, max_value=max_dilation),
         )
     )
-    full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
+    fdilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if transpose:
         x_dim = draw(
             helpers.get_shape(
@@ -182,15 +186,15 @@ def _x_and_filters(draw, dim: int = 2, transpose: bool = False):
     else:
         x_dim = []
         for i in range(dim):
-            min_x = filter_shape[i] + (filter_shape[i] - 1) * (full_dilations[i] - 1)
+            min_x = filter_dim[i] + (filter_dim[i] - 1) * (fdilations[i] - 1)
             x_dim.append(draw(st.integers(min_x, 15)))
         x_dim = tuple(x_dim)
     if not transpose:
         output_channels = output_channels * fc
-        filter_shape = (output_channels, input_channels // fc) + filter_shape
+        filter_shape = (output_channels, input_channels // fc) + filter_dim
     else:
         input_channels = input_channels * fc
-        filter_shape = (input_channels, output_channels // fc) + filter_shape
+        filter_shape = (input_channels, output_channels // fc) + filter_dim
     x_shape = (batch_size, input_channels) + x_dim
     vals = draw(
         helpers.array_values(
@@ -217,18 +221,33 @@ def _x_and_filters(draw, dim: int = 2, transpose: bool = False):
         )
     )
     if transpose:
-        full_strides = [strides] * dim if isinstance(strides, int) else strides
+        fstrides = [strides] * dim if isinstance(strides, int) else strides
         output_padding = draw(
             st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim)
         )
         padding = [padding] * dim if isinstance(padding, int) else padding
         for i in range(len(output_padding)):
             # ToDo: remove this when support for output_padding > padding is added
-            output_padding[i] = min(padding[i], output_padding[i])
-            m = min(full_strides[i], full_dilations[i])
+            if dim != 2:
+                output_padding[i] = min(padding[i], output_padding[i])
+            m = min(fstrides[i], fdilations[i])
             output_padding[i] = min(output_padding[i], m - 1)
         if draw(st.booleans()):
             output_padding = min(output_padding)
+        assume(
+            all(
+                s > 0
+                for s in _output_shape(
+                    dim,
+                    fdilations,
+                    fstrides,
+                    padding,
+                    output_padding,
+                    x_dim,
+                    filter_dim,
+                )
+            )
+        )
         return (
             dtype,
             vals,
@@ -345,7 +364,7 @@ def test_torch_conv3d(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.conv_transpose1d",
-    dtype_vals=_x_and_filters(dim=1, transpose=True),
+    dtype_vals=_x_and_filters(dim=1, transpose=True, max_dilation=1),
 )
 def test_torch_conv_tranpose1d(
     *,
@@ -357,15 +376,14 @@ def test_torch_conv_tranpose1d(
     backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
-    dilations = 1  # ToDo: remove this when support for dilation > 1 is added
     assume(
-        all(
-            x > 0
-            for x in _output_shape(
-                1, dilations, strides, padding, output_pad, vals.shape, weight.shape
-            )
+        backend_fw in ["torch", "tensorflow"]
+        or all(
+            dil == 1
+            for dil in ([dilations] if isinstance(dilations, int) else dilations)
         )
     )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -398,15 +416,14 @@ def test_torch_conv_tranpose2d(
     backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
-    dilations = 1  # ToDo: remove this when support for dilation > 1 is added
     assume(
-        all(
-            x > 0
-            for x in _output_shape(
-                2, dilations, strides, padding, output_pad, vals.shape, weight.shape
-            )
+        backend_fw in ["torch", "tensorflow"]
+        or all(
+            dil == 1
+            for dil in ([dilations] if isinstance(dilations, int) else dilations)
         )
     )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -427,7 +444,7 @@ def test_torch_conv_tranpose2d(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.conv_transpose3d",
-    dtype_vals=_x_and_filters(dim=3, transpose=True),
+    dtype_vals=_x_and_filters(dim=3, transpose=True, max_dilation=1),
 )
 def test_torch_conv_tranpose3d(
     *,
@@ -439,15 +456,14 @@ def test_torch_conv_tranpose3d(
     backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
-    dilations = 1  # ToDo: remove this when support for dilation > 1 is added
     assume(
-        all(
-            x > 0
-            for x in _output_shape(
-                3, dilations, strides, padding, output_pad, vals.shape, weight.shape
-            )
+        backend_fw in ["torch", "tensorflow"]
+        or all(
+            dil == 1
+            for dil in ([dilations] if isinstance(dilations, int) else dilations)
         )
     )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,

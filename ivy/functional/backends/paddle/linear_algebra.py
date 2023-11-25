@@ -53,7 +53,7 @@ def cross(
     axisa: int = -1,
     axisb: int = -1,
     axisc: int = -1,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     def _cross(x1, x2, axisa, axisb, axisc, axis):
@@ -433,7 +433,7 @@ def tensorsolve(
     x2: paddle.Tensor,
     /,
     *,
-    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     # Implemented as a composite function in ivy.functional.ivy.linear_algebra

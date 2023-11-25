@@ -109,7 +109,7 @@ class Module(ivy.Module):
     def _build(self, *args, **kwargs):
         self._native_params = ivy.Container(
             OrderedDict(
-                sorted([
+                ([
                     (k.replace(".", "/"), v)
                     for k, v in dict(self.named_parameters()).items()
                 ])
@@ -135,9 +135,11 @@ class Module(ivy.Module):
             if isinstance(v, ivy.Container):
                 # noinspection PyProtectedMember
                 native._modules[k] = self._replace_update_v(v, native._modules[k])
-            elif _is_variable(v):
+            elif isinstance(v, Parameter):
                 # noinspection PyProtectedMember
                 native.__setattr__(k, v)
+            elif _is_variable(v):
+                native.__setattr__(k, Parameter(v))
             elif isinstance(v, Tensor):
                 # noinspection PyProtectedMember
                 native.__setattr__(k, Parameter(v, requires_grad=v.requires_grad))
@@ -154,8 +156,7 @@ class Module(ivy.Module):
         )
 
     def _forward(self, *a, **kw):
-        self._update_v(self.v)
-        ret = self(*a, **kw)
+        ret = self._wrapped_call_impl(*a, **kw)
         return ret
 
     def register_buffer(
@@ -386,7 +387,7 @@ class Module(ivy.Module):
     def _get_name(self):
         return self.__class__.__name__
 
-    def extra_repr(self) -> str:
+    def _extra_repr(self) -> str:
         return ""
 
     def register_full_backward_pre_hook(
@@ -562,8 +563,6 @@ class Module(ivy.Module):
             return self._call_impl(*args, **kwargs)
 
     def _call_impl(self, *args, **kwargs):
-        # TODO: Remove this once backprop through the frontends is fixed
-        self.requires_grad_(False)
         forward_call = self.forward
         # If we don't have any hooks, we want to skip the rest of the logic in
         # this function, and just call forward.
@@ -715,8 +714,6 @@ class Module(ivy.Module):
             # raise exception raised in try block
             raise
 
-    __call__: Callable[..., Any] = _wrapped_call_impl
-
     def __getattribute__(self, name: str) -> Any:
         if name in ("__dict__", "v", "buffers"):
             return super(Module, self).__getattribute__(name)
@@ -735,9 +732,6 @@ class Module(ivy.Module):
         return super(Module, self).__getattribute__(name)
 
     def __setattr__(self, name: str, value: Union[Tensor, "Module"]) -> None:
-        if name == "weight":
-            pass
-
         def remove_from(*dicts_or_sets):
             for d in dicts_or_sets:
                 if name in d:
@@ -758,13 +752,6 @@ class Module(ivy.Module):
                 self._modules,
                 self._non_persistent_buffers_set,
             )
-            self.register_parameter(name, value)
-        elif params is not None and name in params:
-            if value is not None:
-                raise TypeError(
-                    f"cannot assign '{type(value)}' as parameter '{name}' "
-                    "(torch.nn.Parameter or None expected)"
-                )
             self.register_parameter(name, value)
         else:
             modules = self.__dict__.get("_modules")
