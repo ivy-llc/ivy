@@ -340,7 +340,14 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex64", "complex128")},
+    {
+        "2.5.2 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
     "paddle",
 )
 @to_ivy_arrays_and_back
