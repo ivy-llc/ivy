@@ -1,0 +1,34 @@
+name: Your Workflow Name
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  your-job-name:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run your tests
+        run: |
+          python your_test_script.py
+
+      - name: Set outputs to environment file
+        run: |
+          echo "OUTPUT_VAR=${{ steps.your_step_name.outputs.your_output_name }}" >> $GITHUB_ENV
+
+  # Add other jobs or steps as needed
