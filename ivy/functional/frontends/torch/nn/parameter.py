@@ -20,7 +20,6 @@ class Parameter(Tensor):
         self.grad_fn = None
 
     def __deepcopy__(self, memo):
-        # TODO: Need to add test. Adding for KLA demo (priority)
         if id(self) in memo:
             return memo[id(self)]
         else:

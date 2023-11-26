@@ -160,7 +160,6 @@ def conv1d_transpose(
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(1, strides, dilations)
-    filters = filters.swapaxes(-2, -1)
     return ivy.conv1d_transpose(
         input,
         filters,
@@ -198,7 +197,6 @@ def conv2d_transpose(
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     padding = _reduce_padding(padding, data_format)
-    filters = filters.swapaxes(-2, -1)
     return ivy.conv2d_transpose(
         input,
         filters,
@@ -221,7 +219,7 @@ def conv3d(
     )
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
     input,
@@ -235,7 +233,6 @@ def conv3d_transpose(
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(3, strides, dilations)
-    filters = filters.swapaxes(-2, -1)
     return ivy.conv3d_transpose(
         input,
         filters,
@@ -303,7 +300,7 @@ def ctc_unique_labels(labels, name=None):
     return unique_pad, ctc_labels[2]
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def depthwise_conv2d(
     input,
@@ -333,7 +330,7 @@ def depthwise_conv2d(
 
 @to_ivy_arrays_and_back
 def dropout(x, rate, noise_shape=None, seed=None, name=None):
-    return ivy.dropout(x, rate, noise_shape=noise_shape, seed=seed)
+    return ivy.dropout(x, rate, noise_shape=noise_shape, training=True, seed=seed)
 
 
 @with_unsupported_dtypes({"2.11.1 and below": ("complex",)}, "tensorflow")
@@ -347,13 +344,13 @@ def gelu(features, approximate=False, name=None):
     return ivy.gelu(features, approximate=approximate)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": "float16"}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": "float16"}, "tensorflow")
 @to_ivy_arrays_and_back
 def leaky_relu(features, alpha=0.2, name=None):
     return ivy.leaky_relu(features, alpha=alpha)
 
 
-@with_supported_dtypes({"2.14.0 and below": ("float32", "float16")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def local_response_normalization(
     input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
@@ -378,7 +375,7 @@ def max_pool2d(input, ksize, strides, padding, data_format="NHWC", name=None):
     return ivy.max_pool2d(input, ksize, strides, padding, data_format=data_format)
 
 
-@with_supported_dtypes({"2.14.0 and below": ("float32",)}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def max_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
     return ivy.max_pool3d(input, ksize, strides, padding, data_format=data_format)
@@ -393,7 +390,7 @@ def moments(x, axes, shift=None, keepdims=False, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "int8",
             "int16",
             "int32",
@@ -442,19 +439,19 @@ def pool(
     )
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def relu(features, name=None):
     return ivy.relu(features)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def relu6(features, name=None):
     return ivy.relu6(features)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def separable_conv2d(
     input,
@@ -481,7 +478,7 @@ def separable_conv2d(
 
 @with_unsupported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "int8",
             "int16",
             "int32",
@@ -508,7 +505,7 @@ def silu(features, beta: float = 1.0):
     return ivy.multiply(features, ivy.sigmoid(ivy.multiply(beta, features)))
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
@@ -517,7 +514,7 @@ def softmax(logits, axis=None, name=None):
 # Softsign
 @with_unsupported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "int8",
             "int16",
             "int32",
@@ -568,7 +565,7 @@ def sufficient_statistics(x, axes, shift=None, keepdims=False, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "int8",
             "int16",
             "int32",

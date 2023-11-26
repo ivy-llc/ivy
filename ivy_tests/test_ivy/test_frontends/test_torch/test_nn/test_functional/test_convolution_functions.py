@@ -376,6 +376,13 @@ def test_torch_conv_tranpose1d(
     backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
+    assume(
+        backend_fw in ["torch", "tensorflow"]
+        or all(
+            dil == 1
+            for dil in ([dilations] if isinstance(dilations, int) else dilations)
+        )
+    )
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -409,6 +416,13 @@ def test_torch_conv_tranpose2d(
     backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
+    assume(
+        backend_fw in ["torch", "tensorflow"]
+        or all(
+            dil == 1
+            for dil in ([dilations] if isinstance(dilations, int) else dilations)
+        )
+    )
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -442,6 +456,13 @@ def test_torch_conv_tranpose3d(
     backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
+    assume(
+        backend_fw in ["torch", "tensorflow"]
+        or all(
+            dil == 1
+            for dil in ([dilations] if isinstance(dilations, int) else dilations)
+        )
+    )
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,

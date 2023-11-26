@@ -68,6 +68,98 @@ class Tensor:
     def __add__(self, y, /, name=None):
         return paddle_frontend.add(self, y)
 
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __radd__(self, x, /, name=None):
+        return paddle_frontend.add(self, x)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __sub__(self, y, /, name=None):
+        return paddle_frontend.subtract(self, y)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("uint8", "int8", "int16", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __mul__(self, y, /, name=None):
+        return paddle_frontend.multiply(self, y)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def __gt__(self, y, /, name=None):
+        return paddle_frontend.logic.greater_than(self, y)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def __ge__(self, y, /, name=None):
+        return paddle_frontend.logic.greater_equal(self, y)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def __le__(self, y, /, name=None):
+        return paddle_frontend.logic.less_equal(self, y)
+
+    @with_supported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "paddle",
+    )
+    def __or__(self, y, /, name=None):
+        return paddle_frontend.logic.bitwise_or(self, y)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __rsub__(self, x, /, name=None):
+        return paddle_frontend.subtract(x, self)
+
     def __getitem__(self, item):
         ivy_args = ivy.nested_map(_to_ivy_array, [self, item])
         ret = ivy.get_item(*ivy_args)
@@ -78,11 +170,56 @@ class Tensor:
             "ivy.functional.frontends.paddle.Tensor object doesn't support assignment"
         )
 
+    @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+    def __floordiv__(self, y, /, name=None):
+        return paddle_frontend.floor_divide(self, y)
+
+    @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+    def __ne__(self, y, /, name=None):
+        return paddle_frontend.not_equal(self, y)
+
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d tensor not supported")
         for i in range(self.shape[0]):
             yield self[i]
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __rmul__(self, y, /, name=None):
+        return paddle_frontend.multiply(self, y)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __float__(self):
+        return float(self._ivy_array)
+
+    def __xor__(self, y, /, name=None):
+        return paddle_frontend.logic.bitwise_xor(self, y)
+
+    def __len__(self):
+        return len(self._ivy_array)
+
+    def __neg__(self):
+        return paddle_frontend.neg(self)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __rdiv__(self, y, /, name=None):
+        return paddle_frontend.divide(y, self)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __int__(self):
+        return int(self._ivy_array)
 
     # Instance Methods #
     # ---------------- #
@@ -98,7 +235,8 @@ class Tensor:
                 return paddle_frontend.reshape(self, shape)
             else:
                 return paddle_frontend.reshape(self, args)
-        return paddle_frontend.reshape(self)
+        else:
+            raise ValueError("reshape() got no values for argument 'shape'")
 
     def dim(self):
         return self.ivy_array.ndim

@@ -1,7 +1,7 @@
 """Converters from Native Modules to Ivy Modules."""
 
 # global
-import importlib
+import functools
 from typing import Optional, Dict, List
 import re  # noqa
 import inspect
@@ -440,26 +440,40 @@ class ModuleConverters:
         )
 
     def to_keras_module(self):
-        class KerasModel(importlib.import_module("tensorflow").keras.Model):
+        """
+        Convert a `ivy.Module` module instance to a `tf.keras.Model` instance.
+
+        Returns
+        -------
+        ret
+            The new trainable `tf.keras.Model` instance.
+        """
+        try:
+            import tensorflow as tf
+        except ModuleNotFoundError as exc:
+            raise ModuleNotFoundError(
+                "`tensorflow` was not found installed on your system. Please proceed "
+                "to install it and restart your interpreter to see the changes."
+            ) from exc
+
+        class KerasModel(tf.keras.Model):
             def __init__(self, ivy_module):
                 super(KerasModel, self).__init__()
                 self._ivy_module = ivy_module
-                self._parameters_converted = False
+                self._parameters = {}
                 self._assign_variables()
+                self._populate_params()
+                self._propagate_params()
 
             def _assign_variables(self):
                 ivy.set_backend("tensorflow")
 
                 self._ivy_module.v = self._ivy_module.v.cont_map(
                     lambda x, kc: (
-                        x.ivy_array.data
+                        ivy.to_new_backend(x.ivy_array.data, native=True)
                         if hasattr(x, "_ivy_array")
-                        else ivy.to_native(x, nested=False, cont_inplace=True)
-                    )
-                )
-
-                self._ivy_module.v = self._ivy_module.v.cont_map(
-                    lambda x, kc: ivy.array_to_new_backend(x, native=True)
+                        else ivy.to_new_backend(x, native=True)
+                    ),
                 )
                 self._ivy_module.v.cont_map(
                     lambda x, kc: self.add_weight(
@@ -474,26 +488,37 @@ class ModuleConverters:
 
                 ivy.previous_backend()
 
-            def call(self, *args, **kwargs):
-                if not self._parameters_converted:
-                    params = {
-                        re.sub(r":([0-9]+)$", "", param.name).replace(
-                            f"{self.name}/", ""
-                        ): param
-                        for param in self.variables
-                    }
-                    self._ivy_module.v = self._ivy_module.v.cont_map(
-                        lambda _, kc: params[kc]
-                    )
-                    self._parameters_converted = True
-                if "training" in kwargs:
-                    del kwargs["training"]
+            def _populate_params(self):
+                self._parameters = {
+                    re.sub(r":([0-9]+)$", "", param.name).replace(
+                        f"{self.name}/", ""
+                    ): param
+                    for param in self.variables
+                }
+
+            def _propagate_params(self):
+                def __update_param(ivy_module, x, kc):
+                    # Update param in the underneath ivy module
+                    module = ivy_module
+                    keys = re.split("[/.]", kc)
+                    for key in keys[:-1]:
+                        module = module.__getattribute__(key)
+                    if hasattr(module, "_update_v"):
+                        module._update_v({keys[-1]: self._parameters[kc]})
+                    return self._parameters[kc]
+
+                self._ivy_module.v = self._ivy_module.v.cont_map(
+                    functools.partial(__update_param, self._ivy_module),
+                    inplace=True,
+                )
+
+            def call(self, *args, training=None, **kwargs):
                 ret = self._ivy_module(*args, **kwargs)
                 ret = ivy.nested_map(
                     lambda x: (
                         x.ivy_array.data
                         if hasattr(x, "_ivy_array")
-                        else ivy.to_native(x, nested=False)
+                        else ivy.to_native(x)
                     ),
                     ret,
                 )
@@ -501,8 +526,7 @@ class ModuleConverters:
 
             def __call__(self, *args, **kwargs):
                 ivy.set_backend("tensorflow")
-                args = ivy.nest_array_to_new_backend(args, native=True)
-                kwargs = ivy.nest_array_to_new_backend(kwargs, native=True)
+                args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
                 ivy.previous_backend()
 
                 return super(KerasModel, self).__call__(*args, **kwargs)

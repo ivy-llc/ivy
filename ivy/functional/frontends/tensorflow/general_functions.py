@@ -62,7 +62,7 @@ def boolean_mask(tensor, mask, axis=None, name=None):
         return ivy.get_item(tensor, mask)
 
 
-@with_supported_dtypes({"2.14.0 and below": ("float32",)}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     if use_norm is not None:
@@ -76,7 +76,7 @@ def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     ], global_norm
 
 
-@with_supported_dtypes({"2.14.0 and below": ("float", "complex")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float", "complex")}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_norm(t, clip_norm, axes=None):
     t, clip_norm = check_tensorflow_casting(t, clip_norm)
@@ -95,7 +95,7 @@ def clip_by_norm(t, clip_norm, axes=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.14.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, "tensorflow")
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.utils.assertions.check_all_or_any_fn(
         clip_value_min,
@@ -170,7 +170,7 @@ def expand_dims(input, axis, name=None):
     return ivy.expand_dims(input, axis=axis)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
@@ -299,7 +299,7 @@ def no_op(name=None):
     return
 
 
-@with_supported_dtypes({"2.14.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
 @to_ivy_arrays_and_back
 def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
     return tf_frontend.linalg.norm(
@@ -321,7 +321,7 @@ def one_hot(
     return ivy.one_hot(indices, depth)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def ones(shape, dtype=ivy.float32, name=None):
@@ -340,7 +340,7 @@ def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
     return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def range(start, limit=None, delta=1, dtype=None, name=None):
@@ -352,7 +352,7 @@ def rank(input, **kwargs):
     return ivy.astype(ivy.array(input.ndim), ivy.int32)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("unsigned", "integer")}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("unsigned", "integer")}, "tensorflow")
 @to_ivy_arrays_and_back
 def realdiv(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
@@ -410,7 +410,7 @@ def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("int8", "int16", "int32", "int64")}, "tensorflow"
+    {"2.15.0 and below": ("int8", "int16", "int32", "int64")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
@@ -483,7 +483,7 @@ def sort(values, axis=-1, direction="ASCENDING", name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.14.0 and below": ("uint8", "uint16", "uint32", "uint64", "int16")}, "tensorflow"
+    {"2.15.0 and below": ("uint8", "uint16", "uint32", "uint64", "int16")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def split(value, num_or_size_splits, axis=0, num=None, name=None):
@@ -620,7 +620,7 @@ def tensor_scatter_nd_add(tensor, indices, updates, name=None):
     return ivy.add(tensor, scatter_tensor)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("uint16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("uint16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def tile(input, multiples, name=None):
     return ivy.tile(input, multiples)
@@ -636,14 +636,14 @@ def transpose(a, perm=None, conjugate=False, name="transpose"):
     return ivy.permute_dims(a, axes=perm)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def truncatediv(x, y, name=None):
     return x.trunc_divide(y)
 
 
 @with_unsupported_dtypes(
-    {"2.14.0 and below": ("int16", "int8", "uint8", " uint16")}, "tensorflow"
+    {"2.15.0 and below": ("int16", "int8", "uint8", " uint16")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def truncatemod(x, y):
@@ -704,7 +704,7 @@ def unravel_index(indices, dims, out=None, name=None):
     return ivy.unravel_index(indices, dims, out=out)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def unstack(value: ivy.Array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
@@ -739,7 +739,7 @@ def zeros(shape, dtype=ivy.float32, name=None):
     return ivy.zeros(shape=shape, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def zeros_initializer(shape, dtype=None, name=None):
     # todo internal: fix behaviour

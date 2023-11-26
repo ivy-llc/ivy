@@ -205,8 +205,9 @@ def gather(
             result.append(r)
         result = torch.stack(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-        if out:
-            out[:] = result
+    if ivy.exists(out):
+        return ivy.inplace_update(out, result)
+
     return result
 
 
