@@ -12,6 +12,9 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
+import numpy as np
+
+
 # --- Helpers --- #
 # --------------- #
 
@@ -384,6 +387,53 @@ def _remainder(
     return ret
 
 
+def _roots(
+    p,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    """
+    Compute the roots of a polynomial with coefficients given in the array `p`.
+
+    Parameters:
+    - p (array_like): 1-D array of polynomial coefficients.
+    - out (ndarray, optional): Output array for the roots.
+    - where (array_like, optional): Boolean array indicating which elements of the output should be computed.
+    - casting ({'no', 'equiv', 'safe', 'same_kind', 'unsafe'}, optional): Controls what kind of data casting may occur.
+    - order ({'K', 'A', 'C', 'F'}, optional): Controls the order of the output.
+    - dtype (dtype, optional): Data type to force. If specified, the input array is cast to this dtype before computation.
+    - subok (bool, optional): If True, then sub-classes will be passed-through, otherwise the returned array will be forced to be a base-class array.
+
+    Returns:
+    - roots (ndarray): Computed roots of the polynomial.
+
+    Raises:
+    - ValueError: If the 'where' parameter is not a boolean array with the same shape as the roots.
+
+    Notes:
+    The function uses NumPy's `roots` function to compute the roots of the polynomial.
+    If the 'where' parameter is provided as a boolean array, it filters the roots accordingly.
+    """
+    if dtype:
+        p = np.asarray(p, dtype=dtype)
+    ret = np.roots(p, out=out)
+
+    if np.asarray(where).ndim == 0 or np.asarray(where).shape != ret.shape:
+        raise ValueError(
+            "The 'where' parameter must be a boolean array with the same shape as the"
+            " roots."
+        )
+
+    ret = np.where(where, ret, np.full_like(ret, np.nan), out=out)
+    return ret
+
+
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -421,48 +471,3 @@ def vdot(
 ):
     a, b = promote_types_of_numpy_inputs(a, b)
     return ivy.multiply(a, b).sum()
-
-import numpy as np
-
-def _roots(
-    p,
-    /,
-    out=None,
-    *,
-    where=True,
-    casting="same_kind",
-    order="K",
-    dtype=None,
-    subok=True,
-):
-    """
-    Compute the roots of a polynomial with coefficients given in the array `p`.
-
-    Parameters:
-    - p (array_like): 1-D array of polynomial coefficients.
-    - out (ndarray, optional): Output array for the roots.
-    - where (array_like, optional): Boolean array indicating which elements of the output should be computed.
-    - casting ({'no', 'equiv', 'safe', 'same_kind', 'unsafe'}, optional): Controls what kind of data casting may occur.
-    - order ({'K', 'A', 'C', 'F'}, optional): Controls the order of the output.
-    - dtype (dtype, optional): Data type to force. If specified, the input array is cast to this dtype before computation.
-    - subok (bool, optional): If True, then sub-classes will be passed-through, otherwise the returned array will be forced to be a base-class array.
-
-    Returns:
-    - roots (ndarray): Computed roots of the polynomial.
-
-    Raises:
-    - ValueError: If the 'where' parameter is not a boolean array with the same shape as the roots.
-
-    Notes:
-    The function uses NumPy's `roots` function to compute the roots of the polynomial.
-    If the 'where' parameter is provided as a boolean array, it filters the roots accordingly.
-    """
-    if dtype:
-        p = np.asarray(p, dtype=dtype)
-    ret = np.roots(p, out=out)
-    
-    if np.asarray(where).ndim == 0 or np.asarray(where).shape != ret.shape:
-        raise ValueError("The 'where' parameter must be a boolean array with the same shape as the roots.")
-    
-    ret = np.where(where, ret, np.full_like(ret, np.nan), out=out)
-    return ret
