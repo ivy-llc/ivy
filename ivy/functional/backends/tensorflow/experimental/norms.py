@@ -1,10 +1,11 @@
 import tensorflow as tf
-from typing import Union, Optional, Tuple
-from ivy.func_wrapper import with_unsupported_dtypes
+from typing import Literal, Union, Optional, Tuple
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from . import backend_version
+import math
 
 
-@with_unsupported_dtypes({"2.13.0 and below": "uint8"}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": "uint8"}, backend_version)
 def l1_normalize(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -29,7 +30,43 @@ def l2_normalize(
     return tf.math.divide(x, denorm)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float16")}, backend_version)
+def local_response_norm(
+    x: Union[tf.Tensor, tf.Variable],
+    size,
+    /,
+    *,
+    bias: Optional[float] = 1.0,
+    alpha: Optional[float] = 1.0,
+    beta: Optional[float] = 0.5,
+    average: bool = False,
+    data_format: Optional[Literal["NHWC", "NCHW"]] = "NHWC",
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+    # `alpha = alpha/size if average else alpha` was causing numerical instability
+    if average:
+        ret = tf.nn.local_response_normalization(
+            x / math.sqrt(size),
+            depth_radius=size // 2,
+            bias=bias,
+            alpha=alpha,
+            beta=beta,
+        ) * math.sqrt(size)
+    else:
+        ret = tf.nn.local_response_normalization(
+            x, depth_radius=size // 2, bias=bias, alpha=alpha, beta=beta
+        )
+    if data_format == "NCHW":
+        ret = tf.transpose(ret, (0, 3, 1, 2))
+    return ret
+
+
+local_response_norm.partial_mixed_handler = lambda x, size, **kwargs: size % 2 != 0
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def batch_norm(
     x: Union[tf.Tensor, tf.Variable],
     mean: Union[tf.Tensor, tf.Variable],
@@ -61,12 +98,8 @@ def batch_norm(
     runningmean = mean
     runningvariance = variance
     if training:
-        n = (
-            tf.size(x)
-            if xdims == 1
-            else tf.cast(tf.divide(tf.size(x), tf.shape(x)[-1]), x.dtype)
-        )
-        n = tf.cast(n, x.dtype)
+        n = tf.size(x) if xdims == 1 else tf.divide(tf.size(x), tf.shape(x)[-1])
+        n = tf.cast(n, x.dtype) if n.dtype != x.dtype else n
         dims = (0, *range(1, xdims - 1))
         mean = tf.math.reduce_mean(x, axis=dims)
         variance = tf.math.reduce_variance(x, axis=dims)

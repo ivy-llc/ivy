@@ -124,7 +124,7 @@ def test_jax_result_type(
     dtype, x = helpers.as_lists(*dtype_and_x)
     kw = {}
     for i, (dtype_, x_) in enumerate(zip(dtype, x)):
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
     test_flags.num_positional_args = len(kw)
     helpers.test_frontend_function(
         input_dtypes=dtype,

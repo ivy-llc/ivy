@@ -11,7 +11,7 @@ from ..pipeline_helper import BackendHandler, get_frontend_config
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
-from ...conftest import mod_backend
+from ..globals import mod_backend
 
 
 _dtype_kind_keys = {
@@ -50,6 +50,8 @@ def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
 def _get_type_dict_helper(framework, kind, is_frontend_test):
     if is_frontend_test:
         framework_module = get_frontend_config(framework).supported_dtypes
+    elif ivy.current_backend_str() == framework:
+        framework_module = ivy
     else:
         with BackendHandler.update_backend(framework) as ivy_backend:
             framework_module = ivy_backend
@@ -125,7 +127,7 @@ def get_dtypes(
         Supported types are integer, float, valid, numeric, signed_integer, complex,
         real_and_complex, float_and_complex, bool, and unsigned
     index
-        list indexing incase a test needs to be skipped for a particular dtype(s)
+        list indexing in case a test needs to be skipped for a particular dtype(s)
     mixed_fn_compos
         boolean if True, the function will return the dtypes of the compositional
         implementation for mixed partial functions and if False, it will return
@@ -349,9 +351,9 @@ def array_dtypes(
         else:
             pairs = ivy.promotion_table.keys()
         # added to avoid complex dtypes from being sampled if they are not available.
-        pairs = [pair for pair in pairs if all([d in available_dtypes for d in pair])]
+        [pair for pair in pairs if all(d in available_dtypes for d in pair)]
         available_dtypes = [
-            pair for pair in pairs if not any([d in pair for d in unwanted_types])
+            pair for pair in pairs if not any(d in pair for d in unwanted_types)
         ]
         dtypes = list(draw(st.sampled_from(available_dtypes)))
         if num_arrays > 2:
@@ -404,11 +406,13 @@ def cast_filter(d, dtype, x):
 
 def cast_filter_helper(d, dtype, x, current_backend):
     with BackendHandler.update_backend(current_backend) as ivy_backend:
-        bound_dtype_bits = lambda d: (
-            ivy_backend.dtype_bits(d) / 2
-            if ivy_backend.is_complex_dtype(d)
-            else ivy_backend.dtype_bits(d)
-        )
+
+        def bound_dtype_bits(d):
+            return (
+                ivy_backend.dtype_bits(d) / 2
+                if ivy_backend.is_complex_dtype(d)
+                else ivy_backend.dtype_bits(d)
+            )
 
         if ivy_backend.is_int_dtype(d):
             max_val = ivy_backend.iinfo(d).max

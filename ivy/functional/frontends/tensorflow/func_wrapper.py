@@ -1,6 +1,6 @@
 # global
 import inspect
-from typing import Callable, Dict
+from typing import Callable, Dict, Optional
 import functools
 
 # local
@@ -139,7 +139,9 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     return _inputs_to_ivy_arrays_tf
 
 
-def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callable:
+def map_raw_ops_alias(
+    alias: callable, kwargs_to_update: Optional[Dict] = None
+) -> callable:
     """
     Map the raw_ops function with its respective frontend alias function, as the
     implementations of raw_ops is way similar to that of frontend functions, except that

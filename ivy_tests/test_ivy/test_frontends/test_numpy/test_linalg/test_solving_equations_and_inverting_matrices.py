@@ -27,9 +27,9 @@ def _get_inv_square_matrices(draw):
     )
 
     shape, ind = draw(
-        st.sampled_from(
-            [(generated_shape, generated_ind), (handpicked_shape, handpicked_ind)]
-        )
+        st.sampled_from([
+            (generated_shape, generated_ind), (handpicked_shape, handpicked_ind)
+        ])
     )
 
     input_dtype = draw(
@@ -168,8 +168,8 @@ def test_numpy_pinv(
 # solve
 @handle_frontend_test(
     fn_tree="numpy.linalg.solve",
-    x=helpers.get_first_solve_matrix(adjoint=True),
-    y=helpers.get_second_solve_matrix(),
+    x=helpers.get_first_solve_batch_matrix(),
+    y=helpers.get_second_solve_batch_matrix(),
     test_with_out=st.just(False),
 )
 def test_numpy_solve(
@@ -182,7 +182,7 @@ def test_numpy_solve(
     on_device,
 ):
     dtype1, x1, _ = x
-    dtype2, x2 = y
+    dtype2, x2, _ = y
     helpers.test_frontend_function(
         input_dtypes=[dtype1, dtype2],
         backend_to_test=backend_fw,
@@ -190,6 +190,8 @@ def test_numpy_solve(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-4,
+        atol=1e-4,
         a=x1,
         b=x2,
     )

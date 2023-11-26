@@ -46,7 +46,7 @@ def assert_all_close(
         f" {ret_from_gt_dtype} datatype while the backend {backend} returned a"
         f" {ret_dtype} datatype"
     )
-    # TODO eanble
+    # TODO enable
     # if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
     #     ivy.Container.cont_multi_map(assert_all_close, [ret_np, ret_from_gt_np])
     # else:
@@ -141,7 +141,8 @@ def value_test(
     assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
         f"The length of results from backend {backend} and ground truth framework"
         f" {ground_truth_backend} does not match\n\nlen(ret_np_flat) !="
-        f" len(ret_np_from_gt_flat):\n\nret_np_flat:\n\n{ret_np_flat}\n\nret_np_from_gt_flat:\n\n{ret_np_from_gt_flat}"
+        f" len(ret_np_from_gt_flat):\n\nret_np_flat:\n\n{ret_np_flat}\n\n"
+        f"ret_np_from_gt_flat:\n\n{ret_np_from_gt_flat}"
     )
     # value tests, iterating through each array in the flattened returns
     if specific_tolerance_dict is not None:
