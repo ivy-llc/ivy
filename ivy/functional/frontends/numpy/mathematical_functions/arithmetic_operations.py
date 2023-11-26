@@ -421,3 +421,23 @@ def vdot(
 ):
     a, b = promote_types_of_numpy_inputs(a, b)
     return ivy.multiply(a, b).sum()
+import numpy as np
+
+def _roots(
+    p,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        p = np.asarray(p, dtype=dtype)
+    ret = np.roots(p, out=out)
+    if np.asarray(where).ndim == 1:
+        ret = np.where(where, ret, np.full_like(ret, np.nan), out=out)
+    return ret
+
