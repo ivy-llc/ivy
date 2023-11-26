@@ -423,6 +423,41 @@ def test_paddle_cond(
     )
 
 
+@handle_frontend_test(
+    fn_tree="paddle.linalg.corrcoef",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=2,
+        min_value=0,
+        max_value=100,
+    ),
+    rowvar=st.booleans(),
+)
+def test_paddle_corrcoef(
+    dtype_and_x,
+    rowvar,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        rowvar=rowvar,
+    )
+
+
 # Tests #
 # ----- #
 

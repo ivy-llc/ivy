@@ -50,6 +50,11 @@ def cond(x, p=None, name=None):
     return ret
 
 
+@to_ivy_arrays_and_back
+def corrcoef(x, rowvar=True, name=None):
+    return ivy.astype(ivy.corrcoef(x, rowvar=rowvar), x.dtype)
+
+
 @with_supported_dtypes(
     {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
