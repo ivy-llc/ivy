@@ -568,7 +568,6 @@ def test_paddle_rfftfreq(
     )
 
 
-
 @handle_frontend_test(
     fn_tree="paddle.fft.rfftn",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -616,6 +615,7 @@ def test_paddle_rfftn(
         axes=axes,
         norm=norm,
     )
+
 
 # Use the custom strategy for s and axes
 axes_strategy = sequence_of_two_integers()
