@@ -43,12 +43,6 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
     def get_n_leaves(self):
         raise NotImplementedError
 
-    def _support_missing_values(self, X):
-        raise NotImplementedError
-
-    def _compute_missing_values_in_feature_mask(self, X):
-        raise NotImplementedError
-
     def _fit(
         self,
         X,
@@ -59,9 +53,6 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
     ):
         raise NotImplementedError
 
-    def _validate_X_predict(self, X, check_input):
-        raise NotImplementedError
-
     def predict(self, X, check_input=True):
         raise NotImplementedError
 
@@ -69,12 +60,6 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
         raise NotImplementedError
 
     def decision_path(self, X, check_input=True):
-        raise NotImplementedError
-
-    def _prune_tree(self):
-        raise NotImplementedError
-
-    def cost_complexity_pruning_path(self, X, y, sample_weight=None):
         raise NotImplementedError
 
     @property
@@ -128,11 +113,3 @@ class DecisionTreeClassifier(ClassifierMixin, BaseDecisionTree):
 
     def predict_log_proba(self, X):
         raise NotImplementedError
-
-    def _more_tags(self):
-        allow_nan = self.splitter == "best" and self.criterion in {
-            "gini",
-            "log_loss",
-            "entropy",
-        }
-        return {"multilabel": True, "allow_nan": allow_nan}

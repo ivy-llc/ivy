@@ -55,7 +55,7 @@ def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=No
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 def dropout2d(x, *, p=0.5, training=True, data_format="NCHW", name=None):
-    return ivy.dropout2d(x, p=p, training=training, data_format=data_format)
+    return ivy.dropout2d(x, p, training=training, data_format=data_format)
 
 
 @to_ivy_arrays_and_back

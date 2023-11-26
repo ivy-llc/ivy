@@ -452,24 +452,13 @@ def floor_divide(x1, x2, /, out=None):
 @to_ivy_arrays_and_back
 def fmax(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
-    ret = ivy.where(
-        ivy.bitwise_or(ivy.greater(x1, x2), ivy.isnan(x2)),
-        x1,
-        x2,
-    )
-    return ret
+    return ivy.fmax(x1, x2)
 
 
 @to_ivy_arrays_and_back
 def fmin(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
-    ret = ivy.where(
-        ivy.bitwise_or(ivy.less(x1, x2), ivy.isnan(x2)),
-        x1,
-        x2,
-    )
-    print("jax-frontend", ret)
-    return ret
+    return ivy.fmin(x1, x2)
 
 
 @to_ivy_arrays_and_back

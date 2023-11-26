@@ -28,6 +28,25 @@ def fft(x, n=None, axis=-1.0, norm="backward", name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
+def fft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
+    if axes is None:
+        axes = (-2, -1)
+    ret = ivy.fft2(x, s=s, dim=axes, norm=norm)
+    return ret
+
+
+@with_supported_dtypes(
+    {
+        "2.5.2 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
 def fftfreq(n, d=1.0, dtype=None, name=None):
     if d * n == 0:
         raise ValueError("d or n should not be 0.")

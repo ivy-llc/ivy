@@ -387,7 +387,7 @@ class Module(ivy.Module):
     def _get_name(self):
         return self.__class__.__name__
 
-    def extra_repr(self) -> str:
+    def _extra_repr(self) -> str:
         return ""
 
     def register_full_backward_pre_hook(
