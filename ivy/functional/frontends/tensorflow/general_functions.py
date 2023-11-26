@@ -27,6 +27,14 @@ def _num_to_bit_list(value, num_dims):
 # ------------ #
 
 
+
+
+@ivy.to_ivy_arrays_and_back
+def AddN(inputs, name=None):
+    return ivy.add_n(inputs, name=name)
+
+
+
 @to_ivy_arrays_and_back
 def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
     if direction == "DESCENDING":
