@@ -97,7 +97,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._v_from_constructor = (
             v if isinstance(v, Container) or v is None else Container(v)
         )
-        self._v = v
+        self._v = v if v is not None else Container()
         self._buffers = Container(ivy.default(buffers, {}))
         self._module_dict = Container()
         self._args = args
@@ -206,7 +206,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         # this creates weights for this Module only
         created = Container(
             self._create_variables(device=self._device, dtype=dtype),
-            dynamic_backend=False,
+            dynamic_backend=self._dynamic_backend,
         )
 
         # build variables based on locally built layers, if v not passed in constructor
@@ -248,7 +248,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         else:
             self._v = created_n_found
         # remove duplicates
-        self._v, keychain_mappings = self._remove_duplicate_variables(self.v, created)
+        self._v, keychain_mappings = self._remove_duplicate_variables(self._v, created)
         # build any child 'on_call' layers
         if not built and from_call:
             # update child modules to share the same device
@@ -266,13 +266,14 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                     dict(
                         **self._find_variables(obj=self),
                         **self._create_variables(device=self._device, dtype=dtype),
-                    )
+                    ),
+                    dynamic_backend=self._dynamic_backend,
                 )
                 self._v = created_n_found
 
             # remove further duplicates with self.v
             self._v, keychain_mappings = self._remove_duplicate_variables(
-                self.v, created
+                self._v, created
             )
 
             # set built flag
@@ -349,6 +350,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             Value of the buffer
         """
         self._buffers.update({name: value})
+        super().__setattr__(name, value)
 
     def register_parameter(self, name, value):
         """
@@ -362,6 +364,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             Value of the buffer
         """
         self._v.update({name: value})
+        super().__setattr__(name, value)
 
     def train(self, mode: bool = True):
         """Enable or disable training mode."""
@@ -370,10 +373,11 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             module = getattr(self, module, None)
             if isinstance(module, ivy.Module):
                 module.train(mode=mode)
+        return self
 
     def eval(self):
         """Disable training mode."""
-        self.train(mode=False)
+        return self.train(mode=False)
 
     def to_device(self, device):
         """Move the weights and buffers  to the specified device."""
@@ -516,7 +520,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     def __getattribute__(self, name):
         if name == "v":
-            if super().__getattribute__("v") is None and not self.built:
+            if not self.built:
                 self._build_and_return_v(
                     *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
@@ -525,16 +529,33 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     def __setattr__(self, name, value):
         if name in ["v", "buffers"]:
             name = "_" + name
-        if isinstance(value, Module):
-            ret = super().__setattr__(name, value)
+
+        from ivy.functional.ivy.gradients import _is_variable
+
+        if (
+            name != "_v" and _is_variable(value.ivy_array)
+            if hasattr(value, "_ivy_array")
+            else (ivy.is_array(value) and _is_variable(value))
+        ):
+            if hasattr(self, "_v"):
+                self._v[name] = value
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
                 and self.built
             ):
                 self._rebuild()
-            return ret
-        return super().__setattr__(name, value)
+
+        elif name != "_module_dict" and isinstance(value, Module):
+            if hasattr(self, "_module_dict") and self._module_dict:
+                self._module_dict[name] = value
+            if (
+                hasattr(self, "_build_mode")
+                and self.build_mode == "on_init"
+                and self.built
+            ):
+                self._rebuild()
+        super().__setattr__(name, value)
 
     def __delattr__(self, name):
         if hasattr(self, name):
