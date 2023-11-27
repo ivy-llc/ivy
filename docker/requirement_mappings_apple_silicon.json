@@ -1,6 +1,8 @@
 {
     "tensorflow": ["tensorflow-macos", "tensorflow-probability"],
-    "jax": ["jaxlib", "dm-haiku", "flax"],
-    "torch": ["torch-scatter", "functorch"],
+    "jax": ["ml-dtypes", "jaxlib", "dm-haiku", "flax"],
+    "numpy": ["numpy"],
+    "paddle": ["paddlepaddle"],
+    "torch": ["torch-scatter", "functorch", "torchvision"],
     "mxnet": ["mxnet"]
   }
