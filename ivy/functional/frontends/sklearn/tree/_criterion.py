@@ -17,7 +17,6 @@ class Criterion(ABC):
 
 
 class ClassificationCriterion(Criterion):
-
     def __init__(self, n_outputs: int, n_classes: ivy.Array):
         self.start = 0
         self.pos = 0
@@ -83,23 +82,27 @@ class ClassificationCriterion(Criterion):
 
     def reset(self):
         self.pos = self.start
-        self.weighted_n_left, self.weighted_n_right, self.sum_left, self.sum_right = _move_sums_classification(
-            self,
-            self.sum_left,
-            self.sum_right,
-            self.weighted_n_left,
-            self.weighted_n_right
+        self.weighted_n_left, self.weighted_n_right, self.sum_left, self.sum_right = (
+            _move_sums_classification(
+                self,
+                self.sum_left,
+                self.sum_right,
+                self.weighted_n_left,
+                self.weighted_n_right,
+            )
         )
         return 0
 
     def reverse_reset(self):
         self.pos = self.end
-        self.weighted_n_right, self.weighted_n_left, self.sum_right, self.sum_left = _move_sums_classification(
-            self,
-            self.sum_right,
-            self.sum_left,
-            self.weighted_n_right,
-            self.weighted_n_left,
+        self.weighted_n_right, self.weighted_n_left, self.sum_right, self.sum_left = (
+            _move_sums_classification(
+                self,
+                self.sum_right,
+                self.sum_left,
+                self.weighted_n_right,
+                self.weighted_n_left,
+            )
         )
         return 0
 
@@ -136,6 +139,10 @@ class ClassificationCriterion(Criterion):
                 self.sum_right[k, c] = self.sum_total[k, c] - self.sum_left[k, c]
         self.pos = new_pos
         return 0
+
+
+# --- Helpers --- #
+# --------------- #
 
 
 def _move_sums_classification(criterion, sum_1, sum_2, weighted_n_1, weighted_n_2):
