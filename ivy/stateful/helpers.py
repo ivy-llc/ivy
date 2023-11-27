@@ -77,6 +77,16 @@ class ModuleHelpers:
             return vs
         elif not hasattr(obj, "__dict__"):
             return vs
+        elif hasattr(obj, "_module_dict") and obj._module_dict:
+            for k, v in obj._module_dict.items():
+                ret = self._find_variables(
+                    obj=v,
+                    without_initialisation=without_initialisation,
+                    _visited=_visited,
+                )
+                if ret:
+                    vs[k[1:] if k[0] == "_" else k] = ret
+            return vs
         for k, v in obj.__dict__.items():
             if v is not None and k[0:2] != "__" and k != "_module_dict":
                 ret = self._find_variables(
@@ -259,11 +269,12 @@ class ModuleHelpers:
             Result of the forward pass of the layer.
         """
         if not self._built:
+            first_arr = _get_first_array(*args, **kwargs)
             self.build(
                 *args,
                 **kwargs,
                 from_call=True,
-                dtype=_get_first_array(*args, **kwargs).dtype,
+                dtype=first_arr.dtype if ivy.exists(first_arr) else ivy.default_dtype(),
             )
         if v is not None:
             v_orig = self.v
@@ -298,10 +309,11 @@ class ModuleHelpers:
         self.build(*self._args, **self._kwargs)
 
     def _compute_module_dict(self):
-        self._module_dict = Container()
         for key, value in self.__dict__.items():
             if isinstance(value, ivy.Module):
-                if "stateful" in value.__module__:
+                if key in self._module_dict:
+                    continue
+                if "stateful" in value.__module__ or hasattr(value, "_frontend_module"):
                     self._module_dict[key] = value
                 else:
                     self._module_dict[key] = value._module_dict
