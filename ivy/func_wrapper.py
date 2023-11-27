@@ -224,7 +224,10 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
 def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
-    array_fn = ivy.is_array if "array_fn" not in kwargs else kwargs["array_fn"]
+    array_fn = lambda x: (
+        ivy.is_array(x) if not hasattr(x, "_ivy_array") else ivy.is_array(x.ivy_array)
+    )
+    array_fn = array_fn if "array_fn" not in kwargs else kwargs["array_fn"]
     arr = None
     if args:
         arr_idxs = ivy.nested_argwhere(args, array_fn, stop_after_n_found=1)
