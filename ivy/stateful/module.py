@@ -529,33 +529,16 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     def __setattr__(self, name, value):
         if name in ["v", "buffers"]:
             name = "_" + name
-
-        from ivy.functional.ivy.gradients import _is_variable
-
-        if (
-            name != "_v" and _is_variable(value.ivy_array)
-            if hasattr(value, "_ivy_array")
-            else (ivy.is_array(value) and _is_variable(value))
-        ):
-            if hasattr(self, "_v"):
-                self._v[name] = value
+        if isinstance(value, Module):
+            ret = super().__setattr__(name, value)
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
                 and self.built
             ):
                 self._rebuild()
-
-        elif name != "_module_dict" and isinstance(value, Module):
-            if hasattr(self, "_module_dict") and self._module_dict:
-                self._module_dict[name] = value
-            if (
-                hasattr(self, "_build_mode")
-                and self.build_mode == "on_init"
-                and self.built
-            ):
-                self._rebuild()
-        super().__setattr__(name, value)
+            return ret
+        return super().__setattr__(name, value)
 
     def __delattr__(self, name):
         if hasattr(self, name):
