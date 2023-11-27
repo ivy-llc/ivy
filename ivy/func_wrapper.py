@@ -1269,8 +1269,8 @@ def _dtype_from_version(dic, version):
         if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split("."))):
             return dic[key]
 
-    # if no version is found, we return empty tuple
-    return ()
+    # if no version is found, return the last version
+    return dic[list(dic.keys())[-1]]
 
 
 def _versioned_attribute_factory(attribute_function, base):
