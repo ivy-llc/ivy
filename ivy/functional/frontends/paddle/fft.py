@@ -200,10 +200,6 @@ def ihfft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
 
 @to_ivy_arrays_and_back
 def ihfftn(x, s=None, axes=None, norm="backward", name=None):
-    # check if the input array is two-dimensional and real
-    if len(ivy.array(x).shape) != 2 or ivy.is_complex_dtype(x):
-        raise ValueError("input must be a two-dimensional real array")
-
     # cast the input to the same float64 type so that there are no backend issues
     x_ = ivy.astype(x, ivy.float64)
 
