@@ -191,6 +191,7 @@ def test_numpy_isposinf(
     fn_tree="numpy.isin",
     assume_unique_and_dtype_and_x=_isin_data_generation_helper(),
     invert=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_numpy_isin(
     *,
