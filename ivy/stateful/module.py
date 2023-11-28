@@ -350,7 +350,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             Value of the buffer
         """
         self._buffers.update({name: value})
-        super().__setattr__(name, value)
 
     def register_parameter(self, name, value):
         """
@@ -364,7 +363,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             Value of the buffer
         """
         self._v.update({name: value})
-        super().__setattr__(name, value)
 
     def train(self, mode: bool = True):
         """Enable or disable training mode."""
