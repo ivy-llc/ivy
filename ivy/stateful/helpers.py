@@ -302,8 +302,6 @@ class ModuleHelpers:
         self._module_dict = Container()
         for key, value in self.__dict__.items():
             if isinstance(value, ivy.Module):
-                if key in self._module_dict:
-                    continue
                 if "stateful" in value.__module__ or hasattr(value, "_frontend_module"):
                     self._module_dict[key] = value
                 else:

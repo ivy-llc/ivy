@@ -520,7 +520,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     def __getattribute__(self, name):
         if name == "v":
-            if not self.built:
+            if not super().__getattribute__("_v") and not self.built:
                 self._build_and_return_v(
                     *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
