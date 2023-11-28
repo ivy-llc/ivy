@@ -465,7 +465,6 @@ def _x_and_filters(
     depthwise=False,
     general=False,
     bias=False,
-    filter_format=None,
 ):
     if not isinstance(dim, int):
         dim = draw(dim)
@@ -483,7 +482,7 @@ def _x_and_filters(
         group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
-    fc = draw(st.sampled_from(group_list)) if general else 1
+    fc = min(draw(st.sampled_from(group_list)), output_channels) if general else 1
     strides = draw(
         st.one_of(
             st.integers(1, 3), st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
@@ -551,7 +550,7 @@ def _x_and_filters(
             filter_shape = filter_shape + (input_channels // fc, output_channels)
         else:
             input_channels = input_channels * fc
-            filter_shape = filter_shape + (input_channels, output_channels // fc)
+            filter_shape = filter_shape + (output_channels // fc, input_channels)
     else:
         filter_shape = filter_shape + (input_channels,)
     channel_first = True
@@ -596,27 +595,25 @@ def _x_and_filters(
             )
         )
         dilations = (dilations, x_dilation)
-    if filter_format is not None:
-        filter_format = draw(filter_format)
-        if filter_format == "channel_first":
-            filters = np.transpose(filters, (-1, -2, *range(dim)))
+    filter_format = draw(st.sampled_from(["channel_first", "channel_last"]))
+    if filter_format == "channel_first":
+        filters = np.transpose(filters, (-1, -2, *range(dim)))
     ret = (
         dtype,
         vals,
         filters,
         dilations,
+        filter_format,
         data_format,
         strides,
         padding,
     )
     ret = ret + (output_shape, fc) if transpose else ret + (fc,)
-    ret = ret + (filter_format,) if filter_format is not None else ret
     if bias:
         return ret + (b,)
     return ret
 
 
-# filter_format not in conv_general_transpose
 # output_shape not in conv_general_dilated
 @st.composite
 def _x_and_filters_and_transpose(
@@ -624,28 +621,24 @@ def _x_and_filters_and_transpose(
     dim: int = 2,
     general=False,
     bias=False,
-    filter_format=None,
 ):
     transpose = draw(st.booleans())
-    if not transpose:
-        filter_format = st.sampled_from(["channel_last", "channel_first"])
     all_args = draw(
         _x_and_filters(
             dim=dim,
             general=general,
             bias=bias,
-            filter_format=filter_format,
             transpose=transpose,
         )
     )
     output_shape = None
-    filter_format = "channel_last"
     if transpose:
         (
             dtype,
             x,
             filters,
             dilations,
+            filter_format,
             data_format,
             stride,
             pad,
@@ -659,11 +652,11 @@ def _x_and_filters_and_transpose(
             x,
             filters,
             dilations,
+            filter_format,
             data_format,
             stride,
             pad,
             fc,
-            filter_format,
             bias,
         ) = all_args
     return (
@@ -689,7 +682,8 @@ def _x_and_linear(draw):
     mixed_fn_compos = draw(st.booleans())
     is_torch_backend = ivy.current_backend_str() == "torch"
     dtype = draw(
-        helpers.get_dtypes("numeric", full=False, mixed_fn_compos=mixed_fn_compos)
+        # should sample from "valid" but with_supported_dtypes was not working
+        helpers.get_dtypes("float", full=False, mixed_fn_compos=mixed_fn_compos)
     )
     in_features = draw(
         helpers.ints(min_value=1, max_value=2, mixed_fn_compos=mixed_fn_compos)
@@ -924,7 +918,6 @@ def test_conv(*, dims, x_f_d_df_tr, test_flags, backend_fw, fn_name, on_device):
     x_f_d_df=_x_and_filters(
         dim=1,
         bias=True,
-        filter_format=st.sampled_from(["channel_last", "channel_first"]),
     ),
     ground_truth_backend="jax",
 )
@@ -980,6 +973,7 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         x,
         filters,
         dilations,
+        filter_format,
         data_format,
         stride,
         pad,
@@ -1002,6 +996,7 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         strides=stride,
         padding=pad,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -1014,7 +1009,6 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
     x_f_d_df=_x_and_filters(
         dim=2,
         bias=True,
-        filter_format=st.sampled_from(["channel_last", "channel_first"]),
     ),
     ground_truth_backend="jax",
 )
@@ -1069,6 +1063,7 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         x,
         filters,
         dilations,
+        filter_format,
         data_format,
         stride,
         pad,
@@ -1091,6 +1086,7 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         strides=stride,
         padding=pad,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -1103,7 +1099,6 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
     x_f_d_df=_x_and_filters(
         dim=3,
         bias=True,
-        filter_format=st.sampled_from(["channel_last", "channel_first"]),
     ),
     ground_truth_backend="jax",
 )
@@ -1158,6 +1153,7 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         x,
         filters,
         dilations,
+        filter_format,
         data_format,
         stride,
         pad,
@@ -1179,6 +1175,7 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         strides=stride,
         padding=pad,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -1193,7 +1190,6 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         dim=st.shared(st.integers(1, 3), key="dims"),
         general=True,
         bias=True,
-        filter_format=st.sampled_from(["channel_last", "channel_first"]),
     ),
     ground_truth_backend="jax",
 )
@@ -1248,6 +1244,7 @@ def test_conv_general_transpose(
         x,
         filters,
         dilations,
+        filter_format,
         data_format,
         stride,
         pad,
@@ -1270,8 +1267,9 @@ def test_conv_general_transpose(
         strides=stride,
         padding=pad,
         dims=dims,
-        output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
+        output_shape=output_shape,
         dilations=dilations,
         feature_group_count=fc,
         bias=bias,
@@ -1326,28 +1324,44 @@ def test_dropout(
     on_device,
 ):
     (x_dtype, x), noise_shape, seed, dtype, prob, scale, training = data
-    ret, gt_ret = helpers.test_function(
-        input_dtypes=x_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        test_values=False,
-        x=x[0],
-        prob=prob,
-        scale=scale,
-        noise_shape=noise_shape,
-        dtype=dtype[0],
-        training=training,
-        seed=seed,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
-    gt_ret = helpers.flatten_and_to_np(
-        ret=gt_ret, backend=test_flags.ground_truth_backend
-    )
-    for u, v, w in zip(ret, gt_ret, x):
-        # cardinality test
-        assert u.shape == v.shape == w.shape
+    if not training or prob == 0:
+        helpers.test_function(
+            input_dtypes=x_dtype,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            x=x[0],
+            prob=prob,
+            scale=scale,
+            noise_shape=noise_shape,
+            dtype=dtype[0],
+            training=training,
+            seed=seed,
+        )
+    else:
+        ret, gt_ret = helpers.test_function(
+            input_dtypes=x_dtype,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            test_values=False,
+            x=x[0],
+            prob=prob,
+            scale=scale,
+            noise_shape=noise_shape,
+            dtype=dtype[0],
+            training=training,
+            seed=seed,
+        )
+        ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+        gt_ret = helpers.flatten_and_to_np(
+            ret=gt_ret, backend=test_flags.ground_truth_backend
+        )
+        for u, v, w in zip(ret, gt_ret, x):
+            # cardinality test
+            assert u.shape == v.shape == w.shape
 
 
 # linear

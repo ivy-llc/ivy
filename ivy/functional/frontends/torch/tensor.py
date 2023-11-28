@@ -849,7 +849,8 @@ class Tensor:
                 return torch_frontend.permute(self, dims)
             else:
                 return torch_frontend.permute(self, args)
-        return torch_frontend.permute(self)
+        else:
+            raise ValueError("permute() got no values for argument 'dims'")
 
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
