@@ -104,6 +104,25 @@ def _broadcast_to_helper(draw):
     return dtype, x, shape
 
 
+@st.composite
+def _crop_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"), min_num_dims=1, max_num_dims=3
+        )
+    )
+
+    input_shape = x[0].shape
+    shape = []
+    offsets = []
+    for i in range(len(input_shape)):
+        s = draw(helpers.ints(min_value=1, max_value=input_shape[i]))
+        o = draw(helpers.ints(min_value=0, max_value=input_shape[i] - s))
+        shape.append(s)
+        offsets.append(o)
+    return dtype, x, shape, offsets
+
+
 # flip
 @st.composite
 def _dtype_x_axis(draw, **kwargs):
@@ -355,9 +374,7 @@ def test_paddle_concat(
 
 @handle_frontend_test(
     fn_tree="paddle.crop",
-    dt_x_shape_offsets=_split_helper(),
-    number_positional_args=st.just(2),
-    test_with_out=st.just(False),
+    dt_x_shape_offsets=_crop_helper(),
 )
 def test_paddle_crop(
     *,
