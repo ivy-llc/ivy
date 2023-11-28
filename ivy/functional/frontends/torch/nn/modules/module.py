@@ -26,11 +26,15 @@ class Module(ivy.Module):
             **kwargs,
         )
         super().__setattr__("_frontend_module", True)
+        super().__setattr__("_nonetype_param_dict", dict())
+        super().__setattr__("_nonetype_buffers_dict", dict())
         super().__setattr__(
             "_attr_mapping", {"_parameters": "v", "_modules": "module_dict"}
         )
 
     def _create_variables(self, device=None, dtype=None):
+        # Create variables stored in the `__dict__` that were set
+        # using direct `__setattr__` e.g. self.weight = ...
         v = ivy.Container(
             OrderedDict(
                 ([
@@ -41,16 +45,38 @@ class Module(ivy.Module):
             ),
             dynamic_backend=self._dynamic_backend,
         )
+        # Created variables that were added using `register_paramter`,
+        # since those would appear in `self._v`
+        v = (
+            ivy.Container(
+                OrderedDict(
+                    (
+                        dict(
+                            (
+                                (_k.replace(".", "/"), _v)
+                                for (_k, _v) in self._v.items()
+                                if _k.replace(".", "/") not in v
+                                and not isinstance(_v, ivy.Container)
+                            )
+                        )
+                    ),
+                    **v,
+                )
+            )
+            if self._v
+            else v
+        )
         return v
 
     def _build(self, *args, **kwargs):
-        for _, module in self._module_dict.items():
-            if not module.built:
-                module.build(
-                    *module._args,
-                    dynamic_backend=module._dynamic_backend,
-                    **module._kwargs,
-                )
+        for _, module in self.__dict__.items():
+            if isinstance(module, Module) and module is not self:
+                if not module.built:
+                    module.build(
+                        *module._args,
+                        dynamic_backend=module._dynamic_backend,
+                        **module._kwargs,
+                    )
         return True
 
     def _replace_update_v(self, new_v, native=None):
@@ -89,6 +115,16 @@ class Module(ivy.Module):
 
     def add_module(self, name: str, module: Optional["Module"]) -> None:
         super().__setattr__(name, module)
+
+    def register_buffer(self, name: str, value: Optional["Tensor"]) -> None:
+        if value is None:
+            self._nonetype_buffers_dict[name] = value
+        super().register_buffer(name, value)
+
+    def register_parameter(self, name: str, value: Optional["Parameter"]) -> None:
+        if value is None:
+            self._nonetype_param_dict[name] = value
+        super().register_parameter(name, value)
 
     def register_module(self, name: str, module: Optional["Module"]) -> None:
         r"""Alias for :func:`add_module`."""
@@ -210,6 +246,29 @@ class Module(ivy.Module):
     def __getattribute__(self, name: str) -> Any:
         if name == "__dict__":
             return super().__getattribute__(name)
+        if "_module_dict" in self.__dict__:
+            modules = self.__dict__["_module_dict"]
+            if name in modules:
+                return modules[name]
+        if "_buffers" in self.__dict__:
+            buffers = self.__dict__["_buffers"]
+            if name in buffers:
+                return buffers[name]
+        if "_v" in self.__dict__:
+            v = self.__dict__["_v"]
+            if name in v:
+                return v[name]
+        if "_nonetype_param_dict" in self.__dict__:
+            nonetype_param_dict = self.__dict__["_nonetype_param_dict"]
+            if name in nonetype_param_dict:
+                return nonetype_param_dict[name]
+        if "_nonetype_buffers_dict" in self.__dict__:
+            nonetype_buffers_dict = self.__dict__["_nonetype_buffers_dict"]
+            if name in nonetype_buffers_dict:
+                return nonetype_buffers_dict[name]
+        # Adding this attribute mapping s.t if someone tries
+        # to retrieve self._modules/self._parameters, we
+        # can handle that here
         if "_attr_mapping" in self.__dict__:
             mapping = self.__dict__["_attr_mapping"]
             if name in mapping:

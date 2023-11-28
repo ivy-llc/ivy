@@ -125,9 +125,13 @@ class ModuleHelpers:
             ret_cont = Container()
         for old_kc, new_kc in keychain_mappings.items():
             if orig_key_chain in old_kc:
-                ret_cont = ret_cont.cont_set_at_key_chain(
-                    "/".join(new_kc.split("/")[1:]), v.cont_at_key_chain(new_kc)
-                )
+                # Check if `v` contains `new_kc` before replacing in `ret_cont`
+                if v.cont_has_key_chain(new_kc):
+                    ret_cont = ret_cont.cont_set_at_key_chain(
+                        "/".join(new_kc.split("/")[1:]), v.cont_at_key_chain(new_kc)
+                    )
+                else:
+                    continue
         return ret_cont
 
     @staticmethod
@@ -266,24 +270,28 @@ class ModuleHelpers:
                 from_call=True,
                 dtype=first_arr.dtype if ivy.exists(first_arr) else ivy.default_dtype(),
             )
+
+        # If `v` was provided, replace with the module's v
+        replace_v = False
         if v is not None:
             v_orig = self.v
-            buffers_orig = self.buffers
-            self._v = (
-                Container(v, **v.cont_config)
-                if isinstance(v, Container)
-                else Container(v)
-            )
-            self._buffers = (
-                Container(buffers, **buffers.cont_config)
-                if isinstance(buffers, Container)
-                else Container(buffers)
-            )
-            ret = self._forward(*args, **kwargs)
-            self._v = v_orig
-            self._buffers = buffers_orig
-            return ret
+            self._v = v
+            replace_v = True
 
+        # If `buffers` were provided, replace with the module's buffers
+        replace_buffers = False
+        if buffers is not None:
+            buffers_orig = self.buffers
+            self._buffers = buffers
+            replace_buffers = True
+
+        if replace_v or replace_buffers:
+            # Call the forward pass
+            ret = self._forward(*args, **kwargs)
+            # Replace v, buffers if needed
+            self._v = v_orig if replace_v else self._v
+            self._buffers = buffers_orig if replace_buffers else self._buffers
+            return ret
         elif hasattr(self.__call__, "wrapped"):
             return self.__call__(*args, **kwargs)
         return self._forward(*args, **kwargs)
