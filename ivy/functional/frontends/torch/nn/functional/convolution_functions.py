@@ -80,7 +80,7 @@ def _conv_transpose(
         bias=bias,
     )
     unpad_slice = (slice(None),) * 2
-    for i in range(dims):  # most likely cause of error
+    for i in range(dims):
         unpad_slice += (
             slice(
                 max([padding[i] - (dilation[i] // 2), padding[i], output_padding[i]]),
