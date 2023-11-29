@@ -254,13 +254,13 @@ def conv_transpose2d(
 ):
     if ivy.current_backend_str() in ["torch", "tensorflow"]:
         # these two backends support explicit padding, no need for conv_general_dilated
-        weight = ivy.permute_dims(weight, axes=(2, 3, 0, 1))
         return ivy.conv_general_transpose(
             input,
             weight,
             stride,
             _get_transpose_pad(padding, output_padding, 2),
             dims=2,
+            filter_format="channel_first",
             data_format="channel_first",
             dilations=dilation,
             feature_group_count=groups,

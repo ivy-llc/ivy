@@ -30,7 +30,7 @@ def alpha_dropout(input, p=0.5, training=False, inplace=False):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, "torch")
 def dropout(input, p=0.5, training=True, inplace=False):
-    return ivy.dropout(input, p, training=training)
+    return ivy.dropout(input, p, scale=True, training=training)
 
 
 @to_ivy_arrays_and_back

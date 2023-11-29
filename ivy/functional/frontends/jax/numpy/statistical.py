@@ -495,7 +495,7 @@ def nanpercentile(
     ):
         """Assumes that q is in [0, 1], and is an ndarray."""
         if a.size == 0:
-            return ivy.nanmean(a, axis, out=out, keepdims=keepdims)
+            return ivy.nanmean(a, axis=axis, out=out, keepdims=keepdims)
         return _ureduce(
             a,
             func=_nanquantile_ureduce_func,
