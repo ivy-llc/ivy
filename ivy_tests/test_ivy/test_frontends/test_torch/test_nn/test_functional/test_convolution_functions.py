@@ -366,7 +366,7 @@ def test_torch_conv3d(
     fn_tree="torch.nn.functional.conv_transpose1d",
     dtype_vals=_x_and_filters(dim=1, transpose=True, max_dilation=1),
 )
-def test_torch_conv_tranpose1d(
+def test_torch_conv_transpose1d(
     *,
     dtype_vals,
     on_device,
@@ -406,7 +406,7 @@ def test_torch_conv_tranpose1d(
     fn_tree="torch.nn.functional.conv_transpose2d",
     dtype_vals=_x_and_filters(dim=2, transpose=True),
 )
-def test_torch_conv_tranpose2d(
+def test_torch_conv_transpose2d(
     *,
     dtype_vals,
     on_device,
@@ -446,7 +446,7 @@ def test_torch_conv_tranpose2d(
     fn_tree="torch.nn.functional.conv_transpose3d",
     dtype_vals=_x_and_filters(dim=3, transpose=True, max_dilation=1),
 )
-def test_torch_conv_tranpose3d(
+def test_torch_conv_transpose3d(
     *,
     dtype_vals,
     on_device,
