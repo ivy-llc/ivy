@@ -805,7 +805,7 @@ def handle_device(fn: Callable) -> Callable:
             with ivy.DefaultDevice(ivy.default_device(dev)):
                 return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
         inputs = args + tuple(kwargs.values())
-        devices = tuple(ivy.dev(x) for x in inputs if ivy.is_native_array(x))
+        devices = tuple(ivy.dev(x) for x in inputs if ivy.is_array(x))
         unique_devices = set(devices)
         # check if arrays are on the same device
         if len(unique_devices) <= 1:
