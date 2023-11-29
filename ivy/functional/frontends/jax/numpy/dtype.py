@@ -95,11 +95,9 @@ def iinfo(int_type):
     "jax",
 )
 @to_ivy_arrays_and_back
-def issubdtype(arg1, arg2) -> bool:
-    arg1_dtype = ivy.dtype(arg1)
-    arg2_dtype = ivy.dtype(arg2)
-
-    return issubclass(arg1_dtype, arg2_dtype)
+def issubdtype(arg1, arg2):
+    result = issubclass(arg1, arg2)
+    return ivy.bool(result)
 
 
 def promote_types(type1, type2, /):
