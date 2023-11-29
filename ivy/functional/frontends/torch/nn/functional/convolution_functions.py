@@ -84,13 +84,7 @@ def _conv_transpose(
         unpad_slice += (
             slice(
                 max([padding[i] - (dilation[i] // 2), padding[i], output_padding[i]]),
-                min([
-                    ret.shape[2 + i]
-                    - padding[i]
-                    + output_padding[i]
-                    + (dilation[i] // 2),
-                    ret.shape[2 + i] - padding[i] + output_padding[i],
-                ]),
+                ret.shape[2 + i] - padding[i] + output_padding[i] + (dilation[i] // 2),
                 1,
             ),
         )
