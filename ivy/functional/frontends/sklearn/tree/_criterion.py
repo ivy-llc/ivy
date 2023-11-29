@@ -141,6 +141,44 @@ class ClassificationCriterion(Criterion):
         return 0
 
 
+class Gini(ClassificationCriterion):
+    def node_impurity(self):
+        gini = 0.0
+        for k in range(self.n_outputs):
+            sq_count = 0.0
+            for c in range(int(self.n_classes[k])):
+                count_k = self.sum_total[k, c]
+                sq_count += count_k * count_k
+            gini += 1.0 - sq_count / (
+                self.weighted_n_node_samples * self.weighted_n_node_samples
+            )
+        return gini / self.n_outputs
+
+    def children_impurity(
+        self,
+        impurity_left: float,
+        impurity_right: float,
+    ):
+        gini_left, gini_right = 0.0, 0.0
+        for k in range(self.n_outputs):
+            sq_count_left, sq_count_right = 0.0, 0.0
+            for c in range(int(self.n_classes[k])):
+                count_k = self.sum_left[k, c]
+                sq_count_left += count_k * count_k
+                count_k = self.sum_right[k, c]
+                sq_count_right += count_k * count_k
+
+            gini_left += 1.0 - sq_count_left / (
+                self.weighted_n_left * self.weighted_n_left
+            )
+            gini_right += 1.0 - sq_count_right / (
+                self.weighted_n_right * self.weighted_n_right
+            )
+        impurity_left = gini_left / self.n_outputs
+        impurity_right = gini_right / self.n_outputs
+        return impurity_left, impurity_right
+
+
 # --- Helpers --- #
 # --------------- #
 
