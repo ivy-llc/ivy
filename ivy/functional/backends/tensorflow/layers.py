@@ -141,7 +141,7 @@ def conv1d(
     res = tf.nn.conv1d(x, filters, strides, padding, data_format, dilations)
     if bias is not None:
         if data_format[1] == "C":
-            bias = bias[tf.newaxis, ..., tf.newaxis]
+            bias = tf.reshape(bias, [1, -1, 1])
         res = tf.math.add(res, bias)
     if permuted_x:
         res = tf.transpose(res, (0, 2, 1))
@@ -184,7 +184,7 @@ def conv1d_transpose(
     )
     if bias is not None:
         if data_format[1] == "C":
-            bias = bias[tf.newaxis, ..., tf.newaxis]
+            bias = tf.reshape(bias, [1, -1, 1])
         res = tf.math.add(res, bias)
     if permuted_x:
         res = tf.transpose(res, (0, 2, 1))
@@ -236,7 +236,7 @@ def conv2d(
     res = tf.nn.conv2d(x, filters, strides, padding, data_format, dilations)
     if bias is not None:
         if data_format[1] == "C":
-            bias = bias[tf.newaxis, ..., tf.newaxis, tf.newaxis]
+            bias = tf.reshape(bias, [1, -1, 1, 1])
         res = tf.math.add(res, bias)
     if permuted_x:
         return tf.transpose(res, (0, 3, 1, 2))
@@ -285,7 +285,7 @@ def conv2d_transpose(
     )
     if bias is not None:
         if data_format[1] == "C":
-            bias = bias[tf.newaxis, ..., tf.newaxis, tf.newaxis]
+            bias = tf.reshape(bias, [1, -1, 1, 1])
         res = tf.math.add(res, bias)
     if permuted_x:
         return tf.transpose(res, (0, 3, 1, 2))
@@ -349,7 +349,7 @@ def conv3d(
     res = tf.nn.conv3d(x, filters, strides, padding, data_format, dilations)
     if bias is not None:
         if data_format[1] == "C":
-            bias = bias[tf.newaxis, ..., tf.newaxis, tf.newaxis, tf.newaxis]
+            bias = tf.reshape(bias, [1, -1, 1, 1, 1])
         res = tf.math.add(res, bias)
     if permuted_x:
         return tf.transpose(res, (0, 4, 1, 2, 3))
@@ -393,7 +393,7 @@ def conv3d_transpose(
     )
     if bias is not None:
         if data_format[1] == "C":
-            bias = bias[tf.newaxis, ..., tf.newaxis, tf.newaxis, tf.newaxis]
+            bias = tf.reshape(bias, [1, -1, 1, 1, 1])
         res = tf.math.add(res, bias)
     if permuted_x:
         return tf.transpose(res, (0, 4, 1, 2, 3))
@@ -553,8 +553,7 @@ def conv_general_dilated(
                 )
     if bias is not None:
         if data_format[1] == "C":
-            new_dims = [tf.newaxis, Ellipsis] + [tf.newaxis] * dims
-            bias = bias[new_dims]
+            bias = tf.reshape(bias, [1, -1, *([1] * dims)])
         res = tf.math.add(res, bias)
     if permuted_x:
         return tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
