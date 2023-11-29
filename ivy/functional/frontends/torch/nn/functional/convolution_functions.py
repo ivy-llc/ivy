@@ -38,8 +38,6 @@ def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return ret
 
 
-# ToDo: add support for dilation > 1
-# ToDo: add support for output_padding > padding
 def _conv_transpose(
     input,
     weight,
@@ -57,7 +55,18 @@ def _conv_transpose(
     padding, output_padding = map(
         lambda x: [x] * dims if isinstance(x, int) else x, [padding, output_padding]
     )
-    pad_widths = [(weight.shape[i] - 1,) * 2 for i in range(dims)]
+    dilation = [dilation] * dims if isinstance(dilation, int) else dilation
+    stride = [stride] * dims if isinstance(stride, int) else stride
+
+    pad_widths = [
+        (
+            (weight.shape[i] - 1) * dilation[i]
+            + max([output_padding[i] - padding[i], 0]),
+        )
+        * 2
+        for i in range(dims)
+    ]
+
     ret = ivy.conv_general_dilated(
         input,
         weight,
@@ -67,12 +76,23 @@ def _conv_transpose(
         data_format="channel_first",
         feature_group_count=groups,
         x_dilations=stride,
+        dilations=dilation,
         bias=bias,
     )
     unpad_slice = (slice(None),) * 2
-    for i in range(dims):
+    for i in range(dims):  # most likely cause of error
         unpad_slice += (
-            slice(padding[i], ret.shape[2 + i] - padding[i] + output_padding[i], 1),
+            slice(
+                max([padding[i] - (dilation[i] // 2), padding[i], output_padding[i]]),
+                min([
+                    ret.shape[2 + i]
+                    - padding[i]
+                    + output_padding[i]
+                    + (dilation[i] // 2),
+                    ret.shape[2 + i] - padding[i] + output_padding[i],
+                ]),
+                1,
+            ),
         )
     ret = ret[unpad_slice]
     return ret
@@ -247,7 +267,7 @@ def conv_transpose2d(
             bias=bias,
         )
     else:
-        _conv_transpose(
+        return _conv_transpose(
             input,
             weight,
             bias=bias,
