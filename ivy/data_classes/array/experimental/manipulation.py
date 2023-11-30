@@ -1521,6 +1521,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         /,
         *,
         name: Optional[str] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         Add the elements of the input tensor with value tensor by selecting the indices
@@ -1528,7 +1529,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Parameters
         ----------
-        x : Array
+        self : Array
             The Destination Array.
         index : Array
                 The 1-D array containing the indices to index.
@@ -1538,6 +1539,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
                 The tensor used to add the elements along the target axis.
         name : str, optional
                Output array where the output is to be stored. Default value is 'none'.
+        out : Array
+               Output array.
 
         Returns
         -------
@@ -1546,12 +1549,12 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x1 = ivy.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
-        >>> index1 = ivy.array([0, 2])
-        >>> value1 = ivy.array([[1, 1, 1], [1, 1, 1]])
-        >>> ret1 = ivy.index_add(x1, index1, 0, value1)
+        >>> x = ivy.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
+        >>> idx = ivy.array([0, 2])
+        >>> val = ivy.array([[1, 1, 1], [1, 1, 1]])
+        >>> ans = ivy.index_add(x, idx, 0, val)
         array([[2, 2, 2],
                [1, 1, 1],
                [2, 2, 2]])
         """
-        return ivy.index_add(self._data, index, axis, value)
+        return ivy.index_add(self._data, index, axis, value, out=out)
