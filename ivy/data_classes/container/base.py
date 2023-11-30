@@ -3980,7 +3980,7 @@ class ContainerBase(dict, abc.ABC):
         return new_dict
 
     def __dir__(self):
-        return list(super.__dir__(self)) + list(self.keys())
+        return list(super().__dir__()) + list(self.keys())
 
     # noinspection PyProtectedMember
     def __getattr__(self, item, *args, **kwargs):
@@ -4007,7 +4007,7 @@ class ContainerBase(dict, abc.ABC):
         if name[0] != "_":
             self[name] = value
         else:
-            super.__setattr__(self, name, value)
+            super().__setattr__(name, value)
 
     def _get_queue_item(self, query):
         if isinstance(query, int):

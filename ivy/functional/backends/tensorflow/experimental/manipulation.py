@@ -294,11 +294,9 @@ def pad(
     **kwargs: Optional[Any],
 ) -> Union[tf.Tensor, tf.Variable]:
     pad_width = _to_tf_padding(pad_width, len(input.shape))
-    if not isinstance(pad_width, (tf.Variable, tf.Tensor)):
-        pad_width = tf.constant(pad_width)
-    constant_values = tf.constant(constant_values)
-    if constant_values.dtype != input.dtype:
-        constant_values = tf.cast(constant_values, input.dtype)
+    if isinstance(constant_values, (tf.Variable, tf.Tensor)):
+        if constant_values.dtype != input.dtype:
+            constant_values = tf.cast(constant_values, input.dtype)
     return tf.pad(
         input,
         pad_width,
