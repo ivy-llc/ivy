@@ -221,16 +221,31 @@ def conv_transpose1d(
     groups=1,
     dilation=1,
 ):
-    return _conv_transpose(
-        input,
-        weight,
-        bias=bias,
-        stride=stride,
-        padding=padding,
-        output_padding=output_padding,
-        groups=groups,
-        dilation=dilation,
-    )
+    if ivy.current_backend_str() in ["torch"]:
+        # this backend supports explicit padding, no need for conv_general_dilated
+        return ivy.conv_general_transpose(
+            input,
+            weight,
+            stride,
+            _get_transpose_pad(padding, output_padding, 1),
+            dims=1,
+            filter_format="channel_first",
+            data_format="channel_first",
+            dilations=dilation,
+            feature_group_count=groups,
+            bias=bias,
+        )
+    else:
+        return _conv_transpose(
+            input,
+            weight,
+            bias=bias,
+            stride=stride,
+            padding=padding,
+            output_padding=output_padding,
+            groups=groups,
+            dilation=dilation,
+        )
 
 
 @with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
@@ -284,16 +299,31 @@ def conv_transpose3d(
     groups=1,
     dilation=1,
 ):
-    return _conv_transpose(
-        input,
-        weight,
-        bias=bias,
-        stride=stride,
-        padding=padding,
-        output_padding=output_padding,
-        groups=groups,
-        dilation=dilation,
-    )
+    if ivy.current_backend_str() in ["torch"]:
+        # this backend supports explicit padding, no need for conv_general_dilated
+        return ivy.conv_general_transpose(
+            input,
+            weight,
+            stride,
+            _get_transpose_pad(padding, output_padding, 3),
+            dims=3,
+            filter_format="channel_first",
+            data_format="channel_first",
+            dilations=dilation,
+            feature_group_count=groups,
+            bias=bias,
+        )
+    else:
+        return _conv_transpose(
+            input,
+            weight,
+            bias=bias,
+            stride=stride,
+            padding=padding,
+            output_padding=output_padding,
+            groups=groups,
+            dilation=dilation,
+        )
 
 
 @to_ivy_arrays_and_back
