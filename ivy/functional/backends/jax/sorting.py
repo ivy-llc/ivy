@@ -80,7 +80,7 @@ def searchsorted(
 
 
 # msort
-@with_unsupported_dtypes({"0.4.18 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.20 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[JaxArray, list, tuple],
     /,

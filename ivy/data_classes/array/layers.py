@@ -20,9 +20,10 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.linear. This method simply
-        wraps the function, and so the docstring for ivy.linear also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.linear. This method simply wraps the
+        function, and so the docstring for ivy.linear also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -77,9 +78,10 @@ class _ArrayWithLayers(abc.ABC):
         noise_shape: Optional[Sequence[int]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.dropout. This method simply
-        wraps the function, and so the docstring for ivy.dropout also applies
-        to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.dropout. This method simply wraps the
+        function, and so the docstring for ivy.dropout also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -155,9 +157,10 @@ class _ArrayWithLayers(abc.ABC):
         data_format: str = "NWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.dropout1d. This method
-        simply wraps the function, and so the docstring for ivy.droput1d also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.dropout1d. This method simply wraps the
+        function, and so the docstring for ivy.droput1d also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -202,9 +205,10 @@ class _ArrayWithLayers(abc.ABC):
         data_format: str = "NHWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.dropout2d. This method
-        simply wraps the function, and so the docstring for ivy.droput1d also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.dropout2d. This method simply wraps the
+        function, and so the docstring for ivy.droput1d also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -250,9 +254,10 @@ class _ArrayWithLayers(abc.ABC):
         data_format: str = "NDHWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.dropout3d. This method
-        simply wraps the function, and so the docstring for ivy.droput3d also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.dropout3d. This method simply wraps the
+        function, and so the docstring for ivy.droput3d also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -294,10 +299,11 @@ class _ArrayWithLayers(abc.ABC):
         training: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of
-        ivy.scaled_dot_product_attention. This method simply wraps the
-        function, and so the docstring for ivy.scaled_dot_product_attention
-        also applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.scaled_dot_product_attention. This
+        method simply wraps the function, and so the docstring for
+        ivy.scaled_dot_product_attention also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -457,9 +463,10 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.conv1d. This method simply
-        wraps the function, and so the docstring for ivy.conv1d also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.conv1d. This method simply wraps the
+        function, and so the docstring for ivy.conv1d also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -523,21 +530,23 @@ class _ArrayWithLayers(abc.ABC):
         /,
         *,
         output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        filter_format: str = "channel_last",
         data_format: str = "NWC",
         dilations: Union[int, Tuple[int]] = 1,
         bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.conv1d_transpose. This
-        method simply wraps the function, and so the docstring for
-        ivy.conv1d_transpose also applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.conv1d_transpose. This method simply
+        wraps the function, and so the docstring for ivy.conv1d_transpose also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
         self
             Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
         filters
-            Convolution filters *[fw,d_in,d_out]*.
+            Convolution filters *[fw,d_out,d_in]*.
         strides
             The stride of the sliding window for each dimension of input.
         padding
@@ -546,6 +555,9 @@ class _ArrayWithLayers(abc.ABC):
             to apply before and after each spatial dimension.
         output_shape
             Shape of the output (Default value = None)
+        filter_format
+            Either "channel_first" or "channel_last". "channel_first" corresponds
+            to "IOW",input data formats, while "channel_last" corresponds to "WOI".
         data_format
             The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
             corresponds to input with shape (batch_size, width, channels), while "NCW"
@@ -580,6 +592,7 @@ class _ArrayWithLayers(abc.ABC):
             strides,
             padding,
             output_shape=output_shape,
+            filter_format=filter_format,
             data_format=data_format,
             dilations=dilations,
             bias=bias,
@@ -597,9 +610,10 @@ class _ArrayWithLayers(abc.ABC):
         dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.depthwise_conv2d. This
-        method simply wraps the function, and so the docstring for
-        ivy.depthwise_conv2d also applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.depthwise_conv2d. This method simply
+        wraps the function, and so the docstring for ivy.depthwise_conv2d also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -657,9 +671,10 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of `ivy.conv2d`. This method
-        simply wraps the function, and so the docstring for `ivy.conv2d` also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of `ivy.conv2d`. This method simply wraps the
+        function, and so the docstring for `ivy.conv2d` also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -729,22 +744,23 @@ class _ArrayWithLayers(abc.ABC):
         /,
         *,
         output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        filter_format: str = "channel_last",
         data_format: str = "NHWC",
         dilations: Union[int, Tuple[int, int]] = 1,
         out: Optional[ivy.Array] = None,
         bias: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of `ivy.conv2d_transpose`. This
-        method simply wraps the function, and so the docstring for
-        `ivy.conv2d_transpose` also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of `ivy.conv2d_transpose`. This method simply
+        wraps the function, and so the docstring for `ivy.conv2d_transpose` also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
         self
             Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
         filters
-            Convolution filters *[fh,fw,d_in,d_out]*.
+            Convolution filters *[fh,fw,d_out,d_in]*.
         strides
             The stride of the sliding window for each dimension of input.
         padding
@@ -752,6 +768,9 @@ class _ArrayWithLayers(abc.ABC):
             per-dimension paddings.
         output_shape
             Shape of the output (Default value = None)
+        filter_format
+            Either "channel_first" or "channel_last". "channel_first" corresponds
+            to "IOHW",input data formats, while "channel_last" corresponds to "HWOI".
         data_format
             The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
             corresponds to inputs with shape (batch_size, height, width, channels),
@@ -773,7 +792,7 @@ class _ArrayWithLayers(abc.ABC):
         Examples
         --------
         >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
-        >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+        >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6, 3])
         >>> y = x.conv2d_transpose(filters,2,'SAME',)
         >>> print(y.shape)
         (1, 56, 56, 6)
@@ -784,6 +803,7 @@ class _ArrayWithLayers(abc.ABC):
             strides,
             padding,
             output_shape=output_shape,
+            filter_format=filter_format,
             data_format=data_format,
             dilations=dilations,
             out=out,
@@ -804,9 +824,10 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of `ivy.conv3d`. This method
-        simply wraps the function, and so the docstring for `ivy.conv3d` also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of `ivy.conv3d`. This method simply wraps the
+        function, and so the docstring for `ivy.conv3d` also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -869,22 +890,23 @@ class _ArrayWithLayers(abc.ABC):
         /,
         *,
         output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        filter_format: str = "channel_last",
         data_format: str = "NDHWC",
         dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
         bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of `ivy.conv3d_transpose`. This
-        method simply wraps the function, and so the docstring for
-        `ivy.conv3d_transpose` also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of `ivy.conv3d_transpose`. This method simply
+        wraps the function, and so the docstring for `ivy.conv3d_transpose` also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
         self
             Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
         filters
-            Convolution filters *[fd,fh,fw,d_in,d_out]*.
+            Convolution filters *[fd,fh,fw,d_out,d_in]*.
         strides
             The stride of the sliding window for each dimension of input.
         padding
@@ -892,6 +914,9 @@ class _ArrayWithLayers(abc.ABC):
             the per-dimension paddings.
         output_shape
             Shape of the output (Default value = None)
+        filter_format
+            Either "channel_first" or "channel_last". "channel_first" corresponds
+            to "IODHW",input data formats, while "channel_last" corresponds to "DHWOI".
         data_format
             The ordering of the dimensions in the input, one of "NDHWC" or
             "NCDHW". "NDHWC" corresponds to inputs with shape (batch_size,
@@ -914,7 +939,7 @@ class _ArrayWithLayers(abc.ABC):
         Examples
         --------
         >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-        >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+        >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
         >>> y = x.conv3d_transpose(filters, 2, 'SAME')
         >>> print(y.shape)
         (1, 6, 56, 56, 6)
@@ -925,6 +950,7 @@ class _ArrayWithLayers(abc.ABC):
             strides,
             padding,
             output_shape=output_shape,
+            filter_format=filter_format,
             data_format=data_format,
             dilations=dilations,
             bias=bias,
@@ -942,9 +968,10 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> Tuple[ivy.Array, ivy.Array]:
-        """ivy.Array instance method variant of ivy.lstm_update. This method
-        simply wraps the function, and so the docstring for ivy.lstm_update
-        also applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.lstm_update. This method simply wraps
+        the function, and so the docstring for ivy.lstm_update also applies to this
+        method with minimal changes.
 
         Parameters
         ----------

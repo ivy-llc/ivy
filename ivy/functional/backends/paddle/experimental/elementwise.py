@@ -20,7 +20,7 @@ from .. import backend_version
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
             "float32",
             "float64",
             "int32",
@@ -42,7 +42,7 @@ def amax(
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
             "float32",
             "float64",
             "int32",
@@ -63,7 +63,7 @@ def amin(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+    {"2.5.2 and below": ("float32", "float64")},
     backend_version,
 )
 def lgamma(
@@ -73,7 +73,7 @@ def lgamma(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float64", "float32", "int32", "int64")},
+    {"2.5.2 and below": ("float64", "float32", "int32", "int64")},
     backend_version,
 )
 def fmax(
@@ -89,7 +89,7 @@ def fmax(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
@@ -153,7 +153,8 @@ def copysign(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("uint8", "int8", "int16", "float16")}},
+    backend_version,
 )
 def nansum(
     x: paddle.Tensor,
@@ -171,7 +172,7 @@ def nansum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def isclose(
     a: paddle.Tensor,
@@ -187,7 +188,7 @@ def isclose(
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("float16", "int16", "int8", "uint8")}, backend_version
+    {"2.5.2 and below": ("float16", "int16", "int8", "uint8")}, backend_version
 )
 def diff(
     x: Union[paddle.Tensor, list, tuple],
@@ -236,7 +237,7 @@ def hypot(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -276,7 +277,7 @@ def fix(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def nextafter(
     x1: paddle.Tensor,
@@ -317,7 +318,7 @@ _BERNOULLI_COEFS = [
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -347,7 +348,7 @@ def zeta(
             if q.dtype == paddle.float32
             else paddle.to_tensor(8.0, dtype="float64")
         )
-        assert M <= len(_BERNOULLI_COEFS)
+        assert len(_BERNOULLI_COEFS) >= M
         k = paddle.unsqueeze(ivy.arange(N, dtype=q.dtype), tuple(range(q.ndim)))
         S = paddle.sum((a_ + k) ** -s_, -1)
         Q = ivy.divide((q + N) ** (1 - x), x - 1)
@@ -384,7 +385,7 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
             axis = [operator.index(axis)]
         except TypeError:
             pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
     if len(set(axis)) != len(axis):
         raise ValueError("repeated axis")
     return axis
@@ -395,7 +396,7 @@ def _np_ndim(x):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+    {"2.5.2 and below": ("float32", "float64")},
     backend_version,
 )
 def gradient(
@@ -653,7 +654,7 @@ def count_nonzero(
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.5.2 and below": (
             "complex64",
             "complex128",
             "float32",
@@ -696,53 +697,45 @@ def digamma(
 # --- erfc --- #
 # Polynomials for computing erf/erfc. Originally from cephes library.
 # https://netlib.org/cephes/doubldoc.html
-kErfcPCoefficient = paddle.to_tensor(
-    [
-        2.46196981473530512524e-10,
-        5.64189564831068821977e-1,
-        7.46321056442269912687e0,
-        4.86371970985681366614e1,
-        1.96520832956077098242e2,
-        5.26445194995477358631e2,
-        9.34528527171957607540e2,
-        1.02755188689515710272e3,
-        5.57535335369399327526e2,
-    ]
-)
-kErfcQCoefficient = paddle.to_tensor(
-    [
-        1.00000000000000000000e0,
-        1.32281951154744992508e1,
-        8.67072140885989742329e1,
-        3.54937778887819891062e2,
-        9.75708501743205489753e2,
-        1.82390916687909736289e3,
-        2.24633760818710981792e3,
-        1.65666309194161350182e3,
-        5.57535340817727675546e2,
-    ]
-)
-kErfcRCoefficient = paddle.to_tensor(
-    [
-        5.64189583547755073984e-1,
-        1.27536670759978104416e0,
-        5.01905042251180477414e0,
-        6.16021097993053585195e0,
-        7.40974269950448939160e0,
-        2.97886665372100240670e0,
-    ]
-)
-kErfcSCoefficient = paddle.to_tensor(
-    [
-        1.00000000000000000000e0,
-        2.26052863220117276590e0,
-        9.39603524938001434673e0,
-        1.20489539808096656605e1,
-        1.70814450747565897222e1,
-        9.60896809063285878198e0,
-        3.36907645100081516050e0,
-    ]
-)
+kErfcPCoefficient = paddle.to_tensor([
+    2.46196981473530512524e-10,
+    5.64189564831068821977e-1,
+    7.46321056442269912687e0,
+    4.86371970985681366614e1,
+    1.96520832956077098242e2,
+    5.26445194995477358631e2,
+    9.34528527171957607540e2,
+    1.02755188689515710272e3,
+    5.57535335369399327526e2,
+])
+kErfcQCoefficient = paddle.to_tensor([
+    1.00000000000000000000e0,
+    1.32281951154744992508e1,
+    8.67072140885989742329e1,
+    3.54937778887819891062e2,
+    9.75708501743205489753e2,
+    1.82390916687909736289e3,
+    2.24633760818710981792e3,
+    1.65666309194161350182e3,
+    5.57535340817727675546e2,
+])
+kErfcRCoefficient = paddle.to_tensor([
+    5.64189583547755073984e-1,
+    1.27536670759978104416e0,
+    5.01905042251180477414e0,
+    6.16021097993053585195e0,
+    7.40974269950448939160e0,
+    2.97886665372100240670e0,
+])
+kErfcSCoefficient = paddle.to_tensor([
+    1.00000000000000000000e0,
+    2.26052863220117276590e0,
+    9.39603524938001434673e0,
+    1.20489539808096656605e1,
+    1.70814450747565897222e1,
+    9.60896809063285878198e0,
+    3.36907645100081516050e0,
+])
 
 
 # Evaluate the polynomial given coefficients and `x`.
@@ -755,7 +748,8 @@ def _EvaluatePolynomial(x, coefficients):
 
 
 def _is_scalar(x):
-    """Determines if the given tensor is a scalar.
+    """
+    Determines if the given tensor is a scalar.
 
     Args:
     - x (paddle.Tensor): Input tensor.
@@ -769,7 +763,7 @@ def _is_scalar(x):
 # TODO: Repalce once native function becomes available.
 # Compute an approximation of the error function complement (1 - erf(x)).
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float64", "float32")},
+    {"2.5.2 and below": ("float64", "float32")},
     backend_version,
 )
 def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:

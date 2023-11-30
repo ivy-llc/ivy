@@ -210,6 +210,7 @@ def test_numpy_logspace(
     sparse=st.booleans(),
     indexing=st.sampled_from(["xy", "ij"]),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_numpy_meshgrid(
     *,

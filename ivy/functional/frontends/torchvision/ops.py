@@ -4,13 +4,28 @@ from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_
 
 
 @to_ivy_arrays_and_back
+def batched_nms(boxes, scores, idxs, iou_threshold):
+    if boxes.size == 0:
+        return ivy.array([], dtype=ivy.int64)
+    else:
+        max_coordinate = boxes.max()
+        boxes_dtype = boxes.dtype
+        offsets = idxs.astype(boxes_dtype) * (
+            max_coordinate + ivy.array(1, dtype=boxes_dtype)
+        )
+        boxes_for_nms = boxes + offsets[:, None]
+        keep = nms(boxes_for_nms, scores, iou_threshold)
+        return keep
+
+
+@to_ivy_arrays_and_back
 def box_area(boxes):
     return ivy.prod(boxes[..., 2:] - boxes[..., :2], axis=-1)
 
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.1.0 and below": {
+        "2.1.1 and below": {
             "cpu": ("float16",),
         }
     },
@@ -36,7 +51,7 @@ def remove_small_boxes(boxes, min_size):
     return ivy.nonzero((w >= min_size) & (h >= min_size))[0]
 
 
-@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.1.1 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def roi_align(
     input, boxes, output_size, spatial_scale=1.0, sampling_ratio=1, aligned=False

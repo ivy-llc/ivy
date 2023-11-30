@@ -21,7 +21,8 @@ class LogPoissonLoss(Module):
     def _forward(
         self, true, pred, *, compute_full_loss=None, axis=None, reduction=None
     ):
-        """Perform forward pass of the Log Poisson Loss.
+        """
+        Perform forward pass of the Log Poisson Loss.
 
         true
             input array containing true labels.
@@ -52,6 +53,12 @@ class LogPoissonLoss(Module):
             reduction=ivy.default(reduction, self._reduction),
         )
 
+    def _extra_repr(self) -> str:
+        return (
+            f"compute_full_loss={self._compute_full_loss}, axis={self._axis}, "
+            f"reduction={self._reduction}"
+        )
+
 
 class CrossEntropyLoss(Module):
     def __init__(
@@ -67,7 +74,8 @@ class CrossEntropyLoss(Module):
         Module.__init__(self)
 
     def _forward(self, true, pred, *, axis=None, epsilon=None, reduction=None):
-        """Perform forward pass of the Cross Entropy Loss.
+        """
+        Perform forward pass of the Cross Entropy Loss.
 
         true
             input array containing true labels.
@@ -95,6 +103,11 @@ class CrossEntropyLoss(Module):
             axis=ivy.default(axis, self._axis),
             epsilon=ivy.default(epsilon, self._epsilon),
             reduction=ivy.default(reduction, self._reduction),
+        )
+
+    def _extra_repr(self) -> str:
+        return (
+            f"axis={self._axis}, epsilon={self._epsilon}, reduction={self._reduction}"
         )
 
 
@@ -158,4 +171,10 @@ class BinaryCrossEntropyLoss(Module):
             reduction=ivy.default(reduction, self._reduction),
             pos_weight=pos_weight,
             axis=axis,
+        )
+
+    def _extra_repr(self) -> str:
+        return (
+            f"from_logits={self._from_logits}, epsilon={self._epsilon}, "
+            f"reduction={self._reduction}"
         )

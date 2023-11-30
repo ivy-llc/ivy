@@ -7,6 +7,7 @@ from hypothesis import strategies as st
 
 # local
 import ivy
+from ivy_tests.test_ivy import helpers
 from ivy_tests.test_ivy.helpers.testing_helpers import handle_method
 
 
@@ -59,7 +60,14 @@ def _train(module, input_arr):
 @handle_method(
     method_tree="Sequential.__call__",
     input_array=st.lists(
-        st.floats(min_value=-1, max_value=1, allow_nan=False, allow_infinity=False),
+        helpers.floats(
+            min_value=-1,
+            max_value=1,
+            allow_nan=False,
+            allow_inf=False,
+            small_abs_safety_factor=1.5,
+            safety_factor_scale="log",
+        ),
         min_size=1,
         max_size=5,
     ),
@@ -69,49 +77,58 @@ def _train(module, input_arr):
 def test_sequential_construction_and_value(
     input_array, dims, use_activation, on_device, backend_fw
 ):
-    dims = [len(input_array)] + dims
-    layer_count = len(dims)
-    layers = [
-        ivy.Linear(dims[i], dims[i + 1], device=on_device)
-        for i in range(layer_count - 1)
-    ]
+    with ivy.utils.backend.ContextManager(backend_fw):
+        dims = [len(input_array)] + dims
+        layer_count = len(dims)
+        layers = [
+            ivy.Linear(dims[i], dims[i + 1], device=on_device)
+            for i in range(layer_count - 1)
+        ]
 
-    if use_activation:
-        activations = [ivy.GELU() for _ in range(layer_count - 1)]
-        layers = itertools.chain.from_iterable(zip(layers, activations))
+        if use_activation:
+            activations = [ivy.GELU() for _ in range(layer_count - 1)]
+            layers = itertools.chain.from_iterable(zip(layers, activations))
 
-    module = ivy.Sequential(*layers)
+        module = ivy.Sequential(*layers)
 
-    input_array = ivy.array(input_array, dtype="float32", device=on_device)
+        input_array = ivy.array(input_array, dtype="float32", device=on_device)
 
-    if "numpy" not in backend_fw.__name__:
-        _train(module, input_array)
+        if backend_fw != "numpy":
+            _train(module, input_array)
 
 
 @handle_method(
     method_tree="Sequential.__call__",
     input_array=st.lists(
-        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
+        helpers.floats(
+            min_value=0,
+            max_value=1,
+            allow_nan=False,
+            allow_inf=False,
+            small_abs_safety_factor=1.5,
+            safety_factor_scale="log",
+        ),
         min_size=1,
         max_size=5,
     ),
     dims=st.lists(st.integers(1, 10), min_size=2, max_size=2),
 )
 def test_sequential_same_as_class(input_array, dims, backend_fw):
-    dims = [len(input_array)] + dims
-    layer_count = len(dims)
-    layers = [ivy.Linear(dims[i], dims[i + 1]) for i in range(layer_count - 1)]
+    with ivy.utils.backend.ContextManager(backend_fw):
+        dims = [len(input_array)] + dims
+        layer_count = len(dims)
+        layers = [ivy.Linear(dims[i], dims[i + 1]) for i in range(layer_count - 1)]
 
-    m_sequential = ivy.Sequential(*layers)
-    m_class = TrainableModule(dims[0], dims[1], dims[2])
+        m_sequential = ivy.Sequential(*layers)
+        m_class = TrainableModule(dims[0], dims[1], dims[2])
 
-    # copy weights
-    _copy_weights(m_class.v.linear0, m_sequential.v.submodules.v0)
-    _copy_weights(m_class.v.linear1, m_sequential.v.submodules.v1)
+        # copy weights
+        _copy_weights(m_class.v.linear0, m_sequential.v.submodules.v0)
+        _copy_weights(m_class.v.linear1, m_sequential.v.submodules.v1)
 
-    input_array = ivy.array(input_array, dtype="float32")
+        input_array = ivy.array(input_array, dtype="float32")
 
-    if "numpy" not in backend_fw.__name__:
-        sequential_loss = _train(m_sequential, input_array)
-        class_loss = _train(m_class, input_array)
-        assert sequential_loss == class_loss
+        if backend_fw != "numpy":
+            sequential_loss = _train(m_sequential, input_array)
+            class_loss = _train(m_class, input_array)
+            assert sequential_loss == class_loss

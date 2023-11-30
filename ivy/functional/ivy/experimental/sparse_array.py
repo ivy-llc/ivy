@@ -426,7 +426,7 @@ class SparseArray(ivy.Array):
             )
 
         # initialize parent class
-        super(SparseArray, self).__init__(self)
+        super().__init__(self)
 
     def _init_data(self, data):
         if ivy.is_ivy_sparse_array(data):
@@ -766,12 +766,10 @@ class SparseArray(ivy.Array):
             for col in cols:
                 for col_index in range(nblockcols):
                     for row_index in range(nblockrows):
-                        all_coordinates.append(
-                            [
-                                nblockrows * row + row_index,
-                                nblockcols * col + col_index,
-                            ]
-                        )
+                        all_coordinates.append([
+                            nblockrows * row + row_index,
+                            nblockcols * col + col_index,
+                        ])
         return all_coordinates
 
     def _bsc_to_dense_coordinates(self):
@@ -787,12 +785,10 @@ class SparseArray(ivy.Array):
             for row in rows:
                 for col_index in range(nblockcols):
                     for row_index in range(nblockrows):
-                        all_coordinates.append(
-                            [
-                                nblockrows * row + row_index,
-                                nblockcols * col + col_index,
-                            ]
-                        )
+                        all_coordinates.append([
+                            nblockrows * row + row_index,
+                            nblockcols * col + col_index,
+                        ])
         return all_coordinates
 
     def to_dense_array(self, *, native=False):

@@ -14,7 +14,6 @@ from ivy.func_wrapper import (
 )
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.utils.einsum_parser import legalise_einsum_expr
-from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 
 # local
 from . import backend_version
@@ -25,7 +24,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64", "int32", "int64")},
+    {"2.5.2 and below": ("complex", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def min(
@@ -54,7 +53,7 @@ def min(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64", "int32", "int64")},
+    {"2.5.2 and below": ("complex", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def max(
@@ -92,7 +91,7 @@ def max(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "complex", "float32", "float64")}, backend_version
+    {"2.5.2 and below": ("bool", "complex", "float32", "float64")}, backend_version
 )
 def mean(
     x: paddle.Tensor,
@@ -122,7 +121,7 @@ def mean(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def prod(
     x: paddle.Tensor,
@@ -170,7 +169,10 @@ def std(
     return _std(x, axis, correction, keepdims).cast(x.dtype)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("int8", "uint8")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.5.2 and below": ("int8", "int16", "uint8")},
+    backend_version,
+)
 def sum(
     x: paddle.Tensor,
     /,
@@ -209,7 +211,7 @@ def var(
 # Extra #
 # ----- #
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex", "float32", "float64", "int32", "int64")},
+    {"2.5.2 and below": ("complex", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def cumprod(
@@ -259,7 +261,7 @@ def cumprod(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def cumsum(
     x: paddle.Tensor,
@@ -308,7 +310,7 @@ def cumsum(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("float32", "float64", "complex64", "complex128"),
             "gpu": (
                 "bfloat16",
@@ -331,6 +333,15 @@ def einsum(
     *operands: paddle.Tensor,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = _get_promoted_type_of_operands(operands)
     equation = legalise_einsum_expr(*[equation, *operands])
-    return paddle.einsum(equation, *operands).astype(dtype)
+
+    dtype_list = set(map(lambda x: x.dtype, operands))
+    dtype = dtype_list.pop()
+    if len(dtype_list) > 0:
+        for d in dtype_list:
+            dtype = ivy.promote_types(dtype, d)
+        operands = list(
+            map(lambda x: x.cast(dtype) if x.dtype != dtype else x, operands)
+        )
+
+    return paddle.einsum(equation, *operands)

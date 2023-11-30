@@ -20,7 +20,7 @@ from .elementwise import _elementwise_helper
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
+    {"2.5.2 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
     backend_version,
 )
 def argmax(
@@ -52,7 +52,7 @@ def argmax(
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("bfloat16", "bool", "complex", "float16", "int8")},
+    {"2.5.2 and below": ("bfloat16", "bool", "complex", "float16", "int8")},
     backend_version,
 )
 def argmin(
@@ -84,7 +84,7 @@ def argmin(
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("float16", "int8", "uint8")}, backend_version
+    {"2.5.2 and below": ("float16", "int8", "uint8")}, backend_version
 )
 def nonzero(
     x: paddle.Tensor,
@@ -168,7 +168,7 @@ def where(
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("float16", "int8", "uint8")}, backend_version
+    {"2.5.2 and below": ("float16", "int8", "uint8")}, backend_version
 )
 def argwhere(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
