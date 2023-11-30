@@ -498,6 +498,8 @@ class ModuleConverters:
 
             def _propagate_params(self):
                 def __update_param(ivy_module, x, kc):
+                    if kc not in self._parameters:
+                        return x
                     # Update param in the underneath ivy module
                     module = ivy_module
                     keys = re.split("[/.]", kc)
