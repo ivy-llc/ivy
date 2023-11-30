@@ -1004,7 +1004,7 @@ def stft(
     n_frames = (len(signal) - win_length) // hop_length + 1
     freqs = np.fft.rfftfreq(n_fft, 1.0 / fs)
 
-    stft = np.empty((len(freqs), n_frames), dtype=output_dtype)
+    stft_matrix = np.empty((len(freqs), n_frames), dtype=output_dtype)
 
     for i in range(n_frames):
         start = i * hop_length
