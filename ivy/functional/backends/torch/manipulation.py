@@ -39,6 +39,16 @@ def concat(
 concat.support_native_out = True
 
 
+def unflatten(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: int = 0,
+    sizes: Tuple[int] = None,
+) -> torch.Tensor:
+    return torch.unflatten(input=x, dim=axis, sizes=sizes)
+
+
 def expand_dims(
     x: torch.Tensor,
     /,
