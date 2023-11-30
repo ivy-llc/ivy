@@ -10,7 +10,6 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_dtypes,
     with_supported_device_and_dtypes,
-    with_supported_dtypes,
 )
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.utils.einsum_parser import legalise_einsum_expr
