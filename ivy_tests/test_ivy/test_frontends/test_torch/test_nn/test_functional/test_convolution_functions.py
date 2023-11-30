@@ -227,9 +227,6 @@ def _x_and_filters(draw, dim: int = 2, transpose: bool = False, max_dilation=3):
         )
         padding = [padding] * dim if isinstance(padding, int) else padding
         for i in range(len(output_padding)):
-            # ToDo: remove this when support for output_padding > padding is added
-            if dim != 2:
-                output_padding[i] = min(padding[i], output_padding[i])
             m = min(fstrides[i], fdilations[i])
             output_padding[i] = min(output_padding[i], m - 1)
         if draw(st.booleans()):
@@ -364,7 +361,7 @@ def test_torch_conv3d(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.conv_transpose1d",
-    dtype_vals=_x_and_filters(dim=1, transpose=True, max_dilation=1),
+    dtype_vals=_x_and_filters(dim=1, transpose=True),
 )
 def test_torch_conv_transpose1d(
     *,
@@ -444,7 +441,7 @@ def test_torch_conv_transpose2d(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.conv_transpose3d",
-    dtype_vals=_x_and_filters(dim=3, transpose=True, max_dilation=1),
+    dtype_vals=_x_and_filters(dim=3, transpose=True),
 )
 def test_torch_conv_transpose3d(
     *,
