@@ -45,12 +45,12 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
         raise ivy.utils.exceptions.IvyNotImplementedException(
             "Only implemented for order='K'"
         )
-    ret = ivy.array(object, dtype=dtype)
+    device = ivy.default_device()
+    if ivy.is_array(object):
+        device = ivy.dev(object)
+    ret = ivy.array(object, dtype=dtype, device=device)
     if ivy.get_num_dims(ret) < ndmin:
         ret = ivy.expand_dims(ret, axis=list(range(ndmin - ivy.get_num_dims(ret))))
-
-    default_device = ivy.default_device()
-    ret = ivy.to_device(ret, default_device)
 
     if ret.shape == () and dtype is None:
         return Array(ret, weak_type=True)

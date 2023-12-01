@@ -479,10 +479,14 @@ def _x_and_filters(
     output_channels = draw(st.integers(1, 3))
     group_list = [*range(1, 6)]
     if not transpose:
-        group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
+        group_list = list(
+            filter(
+                lambda x: (input_channels % x == 0 and x <= output_channels), group_list
+            )
+        )
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
-    fc = min(draw(st.sampled_from(group_list)), output_channels) if general else 1
+    fc = draw(st.sampled_from(group_list))
     strides = draw(
         st.one_of(
             st.integers(1, 3), st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
@@ -595,20 +599,22 @@ def _x_and_filters(
             )
         )
         dilations = (dilations, x_dilation)
-    filter_format = draw(st.sampled_from(["channel_first", "channel_last"]))
-    if filter_format == "channel_first":
-        filters = np.transpose(filters, (-1, -2, *range(dim)))
+    if not depthwise:
+        filter_format = draw(st.sampled_from(["channel_first", "channel_last"]))
+        if filter_format == "channel_first":
+            filters = np.transpose(filters, (-1, -2, *range(dim)))
     ret = (
         dtype,
         vals,
         filters,
         dilations,
-        filter_format,
         data_format,
         strides,
         padding,
     )
     ret = ret + (output_shape, fc) if transpose else ret + (fc,)
+    if not depthwise:
+        ret = ret + (filter_format,)
     if bias:
         return ret + (b,)
     return ret
@@ -638,12 +644,12 @@ def _x_and_filters_and_transpose(
             x,
             filters,
             dilations,
-            filter_format,
             data_format,
             stride,
             pad,
             output_shape,
             fc,
+            filter_format,
             bias,
         ) = all_args
     else:
@@ -652,11 +658,11 @@ def _x_and_filters_and_transpose(
             x,
             filters,
             dilations,
-            filter_format,
             data_format,
             stride,
             pad,
             fc,
+            filter_format,
             bias,
         ) = all_args
     return (
@@ -973,12 +979,12 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         x,
         filters,
         dilations,
-        filter_format,
         data_format,
         stride,
         pad,
         output_shape,
         fc,
+        filter_format,
         bias,
     ) = x_f_d_df
     # tensorflow does not work with dilations > 1 on cpu
@@ -1063,12 +1069,12 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         x,
         filters,
         dilations,
-        filter_format,
         data_format,
         stride,
         pad,
         output_shape,
         fc,
+        filter_format,
         bias,
     ) = x_f_d_df
     assume(isinstance(pad, str) or backend_fw in ["torch", "tensorflow"])
@@ -1153,12 +1159,12 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         x,
         filters,
         dilations,
-        filter_format,
         data_format,
         stride,
         pad,
         output_shape,
         fc,
+        filter_format,
         bias,
     ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
@@ -1191,7 +1197,7 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         general=True,
         bias=True,
     ),
-    ground_truth_backend="jax",
+    ground_truth_backend="torch",
 )
 def test_conv_general_dilated(
     *, dims, x_f_d_df, test_flags, backend_fw, fn_name, on_device
@@ -1244,12 +1250,12 @@ def test_conv_general_transpose(
         x,
         filters,
         dilations,
-        filter_format,
         data_format,
         stride,
         pad,
         output_shape,
         fc,
+        filter_format,
         bias,
     ) = dim_x_f_d_df
     assume(isinstance(pad, str) or backend_fw in ["torch", "tensorflow"])
