@@ -478,6 +478,7 @@ def index_add(
     /,
     *,
     name: Optional[str] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x = jnp.swapaxes(x, axis, 0)
     value = jnp.swapaxes(value, axis, 0)

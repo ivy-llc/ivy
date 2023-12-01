@@ -915,5 +915,6 @@ def index_add(
     /,
     *,
     name: Optional[str] = None,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.index_add(x, index, axis, value)

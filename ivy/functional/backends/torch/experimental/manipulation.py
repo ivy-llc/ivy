@@ -649,6 +649,7 @@ def index_add(
     /,
     *,
     name: Optional[str] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = torch.swapaxes(x, axis, 0)
     value = torch.swapaxes(value, axis, 0)

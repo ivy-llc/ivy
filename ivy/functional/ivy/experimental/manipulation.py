@@ -2916,6 +2916,7 @@ def index_add(
     /,
     *,
     name: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Add the elements of the input tensor with value tensor by selecting the indices in

@@ -608,6 +608,7 @@ def index_add(
     /,
     *,
     name: Optional[str] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x = np.swapaxes(x, axis, 0)
     value = np.swapaxes(value, axis, 0)

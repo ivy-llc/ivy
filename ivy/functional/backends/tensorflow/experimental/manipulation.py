@@ -571,6 +571,7 @@ def index_add(
     /,
     *,
     name: Optional[str] = None,
+    out: Union[tf.Tensor, tf.Variable] = None,
 ) -> tf.Tensor:
     x = tf.experimental.numpy.swapaxes(x, axis, 0)
     value = tf.experimental.numpy.swapaxes(value, axis, 0)

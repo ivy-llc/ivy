@@ -215,6 +215,7 @@ def index_add(
     /,
     *,
     name: Optional[str] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     x = mx.nd.swapaxes(x, axis, 0)
     value = mx.nd.swapaxes(value, axis, 0)
