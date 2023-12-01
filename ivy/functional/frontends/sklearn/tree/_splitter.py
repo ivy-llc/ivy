@@ -27,7 +27,6 @@ class Splitter:
         missing_values_in_feature_mask,
         *args,
     ):
-
         n_samples = X.shape[0]
         self.samples = ivy.empty(n_samples, dtype=ivy.int32)
         samples = self.samples
