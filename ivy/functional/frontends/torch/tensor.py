@@ -793,7 +793,7 @@ class Tensor:
         return self
 
     def size(self, dim=None):
-        shape = self.shape
+        shape = self.ivy_array.shape
         if dim is None:
             return shape
         try:

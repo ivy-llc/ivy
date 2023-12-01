@@ -174,9 +174,18 @@ def max_pool2d(
             )
         else:
             padding = "VALID"
-    res = tf.nn.pool(
-        x, kernel, "MAX", strides, padding, dilations=dilation, data_format=data_format
-    )
+    if any(d > 1 for d in dilation):
+        res = tf.nn.pool(
+            x,
+            kernel,
+            "MAX",
+            strides,
+            padding,
+            dilations=dilation,
+            data_format=data_format,
+        )
+    else:  # faster
+        res = tf.nn.max_pool2d(x, kernel, strides, padding, data_format=data_format)
 
     if depth_pooling:
         res = tf.transpose(res, (0, 2, 3, 1))
