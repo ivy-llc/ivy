@@ -498,6 +498,8 @@ class ModuleConverters:
 
             def _propagate_params(self):
                 def __update_param(ivy_module, x, kc):
+                    if kc not in self._parameters:
+                        return x
                     # Update param in the underneath ivy module
                     module = ivy_module
                     keys = re.split("[/.]", kc)
@@ -525,10 +527,12 @@ class ModuleConverters:
                 return ret
 
             def __call__(self, *args, **kwargs):
-                ivy.set_backend("tensorflow")
-                args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
-                ivy.previous_backend()
-
+                if ivy.backend != "tensorflow":
+                    ivy.set_backend("tensorflow")
+                    args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
+                    ivy.previous_backend()
+                else:
+                    args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
                 return super(KerasModel, self).__call__(*args, **kwargs)
 
             def to_device(self, device):
