@@ -1,0 +1,77 @@
+version: 0.0.1
+start_date: "2023-12-02" #change this to the date you want to start tracking from
+
+achievements:
+  - achievement:
+      name: Bug Trackers
+      icon: [Badge Icon URL Placeholder]
+      description: Awarded for creating issues in the project.
+      triggers:
+        - trigger:
+            actor: author
+            action: issue
+            condition: count() >= 1 & created_at >= ${start_date}
+
+  - achievement:
+      name: Debugging Dynamo
+      icon: [Badge Icon URL Placeholder]
+      description: Awarded for creating useful issues.
+      triggers:
+        - trigger:
+            actor: author
+            action: issue
+            condition: count(useful = true) >= 1 & created_at >= ${start_date}
+
+  - achievement:
+      name: Pull Request Pioneer
+      icon: [Badge Icon URL Placeholder]
+      description: Awarded for creating pull requests.
+      triggers:
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count() >= 1 & created_at >= ${start_date}
+
+  - achievement:
+      name: Merging Master
+      icon: [Badge Icon URL Placeholder]
+      description: Awarded for getting pull requests merged.
+      triggers:
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count(merged = true) >= 1 & created_at >= ${start_date}
+
+  - achievement:
+      name: Merging Wizard
+      icon: [Badge Icon URL Placeholder]
+      description: Awarded for getting priority pull requests merged.
+      triggers:
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count(merged = true & labels in {'Priority PR'}) >= 1 & created_at >= ${start_date}
+
+  - achievement:
+      name: Supreme Solver
+      icon: [Badge Icon URL Placeholder]
+      description: Awarded for creating a useful issue and getting a pull request merged for it.
+      triggers:
+        - trigger:
+            actor: author
+            action: issue
+            condition: count(useful = true) >= 1 & created_at >= ${start_date}
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count(merged = true) >= 1 & created_at >= ${start_date}
+
+  - achievement:
+      name: Ivy Inspectors
+      icon: [Badge Icon URL Placeholder]
+      description: Awarded for reviewing pull requests.
+      triggers:
+        - trigger:
+            actor: reviewer
+            action: pull_request
+            condition: count() >= 1 & created_at >= ${start_date}
