@@ -274,4 +274,7 @@ def node_split_best(
 
 
 def sort(feature_values, samples, n):
-    return 0, 0
+    if n == 0:
+        return
+    idx = ivy.argsort(feature_values)
+    return feature_values[idx], samples[idx]
