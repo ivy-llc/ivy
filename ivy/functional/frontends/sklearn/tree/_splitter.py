@@ -103,11 +103,6 @@ class BestSplitter(Splitter):
 
 
 def node_split_best(
-    splitter: Splitter,
-    partitioner,
-    criterion,
-    impurity,
-    split,
-    n_constant_features
+    splitter: Splitter, partitioner, criterion, impurity, split, n_constant_features
 ):
     pass
