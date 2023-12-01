@@ -38,8 +38,6 @@ def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return ret
 
 
-# ToDo: add support for dilation > 1
-# ToDo: add support for output_padding > padding
 def _conv_transpose(
     input,
     weight,
@@ -54,10 +52,20 @@ def _conv_transpose(
     weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 0, 1))
     for i in range(dims):
         weight = ivy.flip(weight, axis=i)
-    padding, output_padding = map(
-        lambda x: [x] * dims if isinstance(x, int) else x, [padding, output_padding]
+    padding, output_padding, stride, dilation = map(
+        lambda x: [x] * dims if isinstance(x, int) else x,
+        [padding, output_padding, stride, dilation],
     )
-    pad_widths = [(weight.shape[i] - 1,) * 2 for i in range(dims)]
+
+    pad_widths = [
+        (
+            (weight.shape[i] - 1) * dilation[i]
+            + max([output_padding[i] - padding[i], 0]),
+        )
+        * 2
+        for i in range(dims)
+    ]
+
     ret = ivy.conv_general_dilated(
         input,
         weight,
@@ -67,12 +75,17 @@ def _conv_transpose(
         data_format="channel_first",
         feature_group_count=groups,
         x_dilations=stride,
+        dilations=dilation,
         bias=bias,
     )
     unpad_slice = (slice(None),) * 2
     for i in range(dims):
         unpad_slice += (
-            slice(padding[i], ret.shape[2 + i] - padding[i] + output_padding[i], 1),
+            slice(
+                max([padding[i] - (dilation[i] // 2), padding[i], output_padding[i]]),
+                ret.shape[2 + i] - padding[i] + output_padding[i] + (dilation[i] // 2),
+                1,
+            ),
         )
     ret = ret[unpad_slice]
     return ret
@@ -208,16 +221,31 @@ def conv_transpose1d(
     groups=1,
     dilation=1,
 ):
-    return _conv_transpose(
-        input,
-        weight,
-        bias=bias,
-        stride=stride,
-        padding=padding,
-        output_padding=output_padding,
-        groups=groups,
-        dilation=dilation,
-    )
+    if ivy.current_backend_str() in ["torch"]:
+        # this backend supports explicit padding, no need for conv_general_dilated
+        return ivy.conv_general_transpose(
+            input,
+            weight,
+            stride,
+            _get_transpose_pad(padding, output_padding, 1),
+            dims=1,
+            filter_format="channel_first",
+            data_format="channel_first",
+            dilations=dilation,
+            feature_group_count=groups,
+            bias=bias,
+        )
+    else:
+        return _conv_transpose(
+            input,
+            weight,
+            bias=bias,
+            stride=stride,
+            padding=padding,
+            output_padding=output_padding,
+            groups=groups,
+            dilation=dilation,
+        )
 
 
 @with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
@@ -234,20 +262,20 @@ def conv_transpose2d(
 ):
     if ivy.current_backend_str() in ["torch", "tensorflow"]:
         # these two backends support explicit padding, no need for conv_general_dilated
-        weight = ivy.permute_dims(weight, axes=(2, 3, 0, 1))
         return ivy.conv_general_transpose(
             input,
             weight,
             stride,
             _get_transpose_pad(padding, output_padding, 2),
             dims=2,
+            filter_format="channel_first",
             data_format="channel_first",
             dilations=dilation,
             feature_group_count=groups,
             bias=bias,
         )
     else:
-        _conv_transpose(
+        return _conv_transpose(
             input,
             weight,
             bias=bias,
@@ -271,16 +299,31 @@ def conv_transpose3d(
     groups=1,
     dilation=1,
 ):
-    return _conv_transpose(
-        input,
-        weight,
-        bias=bias,
-        stride=stride,
-        padding=padding,
-        output_padding=output_padding,
-        groups=groups,
-        dilation=dilation,
-    )
+    if ivy.current_backend_str() in ["torch"]:
+        # this backend supports explicit padding, no need for conv_general_dilated
+        return ivy.conv_general_transpose(
+            input,
+            weight,
+            stride,
+            _get_transpose_pad(padding, output_padding, 3),
+            dims=3,
+            filter_format="channel_first",
+            data_format="channel_first",
+            dilations=dilation,
+            feature_group_count=groups,
+            bias=bias,
+        )
+    else:
+        return _conv_transpose(
+            input,
+            weight,
+            bias=bias,
+            stride=stride,
+            padding=padding,
+            output_padding=output_padding,
+            groups=groups,
+            dilation=dilation,
+        )
 
 
 @to_ivy_arrays_and_back

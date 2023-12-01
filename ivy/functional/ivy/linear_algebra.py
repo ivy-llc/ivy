@@ -3182,7 +3182,7 @@ def tensorsolve(
             allaxes.remove(k)
             allaxes.insert(ndim1, k)
 
-        x1 = ivy.matrix_transpose(x1, allaxes)
+        x1 = ivy.matrix_transpose(x1)
 
     old_shape = x1.shape[-(ndim1 - ndim2) :]
 

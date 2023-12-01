@@ -62,7 +62,7 @@ class InterruptedTest(BaseException):
     """Indicate that a test tried to write global attributes while a test is running."""
 
     def __init__(self, test_interrupted):
-        super.__init__(f"{test_interrupted} was interrupted during execution.")
+        super().__init__(f"{test_interrupted} was interrupted during execution.")
 
 
 # Setup
