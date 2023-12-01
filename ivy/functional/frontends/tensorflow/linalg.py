@@ -496,13 +496,11 @@ def tridiagonal_solve(
         dim = diagonals[0].shape[0]
         diagonals[[0, -1], [-1, 0]] = 0
         dummy_idx = [0, 0]
-        indices = ivy.array(
-            [
-                [(i, i + 1) for i in range(dim - 1)] + [dummy_idx],
-                [(i, i) for i in range(dim)],
-                [dummy_idx] + [(i + 1, i) for i in range(dim - 1)],
-            ]
-        )
+        indices = ivy.array([
+            [(i, i + 1) for i in range(dim - 1)] + [dummy_idx],
+            [(i, i) for i in range(dim)],
+            [dummy_idx] + [(i + 1, i) for i in range(dim - 1)],
+        ])
         constructed_matrix = ivy.scatter_nd(
             indices, diagonals, shape=ivy.array([dim, dim])
         )
