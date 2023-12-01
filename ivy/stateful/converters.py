@@ -527,10 +527,12 @@ class ModuleConverters:
                 return ret
 
             def __call__(self, *args, **kwargs):
-                ivy.set_backend("tensorflow")
-                args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
-                ivy.previous_backend()
-
+                if ivy.backend != "tensorflow":
+                    ivy.set_backend("tensorflow")
+                    args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
+                    ivy.previous_backend()
+                else:
+                    args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
                 return super(KerasModel, self).__call__(*args, **kwargs)
 
             def to_device(self, device):
