@@ -5,9 +5,9 @@ class Splitter:
     def __init__(
         self,
         criterion,
-        max_features: int,
-        min_samples_leaf: int,
-        min_weight_leaf: float,
+        max_features,
+        min_samples_leaf,
+        min_weight_leaf,
         random_state,
         *args,
     ):
@@ -77,3 +77,37 @@ class Splitter:
 
     def node_impurity(self):
         return self.criterion.node_impurity()
+
+
+class BestSplitter(Splitter):
+    def init(
+        self,
+        X,
+        y,
+        sample_weight,
+        missing_values_in_feature_mask,
+        *args,
+    ):
+        Splitter.init(self, X, y, sample_weight, missing_values_in_feature_mask, *args)
+        self.partitioner = None
+
+    def node_split(self, impurity, split, n_constant_features):
+        return node_split_best(
+            self,
+            self.partitioner,
+            self.criterion,
+            impurity,
+            split,
+            n_constant_features,
+        )
+
+
+def node_split_best(
+    splitter: Splitter,
+    partitioner,
+    criterion,
+    impurity,
+    split,
+    n_constant_features
+):
+    pass
