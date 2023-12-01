@@ -28,6 +28,7 @@ UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
 
 TEST_PARAMS_CONFIG = []
+SKIP_GROUND_TRUTH = False
 UNSUPPORTED_FRAEMWORK_DEVICES = {"numpy": ["gpu", "tpu"]}
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
@@ -35,7 +36,7 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 
 def default_framework_mapper(fw, fw_path="/opt/fw/", set_too=False):
     # do a path search, get the latest
-    # so that we can get the higest version
+    # so that we can get the highest version
     # available dynamically and set that for
     # use by the rest of the code
     # eg: torch/1.11.0 and torch/1.12.0
@@ -168,14 +169,14 @@ def pytest_configure(config):
             # for future access
             mod_frontend[fw] = (proc, queue)
 
-    # compile_graph
-    raw_value = config.getoption("--compile_graph")
+    # trace_graph
+    raw_value = config.getoption("--trace_graph")
     if raw_value == "both":
-        compile_modes = [True, False]
+        trace_modes = [True, False]
     elif raw_value == "true":
-        compile_modes = [True]
+        trace_modes = [True]
     else:
-        compile_modes = [False]
+        trace_modes = [False]
 
     # implicit
     raw_value = config.getoption("--with_implicit")
@@ -190,18 +191,18 @@ def pytest_configure(config):
             if "/" in backend_str:
                 backend_str = backend_str.split("/")[0]
             if (
-                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES.keys()
+                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES
                 and device.partition(":")[0]
                 in UNSUPPORTED_FRAEMWORK_DEVICES[backend_str]
             ):
                 continue
-            for compile_graph in compile_modes:
+            for trace_graph in trace_modes:
                 for implicit in implicit_modes:
                     TEST_PARAMS_CONFIG.append(
                         (
                             device,
                             backend_str,
-                            compile_graph,
+                            trace_graph,
                             implicit,
                         )
                     )
@@ -210,7 +211,7 @@ def pytest_configure(config):
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
+def run_around_tests(request, on_device, backend_fw, trace_graph, implicit):
     try:
         test_globals.setup_api_test(
             backend_fw,
@@ -239,19 +240,20 @@ def pytest_generate_tests(metafunc):
     # Skip backend test against groud truth backend
     # This redundant and wastes resources, as we going to be comparing
     # The backend against it self
+    global SKIP_GROUND_TRUTH
     if hasattr(metafunc.function, "ground_truth_backend"):
         test_paramters = TEST_PARAMS_CONFIG.copy()
         # Find the entries that contains the ground truth backend as it's backend
         for entry in test_paramters.copy():
             # Entry 1 is backend_fw
-            if entry[1] == metafunc.function.ground_truth_backend:
+            if entry[1] == metafunc.function.ground_truth_backend and SKIP_GROUND_TRUTH:
                 test_paramters.remove(entry)
         metafunc.parametrize(
-            "on_device,backend_fw,compile_graph,implicit", test_paramters
+            "on_device,backend_fw,trace_graph,implicit", test_paramters
         )
     else:
         metafunc.parametrize(
-            "on_device,backend_fw,compile_graph,implicit", TEST_PARAMS_CONFIG
+            "on_device,backend_fw,trace_graph,implicit", TEST_PARAMS_CONFIG
         )
 
 
@@ -284,15 +286,19 @@ def process_cl_flags(config) -> Dict[str, bool]:
             getopt("--skip-gradient-testing"),
             getopt("--with-gradient-testing"),
         ),
-        "test_compile": (
-            getopt("--skip-compile-testing"),
-            getopt("--with-compile-testing"),
+        "test_trace": (
+            getopt("--skip-trace-testing"),
+            getopt("--with-trace-testing"),
         ),
         "transpile": (
             False,
-            getopt("--with-transpile-frontend"),
+            getopt("--with-transpile"),
         ),
     }
+
+    # whether to skip gt testing or not
+    # global SKIP_GROUND_TRUTH
+    # SKIP_GROUND_TRUTH = not tmp_config["transpile"][1]
 
     # final mapping for hypothesis value generation
     for k, v in tmp_config.items():
@@ -326,7 +332,7 @@ def pytest_addoption(parser):
 
     parser.addoption("--device", action="store", default="cpu")
     parser.addoption("-B", "--backend", action="store", default="all")
-    parser.addoption("--compile_graph", action="store_true")
+    parser.addoption("--trace_graph", action="store_true")
     parser.addoption("--with_implicit", action="store_true")
     parser.addoption("--frontend", action="store", default=None)
     parser.addoption("--env", action="store", default=None)
@@ -337,7 +343,7 @@ def pytest_addoption(parser):
     parser.addoption("--skip-nestable-testing", action="store_true")
     parser.addoption("--skip-instance-method-testing", action="store_true")
     parser.addoption("--skip-gradient-testing", action="store_true")
-    parser.addoption("--skip-compile-testing", action="store_true")
+    parser.addoption("--skip-trace-testing", action="store_true")
 
     parser.addoption("--with-variable-testing", action="store_true")
     parser.addoption("--with-native-array-testing", action="store_true")
@@ -345,8 +351,8 @@ def pytest_addoption(parser):
     parser.addoption("--with-nestable-testing", action="store_true")
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
-    parser.addoption("--with-compile-testing", action="store_true")
-    parser.addoption("--with-transpile-frontend", action="store_true")
+    parser.addoption("--with-trace-testing", action="store_true")
+    parser.addoption("--with-transpile", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
         "--my_test_dump",

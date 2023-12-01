@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
-    handle_device_shifting,
+    handle_device,
     handle_complex_input,
     handle_backend_invalid,
 )
@@ -29,7 +29,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def abs(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -123,7 +123,6 @@ def abs(
         b: ivy.array([4.5, 5.3, 0., 2.3])
     }
     """
-
     return ivy.current_backend(x).abs(x, out=out)
 
 
@@ -134,7 +133,7 @@ def abs(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def acos(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -244,7 +243,7 @@ def acos(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def acosh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -353,7 +352,7 @@ def acosh(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def add(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -421,7 +420,7 @@ def add(
 
     For complex floating-point operands, the real valued floating-point
     special cases must independently apply to the real and
-    imaginary component operation invloving real numbers as
+    imaginary component operation involving real numbers as
     described in the above table. For example, let ``a = real(x1_i)``,
     ``c = real(x2_i)``, ``d = imag(x2_i)``,
     and
@@ -505,7 +504,7 @@ def add(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def asin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -515,7 +514,7 @@ def asin(
     """
     Calculate an implementation-dependent approximation of the principal value of the
     inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each
-    element ``x_i`` of the input array ``x``. Each element-wise result is expressed in
+    element ``x_i`` of the input array ``x``. Each element- wise result is expressed in
     radians.
 
     **Special cases**
@@ -594,7 +593,7 @@ def asin(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def asinh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -703,7 +702,7 @@ def asinh(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def atan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -787,7 +786,7 @@ def atan(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def atan2(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -964,7 +963,7 @@ def atan2(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def atanh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1066,7 +1065,7 @@ def atanh(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def bitwise_and(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -1161,7 +1160,7 @@ def bitwise_and(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def bitwise_invert(
     x: Union[int, bool, ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -1238,7 +1237,7 @@ def bitwise_invert(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def bitwise_left_shift(
     x1: Union[int, ivy.Array, ivy.NativeArray],
     x2: Union[int, ivy.Array, ivy.NativeArray],
@@ -1289,7 +1288,7 @@ def bitwise_left_shift(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def bitwise_or(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -1378,7 +1377,7 @@ def bitwise_or(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def bitwise_right_shift(
     x1: Union[int, ivy.Array, ivy.NativeArray],
     x2: Union[int, ivy.Array, ivy.NativeArray],
@@ -1494,7 +1493,7 @@ def bitwise_right_shift(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def bitwise_xor(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -1600,7 +1599,7 @@ def bitwise_xor(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1691,7 +1690,7 @@ def ceil(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def cos(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1778,7 +1777,7 @@ def cos(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def cosh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1897,7 +1896,7 @@ def cosh(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def divide(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2089,7 +2088,7 @@ def divide(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def equal(
     x1: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -2207,7 +2206,7 @@ def equal(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def exp(
     x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
@@ -2346,7 +2345,7 @@ def exp(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def imag(
     val: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2399,7 +2398,7 @@ def imag(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def angle(
     z: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2443,7 +2442,7 @@ def angle(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def gcd(
     x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
     x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
@@ -2486,7 +2485,7 @@ def gcd(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def exp2(
     x: Union[ivy.Array, float, list, tuple],
     /,
@@ -2527,7 +2526,7 @@ def exp2(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2654,7 +2653,7 @@ def expm1(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def floor(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2744,7 +2743,7 @@ def floor(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def floor_divide(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2942,7 +2941,7 @@ def floor_divide(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def fmin(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2990,7 +2989,7 @@ def fmin(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def greater(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -3091,7 +3090,7 @@ def greater(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def greater_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3178,7 +3177,7 @@ def greater_equal(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def less_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3265,7 +3264,7 @@ def less_equal(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def multiply(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -3452,7 +3451,7 @@ def multiply(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3550,7 +3549,7 @@ def isfinite(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def isinf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3675,7 +3674,7 @@ def isinf(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def isnan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3784,7 +3783,7 @@ def isnan(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def less(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -3875,7 +3874,7 @@ def less(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def log(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3976,7 +3975,7 @@ def log(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def log10(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4071,7 +4070,7 @@ def log10(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def log1p(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4190,7 +4189,7 @@ def log1p(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def log2(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4212,7 +4211,7 @@ def log2(
     - If ``x_i`` is ``1``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
 
-    For complex floating-point operands, special cases must be hanled as if
+    For complex floating-point operands, special cases must be handled as if
     the operation is implemented using the standard change of base formula
 
     .. math::
@@ -4246,6 +4245,37 @@ def log2(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([5.0, 1, -0.0, -6.0])
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    ivy.array([2.32, 0., -inf, nan])
+    >>> x = ivy.array([[float('nan'), 1, 6.0, float('+inf')],
+    ...               [+0, -2.0, -7, float('-inf')]])
+    >>> y = ivy.empty_like(x)
+    >>> ivy.log2(x, out=y)
+    >>> print(y)
+    ivy.array([[nan, 0., 2.58, inf],[inf, nan, nan, nan]])
+    >>> x = ivy.array([[float('nan'), 1, 7.0, float('+inf')],
+    ...               [+0, -3.0, -8, float('-inf')]])
+    >>> ivy.log2(x, out=x)
+    >>> print(x)
+    ivy.array([[nan, 0., 2.81, inf],[inf, nan, nan, nan]])
+
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+    ...                   b=ivy.array([-0., -4.9, float('+inf')]),
+    ...                   c=ivy.array([8.9, 2.1, 1.]))
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    {
+        a: ivy.array([-inf, nan]),
+        b: ivy.array([-inf, nan, inf]),
+        c: ivy.array([3.15, 1.07, 0.])
+    }
     """
     return ivy.current_backend(x).log2(x, out=out)
 
@@ -4256,7 +4286,7 @@ def log2(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def logaddexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -4357,7 +4387,7 @@ def logaddexp(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def logaddexp2(
     x1: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
     x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
@@ -4401,7 +4431,7 @@ def logaddexp2(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def logical_and(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -4503,7 +4533,7 @@ def logical_and(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def logical_not(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4600,7 +4630,7 @@ def logical_not(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def logical_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -4692,7 +4722,7 @@ def logical_or(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def logical_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -4791,7 +4821,7 @@ def logical_xor(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def nan_to_num(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4854,7 +4884,7 @@ def nan_to_num(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def negative(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -4940,7 +4970,7 @@ def negative(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def not_equal(
     x1: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -4965,7 +4995,7 @@ def not_equal(
       and ``x1_i`` does not equal ``x2_i``, the result is ``True``.
     - In the remaining cases, the result is ``False``.
 
-    For omplex floating-point operands, let ``a = real(x1_i)``, ``b = imag(x1_i)``,
+    For complex floating-point operands, let ``a = real(x1_i)``, ``b = imag(x1_i)``,
     ``c = real(x2_i)``, ``d = imag(x2_i)``, and
 
     - If ``a``, ``b``, ``c``, or ``d`` is ``NaN``, the result is ``True``.
@@ -5124,7 +5154,7 @@ def not_equal(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def positive(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -5200,7 +5230,7 @@ def positive(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def pow(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[int, float, ivy.Array, ivy.NativeArray],
@@ -5347,7 +5377,7 @@ def _complex_to_inf(exponent):
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def real(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5418,7 +5448,7 @@ def real(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def remainder(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -5549,7 +5579,7 @@ def remainder(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def round(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5671,7 +5701,7 @@ def round(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def sign(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5781,7 +5811,7 @@ def sign(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def sin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5876,7 +5906,7 @@ def sin(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def sinh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -6000,7 +6030,7 @@ def sinh(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -6132,7 +6162,7 @@ def sqrt(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def square(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -6205,7 +6235,7 @@ def square(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def subtract(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -6271,7 +6301,7 @@ def subtract(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def tan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -6375,7 +6405,7 @@ def tan(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -6517,7 +6547,7 @@ def tanh(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def trapz(
     y: ivy.Array,
     /,
@@ -6578,7 +6608,7 @@ def trapz(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def trunc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -6671,7 +6701,7 @@ def trunc(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def erf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -6733,7 +6763,7 @@ def erf(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def maximum(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -6825,7 +6855,7 @@ def maximum(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def minimum(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -6918,7 +6948,7 @@ def minimum(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def reciprocal(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -6957,7 +6987,7 @@ def reciprocal(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def deg2rad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -7036,7 +7066,7 @@ def deg2rad(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def rad2deg(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -7161,7 +7191,7 @@ trunc_divide.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
         "handle_backend_invalid",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
@@ -7175,7 +7205,7 @@ trunc_divide.mixed_backend_wrappers = {
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def isreal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -7240,7 +7270,7 @@ def isreal(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def fmod(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -7284,7 +7314,7 @@ def fmod(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def lcm(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],

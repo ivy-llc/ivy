@@ -14,7 +14,7 @@ from . import backend_version
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -42,7 +42,7 @@ def l1_loss(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -72,7 +72,7 @@ def smooth_l1_loss(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -100,7 +100,7 @@ def huber_loss(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -126,28 +126,21 @@ def soft_margin_loss(
     return paddle.nn.functional.soft_margin_loss(input, label, reduction=reduction)
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": (
-                "bfloat16",
-                "float16",
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "complex64",
-                "complex128",
-                "bool",
-            )
-        }
-    },
+@with_supported_device_and_dtypes(
+    {"2.5.2 and below": {"cpu": ("float32", "float64")}},
     backend_version,
 )
 def kl_div(
-    input: paddle.Tensor, target: paddle.Tensor, /, *, reduction: Optional[str] = "mean"
+    input: paddle.Tensor,
+    target: paddle.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+    log_target=False,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if log_target:
+        target = paddle.exp(target)
     loss = F.kl_div(input, target, reduction=reduction)
     return loss
 
@@ -202,7 +195,7 @@ def _validate_poisson_nll_params(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
