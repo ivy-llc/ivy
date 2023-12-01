@@ -91,91 +91,41 @@ def caster(dtype, intersect):
                 return ret_dtype
 
 
+def cast_helper(arg, dtype, intersect, is_upcast=True):
+    step = 1 if is_upcast else -1
+    index = casting_modes_dict[arg]().index(dtype) + step
+    result = ""
+    while 0 <= index < len(casting_modes_dict[arg]()):
+        if casting_modes_dict[arg]()[index] not in intersect:
+            result = casting_modes_dict[arg]()[index]
+            break
+        index += step
+
+    return result
+
+
 def upcaster(dtype, intersect):
     # upcasting is enabled, we upcast to the highest
     if "uint" in str(dtype):
-        index = casting_modes_dict["uint"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["uint"]()):
-            if casting_modes_dict["uint"]()[index] not in intersect:
-                result = casting_modes_dict["uint"]()[index]
-                break
-            index += 1
-        return result
-
+        return cast_helper("uint", dtype, intersect, is_upcast=True)
     if "int" in dtype:
-        index = casting_modes_dict["int"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["int"]()):
-            if casting_modes_dict["int"]()[index] not in intersect:
-                result = casting_modes_dict["int"]()[index]
-                break
-            index += 1
-        return result
-
+        return cast_helper("int", dtype, intersect, is_upcast=True)
     if "float" in dtype:
-        index = casting_modes_dict["float"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["float"]()):
-            if casting_modes_dict["float"]()[index] not in intersect:
-                result = casting_modes_dict["float"]()[index]
-                break
-            index += 1
-        return result
-
+        return cast_helper("float", dtype, intersect, is_upcast=True)
     if "complex" in dtype:
-        index = casting_modes_dict["complex"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["complex"]()):
-            if casting_modes_dict["complex"]()[index] not in intersect:
-                result = casting_modes_dict["complex"]()[index]
-                break
-            index += 1
-        return result
+        return cast_helper("complex", dtype, intersect, is_upcast=True)
 
 
 def downcaster(dtype, intersect):
     # downcasting is enabled, we upcast to the highest
     if "uint" in str(dtype):
-        index = casting_modes_dict["uint"]().index(dtype) - 1
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["int"]()[index] not in intersect:
-                result = casting_modes_dict["uint"]()[index]
-                break
-            index -= 1
-        return result
-
+        return cast_helper("uint", dtype, intersect, is_upcast=False)
     if "int" in dtype:
-        index = casting_modes_dict["int"]().index(dtype) - 1
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["int"]()[index] not in intersect:
-                result = casting_modes_dict["int"]()[index]
-                break
-            index -= 1
-        return result
-
+        return cast_helper("int", dtype, intersect, is_upcast=False)
     if "float" in dtype:
-        index = casting_modes_dict["float"]().index(dtype) - 1
-
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["float"]()[index] not in intersect:
-                result = casting_modes_dict["float"]()[index]
-                break
-            index -= 1
-        return result
-
+        return cast_helper("float", dtype, intersect, is_upcast=False)
     if "complex" in dtype:
-        index = casting_modes_dict["complex"]().index(dtype) - 1
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["complex"]()[index] not in intersect:
-                result = casting_modes_dict["complex"]()[index]
-                break
-            index -= 1
-        return result
+        return cast_helper("complex", dtype, intersect, is_upcast=False)
 
 
 def cross_caster(intersect):
@@ -224,7 +174,10 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
 def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
-    array_fn = ivy.is_array if "array_fn" not in kwargs else kwargs["array_fn"]
+    array_fn = lambda x: (
+        ivy.is_array(x) if not hasattr(x, "_ivy_array") else ivy.is_array(x.ivy_array)
+    )
+    array_fn = array_fn if "array_fn" not in kwargs else kwargs["array_fn"]
     arr = None
     if args:
         arr_idxs = ivy.nested_argwhere(args, array_fn, stop_after_n_found=1)
@@ -802,7 +755,7 @@ def handle_device(fn: Callable) -> Callable:
             with ivy.DefaultDevice(ivy.default_device(dev)):
                 return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
         inputs = args + tuple(kwargs.values())
-        devices = tuple(ivy.dev(x) for x in inputs if ivy.is_native_array(x))
+        devices = tuple(ivy.dev(x) for x in inputs if ivy.is_array(x))
         unique_devices = set(devices)
         # check if arrays are on the same device
         if len(unique_devices) <= 1:
