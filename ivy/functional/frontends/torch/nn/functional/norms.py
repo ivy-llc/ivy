@@ -34,8 +34,9 @@ def batch_norm(
         momentum=momentum,
         data_format="NCS",
     )
-    ivy.inplace_update(running_mean, mean)
-    ivy.inplace_update(running_var, var)
+    if training:
+        ivy.inplace_update(running_mean, mean)
+        ivy.inplace_update(running_var, var)
     return normalized
 
 
