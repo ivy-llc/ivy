@@ -20,7 +20,7 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: count(useful = true) >= 1 & created_at >= ${start_date}
+            condition: count(labels in {'Useful Issue'}) >= 1 & created_at >= ${start_date}
 
   - achievement:
       name: Pull Request Pioneer
