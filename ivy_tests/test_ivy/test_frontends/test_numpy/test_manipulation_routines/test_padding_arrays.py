@@ -13,20 +13,18 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @st.composite
 def _pad_helper(draw):
     mode = draw(
-        st.sampled_from(
-            [
-                "constant",
-                "edge",
-                "linear_ramp",
-                "maximum",
-                "mean",
-                "median",
-                "minimum",
-                "reflect",
-                "symmetric",
-                "wrap",
-            ]
-        )
+        st.sampled_from([
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+        ])
     )
     if mode in ["median", "mean"]:
         dtypes = "float"
@@ -46,7 +44,7 @@ def _pad_helper(draw):
     ndim = len(shape)
     pad_width = draw(_st_tuples_or_int(ndim, min_val=0))
     kwargs = {}
-    if mode == "reflect" or mode == "symmetric":
+    if mode in ["reflect", "symmetric"]:
         kwargs["reflect_type"] = draw(st.sampled_from(["even", "odd"]))
     if mode in ["maximum", "mean", "median", "minimum"]:
         kwargs["stat_length"] = draw(_st_tuples_or_int(ndim, min_val=2))

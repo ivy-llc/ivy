@@ -24,6 +24,19 @@ from ivy.utils.exceptions import handle_exceptions
 # ------#
 
 
+def _get_embed_dim(
+    in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query
+):
+    pre_embed_dim = query.shape[-1]
+    if ivy.exists(in_proj_weights):
+        embed_dim = in_proj_weights.shape[0] / 3
+    elif all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]):
+        embed_dim = q_proj_weights.shape[0]
+    else:
+        embed_dim = None
+    return pre_embed_dim, embed_dim
+
+
 def _in_projection(
     q,
     k,
@@ -32,9 +45,9 @@ def _in_projection(
     b=None,
 ):
     """
-    Projects query, key and value effeciently, depending on whether we are doing self-
+    Projects query, key and value efficiently, depending on whether we are doing self-
     attention (query is key is value) or cross-attention (key is value) or an attention
-    where query, key and value are all diferrent.
+    where query, key and value are all different.
 
     it is only used in
     multi_head_attention layer.
@@ -383,9 +396,9 @@ def dropout(
     }
     """
     if prob == 0 or not training:
-        if dtype is not None:
+        if dtype is not None and x.dtype != dtype:
             x = ivy.astype(x, dtype)
-        return x if not ivy.exists(out) else ivy.inplace_update(out, x)
+        return ivy.inplace_update(out, x) if ivy.exists(out) else x
     if noise_shape is None:
         noise_shape = x.shape
     else:
@@ -402,7 +415,7 @@ def dropout(
     x = x * mask
     if scale:
         x = ivy.multiply(x, 1.0 / (1.0 - prob), out=out)
-    return x if not ivy.exists(out) else ivy.inplace_update(out, x)
+    return ivy.inplace_update(out, x) if ivy.exists(out) else x
 
 
 dropout.mixed_backend_wrappers = {
@@ -460,7 +473,7 @@ def scaled_dot_product_attention(
         The mask input array. The mask to apply to the query-key values. Default is
         None. The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
     dropout_p
-        Specifies the dropout probablity, if greater than 0.0, dropout is applied
+        Specifies the dropout probability, if greater than 0.0, dropout is applied
     is_causal
         If true, assumes causal attention masking
         and errors if both `mask` and `is_causal` are set.
@@ -678,7 +691,7 @@ def scaled_dot_product_attention(
         "is_causal and attn_mask cannot be set at the same time",
     )
     embed_dim = query.shape[-1]
-    scale = 1 / (embed_dim**0.5) if not scale else scale
+    scale = scale if scale else 1 / (embed_dim**0.5)
     sim = ivy.einsum("... q f, ... k f -> ... q k", query, key) * scale
     sim = ivy.dropout(sim, dropout_p, training=training)
     if ivy.exists(mask):
@@ -699,7 +712,7 @@ def scaled_dot_product_attention(
         )
     attn = ivy.softmax(sim, axis=-1)
     result = ivy.einsum("... qk, ...kf -> ...qf", attn, value)
-    return result if not ivy.exists(out) else ivy.inplace_update(out, result)
+    return ivy.inplace_update(out, result) if ivy.exists(out) else result
 
 
 @handle_exceptions
@@ -800,9 +813,11 @@ def multi_head_attention(
     bias_v
         An additional bias added to the value sequence. Shape: `(E,)`.
     static_k
-        A static key to be used in the attention operators. Shape: `(N*num_heads, S, E//num_heads)`.
+        A static key to be used in the attention operators.
+        Shape: `(N*num_heads, S, E//num_heads)`.
     static_v
-        A static value to be used in the attention operators. Shape: `(N*num_heads, S, E//num_heads)`.
+        A static value to be used in the attention operators.
+        Shape: `(N*num_heads, S, E//num_heads)`.
     add_zero_attn
         A boolean flag indicating whether to add a batch of zeros to key and value.
     return_attention_weights
@@ -841,15 +856,15 @@ def multi_head_attention(
     if key is None and value is None:
         key = value = query
     if num_dims == 2:
-        query, key, value = [ivy.expand_dims(x, axis=0) for x in [query, key, value]]
+        query, key, value = (ivy.expand_dims(x, axis=0) for x in [query, key, value])
     elif not batch_first:
-        query, key, value = [ivy.swapaxes(x, 0, 1) for x in [query, key, value]]
+        query, key, value = (ivy.swapaxes(x, 0, 1) for x in [query, key, value])
 
     # project query, key and value
     if ivy.exists(in_proj_weights):
         q, k, v = _in_projection(query, key, value, w=in_proj_weights, b=in_proj_bias)
         emb_dim = int(in_proj_weights.shape[0] / 3)
-    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+    elif all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]):
         if ivy.exists(in_proj_bias):
             b_q, b_k, b_v = ivy.split(in_proj_bias, num_or_size_splits=3)
         else:
@@ -904,7 +919,7 @@ def multi_head_attention(
 
     # get attention scores
     attn_scores = ivy.matmul(q, ivy.swapaxes(k, 1, 2))
-    scale = 1 / (head_dim**0.5) if not scale else scale
+    scale = scale if scale else 1 / (head_dim**0.5)
     attn_scores *= scale
 
     # mask the attention scores
@@ -1113,6 +1128,7 @@ def conv1d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[ivy.Array] = None,
@@ -1126,7 +1142,7 @@ def conv1d_transpose(
     x
         Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
     filters
-        Convolution filters *[fw,d_in,d_out]*.
+        Convolution filters *[fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1134,6 +1150,9 @@ def conv1d_transpose(
         input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IOW",input data formats, while "channel_last" corresponds to "WOI".
     data_format
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
@@ -1160,7 +1179,7 @@ def conv1d_transpose(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 6, 3])
     >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 56, 6)
@@ -1173,7 +1192,7 @@ def conv1d_transpose(
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 64])
     >>> y = ivy.zeros((1, 258, 32))
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 64, 32])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 32, 64])
     >>> ivy.conv1d_transpose(x, filters, 1, 'VALID', out=y)
     >>> print(y.shape)
     ivy.Shape(1, 258, 32)
@@ -1181,9 +1200,9 @@ def conv1d_transpose(
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array(
-    ...         ivy.random_normal(mean=0, std=1, shape=[1,256,128]))
+    ...         ivy.random_normal(mean=0, std=1, shape=[1, 256, 128]))
     >>> filters = ivy.native_array(
-    ...         ivy.random_normal(mean=0, std=1, shape=[3, 128, 32]))
+    ...         ivy.random_normal(mean=0, std=1, shape=[3, 32, 128]))
     >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 512, 32)
@@ -1236,6 +1255,7 @@ def conv1d_transpose(
         strides,
         padding,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -1399,6 +1419,7 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[ivy.Array] = None,
@@ -1412,7 +1433,7 @@ def conv2d_transpose(
     x
         Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
     filters
-        Convolution filters *[fh,fw,d_in,d_out]*.
+        Convolution filters *[fh,fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1425,8 +1446,8 @@ def conv2d_transpose(
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
     filter_format
-        Either "channel_first" or "channel_last". "channel_first" corresponds to
-        "OIDHW" input data formats, while "channel_last" corresponds to "DHWIO" .
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IOHW",input data formats, while "channel_last" corresponds to "HWOI".
     x_dilations
         The dilation factor for each dimension of input. (Default value = 1)
     dilations
@@ -1450,7 +1471,7 @@ def conv2d_transpose(
     --------
     With :class:`ivy.Array` input:
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6, 3])
     >>> y = ivy.conv2d_transpose(x,filters,2,'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 56, 56, 6)
@@ -1463,7 +1484,7 @@ def conv2d_transpose(
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])
     >>> y = ivy.zeros((1, 258, 258, 32))
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 32, 64])
     >>> ivy.conv2d_transpose(x,filters,[1, 1, 1],'VALID',out=y)
     >>> print(y.shape)
     ivy.Shape(1, 258, 258, 32)
@@ -1514,6 +1535,7 @@ def conv2d_transpose(
         strides,
         padding,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -1798,6 +1820,7 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[ivy.Array] = None,
@@ -1811,7 +1834,7 @@ def conv3d_transpose(
     x
         Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
-        Convolution filters *[fd,fh,fw,d_in,d_out]*.
+        Convolution filters *[fd,fh,fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1819,6 +1842,9 @@ def conv3d_transpose(
         input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IODHW",input data formats, while "channel_last" corresponds to "DHWOI".
     data_format
         The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
         corresponds to inputs with shape (batch_size, depth, height, width, channels),
@@ -1842,16 +1868,16 @@ def conv3d_transpose(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-    >>> y = ivy.conv3d_transpose(x, filters, 2, 'SAME')
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 6, 56, 56, 6)
 
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32])
-    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID')
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
-    ivy.Shape(1, 9, 258, 258, 32)
+    ivy.Shape(1, 7, 129, 129, 6)
 
     With :class:`ivy.Container` inputs:
 
@@ -1861,7 +1887,7 @@ def conv3d_transpose(
     >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
     >>> x = ivy.Container(a=a, b=b)
     >>> filters = ivy.Container(c=c, d=d)
-    >>> y = ivy.conv3d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
     >>> print(y.shape)
     {
         a: {
@@ -1885,22 +1911,21 @@ def conv3d_transpose(
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.full((1, 6, 6, 6, 1), 2.7)
-    >>> a =  ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
-    >>> b =  ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
-    >>> filters = ivy.Container(a = a, b = b)
-    >>> y = ivy.conv3d_transpose(x, filters, 1, 'VALID', dilations=1)
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
     {
         a: ivy.Shape(1, 8, 8, 8, 1),
         b: ivy.Shape(1, 8, 8, 8, 1)
     }
 
-
     >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
-    >>> a =  ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> b =  ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> filters = ivy.Container(a = a, b = b)
-    >>> y = ivy.conv3d_transpose(x, filters, 1, 'VALID', dilations=1)
+    >>> a = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> b = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
     {
         a: ivy.Shape(1, 8, 8, 8, 1),
@@ -1913,6 +1938,7 @@ def conv3d_transpose(
         strides,
         padding,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -2022,6 +2048,7 @@ def conv_general_transpose(
     *,
     dims: int = 2,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
@@ -2037,7 +2064,7 @@ def conv_general_transpose(
     x
         Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
-        Convolution filters *[fd,fh,fw,d_in,d_out]*.
+        Convolution filters *[fd,fh,fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -2047,6 +2074,9 @@ def conv_general_transpose(
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     output_shape
         Shape of the output.
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IODHW",input data formats, while "channel_last" corresponds to "DHWOI".
     data_format
         Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
         "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
@@ -2065,6 +2095,68 @@ def conv_general_transpose(
     -------
     ret
         The result of the transpose convolution operation.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
+    >>> print(y.shape)
+    ivy.Shape(1, 6, 56, 56, 6)
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    ivy.Shape(1, 7, 129, 129, 6)
+    With :class: 'ivy.Container' inputs:
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
+    >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
+    >>> x = ivy.Container(a=a, b=b)
+    >>> filters = ivy.Container(c=c, d=d)
+    >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
+    >>> print(y.shape)
+    {
+        a: {
+            c: ivy.Shape(1, 6, 28, 28, 3),
+            d: ivy.Shape(1, 6, 28, 28, 3)
+        },
+        b: {
+            c: ivy.Shape(1, 6, 56, 56, 3),
+            d: ivy.Shape(1, 6, 56, 56, 3)
+        },
+        c: {
+            c: ivy.Shape(6, 6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 6, 3)
+        },
+        d: {
+            c: ivy.Shape(6, 6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 6, 3)
+        }
+    }
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+    >>> x = ivy.full((1, 6, 6, 6, 1), 2.7)
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    {
+        a: ivy.Shape(1, 8, 8, 8, 1),
+        b: ivy.Shape(1, 8, 8, 8, 1)
+    }
+    >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
+    >>> a = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> b = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID', dilations=[1, 1, 1])
+    >>> print(y.shape)
+    {
+        a: ivy.Shape(1, 8, 8, 8, 1),
+        b: ivy.Shape(1, 8, 8, 8, 1)
+    }
     """
     return current_backend(x).conv_general_transpose(
         x,
@@ -2073,6 +2165,7 @@ def conv_general_transpose(
         padding,
         dims=dims,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         feature_group_count=feature_group_count,
@@ -2252,7 +2345,7 @@ def lstm_update(
     ct = init_c
 
     # lstm outputs
-    hts_list = list()
+    hts_list = []
 
     # unrolled time dimension with lstm steps
     for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
@@ -2297,25 +2390,27 @@ def _handle_padding(x, strides, filters, padding):
     return pad
 
 
-def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dims):
+def _validate_max_pool_params(
+    kernel, strides, padding, dilation, ceil_mode, dims, data_format
+):
     if isinstance(kernel, int):
         kernel = (kernel,) * dims
     elif len(kernel) == 1:
         kernel = (kernel[0],) * dims
-    elif (len(kernel) != dims) and (len(kernel) != dims + 2):
+    elif len(kernel) not in [dims, dims + 2]:
         raise ValueError(
             "The kernel should be an integer, or a tuple of length"
-            f" {list(set((1, dims, dims+2)))}"
+            f" {list({1, dims, dims + 2})}"
         )
 
     if isinstance(strides, int):
         strides = (strides,) * dims
     elif len(strides) == 1:
         strides = (strides[0],) * dims
-    elif (len(strides) != dims) and (len(strides) != dims + 2):
+    elif len(strides) not in [dims, dims + 2]:
         raise ValueError(
             "The stride should be an integer, or a tuple of length"
-            f" {list(set((1, dims, dims+2)))}"
+            f" {list({1, dims, dims + 2})}"
         )
 
     if isinstance(padding, int):
@@ -2325,7 +2420,7 @@ def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dim
     elif isinstance(padding, tuple) and len(padding) == dims:
         padding = [(padding[i],) * 2 for i in range(dims)]
     elif isinstance(padding, list) and len(padding) == dims:
-        if not all([isinstance(p, tuple) and len(p) == 2 for p in padding]):
+        if not all(isinstance(p, tuple) and len(p) == 2 for p in padding):
             raise ValueError("Explicit padding must be a list of tuple of two integers")
     if isinstance(padding, str) and padding.upper() not in ["VALID", "SAME"]:
         raise ValueError(
@@ -2338,7 +2433,7 @@ def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dim
         dilation = (dilation[0],) * dims
     elif len(dilation) != dims:
         raise ValueError(
-            f"Dilation must be an integer or a tuple of length {list(set((1, dims)))}"
+            f"Dilation must be an integer or a tuple of length {list({1, dims})}"
         )
     if min(dilation) < 1:
         raise ValueError("All values of `dilation` must be positive")
@@ -2348,14 +2443,24 @@ def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dim
         raise ValueError("When 'padding' is 'VALID', 'ceil_mode' must be False")
     assert len(kernel) == len(strides), f"len({kernel}) must equal len({strides})"
 
+    ret = kernel, strides, padding, dilation
+
     # Account for dilation when padding > kernel/2. Not the case in torch by default.
-    new_kernel = tuple(
-        [dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel))]
-    )
+    if len(dilation) < len(kernel):
+        if data_format[:2] == "NC":
+            dilation = [1, 1, *dilation]
+        else:
+            dilation = [1, *dilation, 1]
+    elif len(dilation) > len(kernel):
+        if data_format[:2] == "NC":
+            kernel = [1, 1, *kernel]
+        else:
+            kernel = [1, *kernel, 1]
+    new_kernel = tuple(dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel)))
     if isinstance(padding, list) and len(padding) == len(new_kernel):
         ivy.utils.assertions.check_kernel_padding_size(new_kernel, padding)
 
-    return kernel, strides, padding, dilation
+    return ret
 
 
 def _depth_max_pooling_helper(
@@ -2665,7 +2770,7 @@ def nms(
             yy2 = ivy.minimum(y2[i], y2[order[1:]])
 
             w = ivy.maximum(0.0, xx2 - xx1)  # maximum width
-            h = ivy.maximum(0.0, yy2 - yy1)  # maxiumum height
+            h = ivy.maximum(0.0, yy2 - yy1)  # maximum height
             inter = w * h
             ovr = inter / (areas[i] + areas[order[1:]] - inter)
             inds = ivy.nonzero(ovr <= iou_threshold)[0]

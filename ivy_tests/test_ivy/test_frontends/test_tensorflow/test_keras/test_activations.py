@@ -6,6 +6,7 @@ import sys
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from typing import Optional
 
 try:
     import tensorflow as tf
@@ -18,7 +19,7 @@ def get_callable_functions(
     module_name: str,
 ):
     module = sys.modules[module_name]
-    fn_list = list()
+    fn_list = []
     for fn_name in dir(module):
         obj = getattr(module, fn_name)
         if callable(obj):
@@ -34,7 +35,7 @@ def simple_test_two_function(
     frontend: str,
     fn_str: str,
     dtype_data: str,
-    rtol_: float = None,
+    rtol_: Optional[float] = None,
     atol_: float = 1e-06,
     ivy_submodules: list = [],
     framework_submodules: list = [],

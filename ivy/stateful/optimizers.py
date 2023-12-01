@@ -417,6 +417,85 @@ class Adam(Optimizer):
         return ivy.Container({"mw": self._mw, "vw": self._vw})
 
 
+class AdamW(Adam):
+    def __init__(
+        self,
+        lr: float = 1e-4,
+        beta1: float = 0.9,
+        beta2: float = 0.999,
+        epsilon: float = 1e-07,
+        weight_decay: float = 0.0,
+        inplace: bool = True,
+        stop_gradients: bool = True,
+        trace_on_next_step: bool = False,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ):
+        """
+        Construct an ADAMW optimizer.
+
+        Parameters
+        ----------
+        lr
+            Learning rate, default is ``1e-4``.
+        beta1
+            gradient forgetting factor, default is ``0.9``
+        beta2
+            second moment of gradient forgetting factor, default is ``0.999``
+        epsilon
+            divisor during adamw update, preventing division by zero,
+            default is ``1e-07``
+        weight_decay
+            weight decay coefficient, default is ``0.0``
+        inplace
+            Whether to update the variables in-place, or to create new variable handles.
+            This is only relevant for frameworks with stateful variables such as
+            PyTorch.
+            Default is ``True``, provided the backend framework supports it.
+        stop_gradients
+            Whether to stop the gradients of the variables after each gradient step.
+            Default is ``True``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
+        device
+            Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. (Default value = None)
+        """
+        self._weight_decay = weight_decay
+        super().__init__(
+            lr,
+            beta1,
+            beta2,
+            epsilon,
+            inplace,
+            stop_gradients,
+            trace_on_next_step,
+            device,
+        )
+
+    def _step(self, v: ivy.Container, grads: ivy.Container):
+        """
+        Update nested variables container v by AdamW update step, using nested grads
+        container.
+
+        Parameters
+        ----------
+        v
+            Nested variables to update.
+        grads
+            Nested gradients to update.
+
+        Returns
+        -------
+        ret
+            The updated variables, following AdamW update step.
+        """
+        # Apply L2 regularization directly to the parameters
+        if self._weight_decay != 0:
+            grads += self._weight_decay * v
+
+        return super()._step(v, grads)
+
+
 class LAMB(Optimizer):
     def __init__(
         self,

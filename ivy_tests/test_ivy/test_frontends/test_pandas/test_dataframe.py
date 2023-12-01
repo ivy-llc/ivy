@@ -24,6 +24,7 @@ def test_pandas_series_abs(
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     # todo add castable dtypes for output
@@ -39,6 +40,7 @@ def test_pandas_series_abs(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -138,6 +140,7 @@ def test_pandas_series_to_numpy(
     na_values,
     copy,
     frontend_method_data,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -157,5 +160,6 @@ def test_pandas_series_to_numpy(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        backend_to_test=backend_fw,
         on_device=on_device,
     )
