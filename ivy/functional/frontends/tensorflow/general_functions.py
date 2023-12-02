@@ -88,10 +88,7 @@ def clip_by_norm(t, clip_norm, axes=None):
     intermediate = t * clip_norm
     assert (
         t.shape == intermediate.shape
-    ), "Dimensions {} and {} are not compatible".format(
-        t.shape,
-        intermediate.shape,
-    )
+    ), f"Dimensions {t.shape} and {intermediate.shape} are not compatible"
     t_clip = intermediate / ivy.maximum(l2norm, clip_norm)
     return t_clip
 
