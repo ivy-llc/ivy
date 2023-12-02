@@ -59,5 +59,5 @@ def tensorinv(a, ind=2):
         raise ValueError("Invalid ind argument.")
     a = ivy.reshape(a, shape=(prod, -1))
     ia = ivy.inv(a)
-    new_shape = tuple([*invshape])
+    new_shape = (*invshape,)
     return ivy.reshape(ia, shape=new_shape)
