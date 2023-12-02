@@ -280,6 +280,7 @@ SquaredDifference = to_ivy_arrays_and_back(
 Squeeze = to_ivy_arrays_and_back(
     map_raw_ops_alias(tf_frontend.general_functions.squeeze)
 )
+Stack = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.stack))
 Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
 Tile = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.tile))
