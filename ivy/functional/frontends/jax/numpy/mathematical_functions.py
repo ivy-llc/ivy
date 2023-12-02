@@ -237,7 +237,7 @@ def einsum_path(subscripts, *operands, optimize="greedy"):
         path_type = path_type[0]
 
     else:
-        raise TypeError("Did not understand the path: %s" % str(path_type))
+        raise TypeError(f"Did not understand the path: {str(path_type)}")
 
     # Python side parsing
     if subscripts:
