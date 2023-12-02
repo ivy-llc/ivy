@@ -98,8 +98,8 @@ def _validate_poisson_nll_params(
     for parameter, name in zip([input, label], ["input", "label"]):
         if parameter.dtype not in allowed_dtypes:
             raise ValueError(
-                "The dtype of '%s' in poisson_nll_loss should be one of %s, but"
-                " received %s." % (name, allowed_dtypes, parameter.dtype)
+                "The dtype of '{}' in poisson_nll_loss should be one of {}, but"
+                " received {}.".format(name, allowed_dtypes, parameter.dtype)
             )
 
     # Validate epsilon
@@ -119,8 +119,8 @@ def _validate_poisson_nll_params(
     # Validate shape
     if input.shape != label.shape:
         raise ValueError(
-            "The shape of 'input' (%s) must be the same as the shape of 'label' (%s)."
-            % (input.shape, label.shape)
+            "The shape of 'input' ({}) must be the same as the shape of 'label' ({})."
+            .format(input.shape, label.shape)
         )
 
     return True
