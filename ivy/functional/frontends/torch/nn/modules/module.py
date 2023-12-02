@@ -312,3 +312,11 @@ class Module(ivy.Module):
         keys = [key for key in keys if not key[0].isdigit()]
 
         return sorted(keys)
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.pop("_compiled_call_impl", None)
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
