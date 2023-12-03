@@ -86,25 +86,25 @@ def _fold_helper_with_filter(draw, dim):
 
 
 def _fold_shape_check(
-        ndim,
-        input_shape,
-        output_shape,
-        kernel_sizes,
-        dilations,
-        paddings,
-        strides,
+    ndim,
+    input_shape,
+    output_shape,
+    kernel_sizes,
+    dilations,
+    paddings,
+    strides,
 ):
     batch_dim = 0 if ndim == 3 else -1
 
     input_length = input_shape[batch_dim + 2]
     n_blocks_height = (
-                              (output_shape[0] + 2 * paddings[0] - dilations[0] * (kernel_sizes[0] - 1) - 1)
-                              // strides[0]
-                      ) + 1
+        (output_shape[0] + 2 * paddings[0] - dilations[0] * (kernel_sizes[0] - 1) - 1)
+        // strides[0]
+    ) + 1
     n_blocks_width = (
-                             (output_shape[1] + 2 * paddings[1] - dilations[1] * (kernel_sizes[1] - 1) - 1)
-                             // strides[1]
-                     ) + 1
+        (output_shape[1] + 2 * paddings[1] - dilations[1] * (kernel_sizes[1] - 1) - 1)
+        // strides[1]
+    ) + 1
 
     if input_length != (n_blocks_height * n_blocks_width):
         return False
@@ -144,7 +144,7 @@ def _fold_unfold_helper(draw, dim):
 
 
 def _output_shape(
-        dims, dilation, stride, padding, output_padding, input_shape, weight_shape
+    dims, dilation, stride, padding, output_padding, input_shape, weight_shape
 ):
     padding, output_padding = map(
         lambda x: [x] * dims if isinstance(x, int) else x,
@@ -229,7 +229,7 @@ def _x_and_filters(draw, dim: int = 2, transpose: bool = False, max_dilation=3):
     if not transpose:
         group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
     else:
-        group_list = list(filter(lambda x: (output_channels % x ** 2 == 0), group_list))
+        group_list = list(filter(lambda x: (output_channels % x**2 == 0), group_list))
     fc = draw(st.sampled_from(group_list))
     dilations = draw(
         st.one_of(
@@ -337,13 +337,13 @@ def _x_and_filters(draw, dim: int = 2, transpose: bool = False, max_dilation=3):
     dtype_vals=_x_and_filters(dim=1),
 )
 def test_torch_conv1d(
-        *,
-        dtype_vals,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        backend_fw,
+    *,
+    dtype_vals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
@@ -368,13 +368,13 @@ def test_torch_conv1d(
     dtype_vals=_x_and_filters(dim=2),
 )
 def test_torch_conv2d(
-        *,
-        dtype_vals,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        backend_fw,
+    *,
+    dtype_vals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
@@ -399,13 +399,13 @@ def test_torch_conv2d(
     dtype_vals=_x_and_filters(dim=3),
 )
 def test_torch_conv3d(
-        *,
-        dtype_vals,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        backend_fw,
+    *,
+    dtype_vals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
@@ -432,13 +432,13 @@ def test_torch_conv3d(
     dtype_vals=_x_and_filters(dim=1, transpose=True, max_dilation=1),
 )
 def test_torch_conv_tranpose1d(
-        *,
-        dtype_vals,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        backend_fw,
+    *,
+    dtype_vals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
@@ -465,13 +465,13 @@ def test_torch_conv_tranpose1d(
     dtype_vals=_x_and_filters(dim=2, transpose=True),
 )
 def test_torch_conv_tranpose2d(
-        *,
-        dtype_vals,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        backend_fw,
+    *,
+    dtype_vals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
@@ -498,13 +498,13 @@ def test_torch_conv_tranpose2d(
     dtype_vals=_x_and_filters(dim=3, transpose=True, max_dilation=1),
 )
 def test_torch_conv_tranpose3d(
-        *,
-        dtype_vals,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        backend_fw,
+    *,
+    dtype_vals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
@@ -531,13 +531,13 @@ def test_torch_conv_tranpose3d(
     dtype_vals=_fold_helper(),
 )
 def test_torch_fold(
-        *,
-        dtype_vals,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        backend_fw,
+    *,
+    dtype_vals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     dtype, vals, kernel_shape, output_shape, dilations, strides, padding = dtype_vals
     helpers.test_frontend_function(
@@ -561,13 +561,13 @@ def test_torch_fold(
     dtype_vals=_unfold_helper(),
 )
 def test_torch_unfold(
-        *,
-        dtype_vals,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        backend_fw,
+    *,
+    dtype_vals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     dtype, vals, kernel_shape, dilations, strides, padding = dtype_vals
     helpers.test_frontend_function(
