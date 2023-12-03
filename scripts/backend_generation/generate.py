@@ -268,9 +268,9 @@ def _update_valid_config_value(key):
     ret = ret.strip("")
     if ret == "":
         return True
-    indicies = ret.split(" ")
-    indicies = [int(item.strip(" ")) for item in indicies]
-    for i in sorted(indicies, reverse=True):
+    indices = ret.split(" ")
+    indices = [int(item.strip(" ")) for item in indices]
+    for i in sorted(indices, reverse=True):
         del config_valids[key][i]
     return True
 
