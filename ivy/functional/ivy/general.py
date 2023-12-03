@@ -254,7 +254,11 @@ def get_referrers_recursive(
 
         def get_referrers_recursive_inner():
             return get_referrers_recursive(
-                ref, depth + 1, max_depth, seen_set, local_set
+                ref,
+                depth=depth + 1,
+                max_depth=max_depth,
+                seen_set=seen_set,
+                local_set=local_set,
             )
 
         this_repr = "tracked" if seen else str(ref).replace(" ", "")
@@ -2841,7 +2845,7 @@ def get_item(
         if query.ndim == 0:
             if query is False:
                 return ivy.zeros(shape=(0,) + x.shape, dtype=x.dtype)
-            return x[None]  # eqivalent to ivy.expand_dims(x, axis=0)
+            return x[None]  # equivalent to ivy.expand_dims(x, axis=0)
         query = ivy.nonzero(query, as_tuple=False)
         ret = ivy.gather_nd(x, query)
     else:
