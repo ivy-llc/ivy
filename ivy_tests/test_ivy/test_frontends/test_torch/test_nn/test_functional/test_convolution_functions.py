@@ -1,6 +1,6 @@
 # global
 import math
-from hypothesis import strategies as st, assume, reproduce_failure
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -524,7 +524,6 @@ def test_torch_conv_tranpose3d(
     )
 
 
-@reproduce_failure('6.48.2', b'AXicY2RkYGBkZACRDKOAPgAAChEABw==')
 @handle_frontend_test(
     fn_tree="torch.nn.functional.fold",
     dtype_vals=_fold_helper(),
