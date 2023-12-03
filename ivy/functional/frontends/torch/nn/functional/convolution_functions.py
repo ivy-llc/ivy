@@ -41,14 +41,14 @@ def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
 # ToDo: add support for dilation > 1
 # ToDo: add support for output_padding > padding
 def _conv_transpose(
-    input,
-    weight,
-    bias=None,
-    stride=1,
-    padding=0,
-    output_padding=0,
-    groups=1,
-    dilation=1,
+        input,
+        weight,
+        bias=None,
+        stride=1,
+        padding=0,
+        output_padding=0,
+        groups=1,
+        dilation=1,
 ):
     dims = len(input.shape) - 2
     weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 0, 1))
@@ -199,14 +199,14 @@ def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
 @with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose1d(
-    input,
-    weight,
-    bias=None,
-    stride=1,
-    padding=0,
-    output_padding=0,
-    groups=1,
-    dilation=1,
+        input,
+        weight,
+        bias=None,
+        stride=1,
+        padding=0,
+        output_padding=0,
+        groups=1,
+        dilation=1,
 ):
     return _conv_transpose(
         input,
@@ -223,14 +223,14 @@ def conv_transpose1d(
 @with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose2d(
-    input,
-    weight,
-    bias=None,
-    stride=1,
-    padding=0,
-    output_padding=0,
-    groups=1,
-    dilation=1,
+        input,
+        weight,
+        bias=None,
+        stride=1,
+        padding=0,
+        output_padding=0,
+        groups=1,
+        dilation=1,
 ):
     if ivy.current_backend_str() in ["torch", "tensorflow"]:
         # these two backends support explicit padding, no need for conv_general_dilated
@@ -262,14 +262,14 @@ def conv_transpose2d(
 @with_unsupported_dtypes({"2.1.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose3d(
-    input,
-    weight,
-    bias=None,
-    stride=1,
-    padding=0,
-    output_padding=0,
-    groups=1,
-    dilation=1,
+        input,
+        weight,
+        bias=None,
+        stride=1,
+        padding=0,
+        output_padding=0,
+        groups=1,
+        dilation=1,
 ):
     return _conv_transpose(
         input,
@@ -325,10 +325,10 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
             k += 1
     ret = ivy.array(
         output_padded[
-            :,
-            :,
-            padding[0] : output_padded.shape[2] - padding[0],
-            padding[1] : output_padded.shape[3] - padding[1],
+        :,
+        :,
+        padding[0]: output_padded.shape[2] - padding[0],
+        padding[1]: output_padded.shape[3] - padding[1],
         ]
     )
     if orig_ndim == 2:
@@ -362,11 +362,11 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
             i_in = i * stride[0]
             j_in = j * stride[1]
             ret[:, :, :, :, i, j] = input_padded[
-                :,
-                :,
-                i_in : i_in + kernel_size[0] * dilation[0] : dilation[0],
-                j_in : j_in + kernel_size[1] * dilation[1] : dilation[1],
-            ]
+                                    :,
+                                    :,
+                                    i_in: i_in + kernel_size[0] * dilation[0]: dilation[0],
+                                    j_in: j_in + kernel_size[1] * dilation[1]: dilation[1],
+                                    ]
     return ivy.reshape(
         ret, (input.shape[0], input.shape[1] * math.prod(kernel_size), -1)
     )
