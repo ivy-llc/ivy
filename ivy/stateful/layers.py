@@ -1,4 +1,5 @@
 """Collection of Ivy neural network layers as stateful classes."""
+
 # flake8: noqa
 # local
 import ivy
@@ -64,7 +65,7 @@ class Linear(Module):
         self._with_bias = with_bias
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """
         Create internal variables for the layer.
 
@@ -77,6 +78,8 @@ class Linear(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -115,6 +118,12 @@ class Linear(Module):
             *[batch_shape, out]*
         """
         return ivy.linear(x, self.v.w, bias=self.v.b if self._with_bias else None)
+
+    def _extra_repr(self) -> str:
+        return (
+            f"in_features={self._input_channels}, out_features={self._output_channels},"
+            f" with_bias={self._with_bias is True}"
+        )
 
 
 # Dropout #
@@ -185,6 +194,12 @@ class Dropout(Module):
         return ivy.dropout(
             inputs, self._prob, scale=self._scale, training=self.training, dtype=dtype
         )
+
+    def _extra_repr(self) -> str:
+        s = "prob={prob}"
+        if not self._scale:
+            s += ", scale={scale}"
+        return s.format(prob=self._prob, scale=self._scale)
 
 
 # Attention #
@@ -290,7 +305,7 @@ class MultiHeadAttention(Module):
             training=training,
         )
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """
         Parameters
         ----------
@@ -301,6 +316,8 @@ class MultiHeadAttention(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = dict(
             out_proj_weights=GlorotUniform().create_variables(
                 (self._embed_dim, self._inner_dim),
@@ -417,13 +434,13 @@ class MultiHeadAttention(Module):
                 self.v.in_proj_weights if self._qkv_same_embed_dim else None
             ),
             q_proj_weights=(
-                self.v.q_proj_weights if not self._qkv_same_embed_dim else None
+                None if self._qkv_same_embed_dim else self.v.q_proj_weights
             ),
             k_proj_weights=(
-                self.v.k_proj_weights if not self._qkv_same_embed_dim else None
+                None if self._qkv_same_embed_dim else self.v.k_proj_weights
             ),
             v_proj_weights=(
-                self.v.v_proj_weights if not self._qkv_same_embed_dim else None
+                None if self._qkv_same_embed_dim else self.v.v_proj_weights
             ),
             out_proj_weights=self.v.out_proj_weights,
             in_proj_bias=self.v.in_proj_bias if self._use_proj_bias else None,
@@ -433,6 +450,15 @@ class MultiHeadAttention(Module):
             average_attention_weights=average_attention_weights,
             dropout=self._dropout_rate,
             training=self.training,
+        )
+
+    def _extra_repr(self) -> str:
+        return (
+            f"embed_dim={self._embed_dim}, key_dim={self._key_dim}, "
+            f"value_dim={self._value_dim}, num_heads={self.num_heads}, "
+            f"head_dim={self._head_dim}, dropout_rate={self.dropout_rate}, "
+            f"use_proj_bias={self._use_proj_bias}, "
+            f"attention_axes={self._attention_axes}, scale={self._scale}"
         )
 
 
@@ -511,7 +537,7 @@ class Conv1D(Module):
         self._dilations = dilations
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """
         Create internal variables for the layer.
 
@@ -524,6 +550,8 @@ class Conv1D(Module):
             the desired data type of the internal variables to be created.
              Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -568,6 +596,19 @@ class Conv1D(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def _extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_size={_filter_size},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1,)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv1DTranspose(Module):
@@ -658,6 +699,8 @@ class Conv1DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -703,6 +746,21 @@ class Conv1DTranspose(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def _extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_size={_filter_size},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1,)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._output_shape is not None:
+            s += ", output_shape={_output_shape}"
+        if self._data_format != "NWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv2D(Module):
@@ -791,6 +849,8 @@ class Conv2D(Module):
             the desired data type of the internal variables to be created.
             Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -835,6 +895,19 @@ class Conv2D(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def _extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv2DTranspose(Module):
@@ -927,6 +1000,8 @@ class Conv2DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -972,6 +1047,21 @@ class Conv2DTranspose(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def _extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._output_shape is not None:
+            s += ", output_shape={_output_shape}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class DepthwiseConv2D(Module):
@@ -1056,6 +1146,8 @@ class DepthwiseConv2D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -1100,6 +1192,19 @@ class DepthwiseConv2D(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def _extra_repr(self):
+        s = (
+            "num_channels={_num_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv3D(Module):
@@ -1188,6 +1293,8 @@ class Conv3D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -1233,6 +1340,19 @@ class Conv3D(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def _extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class Conv3DTranspose(Module):
@@ -1326,6 +1446,8 @@ class Conv3DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
@@ -1372,6 +1494,21 @@ class Conv3DTranspose(Module):
             data_format=self._data_format,
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
+
+    def _extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1, 1, 1)]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._output_shape is not None:
+            s += ", output_shape={_output_shape}"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 # LSTM #
@@ -1444,6 +1581,7 @@ class LSTM(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        dtype = ivy.default(dtype, self.dtype)
         batch_shape = list(batch_shape)
         return (
             [
@@ -1458,7 +1596,7 @@ class LSTM(Module):
 
     # Overridden
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """
         Create internal variables for the layer.
 
@@ -1471,9 +1609,11 @@ class LSTM(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         input_weights = dict(
             zip(
-                ["layer_" + str(i) for i in range(self._num_layers)],
+                [f"layer_{str(i)}" for i in range(self._num_layers)],
                 [
                     {
                         "w": self._w_init.create_variables(
@@ -1497,7 +1637,7 @@ class LSTM(Module):
         )
         recurrent_weights = dict(
             zip(
-                ["layer_" + str(i) for i in range(self._num_layers)],
+                [f"layer_{str(i)}" for i in range(self._num_layers)],
                 [
                     {
                         "w": self._w_init.create_variables(
@@ -1538,8 +1678,8 @@ class LSTM(Module):
             initial_state = self.get_initial_state(
                 inputs.shape[:-2], dtype=inputs.dtype
             )
-        h_n_list = list()
-        c_n_list = list()
+        h_n_list = []
+        c_n_list = []
         h_t = inputs
         for h_0, c_0, (_, lstm_input_var), (_, lstm_recurrent_var) in zip(
             initial_state[0],
@@ -1557,6 +1697,16 @@ class LSTM(Module):
         if not self._return_state:
             return h_t
         return h_t, (h_n_list, c_n_list)
+
+    def _extra_repr(self):
+        s = "{_input_channels}, {_output_channels}"
+        if self._num_layers != 1:
+            s += ", num_layers={_num_layers}"
+        if self._return_sequence is not True:
+            s += ", return_sequence={_return_sequence}"
+        if self._return_state is not True:
+            s += ", return_state={_return_state}"
+        return s.format(**self.__dict__)
 
 
 # Pooling #
@@ -1617,6 +1767,12 @@ class MaxPool2D(Module):
             data_format=self._data_format,
         )
 
+    def _extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class AvgPool2D(Module):
     def __init__(
@@ -1671,6 +1827,12 @@ class AvgPool2D(Module):
             self._padding,
             data_format=self._data_format,
         )
+
+    def _extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class MaxPool1D(Module):
@@ -1727,6 +1889,12 @@ class MaxPool1D(Module):
             data_format=self._data_format,
         )
 
+    def _extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class MaxPool3D(Module):
     def __init__(
@@ -1778,6 +1946,12 @@ class MaxPool3D(Module):
             self._padding,
             data_format=self._data_format,
         )
+
+    def _extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
 
 
 class AvgPool3D(Module):
@@ -1847,6 +2021,19 @@ class AvgPool3D(Module):
             divisor_override=self._divisor_override,
         )
 
+    def _extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NDHWC":
+            s += ", data_format={_data_format}"
+        if self._count_include_pad is not False:
+            s += ", count_include_pad={_count_include_pad}"
+        if self._ceil_mode is not False:
+            s += ", ceil_mode={_ceil_mode}"
+        if self._divisor_override is not False:
+            s += ", divisor_override={_divisor_override}"
+
+        return s.format(**self.__dict__)
+
 
 class AdaptiveAvgPool2d(Module):
     def __init__(
@@ -1887,6 +2074,9 @@ class AdaptiveAvgPool2d(Module):
             x,
             self._output_size,
         )
+
+    def _extra_repr(self):
+        return f"output_size={self._output_size}"
 
 
 class AdaptiveAvgPool1d(Module):
@@ -1930,6 +2120,9 @@ class AdaptiveAvgPool1d(Module):
             x,
             self._output_size,
         )
+
+    def _extra_repr(self):
+        return f"output_size={self._output_size}"
 
 
 class FFT(Module):
@@ -1986,6 +2179,14 @@ class FFT(Module):
             out=self._out,
         )
 
+    def _extra_repr(self):
+        s = "dim={_dim}"
+        if self._norm != "backward":
+            s += ", norm={_norm}"
+        if self._n is not False:
+            s += ", n={_n}"
+        return s.format(**self.__dict__)
+
 
 class AvgPool1D(Module):
     def __init__(
@@ -2038,6 +2239,12 @@ class AvgPool1D(Module):
             data_format=self._data_format,
         )
 
+    def _extra_repr(self):
+        s = "kernel_size={_kernel_size}, stride={_stride}, padding={_padding}"
+        if self._data_format != "NWC":
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
 
 class Dct(Module):
     def __init__(
@@ -2060,7 +2267,7 @@ class Dct(Module):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The length of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal length,
             then x is truncated, if n is larger then x is zero-padded.
         axis
             The axis to compute the DCT along.
@@ -2095,6 +2302,16 @@ class Dct(Module):
             axis=self.axis,
             norm=self.norm,
         )
+
+    def _extra_repr(self):
+        s = "type={type}"
+        if self.n is not None:
+            s += ", n={n}"
+        if self.axis != -1:
+            s += ", axis={axis}"
+        if self.norm is not None:
+            s += ", norm={norm}"
+        return s.format(**self.__dict__)
 
 
 # EMBEDDING #
@@ -2148,7 +2365,7 @@ class Embedding(Module):
         self._weight_initializer = weight_initializer
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """
         Create internal variables for the layer.
 
@@ -2161,6 +2378,8 @@ class Embedding(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         v = {
             "w": self._weight_initializer.create_variables(
                 (self._num_embeddings, self._embedding_dim),
@@ -2195,6 +2414,14 @@ class Embedding(Module):
             emb = self._pad_embd(indices, emb)
         return emb
 
+    def _extra_repr(self):
+        s = "num_embeddings={_num_embeddings}, embedding_dim={_embedding_dim}"
+        if self._padding_idx is not None:
+            s += ", padding_idx={_padding_idx}"
+        if self._max_norm is not None:
+            s += ", max_norm={_max_norm}"
+        return s.format(**self.__dict__)
+
 
 class Identity(Module):
     def __init__(self):
@@ -2224,3 +2451,71 @@ class Identity(Module):
             The input array as it is.
         """
         return x
+
+
+class IFFT(Module):
+    def __init__(
+        self,
+        dim,
+        /,
+        *,
+        norm="backward",
+        n=None,
+        out=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying IFFT to input.
+
+        Parameters
+        ----------
+        dim : int
+            Dimension along which to take the IFFT.
+        norm : str
+            Optional argument indicating the normalization mode. Possible Values : "backward", "ortho" or "forward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+            Default: "backward"
+        n : int
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing IFFT.
+            Should be a integer greater than 1. Default: None
+        out : int
+            Size of the output. Default: None
+        """
+        self._dim = dim
+        self._norm = norm
+        self._n = n
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs : array
+            Input array to take the IFFT of.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.ifft(
+            inputs,
+            self._dim,
+            norm=self._norm,
+            n=self._n,
+            out=self._out,
+        )
+
+    def _extra_repr(self):
+        s = "dim={_dim}"
+        if self._norm != "backward":
+            s += ", norm={_norm}"
+        if self._n is not False:
+            s += ", n={_n}"
+        return s.format(**self.__dict__)

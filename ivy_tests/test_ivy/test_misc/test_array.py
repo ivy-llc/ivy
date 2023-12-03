@@ -2538,3 +2538,35 @@ def test_array_property_strides(dtype_x, backend_fw):
         ivy_backend.utils.assertions.check_equal(
             x.strides, ivy_backend.to_numpy(x).strides, as_array=False
         )
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_dim_size=3,
+        max_dim_size=3,
+        min_num_dims=3,
+        max_num_dims=3,
+        num_arrays=2,
+        min_value=3.0,
+        max_value=10.0,
+    ),
+    op=st.sampled_from([
+        "!=", ">", "<", ">=", "<=", "*", "/", "%", "==", "&", "@", "**", "/"
+    ]),
+)
+def test_dunder_wrapping(
+    dtype_x,
+    backend_fw,
+    test_flags,
+    op,
+):
+    _, data = dtype_x
+    ivy.set_backend(backend_fw)
+    x = ivy.to_native(ivy.array(data[0]))
+    y = ivy.array(data[1])
+    assert ivy.is_ivy_array(y)
+    assert ivy.is_native_array(x)
+    res = eval(f"x {op} y")
+    assert ivy.is_ivy_array(res)

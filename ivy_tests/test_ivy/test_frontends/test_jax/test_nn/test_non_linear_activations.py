@@ -34,7 +34,7 @@ def _dtype_indices_classes_axis(draw):
 @handle_frontend_test(
     fn_tree="jax.nn.celu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-5,
         max_value=5,
         safety_factor_scale="linear",
@@ -245,7 +245,7 @@ def test_jax_hard_silu(
 @handle_frontend_test(
     fn_tree="jax.nn.hard_swish",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-10,
         max_value=10,
         safety_factor_scale="linear",

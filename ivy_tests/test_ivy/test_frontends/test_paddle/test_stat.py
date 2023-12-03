@@ -86,6 +86,7 @@ def test_paddle_nanmedian(
     dtype_x_and_axis,
     keepdim,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
 ):
@@ -93,6 +94,7 @@ def test_paddle_nanmedian(
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         x=x[0],
