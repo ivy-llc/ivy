@@ -1,7 +1,7 @@
 # global
 import copy
 import time
-from typing import Union, List
+from typing import Union, List, Optional
 import numpy as np
 import types
 import importlib
@@ -376,9 +376,9 @@ def test_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     test_flags: FunctionTestFlags,
     fn_name: str,
-    rtol_: float = None,
+    rtol_: Optional[float] = None,
     atol_: float = 1e-06,
-    tolerance_dict: dict = None,
+    tolerance_dict: Optional[dict] = None,
     test_values: bool = True,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
@@ -720,10 +720,10 @@ def test_frontend_function(
     on_device="cpu",
     frontend: str,
     fn_tree: str,
-    gt_fn_tree: str = None,
-    rtol: float = None,
+    gt_fn_tree: Optional[str] = None,
+    rtol: Optional[float] = None,
     atol: float = 1e-06,
-    tolerance_dict: dict = None,
+    tolerance_dict: Optional[dict] = None,
     test_values: bool = True,
     **all_as_kwargs_np,
 ):
@@ -1208,7 +1208,7 @@ def gradient_test(
     input_dtypes,
     test_flags,
     test_trace: bool = False,
-    rtol_: float = None,
+    rtol_: Optional[float] = None,
     atol_: float = 1e-06,
     tolerance_dict=None,
     xs_grad_idxs=None,
@@ -1589,17 +1589,17 @@ def test_method_ground_truth_computation(
 
 def test_method(
     *,
-    init_input_dtypes: List[ivy.Dtype] = None,
-    method_input_dtypes: List[ivy.Dtype] = None,
-    init_all_as_kwargs_np: dict = None,
-    method_all_as_kwargs_np: dict = None,
+    init_input_dtypes: Optional[List[ivy.Dtype]] = None,
+    method_input_dtypes: Optional[List[ivy.Dtype]] = None,
+    init_all_as_kwargs_np: Optional[dict] = None,
+    method_all_as_kwargs_np: Optional[dict] = None,
     init_flags: pf.MethodTestFlags,
     method_flags: pf.MethodTestFlags,
     class_name: str,
     method_name: str = "__call__",
     init_with_v: bool = False,
     method_with_v: bool = False,
-    rtol_: float = None,
+    rtol_: Optional[float] = None,
     atol_: float = 1e-06,
     tolerance_dict=None,
     test_values: Union[bool, str] = True,
@@ -1910,15 +1910,15 @@ def test_frontend_method(
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     init_flags,
     method_flags,
-    init_all_as_kwargs_np: dict = None,
+    init_all_as_kwargs_np: Optional[dict] = None,
     method_all_as_kwargs_np: dict,
     frontend: str,
     frontend_method_data: FrontendMethodData,
     backend_to_test: str,
     on_device,
-    rtol_: float = None,
+    rtol_: Optional[float] = None,
     atol_: float = 1e-06,
-    tolerance_dict: dict = None,
+    tolerance_dict: Optional[dict] = None,
     test_values: Union[bool, str] = True,
 ):
     """

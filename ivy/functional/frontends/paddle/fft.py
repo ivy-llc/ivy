@@ -28,6 +28,25 @@ def fft(x, n=None, axis=-1.0, norm="backward", name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
+def fft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
+    if axes is None:
+        axes = (-2, -1)
+    ret = ivy.fft2(x, s=s, dim=axes, norm=norm)
+    return ret
+
+
+@with_supported_dtypes(
+    {
+        "2.5.2 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
 def fftfreq(n, d=1.0, dtype=None, name=None):
     if d * n == 0:
         raise ValueError("d or n should not be 0.")
@@ -192,10 +211,30 @@ def ihfft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
     if norm == "ortho":
         ihfft2_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="ortho"))
 
-    if x.dtype == ivy.float32 or x.dtype == ivy.int32 or x.dtype == ivy.int64:
+    if x.dtype in [ivy.float32, ivy.int32, ivy.int64]:
         return ivy.astype(ihfft2_result, ivy.complex64)
     if x.dtype == ivy.float64:
         return ivy.astype(ihfft2_result, ivy.complex128)
+
+
+@to_ivy_arrays_and_back
+def ihfftn(x, s=None, axes=None, norm="backward", name=None):
+    # cast the input to the same float64 type so that there are no backend issues
+    x_ = ivy.astype(x, ivy.float64)
+
+    ihfftn_result = 0
+    # Compute the complex conjugate of the 2-dimensional discrete Fourier Transform
+    if norm == "backward":
+        ihfftn_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="forward"))
+    if norm == "forward":
+        ihfftn_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="backward"))
+    if norm == "ortho":
+        ihfftn_result = ivy.conj(ivy.rfftn(x_, s=s, axes=axes, norm="ortho"))
+
+    if x.dtype in [ivy.float32, ivy.int32, ivy.int64]:
+        return ivy.astype(ihfftn_result, ivy.complex64)
+    if x.dtype == ivy.float64:
+        return ivy.astype(ihfftn_result, ivy.complex128)
 
 
 @with_supported_dtypes(

@@ -180,7 +180,7 @@ def as_ivy_dtype(
         )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("uint16",)}, backend_version)
 def as_native_dtype(
     dtype_in: Union[torch.dtype, str, bool, int, float, np.dtype]
 ) -> torch.dtype:
@@ -196,7 +196,7 @@ def as_native_dtype(
         dtype_in = dtype_in.name
     if not isinstance(dtype_in, str):
         return dtype_in
-    if dtype_in in native_dtype_dict.keys():
+    if dtype_in in native_dtype_dict:
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(

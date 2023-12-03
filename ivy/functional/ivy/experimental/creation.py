@@ -945,6 +945,7 @@ def random_parafac2(
         the decomposed tensor is returned
      seed
         seed for generating random numbers
+
     Returns
     -------
       ivy.Parafac2Tensor
@@ -1196,7 +1197,7 @@ def polyval(
     Returns
     -------
     ret
-       Simplified result of substituing x in the coefficients - final value
+       Simplified result of substituting x in the coefficients - final value
        of polynomial.
 
     Examples

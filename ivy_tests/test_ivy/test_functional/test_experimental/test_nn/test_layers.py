@@ -65,37 +65,23 @@ def _interp_args(draw, mode=None, mode_list=None):
             mode = draw(st.sampled_from(jax_modes))
         else:
             mode = draw(
-                st.sampled_from(
-                    [
-                        "linear",
-                        "bilinear",
-                        "trilinear",
-                        "nearest",
-                        "nearest-exact",
-                        "area",
-                        "tf_area",
-                        "tf_bicubic",
-                        "lanczos3",
-                        "lanczos5",
-                        "mitchellcubic",
-                        "gaussian",
-                    ]
-                )
+                st.sampled_from([
+                    "linear",
+                    "bilinear",
+                    "trilinear",
+                    "nearest",
+                    "nearest-exact",
+                    "area",
+                    "tf_area",
+                    "tf_bicubic",
+                    "lanczos3",
+                    "lanczos5",
+                    "mitchellcubic",
+                    "gaussian",
+                ])
             )
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
-    align_corners = None
-    if mode in [
-        "linear",
-        "bilinear",
-        "trilinear",
-        "nd",
-        "tf_bicubic",
-        "lanczos3",
-        "lanczos5",
-        "bicubic",
-    ]:
-        align_corners = draw(st.booleans())
     if mode == "linear":
         num_dims = 3
     elif mode in [
@@ -138,6 +124,7 @@ def _interp_args(draw, mode=None, mode_list=None):
             abs_smallest_val=1e-04,
         )
     )
+    align_corners = draw(st.booleans())
     if draw(st.booleans()):
         if draw(st.booleans()):
             scale_factor = draw(
@@ -1090,7 +1077,7 @@ def test_interpolate(dtype_x_mode, test_flags, backend_fw, fn_name, on_device):
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-01,
-        atol_=1e-01,
+        atol_=1e-03,
         x=x[0],
         size=size,
         mode=mode,
@@ -1178,12 +1165,9 @@ def test_max_pool2d(
     assume(
         not (
             backend_fw == "tensorflow"
-            and (
-                (stride[0] > kernel[0] or stride[0] > kernel[1])
-                or (
-                    (stride[0] > 1 and dilation[0] > 1)
-                    or (stride[0] > 1 and dilation[1] > 1)
-                )
+            and all(
+                stride[i] > kernel[i] or (stride[i] > 1 and dilation[i] > 1)
+                for i in range(2)
             )
         )
     )
@@ -1236,7 +1220,14 @@ def test_max_pool3d(
     on_device,
 ):
     dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
-
+    assume(
+        not (
+            backend_fw == "tensorflow"
+            and isinstance(pad, str)
+            and pad == "SAME"
+            and any(dil > 1 for dil in dilation)
+        )
+    )
     data_format = "NCDHW" if data_format == "channel_first" else "NDHWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation

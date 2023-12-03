@@ -167,7 +167,10 @@ def std(
     return _std(x, axis, correction, keepdims).cast(x.dtype)
 
 
-@with_unsupported_dtypes({"2.5.2 and below": ("int8", "uint8")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.5.2 and below": ("int8", "int16", "uint8")},
+    backend_version,
+)
 def sum(
     x: paddle.Tensor,
     /,

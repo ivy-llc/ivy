@@ -20,7 +20,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.1.0 and below": {"cpu": ("float16",)}},
+    {"2.1.1 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def kaiser_window(
@@ -87,7 +87,7 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, backend_version)
 def hann_window(
     size: int,
     /,
@@ -152,7 +152,7 @@ def unsorted_segment_min(
     return res
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, backend_version)
 def blackman_window(
     size: int,
     /,
@@ -238,9 +238,9 @@ def mel_weight_matrix(
     )
     # create overlapping frames of size 3
     mel_edges = mel_edges.unfold(0, size=3, step=1)
-    lower_edge_mel, center_mel, upper_edge_mel = [
+    lower_edge_mel, center_mel, upper_edge_mel = (
         t.reshape((1, num_mel_bins)) for t in mel_edges.split(1, dim=1)
-    ]
+    )
     lower_slopes = (spec_bin_mels - lower_edge_mel) / (center_mel - lower_edge_mel)
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = torch.maximum(zero, torch.minimum(lower_slopes, upper_slopes))

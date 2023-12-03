@@ -74,7 +74,7 @@ def conj(input):
 # diagonal_scatter
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.1 and below": (
             "bfloat16",
             "float16",
         )
@@ -174,7 +174,7 @@ def index_add(input, dim, index, source, *, alpha=1, out=None):
         while len(_to_adds) < _curr_idx:
             _to_adds.append(ivy.zeros_like(source[0]))
         _to_add_cum = ivy.get_item(source, index[0][1])
-        while (1 < len(index)) and (index[0][0] == index[1][0]):
+        while (len(index) > 1) and (index[0][0] == index[1][0]):
             _to_add_cum = _to_add_cum + ivy.get_item(source, index.pop(1)[1])
         index.pop(0)
         _to_adds.append(_to_add_cum)
@@ -200,7 +200,7 @@ def index_copy(input, dim, index, source, *, out=None):
         _curr_idx = index[0][0]
         for i in range(len(res), _curr_idx):
             res.append(ivy.get_item(input, i))
-        while (1 < len(index)) and (index[0][0] == index[1][0]):
+        while (len(index) > 1) and (index[0][0] == index[1][0]):
             index.pop(0)
         res.append(ivy.get_item(source, index[0][1]))
         index.pop(0)
@@ -215,7 +215,7 @@ def index_copy(input, dim, index, source, *, out=None):
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.1 and below": (
             "uint16",
             "uint32",
             "uint64",

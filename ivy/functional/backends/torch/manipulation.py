@@ -32,14 +32,7 @@ def concat(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
-        is_tuple = type(xs) is tuple
-        if is_tuple:
-            xs = list(xs)
-        for i in range(len(xs)):
-            xs[i] = torch.flatten(xs[i])
-        if is_tuple:
-            xs = tuple(xs)
-        axis = 0
+        return torch.cat([torch.flatten(x) for x in xs], dim=0, out=out)
     return torch.cat(xs, dim=axis, out=out)
 
 
@@ -246,7 +239,7 @@ def split(
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("int8", "int16", "uint8")}, backend_version
+    {"2.1.1 and below": ("int8", "int16", "uint8")}, backend_version
 )
 def repeat(
     x: torch.Tensor,
@@ -315,7 +308,7 @@ def swapaxes(
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("bool", "float16", "complex")}, backend_version
+    {"2.1.1 and below": ("bool", "float16", "complex")}, backend_version
 )
 def clip(
     x: torch.Tensor,

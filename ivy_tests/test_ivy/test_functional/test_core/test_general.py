@@ -408,12 +408,10 @@ def test_arg_info():
 
 
 @given(
-    x_n_value=st.sampled_from(
-        [
-            [ivy.value_is_nan, ["x", "include_infs"]],
-            [ivy.clip_matrix_norm, ["x", "max_norm", "p", "out"]],
-        ]
-    )
+    x_n_value=st.sampled_from([
+        [ivy.value_is_nan, ["x", "include_infs"]],
+        [ivy.clip_matrix_norm, ["x", "max_norm", "p", "out"]],
+    ])
 )
 def test_arg_names(x_n_value):
     x, value = x_n_value
@@ -712,17 +710,15 @@ def test_default(x, default_val, test_flags, backend_fw):
         and (ivy.array([x[1][0]], dtype="float32").shape[3] % 2 == 0)
         and (x[0][0] not in ["float16", "bfloat16"])
     ),
-    pattern_and_axes_lengths=st.sampled_from(
-        [
-            ("b h w c -> b h w c", {}),
-            ("b h w c -> (b h) w c", {}),
-            ("b h w c -> b c h w", {}),
-            ("b h w c -> h (b w) c", {}),
-            ("b h w c -> b (c h w)", {}),
-            ("b (h1 h) (w1 w) c -> (b h1 w1) h w c", {"h1": 2, "w1": 2}),
-            ("b (h h1) (w w1) c -> b h w (c h1 w1)", {"h1": 2, "w1": 2}),
-        ]
-    ),
+    pattern_and_axes_lengths=st.sampled_from([
+        ("b h w c -> b h w c", {}),
+        ("b h w c -> (b h) w c", {}),
+        ("b h w c -> b c h w", {}),
+        ("b h w c -> h (b w) c", {}),
+        ("b h w c -> b (c h w)", {}),
+        ("b (h1 h) (w1 w) c -> (b h1 w1) h w c", {"h1": 2, "w1": 2}),
+        ("b (h h1) (w w1) c -> b h w (c h1 w1)", {"h1": 2, "w1": 2}),
+    ]),
 )
 def test_einops_rearrange(
     dtype_x, pattern_and_axes_lengths, test_flags, backend_fw, fn_name, on_device
@@ -758,11 +754,9 @@ def test_einops_rearrange(
         and (ivy.array([x[1][0]], dtype="float32").shape[3] % 2 == 0)
         and (x[0][0] not in ["float16", "bfloat16"])
     ),
-    pattern_and_axes_lengths=st.sampled_from(
-        [
-            ("b c (h1 h2) (w1 w2) -> b c h1 w1", {"h2": 2, "w2": 2}),
-        ]
-    ),
+    pattern_and_axes_lengths=st.sampled_from([
+        ("b c (h1 h2) (w1 w2) -> b c h1 w1", {"h2": 2, "w2": 2}),
+    ]),
     floattypes=helpers.get_dtypes("float"),
     reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
 )
@@ -809,15 +803,13 @@ def test_einops_reduce(
         max_num_dims=2,
         min_dim_size=2,
     ),
-    pattern_and_axes_lengths=st.sampled_from(
-        [
-            ("h w -> h w repeat", {"repeat": 2}),
-            ("h w -> (repeat h) w", {"repeat": 2}),
-            ("h w -> h (repeat w)", {"repeat": 2}),
-            ("h w -> (h h2) (w w2)", {"h2": 2, "w2": 2}),
-            ("h w  -> w h", {}),
-        ]
-    ),
+    pattern_and_axes_lengths=st.sampled_from([
+        ("h w -> h w repeat", {"repeat": 2}),
+        ("h w -> (repeat h) w", {"repeat": 2}),
+        ("h w -> h (repeat w)", {"repeat": 2}),
+        ("h w -> (h h2) (w w2)", {"h2": 2, "w2": 2}),
+        ("h w  -> w h", {}),
+    ]),
 )
 def test_einops_repeat(
     *, dtype_x, pattern_and_axes_lengths, test_flags, backend_fw, fn_name, on_device
@@ -1762,7 +1754,7 @@ def test_stable_pow(
     *, dtypes_and_xs, min_base, test_flags, backend_fw, fn_name, on_device
 ):
     dtypes, xs = dtypes_and_xs
-    assume(all(["bfloat16" not in x for x in dtypes]))
+    assume(all("bfloat16" not in x for x in dtypes))
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,

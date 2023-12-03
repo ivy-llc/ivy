@@ -2753,7 +2753,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         kernel_size: Union[Tuple[int], int],
         /,
         *,
-        strides: Union[int, Tuple[int]] = None,
+        strides: Optional[Union[int, Tuple[int]]] = None,
         padding: Union[int, Tuple[int]] = 0,
         data_format: Union[str, ivy.Container] = "NCW",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -2817,7 +2817,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         kernel_size: Union[Tuple[int], int],
         /,
         *,
-        strides: Union[int, Tuple[int]] = None,
+        strides: Optional[Union[int, Tuple[int]]] = None,
         padding: Union[int, Tuple[int]] = 0,
         data_format: Optional[str] = "NCW",
     ) -> ivy.Container:
