@@ -13,38 +13,13 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
 # --- Helpers --- #
 # --------------- #
 
-def _fold_shape_check(
-        ndim,
-        input_shape,
-        output_shape,
-        kernel_sizes,
-        dilations,
-        paddings,
-        strides,
-):
-    batch_dim = 0 if ndim == 3 else -1
-
-    input_length = input_shape[batch_dim + 2]
-    n_blocks_height = ((output_shape[0] + 2 * paddings[0] - dilations[0] * (
-            kernel_sizes[0] - 1) - 1) // strides[0]
-                       ) + 1
-    n_blocks_width = (
-                             (output_shape[1] + 2 * paddings[1] - dilations[1] * (kernel_sizes[1] - 1) - 1) // strides[
-                         1]
-                     ) + 1
-
-    if input_length != (n_blocks_height * n_blocks_width):
-        return False
-
-    return True
-
 
 @st.composite
 def _fold_helper(draw, dim=2):
     x_shape, output_shape, kernel_sizes, dilations, paddings, strides = draw(
-        _fold_helper_with_filter(dim).filter(lambda x: _fold_shape_check(
-            dim, x[0], x[1], x[2], x[3], x[4], x[5]
-        ))
+        _fold_helper_with_filter(dim).filter(
+            lambda x: _fold_shape_check(dim, x[0], x[1], x[2], x[3], x[4], x[5])
+        )
     )
 
     dtype, [vals] = draw(
@@ -108,6 +83,33 @@ def _fold_helper_with_filter(draw, dim):
     ]
     x_shape = (batch_size, n_channels * math.prod(kernel_sizes), math.prod(x_shape))
     return x_shape, output_shape, kernel_sizes, dilations, paddings, strides
+
+
+def _fold_shape_check(
+        ndim,
+        input_shape,
+        output_shape,
+        kernel_sizes,
+        dilations,
+        paddings,
+        strides,
+):
+    batch_dim = 0 if ndim == 3 else -1
+
+    input_length = input_shape[batch_dim + 2]
+    n_blocks_height = (
+                              (output_shape[0] + 2 * paddings[0] - dilations[0] * (kernel_sizes[0] - 1) - 1)
+                              // strides[0]
+                      ) + 1
+    n_blocks_width = (
+                             (output_shape[1] + 2 * paddings[1] - dilations[1] * (kernel_sizes[1] - 1) - 1)
+                             // strides[1]
+                     ) + 1
+
+    if input_length != (n_blocks_height * n_blocks_width):
+        return False
+
+    return True
 
 
 @st.composite
