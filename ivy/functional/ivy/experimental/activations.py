@@ -799,7 +799,7 @@ def celu(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Apply the Continously Differentiable Exponential Linear Unit (CELU) activation
+    Apply the Continuosly Differentiable Exponential Linear Unit (CELU) activation
     function to each element of the input.
 
     Parameters
