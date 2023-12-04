@@ -245,7 +245,26 @@ class DensePartitioner:
         self.samples = samples
 
 
-class SplitRecord: ...
+class SplitRecord:
+    def __init__(
+        self,
+        feature=0,
+        pos=0,
+        threshold=0.0,
+        improvement=-INFINITY,
+        impurity_left=0.0,
+        impurity_right=0.0,
+        missing_go_to_left=False,
+        n_missing=0,
+    ):
+        self.feature = feature
+        self.pos = pos
+        self.threshold = threshold
+        self.improvement = improvement
+        self.impurity_left = impurity_left
+        self.impurity_right = impurity_right
+        self.missing_go_to_left = missing_go_to_left
+        self.n_missing = n_missing
 
 
 class BestSplitter(Splitter):
