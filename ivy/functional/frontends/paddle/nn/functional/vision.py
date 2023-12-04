@@ -118,7 +118,7 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
     )
 
     if not isinstance(upscale_factor, int):
-        raise ValueError("upscale factor must be int type")
+        raise TypeError("upscale factor must be int type")
 
     if data_format not in ["NCHW", "NHWC"]:
         raise ValueError(
@@ -172,7 +172,7 @@ def pixel_unshuffle(x, downscale_factor, data_format="NCHW"):
         )
 
     if not isinstance(downscale_factor, int):
-        raise ValueError("Downscale factor must be int type")
+        raise TypeError("Downscale factor must be int type")
 
     if downscale_factor <= 0:
         raise ValueError("Downscale factor must be positive")
