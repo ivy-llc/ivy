@@ -187,7 +187,9 @@ def gather(
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
-        result = torch.gather(params, axis, indices.long(), sparse_grad=False, out=out)
+        result = torch.gather(
+            params, axis, torch.reshape(indices, (-1,)).long(), 
+            sparse_grad=False, out=out)
     else:
         for b in range(batch_dims):
             if b == 0:
