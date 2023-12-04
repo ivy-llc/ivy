@@ -314,7 +314,6 @@ def node_split_best(
 ):
     start = splitter.start
     end = splitter.end
-    splitter.samples
     features = splitter.features
     constant_features = splitter.constant_features
     n_features = splitter.n_features
@@ -326,12 +325,9 @@ def node_split_best(
 
     best_split = SplitRecord()
     current_split = SplitRecord()
-    current_proxy_improvement = -ivy.inf
     best_proxy_improvement = -ivy.inf
 
     f_i = n_features
-    f_j = 0
-    p = 0
     p_prev = 0
 
     n_visited_features = 0
