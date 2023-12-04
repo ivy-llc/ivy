@@ -2905,7 +2905,7 @@ trim_zeros.mixed_backend_wrappers = {
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
-@inputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_array_function
 @handle_device
 def index_add(
