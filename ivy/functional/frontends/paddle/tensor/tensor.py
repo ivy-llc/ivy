@@ -221,6 +221,13 @@ class Tensor:
     def __int__(self):
         return int(self._ivy_array)
 
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "int64", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __long__(self):
+        return long(self._ivy_array)
+
     # Instance Methods #
     # ---------------- #
 
