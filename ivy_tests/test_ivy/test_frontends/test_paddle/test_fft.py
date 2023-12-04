@@ -617,7 +617,9 @@ def test_paddle_rfftfreq(
     fn_tree="paddle.fft.rfftn",
     dtype_and_x=_x_and_rfftn(),
 )
-def test_paddle_rfftn(dtype_and_x, frontend, backend_fw, test_flags, fn_tree, on_device):
+def test_paddle_rfftn(
+    dtype_and_x, frontend, backend_fw, test_flags, fn_tree, on_device
+):
     dtype, x, s, axes, norm = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
