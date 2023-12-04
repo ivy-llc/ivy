@@ -510,4 +510,6 @@ def sort(feature_values, samples, n):
         return
     idx = ivy.argsort(feature_values)
     return feature_values[idx], samples[idx]
+
+
 INFINITY = ivy.inf
