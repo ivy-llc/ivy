@@ -186,9 +186,8 @@ def gather(
     batch_dims %= len(params.shape)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
-    indices.to(torch.int64)
     if batch_dims == 0:
-        result = torch.gather(params, axis, indices, sparse_grad=False, out=out)
+        result = torch.gather(params, axis, indices.long(), sparse_grad=False, out=out)
     else:
         for b in range(batch_dims):
             if b == 0:
@@ -200,7 +199,7 @@ def gather(
         for z in zip_list:
             p, i = z
             r = torch.gather(
-                p, (axis - batch_dims) % p.ndim, torch.reshape(i, (-1,)), 
+                p, (axis - batch_dims) % p.ndim, torch.reshape(i, (-1,)).long(), 
                 sparse_grad=False, out=None
             )
 
