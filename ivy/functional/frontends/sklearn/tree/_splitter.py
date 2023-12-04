@@ -250,7 +250,7 @@ class SplitRecord:
         feature=0,
         pos=0,
         threshold=0.0,
-        improvement=-INFINITY,
+        improvement=-ivy.inf,
         impurity_left=0.0,
         impurity_right=0.0,
         missing_go_to_left=False,
@@ -294,12 +294,12 @@ class BestSplitter(Splitter):
 
 
 def _init_split(split_record, start_pos):
-    split_record.impurity_left = INFINITY
-    split_record.impurity_right = INFINITY
+    split_record.impurity_left = ivy.inf
+    split_record.impurity_right = ivy.inf
     split_record.pos = start_pos
     split_record.feature = 0
     split_record.threshold = 0.0
-    split_record.improvement = -INFINITY
+    split_record.improvement = -ivy.inf
     split_record.missing_go_to_left = False
     split_record.n_missing = 0
     return split_record
@@ -326,8 +326,8 @@ def node_split_best(
 
     best_split = SplitRecord()
     current_split = SplitRecord()
-    current_proxy_improvement = -INFINITY
-    best_proxy_improvement = -INFINITY
+    current_proxy_improvement = -ivy.inf
+    best_proxy_improvement = -ivy.inf
 
     f_i = n_features
     f_j = 0
@@ -430,8 +430,8 @@ def node_split_best(
 
                     if (
                         current_split.threshold == feature_values[p]
-                        or current_split.threshold == INFINITY
-                        or current_split.threshold == -INFINITY
+                        or current_split.threshold == ivy.inf
+                        or current_split.threshold == -ivy.inf
                     ):
                         current_split.threshold = feature_values[p_prev]
 
@@ -460,7 +460,7 @@ def node_split_best(
 
                     if current_proxy_improvement > best_proxy_improvement:
                         best_proxy_improvement = current_proxy_improvement
-                        current_split.threshold = INFINITY
+                        current_split.threshold = ivy.inf
                         current_split.missing_go_to_left = missing_go_to_left
                         current_split.n_missing = n_missing
                         current_split.pos = p
@@ -510,6 +510,3 @@ def sort(feature_values, samples, n):
         return
     idx = ivy.argsort(feature_values)
     return feature_values[idx], samples[idx]
-
-
-INFINITY = ivy.inf
