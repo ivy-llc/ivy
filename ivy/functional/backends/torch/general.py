@@ -199,7 +199,8 @@ def gather(
         for z in zip_list:
             p, i = z
             r = torch.gather(
-                p, (axis - batch_dims) % p.ndim, torch.reshape(i, (-1,)), sparse_grad=False, out=None
+                p, (axis - batch_dims) % p.ndim, torch.reshape(i, (-1,)), 
+                sparse_grad=False, out=None
             )
 
             result.append(r)
