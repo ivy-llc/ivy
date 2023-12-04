@@ -374,19 +374,5 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
 def rfftn(x, s=None, axes=None, norm="backward", name=None):
     """Compute the N-dimensional discrete Fourier Transform over any number of axes in
     an M-dimensional real array by means of the Fast Fourier Transform (FFT)."""
-    if s is None:
-        s = x.shape
-
-    # Apply rfft along the last axis
-    rfft_result = ivy.rfftn(x, s=s, axes=axes, norm=norm, out=name)
-
-    if axes is None:
-        # If axes is not specified, transform all axes except the last one.
-        axes = tuple(range(x.ndim - 1))
-
-    # Apply fft on the specified axes for N-dimensional FFT
-    fftn_result = rfft_result
-    for axis in axes:
-        fftn_result = ivy.fft(fftn_result, axis=axis, norm=norm)
-
-    return fftn_result
+    x = ivy.asarray(x, dtype=ivy.complex128)
+    return ivy.rfftn(x, s=s, axes=axes, norm=norm)

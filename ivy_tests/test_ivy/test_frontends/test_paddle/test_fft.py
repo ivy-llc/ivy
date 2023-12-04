@@ -6,6 +6,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
     _x_and_ifftn,
+    _x_and_rfftn,
 )
 
 
@@ -614,47 +615,19 @@ def test_paddle_rfftfreq(
 
 @handle_frontend_test(
     fn_tree="paddle.fft.rfftn",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=-10,
-        max_value=10,
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
-    ),
-    s=st.one_of(
-        st.tuples(
-            st.integers(min_value=2, max_value=10),
-            st.integers(min_value=2, max_value=10),
-        ),
-        st.just(None),
-    ),
-    axes=st.one_of(
-        st.lists(
-            st.integers(min_value=0, max_value=2), min_size=1, max_size=3, unique=True
-        ),
-        st.just(None),
-    ),
-    norm=st.sampled_from(["backward", "ortho", "forward"]),
+    dtype_and_x=_x_and_rfftn(),
 )
-def test_paddle_rfftn(
-    dtype_x_axis,
-    s,
-    axes,
-    norm,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-):
-    input_dtypes, x, axis = dtype_x_axis
+def test_paddle_rfftn(dtype_and_x, frontend, backend_fw, test_flags, fn_tree, on_device):
+    dtype, x, s, axes, norm = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        x=x[0],
+        on_device=on_device,
+        test_values=True,
+        x=x,
         s=s,
         axes=axes,
         norm=norm,
