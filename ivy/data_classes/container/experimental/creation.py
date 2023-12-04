@@ -1290,7 +1290,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Returns
         -------
         ret
-            Output container containing simplified result of substituing x in the
+            Output container containing simplified result of substituting x in the
             coefficients - final value of polynomial.
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1385,7 +1385,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Returns
         -------
         ret
-            Output container containing simplified result of substituing x in the
+            Output container containing simplified result of substituting x in the
             coefficients - final value of polynomial.
         """
         return self.static_polyval(self, coeffs, x)
