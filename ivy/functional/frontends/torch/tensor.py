@@ -2017,6 +2017,10 @@ class Tensor:
         )
         return self
 
+    @with_supported_dtypes({"2.1.1 and below": ("float32", "float64")}, "torch")
+    def frac(self, name=None):
+        return torch_frontend.frac(self._ivy_array)
+
     @with_unsupported_dtypes(
         {
             "2.1.1 and below": (
