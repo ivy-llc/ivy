@@ -180,6 +180,26 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
     return out
 
 
+# allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+def _expand_typesets(dtypes):
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+    dtypes = list(dtypes)
+    typeset_list = []
+    for i, dtype in reversed(list(enumerate(dtypes))):
+        if dtype in typesets:
+            typeset_list.extend(typesets[dtype])
+            dtypes.pop(i)
+    dtypes += typeset_list
+    return dtypes
+
+
 # Get the list of dtypes supported by the function
 # by default returns the supported dtypes
 def _get_dtypes(fn, complement=True):
@@ -204,16 +224,6 @@ def _get_dtypes(fn, complement=True):
         ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
     ]
 
-    # allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
-    typesets = {
-        "valid": ivy.valid_dtypes,
-        "numeric": ivy.valid_numeric_dtypes,
-        "float": ivy.valid_float_dtypes,
-        "integer": ivy.valid_int_dtypes,
-        "unsigned": ivy.valid_uint_dtypes,
-        "complex": ivy.valid_complex_dtypes,
-    }
-
     for key, merge_fn, base in basic:
         if hasattr(fn, key):
             dtypes = getattr(fn, key)
@@ -221,15 +231,9 @@ def _get_dtypes(fn, complement=True):
             if isinstance(dtypes, dict):
                 dtypes = dtypes.get(ivy.current_backend_str(), base)
             ivy.utils.assertions.check_isinstance(dtypes, tuple)
-            if dtypes == ():
+            if not dtypes:
                 dtypes = base
-            dtypes = list(dtypes)
-            typeset_list = []
-            for i, dtype in reversed(list(enumerate(dtypes))):
-                if dtype in typesets:
-                    typeset_list.extend(typesets[dtype])
-                    dtypes.pop(i)
-            dtypes += typeset_list
+            dtypes = _expand_typesets(dtypes)
             supported = merge_fn(supported, set(dtypes))
 
     if complement:
@@ -1831,12 +1835,12 @@ def is_bool_dtype(
     elif isinstance(dtype_in, np.ndarray):
         return "bool" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return isinstance(dtype_in, (bool, np.bool)) and not isinstance(dtype_in, bool)
+        return isinstance(dtype_in, (bool, np.bool_)) and not isinstance(dtype_in, bool)
     elif isinstance(dtype_in, (list, tuple, dict)):
         return bool(
             ivy.nested_argwhere(
                 dtype_in,
-                lambda x: isinstance(x, (bool, np.bool)) and x is not int,
+                lambda x: isinstance(x, (bool, np.bool_)) and x is not int,
             )
         )
     return "bool" in ivy.as_ivy_dtype(dtype_in)

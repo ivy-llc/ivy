@@ -1,12 +1,193 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
+import numpy as np
 
 # local
 import ivy
 from ivy.functional.ivy.layers import _get_embed_dim
+from ivy.functional.frontends.torch.nn.functional.layer_functions import (
+    _pack_padded_sequence,
+)
 from ivy_tests.test_ivy import helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _mha_helper
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _lstm_helper(draw):
+    dtype = draw(helpers.get_dtypes("valid", full=False))
+
+    has_biases = draw(st.booleans())
+    bidirectional = draw(st.booleans())
+    dropout = draw(st.floats(min_value=0, max_value=0.99))
+    train = (
+        draw(st.booleans()) and not dropout
+    )  # not yet supported by original function
+    packed = draw(st.booleans())
+
+    batch_first = draw(st.booleans()) and not packed
+    num_batches = draw(st.integers(min_value=1, max_value=5))
+    num_layers = draw(st.integers(min_value=1, max_value=3))
+    num_directions = 2 if bidirectional else 1
+    seq_size = draw(st.integers(min_value=1, max_value=5))
+    in_size = draw(st.integers(min_value=1, max_value=3))
+    hidden_size = draw(st.integers(min_value=1, max_value=3))
+
+    input = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(
+                (num_batches, seq_size, in_size)
+                if batch_first
+                else (seq_size, num_batches, in_size)
+            ),
+            min_value=0,
+            max_value=1,
+        )
+    )
+
+    init_h = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(num_directions * num_layers, num_batches, hidden_size),
+            min_value=0,
+            max_value=1,
+        )
+    )
+    init_c = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(num_directions * num_layers, num_batches, hidden_size),
+            min_value=0,
+            max_value=1,
+        )
+    )
+
+    all_weights = []
+    for k in range(num_layers):
+        for _ in range(num_directions):
+            weight_ih = draw(
+                helpers.array_values(
+                    dtype=dtype[0],
+                    shape=(
+                        (4 * hidden_size, in_size)
+                        if k == 0
+                        else (4 * hidden_size, num_directions * hidden_size)
+                    ),
+                    min_value=0,
+                    max_value=1,
+                )
+            )
+            weight_hh = draw(
+                helpers.array_values(
+                    dtype=dtype[0],
+                    shape=(4 * hidden_size, hidden_size),
+                    min_value=0,
+                    max_value=1,
+                )
+            )
+            all_weights += [weight_ih, weight_hh]
+            if has_biases:
+                bias_ih = draw(
+                    helpers.array_values(
+                        dtype=dtype[0],
+                        shape=(4 * hidden_size,),
+                        min_value=0,
+                        max_value=1,
+                    )
+                )
+                bias_hh = draw(
+                    helpers.array_values(
+                        dtype=dtype[0],
+                        shape=(4 * hidden_size,),
+                        min_value=0,
+                        max_value=1,
+                    )
+                )
+                all_weights += [bias_ih, bias_hh]
+
+    if packed:
+        batch_sizes = [seq_size]
+        batch_sizes += draw(
+            st.lists(
+                st.integers(min_value=1, max_value=seq_size),
+                min_size=num_batches - 1,
+                max_size=num_batches - 1,
+            )
+        )
+        batch_sizes = np.array(draw(st.permutations(batch_sizes)))
+        input, batch_sizes = (
+            ivy.to_numpy(p) for p in _pack_padded_sequence(input, batch_sizes)
+        )
+    else:
+        batch_sizes = None
+
+    initial_states = init_h, init_c
+    all_weights = tuple(all_weights)
+    if batch_sizes is not None:
+        dtypes = dtype + ["int64"]
+        kwargs = {
+            "data": input,
+            "batch_sizes": batch_sizes,
+            "hx": initial_states,
+            "params": all_weights,
+            "has_biases": has_biases,
+            "num_layers": num_layers,
+            "dropout": dropout,
+            "train": train,
+            "bidirectional": bidirectional,
+        }
+    else:
+        dtypes = dtype
+        kwargs = {
+            "input": input,
+            "hx": initial_states,
+            "params": all_weights,
+            "has_biases": has_biases,
+            "num_layers": num_layers,
+            "dropout": dropout,
+            "train": train,
+            "bidirectional": bidirectional,
+            "batch_first": batch_first,
+        }
+    return dtypes, kwargs
+
+
+# --- Main --- #
+# ------------ #
+
+
+# lstm
+@handle_frontend_test(
+    fn_tree="torch.lstm",
+    dtypes_kwargs=_lstm_helper(),
+    test_with_out=st.just(False),
+)
+def test_torch_lstm(
+    *,
+    dtypes_kwargs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtypes, kwargs = dtypes_kwargs
+    # Todo: Debug the function to have this case passing as well
+    assume("batch_sizes" not in kwargs or not kwargs["bidirectional"])
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kwargs,
+    )
 
 
 # multi_head_attention_forward

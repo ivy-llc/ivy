@@ -87,16 +87,14 @@ def tree_strategy(max_depth=2):
         return leaf_strategy()
     else:
         return st.dictionaries(
-            keys=st.one_of(
-                *[
-                    st.text(
-                        alphabet=st.characters(min_codepoint=97, max_codepoint=122),
-                        min_size=1,
-                        max_size=1,
-                    ).filter(lambda x: x not in used_keys)
-                    for used_keys in [set()]
-                ]
-            ),
+            keys=st.one_of(*[
+                st.text(
+                    alphabet=st.characters(min_codepoint=97, max_codepoint=122),
+                    min_size=1,
+                    max_size=1,
+                ).filter(lambda x: x not in used_keys)
+                for used_keys in [set()]
+            ]),
             values=st.one_of(leaf_strategy(), tree_strategy(max_depth - 1)),
             min_size=1,
             max_size=10,

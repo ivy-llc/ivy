@@ -94,7 +94,7 @@ def _get_user_input(fn, *args, **kwargs):
                 break
         except KeyboardInterrupt:
             print("Aborted.")
-            exit()
+            sys.exit()
 
 
 def _update_native_config_value(key):
@@ -154,9 +154,9 @@ def _should_install_backend(package_name):
     if ret.lower() == "y":
         try:
             # Install backend
-            subprocess.check_call(
-                [sys.executable, "-m", "pip", "install", package_name]
-            )
+            subprocess.check_call([
+                sys.executable, "-m", "pip", "install", package_name
+            ])
             global _backend_is_installed
             _backend_is_installed = True
             with open("../../requirements/optional.txt", "a") as reqr_file:
@@ -268,9 +268,9 @@ def _update_valid_config_value(key):
     ret = ret.strip("")
     if ret == "":
         return True
-    indicies = ret.split(" ")
-    indicies = [int(item.strip(" ")) for item in indicies]
-    for i in sorted(indicies, reverse=True):
+    indices = ret.split(" ")
+    indices = [int(item.strip(" ")) for item in indices]
+    for i in sorted(indices, reverse=True):
         del config_valids[key][i]
     return True
 

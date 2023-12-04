@@ -5,7 +5,7 @@ import pytest
 import importlib
 import inspect
 import functools
-from typing import List
+from typing import List, Optional
 
 from hypothesis import given, strategies as st
 
@@ -24,6 +24,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltGradientStrategy,
     BuiltContainerStrategy,
     BuiltWithOutStrategy,
+    BuiltWithCopyStrategy,
     BuiltInplaceStrategy,
     BuiltTraceStrategy,
     BuiltFrontendArrayStrategy,
@@ -89,7 +90,7 @@ def num_positional_args_method(draw, *, method):
 
 
 @st.composite
-def num_positional_args(draw, *, fn_name: str = None):
+def num_positional_args(draw, *, fn_name: Optional[str] = None):
     """
     Draws an integers randomly from the minimum and maximum number of positional
     arguments a given function can take.
@@ -330,11 +331,12 @@ def _partition_dtypes_into_kinds(framework: str, dtypes):
 
 def handle_test(
     *,
-    fn_tree: str = None,
+    fn_tree: Optional[str] = None,
     ground_truth_backend: str = "tensorflow",
     number_positional_args=None,
     test_instance_method=BuiltInstanceStrategy,
     test_with_out=BuiltWithOutStrategy,
+    test_with_copy=BuiltWithCopyStrategy,
     test_gradients=BuiltGradientStrategy,
     test_trace=BuiltTraceStrategy,
     transpile=BuiltTranspileStrategy,
@@ -366,6 +368,10 @@ def handle_test(
 
     test_with_out
         A search strategy that generates a boolean to test the function with an `out`
+        parameter
+
+    test_with_copy
+        A search strategy that generates a boolean to test the function with an `copy`
         parameter
 
     test_gradients
@@ -408,6 +414,7 @@ def handle_test(
             num_positional_args=number_positional_args,
             instance_method=_get_runtime_flag_value(test_instance_method),
             with_out=_get_runtime_flag_value(test_with_out),
+            with_copy=_get_runtime_flag_value(test_with_copy),
             test_gradients=_get_runtime_flag_value(test_gradients),
             test_trace=_get_runtime_flag_value(test_trace),
             transpile=_get_runtime_flag_value(transpile),
@@ -468,10 +475,11 @@ def handle_test(
 def handle_frontend_test(
     *,
     fn_tree: str,
-    gt_fn_tree: str = None,
-    aliases: List[str] = None,
+    gt_fn_tree: Optional[str] = None,
+    aliases: Optional[List[str]] = None,
     number_positional_args=None,
     test_with_out=BuiltWithOutStrategy,
+    test_with_copy=BuiltWithCopyStrategy,
     test_inplace=BuiltInplaceStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
@@ -503,6 +511,10 @@ def handle_frontend_test(
 
     test_with_out
         A search strategy that generates a boolean to test the function with an `out`
+        parameter
+
+    test_with_copy
+        A search strategy that generates a boolean to test the function with an `copy`
         parameter
 
     precision_mode
@@ -539,6 +551,7 @@ def handle_frontend_test(
         test_flags = pf.frontend_function_flags(
             num_positional_args=number_positional_args,
             with_out=_get_runtime_flag_value(test_with_out),
+            with_copy=_get_runtime_flag_value(test_with_copy),
             inplace=_get_runtime_flag_value(test_inplace),
             as_variable=_get_runtime_flag_value(as_variable_flags),
             native_arrays=_get_runtime_flag_value(native_array_flags),
@@ -613,7 +626,7 @@ def _import_method(method_tree: str):
 def handle_method(
     *,
     init_tree: str = "",
-    method_tree: str = None,
+    method_tree: Optional[str] = None,
     ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
     test_trace=BuiltTraceStrategy,

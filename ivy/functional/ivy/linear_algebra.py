@@ -1,4 +1,5 @@
 # global
+
 from typing import Union, Optional, Tuple, Literal, List, Sequence
 
 # local
@@ -2263,7 +2264,11 @@ def svd(
 @handle_array_function
 @handle_device
 def svdvals(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    driver: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Return the singular values of a matrix (or a stack of matrices) ``x``.
@@ -2273,6 +2278,10 @@ def svdvals(
     x
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form
         ``MxN`` matrices.
+    driver
+        optional output array,name of the cuSOLVER method to be used. This keyword
+        argument only works on CUDA inputs.
+        Available options are: None, gesvd, gesvdj, and gesvda.Default: None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2386,7 +2395,7 @@ def svdvals(
         b: ivy.array([23.16134834, 10.35037804, 4.31025076, 1.35769391])
     }
     """
-    return current_backend(x).svdvals(x, out=out)
+    return current_backend(x).svdvals(x, driver=driver, out=out)
 
 
 @handle_exceptions
@@ -2531,6 +2540,14 @@ def trace(
         -   ``offset < 0``: off-diagonal below the main diagonal.
 
         Default: ``0``.
+    axis1
+        axis to be used as the first axis of the 2-D sub-arrays from which the
+        diagonals should be taken.
+        Defaults to ``0.`` .
+    axis2
+        axis to be used as the second axis of the 2-D sub-arrays from which the
+        diagonals should be taken.
+        Defaults to ``1.`` .
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2567,6 +2584,14 @@ def trace(
     >>> print(y)
     ivy.array([3., 4.])
 
+    >>> x = ivy.array([[1., 2., 3.],
+    ...                [4., 5., 6.],
+    ...                [7., 8., 9.]])
+    >>> y = ivy.zeros(1)
+    >>> ivy.trace(x, offset=1,out=y)
+    >>> print(y)
+    ivy.array(8.)
+
     With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[2., 0., 3.],[3., 5., 6.]])
@@ -2577,9 +2602,9 @@ def trace(
     >>> x = ivy.native_array([[0, 1, 2],
     ...                       [3, 4, 5],
     ...                       [6, 7, 8]])
-    >>> y = ivy.trace(x, offset=0)
+    >>> y = ivy.trace(x, offset=1)
     >>> print(y)
-    ivy.array(12)
+    ivy.array(6)
 
     With :class:`ivy.Container` inputs:
 
@@ -2611,6 +2636,49 @@ def trace(
     {
         a: ivy.array(6),
         b: ivy.array(8)
+    }
+
+    With multiple ivy.Container inputs:
+
+    >>> x = ivy.Container(
+    ...        a = ivy.array([[7, 1, 3],
+    ...                       [8, 6, 5],
+    ...                       [9, 7, 2]]),
+    ...        b = ivy.array([[4, 3, 2],
+    ...                       [1, 9, 5],
+    ...                       [7, 0, 6]])
+    ...    )
+    >>> offset = ivy.Container(a=1, b=0)
+    >>> y = ivy.trace(x, offset)
+    >>> print(y)
+    {
+        a: ivy.array(6),
+        b: ivy.array(19)
+    }
+
+    With Array instance method example:
+
+    >>> x = ivy.array([[2., 0., 11.],
+    ...                [3., 5., 12.],
+    ...                [1., 6., 13.],
+    ...                [8., 9., 14.]])
+    >>> y = x.trace(offset=1)
+    >>> print(y)
+    ivy.array(12.)
+
+    With Container instance method example:
+
+    >>> x = ivy.Container(
+    ...        a=ivy.array([[2., 0., 11.],
+    ...                     [3., 5., 12.]]),
+    ...        b=ivy.array([[1., 6., 13.],
+    ...                     [8., 9., 14.]])
+    ...    )
+    >>> y = x.trace(offset=0)
+    >>> print(y)
+    {
+        a: ivy.array(7.),
+        b: ivy.array(10.)
     }
     """
     return current_backend(x).trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
@@ -3114,7 +3182,7 @@ def tensorsolve(
             allaxes.remove(k)
             allaxes.insert(ndim1, k)
 
-        x1 = ivy.matrix_transpose(x1, allaxes)
+        x1 = ivy.matrix_transpose(x1)
 
     old_shape = x1.shape[-(ndim1 - ndim2) :]
 

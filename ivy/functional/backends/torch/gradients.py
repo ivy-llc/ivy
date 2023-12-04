@@ -98,8 +98,8 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    xs_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
+    ret_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
@@ -239,7 +239,7 @@ def grad(f, argnums=0):
 
                 # Avoid zero gradients setting requires_grads as False
                 if isinstance(y, tuple):
-                    y_ones = tuple([torch.ones_like(y_) for y_ in y])
+                    y_ones = tuple(torch.ones_like(y_) for y_ in y)
                     [y_.requires_grad_() for y_ in y if y_.requires_grad is False]
                 elif y.requires_grad is False:
                     y.requires_grad_()

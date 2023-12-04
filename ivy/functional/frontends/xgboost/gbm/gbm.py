@@ -163,12 +163,10 @@ def _get_gradient(obj, pred, label, scale_pos_weight):
     # group weights for positive class are scaled
     w_scaled = ivy.where(label == 1.0, w * scale_pos_weight, w)
 
-    return ivy.hstack(
-        [
-            obj.first_order_gradient(p, label) * w_scaled,
-            obj.second_order_gradient(p, label) * w_scaled,
-        ]
-    )
+    return ivy.hstack([
+        obj.first_order_gradient(p, label) * w_scaled,
+        obj.second_order_gradient(p, label) * w_scaled,
+    ])
 
 
 def _pred(dt, w, base):
