@@ -7,7 +7,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_b
 from ivy.func_wrapper import with_supported_dtypes
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float",)}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def extract_patches(images, sizes, strides, rates, padding):
     depth = images.shape[-1]
@@ -46,7 +46,7 @@ def resize(
     else:
         new_height, new_width = size
     if method == "bicubic":
-        method = "bicubic_tensorflow"
+        method = "tf_bicubic"
     elif method == "area":
         method = "tf_area"
     image = ivy.interpolate(

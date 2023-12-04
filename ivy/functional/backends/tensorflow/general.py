@@ -24,7 +24,7 @@ _round = round
 
 
 def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, (tf.Tensor, tf.Variable)):
+    if isinstance(x, (tf.Tensor, tf.Variable, tf.TensorArray)):
         if exclusive and isinstance(x, tf.Variable):
             return False
         return True
@@ -37,7 +37,7 @@ def array_equal(
     /,
 ) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
-    return bool((tf.experimental.numpy.array_equal(x0, x1)))
+    return bool(tf.experimental.numpy.array_equal(x0, x1))
 
 
 def container_types():
@@ -50,7 +50,7 @@ def current_backend_str() -> str:
 
 def _check_query(query):
     return not isinstance(query, list) and (
-        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
+        not (ivy.is_array(query) and ivy.is_bool_dtype(query) and bool(query.ndim > 0))
     )
 
 
@@ -59,13 +59,14 @@ def get_item(
     /,
     query: Union[tf.Tensor, tf.Variable, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return x.__getitem__(query)
 
 
 get_item.partial_mixed_handler = lambda x, query, **kwargs: (
     all(_check_query(i) for i in query)
+    and len({i.shape for i in query if ivy.is_array(i)}) == 1
     if isinstance(query, tuple)
     else _check_query(query)
 )
@@ -109,8 +110,8 @@ def gather(
     batch_dims: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axis = axis % len(params.shape)
-    batch_dims = batch_dims % len(params.shape)
+    axis %= len(params.shape)
+    batch_dims %= len(params.shape)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
@@ -159,7 +160,7 @@ def gather_nd(
     try:
         return tf.gather_nd(params, indices, batch_dims=batch_dims)
     except Exception:  # fall back to compositional implementation
-        batch_dims = batch_dims % len(params.shape)
+        batch_dims %= len(params.shape)
         result = []
         if batch_dims == 0:
             result = gather_nd_helper(params, indices)
@@ -206,11 +207,10 @@ def inplace_decrement(
             x.data = x_native
         else:
             x = ivy.Array(x_native)
+    elif ivy.is_ivy_array(x):
+        x.data -= val_native
     else:
-        if ivy.is_ivy_array(x):
-            x.data -= val_native
-        else:
-            x = ivy.Array(val_native)
+        x = ivy.Array(val_native)
     return x
 
 
@@ -326,31 +326,26 @@ def scatter_flat(
     if not target_given:
         target = tf.zeros([size], dtype=updates.dtype)
         res = tf.tensor_scatter_nd_update(target, tf.expand_dims(indices, -1), updates)
+    elif reduction == "max":
+        res = tf.tensor_scatter_nd_max(target, tf.expand_dims(indices, -1), updates)
+    elif reduction == "min":
+        res = tf.tensor_scatter_nd_min(target, tf.expand_dims(indices, -1), updates)
+    elif reduction == "replace":
+        res = tf.tensor_scatter_nd_update(target, tf.expand_dims(indices, -1), updates)
+    elif reduction == "sum":
+        res = tf.tensor_scatter_nd_add(target, tf.expand_dims(indices, -1), updates)
     else:
-        if reduction == "sum":
-            res = tf.tensor_scatter_nd_add(target, tf.expand_dims(indices, -1), updates)
-        elif reduction == "min":
-            res = tf.tensor_scatter_nd_min(target, tf.expand_dims(indices, -1), updates)
-        elif reduction == "max":
-            res = tf.tensor_scatter_nd_max(target, tf.expand_dims(indices, -1), updates)
-        elif reduction == "replace":
-            res = tf.tensor_scatter_nd_update(
-                target, tf.expand_dims(indices, -1), updates
-            )
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "reduction is {}, but it must be one of "
-                '"sum", "min", "max" or "replace"'.format(reduction)
-            )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, res)
-    return res
+        raise ivy.utils.exceptions.IvyException(
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
+        )
+    return ivy.inplace_update(out, res) if ivy.exists(out) else res
 
 
 scatter_flat.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "complex")}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -394,12 +389,15 @@ def scatter_nd(
         res = tf.tensor_scatter_nd_min(target, indices, updates)
     elif reduction == "max":
         res = tf.tensor_scatter_nd_max(target, indices, updates)
+    elif reduction == "mul":
+        updates = ivy.multiply(ivy.gather_nd(target, indices), updates).data
+        res = tf.tensor_scatter_nd_update(target, indices, updates)
     elif reduction == "replace":
         res = tf.tensor_scatter_nd_update(target, indices, updates)
     else:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max",'
+            ' "mul" or "replace"'
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
@@ -473,7 +471,7 @@ def vmap(
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
-            none_axis_index = list()
+            none_axis_index = []
             for index, axis in enumerate(in_axes):
                 if axis is None:
                     none_axis_index.append(index)
@@ -507,7 +505,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "complex")}, backend_version)
 def isin(
     elements: tf.Tensor,
     test_elements: tf.Tensor,

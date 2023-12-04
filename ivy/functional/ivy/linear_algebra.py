@@ -1,4 +1,5 @@
 # global
+
 from typing import Union, Optional, Tuple, Literal, List, Sequence
 
 # local
@@ -10,7 +11,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -30,7 +31,7 @@ inf = float("inf")
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -170,7 +171,7 @@ def cholesky(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def cross(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -278,7 +279,7 @@ def cross(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def det(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -313,8 +314,8 @@ def det(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[2.,4.],[6.,7.]])
@@ -352,7 +353,7 @@ def det(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def diagonal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -405,9 +406,8 @@ def diagonal(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1., 2.],
@@ -533,7 +533,7 @@ def diagonal(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -586,7 +586,7 @@ def eig(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -646,6 +646,48 @@ def eigh(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1., 2.],[2., 5.]])
+    >>> eigenvalues, eigenvectors = ivy.eigh(x)
+    >>> print(eigenvalues)
+    ivy.array([0.17157288, 5.82842731])
+    >>> print(eigenvectors)
+    ivy.array([[-0.9238795 ,  0.38268343],
+        [ 0.38268343,  0.9238795 ]])
+
+    >>> x = ivy.array([[1., 2.], [2., 5.]])
+    >>> eigenvalues, eigenvectors = ivy.zeros(len(x)), ivy.zeros(x.shape)
+    >>> ivy.eigh(x, out=(eigenvalues, eigenvectors))
+    >>> print(eigenvalues)
+    ivy.array([0.17157288, 5.82842731])
+    >>> print(eigenvectors)
+    ivy.array([[-0.9238795 ,  0.38268343],
+           [ 0.38268343,  0.9238795 ]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(
+    ...             a = ivy.native_array([[1., 2., 0.], [3., 4., 5.], [1., 5., 9]]),
+    ...             b = ivy.array([[2., 4., 6.], [3., 5., 7.], [0., 0.8, 2.9]]))
+    >>> eigenvalues, eigenvectors = ivy.eigh(x, UPLO = 'U')
+    >>> print(eigenvalues)
+    {
+        a: ivy.array([-0.78930789, 2.59803128, 12.19127655]),
+        b: ivy.array([-4.31213903, -0.63418275, 14.84632206])
+    }
+    >>> print(eigenvectors)
+    {
+        a: ivy.array([[0.70548367, -0.70223427, 0.09570674],
+                    [-0.63116378, -0.56109613, 0.53554028],
+                    [0.32237405, 0.43822157, 0.83906901]]),
+        b: ivy.array([[0.50766778, 0.71475857, 0.48103389],
+                    [0.3676433, -0.68466955, 0.62933773],
+                    [-0.77917379, 0.14264561, 0.61036086]])
+    }
     """
     return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
@@ -657,7 +699,7 @@ def eigh(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def eigvalsh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -765,7 +807,7 @@ def eigvalsh(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def inner(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -806,6 +848,7 @@ def inner(
     Examples
     --------
     Matrices of identical shapes
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = ivy.array([[5., 6.], [7., 8.]])
     >>> d = ivy.inner(x, y)
@@ -813,6 +856,7 @@ def inner(
     ivy.array([[17., 23.], [39., 53.]])
 
     # Matrices of different shapes
+
     >>> x = ivy.array([[1., 2.], [3., 4.], [5., 6.]])
     >>> y = ivy.array([[5., 6.], [7., 8.]])
     >>> d = ivy.inner(x, y)
@@ -820,6 +864,7 @@ def inner(
     ivy.array([[17., 23.], [39., 53.], [61., 83.]])
 
     # 3D matrices
+
     >>> x = ivy.array([[[1., 2.], [3., 4.]],
     ...                [[5., 6.], [7., 8.]]])
     >>> y = ivy.array([[[9., 10.], [11., 12.]],
@@ -841,7 +886,7 @@ def inner(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def inv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -935,7 +980,7 @@ def inv(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def matmul(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1098,7 +1143,7 @@ def matmul(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1260,7 +1305,7 @@ def matrix_norm(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def matrix_power(
     x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1361,7 +1406,7 @@ def matrix_power(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1395,11 +1440,11 @@ def matrix_rank(
         where ``eps`` must be the machine epsilon associated with the floating-point
         data type determined by :ref:`type-promotion` (as applied to ``x``).
         Default: ``None``.
-    
+
     hermitian
         indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x``
         is assumed to be Hermitian, enabling a more efficient method for finding
-        eigenvalues, but x is not checked inside the function. 
+        eigenvalues, but x is not checked inside the function.
         Instead, We just use the lower triangular of the matrix to compute.
         Default: ``False``.
     out
@@ -1477,7 +1522,7 @@ def matrix_rank(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def matrix_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1567,7 +1612,7 @@ def matrix_transpose(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def outer(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1658,7 +1703,7 @@ def outer(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def pinv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1734,7 +1779,7 @@ def pinv(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def qr(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1789,6 +1834,53 @@ def qr(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1.,2.,3.],[4.,5.,6.],[7.,8.,9.]])
+    >>> q, r = ivy.qr(x)
+    >>> print(q)
+    ivy.array([[-0.12309149,  0.90453403,  0.40824829],
+        [-0.49236596,  0.30151134, -0.81649658],
+        [-0.86164044, -0.30151134,  0.40824829]])
+    >>> print(r)
+    ivy.array([[-8.12403841e+00,-9.60113630e+00, -1.10782342e+01],
+        [ 0.00000000e+00,  9.04534034e-01,  1.80906807e+00],
+        [ 0.00000000e+00,  0.00000000e+00, -8.88178420e-16]])
+
+    # Note: if `int` values are used in `x` the output for q, r vary
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> q = ivy.zeros_like(x)
+    >>> r = ivy.zeros_like(x)
+    >>> ivy.qr(x, out=(q,r))
+    >>> print(q)
+    ivy.array([[-0.31622776, -0.94868332],
+           [-0.94868332,  0.31622776]])
+    >>> print(r)
+    ivy.array([[-3.1622777 , -4.42718887],
+           [ 0.        , -0.63245553]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.native_array([[1., 2.], [3., 4.]]),
+    ...                   b = ivy.array([[2., 3.], [4. ,5.]]))
+    >>> q,r = ivy.qr(x, mode='complete')
+    >>> print(q)
+    {
+        a: ivy.array([[-0.31622777, -0.9486833],
+                    [-0.9486833, 0.31622777]]),
+        b: ivy.array([[-0.4472136, -0.89442719],
+                    [-0.89442719, 0.4472136]])
+    }
+    >>> print(r)
+    {
+        a: ivy.array([[-3.16227766, -4.42718872],
+                    [0., -0.63245553]]),
+        b: ivy.array([[-4.47213595, -5.81377674],
+                    [0., -0.4472136]])
+    }
     """
     return current_backend(x).qr(x, mode=mode, out=out)
 
@@ -1799,7 +1891,7 @@ def qr(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1864,9 +1956,8 @@ def slogdet(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[2.0, 1.0],
@@ -1908,17 +1999,18 @@ def slogdet(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def solve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    adjoint: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the solution to the system of linear equations represented by the well-
-    determined (i.e., full rank) linear matrix equation AX = B.
+    Return the solution x to the system of linear equations represented by the well-
+    determined (i.e., full rank) linear matrix equation Ax = B.
 
     Parameters
     ----------
@@ -1927,11 +2019,13 @@ def solve(
         form square matrices. Must be of full rank (i.e., all rows or, equivalently,
         columns must be linearly independent). Should have a floating-point data type.
     x2
-        ordinate (or “dependent variable”) array B. If x2 has shape (M,), x2 is
+        ordinate (or “dependent variable”) array B. If x2 has shape (M,1), x2 is
         equivalent to an array having shape (..., M, 1). If x2 has shape (..., M, K),
         each column k defines a set of ordinate values for which to compute a solution,
         and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).
         Should have a floating-point data type.
+    adjoint
+        specifies whether the system should be solved for x1 or adjoint(x1)
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1939,11 +2033,10 @@ def solve(
     Returns
     -------
     ret
-        an array containing the solution to the system AX = B for each square matrix.
-        The returned array must have the same shape as x2 (i.e., the array corresponding
-        to B) and must have a floating-point data type determined by Type Promotion
-        Rules.
-
+        an array containing the solution to the system AX = B (or adjoint(A)X = B)
+        for each square matrix. The returned array must have the same shape as x2
+        (i.e., the array corresponding to B) and must have a floating-point data
+        type determined by Type Promotion Rules.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -1951,11 +2044,84 @@ def solve(
     extensions/generated/array_api.linalg.solve.html>`_
     in the standard.
 
-    Both the description and the type hints above assumes an array input for simplicity,
+    Both the description and the type hints above assume an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With class:`ivy.Array` input:
+    >>> A = ivy.array([[1.1, 1.2, 1.3],
+                       [2.1, 2.2, 2.3],
+                       [3.1, 3.2, 3.3]]),
+    >>> B = ivy.array([[1.1],
+                       [2.1],
+                       [3.1]]),
+    >>> x = solve(A,B);
+    >>> print(x)
+    ivy.array([[1],
+               [0],
+               [0]])
+    >>> print(x.shape)
+    (1,3)
+
+    With shape(A) = (2,3,3) and shape(B) = (2,3,1):
+    >>> A = ivy.array([[[11.1, 11.2, 11.3],
+                        [12.1, 12.2, 12.3],
+                        [13.1, 13.2, 13.3]],
+                       [[21.1, 21.2, 21.3],
+                        [22.1, 22.2, 22.3],
+                        [23.1, 23.2, 23.3]]
+                        ]),
+    >>> B = ivy.array([[[11.1],
+                        [12.1],
+                        [13.1]],
+                       [[21.1],
+                        [22.1],
+                        [23.1]]]),
+    >>> x = solve(A,B);
+    >>> print(x)
+    ivy.array([[[1],
+                [0],
+                [0]],
+               [[1],
+                [0],
+                [0]]])
+    >>> print(x.shape)
+    (2,1,3)
+
+    With shape(A) = (3,3) and shape(B) = (3,2):
+    >>> A = ivy.array([[1.1, 1.2, 1.3],
+                       [2.1, 2.2, 2.3],
+                       [3.1, 3.2, 3.3]]),
+    >>> B = ivy.array([[1.1, 2.2],
+                       [2.1, 4.2],
+                       [3.1, 6.2]]),
+    >>> x = solve(A,B);
+    >>> print(x)
+    ivy.array([[[1],
+                [0],
+                [0]],
+               [[2],
+                [0],
+                [0]]])
+    >>> print(x.shape)
+    (2,1,3)
+
+    With class:`ivy.Container` input:
+    >>> A = ivy.array([[1.1, 1.2, 1.3],
+                       [2.1, 2.2, 2.3],
+                       [3.1, 3.2, 3.3]]),
+    >>> B = ivy.container(B1 = ivy.array([[1.1], [2.1], [3.1]]),
+                          B2 = ivy.array([[2.2], [4.2], [6.2]]))
+    >>> x = solve(A,B);
+    >>> print(x)
+    {
+        B1:([[1],[0],[0]]),
+        B2:([[2],[0],[0]])
+    }
     """
-    return current_backend(x1, x2).solve(x1, x2, out=out)
+    return current_backend(x1, x2).solve(x1, x2, adjoint=adjoint, out=out)
 
 
 @handle_exceptions
@@ -1964,7 +2130,7 @@ def solve(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2096,9 +2262,13 @@ def svd(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def svdvals(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    driver: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Return the singular values of a matrix (or a stack of matrices) ``x``.
@@ -2108,6 +2278,10 @@ def svdvals(
     x
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form
         ``MxN`` matrices.
+    driver
+        optional output array,name of the cuSOLVER method to be used. This keyword
+        argument only works on CUDA inputs.
+        Available options are: None, gesvd, gesvdj, and gesvda.Default: None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2132,9 +2306,8 @@ def svdvals(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[5.0, 7.0], [4.0, 3.0]])
@@ -2195,8 +2368,8 @@ def svdvals(
         b: ivy.array([15.7786541, 5.55970621, 4.16857576, 0.86412698])
     }
 
-    # Instance Method Examples
-    ------------------------
+    Instance Method Examples
+    ~~~~~~~~~~~~~~~~~~~~~~~~
 
     Using :class:`ivy.Array` instance method:
 
@@ -2222,7 +2395,7 @@ def svdvals(
         b: ivy.array([23.16134834, 10.35037804, 4.31025076, 1.35769391])
     }
     """
-    return current_backend(x).svdvals(x, out=out)
+    return current_backend(x).svdvals(x, driver=driver, out=out)
 
 
 @handle_exceptions
@@ -2231,7 +2404,7 @@ def svdvals(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def tensordot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2279,8 +2452,8 @@ def tensordot(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[1., 2.], [2., 3.]])
@@ -2288,6 +2461,15 @@ def tensordot(
     >>> res = ivy.tensordot(x, y, axes =0)
     >>> print(res)
     ivy.array([[[[3.,4.],[4.,5.]],[[6.,8.],[8.,10.]]],[[[6.,8.],[8.,10.]],[[9.,12.],[12.,15.]]]])
+
+    With :class:'ivy.NativeArray' input:
+
+    >>> x = ivy.native_array([[1., 2.], [2., 3.]])
+    >>> y = ivy.native_array([[3., 4.], [4., 5.]])
+    >>> res = ivy.tensordot(x, y, axes = (1,1))
+    >>> print(res)
+    ivy.array([[11., 14.],
+            [18., 23.]])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -2322,7 +2504,7 @@ def tensordot(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def trace(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2358,6 +2540,14 @@ def trace(
         -   ``offset < 0``: off-diagonal below the main diagonal.
 
         Default: ``0``.
+    axis1
+        axis to be used as the first axis of the 2-D sub-arrays from which the
+        diagonals should be taken.
+        Defaults to ``0.`` .
+    axis2
+        axis to be used as the second axis of the 2-D sub-arrays from which the
+        diagonals should be taken.
+        Defaults to ``1.`` .
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2394,6 +2584,14 @@ def trace(
     >>> print(y)
     ivy.array([3., 4.])
 
+    >>> x = ivy.array([[1., 2., 3.],
+    ...                [4., 5., 6.],
+    ...                [7., 8., 9.]])
+    >>> y = ivy.zeros(1)
+    >>> ivy.trace(x, offset=1,out=y)
+    >>> print(y)
+    ivy.array(8.)
+
     With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[2., 0., 3.],[3., 5., 6.]])
@@ -2404,9 +2602,9 @@ def trace(
     >>> x = ivy.native_array([[0, 1, 2],
     ...                       [3, 4, 5],
     ...                       [6, 7, 8]])
-    >>> y = ivy.trace(x, offset=0)
+    >>> y = ivy.trace(x, offset=1)
     >>> print(y)
-    ivy.array(12)
+    ivy.array(6)
 
     With :class:`ivy.Container` inputs:
 
@@ -2439,6 +2637,49 @@ def trace(
         a: ivy.array(6),
         b: ivy.array(8)
     }
+
+    With multiple ivy.Container inputs:
+
+    >>> x = ivy.Container(
+    ...        a = ivy.array([[7, 1, 3],
+    ...                       [8, 6, 5],
+    ...                       [9, 7, 2]]),
+    ...        b = ivy.array([[4, 3, 2],
+    ...                       [1, 9, 5],
+    ...                       [7, 0, 6]])
+    ...    )
+    >>> offset = ivy.Container(a=1, b=0)
+    >>> y = ivy.trace(x, offset)
+    >>> print(y)
+    {
+        a: ivy.array(6),
+        b: ivy.array(19)
+    }
+
+    With Array instance method example:
+
+    >>> x = ivy.array([[2., 0., 11.],
+    ...                [3., 5., 12.],
+    ...                [1., 6., 13.],
+    ...                [8., 9., 14.]])
+    >>> y = x.trace(offset=1)
+    >>> print(y)
+    ivy.array(12.)
+
+    With Container instance method example:
+
+    >>> x = ivy.Container(
+    ...        a=ivy.array([[2., 0., 11.],
+    ...                     [3., 5., 12.]]),
+    ...        b=ivy.array([[1., 6., 13.],
+    ...                     [8., 9., 14.]])
+    ...    )
+    >>> y = x.trace(offset=0)
+    >>> print(y)
+    {
+        a: ivy.array(7.),
+        b: ivy.array(10.)
+    }
     """
     return current_backend(x).trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
@@ -2449,7 +2690,7 @@ def trace(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def vecdot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2508,6 +2749,33 @@ def vecdot(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1., 2., 3.])
+    >>> x2 = ivy.array([4., 5., 6.])
+    >>> dot_product = ivy.vecdot(x1, x2)
+    >>> print(dot_product)
+    ivy.array(32.)
+
+    >>> x1 = ivy.array([1., 2., 3.])
+    >>> x2 = ivy.array([1., .8, 4.])
+    >>> y = ivy.zeros(1)
+    >>> ivy.vecdot(x1, x2, out=y)
+    ivy.array(14.60000038)
+
+    With :class:`ivy.Container` input:
+
+    >>> x1 = ivy.array([1., 2., 3.])
+    >>> x2 = ivy.Container(a=ivy.array([7., 8., 9.]), b=ivy.array([10., 11., 12.]))
+    >>> dot_product = ivy.vecdot(x1, x2, axis=0)
+    >>> print(dot_product)
+    {
+        a: ivy.array(50.),
+        b: ivy.array(68.)
+    }
     """
     return current_backend(x1).vecdot(x1, x2, axis=axis, out=out)
 
@@ -2519,7 +2787,7 @@ def vecdot(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2668,7 +2936,7 @@ def vector_norm(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def diag(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2712,9 +2980,8 @@ def diag(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[0, 1, 2],
@@ -2753,7 +3020,7 @@ def diag(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def vander(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2827,7 +3094,7 @@ def vander(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -2862,7 +3129,7 @@ def vector_to_skew_symmetric_matrix(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def lu_factor(
     A: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2897,7 +3164,7 @@ def lu_factor(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def tensorsolve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2915,7 +3182,7 @@ def tensorsolve(
             allaxes.remove(k)
             allaxes.insert(ndim1, k)
 
-        x1 = ivy.matrix_transpose(x1, allaxes)
+        x1 = ivy.matrix_transpose(x1)
 
     old_shape = x1.shape[-(ndim1 - ndim2) :]
 

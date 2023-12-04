@@ -1,7 +1,17 @@
 # global
 from collections import namedtuple
-from typing import Union, Optional, Sequence, Tuple, NamedTuple, List, Literal, \
-    Callable, Any
+from typing import (
+    Iterable,
+    Union,
+    Optional,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    List,
+    Literal,
+    Callable,
+    Any,
+)
 from numbers import Number
 import tensorflow as tf
 
@@ -9,6 +19,7 @@ import tensorflow as tf
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
+from ivy.functional.ivy.experimental.manipulation import _to_tf_padding
 
 
 def moveaxis(
@@ -23,7 +34,7 @@ def moveaxis(
     return tf.experimental.numpy.moveaxis(a, source, destination)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def heaviside(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -74,7 +85,7 @@ def rot90(
     return tf.experimental.numpy.rot90(m, k, axes)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("unsigned", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("unsigned", "complex")}, backend_version)
 def top_k(
     x: tf.Tensor,
     k: int,
@@ -116,7 +127,7 @@ def fliplr(
     return tf.experimental.numpy.fliplr(m)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def i0(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -256,60 +267,75 @@ def broadcast_shapes(
 
 def pad(
     input: Union[tf.Tensor, tf.Variable],
-    pad_width: Union[Sequence[Sequence[int]], Union[tf.Tensor, tf.Variable], int],
+    pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
     mode: Union[
         Literal[
             "constant",
+            "dilated",
             "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
             "reflect",
+            "symmetric",
             "wrap",
+            "empty",
         ],
         Callable,
     ] = "constant",
-    stat_length: Union[Sequence[Union[tf.Tensor, tf.Variable]], int] = 1,
-    constant_values: Number = 0,
-    end_values: Number = 0,
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> Union[tf.Tensor, tf.Variable]:
     pad_width = _to_tf_padding(pad_width, len(input.shape))
-    if not isinstance(pad_width, (tf.Variable, tf.Tensor)):
-        pad_width = tf.constant(pad_width)
+    if isinstance(constant_values, (tf.Variable, tf.Tensor)):
+        if constant_values.dtype != input.dtype:
+            constant_values = tf.cast(constant_values, input.dtype)
     return tf.pad(
         input,
         pad_width,
         mode=mode,
         constant_values=constant_values,
-     )
+    )
 
 
-pad.partial_mixed_handler = lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: \
-    _check_tf_pad(args[0].shape, args[1], mode, constant_values, reflect_type)
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_tf_pad(args[0].shape, args[1], mode, constant_values, reflect_type)
+    )
+)
 
 
 def _check_tf_pad(input_shape, pad_width, mode, constant_values, reflect_type):
     pad_width = _to_tf_padding(pad_width, len(input_shape))
-    return isinstance(constant_values, Number) and \
-        (
-            mode == 'constant' or
-            (
-                reflect_type == "even" and
+    return isinstance(constant_values, Number) and (
+        mode == "constant"
+        or (
+            reflect_type == "even"
+            and (
                 (
-                    (mode == 'reflect' and all(pad_width[i][0] < s and pad_width[i][1] < s for i, s in enumerate(input_shape))) or
-                    (mode == 'symmetric' and all(pad_width[i][0] <= s and pad_width[i][1] <= s for i, s in enumerate(input_shape)))
+                    mode == "reflect"
+                    and all(
+                        pad_width[i][0] < s and pad_width[i][1] < s
+                        for i, s in enumerate(input_shape)
+                    )
+                )
+                or (
+                    mode == "symmetric"
+                    and all(
+                        pad_width[i][0] <= s and pad_width[i][1] <= s
+                        for i, s in enumerate(input_shape)
+                    )
                 )
             )
         )
-
-
-def _to_tf_padding(pad_width, ndim):
-    if isinstance(pad_width, Number):
-        pad_width = [[pad_width]*2]*ndim
-    elif len(pad_width) == 2 and isinstance(pad_width[0], Number):
-        pad_width = pad_width*ndim
-    return pad_width
+    )
 
 
 def expand(
@@ -323,9 +349,7 @@ def expand(
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
-            shape[i] = x.shape.num_elements() / tf.reduce_prod(
-                [s for s in shape if s > 0]
-            )
+            shape[i] = x.shape[i]
     return tf.broadcast_to(x, shape)
 
 
@@ -405,26 +429,135 @@ def unique_consecutive(
     )
 
 
-def fill_diagonal(
-    a: tf.Tensor,
-    v: Union[int, float],
+def take(
+    x: Union[int, List, tf.Tensor, tf.Variable],
+    indices: Union[int, List, tf.Tensor, tf.Variable],
     /,
     *,
-    wrap: bool = False,
-):
-    shape = tf.shape(a)
-    max_end = tf.math.reduce_prod(shape)
-    end = max_end
-    if len(shape) == 2:
-        step = shape[1] + 1
-        if not wrap:
-            end = shape[1] * shape[1]
+    axis: Optional[int] = None,
+    mode: str = "clip",
+    fill_value: Optional[Number] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if mode not in ["raise", "wrap", "clip", "fill"]:
+        raise ValueError("mode must be one of 'clip', 'raise', 'wrap', or 'fill'")
+    if not isinstance(x, (tf.Tensor, tf.Variable)):
+        x = tf.constant(x)
+    if len(x.shape) == 0:
+        x = tf.constant([x])
+    if not isinstance(indices, (tf.Tensor, tf.Variable)):
+        indices = tf.constant(indices)
+    if indices.dtype.is_floating:
+        indices = tf.cast(indices, tf.int64)
+
+    # raise
+    if mode == "raise":
+        mode = "clip"
+        if ivy.exists(axis):
+            if axis >= len(x.shape):
+                raise tf.errors.InvalidArgumentError(
+                    None,
+                    None,
+                    f"Shape must be at least rank {axis+1} but is rank {len(x.shape)}",
+                )
+            x_shape = x.shape[axis]
+        else:
+            x_shape = tf.reduce_prod(x.shape)
+
+        bound_check = (indices < -x_shape) | (indices >= x_shape)
+        if tf.reduce_any(bound_check):
+            if len(indices.shape) == 0:
+                raise tf.errors.InvalidArgumentError(
+                    None, None, f"index {indices} is not in [-{x_shape}, {x_shape})"
+                )
+            else:
+                first_non_zero = tuple(
+                    map(
+                        lambda n: n[0].numpy(),
+                        tf.experimental.numpy.nonzero(bound_check),
+                    )
+                )
+                raise tf.errors.InvalidArgumentError(
+                    None,
+                    None,
+                    f"indices{list(first_non_zero)} = {indices[first_non_zero]} "
+                    f"is not in [-{x_shape}, {x_shape})",
+                )
+
+    # clip, wrap
+    if mode != "fill":
+        ret = tf.experimental.numpy.take(x, indices, axis=axis, mode=mode)
+        if ivy.exists(out):
+            ivy.inplace_update(out, ret)
+        return ret
+
+    # fill
+    x_dtype = x.dtype
+    if fill_value is None:
+        # set according to jax behaviour
+        # https://tinyurl.com/66jn68uj
+        if x_dtype.is_floating or x_dtype.is_complex:
+            # NaN for inexact types
+            fill_value = float("NaN")
+        else:
+            if x_dtype == tf.bool:
+                # True for booleans
+                fill_value = True
+            elif x_dtype.is_unsigned:
+                # the largest positive value for unsigned types
+                fill_value = x_dtype.max
+            else:
+                # the largest negative value for signed types
+                fill_value = x_dtype.min
+
+    fill_value = tf.constant(fill_value, dtype=x_dtype)
+    x_shape = x.shape
+    ret = tf.experimental.numpy.take(x, indices, axis=axis, mode="wrap")
+
+    if len(ret.shape) == 0:
+        # if scalar, scalar fill (replace)
+        if tf.reduce_any(indices != 0):
+            ret = fill_value
     else:
-        step = 1 + tf.reduce_sum(tf.math.cumprod(shape[:-1]))
-    a = tf.reshape(a, (-1,))
-    end = min(end, max_end)
-    indices = [[i] for i in range(0, end, step)]
-    ups = tf.convert_to_tensor([v] * len(indices), dtype=a.dtype)
-    a = tf.tensor_scatter_nd_update(a, indices, ups)
-    a = tf.reshape(a, shape)
-    return a
+        rank = len(x.shape)
+        if ivy.exists(axis):
+            axis = ((axis % rank) + rank) % rank
+            x_shape = x_shape[axis]
+        else:
+            axis = 0
+            x_shape = tf.reduce_prod(x_shape)
+
+        bound_check = tf.constant((indices < -x_shape) | (indices >= x_shape))
+
+        if tf.reduce_any(bound_check):
+            if axis > 0:
+                bound_check = tf.broadcast_to(
+                    bound_check, (*x.shape[:axis], *bound_check.shape)
+                )
+                end_dim = x.shape[-((rank - axis) - 1) :]
+            else:
+                end_dim = x.shape[-(rank - 1) :]
+
+            if bound_check.shape != ret.shape:
+                slicer = list([Ellipsis] + ([None] * len(end_dim)))
+                bound_check = tf.broadcast_to(bound_check[slicer], ret.shape)
+
+            ret = tf.where(bound_check, fill_value[None], ret)
+
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+    return ret
+
+
+def trim_zeros(a: tf.Tensor, /, *, trim: Optional[str] = "bf") -> tf.Tensor:
+    nonzero_indices = tf.where(a != 0)
+    first = tf.reduce_min(nonzero_indices)
+    last = tf.reduce_max(nonzero_indices) + 1
+
+    trim = trim.upper()
+    if "F" in trim:
+        first = tf.maximum(first, 0)
+    if "B" in trim:
+        last = tf.minimum(last, tf.cast(tf.shape(a)[0], tf.int64))
+
+    return a[first:last]

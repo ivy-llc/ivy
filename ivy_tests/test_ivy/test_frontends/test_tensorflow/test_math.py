@@ -8,6 +8,12 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
+# fmt: off
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_sorting \
+    import (
+        _invert_permutation_helper,
+    )
+# fmt: on
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
@@ -761,6 +767,36 @@ def test_tensorflow_cumsum(  # NOQA
     )
 
 
+# digamma
+@handle_frontend_test(
+    fn_tree="tensorflow.math.digamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_digamma(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # divide
 @handle_frontend_test(
     fn_tree="tensorflow.math.divide",
@@ -1171,6 +1207,33 @@ def test_tensorflow_in_top_k(
     )
 
 
+# invert_permutation
+@handle_frontend_test(
+    fn_tree="tensorflow.math.invert_permutation",
+    dtype_and_perm=_invert_permutation_helper(for_frontend_test=True),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_invert_permutation(
+    *,
+    dtype_and_perm,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    input_dtype, perm = dtype_and_perm
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=perm,
+    )
+
+
 # is_finite
 
 
@@ -1412,6 +1475,37 @@ def test_tensorflow_less_equal(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# lgamma
+@handle_frontend_test(
+    fn_tree="tensorflow.math.lgamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_lgamma(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-04,
+        x=xs[0],
     )
 
 
@@ -1721,6 +1815,40 @@ def test_tensorflow_minimum(
         backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# mod
+@handle_frontend_test(
+    fn_tree="tensorflow.math.mod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_mod(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -2953,6 +3081,38 @@ def test_tensorflow_truediv(
     test_with_out=st.just(False),
 )
 def test_tensorflow_unsorted_segment_mean(
+    *,
+    data,
+    segment_ids,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int32", "int64"],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=np.max(segment_ids) + 1,
+    )
+
+
+# unsorted_segment_min
+@handle_frontend_test(
+    fn_tree="tensorflow.math.unsorted_segment_min",
+    data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
+    segment_ids=helpers.array_values(
+        dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_unsorted_segment_min(
     *,
     data,
     segment_ids,

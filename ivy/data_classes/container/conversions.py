@@ -18,7 +18,7 @@ class _ContainerWithConversions(ContainerBase):
     def _static_to_native(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         nested: Union[bool, ivy.Container] = False,
-        include_derived: Optional[Union[Dict[type, bool], ivy.Container]] = None,
+        include_derived: Optional[Union[Dict[str, bool], ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -78,7 +78,7 @@ class _ContainerWithConversions(ContainerBase):
     def to_native(
         self: ivy.Container,
         nested: Union[bool, ivy.Container] = False,
-        include_derived: Optional[Union[Dict[type, bool], ivy.Container]] = None,
+        include_derived: Optional[Union[Dict[str, bool], ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -138,7 +138,7 @@ class _ContainerWithConversions(ContainerBase):
     def _static_to_ivy(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         nested: Union[bool, ivy.Container] = False,
-        include_derived: Optional[Union[Dict[type, bool], ivy.Container]] = None,
+        include_derived: Optional[Union[Dict[str, bool], ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -199,7 +199,7 @@ class _ContainerWithConversions(ContainerBase):
     def to_ivy(
         self: ivy.Container,
         nested: Union[bool, ivy.Container] = False,
-        include_derived: Optional[Union[Dict[type, bool], ivy.Container]] = None,
+        include_derived: Optional[Union[Dict[str, bool], ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,

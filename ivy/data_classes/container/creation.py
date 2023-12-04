@@ -1303,7 +1303,7 @@ class _ContainerWithCreation(ContainerBase):
         ret
             container with tensors of zeros with the same shape and type as the inputs,
             unless dtype provided which overrides.
-        
+
         Examples
         --------
         With :class:`ivy.Container` inputs:
@@ -1314,11 +1314,11 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = ivy.Container.static_one_hot(x, y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
-            b: ivy.array([[0., 0., 0., 1., 0.], 
+            b: ivy.array([[0., 0., 0., 1., 0.],
                         [0., 1., 0., 0., 0.]]),
-            c: ivy.array([[0., 0., 1., 0., 0.], 
+            c: ivy.array([[0., 0., 1., 0., 0.],
                         [0., 0., 0., 1., 0.]])
         }
 
@@ -1328,7 +1328,7 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = ivy.Container.static_one_hot(x, y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
             b: ivy.array([], shape=(0, 5)),
             c: ivy.array([[0., 0., 0., 0., 1.]])
@@ -1417,11 +1417,11 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = x.one_hot(y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
-            b: ivy.array([[0., 0., 0., 1., 0.], 
+            b: ivy.array([[0., 0., 0., 1., 0.],
                         [0., 1., 0., 0., 0.]]),
-            c: ivy.array([[0., 0., 1., 0., 0.], 
+            c: ivy.array([[0., 0., 1., 0., 0.],
                         [0., 0., 0., 1., 0.]])
         }
 
@@ -1431,7 +1431,7 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = x.one_hot(y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
             b: ivy.array([], shape=(0, 5)),
             c: ivy.array([[0., 0., 0., 0., 1.]])
@@ -1654,7 +1654,6 @@ class _ContainerWithCreation(ContainerBase):
         out: Optional[Union[Tuple[ivy.Array], ivy.Container]] = None,
     ) -> ivy.Container:
         return self.static_triu_indices(
-            self,
             n_rows,
             n_cols,
             k,
