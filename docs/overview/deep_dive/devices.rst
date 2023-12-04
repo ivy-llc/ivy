@@ -33,7 +33,7 @@ The devices currently supported by Ivy are as follows:
 * gpu:idx
 * tpu:idx
 
-In a similar manner to the :class:`ivy.Dtype` and :class:`ivy.NativeDtype` classes (see :ref:`Data Types`), there is both an `ivy.Device`_ class and an :class:`ivy.NativeDevice` class, with :class:`ivy.NativeDevice` initially set as an `empty class`_.
+In a similar manner to the :class:`ivy.Dtype` and :class:`ivy.NativeDtype` classes (see `Data Types <data_types.rst>`_), there is both an `ivy.Device`_ class and an :class:`ivy.NativeDevice` class, with :class:`ivy.NativeDevice` initially set as an `empty class`_.
 The :class:`ivy.Device` class derives from :code:`str`, and has simple logic in the constructor to verify that the string formatting is correct.
 When a backend is set, the :class:`ivy.NativeDevice` is replaced with the backend-specific `device class`_.
 
@@ -43,7 +43,7 @@ Device Module
 The `device.py`_ module provides a variety of functions for working with devices.
 A few examples include :func:`ivy.get_all_ivy_arrays_on_dev` which gets all arrays which are currently alive on the specified device, :func:`ivy.dev` which gets the device for input array, and :func:`ivy.num_gpus` which determines the number of available GPUs for use with the backend framework.
 
-Many functions in the :mod:`device.py` module are *convenience* functions, which means that they do not directly modify arrays, as explained in the :ref:`Function Types` section.
+Many functions in the :mod:`device.py` module are *convenience* functions, which means that they do not directly modify arrays, as explained in the `Function Types <function_types.rst>`_ section.
 
 For example, the following are all convenience functions: `ivy.total_mem_on_dev`_, which gets the total amount of memory for a given device, `ivy.dev_util`_, which gets the current utilization (%) for a given device, `ivy.num_cpu_cores`_, which determines the number of cores available in the CPU, and `ivy.default_device`_, which returns the correct device to use.
 
@@ -64,7 +64,7 @@ In cases where the input arrays are located on different devices, an error will 
 
 The :code:`device` argument is handled in `infer_device`_ for all functions which have the :code:`@infer_device` decorator, similar to how :code:`dtype` is handled.
 This function calls `ivy.default_device`_ in order to determine the correct device.
-As discussed in the :ref:`Function Wrapping` section, this is applied to all applicable functions dynamically during `backend setting`_.
+As discussed in the `Function Wrapping <function_wrapping.rst>`_ section, this is applied to all applicable functions dynamically during `backend setting`_.
 
 Overall, `ivy.default_device`_ infers the device as follows:
 
@@ -77,7 +77,7 @@ Overall, `ivy.default_device`_ infers the device as follows:
 For the majority of functions which defer to `infer_device`_ for handling the device, these steps will have been followed and the :code:`device` argument will be populated with the correct value before the backend-specific implementation is even entered into.
 Therefore, whereas the :code:`device` argument is listed as optional in the ivy API at :mod:`ivy/functional/ivy/category_name.py`, the argument is listed as required in the backend-specific implementations at :mod:`ivy/functional/backends/backend_name/category_name.py`.
 
-This is exactly the same as with the :code:`dtype` argument, as explained in the :ref:`Data Types` section.
+This is exactly the same as with the :code:`dtype` argument, as explained in the `Data Types <data_types.rst>`_ section.
 
 Let's take a look at the function :func:`ivy.zeros` as an example.
 
@@ -155,7 +155,7 @@ doesn't care about this, it moves all the tensors to the same device before perf
 
 **Controlling Device Handling Behaviour**
 
-In Ivy, users can control the device on which the operation is to be executed using `ivy.set_soft_device_mode`_ flag. There are two cases for this, 
+In Ivy, users can control the device on which the operation is to be executed using `ivy.set_soft_device_mode`_ flag. There are two cases for this,
 either the soft device mode is set to :code:`True` or :code:`False`.
 
 **When ivy.set_soft_device_mode(True)**:
@@ -167,7 +167,7 @@ In the example below, even though the input arrays :code:`x` and :code:`y` are c
 are moved to :code:`ivy.default_device()` while performing :code:`ivy.add` operation, and the output array will be on this device.
 
 .. code-block:: python
-    
+
     ivy.set_backend("torch")
     ivy.set_soft_device_mode(True)
     x = ivy.array([1], device="cpu")
@@ -214,7 +214,7 @@ This is the exception you will get while running the code above:
     File "/content/ivy/ivy/func_wrapper.py", line 863, in _handle_device_shifting
         raise ivy.utils.exceptions.IvyException(
     During the handling of the above exception, another exception occurred:
-    Expected all input arrays to be on the same device, but found atleast two devices - ('cpu', 'gpu:0'), 
+    Expected all input arrays to be on the same device, but found at least two devices - ('cpu', 'gpu:0'),
     set `ivy.set_soft_device_mode(True)` to handle this problem.
 
 b. If all the input arrays are on the same device, the operation is executed without raising any device exceptions.
@@ -278,5 +278,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `d
 .. raw:: html
 
     <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/-Y1Ofk72TLY" class="video">
+    src="https://www.youtube.com/embed/RZmTUwTYhKI" class="video">
     </iframe>

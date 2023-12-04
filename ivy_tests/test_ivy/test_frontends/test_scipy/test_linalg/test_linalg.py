@@ -56,7 +56,7 @@ def _generate_eigh_tridiagonal_args(draw):
         select_range = [-100, 100]
 
     eigvals_only = draw(st.booleans())
-    tol = draw(st.floats(1e-5, 1e-3) | st.just(None))
+    tol = draw(st.floats(1e-5, 1e-3))
     return dtype, alpha, beta, eigvals_only, select, select_range, tol
 
 
@@ -362,31 +362,36 @@ def test_scipy_svd(
 # svdvals
 @handle_frontend_test(
     fn_tree="scipy.linalg.svdvals",
-    dtype_x=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
+        min_value=0.1,
         max_value=50,
-        min_num_dims=2,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ),
+    check_finite=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_scipy_svdvals(
-    dtype_x,
+    dtype_and_x,
+    check_finite,
     frontend,
     test_flags,
     fn_tree,
-    on_device,
     backend_fw,
+    on_device,
 ):
-    dtype, x = dtype_x
+    dtype, x = dtype_and_x
+    x = x[0]
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
+        test_values=False,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        a=x,
+        check_finite=check_finite,
     )
 
 

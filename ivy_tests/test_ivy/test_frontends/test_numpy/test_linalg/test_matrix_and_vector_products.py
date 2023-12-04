@@ -84,7 +84,8 @@ def dtype_value1_value2_axis(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.cross",
+    fn_tree="numpy.linalg.cross",
+    gt_fn_tree="numpy.cross",
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -104,6 +105,7 @@ def test_numpy_cross(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -114,6 +116,7 @@ def test_numpy_cross(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         rtol=1e-3,
         atol=1e-3,
@@ -125,7 +128,8 @@ def test_numpy_cross(
 
 # dot
 @handle_frontend_test(
-    fn_tree="numpy.dot",
+    fn_tree="numpy.linalg.matrix_and_vector_products.dot",
+    gt_fn_tree="numpy.dot",
     dtype_a_b=np_frontend_helpers._get_dtype_input_and_vectors(),
 )
 def test_numpy_dot(
@@ -134,6 +138,7 @@ def test_numpy_dot(
     backend_fw,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     on_device,
 ):
     dtype, a, b = dtype_a_b
@@ -142,6 +147,7 @@ def test_numpy_dot(
         frontend=frontend,
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         test_flags=test_flags,
         rtol=1e-01,
@@ -153,20 +159,19 @@ def test_numpy_dot(
 
 # einsum
 @handle_frontend_test(
-    fn_tree="numpy.einsum",
-    args=st.sampled_from(
-        [
-            (
-                "ii",
-                np.arange(25).reshape(5, 5),
-            ),
-            (
-                "ii->i",
-                np.arange(25).reshape(5, 5),
-            ),
-            ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
-        ]
-    ),
+    fn_tree="numpy.linalg.matrix_and_vector_products.einsum",
+    gt_fn_tree="numpy.einsum",
+    args=st.sampled_from([
+        (
+            "ii",
+            np.arange(25).reshape(5, 5),
+        ),
+        (
+            "ii->i",
+            np.arange(25).reshape(5, 5),
+        ),
+        ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
+    ]),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_numpy_einsum(
@@ -176,6 +181,7 @@ def test_numpy_einsum(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -190,6 +196,7 @@ def test_numpy_einsum(
         backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         test_flags=test_flags,
         **kw,
@@ -201,7 +208,8 @@ def test_numpy_einsum(
 
 # inner
 @handle_frontend_test(
-    fn_tree="numpy.inner",
+    fn_tree="numpy.linalg.matrix_and_vector_products.inner",
+    gt_fn_tree="numpy.inner",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_value=-10,
@@ -216,6 +224,7 @@ def test_numpy_inner(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -226,6 +235,7 @@ def test_numpy_inner(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         a=xs[0],
         b=xs[1],
@@ -234,7 +244,8 @@ def test_numpy_inner(
 
 # kron
 @handle_frontend_test(
-    fn_tree="numpy.kron",
+    fn_tree="numpy.linalg.matrix_and_vector_products.kron",
+    gt_fn_tree="numpy.kron",
     dtype_and_x=helpers.dtype_and_values(
         num_arrays=2,
         allow_inf=True,
@@ -247,6 +258,7 @@ def test_numpy_kron(
     dtype_and_x,
     frontend,
     fn_tree,
+    gt_fn_tree,
     on_device,
     test_flags,
     backend_fw,
@@ -257,6 +269,7 @@ def test_numpy_kron(
         backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         test_flags=test_flags,
         a=xs[0],
@@ -303,7 +316,8 @@ def test_numpy_matmul(
 
 # matrix_power
 @handle_frontend_test(
-    fn_tree="numpy.linalg.matrix_power",
+    fn_tree="numpy.linalg.matrix_and_vector_products.matrix_power",
+    gt_fn_tree="numpy.linalg.matrix_power",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -319,6 +333,7 @@ def test_numpy_matrix_power(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -329,6 +344,7 @@ def test_numpy_matrix_power(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         a=x[0],
         n=n,
@@ -364,7 +380,8 @@ def test_numpy_multi_dot(
 
 # outer
 @handle_frontend_test(
-    fn_tree="numpy.outer",
+    fn_tree="numpy.linalg.matrix_and_vector_products.outer",
+    gt_fn_tree="numpy.outer",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_value=-10,
@@ -380,6 +397,7 @@ def test_numpy_outer(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -390,6 +408,7 @@ def test_numpy_outer(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         a=xs[0],
         b=xs[1],
@@ -398,7 +417,8 @@ def test_numpy_outer(
 
 # tensordot
 @handle_frontend_test(
-    fn_tree="numpy.tensordot",
+    fn_tree="numpy.linalg.matrix_and_vector_products.tensordot",
+    gt_fn_tree="numpy.tensordot",
     dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
         helpers.get_dtypes(kind="numeric")
     ),
@@ -409,6 +429,7 @@ def test_numpy_tensordot(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
 ):
     dtype, a, b, axes = dtype_values_and_axes
@@ -418,6 +439,7 @@ def test_numpy_tensordot(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         a=a,
         b=b,
         axes=axes,

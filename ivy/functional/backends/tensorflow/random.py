@@ -13,7 +13,7 @@ from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
@@ -26,13 +26,16 @@ from . import backend_version
 # ------#
 
 
+@with_supported_dtypes(
+    {"2.15.0 and below": ("float", "int32", "int64")}, backend_version
+)
 def random_uniform(
     *,
     low: Union[float, tf.Tensor, tf.Variable] = 0.0,
     high: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int], tf.Tensor]] = None,
     dtype: DType,
-    device: str,
+    device: Optional[str] = None,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -51,7 +54,7 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: DType,
     seed: Optional[int] = None,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     _check_valid_scale(std)
@@ -63,7 +66,7 @@ def random_normal(
     return tf.random.normal(shape, mean, std, dtype=dtype, seed=seed)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -72,7 +75,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[Union[tf.Tensor, tf.Variable]] = None,
     replace: bool = True,
-    device: str,
+    device: Optional[str] = None,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -125,7 +128,7 @@ def randint(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str,
+    device: Optional[str] = None,
     dtype: Optional[Union[DType, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,

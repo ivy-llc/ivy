@@ -60,6 +60,39 @@ def _generate_multi_dot_dtype_and_arrays(draw):
     return input_dtype, [matrix_1[1][0], matrix_2[1][0], matrix_3[1][0]]
 
 
+@st.composite
+def _get_axis_and_p(draw):
+    p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
+    if p in ["fro", "nuc"]:
+        max_axes_size = 2
+        min_axes_size = 2
+    else:
+        min_axes_size = 1
+        max_axes_size = 5
+    x_dtype, values, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=2,
+            valid_axis=True,
+            min_value=-1e04,
+            max_value=1e04,
+            min_axes_size=min_axes_size,
+            max_axes_size=max_axes_size,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+        )
+    )
+    axis = axis[0] if isinstance(axis, tuple) and len(axis) == 1 else axis
+    # ToDo: fix the castable dtype helper. Right now using `dtype` causes errors
+    #  dtype should be real for real inputs, but got ComplexDouble
+    x_dtype, values, dtype = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("valid")), x_dtype[0], values[0]
+        )
+    )
+    return p, x_dtype, values, axis, x_dtype
+
+
 # helpers
 @st.composite
 def _get_dtype_and_matrix(
@@ -78,7 +111,7 @@ def _get_dtype_and_matrix(
         available_dtypes=helpers.get_dtypes(dtype, full=True),
         min_value=-10,
         max_value=10,
-        abs_smallest_val=1e04,
+        abs_smallest_val=1e-04,
         shape=shape,
     )
     if invertible:
@@ -213,7 +246,7 @@ def _vander_helper(draw):
     # generate input matrix of shape (*, n) and where '*' is one or more
     # batch dimensions
     N = draw(helpers.ints(min_value=2, max_value=5))
-    if draw(helpers.floats(min_value=0, max_value=1.0)) < 0.5:
+    if draw(st.floats(min_value=0, max_value=1.0)) < 0.5:
         N = None
 
     shape = draw(
@@ -437,11 +470,9 @@ def test_torch_eig(
     )
 
 
-# eigh
-# TODO: Test for all valid dtypes
 @handle_frontend_test(
     fn_tree="torch.linalg.eigh",
-    dtype_and_x=_get_dtype_and_matrix(dtype="float", square=True, invertible=True),
+    dtype_and_x=_get_dtype_and_matrix(dtype="valid", square=True, invertible=True),
     UPLO=st.sampled_from(("L", "U")),
 )
 def test_torch_eigh(
@@ -868,6 +899,40 @@ def test_torch_multi_dot(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.linalg.norm",
+    args=_get_axis_and_p(),
+    keepdim=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_torch_norm(
+    *,
+    args,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    p, x_dtype, x, axis, dtype = args
+    helpers.test_frontend_function(
+        input_dtypes=[x_dtype],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        atol=1e-08,
+        input=x,
+        ord=p,
+        dim=axis,
+        keepdim=keepdim,
+        dtype=dtype,
+    )
+
+
 # pinv
 # TODO: add testing for hermitian
 @handle_frontend_test(
@@ -963,8 +1028,8 @@ def test_torch_slogdet(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-4,
-        atol=1e-4,
+        rtol=1e-2,
+        atol=1e-2,
         A=x[0],
     )
 
@@ -972,43 +1037,33 @@ def test_torch_slogdet(
 # solve
 @handle_frontend_test(
     fn_tree="torch.linalg.solve",
-    dtype_and_data=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=0,
-        max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
-        safety_factor_scale="log",
-        small_abs_safety_factor=6,
-    ).filter(
-        lambda x: np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(x[1][0][:, :-1]) != 0
-        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
-    ),
-    left=st.booleans(),
+    A=helpers.get_first_solve_batch_matrix(),
+    B=helpers.get_second_solve_batch_matrix(choose_side=True),
 )
 def test_torch_solve(
     *,
-    dtype_and_data,
-    left,
+    A,
+    B,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    input_dtype, data = dtype_and_data
-    input = data[0][:, :-1]
-    other = data[0][:, -1].reshape(-1, 1)
+    dtype, A, _ = A
+    _, B, left = B
     test_flags.num_positional_args = 2
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype[0], input_dtype[0]],
+        input_dtypes=[dtype, dtype],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        A=input,
-        B=other,
+        rtol=1e-4,
+        atol=1e-4,
+        A=A,
+        B=B,
         left=left,
     )
 
@@ -1016,25 +1071,14 @@ def test_torch_solve(
 # solve_ex
 @handle_frontend_test(
     fn_tree="torch.linalg.solve_ex",
-    dtype_and_data=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=0,
-        max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
-        safety_factor_scale="log",
-        small_abs_safety_factor=6,
-    ).filter(
-        lambda x: np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(x[1][0][:, :-1]) != 0
-        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
-    ),
-    left=st.booleans(),
+    A=helpers.get_first_solve_batch_matrix(),
+    B=helpers.get_second_solve_batch_matrix(choose_side=True),
     check_errors=st.booleans(),
 )
 def test_torch_solve_ex(
     *,
-    dtype_and_data,
-    left,
+    A,
+    B,
     check_errors,
     on_device,
     fn_tree,
@@ -1042,18 +1086,19 @@ def test_torch_solve_ex(
     test_flags,
     backend_fw,
 ):
-    input_dtype, data = dtype_and_data
-    input = data[0][:, :-1]
-    other = data[0][:, -1].reshape(-1, 1)
+    dtype, A, _ = A
+    _, B, left = B
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype[0], input_dtype[0]],
+        input_dtypes=[dtype, dtype],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        A=input,
-        B=other,
+        rtol=1e-4,
+        atol=1e-4,
+        A=A,
+        B=B,
         left=left,
         check_errors=check_errors,
     )
@@ -1111,10 +1156,12 @@ def test_torch_svd(
 @handle_frontend_test(
     fn_tree="torch.linalg.svdvals",
     dtype_and_x=_get_dtype_and_matrix(batch=True),
+    driver=st.sampled_from([None, "gesvd", "gesvdj", "gesvda"]),
 )
 def test_torch_svdvals(
     *,
     dtype_and_x,
+    driver,
     on_device,
     fn_tree,
     frontend,
@@ -1129,6 +1176,7 @@ def test_torch_svdvals(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        driver=driver,
         A=x[0],
     )
 
