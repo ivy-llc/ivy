@@ -276,7 +276,15 @@ class BestSplitter(Splitter):
 
 
 def _init_split(split_record, start_pos):
-    return
+    split_record.impurity_left = INFINITY
+    split_record.impurity_right = INFINITY
+    split_record.pos = start_pos
+    split_record.feature = 0
+    split_record.threshold = 0.0
+    split_record.improvement = -INFINITY
+    split_record.missing_go_to_left = False
+    split_record.n_missing = 0
+    return split_record
 
 
 # --- Main --- #
