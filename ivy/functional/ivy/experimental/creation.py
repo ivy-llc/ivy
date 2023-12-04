@@ -1197,7 +1197,7 @@ def polyval(
     Returns
     -------
     ret
-       Simplified result of substituing x in the coefficients - final value
+       Simplified result of substituting x in the coefficients - final value
        of polynomial.
 
     Examples
