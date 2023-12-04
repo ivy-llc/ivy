@@ -691,6 +691,36 @@ def test_tensorflow_constant(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.control_dependencies",
+    dtype_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    dtypes=helpers.get_dtypes("numeric", full=False),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_control_dependencies(
+    dtype_and_xs,
+    dtypes,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        inputs=xs,
+        dtypes=dtypes,
+    )
+
+
 # convert_to_tensor
 @handle_frontend_test(
     fn_tree="tensorflow.convert_to_tensor",
@@ -2589,67 +2619,3 @@ def test_tensorflow_zeros_like(
         input=x[0],
         dtype=dtype[0],
     )
-
-
-
-@handle_frontend_test(
-    fn_tree="tensorflow.control_dependencies",
-    dtype_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-    dtypes=helpers.get_dtypes("numeric", full=False),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_control_dependencies(
-    dtype_and_xs,
-    dtypes,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtypes, xs = dtype_and_xs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        inputs=xs,
-        dtypes=dtypes,
-    )
-
-
-# @handle_frontend_test(
-#     fn_tree="tensorflow.zeros_initializer",
-#     shape=helpers.get_shape(
-#         allow_none=False,
-#         min_num_dims=1,
-#         max_num_dims=5,
-#         min_dim_size=1,
-#         max_dim_size=10,
-#     ),
-#     dtype=helpers.get_dtypes("valid", full=False),
-#     test_with_out=st.just(False),
-# )
-# def test_tensorflow_zeros_initializer(
-#     shape,
-#     dtype,
-#     frontend,
-#     backend_fw,
-#     test_flags,
-#     fn_tree,
-#     on_device,
-# ):
-#     helpers.test_frontend_function(
-#         input_dtypes=dtype,
-#         frontend=frontend,
-#         backend_to_test=backend_fw,
-#         test_flags=test_flags,
-#         fn_tree=fn_tree,
-#         on_device=on_device,
-#         shape=shape,
-#         dtype=dtype[0],
-#     )
