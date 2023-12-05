@@ -147,7 +147,7 @@ class Module(ivy.Module):
             mod = getattr(mod, item)
 
             if not isinstance(mod, Module):
-                raise AttributeError("`" + item + "` is not an nn.Module")
+                raise TypeError("`" + item + "` is not an nn.Module")
 
         return mod
 

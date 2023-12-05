@@ -476,13 +476,19 @@ class ModuleConverters:
                     ),
                 )
                 self._ivy_module.v.cont_map(
-                    lambda x, kc: self.add_weight(
-                        name=kc, shape=x.shape, dtype=x.dtype, trainable=True
+                    lambda x, kc: (
+                        self.add_weight(
+                            name=kc, shape=x.shape, dtype=x.dtype, trainable=True
+                        )
+                        if x is not None
+                        else x
                     )
                 )
                 model_weights = []
                 self._ivy_module.v.cont_map(
-                    lambda x, kc: model_weights.append(ivy.to_numpy(x))
+                    lambda x, kc: (
+                        model_weights.append(ivy.to_numpy(x)) if x is not None else x
+                    )
                 )
                 self.set_weights(model_weights)
 

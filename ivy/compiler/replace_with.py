@@ -15,7 +15,7 @@ def replace_with(new_func):
 
     def decorator(original_func):
         if not callable(original_func) or not callable(new_func):
-            raise ValueError(
+            raise TypeError(
                 f"Both '{original_func.__name__}' and '{new_func.__name__}' should be"
                 " callable."
             )
