@@ -3,6 +3,7 @@ from ._splitter import SplitRecord
 
 EPSILON = ivy.finfo(ivy.double).eps
 INFINITY = ivy.inf
+INTPTR_MAX = ivy.iinfo(ivy.int32).max
 
 
 class Tree:
@@ -22,6 +23,15 @@ class Tree:
 
         for k in range(n_outputs):
             self.n_classes[k] = n_classes[k]
+
+    def _resize(self, capacity):
+        self._resize_c(capacity)
+
+    def _resize_c(self, capacity=INTPTR_MAX):
+        pass
+
+    def _add_node(self):
+        pass
 
     def predict(self, X):
         pass
