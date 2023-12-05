@@ -207,7 +207,7 @@ def gather(
             )
 
             result.append(r)
-        result = torch.cat(result, dim=0)
+        result = torch.stack(result)
         result = result.reshape((params.shape[:axis] + indices.shape[batch_dims:]
                                 + params.shape[axis + 1 :])
                                 )
