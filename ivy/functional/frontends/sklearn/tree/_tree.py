@@ -5,16 +5,41 @@ EPSILON = ivy.finfo(ivy.double).eps
 INFINITY = ivy.inf
 
 
+class Tree:
+    def __init__(self, n_features, n_classes, n_outputs):
+        self.max_depth = 0
+        self.node_count = 0
+        self.capacity = 0
+        self.nodes = []
+        self.value = None
+
+        self.n_features = n_features
+        self.n_outputs = n_outputs
+        self.n_classes = ivy.zeros(n_outputs, dtype=ivy.int32)
+
+        self.max_n_classes = ivy.max(n_classes)
+        self.value_stride = n_outputs * self.max_n_classes
+
+        for k in range(n_outputs):
+            self.n_classes[k] = n_classes[k]
+
+    def predict(self, X):
+        pass
+
+    def apply(self, X):
+        pass
+
+
 class StackRecord:
     def __init__(
         self,
-        start: int,
-        end: int,
-        depth: int,
-        parent: int,
-        is_left: int,
-        impurity: float,
-        n_constant_features: int,
+        start,
+        end,
+        depth,
+        parent,
+        is_left,
+        impurity,
+        n_constant_features,
     ):
         self.start = start
         self.end = end
