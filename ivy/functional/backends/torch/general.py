@@ -189,15 +189,17 @@ def gather(
     if batch_dims == 0:
         if params.dim() > indices.dim():
             params_slices = torch.unbind(params, axis=0)
+            indices_expanded = indices.expand(params_slices[0].shape)
             result = [torch.take(
-                p, indices.long(), out=None) for p in params_slices]
+                p, indices_expanded.long(), out=None) for p in params_slices]
             result = torch.stack(result)
+            result = result.reshape((params.shape[:axis] + indices.shape[batch_dims:]
+                                    + params.shape[axis + 1 :])
+                                    )
         else:
             result = torch.take(
                 params, indices.long(), out=None)
-        result = result.reshape((params.shape[:axis] + indices.shape[batch_dims:]
-                                + params.shape[axis + 1 :])
-                                )
+        
     else:
         params_slices = torch.unbind(params, axis=0)
         indices_slices = torch.unbind(indices, axis=0)
