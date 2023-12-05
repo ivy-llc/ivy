@@ -188,7 +188,10 @@ def gather(
     result = []
     if batch_dims == 0:
         result = torch.take(
-            params, indices.long(), out=out)
+            params, indices.long(), out=None)
+        result = result.reshape((params.shape[:axis] + indices.shape[batch_dims:]
+                                + params.shape[axis + 1 :])
+                                )
     else:
         params_slices = torch.unbind(params, axis=0)
         indices_slices = torch.unbind(indices, axis=0)
@@ -211,8 +214,8 @@ def gather(
         result = result.reshape((params.shape[:axis] + indices.shape[batch_dims:]
                                 + params.shape[axis + 1 :])
                                 )
-        if ivy.exists(out):
-            return ivy.inplace_update(out, result)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, result)
 
     return result
 
