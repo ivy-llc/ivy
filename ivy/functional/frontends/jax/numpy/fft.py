@@ -24,7 +24,7 @@ def fftfreq(n, d=1.0, *, dtype=None):
     if not isinstance(
         n, (int, type(ivy.int8), type(ivy.int16), type(ivy.int32), type(ivy.int64))
     ):
-        raise ValueError("n should be an integer")
+        raise TypeError("n should be an integer")
 
     dtype = ivy.float64 if dtype is None else ivy.as_ivy_dtype(dtype)
 
