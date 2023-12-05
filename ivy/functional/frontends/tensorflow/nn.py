@@ -1,364 +1,12 @@
 # global
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 
 
-def _reduce_strides_dilations(dim, stride, dilations):
-    if not isinstance(stride, int):
-        if len(stride) > dim:
-            stride = stride[1:-1]
-        if len(stride) == 1 and dim != 1:
-            stride = stride[0]
-    if not isinstance(dilations, int):
-        if len(dilations) > dim:
-            dilations = dilations[1:-1]
-        if len(dilations) == 1 and dim != 1:
-            dilations = dilations[0]
-    return stride, dilations
-
-
-@to_ivy_arrays_and_back
-def atrous_conv2d(value, filters, rate, padding):
-    return ivy.conv2d(value, filters, 1, padding, dilations=[rate] * 2)
-
-
-@to_ivy_arrays_and_back
-def atrous_conv2d_transpose(value, filters, output_shape, rate, padding):
-    filters = filters.swapaxes(-2, -1)
-    return ivy.conv2d_transpose(
-        value, filters, 1, padding, output_shape=output_shape, dilations=[rate] * 2
-    )
-
-
-@to_ivy_arrays_and_back
-def conv1d(
-    input, filters, stride, padding, data_format="NWC", dilations=None, name=None
-):
-    dilations = 1 if dilations is None else dilations
-    stride, dilations = _reduce_strides_dilations(1, stride, dilations)
-    return ivy.conv1d(
-        input, filters, stride, padding, data_format=data_format, dilations=dilations
-    )
-
-
-@to_ivy_arrays_and_back
-def conv1d_transpose(
-    input,
-    filters,
-    output_shape,
-    strides,
-    padding="SAME",
-    data_format="NWC",
-    dilations=None,
-    name=None,
-):
-    dilations = 1 if dilations is None else dilations
-    strides, dilations = _reduce_strides_dilations(1, strides, dilations)
-    filters = filters.swapaxes(-2, -1)
-    return ivy.conv1d_transpose(
-        input,
-        filters,
-        strides,
-        padding,
-        output_shape=output_shape,
-        data_format=data_format,
-        dilations=dilations,
-    )
-
-
-@to_ivy_arrays_and_back
-def gelu(features, approximate=False, name=None):
-    return ivy.gelu(features, approximate=approximate)
-
-
-@to_ivy_arrays_and_back
-def conv2d(
-    input, filters, strides, padding, data_format="NHWC", dilations=None, name=None
-):
-    dilations = 1 if dilations is None else dilations
-    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
-    return ivy.conv2d(
-        input, filters, strides, padding, data_format=data_format, dilations=dilations
-    )
-
-
-@to_ivy_arrays_and_back
-def conv2d_transpose(
-    input,
-    filters,
-    output_shape,
-    strides,
-    padding="SAME",
-    data_format="NHWC",
-    dilations=None,
-    name=None,
-):
-    dilations = 1 if dilations is None else dilations
-    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
-    filters = filters.swapaxes(-2, -1)
-    return ivy.conv2d_transpose(
-        input,
-        filters,
-        strides,
-        padding,
-        output_shape=output_shape,
-        data_format=data_format,
-        dilations=dilations,
-    )
-
-
-@to_ivy_arrays_and_back
-def conv3d(
-    input, filters, strides, padding, data_format="NDHWC", dilations=None, name=None
-):
-    dilations = 1 if dilations is None else dilations
-    strides, dilations = _reduce_strides_dilations(3, strides, dilations)
-    return ivy.conv3d(
-        input, filters, strides, padding, data_format=data_format, dilations=dilations
-    )
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
-@to_ivy_arrays_and_back
-def conv3d_transpose(
-    input,
-    filters,
-    output_shape,
-    strides,
-    padding="SAME",
-    data_format="NDHWC",
-    dilations=None,
-    name=None,
-):
-    dilations = 1 if dilations is None else dilations
-    strides, dilations = _reduce_strides_dilations(3, strides, dilations)
-    filters = filters.swapaxes(-2, -1)
-    return ivy.conv3d_transpose(
-        input,
-        filters,
-        strides,
-        padding,
-        output_shape=output_shape,
-        data_format=data_format,
-        dilations=dilations,
-    )
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
-@to_ivy_arrays_and_back
-def depthwise_conv2d(
-    input,
-    filter,
-    strides,
-    padding="SAME",
-    data_format="NHWC",
-    dilations=None,
-    name=None,
-):
-    dilations = 1 if dilations is None else dilations
-    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
-    fc = filter.shape[-2]
-    filter = filter.reshape(
-        [*filter.shape[0:2], 1, filter.shape[-2] * filter.shape[-1]]
-    )
-    return ivy.conv_general_dilated(
-        input,
-        filter,
-        strides,
-        padding,
-        data_format="channel_last" if data_format[-1] == "C" else "channel_first",
-        dilations=dilations,
-        feature_group_count=fc,
-    )
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
-@to_ivy_arrays_and_back
-def separable_conv2d(
-    input,
-    depthwise_filter,
-    pointwise_filter,
-    strides,
-    padding,
-    data_format=None,
-    dilations=None,
-    name=None,
-):
-    dilations = 1 if dilations is None else dilations
-    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
-    ret = depthwise_conv2d(
-        input,
-        depthwise_filter,
-        strides=strides,
-        padding=padding,
-        dilations=dilations,
-        data_format=data_format,
-    )
-    return conv2d(ret, pointwise_filter, 1, "SAME", data_format=data_format)
-
-
-@to_ivy_arrays_and_back
-def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
-    xnormalized, _, _ = ivy.batch_norm(
-        x,
-        mean,
-        variance,
-        offset=offset,
-        scale=scale,
-        eps=variance_epsilon,
-    )
-    return xnormalized
-
-
-@to_ivy_arrays_and_back
-def dropout(x, rate, noise_shape=None, seed=None, name=None):
-    return ivy.dropout(x, rate, noise_shape=noise_shape, seed=seed)
-
-
-@to_ivy_arrays_and_back
-def silu(features, beta: float = 1.0):
-    beta = ivy.astype(ivy.array(beta), ivy.dtype(features))
-    return ivy.multiply(features, ivy.sigmoid(ivy.multiply(beta, features)))
-
-
-@with_unsupported_dtypes(
-    {
-        "2.13.0 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
-        )
-    },
-    "tensorflow",
-)
-@to_ivy_arrays_and_back
-def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
-    ivy.utils.assertions.check_shape(labels, logits)
-    zeros = ivy.zeros_like(logits)
-    max_logits = ivy.where(logits >= zeros, logits, zeros)
-    neg_abs_logits = ivy.negative(ivy.abs(logits))
-    neg_multiple = ivy.negative(ivy.multiply(logits, labels))
-    ret_val = ivy.add(max_logits, neg_multiple)
-    return ivy.add(ret_val, ivy.log1p(ivy.exp(neg_abs_logits)))
-
-
-@with_unsupported_dtypes(
-    {
-        "2.13.0 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
-        )
-    },
-    "tensorflow",
-)
-@to_ivy_arrays_and_back
-def weighted_cross_entropy_with_logits(
-    labels=None, logits=None, pos_weight=1.0, name=None
-):
-    ivy.utils.assertions.check_shape(labels, logits)
-    ones = ivy.ones_like(labels)
-    zeros = ivy.zeros_like(logits)
-    log_weight = ivy.add(ones, ivy.multiply(pos_weight - 1, labels))
-    ones_minus_labels = ivy.subtract(ones, labels)
-    first_term = ivy.multiply(ones_minus_labels, logits)
-
-    max_neg_logits = ivy.where(
-        ivy.negative(logits) >= zeros, ivy.negative(logits), zeros
-    )
-    neg_abs_logits = ivy.negative(ivy.abs(logits))
-    log_neg_abs_logits = ivy.log1p(ivy.exp(neg_abs_logits))
-    second_term = ivy.multiply(log_weight, ivy.add(log_neg_abs_logits, max_neg_logits))
-    return ivy.add(first_term, second_term)
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
-@to_ivy_arrays_and_back
-def local_response_normalization(
-    input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
-):
-    input_shape = ivy.shape(input)
-    depth = input_shape[-1]
-    ivy.utils.assertions.check_equal(
-        ivy.get_num_dims(input),
-        4,
-        message="4D input, but got input with sizes " + str(input_shape),
-        as_array=False,
-    )
-    sqr_sum = ivy.empty(input_shape[:-1] + (0,), dtype=ivy.dtype(input))
-    for d in range(depth):
-        start = max(0, d - depth_radius)
-        end = min(d + depth_radius + 1, depth)
-        inter_channel_sum = ivy.sum(
-            input[:, :, :, start:end] ** 2, axis=3, keepdims=True
-        )
-        sqr_sum = ivy.concat([sqr_sum, inter_channel_sum], axis=-1)
-    return ivy.divide(input, ivy.pow(ivy.add(sqr_sum * alpha, bias), beta))
-
-
-@to_ivy_arrays_and_back
-def max_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
-    return ivy.max_pool1d(input, ksize, strides, padding, data_format=data_format)
-
-
-@to_ivy_arrays_and_back
-def max_pool2d(input, ksize, strides, padding, data_format="NHWC", name=None):
-    return ivy.max_pool2d(input, ksize, strides, padding, data_format=data_format)
-
-
-@to_ivy_arrays_and_back
-def moments(x, axes, shift=None, keepdims=False, name=None):
-    return ivy.mean(x, axis=ivy.to_list(axes), keepdims=keepdims), ivy.var(
-        x, axis=ivy.to_list(axes), keepdims=keepdims
-    )
-
-
-@with_unsupported_dtypes(
-    {
-        "2.13.0 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
-        )
-    },
-    "tensorflow",
-)
-@to_ivy_arrays_and_back
-def normalize_moments(counts, mean_ss, variance_ss, shift=None, name=None):
-    divisor = ivy.reciprocal(counts)
-    if shift is not None:
-        shifted_mean = ivy.multiply(mean_ss, divisor)
-        mean = ivy.add(shifted_mean, shift)
-    else:
-        shifted_mean = ivy.multiply(mean_ss, divisor)
-        mean = shifted_mean
-
-    variance = ivy.subtract(
-        ivy.multiply(variance_ss, divisor), ivy.square(shifted_mean)
-    )
-    return mean, variance
-
-
-@to_ivy_arrays_and_back
-def bias_add(value, bias, data_format=None, name=None):
-    if data_format is None:
-        data_format = "N...C"
-
-    chanel_index = data_format.find("C")
-    if chanel_index != 1:
-        return ivy.add(value, bias)
-    else:
-        value = ivy.swapaxes(value, 1, -1)
-        res = ivy.add(value, bias)
-        return ivy.swapaxes(res, 1, -1)
+# --- Helpers --- #
+# --------------- #
 
 
 def _convolution_broadcast_helper(
@@ -392,6 +40,208 @@ def _convolution_broadcast_helper(
         return [1, 1] + arg
     else:
         return [1] + arg + [1]
+
+
+def _reduce_padding(padding, data_format):
+    if not isinstance(padding, str):
+        if data_format[1] == "C":
+            padding = padding[2:]
+        else:
+            padding = padding[1:-1]
+    return padding
+
+
+def _reduce_strides_dilations(dim, stride, dilations):
+    if not isinstance(stride, int):
+        if len(stride) > dim:
+            stride = stride[1:-1]
+        if len(stride) == 1 and dim != 1:
+            stride = stride[0]
+    if not isinstance(dilations, int):
+        if len(dilations) > dim:
+            dilations = dilations[1:-1]
+        if len(dilations) == 1 and dim != 1:
+            dilations = dilations[0]
+    return stride, dilations
+
+
+# --- Main --- #
+# ------------ #
+
+
+@to_ivy_arrays_and_back
+def atrous_conv2d(value, filters, rate, padding):
+    return ivy.conv2d(value, filters, 1, padding, dilations=[rate] * 2)
+
+
+@to_ivy_arrays_and_back
+def atrous_conv2d_transpose(value, filters, output_shape, rate, padding):
+    filters = filters.swapaxes(-2, -1)
+    return ivy.conv2d_transpose(
+        value, filters, 1, padding, output_shape=output_shape, dilations=[rate] * 2
+    )
+
+
+@to_ivy_arrays_and_back
+def avg_pool(input, ksize, strides, padding, data_format="NWC", name=None):
+    if len(ivy.shape(input)) == 3:
+        return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+    elif len(ivy.shape(input)) == 4:
+        return ivy.avg_pool2d(input, ksize, strides, padding, data_format=data_format)
+    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+
+
+# avg_pool1d
+@to_ivy_arrays_and_back
+def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
+    return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+
+
+# avg_pool2d
+@to_ivy_arrays_and_back
+def avg_pool2d(input, ksize, strides, padding, data_format="NHWC", name=None):
+    return ivy.avg_pool2d(input, ksize, strides, padding, data_format=data_format)
+
+
+# avg_pool3d
+@to_ivy_arrays_and_back
+def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
+    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
+def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
+    xnormalized, _, _ = ivy.batch_norm(
+        x,
+        mean,
+        variance,
+        offset=offset,
+        scale=scale,
+        eps=variance_epsilon,
+    )
+    return xnormalized
+
+
+@to_ivy_arrays_and_back
+def bias_add(value, bias, data_format=None, name=None):
+    if data_format is None:
+        data_format = "N...C"
+
+    chanel_index = data_format.find("C")
+    if chanel_index != 1:
+        return ivy.add(value, bias)
+    else:
+        value = ivy.swapaxes(value, 1, -1)
+        res = ivy.add(value, bias)
+        return ivy.swapaxes(res, 1, -1)
+
+
+@to_ivy_arrays_and_back
+def conv1d(
+    input, filters, stride, padding, data_format="NWC", dilations=None, name=None
+):
+    dilations = 1 if dilations is None else dilations
+    stride, dilations = _reduce_strides_dilations(1, stride, dilations)
+    return ivy.conv1d(
+        input, filters, stride, padding, data_format=data_format, dilations=dilations
+    )
+
+
+@to_ivy_arrays_and_back
+def conv1d_transpose(
+    input,
+    filters,
+    output_shape,
+    strides,
+    padding="SAME",
+    data_format="NWC",
+    dilations=None,
+    name=None,
+):
+    dilations = 1 if dilations is None else dilations
+    strides, dilations = _reduce_strides_dilations(1, strides, dilations)
+    return ivy.conv1d_transpose(
+        input,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
+@to_ivy_arrays_and_back
+def conv2d(
+    input, filters, strides, padding, data_format="NHWC", dilations=None, name=None
+):
+    dilations = 1 if dilations is None else dilations
+    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    padding = _reduce_padding(padding, data_format)
+    return ivy.conv2d(
+        input, filters, strides, padding, data_format=data_format, dilations=dilations
+    )
+
+
+@to_ivy_arrays_and_back
+def conv2d_transpose(
+    input,
+    filters,
+    output_shape,
+    strides,
+    padding="SAME",
+    data_format="NHWC",
+    dilations=None,
+    name=None,
+):
+    dilations = 1 if dilations is None else dilations
+    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    padding = _reduce_padding(padding, data_format)
+    return ivy.conv2d_transpose(
+        input,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
+@to_ivy_arrays_and_back
+def conv3d(
+    input, filters, strides, padding, data_format="NDHWC", dilations=None, name=None
+):
+    dilations = 1 if dilations is None else dilations
+    strides, dilations = _reduce_strides_dilations(3, strides, dilations)
+    return ivy.conv3d(
+        input, filters, strides, padding, data_format=data_format, dilations=dilations
+    )
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def conv3d_transpose(
+    input,
+    filters,
+    output_shape,
+    strides,
+    padding="SAME",
+    data_format="NDHWC",
+    dilations=None,
+    name=None,
+):
+    dilations = 1 if dilations is None else dilations
+    strides, dilations = _reduce_strides_dilations(3, strides, dilations)
+    return ivy.conv3d_transpose(
+        input,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+    )
 
 
 @to_ivy_arrays_and_back
@@ -434,60 +284,136 @@ def convolution(
     )
 
 
-@with_unsupported_dtypes({"2.11.1 and below": ("complex",)}, "tensorflow")
-@to_ivy_arrays_and_back
-def embedding_lookup(params, ids, max_norm=None, name=None):
-    return ivy.embedding(params, ids, max_norm=max_norm)
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, "tensorflow")
-@to_ivy_arrays_and_back
-def relu(features, name=None):
-    return ivy.relu(features)
-
-
-@to_ivy_arrays_and_back
-def relu6(features, name=None):
-    return ivy.relu6(features)
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("float16",)}, "tensorflow")
-@to_ivy_arrays_and_back
-def softmax(logits, axis=None, name=None):
-    return ivy.softmax(logits, axis=axis)
-
-
-@with_unsupported_dtypes({"2.13.0 and below": "float16"}, "tensorflow")
-@to_ivy_arrays_and_back
-def leaky_relu(features, alpha=0.2, name=None):
-    return ivy.leaky_relu(features, alpha=alpha)
-
-
 @to_ivy_arrays_and_back
 def crelu(features, axis=-1, name=None):
     c = ivy.concat([features, -features], axis=axis)
     return ivy.relu(c)
 
 
+# ctc_unique_labels
 @to_ivy_arrays_and_back
-def avg_pool(input, ksize, strides, padding, data_format="NWC", name=None):
-    if len(ivy.shape(input)) == 3:
-        return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
-    elif len(ivy.shape(input)) == 4:
-        return ivy.avg_pool2d(input, ksize, strides, padding, data_format=data_format)
-    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+def ctc_unique_labels(labels, name=None):
+    ctc_labels = ivy.unique_all(labels, by_value=False)
+    unique_pad = ivy.pad(
+        ctc_labels[0], (0, labels.size - ctc_labels[0].size), mode="constant"
+    )
+    return unique_pad, ctc_labels[2]
 
 
-# avg_pool3d
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
-def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
-    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+def depthwise_conv2d(
+    input,
+    filter,
+    strides,
+    padding="SAME",
+    data_format="NHWC",
+    dilations=None,
+    name=None,
+):
+    dilations = 1 if dilations is None else dilations
+    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    fc = filter.shape[-2]
+    filter = filter.reshape([
+        *filter.shape[0:2], 1, filter.shape[-2] * filter.shape[-1]
+    ])
+    return ivy.conv_general_dilated(
+        input,
+        filter,
+        strides,
+        padding,
+        data_format="channel_last" if data_format[-1] == "C" else "channel_first",
+        dilations=dilations,
+        feature_group_count=fc,
+    )
 
 
-# avg_pool1d
 @to_ivy_arrays_and_back
-def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
-    return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+def dropout(x, rate, noise_shape=None, seed=None, name=None):
+    return ivy.dropout(x, rate, noise_shape=noise_shape, training=True, seed=seed)
+
+
+@with_unsupported_dtypes({"2.11.1 and below": ("complex",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def embedding_lookup(params, ids, max_norm=None, name=None):
+    return ivy.embedding(params, ids, max_norm=max_norm)
+
+
+@to_ivy_arrays_and_back
+def gelu(features, approximate=False, name=None):
+    return ivy.gelu(features, approximate=approximate)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": "float16"}, "tensorflow")
+@to_ivy_arrays_and_back
+def leaky_relu(features, alpha=0.2, name=None):
+    return ivy.leaky_relu(features, alpha=alpha)
+
+
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def local_response_normalization(
+    input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
+):
+    return ivy.local_response_norm(
+        input, 2 * depth_radius + 1, bias=bias, alpha=alpha, beta=beta
+    )
+
+
+@to_ivy_arrays_and_back
+def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
+    return ivy.log_poisson_loss(targets, log_input, compute_full_loss=compute_full_loss)
+
+
+@to_ivy_arrays_and_back
+def max_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
+    return ivy.max_pool1d(input, ksize, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
+def max_pool2d(input, ksize, strides, padding, data_format="NHWC", name=None):
+    return ivy.max_pool2d(input, ksize, strides, padding, data_format=data_format)
+
+
+@with_supported_dtypes({"2.15.0 and below": ("float32",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def max_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
+    return ivy.max_pool3d(input, ksize, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
+def moments(x, axes, shift=None, keepdims=False, name=None):
+    return ivy.mean(x, axis=ivy.to_list(axes), keepdims=keepdims), ivy.var(
+        x, axis=ivy.to_list(axes), keepdims=keepdims
+    )
+
+
+@with_unsupported_dtypes(
+    {
+        "2.15.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def normalize_moments(counts, mean_ss, variance_ss, shift=None, name=None):
+    divisor = ivy.reciprocal(counts)
+    if shift is not None:
+        shifted_mean = ivy.multiply(mean_ss, divisor)
+        mean = ivy.add(shifted_mean, shift)
+    else:
+        shifted_mean = ivy.multiply(mean_ss, divisor)
+        mean = shifted_mean
+
+    variance = ivy.subtract(
+        ivy.multiply(variance_ss, divisor), ivy.square(shifted_mean)
+    )
+    return mean, variance
 
 
 # pool
@@ -511,6 +437,95 @@ def pool(
         data_format=data_format,
         dilations=dilations,
     )
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def relu(features, name=None):
+    return ivy.relu(features)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def relu6(features, name=None):
+    return ivy.relu6(features)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def separable_conv2d(
+    input,
+    depthwise_filter,
+    pointwise_filter,
+    strides,
+    padding,
+    data_format=None,
+    dilations=None,
+    name=None,
+):
+    dilations = 1 if dilations is None else dilations
+    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    ret = depthwise_conv2d(
+        input,
+        depthwise_filter,
+        strides=strides,
+        padding=padding,
+        dilations=dilations,
+        data_format=data_format,
+    )
+    return conv2d(ret, pointwise_filter, 1, "SAME", data_format=data_format)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.15.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
+    ivy.utils.assertions.check_shape(labels, logits)
+    zeros = ivy.zeros_like(logits)
+    max_logits = ivy.where(logits >= zeros, logits, zeros)
+    neg_abs_logits = ivy.negative(ivy.abs(logits))
+    neg_multiple = ivy.negative(ivy.multiply(logits, labels))
+    ret_val = ivy.add(max_logits, neg_multiple)
+    return ivy.add(ret_val, ivy.log1p(ivy.exp(neg_abs_logits)))
+
+
+@to_ivy_arrays_and_back
+def silu(features, beta: float = 1.0):
+    beta = ivy.astype(ivy.array(beta), ivy.dtype(features))
+    return ivy.multiply(features, ivy.sigmoid(ivy.multiply(beta, features)))
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def softmax(logits, axis=None, name=None):
+    return ivy.softmax(logits, axis=axis)
+
+
+# Softsign
+@with_unsupported_dtypes(
+    {
+        "2.15.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def softsign(x, name=None):
+    return ivy.softsign(x)
 
 
 # sufficient_statistics
@@ -548,20 +563,36 @@ def sufficient_statistics(x, axes, shift=None, keepdims=False, name=None):
     return count, sum_of_elements, sum_of_squares, shift
 
 
-# log_poisson_loss
+@with_unsupported_dtypes(
+    {
+        "2.15.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )
+    },
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
-def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
-    return ivy.log_poisson_loss(targets, log_input, compute_full_loss=compute_full_loss)
+def weighted_cross_entropy_with_logits(
+    labels=None, logits=None, pos_weight=1.0, name=None
+):
+    ivy.utils.assertions.check_shape(labels, logits)
+    ones = ivy.ones_like(labels)
+    zeros = ivy.zeros_like(logits)
+    log_weight = ivy.add(ones, ivy.multiply(pos_weight - 1, labels))
+    ones_minus_labels = ivy.subtract(ones, labels)
+    first_term = ivy.multiply(ones_minus_labels, logits)
 
-
-# ctc_unique_labels
-@to_ivy_arrays_and_back
-def ctc_unique_labels(labels, name=None):
-    ctc_labels = ivy.unique_all(labels, by_value=False)
-    unique_pad = ivy.pad(
-        ctc_labels[0], (0, labels.size - ctc_labels[0].size), mode="constant"
+    max_neg_logits = ivy.where(
+        ivy.negative(logits) >= zeros, ivy.negative(logits), zeros
     )
-    return unique_pad, ctc_labels[2]
+    neg_abs_logits = ivy.negative(ivy.abs(logits))
+    log_neg_abs_logits = ivy.log1p(ivy.exp(neg_abs_logits))
+    second_term = ivy.multiply(log_weight, ivy.add(log_neg_abs_logits, max_neg_logits))
+    return ivy.add(first_term, second_term)
 
 
 # weighted_moments

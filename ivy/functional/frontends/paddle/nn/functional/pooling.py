@@ -2,63 +2,52 @@
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
-from ivy.functional.frontends.torch.nn.functional.pooling_functions import (
-    _broadcast_pooling_helper,
-)
+from ivy.functional.ivy.experimental.layers import _broadcast_pooling_helper
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def avg_pool2d(
-    x,
-    kernel_size,
-    stride=None,
-    padding=0,
-    ceil_mode=False,
-    exclusive=True,
-    divisor_override=None,
-    data_format="NCHW",
-    name=None,
-):
-    kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
-    stride = _broadcast_pooling_helper(stride, "2d", name="stride")
-    padding = _broadcast_pooling_helper(padding, "2d", name="padding")
-    kernel_pads = list(zip(kernel_size, padding))
-
-    # Padding should be less than or equal to half of kernel size
-    if not all([pad <= kernel / 2 for kernel, pad in kernel_pads]):
-        raise ValueError(
-            "pad should be smaller than or equal to half of kernel size, "
-            f"but got padding={padding}, kernel_size={kernel_size}. "
-        )
-
-    # Figure out padding string
-    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in kernel_pads]):
-        padding = "SAME"
-    else:
-        padding = "VALID"
-
-    count_include_pad = False if exclusive else True
-    return ivy.avg_pool2d(
-        x,
-        kernel_size,
-        stride,
-        padding,
-        data_format=data_format,
-        count_include_pad=count_include_pad,
-        ceil_mode=ceil_mode,
-        divisor_override=divisor_override,
-    )
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+def adaptive_avg_pool1d(x, output_size, name=None):
+    return ivy.adaptive_avg_pool1d(x, output_size)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+def adaptive_avg_pool2d(x, output_size, data_format="NCHW", name=None):
+    return ivy.adaptive_avg_pool2d(x, output_size)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def adaptive_avg_pool3d(x, output_size, data_format="NCHW", name=None):
+    return ivy.adaptive_avg_pool3d(x, output_size)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+def adaptive_max_pool2d(x, output_size, return_mask=None, name=None):
+    return ivy.adaptive_max_pool2d(x, output_size)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 def avg_pool1d(
     x, kernel_size, stride=None, padding=0, exclusive=True, ceil_mode=False, name=None
 ):
-    data_format = "NCL"
+    data_format = "NCW"
     exclusive = not exclusive
+    if stride is None:
+        stride = kernel_size
+    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
+    # Figure out padding string
+    if all(
+        pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)
+    ):
+        padding = "SAME"
+    else:
+        padding = "VALID"
 
     return ivy.avg_pool1d(
         x,
@@ -72,31 +61,80 @@ def avg_pool1d(
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def adaptive_avg_pool1d(x, output_size, name=None):
-    return ivy.adaptive_avg_pool1d(x, output_size)
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+def avg_pool2d(
+    x,
+    kernel_size,
+    stride=None,
+    padding=0,
+    ceil_mode=False,
+    exclusive=True,
+    divisor_override=None,
+    data_format="NCHW",
+    name=None,
+):
+    if stride is None:
+        stride = kernel_size
+    kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "2d", name="padding")
+    # Figure out padding string
+    if all(
+        pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)
+    ):
+        padding = "SAME"
+    else:
+        padding = "VALID"
+
+    count_include_pad = not exclusive
+    return ivy.avg_pool2d(
+        x,
+        kernel_size,
+        stride,
+        padding,
+        data_format=data_format,
+        count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
+    )
 
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def adaptive_avg_pool2d(x, output_size, data_format="NCHW", name=None):
-    return ivy.adaptive_avg_pool2d(x, output_size)
+def max_pool2d(
+    x,
+    kernel_size,
+    stride=None,
+    padding=0,
+    return_mask=False,
+    ceil_mode=False,
+    data_format="NCHW",
+    name=None,
+):
+    if stride is None:
+        stride = kernel_size
+    kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "2d", name="padding")
+
+    if data_format not in ["NCHW", "NHWC"]:
+        raise ValueError(
+            "Attr(data_format) should be 'NCHW' or 'NHWC'. Received "
+            "Attr(data_format): %s."
+            % str(data_format)
+        )
+
+    if data_format == "NHWC" and return_mask:
+        raise ValueError(
+            "When setting return_mask to true, data_format must be set to NCHW in"
+            " API:max_pool2d"
+        )
+
+    return ivy.max_pool2d(
+        x, kernel_size, stride, padding, data_format=data_format, ceil_mode=ceil_mode
+    )
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
-def adaptive_avg_pool3d(x, output_size, data_format="NCHW", name=None):
-    return ivy.adaptive_avg_pool3d(x, output_size)
-
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def adaptive_max_pool2d(x, output_size, return_mask=None, name=None):
-    return ivy.adaptive_max_pool2d(x, output_size)
-
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 def max_unpool1d(
     x,
     indices,
@@ -107,4 +145,11 @@ def max_unpool1d(
     output_size=None,
     name=None,
 ):
-    return ivy.max_unpool1d(x, indices, kernel_size, stride, padding, data_format)
+    return ivy.max_unpool1d(
+        x,
+        indices,
+        kernel_size,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+    )

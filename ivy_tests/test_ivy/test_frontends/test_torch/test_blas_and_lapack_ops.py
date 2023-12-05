@@ -12,77 +12,49 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
 )
 
 
-# helpers
-@st.composite
-def _get_dtype_and_square_matrix(draw):
-    dim_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", full=True))
-    dtype = [
-        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
-    ]
-    mat = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(dim_size, dim_size), min_value=0, max_value=10
-        )
-    )
-    return dtype, mat
+# --- Helpers --- #
+# --------------- #
 
 
 @st.composite
-def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
-    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim_size2 = dim_size1 if same_size else draw(helpers.ints(min_value=2, max_value=5))
+def _generate_chain_matmul_dtype_and_arrays(draw):
     dtype = draw(helpers.get_dtypes("float", full=True))
-    dtype = [
+    input_dtype = [
         draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
     ]
-    vec1 = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(dim_size1,), min_value=2, max_value=5
-        )
+    matrices_dims = draw(
+        st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
     )
-    vec2 = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(dim_size2,), min_value=2, max_value=5
-        )
-    )
-    if with_input:
-        input = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size1, dim_size2), min_value=2, max_value=5
-            )
-        )
-        return dtype, input, vec1, vec2
-    return dtype, vec1, vec2
+    shape_1 = (matrices_dims[0], matrices_dims[1])
+    shape_2 = (matrices_dims[1], matrices_dims[2])
+    shape_3 = (matrices_dims[2], matrices_dims[3])
 
+    matrix_1 = draw(
+        helpers.dtype_and_values(
+            shape=shape_1,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_2 = draw(
+        helpers.dtype_and_values(
+            shape=shape_2,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_3 = draw(
+        helpers.dtype_and_values(
+            shape=shape_3,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
 
-@st.composite
-def _get_dtype_input_and_matrices(draw, with_input=False):
-    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
-    shared_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", full=True))
-    dtype = [
-        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
-    ]
-    mat1 = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(dim_size1, shared_size), min_value=2, max_value=5
-        )
-    )
-    mat2 = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(shared_size, dim_size2), min_value=2, max_value=5
-        )
-    )
-    if with_input:
-        input = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size1, dim_size2), min_value=2, max_value=5
-            )
-        )
-        return dtype, input, mat1, mat2
-    return dtype, mat1, mat2
+    return input_dtype, [matrix_1[1][0], matrix_2[1][0], matrix_3[1][0]]
 
 
 @st.composite
@@ -132,6 +104,42 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False, input_3d=False):
 
 
 @st.composite
+def _get_dtype_and_matrices(draw):
+    dim1 = draw(helpers.ints(min_value=2, max_value=7))
+    dim2 = draw(helpers.ints(min_value=2, max_value=7))
+    dtype = draw(helpers.get_dtypes("float", full=False))
+
+    matr1 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim1, dim2), min_value=2, max_value=10
+        )
+    )
+    matr2 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim1, dim2), min_value=2, max_value=10
+        )
+    )
+
+    return dtype, matr1, matr2
+
+
+# helpers
+@st.composite
+def _get_dtype_and_square_matrix(draw):
+    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    mat = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size, dim_size), min_value=0, max_value=10
+        )
+    )
+    return dtype, mat
+
+
+@st.composite
 def _get_dtype_input_and_mat_vec(draw, *, with_input=False):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
     shared_size = draw(helpers.ints(min_value=2, max_value=5))
@@ -158,6 +166,67 @@ def _get_dtype_input_and_mat_vec(draw, *, with_input=False):
         )
         return dtype, input, mat, vec
     return dtype, mat, vec
+
+
+@st.composite
+def _get_dtype_input_and_matrices(draw, with_input=False):
+    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
+    shared_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    mat1 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size1, shared_size), min_value=2, max_value=5
+        )
+    )
+    mat2 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(shared_size, dim_size2), min_value=2, max_value=5
+        )
+    )
+    if with_input:
+        input = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size1, dim_size2), min_value=2, max_value=5
+            )
+        )
+        return dtype, input, mat1, mat2
+    return dtype, mat1, mat2
+
+
+@st.composite
+def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
+    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = dim_size1 if same_size else draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    vec1 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size1,), min_value=2, max_value=5
+        )
+    )
+    vec2 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size2,), min_value=2, max_value=5
+        )
+    )
+    if with_input:
+        input = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size1, dim_size2), min_value=2, max_value=5
+            )
+        )
+        return dtype, input, vec1, vec2
+    return dtype, vec1, vec2
+
+
+# --- Main --- #
+# ------------ #
 
 
 # addbmm
@@ -419,6 +488,35 @@ def test_torch_bmm(
     )
 
 
+# chain_matmul
+@handle_frontend_test(
+    fn_tree="torch.chain_matmul",
+    dtype_and_matrices=_generate_chain_matmul_dtype_and_arrays(),
+)
+def test_torch_chain_matmul(
+    *,
+    dtype_and_matrices,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, matrices = dtype_and_matrices
+    args = {f"x{i}": matrix for i, matrix in enumerate(matrices)}
+    test_flags.num_positional_args = len(matrices)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        **args,
+    )
+
+
 # cholesky
 @handle_frontend_test(
     fn_tree="torch.cholesky",
@@ -426,7 +524,7 @@ def test_torch_bmm(
         available_dtypes=helpers.get_dtypes("float", index=1),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1])) != 0
@@ -457,6 +555,33 @@ def test_torch_cholesky(
         rtol=1e-02,
         input=x,
         upper=upper,
+    )
+
+
+# dot
+@handle_frontend_test(
+    fn_tree="torch.dot",
+    dtype_and_vecs=_get_dtype_input_and_vectors(same_size=True),
+)
+def test_torch_dot(
+    dtype_and_vecs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, vec1, vec2 = dtype_and_vecs
+    test_flags.num_positional_args = len(dtype_and_vecs) - 1
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=vec1,
+        other=vec2,
     )
 
 
@@ -788,79 +913,6 @@ def test_torch_svd(
     )
 
 
-# vdot
-@handle_frontend_test(
-    fn_tree="torch.vdot",
-    dtype_and_vecs=_get_dtype_input_and_vectors(same_size=True),
-)
-def test_torch_vdot(
-    dtype_and_vecs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtype, vec1, vec2 = dtype_and_vecs
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=vec1,
-        other=vec2,
-    )
-
-
-# dot
-@handle_frontend_test(
-    fn_tree="torch.dot",
-    dtype_and_vecs=_get_dtype_input_and_vectors(same_size=True),
-)
-def test_torch_dot(
-    dtype_and_vecs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtype, vec1, vec2 = dtype_and_vecs
-    test_flags.num_positional_args = len(dtype_and_vecs) - 1
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=vec1,
-        other=vec2,
-    )
-
-
-@st.composite
-def _get_dtype_and_matrices(draw):
-    dim1 = draw(helpers.ints(min_value=2, max_value=7))
-    dim2 = draw(helpers.ints(min_value=2, max_value=7))
-    dtype = draw(helpers.get_dtypes("float", full=False))
-
-    matr1 = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(dim1, dim2), min_value=2, max_value=10
-        )
-    )
-    matr2 = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(dim1, dim2), min_value=2, max_value=10
-        )
-    )
-
-    return dtype, matr1, matr2
-
-
 @handle_frontend_test(
     fn_tree="torch.trapezoid",
     test_with_out=st.just(False),
@@ -894,5 +946,31 @@ def test_torch_trapezoid(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        **kwargs
+        **kwargs,
+    )
+
+
+# vdot
+@handle_frontend_test(
+    fn_tree="torch.vdot",
+    dtype_and_vecs=_get_dtype_input_and_vectors(same_size=True),
+)
+def test_torch_vdot(
+    dtype_and_vecs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, vec1, vec2 = dtype_and_vecs
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=vec1,
+        other=vec2,
     )

@@ -125,7 +125,7 @@ As of 2020, MATLAB has more than 4 million users worldwide, who come from variou
 SciPy |scipy|
 -------------
 First released in 2001, `SciPy`_ is a Python framework used for scientific computing and technical computing, with modules for optimization, linear algebra, integration, interpolation, special functions, FFT, signal and image processing, ODE solvers and other tasks common in science and engineering.
-While the user interface is in Python, the backend involves Fortran, Cython, C++ and C for high runtime efficiency.
+While the user interface is in Python, the backend involves Fortran, Cython, C++, and C for high runtime efficiency.
 It is built to work with `NumPy`_ arrays, and provides many user-friendly and efficient numerical routines, such as routines for numerical integration and optimization.
 
 Torch |torch|
@@ -145,13 +145,13 @@ It has long been the go-to framework for numeric computing in Python.
 
 SciKit Learn |scikit-learn|
 ---------------------------
-First released in 2007, `Scikit-learn`_ is a Python framework which features various classification, regression and clustering algorithms including support-vector machines, random forests, gradient boosting, k-means and DBSCAN, and is designed to interoperate with the Python numerical and scientific libraries `NumPy`_ and `SciPy`_.
+First released in 2007, `Scikit-learn`_ is a Python framework which features various classification, regression, and clustering algorithms including support-vector machines, random forests, gradient boosting, k-means, and DBSCAN, and is designed to interoperate with the Python numerical and scientific libraries `NumPy`_ and `SciPy`_.
 
 Theano |theano|
 ---------------
 Initially released in 2007, `Theano`_ is a Python framework which focuses on manipulating and evaluating mathematical expressions, especially matrix-valued ones, with an inbuilt optimizing compiler.
 Computations are expressed using a `NumPy`_-esque syntax and are compiled to run efficiently on either CPU or GPU architectures.
-Notably, it includes an extensible graph framework suitable for rapid development of custom operators and symbolic optimizations, and it implements an extensible graph transpilation framework.
+Notably, it includes an extensible graph framework suitable for the rapid development of custom operators and symbolic optimizations, and it implements an extensible graph transpilation framework.
 It is now being continued under the name `Aesara`_.
 
 Pandas |pandas|
@@ -209,7 +209,7 @@ CNTK |cntk|
 -----------
 Originally released in 2016, the `Microsoft Cognitive Toolkit (CNTK)`_ is an open-source toolkit for commercial-grade distributed deep learning, written entirely in C++.
 It describes neural networks as a series of computational steps via a directed graph.
-CNTK allows the user to easily realize and combine popular model types such as feed-forward DNNs, convolutional neural networks (CNNs) and recurrent neural networks (RNNs/LSTMs).
+CNTK allows the user to easily realize and combine popular model types such as feed-forward DNNs, convolutional neural networks (CNNs), and recurrent neural networks (RNNs/LSTMs).
 CNTK implements stochastic gradient descent (SGD, error backpropagation) learning with automatic differentiation and parallelization across multiple GPUs and servers.
 It is no longer being actively developed, having succumbed to the increasing popularity of the frameworks using Python frontend interfaces.
 
@@ -219,7 +219,7 @@ PyTorch |pytorch|
 PyTorch operates based on asynchronous scheduling on the target device, without any pre-compilation of the full computation graph on the target device required.
 This made it possible to combine asynchronous scheduled efficient kernels with pure Python control flow, and also made it easy to query and monitor the intermediate values in the model, with the boundaries of the “computation graph” having been broken down.
 This quickly made it very popular for researchers.
-Generally PyTorch is the choice of the ML researcher, ML practitioner and the hobbyist.
+Generally, PyTorch is the choice of the ML researcher, ML practitioner, and the hobbyist.
 PyTorch is very Pythonic, very simple to use, very forgiving, and has a tremendous ecosystem built around it.
 No other framework comes close to having anything like the `PyTorch Ecosystem`_, with a vast collection of third-party libraries in various important topics for ML research.
 

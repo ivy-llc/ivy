@@ -16,10 +16,31 @@ from ivy.functional.frontends.numpy.ndarray import ndarray
 import ivy.functional.frontends.numpy as np_frontend
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _dtype_helper(draw):
+    return draw(
+        st.sampled_from([
+            draw(st.sampled_from([int, float, bool])),
+            ivy.as_native_dtype(
+                draw(helpers.get_dtypes("valid", full=False, prune_function=False))[0]
+            ),
+            np_frontend.dtype(
+                draw(helpers.get_dtypes("valid", full=False, prune_function=False))[0]
+            ),
+            draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
+            draw(st.sampled_from(list(np_frontend.numpy_str_to_type_table.keys()))),
+        ])
+    )
+
+
 def _fn(*args, check_default=False, dtype=None):
     if (
         check_default
-        and any([not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args])
+        and any(not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args)
         and not ivy.exists(dtype)
     ):
         ivy.utils.assertions.check_equal(
@@ -36,6 +57,59 @@ def _fn(*args, check_default=False, dtype=None):
     if not ivy.exists(args[0]):
         return dtype
     return args[0]
+
+
+def _zero_dim_to_scalar_checks(x, ret_x):
+    if len(x.shape) > 0:
+        assert ivy.all(ivy.array(ret_x) == ivy.array(x))
+    else:
+        assert issubclass(type(ret_x), np_frontend.generic)
+        assert ret_x.ivy_array == ivy.array(x)
+
+
+@st.composite
+def _zero_dim_to_scalar_helper(draw):
+    dtype = draw(
+        helpers.get_dtypes("valid", prune_function=False, full=False).filter(
+            lambda x: "bfloat16" not in x
+        )
+    )[0]
+    shape = draw(helpers.get_shape())
+    return draw(
+        st.one_of(
+            helpers.array_values(shape=shape, dtype=dtype),
+            st.lists(helpers.array_values(shape=shape, dtype=dtype), min_size=1).map(
+                tuple
+            ),
+        )
+    )
+
+
+# --- Main --- #
+# ------------ #
+
+
+@given(
+    dtype=_dtype_helper(),
+)
+def test_handle_numpy_dtype(dtype, backend_fw):
+    ivy.set_backend(backend_fw)
+    ret_dtype = handle_numpy_dtype(_fn)(None, dtype=dtype)
+    assert isinstance(ret_dtype, ivy.Dtype)
+    ivy.previous_backend()
+
+
+@given(x=_zero_dim_to_scalar_helper())
+def test_numpy_from_zero_dim_arrays_to_scalar(x, backend_fw):
+    ivy.set_backend(backend_fw)
+    ret_x = from_zero_dim_arrays_to_scalar(_fn)(x)
+    if isinstance(x, tuple):
+        assert isinstance(ret_x, tuple)
+        for x_i, ret_x_i in zip(x, ret_x):
+            _zero_dim_to_scalar_checks(x_i, ret_x_i)
+    else:
+        _zero_dim_to_scalar_checks(x, ret_x)
+    ivy.previous_backend()
 
 
 @given(
@@ -161,76 +235,4 @@ def test_numpy_to_ivy_arrays_and_back(dtype_x_shape, dtype, backend_fw):
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
-    ivy.previous_backend()
-
-
-@st.composite
-def _zero_dim_to_scalar_helper(draw):
-    dtype = draw(
-        helpers.get_dtypes("valid", prune_function=False, full=False).filter(
-            lambda x: "bfloat16" not in x
-        )
-    )[0]
-    shape = draw(helpers.get_shape())
-    return draw(
-        st.one_of(
-            helpers.array_values(shape=shape, dtype=dtype),
-            st.lists(helpers.array_values(shape=shape, dtype=dtype), min_size=1).map(
-                tuple
-            ),
-        )
-    )
-
-
-def _zero_dim_to_scalar_checks(x, ret_x):
-    if len(x.shape) > 0:
-        assert ivy.all(ivy.array(ret_x) == ivy.array(x))
-    else:
-        assert issubclass(type(ret_x), np_frontend.generic)
-        assert ret_x.ivy_array == ivy.array(x)
-
-
-@given(x=_zero_dim_to_scalar_helper())
-def test_numpy_from_zero_dim_arrays_to_scalar(x, backend_fw):
-    ivy.set_backend(backend_fw)
-    ret_x = from_zero_dim_arrays_to_scalar(_fn)(x)
-    if isinstance(x, tuple):
-        assert isinstance(ret_x, tuple)
-        for x_i, ret_x_i in zip(x, ret_x):
-            _zero_dim_to_scalar_checks(x_i, ret_x_i)
-    else:
-        _zero_dim_to_scalar_checks(x, ret_x)
-    ivy.previous_backend()
-
-
-@st.composite
-def _dtype_helper(draw):
-    return draw(
-        st.sampled_from(
-            [
-                draw(st.sampled_from([int, float, bool])),
-                ivy.as_native_dtype(
-                    draw(helpers.get_dtypes("valid", full=False, prune_function=False))[
-                        0
-                    ]
-                ),
-                np_frontend.dtype(
-                    draw(helpers.get_dtypes("valid", full=False, prune_function=False))[
-                        0
-                    ]
-                ),
-                draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
-                draw(st.sampled_from(list(np_frontend.numpy_str_to_type_table.keys()))),
-            ]
-        )
-    )
-
-
-@given(
-    dtype=_dtype_helper(),
-)
-def test_handle_numpy_dtype(dtype, backend_fw):
-    ivy.set_backend(backend_fw)
-    ret_dtype = handle_numpy_dtype(_fn)(None, dtype=dtype)
-    assert isinstance(ret_dtype, ivy.Dtype)
     ivy.previous_backend()

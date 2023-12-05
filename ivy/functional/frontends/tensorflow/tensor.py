@@ -4,7 +4,7 @@
 import ivy
 from ivy import with_unsupported_dtypes
 import ivy.functional.frontends.tensorflow as tf_frontend
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_dtype, _to_ivy_array
+from ivy.functional.frontends.tensorflow.func_wrapper import _to_ivy_array
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
 
 
@@ -45,7 +45,7 @@ class EagerTensor:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return TensorShape(self.ivy_array.shape.shape)
 
     # Instance Methods #
     # ---------------- #
@@ -86,7 +86,9 @@ class EagerTensor:
         return self.__rand__(y)
 
     def __array__(self, dtype=None, name="array"):
-        return array(ivy.asarray(self.ivy_array, dtype=to_ivy_dtype(dtype)))
+        if not dtype:
+            return ivy.to_numpy(self.ivy_array)
+        return ivy.to_numpy(self.ivy_array).astype(dtype)
 
     def __bool__(self, name="bool"):
         temp = ivy.squeeze(self.ivy_array, axis=None)
@@ -106,19 +108,19 @@ class EagerTensor:
         return tf_frontend.raw_ops.FloorDiv(x=self, y=y, name=name)
 
     @with_unsupported_dtypes(
-        {"2.13.0 and below": ("complex",)},
+        {"2.15.0 and below": ("complex",)},
         "tensorflow",
     )
     def __ge__(self, y, name="ge"):
         return tf_frontend.raw_ops.GreaterEqual(x=self, y=y, name=name)
 
     def __getitem__(self, slice_spec, var=None, name="getitem"):
-        ivy_args = ivy.nested_map([self, slice_spec], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, slice_spec])
         ret = ivy.get_item(*ivy_args)
         return EagerTensor(ret)
 
     @with_unsupported_dtypes(
-        {"2.13.0 and below": ("complex",)},
+        {"2.15.0 and below": ("complex",)},
         "tensorflow",
     )
     def __gt__(self, y, name="gt"):
@@ -128,14 +130,14 @@ class EagerTensor:
         return tf_frontend.raw_ops.Invert(x=self, name=name)
 
     @with_unsupported_dtypes(
-        {"2.13.0 and below": ("complex",)},
+        {"2.15.0 and below": ("complex",)},
         "tensorflow",
     )
     def __le__(self, y, name="le"):
         return tf_frontend.raw_ops.LessEqual(x=self, y=y, name=name)
 
     @with_unsupported_dtypes(
-        {"2.13.0 and below": ("complex",)},
+        {"2.15.0 and below": ("complex",)},
         "tensorflow",
     )
     def __lt__(self, y, name="lt"):
@@ -148,7 +150,7 @@ class EagerTensor:
         return tf_frontend.math.multiply(self, y, name=name)
 
     @with_unsupported_dtypes(
-        {"2.13.0 and below": ("complex",)},
+        {"2.15.0 and below": ("complex",)},
         "tensorflow",
     )
     def __mod__(self, y, name="mod"):
@@ -226,6 +228,114 @@ class EagerTensor:
             yield self[i]
 
 
+class TensorShape:
+    # TODO: there are still some methods that may need implementing
+
+    def __init__(self, dims):
+        self._dims = tuple(dims)
+
+    def __repr__(self):
+        if self._dims is not None:
+            return f"TensorShape({list(self._dims)})"
+        else:
+            return "TensorShape(None)"
+
+    def __str__(self):
+        if self.rank is None:
+            return "<unknown>"
+        elif self.rank == 1:
+            return "(%s,)" % self._dims[0]
+        else:
+            return "(%s)" % ", ".join(str(d) for d in self._dims)
+
+    # Properties #
+    # ---------- #
+
+    @property
+    def dims(self):
+        return self._dims
+
+    @property
+    def ivy_shape(self):
+        return ivy.Shape(self._dims)
+
+    @property
+    def ndims(self):
+        return self.__len__()
+
+    @property
+    def rank(self):
+        return self.__len__()
+
+    # Instance Methods #
+    # ---------------- #
+
+    def __add__(self, other):
+        return self.concatenate(other)
+
+    def __bool__(self):
+        return self._dims is not None
+
+    def __concat__(self, other):
+        return self.concatenate(other)
+
+    def __eq__(self, other):
+        return self._dims == other.dims
+
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            return TensorShape(self._dims[key])
+        else:
+            return self._dims[key]
+
+    def __iter__(self):
+        return iter(d for d in self._dims)
+
+    def __len__(self):
+        return len(self._dims)
+
+    def __nonzero__(self):
+        return self.__bool__()
+
+    def __radd__(self, other):
+        return other.concatenate(self)
+
+    def as_list(self):
+        return list(self._dims)
+
+    def concatenate(self, other):
+        other = as_shape(other)
+        if self.dims is None or other.dims is None:
+            return unknown_shape()
+        else:
+            return TensorShape(self.dims + other.dims)
+
+    def num_elements(self):
+        return ivy.to_scalar(ivy.prod(self._dims))
+
+
 # Dummy Tensor class to help with compilation, don't add methods here
 class Tensor(EagerTensor):
     pass
+
+
+# Helpers
+
+
+def as_shape(shape):
+    """Converts the given object to a TensorShape."""
+    if isinstance(shape, TensorShape):
+        return shape
+    else:
+        return TensorShape(shape)
+
+
+def unknown_shape(rank=None, **kwargs):
+    if rank is None and "ndims" in kwargs:
+        rank = kwargs.pop("ndims")
+    if kwargs:
+        raise TypeError("Unknown argument: %s" % kwargs)
+    if rank is None:
+        return TensorShape(None)
+    else:
+        return TensorShape([None] * rank)

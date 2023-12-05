@@ -6,41 +6,49 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa: E501
+    put_along_axis_helper,
+)
 
 
 @handle_frontend_test(
-    fn_tree="numpy.take_along_axis",
-    dtype_x_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32", "int64"],
+    fn_tree="numpy.compress",
+    dtype_arr_ax=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-        indices_same_dims=True,
+        min_dim_size=10,
+        max_dim_size=100,
+        valid_axis=True,
+        force_int_axis=True,
     ),
-    test_with_out=st.just(False),
+    condition=helpers.array_values(
+        dtype=helpers.get_dtypes("bool"),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
+        ),
+    ),
 )
-def test_numpy_take_along_axis(
-    *,
-    dtype_x_indices_axis,
-    test_flags,
+def test_numpy_compress(
+    dtype_arr_ax,
+    condition,
     frontend,
+    test_flags,
     backend_fw,
     fn_tree,
     on_device,
 ):
-    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    dtype, arr, ax = dtype_arr_ax
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=dtype,
+        frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
-        frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        arr=x,
-        indices=indices,
-        axis=axis,
+        condition=condition,
+        a=arr[0],
+        axis=ax,
     )
 
 
@@ -115,26 +123,19 @@ def test_numpy_diagonal(
 
 @handle_frontend_test(
     fn_tree="numpy.put_along_axis",
-    dtype_x_indices_axis=helpers.array_indices_put_along_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32", "int64"],
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
+    args=put_along_axis_helper(),
     test_with_out=st.just(False),
 )
 def test_numpy_put_along_axis(
     *,
-    dtype_x_indices_axis,
+    args,
     test_flags,
     frontend,
     fn_tree,
     on_device,
     backend_fw,
 ):
-    dtypes, x, indices, axis, values, _ = dtype_x_indices_axis
+    dtypes, x, indices, values, axis = args
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
@@ -144,47 +145,42 @@ def test_numpy_put_along_axis(
         on_device=on_device,
         arr=x,
         indices=indices,
-        axis=axis,
         values=values,
+        axis=axis,
     )
 
 
 @handle_frontend_test(
-    fn_tree="numpy.compress",
-    dtype_arr_ax=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+    fn_tree="numpy.take_along_axis",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
         min_num_dims=1,
         max_num_dims=5,
-        min_dim_size=10,
-        max_dim_size=100,
-        valid_axis=True,
-        force_int_axis=True,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
     ),
-    condition=helpers.array_values(
-        dtype=helpers.get_dtypes("bool"),
-        shape=helpers.get_shape(
-            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
-        ),
-    ),
+    test_with_out=st.just(False),
 )
-def test_numpy_compress(
-    dtype_arr_ax,
-    condition,
-    frontend,
+def test_numpy_take_along_axis(
+    *,
+    dtype_x_indices_axis,
     test_flags,
+    frontend,
     backend_fw,
     fn_tree,
     on_device,
 ):
-    dtype, arr, ax = dtype_arr_ax
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
+        input_dtypes=dtypes,
         backend_to_test=backend_fw,
         test_flags=test_flags,
+        frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        condition=condition,
-        a=arr[0],
-        axis=ax,
+        arr=x,
+        indices=indices,
+        axis=axis,
     )

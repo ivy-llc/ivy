@@ -15,10 +15,44 @@ import ivy.functional.frontends.tensorflow as tf_frontend
 import ivy.functional.frontends.numpy as np_frontend
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _dtype_helper(draw):
+    return draw(
+        st.sampled_from([
+            draw(helpers.get_dtypes("valid", prune_function=False, full=False))[0],
+            ivy.as_native_dtype(
+                draw(helpers.get_dtypes("valid", prune_function=False, full=False))[0]
+            ),
+            draw(st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.values()))),
+            draw(st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.keys()))),
+            np_frontend.dtype(
+                draw(helpers.get_dtypes("valid", prune_function=False, full=False))[0]
+            ),
+            draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
+        ])
+    )
+
+
 def _fn(x=None, dtype=None):
     if ivy.exists(dtype):
         return dtype
     return x
+
+
+# --- Main --- #
+# ------------ #
+
+
+@given(
+    dtype=_dtype_helper(),
+)
+def test_tensorflow_handle_tf_dtype(dtype):
+    ret_dtype = handle_tf_dtype(_fn)(dtype=dtype)
+    assert isinstance(ret_dtype, ivy.Dtype)
 
 
 @given(
@@ -100,37 +134,3 @@ def test_tensorflow_to_ivy_arrays_and_back(dtype_and_x):
     assert isinstance(output, EagerTensor)
     assert input_frontend.dtype == output.dtype
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
-
-
-@st.composite
-def _dtype_helper(draw):
-    return draw(
-        st.sampled_from(
-            [
-                draw(helpers.get_dtypes("valid", prune_function=False, full=False))[0],
-                ivy.as_native_dtype(
-                    draw(helpers.get_dtypes("valid", prune_function=False, full=False))[
-                        0
-                    ]
-                ),
-                draw(
-                    st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.values()))
-                ),
-                draw(st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.keys()))),
-                np_frontend.dtype(
-                    draw(helpers.get_dtypes("valid", prune_function=False, full=False))[
-                        0
-                    ]
-                ),
-                draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
-            ]
-        )
-    )
-
-
-@given(
-    dtype=_dtype_helper(),
-)
-def test_tensorflow_handle_tf_dtype(dtype):
-    ret_dtype = handle_tf_dtype(_fn)(dtype=dtype)
-    assert isinstance(ret_dtype, ivy.Dtype)

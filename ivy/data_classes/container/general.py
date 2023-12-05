@@ -697,6 +697,7 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Decrement by a value
+
         >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))
         >>> y = ivy.inplace_decrement(x, 1.5)
         >>> print(y)
@@ -706,6 +707,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         Decrement by a Container
+
         >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> z = ivy.inplace_decrement(x, y)
@@ -837,6 +839,7 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Increment by a value
+
         >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))
         >>> y = ivy.inplace_increment(x, 1.5)
         >>> print(y)
@@ -846,6 +849,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         Increment by a Container
+
         >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> z = ivy.inplace_increment(x, y)
@@ -1018,7 +1022,6 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-
         >>> ivy.set_backend("numpy")
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
         >>> print(x.assert_supports_inplace())
@@ -1434,7 +1437,7 @@ class _ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional array, for writing the result to. It must have a shape
+            Optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
 
@@ -1524,7 +1527,7 @@ class _ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is
             False.
         out
-            optional array, for writing the result to. It must have a shape
+            Optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
@@ -3195,6 +3198,42 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             A container of elements containing the new items following the
             numerically stable power.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = ivy.Container.stable_pow(x, 2)
+        >>> print(y)
+        {
+            a: ivy.array([4.00004, 16.00008]),
+            b: ivy.array([36.00012, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = ivy.Container.stable_pow(x, 2)
+        >>> print(y)
+        {
+            a: ivy.array(16.00008),
+            b: ivy.array(64.00016)
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = ivy.asarray([1, 2])
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([4.00001, 16.00008]),
+            b: ivy.array([8.00001, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = ivy.Container(a=4, b=8)
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([16.00032, 256.00256]),
+            b: ivy.array([1679638.395, 16777383.77])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "stable_pow",
@@ -3248,6 +3287,42 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             A container of elements containing the new items following the
             numerically stable power.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = x.stable_pow(2)
+        >>> print(y)
+        {
+            a: ivy.array([4.00004, 16.00008]),
+            b: ivy.array([36.00012, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = x.stable_pow(2)
+        >>> print(y)
+        {
+            a: ivy.array(16.00008),
+            b: ivy.array(64.00016)
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = ivy.asarray([1, 2])
+        >>> z = x.stable_pow(y)
+        >>> print(z)
+        {
+            a: ivy.array([4.00001, 16.00008]),
+            b: ivy.array([8.00001, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = ivy.Container(a=4, b=8)
+        >>> z = x.stable_pow(y)
+        >>> print(z)
+        {
+            a: ivy.array([16.00032, 256.00256]),
+            b: ivy.array([1679638.395, 16777383.77])
+        }
         """
         return self._static_stable_pow(
             self,
@@ -3957,13 +4032,24 @@ class _ContainerWithGeneral(ContainerBase):
         >>> b = ivy.array([[-2., 1.], [1. ,2.]])
         >>> c = ivy.array([[0., 1.], [1. ,0.]])
         >>> d = ivy.array([[2., 1.], [1. ,2.]])
-        >>> a0 = ivy.Container(a = a, b = b)
-        >>> a1 = ivy.Container(a = c, b = d)
-        >>> y = a0.array_equal(a1)
+        >>> a1 = ivy.Container(a = a, b = b)
+        >>> a2 = ivy.Container(a = c, b = d)
+        >>> y = a1.array_equal(a2)
         >>> print(y)
         {
             a: True,
             b: False
+        }
+
+        >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),
+                               b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),
+                               b=ivy.array([1, 2, 3]))
+        >>> y = x1.array_equal(x2)
+        >>> print(y)
+        {
+            a: False,
+            b: True
         }
         """
         return _ContainerWithGeneral._static_array_equal(
@@ -4171,3 +4257,127 @@ class _ContainerWithGeneral(ContainerBase):
             A tuple containing the strides.
         """
         return self.static_strides(self)
+
+    @staticmethod
+    def _static_exists(
+        x: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.exists. This method simply wraps
+        the function, and so the docstring for ivy.exists also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            A boolean container detailing if any of the leaf nodes are None.
+            True if not None, False if None.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0,4,5]), b=ivy.array([2,2,0]))
+        >>> y = x._static_exists(x)
+        >>> print(y)
+        { a: True, b: True }
+
+        >>> x = ivy.Container(a=[1,2], b=None)
+        >>> y = x._static_exists(x)
+        >>> print(y)
+        { a: True, b: False }
+
+        >>> x = ivy.Container(a={"d": 1, "c": 3}, b={"d": 20, "c": None})
+        >>> y = x._static_exists(x)
+        >>> print(y)
+        { a: { c: True, d: True }, b: { c: False, d: True } }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "exists",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def exists(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.exists. This method simply wraps
+        the function, and so the docstring for ivy.exists also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            A boolean container detailing if any of the leaf nodes are None.
+            True if not None, False if None.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[1,2,3,4], b=[])
+        >>> y = x.exists()
+        >>> print(y)
+        { a: True, b: True }
+
+        >>> x = ivy.Container(a=None, b=[1,2])
+        >>> y = x.exists()
+        >>> print(y)
+        { a: False, b: True }
+
+        >>> x = ivy.Container(a={"d": 1, "c": 3}, b=None)
+        >>> y = x.exists()
+        >>> print(y)
+        { a: { c: True, d: True }, b: False }
+        """
+        return self._static_exists(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

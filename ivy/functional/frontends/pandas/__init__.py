@@ -1,5 +1,5 @@
-from . import pandas_func_wrappers
-from .pandas_func_wrappers import *
+from . import func_wrapper
+from .func_wrapper import *
 from . import series
 from .series import *
 from . import index
