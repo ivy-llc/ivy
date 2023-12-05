@@ -10,7 +10,16 @@ TREE_LEAF = -1
 _TREE_LEAF = TREE_LEAF
 
 
-class Node: ...
+class Node:
+    def __init__(self):
+        self.left_child = None
+        self.right_child = None
+        self.feature = None
+        self.threshold = None
+        self.impurity = None
+        self.n_node_samples = None
+        self.weighted_n_node_samples = None
+        self.missing_go_to_left = None
 
 
 class Tree:
