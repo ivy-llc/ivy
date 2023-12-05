@@ -5,7 +5,24 @@ EPSILON = ivy.finfo(ivy.double).eps
 INFINITY = ivy.inf
 
 
-class StackRecord: ...
+class StackRecord:
+    def __init__(
+        self,
+        start: int,
+        end: int,
+        depth: int,
+        parent: int,
+        is_left: int,
+        impurity: float,
+        n_constant_features: int,
+    ):
+        self.start = start
+        self.end = end
+        self.depth = depth
+        self.parent = parent
+        self.is_left = is_left
+        self.impurity = impurity
+        self.n_constant_features = n_constant_features
 
 
 class TreeBuilder:
