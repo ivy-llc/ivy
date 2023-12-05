@@ -188,7 +188,7 @@ def gather(
     result = []
     if batch_dims == 0:
         result = torch.take(
-            params, indices, out=out)
+            params, indices.long(), out=out)
     else:
         params_slices = torch.unbind(params, axis=0)
         indices_slices = torch.unbind(indices, axis=0)
