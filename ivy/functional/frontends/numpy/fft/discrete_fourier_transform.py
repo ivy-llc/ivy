@@ -31,7 +31,7 @@ def fftfreq(n, d=1.0):
     if not isinstance(
         n, (int, type(ivy.int8), type(ivy.int16), type(ivy.int32), type(ivy.int64))
     ):
-        raise ValueError("n should be an integer")
+        raise TypeError("n should be an integer")
 
     N = (n - 1) // 2 + 1
     val = 1.0 / (n * d)
@@ -135,7 +135,7 @@ def rfftfreq(n, d=1.0):
     if not isinstance(
         n, (int, type(ivy.int8), type(ivy.int16), type(ivy.int32), type(ivy.int64))
     ):
-        raise ValueError("n should be an integer")
+        raise TypeError("n should be an integer")
 
     val = 1.0 / (n * d)
     N = n // 2 + 1
