@@ -4,6 +4,13 @@ from ._splitter import SplitRecord
 EPSILON = ivy.finfo(ivy.double).eps
 INFINITY = ivy.inf
 INTPTR_MAX = ivy.iinfo(ivy.int32).max
+TREE_UNDEFINED = -2
+_TREE_UNDEFINED = TREE_UNDEFINED
+TREE_LEAF = -1
+_TREE_LEAF = TREE_LEAF
+
+
+class Node: ...
 
 
 class Tree:
@@ -57,8 +64,47 @@ class Tree:
         self.capacity = capacity
         return 0
 
-    def _add_node(self):
-        pass
+    def _add_node(
+        self,
+        parent,
+        is_left,
+        is_leaf,
+        feature,
+        threshold,
+        impurity,
+        n_node_samples,
+        weighted_n_node_samples,
+        missing_go_to_left,
+    ):
+        node_id = self.node_count
+        if node_id >= self.capacity:
+            self._resize_c()
+
+        node = Node()
+        node.impurity = impurity
+        node.n_node_samples = n_node_samples
+        node.weighted_n_node_samples = weighted_n_node_samples
+
+        if parent != _TREE_UNDEFINED:
+            if is_left:
+                self.nodes[parent].left_child = node_id
+            else:
+                self.nodes[parent].right_child = node_id
+
+        if is_leaf:
+            node.left_child = _TREE_LEAF
+            node.right_child = _TREE_LEAF
+            node.feature = _TREE_UNDEFINED
+            node.threshold = _TREE_UNDEFINED
+        else:
+            node.feature = feature
+            node.threshold = threshold
+            node.missing_go_to_left = missing_go_to_left
+
+        self.nodes.append(node)
+        self.node_count += 1
+
+        return node_id
 
     def predict(self, X):
         pass
