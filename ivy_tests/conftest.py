@@ -9,6 +9,10 @@ from hypothesis.database import (
     DirectoryBasedExampleDatabase,
 )
 from hypothesis.extra.redis import RedisExampleDatabase
+from ivy_tests.test_ivy.helpers.pipeline_helper import (
+    BackendHandler,
+    BackendHandlerMode,
+)
 
 
 hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
@@ -96,11 +100,21 @@ def pytest_addoption(parser):
             "this mode should be only used during development on the testing pipeline."
         ),
     )
+    parser.addoption(
+        "--set-backend",
+        action="store_true",
+        default=False,
+        help="Force the testing pipeline to use ivy.set_backend for backend setting",
+    )
 
 
 def pytest_configure(config):
     profile_settings = {}
     getopt = config.getoption
+
+    if getopt("--set-backend"):
+        BackendHandler._update_context(BackendHandlerMode.SetBackend)
+
     max_examples = getopt("--num-examples")
     deadline = getopt("--deadline")
     if (

@@ -2,12 +2,16 @@
 import torch
 from typing import Optional, Union
 
+# local
+import ivy
+
 
 # invert_permutation
 def invert_permutation(
     x: Union[torch.Tensor, list, tuple],
     /,
 ) -> torch.Tensor:
+    x = torch.tensor(x) if not ivy.is_array(x) else x
     sorted_indices = torch.argsort(x)
     inverse = torch.zeros_like(sorted_indices)
     inverse[sorted_indices] = torch.arange(len(x))

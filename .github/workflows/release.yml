@@ -7,7 +7,7 @@ on:
 jobs:
   publish-release-docs:
     name: Publish Release Docs
-    uses: unifyai/workflows/.github/workflows/docs.yml@master
+    uses: unifyai/workflows/.github/workflows/docs.yml@main
     secrets: inherit
 
   deploy:

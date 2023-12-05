@@ -6,7 +6,7 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 
 
 # Helper functions
@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
 def _fill_value(draw):
     with_array = draw(st.sampled_from([True, False]))
     dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         if ivy_backend.is_uint_dtype(dtype):
             ret = draw(helpers.ints(min_value=0, max_value=5))
         elif ivy_backend.is_int_dtype(dtype):

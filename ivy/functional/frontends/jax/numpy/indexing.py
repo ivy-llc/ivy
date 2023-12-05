@@ -1,11 +1,14 @@
 # global
 import inspect
+import abc
 
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
+from .creation import linspace, arange, array
+from .manipulations import transpose, concatenate, expand_dims
 
 
 @to_ivy_arrays_and_back
@@ -80,3 +83,117 @@ def diag_indices_from(arr):
         raise ValueError("All dimensions of input must be of equal length")
     idx = ivy.arange(n, dtype=int)
     return (idx,) * ndim
+
+
+@to_ivy_arrays_and_back
+def indices(dimensions, dtype=int, sparse=False):
+    if sparse:
+        return tuple(
+            ivy.arange(dim)
+            .expand_dims(
+                axis=[j for j in range(len(dimensions)) if i != j],
+            )
+            .astype(dtype)
+            for i, dim in enumerate(dimensions)
+        )
+    else:
+        grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
+        return ivy.stack(grid, axis=0).astype(dtype)
+
+
+def _make_1d_grid_from_slice(s):
+    step = 1 if s.step is None else s.step
+    start = 0 if s.start is None else s.start
+    if s.step is not None and ivy.is_complex_dtype(s.step):
+        newobj = linspace(start, s.stop, int(abs(step)))
+    else:
+        newobj = arange(start, s.stop, step)
+    return newobj
+
+
+class _AxisConcat(abc.ABC):
+    axis: int
+    ndmin: int
+    trans1d: int
+
+    def __getitem__(self, key):
+        key_tup = key if isinstance(key, tuple) else (key,)
+
+        params = [self.axis, self.ndmin, self.trans1d, -1]
+
+        directive = key_tup[0]
+        if isinstance(directive, str):
+            key_tup = key_tup[1:]
+            # check two special cases: matrix directives
+            if directive == "r":
+                params[-1] = 0
+            elif directive == "c":
+                params[-1] = 1
+            else:
+                vec = directive.split(",")
+                k = len(vec)
+                if k < 4:
+                    vec += params[k:]
+                else:
+                    # ignore everything after the first three comma-separated ints
+                    vec = vec[:3] + [params[-1]]
+                try:
+                    params = list(map(int, vec))
+                except ValueError as err:
+                    raise ValueError(
+                        f"could not understand directive {directive!r}"
+                    ) from err
+
+        axis, ndmin, trans1d, matrix = params
+
+        output = []
+        for item in key_tup:
+            if isinstance(item, slice):
+                newobj = _make_1d_grid_from_slice(item)
+                item_ndim = 0
+            elif isinstance(item, str):
+                raise ValueError("string directive must be placed at the beginning")
+            else:
+                newobj = array(item, copy=False)
+                item_ndim = newobj.ndim
+
+            newobj = array(newobj, copy=False, ndmin=ndmin)
+
+            if trans1d != -1 and ndmin - item_ndim > 0:
+                shape_obj = tuple(range(ndmin))
+                # Calculate number of left shifts, with overflow protection by mod
+                num_lshifts = ndmin - abs(ndmin + trans1d + 1) % ndmin
+                shape_obj = tuple(shape_obj[num_lshifts:] + shape_obj[:num_lshifts])
+
+                newobj = transpose(newobj, shape_obj)
+
+            output.append(newobj)
+
+        res = concatenate(tuple(output), axis=axis)
+
+        if matrix != -1 and res.ndim == 1:
+            # insert 2nd dim at axis 0 or 1
+            res = expand_dims(res, matrix)
+
+        return res
+
+    def __len__(self) -> int:
+        return 0
+
+
+class RClass(_AxisConcat):
+    axis = 0
+    ndmin = 1
+    trans1d = -1
+
+
+r_ = RClass()
+
+
+class CClass(_AxisConcat):
+    axis = -1
+    ndmin = 2
+    trans1d = 0
+
+
+c_ = CClass()

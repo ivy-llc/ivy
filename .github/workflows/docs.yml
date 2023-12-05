@@ -3,7 +3,7 @@ on:
   workflow_call:
   push:
     branches:
-      - master
+      - main
     tags:
       - v*
   workflow_dispatch:
@@ -11,5 +11,5 @@ on:
 jobs:
   update-docs:
     name: Update docs
-    uses: unifyai/workflows/.github/workflows/docs.yml@master
+    uses: unifyai/workflows/.github/workflows/docs.yml@main
     secrets: inherit

@@ -9,34 +9,33 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @st.composite
 def _invert_permutation_helper(draw):
-    return ["int64"], [
-        np.array(
-            draw(
-                st.permutations(
-                    list(range(draw(st.integers(min_value=3, max_value=10))))
-                )
-            )
-        )
-    ]
+    perm = draw(
+        st.permutations(list(range(draw(st.integers(min_value=3, max_value=10)))))
+    )
+    if draw(st.booleans()):
+        perm = np.array(perm)
+    dtype = draw(st.sampled_from(["int32", "int64"]))
+    return dtype, perm
 
 
 # invert_permutation
 @handle_test(
     fn_tree="functional.ivy.experimental.invert_permutation",
-    dtype_and_x=_invert_permutation_helper(),
+    dtype_and_perm=_invert_permutation_helper(),
     test_instance_method=st.just(False),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
-def test_invert_permutation(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    dtype, x = dtype_and_x
+def test_invert_permutation(dtype_and_perm, test_flags, backend_fw, fn_name, on_device):
+    dtype, perm = dtype_and_perm
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=[dtype],
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        x=x[0],
+        x=perm,
     )
 
 

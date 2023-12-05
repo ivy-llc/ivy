@@ -10,7 +10,7 @@ With our central goal being to unify all ML frameworks, you would be entirely fo
 
 Won’t adding a new “unified” framework just make the problem even worse…
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/standardization/how_standards_proliferate.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/standardization/how_standards_proliferate.png?raw=true
    :align: center
    :width: 70%
    :target: https://xkcd.com/927/
@@ -52,7 +52,7 @@ The Array API Standard
 The `Consortium for Python Data API Standards <https://data-apis.org>`_ are on a mission to create this shared standard.
 At Ivy, we support their efforts 100% and we are in the process of adopting their standard ourselves.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/standardization/consortium.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/standardization/consortium.png?raw=true
    :align: center
    :width: 25%
 
@@ -60,14 +60,14 @@ The consortium is lead by `Quansight <https://www.quansight.com>`_, an open-sour
 Other collaborators include members of: `TensorFlow <https://www.tensorflow.org>`_, `JAX <https://jax.readthedocs.io/en/latest/>`_, `Google <https://about.google>`_, `OctoML <https://octoml.ai>`_ and `einops <https://einops.rocks>`_.
 Further, the consortium is sponsored by `LG Electronics <https://mail.google.com/chat/u/0/#chat/dm/lZAjU4AAAAE>`_, `Microsoft <https://www.microsoft.com/en-us>`_, `Quansight <https://www.quansight.com>`_, `D E Shaw and Co <https://www.deshaw.com>`_, `TensorFlow <https://www.tensorflow.org>`_, `JAX <https://jax.readthedocs.io/en/latest/>`_ and `Intel <https://www.intel.com/content/www/us/en/homepage.html>`_.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/standardization/array_api_backers.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/standardization/array_api_backers.png?raw=true
    :align: center
    :width: 100%
 
 Together, all major ML frameworks are involved in the the Array API standard in one way or another.
 This is a promising sign in the pursuit of unification.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/logos/supported/frameworks.png?raw=true
    :align: center
    :width: 60%
 

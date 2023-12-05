@@ -9,7 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     assert_all_close,
     handle_frontend_test,
-    update_backend,
+    BackendHandler,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
@@ -68,7 +68,7 @@ def test_jax_svd(
     )
 
     if compute_uv:
-        with update_backend(backend_fw) as ivy_backend:
+        with BackendHandler.update_backend(backend_fw) as ivy_backend:
             ret = [ivy_backend.to_numpy(x) for x in ret]
         frontend_ret = [np.asarray(x) for x in frontend_ret]
 
@@ -84,7 +84,7 @@ def test_jax_svd(
             ground_truth_backend=frontend,
         )
     else:
-        with update_backend(backend_fw) as ivy_backend:
+        with BackendHandler.update_backend(backend_fw) as ivy_backend:
             ret = ivy_backend.to_numpy(ret)
         assert_all_close(
             ret_np=ret,
@@ -167,7 +167,7 @@ def test_jax_eig(
         a=x,
     )
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         ret = [ivy_backend.to_numpy(x).astype(np.float64) for x in ret]
     frontend_ret = [x.astype(np.float64) for x in frontend_ret]
 
@@ -229,7 +229,7 @@ def test_jax_eigh(
         UPLO=UPLO,
         symmetrize_input=symmetrize_input,
     )
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         ret = [ivy_backend.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
@@ -366,7 +366,7 @@ def test_jax_qr(
         a=np.asarray(x[0], dtype[0]),
         mode=mode,
     )
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         ret = [ivy_backend.to_numpy(x).astype(np.float64) for x in ret]
     frontend_ret = [x.astype(np.float64) for x in frontend_ret]
 
@@ -896,12 +896,14 @@ def test_jax_cond(
 
 # multi_dot
 @handle_frontend_test(
-    fn_tree="jax.lax.linalg.multi_dot",
+    fn_tree="jax.numpy.linalg.multi_dot",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        num_arrays=2,
+        shared_dtype=True,
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -910,34 +912,22 @@ def test_jax_cond(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_multi_dot(
+def test_jax_multi_dot(
     *,
     dtype_and_x,
     on_device,
     fn_tree,
     frontend,
     test_flags,
+    backend_fw
 ):
     dtype, x = dtype_and_x
-    x = np.asarray(x[0], dtype=dtype[0])
-
-    ret, frontend_ret = helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=False,
-        args=(x,),
-    )
-
-    ret = ivy.to_numpy(ret)
-    frontend_ret = np.asarray(frontend_ret)
-
-    assert_all_close(
-        ret_np=ret,
-        ret_from_gt_np=frontend_ret,
-        rtol=1e-2,
-        atol=1e-2,
-        ground_truth_backend=frontend,
+        arrays=(x[0],x[1]),
+        backend_to_test=backend_fw,
     )

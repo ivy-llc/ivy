@@ -6,7 +6,7 @@ from hypothesis import strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
 
 
 # random_uniform
@@ -277,7 +277,7 @@ def test_randint(*, dtype_low_high, seed, test_flags, backend_fw, fn_name, on_de
 )
 def test_seed(seed_val, backend_fw):
     # smoke test
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         ivy_backend.seed(seed_value=seed_val)
 
 

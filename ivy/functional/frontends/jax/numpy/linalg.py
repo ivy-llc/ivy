@@ -129,5 +129,5 @@ def cond(x, p=None):
 
 
 @to_ivy_arrays_and_back
-def multi_dot(a):
-    return ivy.multi_dot(a)
+def multi_dot(arrays, *, precision=None):
+    return ivy.multi_dot(arrays)

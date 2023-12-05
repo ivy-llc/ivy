@@ -4,7 +4,7 @@ ML Explosion
 The number of open source ML projects has grown considerably in recent years, especially Deep Learning, as can be seen from the rapidly increasing number of GitHub repos containing the term “Deep Learning” over time.
 These projects are written in many different frameworks.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/ml_explosion/num_dl_repos_over_time.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/ml_explosion/num_dl_repos_over_time.png?raw=true
    :align: center
    :width: 80%
 
@@ -13,7 +13,7 @@ While this is a wonderful thing for researchers and developers, when we also con
 For software development pipelines where rapid prototyping and collaboration are vital, this is a significant bottleneck.
 As new future frameworks become available, backend-specific code quickly becomes outdated and obsolete, and users of these frameworks are constantly re-inventing the wheel.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/ml_explosion/ml_framework_evolution.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/ml_explosion/ml_framework_evolution.png?raw=true
    :align: center
    :width: 80%
 

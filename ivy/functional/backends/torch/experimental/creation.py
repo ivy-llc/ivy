@@ -152,6 +152,25 @@ def unsorted_segment_min(
     return res
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: bool = True,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.blackman_window(
+        size,
+        periodic=periodic,
+        dtype=dtype,
+    )
+
+
+blackman_window.support_native_out = False
+
+
 def unsorted_segment_sum(
     data: torch.Tensor,
     segment_ids: torch.Tensor,
@@ -175,3 +194,19 @@ def unsorted_segment_sum(
             res[i] = torch.sum(data[mask_index], dim=0)
 
     return res
+
+
+def trilu(
+    x: torch.Tensor,
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if upper:
+        return torch.triu(x, diagonal=k, out=out)
+    return torch.tril(x, diagonal=k, out=out)
+
+
+trilu.support_native_out = True

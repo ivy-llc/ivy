@@ -6,7 +6,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import assert_all_close
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 
 
 # svd
@@ -57,7 +57,7 @@ def test_jax_svd(
     )
 
     if compute_uv:
-        with update_backend(backend_fw) as ivy_backend:
+        with BackendHandler.update_backend(backend_fw) as ivy_backend:
             ret = [ivy_backend.to_numpy(x) for x in ret]
         frontend_ret = [np.asarray(x) for x in frontend_ret]
 
@@ -73,7 +73,7 @@ def test_jax_svd(
             ground_truth_backend=frontend,
         )
     else:
-        with update_backend(backend_fw) as ivy_backend:
+        with BackendHandler.update_backend(backend_fw) as ivy_backend:
             ret = ivy_backend.to_numpy(ret)
         assert_all_close(
             ret_np=ret,
@@ -179,7 +179,7 @@ def test_jax_eigh(
         lower=lower,
         symmetrize_input=symmetrize_input,
     )
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         ret = [ivy_backend.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 

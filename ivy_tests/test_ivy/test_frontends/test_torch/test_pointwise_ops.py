@@ -2834,6 +2834,39 @@ def test_torch_igamma(
     )
 
 
+# ldexp
+@handle_frontend_test(
+    fn_tree="torch.ldexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_ldexp(
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        input=x[0],
+        other=x[1],
+    )
+
+
 @handle_frontend_test(
     fn_tree="torch.lgamma",
     dtype_and_input=helpers.dtype_and_values(
@@ -2858,4 +2891,46 @@ def test_torch_lgamma(
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
+    )
+
+
+# gradient
+@handle_frontend_test(
+    fn_tree="torch.gradient",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        force_int_axis=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=4,
+        valid_axis=True,
+    ),
+    spacing=helpers.ints(
+        min_value=-3,
+        max_value=3,
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_gradient(
+    *,
+    dtype_input_axis,
+    spacing,
+    test_flags,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+):
+    input_dtype, x, dim = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        spacing=spacing,
+        dim=dim,
     )

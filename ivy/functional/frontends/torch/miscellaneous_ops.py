@@ -2,6 +2,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.torch import promote_types_of_torch_inputs
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -413,6 +414,55 @@ def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
 
 
+# TODO: Add Ivy function for block_diag but only scipy.linalg and \
+# and torch supports block_diag currently
+@to_ivy_arrays_and_back
+def block_diag(*tensors):
+    shapes_list = [ivy.shape(t) for t in tensors]
+    # TODO: Add ivy function to return promoted dtype for multiple tensors at once
+    promoted_dtype = ivy.as_ivy_dtype(tensors[0].dtype)
+    for idx in range(1, len(tensors)):
+        promoted_dtype = torch_frontend.promote_types_torch(
+            tensors[idx - 1].dtype, tensors[idx].dtype
+        )
+
+    inp_tensors = [ivy.asarray(t, dtype=promoted_dtype) for t in tensors]
+    tensors_2d = []
+    result_dim_0, result_dim_1 = 0, 0
+    for idx, t_shape in enumerate(shapes_list):
+        dim_0, dim_1 = 1, 1
+        if len(t_shape) > 2:
+            raise ivy.exceptions.IvyError(
+                "Input tensors must have 2 or fewer dimensions."
+                f"Input {idx} has {len(t_shape)} dimensions"
+            )
+        elif len(t_shape) == 2:
+            dim_0, dim_1 = t_shape
+            tensors_2d.append(inp_tensors[idx])
+        elif len(t_shape) == 1:
+            dim_1 = t_shape[0]
+            tensors_2d.append(ivy.reshape(inp_tensors[idx], shape=(dim_0, dim_1)))
+        else:
+            tensors_2d.append(ivy.reshape(inp_tensors[idx], shape=(dim_0, dim_1)))
+
+        result_dim_0 += dim_0
+        result_dim_1 += dim_1
+        shapes_list[idx] = (dim_0, dim_1)
+
+    ret = ivy.zeros((result_dim_0, result_dim_1), dtype=promoted_dtype)
+    ret_dim_0 = 0
+    ret_dim_1 = 0
+    for idx, t_shape in enumerate(shapes_list):
+        dim_0, dim_1 = t_shape
+        ret[ret_dim_0 : ret_dim_0 + dim_0, ret_dim_1 : ret_dim_1 + dim_1] = (
+            ivy.copy_array(tensors_2d[idx])
+        )
+        ret_dim_0 += dim_0
+        ret_dim_1 += dim_1
+
+    return ret
+
+
 @with_supported_dtypes(
     {"2.0.1 and below": ("complex64", "complex128")},
     "torch",
@@ -426,6 +476,24 @@ def view_as_real(input):
     re_part = ivy.real(input)
     im_part = ivy.imag(input)
     return ivy.stack((re_part, im_part), axis=-1)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+def view_as_complex(input):
+    if ivy.shape(input)[-1] != 2:
+        raise ivy.exceptions.IvyError("The last dimension must have a size of 2")
+
+    real, imaginary = ivy.split(
+        ivy.stop_gradient(input, preserve_type=False),
+        num_or_size_splits=2,
+        axis=ivy.get_num_dims(input) - 1,
+    )
+    dtype = ivy.complex64 if input.dtype == ivy.float32 else ivy.complex128
+    real = ivy.squeeze(real, axis=ivy.get_num_dims(real) - 1).astype(dtype)
+    imag = ivy.squeeze(imaginary, axis=ivy.get_num_dims(imaginary) - 1).astype(dtype)
+    complex_ = real + imag * 1j
+    return ivy.array(complex_, dtype=dtype)
 
 
 @to_ivy_arrays_and_back

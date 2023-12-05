@@ -2845,7 +2845,7 @@ class ContainerBase(dict, abc.ABC):
                 )
             else:
                 return_dict[k] = v
-        return ivy.Container(return_dict, **self._config)
+        return return_dict
 
     def cont_prune_keys(self, query_keys, ignore_none=True):
         """
@@ -4245,7 +4245,7 @@ class ContainerBase(dict, abc.ABC):
             if ivy.exists(state_dict["_local_ivy"]):
                 if len(state_dict["_local_ivy"]) > 0:
                     state_dict["_local_ivy"] = ivy.with_backend(
-                        state_dict["_local_ivy"], cached=True
+                        state_dict["_local_ivy"]
                     )
                 else:
                     state_dict["_local_ivy"] = ivy
@@ -4254,9 +4254,7 @@ class ContainerBase(dict, abc.ABC):
             if "ivyh" in config_in:
                 if ivy.exists(config_in["ivyh"]):
                     if len(config_in["ivyh"]) > 0:
-                        config_in["ivyh"] = ivy.with_backend(
-                            config_in["ivyh"], cached=True
-                        )
+                        config_in["ivyh"] = ivy.with_backend(config_in["ivyh"])
                     else:
                         config_in["ivyh"] = ivy
             state_dict["_config_in"] = config_in
@@ -4265,7 +4263,7 @@ class ContainerBase(dict, abc.ABC):
             if "ivyh" in config:
                 if ivy.exists(config["ivyh"]):
                     if len(config["ivyh"]) > 0:
-                        config["ivyh"] = ivy.with_backend(config["ivyh"], cached=True)
+                        config["ivyh"] = ivy.with_backend(config["ivyh"])
                     else:
                         config["ivyh"] = ivy
             state_dict["_config"] = config

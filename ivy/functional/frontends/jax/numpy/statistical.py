@@ -95,19 +95,20 @@ def sum(
     where=None,
     promote_integers=True,
 ):
-    if dtype is None:
-        dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
-
     # TODO: promote_integers is only supported from JAX v0.4.10
     if dtype is None and promote_integers:
-        if ivy.is_bool_dtype(dtype):
+        if ivy.is_bool_dtype(a.dtype):
             dtype = ivy.default_int_dtype()
-        elif ivy.is_uint_dtype(dtype):
-            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
-                dtype = ivy.default_uint_dtype()
-        elif ivy.is_int_dtype(dtype):
-            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
-                dtype = ivy.default_int_dtype()
+        elif ivy.is_uint_dtype(a.dtype):
+            dtype = "uint64"
+            a = ivy.astype(a, dtype)
+        elif ivy.is_int_dtype(a.dtype):
+            dtype = "int64"
+            a = ivy.astype(a, dtype)
+        else:
+            dtype = a.dtype
+    elif dtype is None and not promote_integers:
+        dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
 
     if initial:
         if axis is None:
@@ -246,7 +247,7 @@ def nanmax(
                 ax = axis[0] % len(s)
             else:
                 ax = axis % len(s)
-            s[ax] = 1
+            s[ax] = ivy.array(1)
         header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
@@ -267,7 +268,7 @@ def nanmax(
             )
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
-    return res
+    return res.astype(ivy.dtype(a))
 
 
 @to_ivy_arrays_and_back
@@ -293,7 +294,8 @@ def nanmin(
                 ax = axis[0] % len(s)
             else:
                 ax = axis % len(s)
-            s[ax] = 1
+
+            s[ax] = ivy.array(1)
         header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
@@ -314,7 +316,7 @@ def nanmin(
             )
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
-    return res
+    return res.astype(ivy.dtype(a))
 
 
 @handle_jax_dtype
@@ -441,7 +443,7 @@ def nanmedian(
 ):
     return ivy.nanmedian(
         a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
-    )
+    ).astype(a.dtype)
 
 
 @to_ivy_arrays_and_back

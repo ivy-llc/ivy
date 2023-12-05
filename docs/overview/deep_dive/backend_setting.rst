@@ -9,7 +9,6 @@ Backend Setting
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`backend setting channel`: https://discord.com/channels/799879767196958751/982737886963187772
-.. _`backend setting forum`: https://discord.com/channels/799879767196958751/982737886963187772
 
 The backend framework can either be set by calling :code:`ivy.set_backend(backend_name)` or it can inferred from the arguments.
 For the latter, a global variable `implicit_backend`_ is located in the file which is initialized as numpy, and is always used to infer the backend in cases where: (a) no backend has been set using the :code:`set_backend` function and (b) the backend cannot be inferred from the inputs.
@@ -58,13 +57,13 @@ In addition, all the previously set backends can be cleared by calling :func:`iv
 Dynamic Backend Setting
 -----------------------
 
-.. _`ivy.set_dynamic_backend`: https://github.com/unifyai/ivy/blob/master/ivy/__init__.py#L1134.
-.. _`ivy.unset_dynamic_backend`: https://github.com/unifyai/ivy/blob/master/ivy/__init__.py#L1143.
-.. _`ivy.dynamic_backend_as`: https://github.com/unifyai/ivy/blob/master/ivy/__init__.py#L1174.
-.. _`ivy.Array`: https://github.com/unifyai/ivy/blob/master/ivy/data_classes/array/array.py#L186.
-.. _`ivy.Container`: https://github.com/unifyai/ivy/blob/master/ivy/data_classes/container/base.py#L4166.
-.. _`converted to numpy`: https://github.com/unifyai/ivy/blob/master/ivy/utils/backend/handler.py#L283.
-.. _`converted from numpy`: https://github.com/unifyai/ivy/blob/master/ivy/utils/backend/handler.py#L363.
+.. _`ivy.set_dynamic_backend`: https://github.com/unifyai/ivy/blob/main/ivy/__init__.py#L1134.
+.. _`ivy.unset_dynamic_backend`: https://github.com/unifyai/ivy/blob/main/ivy/__init__.py#L1143.
+.. _`ivy.dynamic_backend_as`: https://github.com/unifyai/ivy/blob/main/ivy/__init__.py#L1174.
+.. _`ivy.Array`: https://github.com/unifyai/ivy/blob/main/ivy/data_classes/array/array.py#L186.
+.. _`ivy.Container`: https://github.com/unifyai/ivy/blob/main/ivy/data_classes/container/base.py#L4166.
+.. _`converted to numpy`: https://github.com/unifyai/ivy/blob/main/ivy/utils/backend/handler.py#L283.
+.. _`converted from numpy`: https://github.com/unifyai/ivy/blob/main/ivy/utils/backend/handler.py#L363.
 
 Working with different backends in Ivy can be challenging, especially when you need to switch between backends frequently.
 To make this easier, users can make use of the dynamic backend attribute of :class:`ivy.Array` and :class:`ivy.Container` classes which allow you to automatically convert ivy arrays to the new backend whenever the backend is changed.
@@ -152,7 +151,7 @@ If the user's system doesn't have the backend framework installed, we default to
 
 This should have hopefully given you a good feel for how the backend framework is set.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `backend setting channel`_ or in the `backend setting forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `backend setting channel`_!
 
 
 **Video**

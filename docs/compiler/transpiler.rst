@@ -61,7 +61,7 @@ Transpiler API
 .. py:function:: ivy.unify(*objs, source = None, args = None, kwargs = None, **transpile_kwargs,)
 
   Transpiles an object into Ivy code. It's an alias to 
-  ``ivy.transpile(..., to=”ivy”, ...)``
+  ``ivy.transpile(..., to="ivy", ...)``
 
   :param objs: Native callable(s) to transpile.
   :type objs: ``Callable``
@@ -151,8 +151,8 @@ Transpiling Modules
 ~~~~~~~~~~~~~~~~~~~
 
 Last but not least, Ivy can also transpile trainable modules from one framework to 
-another, at the moment we support ``torch.nn.Module`` when ``to=”torch”``, 
-``tf.keras.Model`` when ``to=”tensorflow”``, and haiku models when ``to=”jax”``.
+another, at the moment we support ``torch.nn.Module`` when ``to="torch"``, 
+``tf.keras.Model`` when ``to="tensorflow"``, and haiku models when ``to="jax"``.
 
 .. code-block::
 

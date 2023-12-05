@@ -620,7 +620,7 @@ def choose_random_backend(excluded=None):
 
 # noinspection PyProtectedMember
 @prevent_access_locally
-def with_backend(backend: str, cached: bool = False):
+def with_backend(backend: str, cached: bool = True):
     # Use already compiled object
     if cached and backend in compiled_backends.keys():
         return compiled_backends[backend][-1]

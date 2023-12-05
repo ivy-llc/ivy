@@ -8,7 +8,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
 
 
 @st.composite
@@ -115,7 +115,7 @@ def test_execute_with_gradients(
     assume(not backend_fw == "numpy")
 
     def func(xs):
-        with update_backend(backend_fw) as ivy_backend:
+        with BackendHandler.update_backend(backend_fw) as ivy_backend:
             if isinstance(xs, ivy_backend.Container):
                 array_idxs = ivy_backend.nested_argwhere(xs, ivy_backend.is_array)
                 array_vals = ivy_backend.multi_index_nest(xs, array_idxs)
@@ -154,7 +154,7 @@ def test_execute_with_gradients(
 def test_value_and_grad(x, dtype, func, backend_fw):
     if backend_fw == "numpy":
         return
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         var = ivy_backend.ivy.functional.ivy.gradients._variable(
             ivy_backend.array(x, dtype=dtype)
         )
@@ -164,7 +164,7 @@ def test_value_and_grad(x, dtype, func, backend_fw):
             ret=value, backend=backend_fw
         ), helpers.flatten_and_to_np(ret=grad, backend=backend_fw)
 
-    with update_backend("tensorflow") as gt_backend:
+    with BackendHandler.update_backend("tensorflow") as gt_backend:
         var = gt_backend.ivy.functional.ivy.gradients._variable(
             gt_backend.array(x, dtype=dtype)
         )
@@ -192,7 +192,7 @@ def test_jac(x, dtype, func_str, backend_fw):
     if backend_fw == "numpy":
         pytest.skip()
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         f = ivy_backend.__dict__[func_str]
         func = lambda x: ivy_backend.mean(f(x))
         _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
@@ -202,7 +202,7 @@ def test_jac(x, dtype, func_str, backend_fw):
         jacobian_np = helpers.flatten_and_to_np(ret=jacobian, backend=backend_fw)
         assert jacobian_np != []
 
-    with update_backend("tensorflow") as gt_backend:
+    with BackendHandler.update_backend("tensorflow") as gt_backend:
         f = gt_backend.__dict__[func_str]
         func = lambda x: gt_backend.mean(f(x))
         _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
@@ -219,7 +219,7 @@ def test_jac(x, dtype, func_str, backend_fw):
     # Test nested input
     func = lambda xs: (2 * xs[1]["x2"], xs[0])
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
         var1 = _variable_fn(ivy_backend.array(x[0], dtype=dtype))
         var2 = _variable_fn(ivy_backend.array(x[1], dtype=dtype))
@@ -228,7 +228,7 @@ def test_jac(x, dtype, func_str, backend_fw):
         jacobian = fn(var)
         jacobian_np = helpers.flatten_and_to_np(ret=jacobian, backend=backend_fw)
 
-    with update_backend("tensorflow") as gt_backend:
+    with BackendHandler.update_backend("tensorflow") as gt_backend:
         _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
         var1 = _variable_fn(gt_backend.array(x[0], dtype=dtype))
         var2 = _variable_fn(gt_backend.array(x[1], dtype=dtype))
@@ -244,7 +244,7 @@ def test_jac(x, dtype, func_str, backend_fw):
         assert np.allclose(jacobian, jacobian_from_gt)
 
     # Test func with non 0-dim output
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         func = ivy_backend.__dict__[func_str]
         _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
         var = _variable_fn(ivy_backend.array(x, dtype=dtype))
@@ -252,7 +252,7 @@ def test_jac(x, dtype, func_str, backend_fw):
         jacobian = fn(var)
         jacobian_np = helpers.flatten_and_to_np(ret=jacobian, backend=backend_fw)
 
-    with update_backend("tensorflow") as gt_backend:
+    with BackendHandler.update_backend("tensorflow") as gt_backend:
         func = gt_backend.__dict__[func_str]
         _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
         var = _variable_fn(gt_backend.array(x, dtype=dtype))
@@ -282,7 +282,7 @@ def test_grad(x, dtype, func, backend_fw, nth):
     ):
         return
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
         var = _variable_fn(ivy_backend.array(x, dtype=dtype))
         fn = ivy_backend.grad(func)
@@ -292,7 +292,7 @@ def test_grad(x, dtype, func, backend_fw, nth):
         grad = fn(var)
         grad_np = helpers.flatten_and_to_np(ret=grad, backend=backend_fw)
 
-    with update_backend("tensorflow") as gt_backend:
+    with BackendHandler.update_backend("tensorflow") as gt_backend:
         _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
         var = _variable_fn(ivy.array(x, dtype=dtype))
         fn = gt_backend.grad(func)

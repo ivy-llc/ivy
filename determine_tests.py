@@ -105,7 +105,7 @@ def main():
             )
             subprocess.run(["git", "fetch", "upstream"])
             lca_sha = subprocess.check_output(
-                ["git", "merge-base", "HEAD", "upstream/master"]
+                ["git", "merge-base", "HEAD", "upstream/main"]
             )
             lca_hash = lca_sha.decode().strip()
             for commit in Repository(".", single=lca_hash).traverse_commits():

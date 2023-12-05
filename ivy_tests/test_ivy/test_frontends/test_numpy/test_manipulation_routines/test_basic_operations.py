@@ -5,7 +5,7 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 
 
 @st.composite
@@ -41,7 +41,7 @@ def test_numpy_copyto(
     if isinstance(where, list) or isinstance(where, tuple):
         where = where[0]
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         src_ivy = ivy_backend.functional.frontends.numpy.array(xs[0])
         dst_ivy = ivy_backend.functional.frontends.numpy.array(xs[1])
         ivy_backend.functional.frontends.numpy.copyto(

@@ -370,7 +370,7 @@ The actual implementation for the :class:`ivy.Linear` layer exposed in the Ivy s
               self.v.b if self._with_bias else None)
 
 The :class:`ivy.Initializer` class has a single abstract method, :code:`create_variables(var_shape, dev, fan_out=None, fan_in=None, *args, **kwargs)`.
-Check out the `code <https://github.com/unifyai/ivy/blob/master/ivy/stateful/initializers.py>`_ or `docs <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html#initializers>`_ for more details.
+Check out the `code <https://github.com/unifyai/ivy/blob/main/ivy/stateful/initializers.py>`_ or `docs <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html#initializers>`_ for more details.
 The default initializer for the weights is :class:`ivy.GlorotUniform` and for this bias is :class:`ivy.Zeros`.
 Let’s take a quick look at what these look like.
 :class:`ivy.GlorotUniform` derives from a more general :class:`ivy.Uniform` initializer class, and is then simply implemented as follows:

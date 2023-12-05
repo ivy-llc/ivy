@@ -3,7 +3,6 @@
 # global
 import gc
 import inspect
-import itertools
 import math
 from functools import wraps
 from numbers import Number
@@ -34,6 +33,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     inputs_to_native_shapes,
     outputs_to_ivy_shapes,
+    outputs_to_ivy_arrays,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -1037,8 +1037,8 @@ def clip_vector_norm(
 
 @handle_exceptions
 @handle_nestable
-@handle_array_function
 @inputs_to_ivy_arrays
+@handle_array_function
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -1565,7 +1565,10 @@ def to_native_shape(
      ret
         the input in its native framework form
     """
-    if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
+    native_shape_type = (ivy.NativeShape,)
+    if ivy.current_backend_str() == "torch":
+        native_shape_type += (tuple,)
+    if len(backend_stack) != 0 and isinstance(shape, native_shape_type):
         return shape
     ivy.utils.assertions.check_isinstance(
         shape, (int, list, tuple, ivy.Array, ivy.NativeArray, ivy.Shape)
@@ -2675,8 +2678,8 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 
 @handle_nestable
-@handle_view_indexing
 @handle_partial_mixed_function
+@handle_view_indexing
 @inputs_to_ivy_arrays
 @handle_array_function
 @handle_device_shifting
@@ -2757,8 +2760,8 @@ get_item.mixed_backend_wrappers = {
 
 
 @handle_nestable
-@handle_view_indexing
 @handle_partial_mixed_function
+@handle_view_indexing
 @inputs_to_ivy_arrays
 @handle_array_function
 def set_item(
@@ -2810,19 +2813,28 @@ def set_item(
     """
     if copy:
         x = ivy.copy_array(x)
-    if 0 in x.shape:
+    if 0 in x.shape or 0 in val.shape:
         return x
+    inv_perm = None
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             query = ivy.tile(query, (x.shape[0],))
         target_shape = ivy.get_item(x, query).shape
         query = ivy.nonzero(query, as_tuple=False)
     else:
-        query, target_shape = _parse_query(query, x.shape, scatter=True)
+        query, target_shape, vector_inds = _parse_query(query, x.shape, scatter=True)
+        if vector_inds is not None:
+            perm = [
+                *vector_inds,
+                *[i for i in range(len(x.shape)) if i not in vector_inds],
+            ]
+            x = ivy.permute_dims(x, axes=perm)
+            inv_perm = ivy.invert_permutation(perm).to_list()
     val = _broadcast_to(val, target_shape).astype(x.dtype)
-    if copy:
-        x = ivy.copy_array(x)
-    return ivy.scatter_nd(query, val, reduction="replace", out=x)
+    ret = ivy.scatter_nd(query, val, reduction="replace", out=x)
+    if inv_perm is not None:
+        return ivy.permute_dims(x, axes=inv_perm)
+    return ret
 
 
 set_item.mixed_backend_wrappers = {
@@ -2844,12 +2856,8 @@ def _parse_query(query, x_shape, scatter=False):
     # check if non-slice queries are in consecutive positions
     # if so, they have to be moved to the front
     # https://numpy.org/neps/nep-0021-advanced-indexing.html#mixed-indexing
-    # relevant only for gathering
-    if not scatter:
-        non_slice_q_idxs = [i for i, q in enumerate(query) if ivy.is_array(q)]
-        to_front = len(non_slice_q_idxs) > 1 and any(ivy.diff(non_slice_q_idxs) != 1)
-    else:
-        to_front = False
+    non_slice_q_idxs = [i for i, q in enumerate(query) if ivy.is_array(q)]
+    to_front = len(non_slice_q_idxs) > 1 and any(ivy.diff(non_slice_q_idxs) != 1)
 
     # extract newaxis queries
     if not scatter:
@@ -2890,7 +2898,7 @@ def _parse_query(query, x_shape, scatter=False):
     if len(query) < len(x_shape):
         query += [ivy.arange(0, s, 1).astype(ivy.int64) for s in x_shape[len(query) :]]
 
-    # calculate target_shape, i.e. the shape the gathered values should be in
+    # calculate target_shape, i.e. the shape the gathered/scattered values should have
     if len(array_inds) and to_front:
         target_shape = (
             [list(new_arrays[0].shape)]
@@ -2914,8 +2922,8 @@ def _parse_query(query, x_shape, scatter=False):
         )
     if not scatter:
         for ax in new_axes:
-            if len(array_inds) and to_front and ax <= array_inds[-1]:
-                ax = array_inds[0] + 1
+            if len(array_inds) and to_front:
+                ax -= sum(1 for x in array_inds if x < ax) - 1
             target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
     target_shape = _deep_flatten(target_shape)
 
@@ -2931,41 +2939,61 @@ def _parse_query(query, x_shape, scatter=False):
             for arr in new_arrays
         ]
     if len(array_inds) and to_front:
+        post_arrays = (
+            ivy.stack(
+                ivy.meshgrid(
+                    *[v for i, v in enumerate(query) if i not in array_inds],
+                    indexing="ij",
+                ),
+                axis=-1,
+            ).reshape((-1, len(query) - len(array_inds)))
+            if len(array_inds) < len(query)
+            else ivy.empty((1, 0))
+        )
         indices = ivy.array(
-            [
-                (*k, *i)
-                for k in zip(*new_arrays)
-                for i in itertools.product(
-                    *[v for i, v in enumerate(query) if i not in array_inds]
-                )
-            ]
+            [(*arr, *post) for arr in zip(*new_arrays) for post in post_arrays]
         ).reshape((*target_shape, len(x_shape)))
     elif len(array_inds):
+        pre_arrays = (
+            ivy.stack(
+                ivy.meshgrid(
+                    *[v for i, v in enumerate(query) if i < array_inds[0]],
+                    indexing="ij",
+                ),
+                axis=-1,
+            ).reshape((-1, array_inds[0]))
+            if array_inds[0] > 0
+            else ivy.empty((1, 0))
+        )
+        post_arrays = (
+            ivy.stack(
+                ivy.meshgrid(
+                    *[v for i, v in enumerate(query) if i > array_inds[-1]],
+                    indexing="ij",
+                ),
+                axis=-1,
+            ).reshape((-1, len(query) - 1 - array_inds[-1]))
+            if array_inds[-1] < len(query) - 1
+            else ivy.empty((1, 0))
+        )
         indices = ivy.array(
             [
-                (*i, *k, *j)
-                for i in itertools.product(
-                    *[v for i, v in enumerate(query) if i < array_inds[0]]
-                )
-                for k in zip(*new_arrays)
-                for j in itertools.product(
-                    *[v for i, v in enumerate(query) if i > array_inds[-1]]
-                )
+                (*pre, *arr, *post)
+                for pre in pre_arrays
+                for arr in zip(*new_arrays)
+                for post in post_arrays
             ]
         ).reshape((*target_shape, len(x_shape)))
     else:
-        indices = ivy.array([(*i,) for i in itertools.product(*query)]).reshape(
+        indices = ivy.stack(ivy.meshgrid(*query, indexing="ij"), axis=-1).reshape(
             (*target_shape, len(x_shape))
         )
 
-    if scatter:
-        return indices.astype(ivy.int64), target_shape
-    else:
-        return (
-            indices.astype(ivy.int64),
-            target_shape,
-            array_inds if len(array_inds) and to_front else None,
-        )
+    return (
+        indices.astype(ivy.int64),
+        target_shape,
+        array_inds if len(array_inds) and to_front else None,
+    )
 
 
 def _parse_ellipsis(so, ndims):
@@ -3007,7 +3035,7 @@ def _parse_slice(idx, s):
                 stop = stop + s
     else:
         start = s - 1 if idx.start is None else idx.start
-        if start <= -s:
+        if start < -s:
             stop = start
         else:
             if start >= s:
@@ -3020,10 +3048,10 @@ def _parse_slice(idx, s):
                 stop = idx.stop
                 if stop > s:
                     stop = s
-                elif stop <= -s:
+                elif stop < -s:
+                    stop = -1
+                elif stop == -s:
                     stop = 0
-                    if start == 0:
-                        stop = -1
                 elif stop < 0:
                     stop = stop + s
     q_i = ivy.arange(start, stop, step).to_list()
@@ -3401,8 +3429,8 @@ def scatter_flat(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
-@to_native_arrays_and_back
 @inputs_to_native_shapes
+@to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
 def scatter_nd(
@@ -3698,8 +3726,9 @@ def multiprocessing(context: Optional[str] = None):
 @handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
+@inputs_to_native_arrays
 @outputs_to_ivy_shapes
-@to_native_arrays_and_back
+@outputs_to_ivy_arrays
 @handle_array_function
 @handle_device_shifting
 def shape(
