@@ -506,4 +506,4 @@ def tridiagonal_solve(
         )
         return ivy.solve(constructed_matrix, rhs_copy)
     else:
-        raise "Unexpected diagonals_format"
+        raise ValueError("Unexpected diagonals_format")
