@@ -187,15 +187,16 @@ def gather(
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
-        if params.dim() > indices.dim():
-            params_slices = torch.unbind(params, axis=0)
-            indices_expanded = indices.expand(params_slices[0].shape)
-            result = [torch.take(
-                p, indices_expanded.long(), out=None) for p in params_slices]
-            result = torch.stack(result)
-            result = result.reshape((params.shape[:axis] + indices.shape[batch_dims:]
-                                    + params.shape[axis + 1 :])
-                                    )
+        dim_diff = params.dim() - indices.dim()
+        if dim_diff > 0:
+            params_squeezed = params
+            for d in range(dim_diff):
+                params_squeezed.squeeze(-1)
+            result = torch.take(
+                params_squeezed, indices.long(), out=None) 
+            for d in range(dim_diff):
+                result = result.expand((params.shape[:axis] + indices.shape[batch_dims:]
+                                        + params.shape[axis + 1 :]))
         else:
             result = torch.take(
                 params, indices.long(), out=None)
