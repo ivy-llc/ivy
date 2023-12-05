@@ -199,6 +199,9 @@ def gather(
         else:
             result = torch.take(
                 params, indices.long(), out=None)
+            result = result.reshape((params.shape[:axis] + indices.shape[batch_dims:]
+                                    + params.shape[axis + 1 :])
+                                    )
         
     else:
         params_slices = torch.unbind(params, axis=0)
