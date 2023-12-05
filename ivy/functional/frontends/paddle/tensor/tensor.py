@@ -235,7 +235,7 @@ class Tensor:
         "paddle",
     )
     def __long__(self):
-        return long(self._ivy_array)
+        return int(self._ivy_array)
 
     # Instance Methods #
     # ---------------- #
