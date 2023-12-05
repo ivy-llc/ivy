@@ -211,8 +211,8 @@ def gather(
         result = result.reshape((params.shape[:axis] + indices.shape[batch_dims:]
                                 + params.shape[axis + 1 :])
                                 )
-        if ivy.exists(out):
-            return ivy.inplace_update(out, result)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, result)
 
     return result
 
