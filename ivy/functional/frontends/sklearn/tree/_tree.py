@@ -28,7 +28,34 @@ class Tree:
         self._resize_c(capacity)
 
     def _resize_c(self, capacity=INTPTR_MAX):
-        pass
+        if capacity == self.capacity and len(self.nodes) != 0:
+            return 0
+        if capacity == INTPTR_MAX:
+            if self.capacity == 0:
+                capacity = 3
+            else:
+                capacity = 2 * self.capacity
+        if self.value is None:
+            self.value = ivy.zeros(
+                (capacity, int(self.n_outputs), int(self.max_n_classes)),
+                dtype=ivy.float32,
+            )
+        else:
+            self.value = ivy.concat([
+                self.value,
+                ivy.zeros(
+                    (
+                        int(capacity - self.capacity),
+                        int(self.n_outputs),
+                        int(self.max_n_classes),
+                    ),
+                    dtype=ivy.float32,
+                ),
+            ])
+        if capacity < self.node_count:
+            self.node_count = capacity
+        self.capacity = capacity
+        return 0
 
     def _add_node(self):
         pass
