@@ -189,7 +189,10 @@ def gather(
     if batch_dims == 0:
         result = torch.gather(
             params, axis, torch.reshape(indices.long(), (-1, )), 
-            sparse_grad=False, out=out)
+            sparse_grad=False, out=out).reshape((params.shape[:axis] 
+                                                + indices.shape[batch_dims:]
+                                                + params.shape[axis + 1 :])
+                                                )
     else:
         for b in range(batch_dims):
             if b == 0:
