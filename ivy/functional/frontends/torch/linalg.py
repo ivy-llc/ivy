@@ -341,7 +341,7 @@ def tensorinv(input, ind=2, *, out=None):
     assert prod_ind_end == prod_ind_start, f"{prod_cond}."
     inverse_shape = shape_ind_start + shape_ind_end
     input = ivy.reshape(input, shape=(prod_ind_end, -1))
-    inverse_shape_tuple = tuple([*inverse_shape])
+    inverse_shape_tuple = (*inverse_shape,)
     assert inv_ex(input, check_errors=True), f"{not_invertible}."
     inverse_tensor = ivy.inv(input)
     return ivy.reshape(inverse_tensor, shape=inverse_shape_tuple, out=out)

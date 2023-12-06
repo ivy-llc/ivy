@@ -88,7 +88,7 @@ def test_current_backend(backend, array_type):
 
 
 @pytest.mark.parametrize(
-    ["middle_backend", "end_backend"],
+    ("middle_backend", "end_backend"),
     [(a, b) for a in backends for b in backends if (a != b and "mxnet" not in [a, b])],
 )
 def test_dynamic_backend_all_combos(middle_backend, end_backend):
