@@ -1602,7 +1602,7 @@ class ContainerBase(dict, abc.ABC):
     # ---------------#
 
     def cont_duplicate_array_keychains(self):
-        duplciates = ()
+        duplicates = ()
         key_chains = self.cont_all_key_chains()
         skips = set()
         for i in range(len(key_chains)):
@@ -1618,9 +1618,9 @@ class ContainerBase(dict, abc.ABC):
                     if key_chains[j] not in temp_duplicates:
                         temp_duplicates += (key_chains[j],)
             if len(temp_duplicates) > 0:
-                duplciates += (temp_duplicates,)
-            skips = chain.from_iterable(duplciates)
-        return duplciates
+                duplicates += (temp_duplicates,)
+            skips = chain.from_iterable(duplicates)
+        return duplicates
 
     def cont_update_config(self, **config):
         new_config = {}
@@ -3980,7 +3980,7 @@ class ContainerBase(dict, abc.ABC):
         return new_dict
 
     def __dir__(self):
-        return list(super.__dir__(self)) + list(self.keys())
+        return list(super().__dir__()) + list(self.keys())
 
     # noinspection PyProtectedMember
     def __getattr__(self, item, *args, **kwargs):
@@ -4007,7 +4007,7 @@ class ContainerBase(dict, abc.ABC):
         if name[0] != "_":
             self[name] = value
         else:
-            super.__setattr__(self, name, value)
+            super().__setattr__(name, value)
 
     def _get_queue_item(self, query):
         if isinstance(query, int):

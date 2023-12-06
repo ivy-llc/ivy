@@ -183,9 +183,9 @@ def get_referrers_recursive(
     item: object,
     *,
     depth: int = 0,
-    max_depth: int = None,
-    seen_set: set = None,
-    local_set: set = None,
+    max_depth: Optional[int] = None,
+    seen_set: Optional[set] = None,
+    local_set: Optional[set] = None,
 ) -> ivy.Container:
     """
     Recursively retrieve referrers for an object.
@@ -254,7 +254,11 @@ def get_referrers_recursive(
 
         def get_referrers_recursive_inner():
             return get_referrers_recursive(
-                ref, depth + 1, max_depth, seen_set, local_set
+                ref,
+                depth=depth + 1,
+                max_depth=max_depth,
+                seen_set=seen_set,
+                local_set=local_set,
             )
 
         this_repr = "tracked" if seen else str(ref).replace(" ", "")
@@ -2341,7 +2345,7 @@ def stable_pow(
     exponent: Union[Number, ivy.Array, ivy.NativeArray],
     /,
     *,
-    min_base: float = None,
+    min_base: Optional[float] = None,
 ) -> Any:
     """
     Raise the base by the power, with ivy.min_base added to the base when exponent > 1
@@ -2841,7 +2845,7 @@ def get_item(
         if query.ndim == 0:
             if query is False:
                 return ivy.zeros(shape=(0,) + x.shape, dtype=x.dtype)
-            return x[None]  # eqivalent to ivy.expand_dims(x, axis=0)
+            return x[None]  # equivalent to ivy.expand_dims(x, axis=0)
         query = ivy.nonzero(query, as_tuple=False)
         ret = ivy.gather_nd(x, query)
     else:
@@ -3524,12 +3528,13 @@ def gather(
         The array which indicates the indices that will be gathered along
         the specified axis.
     axis
-        optional int, the axis from which to gather from.
+        Optional int, the axis from which to gather from.
         Default is ``-1``.
     batch_dims
-        optional int, lets you gather different items from each element of a batch.
+        Optional int, lets you gather different items from each element of a batch.
+        Default is ``0``.
     out
-        optional array, for writing the result to. It must have a shape
+        Optional array, for writing the result to. It must have a shape
         that the inputs broadcast to.
 
     Returns

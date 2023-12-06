@@ -1079,7 +1079,7 @@ def test_tensorflow_Ceil(  # NOQA
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     test_with_out=st.just(False),
 )
@@ -2744,7 +2744,7 @@ def test_tensorflow_MatMul(  # NOQA
     fn_tree="tensorflow.raw_ops.MatrixDeterminant",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
         min_value=-5,
         max_value=5,
     ),
@@ -2775,7 +2775,7 @@ def test_tensorflow_MatrixDeterminant(  # NOQA
     fn_tree="tensorflow.raw_ops.MatrixInverse",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: (x, x)),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     adjoint=st.booleans(),
     test_with_out=st.just(False),
@@ -4200,7 +4200,7 @@ def test_tensorflow_Sum(  # NOQA
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     full_matrices=st.booleans(),
     compute_uv=st.just(True),

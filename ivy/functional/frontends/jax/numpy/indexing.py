@@ -52,7 +52,7 @@ class _AxisConcat(abc.ABC):
                 newobj = _make_1d_grid_from_slice(item)
                 item_ndim = 0
             elif isinstance(item, str):
-                raise ValueError("string directive must be placed at the beginning")
+                raise TypeError("string directive must be placed at the beginning")
             else:
                 newobj = array(item, copy=False)
                 item_ndim = newobj.ndim

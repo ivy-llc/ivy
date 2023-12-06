@@ -52,8 +52,10 @@ class LayerNorm(Module):
         self._bias_init = Zeros()
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """Create internal variables for the layer."""
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         if self._elementwise_affine:
             return {
                 "weight": self._weight_init.create_variables(
@@ -86,6 +88,12 @@ class LayerNorm(Module):
             scale=self.v.weight if self._elementwise_affine else None,
             offset=self.v.bias if self._elementwise_affine else None,
             new_std=self._new_std,
+        )
+
+    def _extra_repr(self) -> str:
+        return (
+            f"normalized_idxs={self._normalized_idxs}, epsilon={self._epsilon}, "
+            f"elementwise_affine={self._elementwise_affine}, new_std={self._new_std}"
         )
 
 
@@ -154,8 +162,10 @@ class BatchNorm2D(Module):
         self._running_var_init = Ones()
         Module.__init__(self, device=device, v=v, dtype=dtype, training=training)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device=None, dtype=None):
         """Create internal variables for the layer."""
+        device = ivy.default(device, self.device)
+        dtype = ivy.default(dtype, self.dtype)
         if self._affine:
             return {
                 "b": self._bias_init.create_variables(
@@ -203,3 +213,11 @@ class BatchNorm2D(Module):
             self.v.running_var = running_var
 
         return normalized
+
+    def _extra_repr(self) -> str:
+        return (
+            f"num_features={self._num_features}, affine={self._affine}, "
+            f"data_format={self._data_format}, epsilon={self._epsilon} "
+            f"momentum={self._momentum}, "
+            f"track_running_stats={self._track_running_stats}"
+        )

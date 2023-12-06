@@ -8,7 +8,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("complex",)}, backend_version)
 def argsort(
     x: torch.Tensor,
     /,
@@ -19,7 +19,7 @@ def argsort(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if out is not None:
-        out = tuple([torch.zeros(x.shape, dtype=x.dtype), out.long()])
+        out = (torch.zeros(x.shape, dtype=x.dtype), out.long())
     _, sorted_indices = torch.sort(
         x, dim=axis, descending=descending, stable=stable, out=out
     )
@@ -29,7 +29,7 @@ def argsort(
 argsort.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("complex",)}, backend_version)
 def sort(
     x: torch.Tensor,
     /,
@@ -40,7 +40,7 @@ def sort(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if out is not None:
-        out = tuple([out, torch.zeros(out.shape, dtype=torch.long)])
+        out = (out, torch.zeros(out.shape, dtype=torch.long))
     sorted_tensor, _ = torch.sort(
         x, dim=axis, descending=descending, stable=stable, out=out
     )
@@ -51,7 +51,7 @@ sort.support_native_out = True
 
 
 # msort
-@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[torch.Tensor, list, tuple], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -61,7 +61,7 @@ def msort(
 msort.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.1 and below": ("complex",)}, backend_version)
 def searchsorted(
     x: torch.Tensor,
     v: torch.Tensor,
