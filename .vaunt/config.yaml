@@ -69,7 +69,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: count( labels in {'Priority PR'}) >= 1
+            condition: count(labels in {'Priority PR'}) >= 1
         - trigger:
             actor: author
             action: pull_request
@@ -77,13 +77,189 @@ achievements:
 
   - achievement:
       name: Ivy Inspectors
-      icon: [Badge Icon URL Placeholder]
+      icon: "Badge Icon URL Placeholder"
       description: Awarded for reviewing pull requests.
       triggers:
         - trigger:
             actor: reviewer
             action: pull_request
             condition: count() >= 1
+        - trigger:
+            actor: reviewer
+            action: pull_request
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Bug Trackers Bronze
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for creating 10 issues in the project.
+      triggers:
+        - trigger:
+            actor: author
+            action: issue
+            condition: count() >= 10
+        - trigger:
+            actor: author
+            action: issue
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Debugging Dynamo Bronze
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for creating 10 useful issues.
+      triggers:
+        - trigger:
+            actor: author
+            action: issue
+            condition: count(labels in {'Useful Issue'}) >= 10
+        - trigger:
+            actor: author
+            action: issue
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Pull Request Pioneer Bronze
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for creating 10 pull requests.
+      triggers:
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count() >= 10
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Merging Master Bronze
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for getting 10 pull requests merged.
+      triggers:
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count(merged = true) >= 10
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Merging Wizard Bronze
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for getting 10 priority pull requests merged.
+      triggers:
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count(merged = true) >= 10
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count(labels in {'Priority PR'}) >= 10
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Ivy Inspectors Bronze
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for reviewing 10 pull requests.
+      triggers:
+        - trigger:
+            actor: reviewer
+            action: pull_request
+            condition: count() >= 10
+        - trigger:
+            actor: reviewer
+            action: pull_request
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Bug Trackers Silver
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for creating 20 issues in the project.
+      triggers:
+        - trigger:
+            actor: author
+            action: issue
+            condition: count() >= 20
+        - trigger:
+            actor: author
+            action: issue
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Debugging Dynamo Silver
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for creating 20 useful issues.
+      triggers:
+        - trigger:
+            actor: author
+            action: issue
+            condition: count(labels in {'Useful Issue'}) >= 20
+        - trigger:
+            actor: author
+            action: issue
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Pull Request Pioneer Silver
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for creating 20 pull requests.
+      triggers:
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count() >= 20
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Merging Master Silver
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for getting 20 pull requests merged.
+      triggers:
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count(merged = true) >= 20
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Merging Wizard Silver
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for getting 20 priority pull requests merged.
+      triggers:
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count(merged = true) >= 20
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: count(labels in {'Priority PR'}) >= 20
+        - trigger:
+            actor: author
+            action: pull_request
+            condition: created_at >= "2023-12-02" # Replace this
+
+  - achievement:
+      name: Ivy Inspectors Silver
+      icon: "Badge Icon URL Placeholder"
+      description: Awarded for reviewing 20 pull requests.
+      triggers:
+        - trigger:
+            actor: reviewer
+            action: pull_request
+            condition: count() >= 20
         - trigger:
             actor: reviewer
             action: pull_request
