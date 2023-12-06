@@ -119,7 +119,27 @@ class Tree:
         pass
 
     def apply(self, X):
-        pass
+        return self._apply_dense(X)
+
+    def _apply_dense(self, X):
+        X_tensor = X
+        n_samples = X.shape[0]
+        out = ivy.zeros(n_samples, dtype="int32")
+        for i in range(n_samples):
+            node = self.nodes[0]  # root node
+            while node.left_child != _TREE_LEAF:
+                X_i_node_feature = X_tensor[i, node.feature]
+                if ivy.isnan(X_i_node_feature):
+                    if node.missing_go_to_left:
+                        node = self.nodes[node.left_child]
+                    else:
+                        node = self.nodes[node.right_child]
+                elif X_i_node_feature <= node.threshold:
+                    node = self.nodes[node.left_child]
+                else:
+                    node = self.nodes[node.right_child]
+            out[i] = self.nodes.index(node)  # terminal node index
+        return out
 
 
 class StackRecord:
