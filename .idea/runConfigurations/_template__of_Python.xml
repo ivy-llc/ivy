@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="true" type="PythonConfigurationType" factoryName="Python">
     <module name="ivy" />
+    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>

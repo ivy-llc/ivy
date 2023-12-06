@@ -425,6 +425,10 @@ class Tensor:
     def logical_or(self, other):
         return torch_frontend.logical_or(self, other)
 
+    @with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, "torch")
+    def logical_xor(self, other):
+        return torch_frontend.logical_xor(self, other)
+
     def bitwise_not(self):
         return torch_frontend.bitwise_not(self)
 
@@ -1567,12 +1571,6 @@ class Tensor:
 
     def tolist(self):
         return self._ivy_array.to_list()
-    
-    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
-    def multiply(self, other, *, out=None):
-        return torch_frontend.multiply(self, other, out=out)
-    
-
 
     @with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, "torch")
     def multiply(self, other, *, out=None):

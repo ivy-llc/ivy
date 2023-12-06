@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="true" type="tests" factoryName="py.test">
     <module name="ivy" />
+    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
@@ -8,7 +9,6 @@
       <env name="PYTHONPATH" value="/opt/fw/numpy:/opt/fw/jax:/opt/fw/tensorflow:/opt/fw/torch:/opt/fw/paddle:/opt/fw/mxnet" />
     </envs>
     <option name="SDK_HOME" value="python" />
-    <option name="SDK_NAME" value="Remote Python 3.10.0 Docker (unifyai/ivy:latest)" />
     <option name="WORKING_DIRECTORY" value="" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
