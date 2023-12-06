@@ -796,6 +796,10 @@ try:
     from .compiler.compiler import transpile, trace_graph, unify
 except:  # noqa: E722
     pass  # Added for the finally statement
+try:
+    from .compiler.replace_with import replace_with, transform_function
+except:
+    pass
 finally:
     # Skip framework imports done by Ivy compiler for now
     for backend_framework in _not_imported_backends.copy():

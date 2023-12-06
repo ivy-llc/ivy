@@ -181,7 +181,7 @@ def divide(x1, x2, /):
 @to_ivy_arrays_and_back
 def divmod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
-    return tuple([ivy.floor_divide(x1, x2), ivy.remainder(x1, x2)])
+    return (ivy.floor_divide(x1, x2), ivy.remainder(x1, x2))
 
 
 @to_ivy_arrays_and_back
@@ -237,7 +237,7 @@ def einsum_path(subscripts, *operands, optimize="greedy"):
         path_type = path_type[0]
 
     else:
-        raise TypeError("Did not understand the path: %s" % str(path_type))
+        raise TypeError(f"Did not understand the path: {str(path_type)}")
 
     # Python side parsing
     if subscripts:
