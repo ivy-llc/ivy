@@ -597,13 +597,17 @@ class Tensor:
     def arccosh_(self):
         self.ivy_array = self.arccosh().ivy_array
         return self
+
     @to_ivy_arrays_and_back
     def to_cpu(self):
-        if ivy_framework.current_framework_str() == 'torch' and ivy_framework.current_device_str() != 'cpu':
-            return ivy.to_device(self, 'cpu')
+        if (
+            ivy_framework.current_framework_str() == "torch"
+            and ivy_framework.current_device_str() != "cpu"
+        ):
+            return ivy.to_device(self, "cpu")
         else:
             return self
-         
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def arccos(self):
         return torch_frontend.arccos(self)
