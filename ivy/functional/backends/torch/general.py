@@ -203,7 +203,7 @@ def gather(
         params_expanded = params_expanded.expand(params.shape[:axis]
                                                  + indices.shape[batch_dims:]
                                                  + params.shape[axis + 1:])
-        indices_expanded = indices.reshape.reshape(singleton_dims[:axis]
+        indices_expanded = indices.reshape(singleton_dims[:axis]
                                                    + indices.shape[batch_dims:]
                                                    + singleton_dims[axis + 1:])
         indices_expanded = indices_expanded.expand(params.shape[:axis]
