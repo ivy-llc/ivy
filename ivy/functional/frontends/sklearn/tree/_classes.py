@@ -75,7 +75,7 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
             self.n_classes_.append(classes_k.shape[0])
         y = y_encoded
 
-        self.n_classes_ = ivy.array(self.n_classes_, dtype="np.int64")
+        self.n_classes_ = ivy.array(self.n_classes_, dtype="int64")
 
         y = ivy.array(y, dtype="float32")
         max_depth = (
@@ -107,7 +107,7 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
 
         criterion = self.criterion
         if not isinstance(criterion, Criterion):
-            criterion = Gini(self.n_outputs_, n_samples)
+            criterion = Gini(self.n_outputs_, self.n_classes_)
         else:
             criterion = copy.deepcopy(criterion)
         splitter = self.splitter
