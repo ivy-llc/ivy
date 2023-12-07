@@ -15,6 +15,18 @@ class Criterion(ABC):
     def update(self, new_pos):
         raise NotImplementedError
 
+    def proxy_impurity_improvement(self):
+        impurity_left = 0.0
+        impurity_right = 0.0
+        impurity_left, impurity_right = self.children_impurity(
+            impurity_left, impurity_right
+        )
+
+        return (
+            -self.weighted_n_right * impurity_right
+            - self.weighted_n_left * impurity_left
+        )
+
     def impurity_improvement(
         self, impurity_parent: float, impurity_left: float, impurity_right: float
     ):
