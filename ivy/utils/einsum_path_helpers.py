@@ -633,7 +633,7 @@ def parse_einsum_input(operands, subscripts=None):
     # Make sure output subscripts are in the input
     for char in output_subscript:
         if char not in input_subscripts:
-            raise ValueError("Output character %s did not appear in the input" % char)
+            raise ValueError(f"Output character {char} did not appear in the input")
 
     # Make sure number operands is equivalent to the number of terms
     if len(input_subscripts.split(",")) != len(operands):

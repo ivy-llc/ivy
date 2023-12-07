@@ -2022,7 +2022,7 @@ def create_nested_input(draw, dimensions, leaf_values):
 def cond_data_gen_helper(draw):
     dtype_x = helpers.dtype_and_values(
         available_dtypes=["float32", "float64"],
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
         max_value=10,
         min_value=-10,
         allow_nan=False,
@@ -2056,7 +2056,7 @@ def get_first_solve_matrix(draw, adjoint=True):
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
+            shape=(shared_size, shared_size),
             min_value=2,
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
@@ -2086,7 +2086,7 @@ def get_second_solve_matrix(draw):
     )
     return input_dtype, draw(
         helpers.array_values(
-            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
+            dtype=input_dtype, shape=(shared_size, 1), min_value=2, max_value=5
         )
     )
 
