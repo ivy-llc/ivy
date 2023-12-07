@@ -627,13 +627,13 @@ def test_default(x, default_val, test_flags, backend_fw):
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         with_callable = False
         if x is not None:
-            if hasattr(x, "__call__"):
+            if callable(x):
                 with_callable = True
             else:
                 x_dtype, x = x
                 x = x[0].tolist() if isinstance(x, list) else x
         else:
-            if hasattr(default_val, "__call__"):
+            if callable(default_val):
                 with_callable = True
             else:
                 dv_dtype, default_val = default_val
@@ -845,7 +845,7 @@ def test_einops_repeat(
 )
 def test_exists(x):
     if x is not None:
-        if not hasattr(x, "__call__"):
+        if not callable(x):
             dtype, x = x
     ret = ivy.exists(x)
     assert isinstance(ret, bool)
