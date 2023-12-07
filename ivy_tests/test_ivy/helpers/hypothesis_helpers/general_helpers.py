@@ -165,7 +165,7 @@ def general_helpers_dtype_info_helper(backend, kind_dtype, dtype):
 
 # from array-api repo
 class BroadcastError(ValueError):
-    """Shapes do not broadcast with eachother."""
+    """Shapes do not broadcast with each other."""
 
 
 # from array-api repo

@@ -34,10 +34,10 @@ class ClassificationCriterion(Criterion):
 
         for k in range(n_outputs):
             self.n_classes[k] = n_classes[k]
-
             if n_classes[k] > max_n_classes:
                 max_n_classes = n_classes[k]
-
+        if isinstance(max_n_classes, ivy.Array):
+            max_n_classes = ivy.to_scalar(max_n_classes)
         self.max_n_classes = max_n_classes
 
         self.sum_total = ivy.zeros((n_outputs, max_n_classes), dtype=ivy.float64)

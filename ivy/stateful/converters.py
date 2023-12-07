@@ -458,7 +458,7 @@ class ModuleConverters:
 
         class KerasModel(tf.keras.Model):
             def __init__(self, ivy_module):
-                super(KerasModel, self).__init__()
+                super().__init__()
                 self._ivy_module = ivy_module
                 self._parameters = {}
                 self._assign_variables()
@@ -476,13 +476,19 @@ class ModuleConverters:
                     ),
                 )
                 self._ivy_module.v.cont_map(
-                    lambda x, kc: self.add_weight(
-                        name=kc, shape=x.shape, dtype=x.dtype, trainable=True
+                    lambda x, kc: (
+                        self.add_weight(
+                            name=kc, shape=x.shape, dtype=x.dtype, trainable=True
+                        )
+                        if x is not None
+                        else x
                     )
                 )
                 model_weights = []
                 self._ivy_module.v.cont_map(
-                    lambda x, kc: model_weights.append(ivy.to_numpy(x))
+                    lambda x, kc: (
+                        model_weights.append(ivy.to_numpy(x)) if x is not None else x
+                    )
                 )
                 self.set_weights(model_weights)
 
@@ -527,11 +533,13 @@ class ModuleConverters:
                 return ret
 
             def __call__(self, *args, **kwargs):
-                ivy.set_backend("tensorflow")
-                args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
-                ivy.previous_backend()
-
-                return super(KerasModel, self).__call__(*args, **kwargs)
+                if ivy.backend != "tensorflow":
+                    ivy.set_backend("tensorflow")
+                    args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
+                    ivy.previous_backend()
+                else:
+                    args, kwargs = ivy.args_to_new_backend(*args, native=True, **kwargs)
+                return super().__call__(*args, **kwargs)
 
             def to_device(self, device):
                 self._ivy_module._module_graph.to_device(device)
