@@ -15,6 +15,18 @@ class Criterion(ABC):
     def update(self, new_pos):
         raise NotImplementedError
 
+    def impurity_improvement(
+        self, impurity_parent: float, impurity_left: float, impurity_right: float
+    ):
+        return (self.weighted_n_node_samples / self.weighted_n_samples) * (
+            impurity_parent
+            - (self.weighted_n_right / self.weighted_n_node_samples * impurity_right)
+            - (self.weighted_n_left / self.weighted_n_node_samples * impurity_left)
+        )
+
+    def node_value(self, dest, node_id):
+        return dest
+
 
 class ClassificationCriterion(Criterion):
     def __init__(self, n_outputs: int, n_classes: ivy.Array):
