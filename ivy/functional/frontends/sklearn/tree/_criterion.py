@@ -30,6 +30,7 @@ class ClassificationCriterion(Criterion):
         self.weighted_n_right = 0.0
         self.weighted_n_missing = 0.0
         self.n_classes = ivy.empty(n_outputs, dtype=ivy.int16)
+        self.n_missing = 0  # todo: remove this assumption
         max_n_classes = 0
 
         for k in range(n_outputs):
@@ -185,10 +186,11 @@ class Gini(ClassificationCriterion):
 
 def _move_sums_classification(criterion, sum_1, sum_2, weighted_n_1, weighted_n_2):
     for k in range(criterion.n_outputs):
-        for c in range(criterion.n_classes[k]):
-            sum_1[k][c] = 0.0
-            sum_2[k][c] = criterion.sum_total[k][c]
+        n = int(criterion.n_classes[k])
+        sum_1[k, :n] = 0
+        sum_2[k, :n] = criterion.sum_total[k, :n]
 
-    weighted_n_1[0] = 0.0
-    weighted_n_2[0] = criterion.weighted_n_node_samples
+    weighted_n_1 = 0.0
+    weighted_n_2 = criterion.weighted_n_node_samples
+
     return weighted_n_1, weighted_n_2, sum_1, sum_2
