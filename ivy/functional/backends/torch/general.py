@@ -194,16 +194,18 @@ def gather(
     result = []
 
     def expand_p_i(params, indices):
-        dim_helper_table = [1 for dim in list(params.shape[:axis]
-                                              + indices.shape[batch_dims:]
-                                              + params.shape[axis + 1:])]
-        singleton_dims = torch.Size(dim_helper_table)
+        res_dim_helper_table = [1 for dim in list(params.shape[:axis]
+                                + indices.shape[batch_dims:]
+                                + params.shape[axis + 1:])]
+        res_singleton_dims = torch.Size(res_dim_helper_table)
+        param_singleton_dims_table = [1 for dim in list(params.shape)]
+        param_singleton_dims = torch.Size(param_singleton_dims_table)
         params_ex = params.reshape(params.shape[:axis]
-                                   + singleton_dims[batch_dims:]
+                                   + res_singleton_dims[batch_dims:]
                                    + params.shape[axis + 1:])
-        indices_ex = indices.reshape(singleton_dims[:axis]
+        indices_ex = indices.reshape(param_singleton_dims[:axis]
                                      + indices.shape[batch_dims:]
-                                     + singleton_dims[axis + 1:])
+                                     + param_singleton_dims[axis + 1:])
         if (params.shape[:axis] 
            + indices.shape[batch_dims:] 
            + params.shape[axis + 1:]) != params_ex.shape:
