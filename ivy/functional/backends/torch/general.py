@@ -205,17 +205,17 @@ def gather(
                                      + singleton_dims[axis + 1:])
         if (params.shape[:axis] 
            + indices.shape[batch_dims:] 
-           + params.shape[axis + 1:]) != params.expanded.shape:
-            params_expanded = params_ex.expand(params.shape[:axis]
-                                               + indices.shape[batch_dims:]
-                                               + params.shape[axis + 1:])
-        if (indices.shape[:axis] 
+           + params.shape[axis + 1:]) != params_ex.shape:
+            params_ex = params_ex.expand(params.shape[:axis]
+                                         + indices.shape[batch_dims:]
+                                         + params.shape[axis + 1:])
+        if (indices.shape[:axis]
            + indices.shape[batch_dims:] 
-           + params.shape[axis + 1:]) != params.expanded.shape:
-            indices_expanded = indices_ex.expand(params.shape[:axis]
-                                             + indices.shape[batch_dims:]
-                                             + params.shape[axis + 1:])
-        return params_expanded, indices_expanded
+           + params.shape[axis + 1:]) != indices_ex.shape:
+            indices_ex = indices_ex.expand(params.shape[:axis]
+                                           + indices.shape[batch_dims:]
+                                           + params.shape[axis + 1:])
+        return params_ex, indices_ex
     if batch_dims == 0:
         dim_diff = params.dim() - indices.dim()
         if dim_diff != 0:
@@ -243,8 +243,8 @@ def gather(
         indices_slices = torch.unbind(indices_expanded, axis=0)
         for b in range(batch_dims):
             if b == 0:
-                zip_list = [(p, i) for 
-                            p, i in 
+                zip_list = [(p, i) for
+                            p, i in
                             zip(params_slices, indices_slices)
                             ]
             else:
