@@ -571,7 +571,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         main_str += ")"
         return main_str
 
-    # Methods to be Optionally Overriden #
+    # Methods to be Optionally Overridden #
     # -----------------------------------#
 
     def _create_variables(self, *, device=None, dtype=None):

@@ -11,6 +11,7 @@ from ivy.functional.frontends.numpy.creation_routines.from_existing_data import 
 )
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_device_and_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
     _to_ivy_array,
     numpy_to_torch_style_args,
@@ -517,6 +518,13 @@ class Tensor:
     def erf_(self, *, out=None):
         self.ivy_array = self.erf(out=out).ivy_array
         return self
+
+    @with_supported_device_and_dtypes(
+        {"2.1.0 and below": {"cpu": ("float32", "float64")}},
+        "torch",
+    )
+    def erfc_(self, *, out=None):
+        return torch_frontend.erfc(self, out=out)
 
     def new_zeros(
         self,
@@ -2016,6 +2024,10 @@ class Tensor:
             self._ivy_array, ivy.astype(ret, self._ivy_array.dtype)
         )
         return self
+
+    @with_supported_dtypes({"2.1.1 and below": ("float32", "float64")}, "torch")
+    def frac(self, name=None):
+        return torch_frontend.frac(self._ivy_array)
 
     @with_unsupported_dtypes(
         {

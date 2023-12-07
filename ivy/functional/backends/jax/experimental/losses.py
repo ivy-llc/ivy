@@ -105,8 +105,8 @@ def _validate_poisson_nll_params(
     # Validate shape
     if input.shape != label.shape:
         raise ValueError(
-            "The shape of 'input' (%s) must be the same as the shape of 'label' (%s)."
-            % (input.shape, label.shape)
+            f"The shape of 'input' ({input.shape}) must be the same as the shape of"
+            f" 'label' ({label.shape})."
         )
 
     return True
