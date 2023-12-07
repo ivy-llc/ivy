@@ -17,7 +17,7 @@ import tensorflow as tf
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
-from .. import backend_version
+from . import backend_version
 import ivy
 from ivy.functional.ivy.experimental.manipulation import _to_tf_padding
 
@@ -596,3 +596,11 @@ def index_add(
     ret = tf.add(x, _to_adds)
     ret = tf.experimental.numpy.swapaxes(ret, axis, 0)
     return ret
+
+
+x1 = tf.constant([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
+index1 = tf.constant([0, 2])
+value1 = tf.constant([[1, 1, 1], [1, 1, 1]])
+ret1 = tf.constant(x1, index1, 0, value1)
+
+print(x1)
