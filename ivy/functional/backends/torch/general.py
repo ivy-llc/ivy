@@ -197,19 +197,25 @@ def gather(
                                               + indices.shape[batch_dims:]
                                               + params.shape[axis + 1:])]
         singleton_dims = torch.Size(dim_helper_table)
-        params_expanded = params.reshape(params.shape[:axis]
-                                         + singleton_dims[batch_dims:]
-                                         + params.shape[axis + 1:])
-        params_expanded = params_expanded.expand(params.shape[:axis]
-                                                 + indices.shape[batch_dims:]
-                                                 + params.shape[axis + 1:])
-        indices_expanded = indices.reshape(singleton_dims[:axis]
-                                                   + indices.shape[batch_dims:]
-                                                   + singleton_dims[axis + 1:])
-        indices_expanded = indices_expanded.expand(params.shape[:axis]
-                                                   + indices.shape[batch_dims:]
-                                                   + params.shape[axis + 1:])
-        return params_expanded, indices_expanded     
+        params_ex = params.reshape(params.shape[:axis]
+                                   + singleton_dims[batch_dims:]
+                                   + params.shape[axis + 1:])
+        indices_ex = indices.reshape(singleton_dims[:axis]
+                                     + indices.shape[batch_dims:]
+                                     + singleton_dims[axis + 1:])
+        if (params.shape[:axis] 
+           + indices.shape[batch_dims:] 
+           + params.shape[axis + 1:]) != params.expanded.shape:
+            params_expanded = params_ex.expand(params.shape[:axis]
+                                               + indices.shape[batch_dims:]
+                                               + params.shape[axis + 1:])
+        if (indices.shape[:axis] 
+           + indices.shape[batch_dims:] 
+           + params.shape[axis + 1:]) != params.expanded.shape:
+            indices_expanded = indices_ex.expand(params.shape[:axis]
+                                             + indices.shape[batch_dims:]
+                                             + params.shape[axis + 1:])
+        return params_expanded, indices_expanded
     if batch_dims == 0:
         dim_diff = params.dim() - indices.dim()
         if dim_diff != 0:
@@ -226,7 +232,7 @@ def gather(
             result = result.reshape((params.shape[:axis]
                                     + indices.shape[batch_dims:]
                                     + params.shape[axis + 1:])
-                                    )    
+                                    )
     else:
         dim_diff = params.dim() - indices.dim()
         params_expanded = params
