@@ -27,7 +27,7 @@ def parse(str_in):
     for import_op in import_ops:
         if import_op in str_in:
             lib_name, expected_version = str_in.split(import_op)
-            if not "mod_name=" in str_in:
+            if "mod_name=" not in str_in:
                 mod_name = lib_name
             expected_version = expected_version.split(" ")[0].split(",")[0]
             expected_op = import_op

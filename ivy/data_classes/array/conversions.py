@@ -342,7 +342,7 @@ def args_to_new_backend(
     *args: Iterable[Any],
     native: bool = True,
     shallow: bool = True,
-    include_derived: Dict[str, bool] = None,
+    include_derived: Optional[Dict[str, bool]] = None,
     cont_inplace: bool = False,
     to_ignore: Optional[Union[type, Tuple[type]]] = None,
     **kwargs: Dict[str, Any],

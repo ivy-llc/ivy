@@ -36,7 +36,7 @@ def _get_cholesky_matrix(draw):
     gen = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
+            shape=(shared_size, shared_size),
             min_value=2,
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
@@ -125,7 +125,7 @@ def _get_hermitian_pos_def_matrix(draw):
     gen = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
+            shape=(shared_size, shared_size),
             min_value=2,
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
@@ -148,7 +148,7 @@ def _get_second_matrix(draw):
     )
     return input_dtype, draw(
         helpers.array_values(
-            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
+            dtype=input_dtype, shape=(shared_size, 1), min_value=2, max_value=5
         )
     )
 
@@ -168,7 +168,7 @@ def _get_tridiagonal_dtype_matrix_format(draw):
         matrix = draw(
             helpers.array_values(
                 dtype=input_dtype,
-                shape=tuple([shared_size, shared_size]),
+                shape=(shared_size, shared_size),
                 min_value=2,
                 max_value=5,
             ).filter(tridiagonal_matrix_filter)
@@ -177,7 +177,7 @@ def _get_tridiagonal_dtype_matrix_format(draw):
         matrix = draw(
             helpers.array_values(
                 dtype=input_dtype,
-                shape=tuple([3, shared_size]),
+                shape=(3, shared_size),
                 min_value=2,
                 max_value=5,
             ).filter(tridiagonal_compact_filter)
@@ -451,7 +451,7 @@ def test_tensorflow_eigvalsh(
         num_arrays=1,
         min_value=1,
         max_value=10,
-        shape=helpers.ints(min_value=3, max_value=3).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=3, max_value=3).map(lambda x: (x, x)),
     ).filter(lambda x: "float16" not in x[0]),
     test_with_out=st.just(False),
 )
@@ -511,7 +511,7 @@ def test_tensorflow_global_norm(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=-100,
         max_value=100,
-        shape=helpers.ints(min_value=1, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=1, max_value=20).map(lambda x: (x, x)),
     ).filter(
         lambda x: "bfloat16" not in x[0]
         and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
@@ -587,7 +587,7 @@ def test_tensorflow_l2_normalize(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -933,7 +933,7 @@ def test_tensorflow_pinv(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
 )
 def test_tensorflow_qr(
@@ -1074,7 +1074,7 @@ def test_tensorflow_solve(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     full_matrices=st.booleans(),
     compute_uv=st.just(True),
