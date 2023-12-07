@@ -22,7 +22,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -79,7 +79,7 @@ def test_numpy_eig(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -136,7 +136,7 @@ def test_numpy_eigh(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=4).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=4).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
