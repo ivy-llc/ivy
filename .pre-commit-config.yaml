@@ -13,6 +13,12 @@ repos:
         language_version: python3
         args:
           - "--preview"
+        exclude: >
+          (?x)
+          (
+            ivy/functional/frontends/(?!.*(?:config\.py|__init__\.py)$).* |
+            ivy_tests/test_ivy/(?!.*(?:__init__\.py|conftest\.py|helpers/.*|test_frontends/config/.*$)).*
+          )
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.2.1
     hooks:
@@ -33,6 +39,6 @@ repos:
         # Exclude everything in frontends except __init__.py, and func_wrapper.py
         exclude: 'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'
   - repo: https://github.com/unifyai/lint-hook
-    rev: aac2ec5dcaa91a72c8b74e610ed50929c2c36216
+    rev: a72ffb17562d919311653d7f593cb537d1245c19
     hooks:
       - id: ivy-lint
