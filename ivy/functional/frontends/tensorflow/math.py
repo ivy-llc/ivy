@@ -819,6 +819,21 @@ def unsorted_segment_sum(data, segment_ids, num_segments, name="unsorted_segment
     return sum_array
 
 
+@to_ivy_arrays_and_back
+def segment_sum(data, segment_ids, name="segment_sum"):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    sum_array = ivy.zeros(
+        tuple([int(segment_ids[-1] + 1)] + (list(data.shape))[1:]), dtype=ivy.int32
+    )
+    for i in range((segment_ids).shape[0]):
+        sum_array[segment_ids[i]] = sum_array[segment_ids[i]] + data[i]
+    return sum_array
+
+
 @with_supported_dtypes(
     {"2.15.0 and below": ("float32", "float64", "complex64", "complex128")},
     "tensorflow",
@@ -861,18 +876,3 @@ def zero_fraction(value, name="zero_fraction"):
 )
 def zeta(x, q, name=None):
     return ivy.zeta(x, q)
-
-
-@to_ivy_arrays_and_back
-def segment_sum(data, segment_ids, name="segment_sum"):
-    data = ivy.array(data)
-    segment_ids = ivy.array(segment_ids)
-    ivy.utils.assertions.check_equal(
-        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
-    )
-    sum_array = ivy.zeros(
-        tuple([int(segment_ids[-1] + 1)] + (list(data.shape))[1:]), dtype=ivy.int32
-    )
-    for i in range((segment_ids).shape[0]):
-        sum_array[segment_ids[i]] = sum_array[segment_ids[i]] + data[i]
-    return sum_array
