@@ -862,6 +862,7 @@ def zero_fraction(value, name="zero_fraction"):
 def zeta(x, q, name=None):
     return ivy.zeta(x, q)
 
+
 @to_ivy_arrays_and_back
 def segment_sum(data, segment_ids, name="segment_sum"):
     data = ivy.array(data)
