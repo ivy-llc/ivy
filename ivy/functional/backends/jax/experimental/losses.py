@@ -64,31 +64,11 @@ def soft_margin_loss(
         return loss
 
 
-def kl_div(
-    input: JaxArray,
-    target: JaxArray,
-    /,
-    *,
-    reduction: Optional[str] = "mean",
-) -> JaxArray:
-    size = jnp.shape(input)
-    loss = jnp.sum(input * jnp.log(input / target), axis=-1)
-
-    if reduction == "mean":
-        loss = jnp.mean(loss)
-    elif reduction == "sum":
-        loss = jnp.sum(loss)
-    elif reduction == "batchmean":
-        loss = jnp.divide(jnp.sum(loss), size[0])
-
-    return loss
-
-
-def _apply_loss_reduction(loss: JaxArray, reduction: str) -> JaxArray:
+def _apply_loss_reduction(loss: JaxArray, reduction: str, axis=None) -> JaxArray:
     if reduction == "sum":
-        return jnp.sum(loss)
+        return jnp.sum(loss, axis=axis)
     elif reduction == "mean":
-        return jnp.mean(loss)
+        return jnp.mean(loss, axis=axis)
     else:  # reduction == "none"
         return loss
 
@@ -125,8 +105,8 @@ def _validate_poisson_nll_params(
     # Validate shape
     if input.shape != label.shape:
         raise ValueError(
-            "The shape of 'input' (%s) must be the same as the shape of 'label' (%s)."
-            % (input.shape, label.shape)
+            f"The shape of 'input' ({input.shape}) must be the same as the shape of"
+            f" 'label' ({label.shape})."
         )
 
     return True

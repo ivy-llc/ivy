@@ -371,7 +371,7 @@ class _ContainerWithStatistical(ContainerBase):
         Returns
         -------
         ret
-            a container contianing different arrays depends on parameters. see below
+            a container containing different arrays depends on parameters. see below
             for the types of arrays in the returned container if the variance was
             computed over the entire array, a zero-dimensional array containing the
             variance; otherwise, a non-zero-dimensional array containing the variances.

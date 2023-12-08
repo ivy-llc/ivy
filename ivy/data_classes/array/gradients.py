@@ -249,6 +249,20 @@ class _ArrayWithGradients(abc.ABC):
         -------
         ret
             The new function weights ws_new, following the LARS updates.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> w = ivy.array([[3., 1, 5],
+        ...                [7, 2, 9]])
+        >>> dcdw = ivy.array([[0.3, 0.1, 0.2],
+        ...                   [0.1, 0.2, 0.4]])
+        >>> lr = ivy.array(0.1)
+        >>> new_weights = w.lars_update(dcdw, lr, stop_gradients = True)
+        >>> print(new_weights)
+        ivy.array([[2.34077978, 0.78025991, 4.56051969],
+        ...        [6.78026009, 1.56051981, 8.12103939]])
         """
         return ivy.lars_update(
             self,

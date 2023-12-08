@@ -1,13 +1,13 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: check-yaml
       - id: trailing-whitespace
       - id: check-toml
       - id: end-of-file-fixer
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 23.9.1
+    rev: 23.11.0
     hooks:
       - id: black
         language_version: python3
@@ -32,7 +32,7 @@ repos:
       - id: pydocstyle
         # Exclude everything in frontends except __init__.py, and func_wrapper.py
         exclude: 'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'
-  - repo: https://github.com/unifyai/lint-hook
-    rev: 2ea80bc854c7f74b09620151028579083ff92ec2
-    hooks:
-      - id: ivy-lint
+#  - repo: https://github.com/unifyai/lint-hook
+#    rev: 2ea80bc854c7f74b09620151028579083ff92ec2
+#    hooks:
+#      - id: ivy-lint

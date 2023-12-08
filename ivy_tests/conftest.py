@@ -109,7 +109,7 @@ def pytest_configure(config):
     max_examples = getopt("--num-examples")
     deadline = getopt("--deadline")
     if (
-        os.getenv("REDIS_URL", default=False)
+        os.getenv("REDIS_URL", default=None)
         and os.environ["REDIS_URL"]
         and is_db_available(
             master=True,

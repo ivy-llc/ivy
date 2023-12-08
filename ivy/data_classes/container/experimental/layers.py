@@ -971,7 +971,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The lenght of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal length,
             then x is truncated, if n is larger than x is zero-padded.
         norm
             The type of normalization to be applied. Must be either None or "ortho".
@@ -1047,7 +1047,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The lenght of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal length,
             then x is truncated, if n is larger then x is zero-padded.
         norm
             The type of normalization to be applied. Must be either None or "ortho".
@@ -2173,6 +2173,185 @@ class _ContainerWithLayersExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_rfft(
+        x: ivy.Container,
+        /,
+        *,
+        n: Optional[Union[int, ivy.Container]] = None,
+        axis: Union[int, ivy.Container] = -1,
+        norm: Union[
+            Literal["backward", "ortho", "forward"], ivy.Container
+        ] = "backward",
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.rfft.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.rfft also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array. Must have a real-valued floating-point data type.
+        n
+            length of the transformed axis of the input. If
+            -   n is greater than the length of the input array, the input array
+            is zero-padded to length n.
+            -   n is less than the length of the input array, the input array is
+            trimmed to length n.
+            -   n is not provided, the length of the transformed axis of the
+            output must equal the length of the input along the axis specified
+            by axis. Default is ``None``.
+        axis
+            axis (dimension) over which to compute the Fourier transform.
+            If not set, the last axis (dimension) is used. Default is ``-1``.
+        norm
+            normalization mode. Should be one of the following modes:
+            -   'backward': no normalization.
+            -   'ortho': normalize by 1/sqrt(n) (i.e., make the FFT orthonormal).
+            -   'forward': normalize by 1/n.
+            Default is ``backward``.
+        out
+            Optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was
+            not applied. Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            an array transformed along the axis (dimension) indicated by axis.
+            The returned array must have a complex-valued floating-point
+            data type determined by Type Promotion Rules.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.,1.,2.]),
+        ...                   b=ivy.array([3.,4.,5.]))
+        >>> y =  ivy.Container.static_rfft(x)
+        >>> print(y)
+        {
+            a: ivy.array([3.+0.j, -1.5+0.8660254j]),
+            b: ivy.array([12.+0.j, -1.5+0.8660254j])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "rfft",
+            x,
+            n=n,
+            axis=axis,
+            norm=norm,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def rfft(
+        self: ivy.Container,
+        /,
+        *,
+        n: Optional[Union[int, ivy.Container]] = None,
+        axis: Union[int, ivy.Container] = -1,
+        norm: Union[
+            Literal["backward", "ortho", "forward"], ivy.Container
+        ] = "backward",
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ):
+        """
+        ivy.Container instance method variant of ivy.rfft. This method simply wraps the
+        function, and so the docstring for ivy.rfft also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Must have a real-valued floating-point data type.
+        n
+            length of the transformed axis of the input. If
+            -   n is greater than the length of the input array, the input array
+            is zero-padded to length n.
+            -   n is less than the length of the input array, the input array is
+            trimmed to length n.
+            -   n is not provided, the length of the transformed axis of the
+            output must equal the length of the input along the axis specified
+            by axis. Default is ``None``.
+        axis
+            axis (dimension) over which to compute the Fourier transform.
+            If not set, the last axis (dimension) is used. Default is ``-1``.
+        norm
+            normalization mode. Should be one of the following modes:
+            -   'backward': no normalization.
+            -   'ortho': normalize by 1/sqrt(n) (i.e., make the FFT orthonormal).
+            -   'forward': normalize by 1/n.
+            Default is ``backward``.
+        out
+            Optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was
+            not applied. Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            an array transformed along the axis (dimension) indicated by axis.
+            The returned array must have a complex-valued floating-point
+            data type determined by Type Promotion Rules.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.,1.,2.]),
+        ...                   b=ivy.array([3.,4.,5.]))
+        >>> y = x.rfft()
+        >>> print(y)
+        {
+            a: ivy.array([3.+0.j, -1.5+0.8660254j]),
+            b: ivy.array([12.+0.j, -1.5+0.8660254j])
+        }
+        """
+        return self.static_rfft(
+            self,
+            n=n,
+            axis=axis,
+            norm=norm,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_rfftn(
         x: ivy.Container,
         s: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
@@ -2574,7 +2753,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         kernel_size: Union[Tuple[int], int],
         /,
         *,
-        strides: Union[int, Tuple[int]] = None,
+        strides: Optional[Union[int, Tuple[int]]] = None,
         padding: Union[int, Tuple[int]] = 0,
         data_format: Union[str, ivy.Container] = "NCW",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -2638,7 +2817,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         kernel_size: Union[Tuple[int], int],
         /,
         *,
-        strides: Union[int, Tuple[int]] = None,
+        strides: Optional[Union[int, Tuple[int]]] = None,
         padding: Union[int, Tuple[int]] = 0,
         data_format: Optional[str] = "NCW",
     ) -> ivy.Container:

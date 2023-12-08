@@ -38,7 +38,7 @@ def _quantile_is_valid(q):
             if not (0.0 <= q[i] <= 1.0):
                 return False
     else:
-        if not (ivy.all(0 <= q) and ivy.all(q <= 1)):
+        if not (ivy.all(q >= 0) and ivy.all(q <= 1)):
             return False
     return True
 
