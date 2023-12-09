@@ -564,10 +564,10 @@ def trim_zeros(a: tf.Tensor, /, *, trim: Optional[str] = "bf") -> tf.Tensor:
 
 
 def index_add(
-    x: tf.Tensor,
-    index: tf.Tensor,
+    x: Union[tf.Tensor, tf.Variable],
+    index: Union[tf.Tensor, tf.Variable],
     axis: int,
-    value: tf.Tensor,
+    value: Union[tf.Tensor, tf.Variable],
     /,
     *,
     name: Optional[str] = None,
@@ -596,11 +596,3 @@ def index_add(
     ret = tf.add(x, _to_adds)
     ret = tf.experimental.numpy.swapaxes(ret, axis, 0)
     return ret
-
-
-x1 = tf.constant([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
-index1 = tf.constant([0, 2])
-value1 = tf.constant([[1, 1, 1], [1, 1, 1]])
-ret1 = tf.constant(x1, index1, 0, value1)
-
-print(x1)
