@@ -209,11 +209,11 @@ def convert_interleaved_input(
             symbol: get_symbol(idx) for idx, symbol in enumerate(sorted(symbol_set))
         }
 
-    except TypeError:  # unhashable or uncomparable object
+    except TypeError as e:  # unhashable or uncomparable object
         raise TypeError(
             "For this input type lists must contain either Ellipsis "
             "or hashable and comparable object (e.g. int, str)."
-        )
+        ) from e
 
     subscripts = ",".join(convert_subscripts(sub, symbol_map) for sub in subscript_list)
     if output_list is not None:
@@ -238,6 +238,7 @@ def legalise_einsum_expr(*operands: Any) -> str:
     -------
     einsum_eqn : str
         Legalised einsum equation
+
     Examples
     --------
     The operand list is simplified to reduce printing:

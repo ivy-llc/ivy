@@ -95,15 +95,24 @@ def asarray(
                 ret = obj.clone().detach()
                 ret.stop_gradient = obj.stop_gradient
             else:
-                ret = obj
+                ret = paddle.to_tensor(
+                    obj.detach(),
+                    dtype=dtype,
+                    place=device,
+                    stop_gradient=obj.stop_gradient,
+                )
         else:
             ret = obj
-        return ret.astype(dtype)
+        ret = ret.astype(dtype) if ret.dtype != obj.dtype else ret
+        return paddle_backend.to_device(ret, device)
 
     elif isinstance(obj, (Number, bool, complex)):
-        return paddle_backend.squeeze(
-            paddle.to_tensor(obj, dtype=dtype, place=device), axis=0
-        )
+        ret = paddle.to_tensor(obj, dtype=dtype, place=device)
+
+        if ret.ndim != 0:  # for versions <2.5.0
+            return ret.squeeze()
+        else:
+            return ret
     obj = ivy.nested_map(_remove_np_bfloat16, obj, shallow=False)
     return paddle.to_tensor(obj, dtype=dtype, place=device)
 
@@ -133,7 +142,7 @@ def empty_like(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "uint8",
                 "int8",
@@ -198,7 +207,11 @@ def to_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
-    return paddle.utils.dlpack.from_dlpack(x)
+    if hasattr(x, "__dlpack__"):
+        capsule = x.__dlpack__()
+    else:
+        capsule = x
+    return paddle.utils.dlpack.from_dlpack(capsule)
 
 
 def full(
@@ -263,7 +276,10 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
         sos_shape = stop_shape
         if num == 1:
             return (
-                paddle_backend.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start
+                paddle_backend.ones(
+                    stop_shape[:axis] + [1] + stop_shape[axis:], dtype=dtype
+                )
+                * start
             )
         stop = stop.reshape((-1,))
         linspace_method = (
@@ -340,7 +356,7 @@ def _slice_at_axis(sl, axis):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
+    {"2.5.2 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
 )
 def linspace(
     start: Union[paddle.Tensor, float],
@@ -398,7 +414,7 @@ def linspace(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -423,9 +439,10 @@ def meshgrid(
         if indexing == "ij":
             return paddle.meshgrid(*arrays)
         elif indexing == "xy":
-            index_switch = lambda x: (
-                paddle_backend.swapaxes(x, 0, 1) if x.ndim > 1 else x
-            )
+
+            def index_switch(x):
+                return paddle_backend.swapaxes(x, 0, 1) if x.ndim > 1 else x
+
             arrays = list(map(index_switch, arrays))
             ret = paddle.meshgrid(*arrays)
             return list(map(index_switch, ret))
@@ -467,7 +484,7 @@ def ones_like(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -486,7 +503,7 @@ def tril(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -599,7 +616,7 @@ def one_hot(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def frombuffer(

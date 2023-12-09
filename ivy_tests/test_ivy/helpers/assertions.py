@@ -46,7 +46,7 @@ def assert_all_close(
         f" {ret_from_gt_dtype} datatype while the backend {backend} returned a"
         f" {ret_dtype} datatype"
     )
-    # TODO eanble
+    # TODO enable
     # if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
     #     ivy.Container.cont_multi_map(assert_all_close, [ret_np, ret_from_gt_np])
     # else:

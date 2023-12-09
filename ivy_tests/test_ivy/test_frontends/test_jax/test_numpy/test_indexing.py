@@ -113,9 +113,9 @@ def test_jax_choose(
     on_device,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
-    choices = ivy.array(
-        [np.random.randint(0, 10, size=x.shape) for _ in range(len(dtypes))]
-    )
+    choices = ivy.array([
+        np.random.randint(0, 10, size=x.shape) for _ in range(len(dtypes))
+    ])
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         backend_to_test=backend_fw,
@@ -287,7 +287,7 @@ def test_jax_mask_indices(
     )
 
 
-@handle_frontend_test(fn_tree="jax.numpy.add", inputs=_helper_c_())  # dummy fn_tree
+@handle_frontend_test(fn_tree="jax.numpy.c_", inputs=_helper_c_())  # dummy fn_tree
 def test_jax_numpy_c_(inputs, backend_fw):
     ret_gt = c_.__getitem__(tuple(inputs))
     with BackendHandler.update_backend(backend_fw):
@@ -326,7 +326,7 @@ def test_jax_numpy_indices(
     )
 
 
-@handle_frontend_test(fn_tree="jax.numpy.add", inputs=_helper_r_())  # dummy fn_tree
+@handle_frontend_test(fn_tree="jax.numpy.r_", inputs=_helper_r_())  # dummy fn_tree
 def test_jax_numpy_r_(inputs, backend_fw):
     inputs, *_ = inputs
     ret_gt = r_.__getitem__(tuple(inputs))

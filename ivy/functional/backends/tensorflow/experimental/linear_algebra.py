@@ -12,7 +12,7 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("int", "float16", "bfloat16")}, backend_version
+    {"2.15.0 and below": ("int", "float16", "bfloat16")}, backend_version
 )
 def eigh_tridiagonal(
     alpha: Union[tf.Tensor, tf.Variable],
@@ -96,7 +96,7 @@ def matrix_exp(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "complex",
             "float32",
             "float64",
@@ -115,7 +115,7 @@ def eig(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "complex",
             "float32",
             "float64",
@@ -140,9 +140,29 @@ def adjoint(
     return tf.linalg.adjoint(x)
 
 
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("int", "float16", "bfloat16", "float64")}, backend_version
+)
+def solve_triangular(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    # Multiplying with a mask matrix can stop gradients on the diagonal.
+    if unit_diagonal:
+        w = tf.constant(tf.eye(x1.shape[-2], batch_shape=x1.shape[:-2], dtype=x1.dtype))
+        x1 = w + (1 - w) * x1
+    return tf.linalg.triangular_solve(x1, x2, lower=not upper, adjoint=adjoint)
+
+
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -221,7 +241,7 @@ def lu_factor(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",

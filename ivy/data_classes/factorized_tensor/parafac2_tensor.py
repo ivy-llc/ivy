@@ -104,7 +104,7 @@ class Parafac2Tensor(FactorizedTensor):
 
         Returns
         -------
-            Parafac2Tensor with factor matrices and weigths extracted from a CPTensor
+            Parafac2Tensor with factor matrices and weights extracted from a CPTensor
         """
         if parafac2_tensor_ok and len(cp_tensor) == 3:
             return Parafac2Tensor(cp_tensor)
@@ -430,6 +430,7 @@ class Parafac2Tensor(FactorizedTensor):
             for i in range(I)
         ]
 
+    @staticmethod
     def parafac2_to_tensor(parafac2_tensor):
         """
         Construct a full tensor from a PARAFAC2 decomposition.
@@ -491,6 +492,7 @@ class Parafac2Tensor(FactorizedTensor):
             tensor[i, :length] = slice_
         return tensor
 
+    @staticmethod
     def parafac2_to_unfolded(parafac2_tensor, mode):
         """
         Construct an unfolded tensor from a PARAFAC2 decomposition. Uneven slices are
@@ -543,6 +545,7 @@ class Parafac2Tensor(FactorizedTensor):
         """
         return ivy.unfold(ivy.Parafac2Tensor.parafac2_to_tensor(parafac2_tensor), mode)
 
+    @staticmethod
     def parafac2_to_vec(parafac2_tensor):
         """
         Construct a vectorized tensor from a PARAFAC2 decomposition. Uneven slices are
