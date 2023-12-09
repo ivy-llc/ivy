@@ -96,10 +96,15 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
 
         labels = ivy.shape(predictions)[1]
         # float comparison?
-        return ivy.array([
-            (0 <= res < labels and ivy.min(top_k[ind] - predictions[ind, res]) <= 1e-9)
-            for ind, res in enumerate(targets)
-        ])
+        return ivy.array(
+            [
+                (
+                    0 <= res < labels
+                    and ivy.min(top_k[ind] - predictions[ind, res]) <= 1e-9
+                )
+                for ind, res in enumerate(targets)
+            ]
+        )
 
     reshape = False
     y_true = ivy.array(y_true)

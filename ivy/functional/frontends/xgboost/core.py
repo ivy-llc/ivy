@@ -103,11 +103,13 @@ class Booster:
         )
 
         # add num_feature, num_target and num_instances to params
-        params.update({
-            "num_feature": n_feat,
-            "num_output_group": n_output_group - 1,
-            "num_instances": n_inst,
-        })
+        params.update(
+            {
+                "num_feature": n_feat,
+                "num_output_group": n_output_group - 1,
+                "num_instances": n_inst,
+            }
+        )
 
         # create gbm(as for now only gblinear booster is available)
         self.gbm = GBLinear(params, compile=compile, cache=cache)

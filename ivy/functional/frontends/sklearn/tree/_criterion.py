@@ -107,27 +107,33 @@ class ClassificationCriterion(Criterion):
 
     def reset(self):
         self.pos = self.start
-        self.weighted_n_left, self.weighted_n_right, self.sum_left, self.sum_right = (
-            _move_sums_classification(
-                self,
-                self.sum_left,
-                self.sum_right,
-                self.weighted_n_left,
-                self.weighted_n_right,
-            )
+        (
+            self.weighted_n_left,
+            self.weighted_n_right,
+            self.sum_left,
+            self.sum_right,
+        ) = _move_sums_classification(
+            self,
+            self.sum_left,
+            self.sum_right,
+            self.weighted_n_left,
+            self.weighted_n_right,
         )
         return 0
 
     def reverse_reset(self):
         self.pos = self.end
-        self.weighted_n_right, self.weighted_n_left, self.sum_right, self.sum_left = (
-            _move_sums_classification(
-                self,
-                self.sum_right,
-                self.sum_left,
-                self.weighted_n_right,
-                self.weighted_n_left,
-            )
+        (
+            self.weighted_n_right,
+            self.weighted_n_left,
+            self.sum_right,
+            self.sum_left,
+        ) = _move_sums_classification(
+            self,
+            self.sum_right,
+            self.sum_left,
+            self.weighted_n_right,
+            self.weighted_n_left,
         )
         return 0
 
