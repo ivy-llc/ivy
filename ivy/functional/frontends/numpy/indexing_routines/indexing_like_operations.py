@@ -104,3 +104,9 @@ def tril_indices(n, k=0, m=None):
 def unravel_index(indices, shape, order="C"):
     ret = [x.astype("int64") for x in ivy.unravel_index(indices, shape)]
     return tuple(ret)
+
+
+@to_ivy_arrays_and_back
+@handle_numpy_out
+def take(a, indices, /, *, axis=None, out=None, mode="raise"):
+    return ivy.take(a, indices, axis=axis, out=out, mode=mode)
