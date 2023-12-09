@@ -20,8 +20,8 @@ def trace_graph(
     params_v=None,
     v=None
 ):
-    """
-    Take `fn` and traces it into a more efficient composition of backend operations.
+    """Take `fn` and traces it into a more efficient composition of backend
+    operations.
 
     Parameters
     ----------
@@ -131,9 +131,9 @@ def transpile(
     params_v=None,
     v=None
 ):
-    """
-    Transpiles Callable objects passed as arguments. If args and kwargs are specified,
-    transpilation is performed eagerly, otherwise, transpilation will happen lazily.
+    """Transpiles Callable objects passed as arguments. If args and kwargs are
+    specified, transpilation is performed eagerly, otherwise, transpilation
+    will happen lazily.
 
     Parameters
     ----------
