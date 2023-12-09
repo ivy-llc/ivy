@@ -202,4 +202,4 @@ def _tuple_to_dict(t):
 
 
 def _dict_to_tuple(d):
-    return tuple([d[k] for k in d])
+    return tuple(d[k] for k in d)

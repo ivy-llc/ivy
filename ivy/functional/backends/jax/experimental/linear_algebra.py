@@ -136,6 +136,25 @@ def adjoint(
     return jnp.conjugate(jnp.transpose(x, axes=axes))
 
 
+def solve_triangular(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jla.solve_triangular(
+        x1,
+        x2,
+        lower=not upper,
+        trans="C" if adjoint else "N",
+        unit_diagonal=unit_diagonal,
+    )
+
+
 def multi_dot(
     x: Sequence[JaxArray],
     /,

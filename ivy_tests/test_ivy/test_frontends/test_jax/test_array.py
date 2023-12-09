@@ -177,6 +177,30 @@ def _transpose_helper(draw):
     return x, xT
 
 
+# swapaxes
+@st.composite
+def dtype_x_axis(draw):
+    dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            max_num_dims=5,
+            ret_shape=True,
+        )
+    )
+    axis1, axis2 = draw(
+        helpers.get_axis(
+            shape=x_shape,
+            sort_values=False,
+            unique=True,
+            min_size=2,
+            max_size=2,
+            force_tuple=True,
+        )
+    )
+    return dtype, x, axis1, axis2
+
+
 # --- Main --- #
 # ------------ #
 
@@ -2498,6 +2522,48 @@ def test_jax_array_squeeze(
     )
 
 
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="std",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
+    ddof=st.booleans(),
+    keepdims=st.booleans(),
+)
+def test_jax_array_std(
+    dtype_x_axis,
+    backend_fw,
+    frontend,
+    ddof,
+    keepdims,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        init_all_as_kwargs_np={
+            "object": x,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "ddof": ddof,
+            "keepdims": keepdims,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 # var
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2723,4 +2789,40 @@ def test_jax_sum(
         method_flags=method_flags,
         on_device=on_device,
         atol_=1e-04,
+    )
+
+
+# swapaxes
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="swapaxes",
+    dtype_x_axis=dtype_x_axis(),
+)
+def test_jax_swapaxes(
+    dtype_x_axis,
+    frontend,
+    frontend_method_data,
+    backend_fw,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtypes, x, axis1, axis2 = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        method_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_all_as_kwargs_np={
+            "axis1": axis1,
+            "axis2": axis2,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
     )

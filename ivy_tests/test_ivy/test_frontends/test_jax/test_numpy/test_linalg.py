@@ -39,9 +39,9 @@ def _get_inv_square_matrices(draw):
     )
 
     shape, ind = draw(
-        st.sampled_from(
-            [(generated_shape, generated_ind), (handpicked_shape, handpicked_ind)]
-        )
+        st.sampled_from([
+            (generated_shape, generated_ind), (handpicked_shape, handpicked_ind)
+        ])
     )
 
     input_dtype = draw(
@@ -148,7 +148,7 @@ def norm_helper(draw):
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -248,7 +248,7 @@ def test_jax_det(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -306,7 +306,7 @@ def test_jax_eig(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -368,7 +368,7 @@ def test_jax_eigh(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -423,7 +423,7 @@ def test_jax_eigvals(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -468,7 +468,7 @@ def test_jax_eigvalsh(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
         max_value=100,
-        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -541,7 +541,7 @@ def test_jax_lstsq(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
         max_value=100,
-        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -612,7 +612,7 @@ def test_jax_matrix_rank(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
         num_arrays=2,
         shared_dtype=True,
     ).filter(
@@ -857,7 +857,7 @@ def test_jax_solve(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]

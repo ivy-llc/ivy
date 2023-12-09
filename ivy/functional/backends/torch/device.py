@@ -1,4 +1,5 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
+
 import inspect
 
 # global
@@ -74,7 +75,7 @@ def as_native_dev(
 ) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
-    if torch.backends.mps.is_available():
+    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
         return torch.device(ivy.Device(device).replace("gpu", "mps"))
     return torch.device(ivy.Device(device).replace("gpu", "cuda"))
 
@@ -96,7 +97,9 @@ def num_gpus() -> int:
 
 
 def gpu_is_available() -> bool:
-    return torch.backends.mps.is_available() or torch.cuda.is_available()
+    return (
+        hasattr(torch.backends, "mps") and torch.backends.mps.is_available()
+    ) or torch.cuda.is_available()
 
 
 # noinspection PyUnresolvedReferences
@@ -119,7 +122,7 @@ def handle_soft_device_variable(*args, fn, **kwargs):
 
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
-        super(Profiler, self).__init__(save_dir)
+        super().__init__(save_dir)
         self._prof = profile(
             activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], with_stack=True
         )

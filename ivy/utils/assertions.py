@@ -136,7 +136,7 @@ def check_all_or_any_fn(
     *args,
     fn,
     type="all",
-    limit=[0],
+    limit=(0,),
     message="args must exist according to type and limit given",
     as_array=True,
 ):
@@ -182,9 +182,9 @@ def check_same_dtype(x1, x2, message=""):
 # -------- #
 
 
-def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
-    if not (isinstance(num_segments, int)):
-        raise ValueError("num_segments must be of integer type")
+def check_unsorted_segment_valid_params(data, segment_ids, num_segments):
+    if not isinstance(num_segments, int):
+        raise TypeError("num_segments must be of integer type")
 
     valid_dtypes = [
         ivy.int32,

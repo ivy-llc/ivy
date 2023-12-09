@@ -292,7 +292,7 @@ class _ArrayWithCreation(abc.ABC):
             input array from which to derive the output array shape.
         dtype
             output array data type. If dtype is None, the output array data type must be
-            inferred from ``self``. Deafult: ``None``.
+            inferred from ``self``. Default: ``None``.
         device
             device on which to place the created array. If device is None, the output
             array device must be inferred from ``self``. Default: ``None``.

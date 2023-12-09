@@ -27,9 +27,9 @@ def _get_inv_square_matrices(draw):
     )
 
     shape, ind = draw(
-        st.sampled_from(
-            [(generated_shape, generated_ind), (handpicked_shape, handpicked_ind)]
-        )
+        st.sampled_from([
+            (generated_shape, generated_ind), (handpicked_shape, handpicked_ind)
+        ])
     )
 
     input_dtype = draw(
@@ -67,7 +67,7 @@ def _get_inv_square_matrices(draw):
         available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=2,
         safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: (x, x)),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     test_with_out=st.just(False),
 )

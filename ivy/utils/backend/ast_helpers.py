@@ -199,9 +199,9 @@ class ImportTransformer(ast.NodeTransformer):
             return tree
 
         # Convenient function to insert the parse the AST import statement and insert it
-        insert_import = lambda node: tree.body.insert(
-            self.insert_index, _create_node(node)
-        )
+        def insert_import(node):
+            return tree.body.insert(self.insert_index, _create_node(node))
+
         if local_ivy_id is None:
             insert_import(
                 _global_import_template.substitute(name=importlib_abs_import_fn)

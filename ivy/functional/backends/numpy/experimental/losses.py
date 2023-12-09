@@ -8,7 +8,7 @@ from ivy.func_wrapper import (
 from . import backend_version
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def huber_loss(
     input: np.ndarray,
@@ -32,7 +32,7 @@ def huber_loss(
 
 
 # Implementation of smooth_l1_loss in the given format
-@with_unsupported_dtypes({"1.26.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def smooth_l1_loss(
     input: np.ndarray,
@@ -56,7 +56,7 @@ def smooth_l1_loss(
         return loss
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def soft_margin_loss(
     input: np.ndarray,
@@ -75,35 +75,15 @@ def soft_margin_loss(
         return loss
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("bool", "bfloat16")}, backend_version)
-@_scalar_output_to_0d_array
-def kl_div(
-    input: np.ndarray,
-    target: np.ndarray,
-    /,
-    *,
-    reduction: Optional[str] = "mean",
-) -> np.ndarray:
-    size = np.shape(input)
-
-    loss = np.sum(input * np.log(input / target), axis=-1)
-
-    if reduction == "mean":
-        loss = np.mean(loss)
-    elif reduction == "sum":
-        loss = np.sum(loss)
-    elif reduction == "batchmean":
-        loss = np.divide(np.sum(loss), size[0])
-
-    return loss
-
-
-def _apply_loss_reduction(loss: np.ndarray, reduction: str) -> np.ndarray:
+def _apply_loss_reduction(loss: np.ndarray, reduction: str, axis, out) -> np.ndarray:
     if reduction == "sum":
-        return np.sum(loss)
+        return np.sum(loss, axis=axis, out=out)
     elif reduction == "mean":
-        return np.mean(loss)
+        return np.mean(loss, axis=axis, out=out)
     else:  # reduction == "none"
+        if out is not None:
+            out[...] = loss
+            return out
         return loss
 
 
@@ -118,8 +98,8 @@ def _validate_poisson_nll_params(
     for parameter, name in zip([input, label], ["input", "label"]):
         if parameter.dtype not in allowed_dtypes:
             raise ValueError(
-                "The dtype of '%s' in poisson_nll_loss should be one of %s, but"
-                " received %s." % (name, allowed_dtypes, parameter.dtype)
+                f"The dtype of '{name}' in poisson_nll_loss should be one of"
+                f" {allowed_dtypes}, but received {parameter.dtype}."
             )
 
     # Validate epsilon
@@ -139,8 +119,8 @@ def _validate_poisson_nll_params(
     # Validate shape
     if input.shape != label.shape:
         raise ValueError(
-            "The shape of 'input' (%s) must be the same as the shape of 'label' (%s)."
-            % (input.shape, label.shape)
+            f"The shape of 'input' ({input.shape}) must be the same as the shape of"
+            f" 'label' ({label.shape})."
         )
 
     return True

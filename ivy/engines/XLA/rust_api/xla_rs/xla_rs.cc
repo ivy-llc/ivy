@@ -1188,7 +1188,7 @@ status execute(const pjrt_loaded_executable exe, const literal *inputs,
     ASSIGN_OR_RETURN_STATUS(buffer,
                             client->BufferFromHostLiteral(*inputs[i], device));
     // Wait for the transfer to have completed to avoid the literal potentially
-    // getting out of scope before it has been transfered.
+    // getting out of scope before it has been transferred.
     MAYBE_RETURN_STATUS(buffer->GetReadyFuture().Await());
     input_buffer_ptrs.push_back(buffer.release());
   }
