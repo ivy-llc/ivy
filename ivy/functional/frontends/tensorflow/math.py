@@ -819,6 +819,10 @@ def unsorted_segment_sum(data, segment_ids, num_segments, name="unsorted_segment
     return sum_array
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("float16", "bool")},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def segment_sum(data, segment_ids, name="segment_sum"):
     data = ivy.array(data)
