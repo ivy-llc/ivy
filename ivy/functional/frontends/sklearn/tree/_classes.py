@@ -137,7 +137,23 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
         return self
 
     def predict(self, X, check_input=True):
-        raise NotImplementedError
+        proba = self.tree_.predict(X)
+        n_samples = X.shape[0]
+
+        # Classification
+
+        if self.n_outputs_ == 1:
+            return ivy.gather(self.classes_, ivy.argmax(proba, axis=1), axis=0)
+
+        else:
+            class_type = self.classes_[0].dtype
+            predictions = ivy.zeros((n_samples, self.n_outputs_), dtype=class_type)
+            for k in range(self.n_outputs_):
+                predictions[:, k] = ivy.gather(
+                    self.classes_[k], ivy.argmax(proba[:, k], axis=1), axis=0
+                )
+
+            return predictions
 
     def apply(self, X, check_input=True):
         raise NotImplementedError
