@@ -276,7 +276,9 @@ class BestSplitter(Splitter):
         *args,
     ):
         Splitter.init(self, X, y, sample_weight, missing_values_in_feature_mask, *args)
-        self.partitioner = None
+        self.partitioner = DensePartitioner(
+            X, self.samples, self.feature_values, missing_values_in_feature_mask
+        )
 
     def node_split(self, impurity, split, n_constant_features):
         return node_split_best(
@@ -381,10 +383,7 @@ def node_split_best(
         f_i -= 1
         features[f_i], features[f_j] = features[f_j], features[f_i]
         has_missing = n_missing != 0
-        criterion.init_missing(n_missing)
-
         n_searches = 2 if has_missing else 1
-
         for i in range(n_searches):
             missing_go_to_left = i == 1
             criterion.missing_go_to_left = missing_go_to_left

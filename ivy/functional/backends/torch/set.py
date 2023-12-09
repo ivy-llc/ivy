@@ -114,7 +114,7 @@ def unique_inverse(
         x = torch.flatten(x)
         axis = 0
 
-    values, inverse_indices = torch.unique(x, return_inverse=True, axis=axis)
+    values, inverse_indices = torch.unique(x, return_inverse=True, dim=axis)
     nan_idx = torch.isnan(x)
     if nan_idx.any():
         inverse_indices[nan_idx] = torch.where(torch.isnan(values))[0][0]

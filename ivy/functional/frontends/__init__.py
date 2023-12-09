@@ -5,7 +5,7 @@ versions = {
     "torch": "2.1.1",
     "tensorflow": "2.15.0",
     "numpy": "1.25.2",
-    "jax": "0.4.14",
+    "jax": "0.4.21",
     "scipy": "1.10.1",
     "paddle": "2.5.2",
     "sklearn": "1.3.0",
