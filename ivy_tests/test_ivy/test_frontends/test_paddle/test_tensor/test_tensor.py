@@ -1214,9 +1214,7 @@ def test_paddle_tensor_add(
     )
 
 
-# __(add_)__
-
-
+# add_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
