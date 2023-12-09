@@ -3201,7 +3201,7 @@ def test_tensorflow_unsorted_segment_sum(
 
 @handle_frontend_test(
     fn_tree="tensorflow.math.segment_sum",
-    data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
+    data=helpers.array_values(dtype=helpers.get_dtypes(), shape=(5, 6)),
     segment_ids=helpers.array_values(
         dtype=ivy.int32,
         shape=(5,),
@@ -3221,7 +3221,7 @@ def test_tensorflow_segment_sum(
     on_device,
 ):
     helpers.test_frontend_function(
-        input_dtypes=["int32", "int64"],
+        input_dtypes=[],
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
