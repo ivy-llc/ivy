@@ -958,6 +958,10 @@ class Tensor:
         return paddle_frontend.inner(self, y, name)
 
     @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+    def acos(self, name=None):
+        return paddle_frontend.Tensor(ivy.acos(self._ivy_array))
+
+    @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
     def mean(self, axis=None, keepdim=False, name=None):
         return paddle_frontend.mean(self, axis=axis, keepdim=keepdim)
 
