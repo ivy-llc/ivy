@@ -118,6 +118,22 @@ class Tensor:
         },
         "paddle",
     )
+    def __lt__(self, y, /, name=None):
+        return paddle_frontend.logic.less_than(self, y)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
     def __ge__(self, y, /, name=None):
         return paddle_frontend.logic.greater_equal(self, y)
 
