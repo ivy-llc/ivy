@@ -2854,8 +2854,7 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Short-time Fourier transform  of input.
+    """Compute the Short-time Fourier transform  of input.
 
     Parameters
     ----------
@@ -3153,7 +3152,7 @@ def rfftn(
 
     return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
 
-  
+
 # stft
 @handle_exceptions
 @handle_backend_invalid
