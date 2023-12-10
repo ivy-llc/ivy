@@ -57,9 +57,7 @@ def searchsorted(
     )
 
     if sorter is not None:
-        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
-            sorter.dtype
-        ), TypeError(
+        assert ivy.is_int_dtype(sorter.dtype), TypeError(
             f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
         )
         if ivy.as_native_dtype(sorter.dtype) not in [paddle.int32, paddle.int64]:

@@ -19,10 +19,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of `ivy.max_pool1d`. This method simply wraps
-        the function, and so the docstring for `ivy.max_pool1d` also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of `ivy.max_pool1d`. This method
+        simply wraps the function, and so the docstring for `ivy.max_pool1d`
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -87,10 +86,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of `ivy.max_pool2d`. This method simply wraps
-        the function, and so the docstring for `ivy.max_pool2d` also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of `ivy.max_pool2d`. This method
+        simply wraps the function, and so the docstring for `ivy.max_pool2d`
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -166,8 +164,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Compute a 3-D max pool given 5-D input x.
+        """Compute a 3-D max pool given 5-D input x.
 
         Parameters
         ----------
@@ -231,10 +228,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of `ivy.avg_pool1d`. This method simply wraps
-        the function, and so the docstring for `ivy.avg_pool1d` also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of `ivy.avg_pool1d`. This method
+        simply wraps the function, and so the docstring for `ivy.avg_pool1d`
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -300,10 +296,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         divisor_override: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of `ivy.avg_pool2d`. This method simply wraps
-        the function, and so the docstring for `ivy.avg_pool2d` also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of `ivy.avg_pool2d`. This method
+        simply wraps the function, and so the docstring for `ivy.avg_pool2d`
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -377,8 +372,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         divisor_override: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Compute a 3-D max pool given 5-D input x.
+        """Compute a 3-D max pool given 5-D input x.
 
         Parameters
         ----------
@@ -443,10 +437,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         norm: Optional[Literal["ortho"]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.dct. This method simply wraps the
-        function, and so the docstring for ivy.dct also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.dct. This method simply
+        wraps the function, and so the docstring for ivy.dct also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -492,10 +485,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         norm: Optional[Literal["ortho"]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.idct. This method simply wraps the
-        function, and so the docstring for ivy.idct also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.idct. This method simply
+        wraps the function, and so the docstring for ivy.idct also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -541,10 +533,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.ifft. This method simply wraps the
-        function, and so the docstring for ivy.ifft also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.ifft. This method simply
+        wraps the function, and so the docstring for ivy.ifft also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -597,10 +588,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.ifft. This method simply wraps the
-        function, and so the docstring for ivy.ifft also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.ifft. This method simply
+        wraps the function, and so the docstring for ivy.ifft also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -666,8 +656,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Compute the discrete Fourier transform of input.
+        """Compute the discrete Fourier transform of input.
 
         Parameters
         ----------
@@ -751,8 +740,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         antialias: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Down/up samples the input to the given size. The algorithm used for
+        """Down/up samples the input to the given size. The algorithm used for
         interpolation is determined by mode.
 
         Parameters
@@ -811,9 +799,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
         self: ivy.Array,
         output_size: int,
     ) -> ivy.Array:
-        """
-        Apply a 1D adaptive average pooling over an input signal composed of several
-        input planes.
+        """Apply a 1D adaptive average pooling over an input signal composed of
+        several input planes.
 
         Parameters
         ----------
@@ -838,9 +825,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
         self: ivy.Array,
         output_size: Union[Sequence[int], int],
     ) -> ivy.Array:
-        """
-        Apply a 2D adaptive average pooling over an input signal composed of several
-        input planes.
+        """Apply a 2D adaptive average pooling over an input signal composed of
+        several input planes.
 
         Parameters
         ----------
@@ -865,9 +851,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
         self: ivy.Array,
         output_size: Union[Sequence[int], int],
     ) -> ivy.Array:
-        """
-        Apply a 2D adaptive maximum pooling over an input signal composed of several
-        input planes.
+        """Apply a 2D adaptive maximum pooling over an input signal composed of
+        several input planes.
 
         Parameters
         ----------
@@ -900,8 +885,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
         base_dilation: Union[int, Sequence[int]] = 1,
         window_dilation: Union[int, Sequence[int]] = 1,
     ) -> ivy.Array:
-        """
-        Apply a reduction function to all elements in each window of an array.
+        """Apply a reduction function to all elements in each window of an
+        array.
 
         Parameters
         ----------
@@ -957,8 +942,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Compute the 2-dimensional discrete Fourier Transform.
+        """Compute the 2-dimensional discrete Fourier Transform.
 
         Parameters
         ----------
@@ -1021,8 +1005,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Compute the N-dimensional inverse discrete Fourier Transform.
+        """Compute the N-dimensional inverse discrete Fourier Transform.
 
         Parameters
         ----------
@@ -1094,10 +1077,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         norm: Literal["backward", "ortho", "forward"] = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.rfft. This method simply wraps the
-        function, and so the docstring for ivy.rfft also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.rfft. This method simply
+        wraps the function, and so the docstring for ivy.rfft also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1149,8 +1131,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Compute the n-dimensional discrete Fourier Transform.
+        """Compute the n-dimensional discrete Fourier Transform.
 
         Parameters
         ----------
@@ -1191,8 +1172,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         boundary: Optional[str] = "zeros",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Compute the Short-time Fourier Transform of signals.
+        """Compute the Short-time Fourier Transform of signals.
 
         Parameters
         ----------
@@ -1296,8 +1276,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         dilation: Union[int, Tuple[int, int]] = 1,
         padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
     ) -> ivy.Array:
-        """
-        Slide a window of specified dimension over all elements of an array.
+        """Slide a window of specified dimension over all elements of an array.
 
         Parameters
         ----------
@@ -1352,8 +1331,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
         padding: Union[int, Tuple[int]] = 0,
         data_format: Optional[str] = "NCW",
     ) -> ivy.Array:
-        """
-        Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+        """Compute a 1-D max unpooling given the 1-D pooled input x and its
+        indices.
 
         Parameters
         ----------

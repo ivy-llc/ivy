@@ -161,17 +161,19 @@ def test_numpy_dot(
 @handle_frontend_test(
     fn_tree="numpy.linalg.matrix_and_vector_products.einsum",
     gt_fn_tree="numpy.einsum",
-    args=st.sampled_from([
-        (
-            "ii",
-            np.arange(25).reshape(5, 5),
-        ),
-        (
-            "ii->i",
-            np.arange(25).reshape(5, 5),
-        ),
-        ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
-    ]),
+    args=st.sampled_from(
+        [
+            (
+                "ii",
+                np.arange(25).reshape(5, 5),
+            ),
+            (
+                "ii->i",
+                np.arange(25).reshape(5, 5),
+            ),
+            ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
+        ]
+    ),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_numpy_einsum(

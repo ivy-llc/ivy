@@ -4,10 +4,10 @@ from ._splitter import SplitRecord
 EPSILON = ivy.finfo(ivy.double).eps
 INFINITY = ivy.inf
 INTPTR_MAX = ivy.iinfo(ivy.int32).max
-TREE_UNDEFINED = -2
-_TREE_UNDEFINED = TREE_UNDEFINED
 TREE_LEAF = -1
+TREE_UNDEFINED = -2
 _TREE_LEAF = TREE_LEAF
+_TREE_UNDEFINED = TREE_UNDEFINED
 
 
 class Node:
@@ -57,17 +57,19 @@ class Tree:
                 dtype=ivy.float32,
             )
         else:
-            self.value = ivy.concat([
-                self.value,
-                ivy.zeros(
-                    (
-                        int(capacity - self.capacity),
-                        int(self.n_outputs),
-                        int(self.max_n_classes),
+            self.value = ivy.concat(
+                [
+                    self.value,
+                    ivy.zeros(
+                        (
+                            int(capacity - self.capacity),
+                            int(self.n_outputs),
+                            int(self.max_n_classes),
+                        ),
+                        dtype=ivy.float32,
                     ),
-                    dtype=ivy.float32,
-                ),
-            ])
+                ]
+            )
         if capacity < self.node_count:
             self.node_count = capacity
         self.capacity = capacity
@@ -199,7 +201,6 @@ class DepthFirstTreeBuilder(TreeBuilder):
     def build(
         self, tree, X, y, sample_weight=None, missing_values_in_feature_mask=None
     ):
-
         if tree.max_depth <= 10:
             init_capacity = int(2 ** (tree.max_depth + 1)) - 1
         else:

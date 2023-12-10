@@ -65,20 +65,22 @@ def _interp_args(draw, mode=None, mode_list=None):
             mode = draw(st.sampled_from(jax_modes))
         else:
             mode = draw(
-                st.sampled_from([
-                    "linear",
-                    "bilinear",
-                    "trilinear",
-                    "nearest",
-                    "nearest-exact",
-                    "area",
-                    "tf_area",
-                    "tf_bicubic",
-                    "lanczos3",
-                    "lanczos5",
-                    "mitchellcubic",
-                    "gaussian",
-                ])
+                st.sampled_from(
+                    [
+                        "linear",
+                        "bilinear",
+                        "trilinear",
+                        "nearest",
+                        "nearest-exact",
+                        "area",
+                        "tf_area",
+                        "tf_bicubic",
+                        "lanczos3",
+                        "lanczos5",
+                        "mitchellcubic",
+                        "gaussian",
+                    ]
+                )
             )
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))

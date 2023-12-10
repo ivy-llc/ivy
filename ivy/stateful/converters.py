@@ -21,9 +21,8 @@ def to_ivy_module(
     devices=None,
     inplace_update=False,
 ):
-    """
-    Convert an instance of a trainable module from a native framework into a trainable
-    ivy.Module instance.
+    """Convert an instance of a trainable module from a native framework into a
+    trainable ivy.Module instance.
 
     Parameters
     ----------
@@ -76,8 +75,7 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """
-        Convert a Haiku module instance to an Ivy module instance.
+        """Convert a Haiku module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -170,8 +168,7 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """
-        Convert a Flax module instance to an Ivy module instance.
+        """Convert a Flax module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -260,8 +257,7 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """
-        Convert a Keras module instance to an Ivy module instance.
+        """Convert a Keras module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -323,8 +319,7 @@ class ModuleConverters:
         device=None,
         devices=None,
     ):
-        """
-        Convert a Paddle layer instance to an Ivy module instance.
+        """Convert a Paddle layer instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -380,8 +375,7 @@ class ModuleConverters:
         devices=None,
         inplace_update=False,
     ):
-        """
-        Convert a Torch module instance to an Ivy module instance.
+        """Convert a Torch module instance to an Ivy module instance.
 
         Parameters
         ----------
@@ -440,8 +434,8 @@ class ModuleConverters:
         )
 
     def to_keras_module(self):
-        """
-        Convert a `ivy.Module` module instance to a `tf.keras.Model` instance.
+        """Convert a `ivy.Module` module instance to a `tf.keras.Model`
+        instance.
 
         Returns
         -------

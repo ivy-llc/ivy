@@ -30,10 +30,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.matmul. This method simply wraps the
-        function, and so the docstring for ivy.matul also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.matmul. This method
+        simply wraps the function, and so the docstring for ivy.matul also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -104,10 +103,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.matmul. This method simply wraps
-        the function, and so the docstring for ivy.matmul also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.matmul. This method
+        simply wraps the function, and so the docstring for ivy.matmul also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -174,10 +172,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.cholesky. This method simply wraps
-        the function, and so the docstring for ivy.cholesky also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.cholesky. This method
+        simply wraps the function, and so the docstring for ivy.cholesky also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -261,10 +258,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.cholesky. This method simply wraps
-        the function, and so the docstring for ivy.cholesky also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.cholesky. This method
+        simply wraps the function, and so the docstring for ivy.cholesky also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -336,10 +332,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.cross. This method simply wraps the
-        function, and so the docstring for ivy.cross also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.cross. This method simply
+        wraps the function, and so the docstring for ivy.cross also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -422,10 +417,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.cross. This method simply wraps the
-        function, and so the docstring for ivy.cross also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.cross. This method
+        simply wraps the function, and so the docstring for ivy.cross also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -545,10 +539,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.diagonal. This method simply wraps
-        the function, and so the docstring for ivy.diagonal also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.diagonal. This method
+        simply wraps the function, and so the docstring for ivy.diagonal also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -631,10 +624,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.diagonal. This method simply wraps
-        the function, and so the docstring for ivy.diagonal also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.diagonal. This method
+        simply wraps the function, and so the docstring for ivy.diagonal also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -737,10 +729,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.diag. This method simply wraps the
-        function, and so the docstring for ivy.diag also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.diag. This method
+        simply wraps the function, and so the docstring for ivy.diag also
+        applies to this method with minimal changes.
 
         Examples
         --------
@@ -796,10 +787,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.eigh. This method simply wraps the
-        function, and so the docstring for ivy.eigh also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.eigh. This method
+        simply wraps the function, and so the docstring for ivy.eigh also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -868,10 +858,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.eigvalsh. This method simply wraps
-        the function, and so the docstring for ivy.eigvalsh also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.eigvalsh. This method
+        simply wraps the function, and so the docstring for ivy.eigvalsh also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -938,10 +927,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.eigvalsh. This method simply wraps
-        the function, and so the docstring for ivy.eigvalsh also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.eigvalsh. This method
+        simply wraps the function, and so the docstring for ivy.eigvalsh also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1006,10 +994,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.inner. This method simply wraps the
-        function, and so the docstring for ivy.inner also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.inner. This method simply
+        wraps the function, and so the docstring for ivy.inner also applies to
+        this method with minimal changes.
 
         Return the inner product of two vectors ``x1`` and ``x2``.
 
@@ -1079,10 +1066,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.inner. This method simply wraps the
-        function, and so the docstring for ivy.inner also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.inner. This method
+        simply wraps the function, and so the docstring for ivy.inner also
+        applies to this method with minimal changes.
 
         Return the inner product of two vectors ``self`` and ``x2``.
 
@@ -1150,10 +1136,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.inv. This method simply wraps the
-        function, and so the docstring for ivy.inv also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.inv. This method simply
+        wraps the function, and so the docstring for ivy.inv also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1219,10 +1204,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.inv. This method simply wraps the
-        function, and so the docstring for ivy.inv also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.inv. This method simply
+        wraps the function, and so the docstring for ivy.inv also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1284,10 +1268,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         rtol: Optional[Union[float, Tuple[float], ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container special method variant of ivy.pinv. This method simply wraps the
-        function, and so the docstring for ivy.pinv also applies to this method with
-        minimal changes.
+        """ivy.Container special method variant of ivy.pinv. This method simply
+        wraps the function, and so the docstring for ivy.pinv also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1343,10 +1326,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         rtol: Optional[Union[float, Tuple[float], ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.pinv. This method simply wraps the
-        function, and so the docstring for ivy.pinv also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.pinv. This method
+        simply wraps the function, and so the docstring for ivy.pinv also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1409,10 +1391,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.matrix_norm. This method simply wraps
-        the function, and so the docstring for ivy.matrix_norm also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.matrix_norm. This method
+        simply wraps the function, and so the docstring for ivy.matrix_norm
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1497,10 +1478,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.matrix_norm. This method simply
-        wraps the function, and so the docstring for ivy.matrix_norm also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.matrix_norm. This
+        method simply wraps the function, and so the docstring for
+        ivy.matrix_norm also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1630,10 +1610,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.matrix_rank. This method returns the
-        rank (i.e., number of non-zero singular values) of a matrix (or a stack of
-        matrices).
+        """ivy.Container static method variant of ivy.matrix_rank. This method
+        returns the rank (i.e., number of non-zero singular values) of a matrix
+        (or a stack of matrices).
 
         Parameters
         ----------
@@ -1725,10 +1704,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.matrix_rank. This method returns
-        the rank (i.e., number of non-zero singular values) of a matrix (or a stack of
-        matrices).
+        """ivy.Container instance method variant of ivy.matrix_rank. This
+        method returns the rank (i.e., number of non-zero singular values) of a
+        matrix (or a stack of matrices).
 
         Parameters
         ----------
@@ -1815,8 +1793,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Transpose a matrix (or a stack of matrices) ``x``.
+        """Transpose a matrix (or a stack of matrices) ``x``.
 
         Parameters
         ----------
@@ -1872,8 +1849,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Transpose a matrix (or a stack of matrices) ``x``.
+        """Transpose a matrix (or a stack of matrices) ``x``.
 
         Parameters
         ----------
@@ -1928,10 +1904,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.outer. This method simply wraps the
-        function, and so the docstring for ivy.outer also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.outer. This method simply
+        wraps the function, and so the docstring for ivy.outer also applies to
+        this method with minimal changes.
 
         Computes the outer product of two arrays, x1 and x2,
         by computing the tensor product along the last dimension of both arrays.
@@ -2003,8 +1978,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Return the outer product of two arrays or containers.
+        """Return the outer product of two arrays or containers.
 
         The instance method implementation of the static method static_outer of the
         ivy.Container class. It calculates the outer product of two input arrays or
@@ -2076,10 +2050,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        """
-        ivy.Container static method variant of ivy.qr. This method simply wraps the
-        function, and so the docstring for ivy.qr also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.qr. This method simply
+        wraps the function, and so the docstring for ivy.qr also applies to
+        this method with minimal changes.
 
         Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
         matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
@@ -2172,10 +2145,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        """
-        ivy.Container instance method variant of ivy.qr. This method simply wraps the
-        function, and so the docstring for ivy.qr also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.qr. This method simply
+        wraps the function, and so the docstring for ivy.qr also applies to
+        this method with minimal changes.
 
         Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
         matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
@@ -2266,10 +2238,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.slogdet. This method simply wraps the
-        function, and so the docstring for ivy.slogdet also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.slogdet. This method
+        simply wraps the function, and so the docstring for ivy.slogdet also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2338,10 +2309,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.slogdet. This method simply wraps
-        the function, and so the docstring for ivy.slogdet also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.slogdet. This method
+        simply wraps the function, and so the docstring for ivy.slogdet also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2458,10 +2428,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
-        """
-        ivy.Container static method variant of ivy.svd. This method simply wraps the
-        function, and so the docstring for ivy.svd also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.svd. This method simply
+        wraps the function, and so the docstring for ivy.svd also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -2531,10 +2500,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.svd. This method simply wraps the
-        function, and so the docstring for ivy.svd also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.svd. This method simply
+        wraps the function, and so the docstring for ivy.svd also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -2749,9 +2717,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.trace. This method Returns the sum
-        along the specified diagonals of a matrix (or a stack of matrices).
+        """ivy.Container static method variant of ivy.trace. This method
+        Returns the sum along the specified diagonals of a matrix (or a stack
+        of matrices).
 
         Parameters
         ----------
@@ -2842,9 +2810,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.trace. This method Returns the sum
-        along the specified diagonals of a matrix (or a stack of matrices).
+        """ivy.Container instance method variant of ivy.trace. This method
+        Returns the sum along the specified diagonals of a matrix (or a stack
+        of matrices).
 
         Parameters
         ----------
@@ -2983,10 +2951,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.vector_norm. This method simply wraps
-        the function, and so the docstring for ivy.vector_norm also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.vector_norm. This method
+        simply wraps the function, and so the docstring for ivy.vector_norm
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3098,10 +3065,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        r"""
-        ivy.Container instance method variant of ivy.vector_norm. This method simply
-        wraps the function, and so the docstring for ivy.vector_norm also applies to
-        this method with minimal changes.
+        r"""ivy.Container instance method variant of ivy.vector_norm. This
+        method simply wraps the function, and so the docstring for
+        ivy.vector_norm also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3249,10 +3215,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.vander. This method simply wraps the
-        function, and so the docstring for ivy.vander also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.vander. This method
+        simply wraps the function, and so the docstring for ivy.vander also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3317,9 +3282,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         increasing: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.vander. This method Returns the
-        Vandermonde matrix of the input array.
+        """ivy.Container instance method variant of ivy.vander. This method
+        Returns the Vandermonde matrix of the input array.
 
         Parameters
         ----------
@@ -3384,10 +3348,10 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.general_inner_product. This method
-        simply wraps the function, and so the docstring for ivy.general_inner_product
-        also applies to this method with minimal changes.
+        """ivy.Container static method variant of ivy.general_inner_product.
+        This method simply wraps the function, and so the docstring for
+        ivy.general_inner_product also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -3456,8 +3420,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.general_inner_product.
+        """ivy.Container instance method variant of ivy.general_inner_product.
 
         This method simply wraps the function, and so the docstring for
         ivy.general_inner_product also applies to this method with
