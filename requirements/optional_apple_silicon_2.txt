@@ -11,3 +11,4 @@ pandas
 pyspark
 autoflake  # for backend generation
 snakeviz  # for profiling
+ml-dtypes==0.2.0
