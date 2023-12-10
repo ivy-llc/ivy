@@ -11,6 +11,7 @@ from ivy.functional.frontends.numpy.creation_routines.from_existing_data import 
 )
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_device_and_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
     _to_ivy_array,
     numpy_to_torch_style_args,
@@ -276,8 +277,7 @@ class Tensor:
         return torch_frontend.atan2(self, other)
 
     def view(self, *args, size=None):
-        """
-        Reshape Tensor.
+        """Reshape Tensor.
 
         possible arguments are either:
             - size
@@ -424,6 +424,10 @@ class Tensor:
     def logical_or(self, other):
         return torch_frontend.logical_or(self, other)
 
+    @with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, "torch")
+    def logical_xor(self, other):
+        return torch_frontend.logical_xor(self, other)
+
     def bitwise_not(self):
         return torch_frontend.bitwise_not(self)
 
@@ -517,6 +521,13 @@ class Tensor:
     def erf_(self, *, out=None):
         self.ivy_array = self.erf(out=out).ivy_array
         return self
+
+    @with_supported_device_and_dtypes(
+        {"2.1.0 and below": {"cpu": ("float32", "float64")}},
+        "torch",
+    )
+    def erfc_(self, *, out=None):
+        return torch_frontend.erfc(self, out=out)
 
     def new_zeros(
         self,

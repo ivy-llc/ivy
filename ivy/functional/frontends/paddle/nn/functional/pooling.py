@@ -118,8 +118,7 @@ def max_pool2d(
     if data_format not in ["NCHW", "NHWC"]:
         raise ValueError(
             "Attr(data_format) should be 'NCHW' or 'NHWC'. Received "
-            "Attr(data_format): %s."
-            % str(data_format)
+            "Attr(data_format): %s." % str(data_format)
         )
 
     if data_format == "NHWC" and return_mask:

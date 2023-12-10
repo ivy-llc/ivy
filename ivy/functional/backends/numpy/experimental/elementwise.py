@@ -432,7 +432,8 @@ lanczos_den_coeffs = np.array([
 def sinpi(x):
     y = np.abs(x) % 2.0
     n = np.round(2.0 * y)
-    assert n >= 0 and n <= 4
+    assert n >= 0
+    assert n <= 4
 
     if n == 0:
         r = np.sin(np.pi * y)

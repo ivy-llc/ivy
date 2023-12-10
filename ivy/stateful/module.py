@@ -53,9 +53,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         device=None,
         **kwargs,
     ):
-        """
-        Initialize Ivy layer, which is a stateful object consisting of trainable
-        variables.
+        """Initialize Ivy layer, which is a stateful object consisting of
+        trainable variables.
 
         Parameters
         ----------
@@ -160,8 +159,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         dynamic_backend=None,
         **kwargs,
     ):
-        """
-        Build the internal layers and variables for this module.
+        """Build the internal layers and variables for this module.
 
         Parameters
         ----------
@@ -304,9 +302,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         kwargs: Optional[Dict] = None,
         **trace_kwargs,
     ):
-        """
-        Trace the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the target
-        backend.
+        """Trace the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to
+        the target backend.
 
         Parameters
         ----------
@@ -339,8 +336,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._lazy_traced = False
 
     def register_buffer(self, name, value):
-        """
-        Register a buffer.
+        """Register a buffer.
 
         Parameters
         ----------
@@ -352,8 +348,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._buffers.update({name: value})
 
     def register_parameter(self, name, value):
-        """
-        Register a parameter.
+        """Register a parameter.
 
         Parameters
         ----------
@@ -415,8 +410,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         )
 
     def save_weights(self, weights_path, /):
-        """
-        Save the weights on the Module.
+        """Save the weights on the Module.
 
         Parameters
         ----------
@@ -431,8 +425,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self.v.cont_to_disk_as_hdf5(weights_path)
 
     def save(self, filename):
-        """
-        Save the module object to disk using pickle.
+        """Save the module object to disk using pickle.
 
         Parameters
         ----------
@@ -448,8 +441,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     @staticmethod
     def load(filename):
-        """
-        Load a module object from disk using pickle.
+        """Load a module object from disk using pickle.
 
         Parameters
         ----------
@@ -477,8 +469,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         buffers=None,
         **kwargs,
     ):
-        """
-        Forward an input through current module.
+        """Forward an input through current module.
 
         Parameters
         ----------
@@ -575,9 +566,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     # -----------------------------------#
 
     def _create_variables(self, *, device=None, dtype=None):
-        """
-        Create internal trainable variables, and return as arbitrary nested dict.
-        Overridable.
+        """Create internal trainable variables, and return as arbitrary nested
+        dict. Overridable.
 
         Parameters
         ----------
@@ -594,8 +584,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return {}
 
     def _build(self, *args, **kwargs) -> bool:
-        """
-        Build the internal layers and variables for this module. Overridable.
+        """Build the internal layers and variables for this module.
+        Overridable.
 
         Returns
         -------
@@ -607,8 +597,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return True
 
     def _forward(self, *args, **kwargs):
-        """
-        Forward pass of the layer, called after handling the optional input variables.
+        """Forward pass of the layer, called after handling the optional input
+        variables.
 
         Raises
         ------
@@ -617,8 +607,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         raise ivy.utils.exceptions.IvyNotImplementedException
 
     def _extra_repr(self) -> str:
-        """
-        Set the extra representation of the module.
+        """Set the extra representation of the module.
 
         To print customized extra information, you should re-implement
         this method in your own modules. Both single-line and multi-line
@@ -659,7 +648,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     @property
     def state_dict(self):
-        """Return the state_dict which is a collection of the variables and buffers."""
+        """Return the state_dict which is a collection of the variables and
+        buffers."""
         return {**self.v, **self.buffers}
 
     @property

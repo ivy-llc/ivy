@@ -421,6 +421,10 @@ class Tensor:
         return paddle_frontend.tanh(self)
 
     @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+    def add(self, y, name=None):
+        return paddle_frontend.Tensor(ivy.add(self._ivy_array, _to_ivy_array(y)))
+
+    @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
     def add_(self, y, name=None):
         self.ivy_array = paddle_frontend.add(self, y).ivy_array
         return self
@@ -952,6 +956,10 @@ class Tensor:
     @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
     def inner(self, y, name=None):
         return paddle_frontend.inner(self, y, name)
+
+    @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+    def acos(self, name=None):
+        return paddle_frontend.Tensor(ivy.acos(self._ivy_array))
 
     @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
     def mean(self, axis=None, keepdim=False, name=None):

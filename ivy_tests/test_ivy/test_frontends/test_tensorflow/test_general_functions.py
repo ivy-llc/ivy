@@ -228,11 +228,13 @@ def _multiple_shape_helper(draw):
 @st.composite
 def _pad_helper(draw):
     mode = draw(
-        st.sampled_from([
-            "CONSTANT",
-            "REFLECT",
-            "SYMMETRIC",
-        ])
+        st.sampled_from(
+            [
+                "CONSTANT",
+                "REFLECT",
+                "SYMMETRIC",
+            ]
+        )
     )
     dtype, input, shape = draw(
         helpers.dtype_and_values(
@@ -283,19 +285,21 @@ def _sequence_mask_helper(draw):
 
     max_len = draw(st.integers(min_value=max_val, max_value=max_val))
     dtype = draw(
-        st.sampled_from([
-            "float16",
-            "uint8",
-            "complex128",
-            "bool",
-            "float64",
-            "int8",
-            "int16",
-            "complex64",
-            "float32",
-            "int32",
-            "int64",
-        ])
+        st.sampled_from(
+            [
+                "float16",
+                "uint8",
+                "complex128",
+                "bool",
+                "float64",
+                "int8",
+                "int16",
+                "complex64",
+                "float32",
+                "int32",
+                "int64",
+            ]
+        )
     )
     return in_dtype, lens, max_len, dtype
 
@@ -725,11 +729,13 @@ def test_tensorflow_convert_to_tensor(
 # einsum
 @handle_frontend_test(
     fn_tree="tensorflow.einsum",
-    eq_n_op_n_shp=st.sampled_from([
-        ("ii", (np.arange(25).reshape(5, 5),), ()),
-        ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
-        ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
-    ]),
+    eq_n_op_n_shp=st.sampled_from(
+        [
+            ("ii", (np.arange(25).reshape(5, 5),), ()),
+            ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
+            ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
+        ]
+    ),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_tensorflow_einsum(
