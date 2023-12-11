@@ -82,7 +82,7 @@ def complex(
     *,
     out=None,
 ):
-    assert real.dtype == imag.dtype, ValueError(
+    assert real.dtype == imag.dtype, TypeError(
         "Expected real and imag to have the same dtype, "
         f" but got real.dtype = {real.dtype} and imag.dtype = {imag.dtype}."
     )

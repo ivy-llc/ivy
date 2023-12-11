@@ -72,7 +72,7 @@ def searchsorted(
     ret_dtype: torch.dtype = torch.int64,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    assert ivy.is_int_dtype(ret_dtype), ValueError(
+    assert ivy.is_int_dtype(ret_dtype), TypeError(
         "only Integer data types are supported for ret_dtype."
     )
     if sorter is not None:
