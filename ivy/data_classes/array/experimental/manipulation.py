@@ -1489,9 +1489,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         name: Optional[str] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Add the elements of the input tensor with value tensor by selecting the indices
-        in the order given in index.
+        """Add the elements of the input tensor with value tensor by selecting
+        the indices in the order given in index.
 
         Parameters
         ----------
