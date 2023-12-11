@@ -224,10 +224,10 @@ def gather(
         if dim_diff != 0:
             params_expanded, indices_expanded = expand_p_i(params, indices)
             result = torch.gather(
-                                    params_expanded, axis,
-                                    indices_expanded.long(),
-                                    sparse_grad=False, out=out
-                                 )
+                                  params_expanded, axis,
+                                  indices_expanded.long(),
+                                  sparse_grad=False, out=out
+            )
             return result
         else:
             result = torch.gather(
