@@ -113,7 +113,7 @@ def randint(
 
 def seed(*, seed_value: int = 0) -> None:
     np.random.seed(seed_value)
-    return
+    return None
 
 
 def shuffle(

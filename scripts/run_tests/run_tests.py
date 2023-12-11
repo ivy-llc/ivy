@@ -73,7 +73,7 @@ if __name__ == "__main__":
                 backends = [backend.strip()]
                 backend_name, backend_version = backend.split("/")
                 other_backends = [
-                    fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
+                    fw for fw in BACKENDS if (fw not in (backend_name, "paddle"))
                 ]
                 for other_backend in other_backends:
                     backends.append(

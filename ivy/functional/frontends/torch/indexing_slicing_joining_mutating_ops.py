@@ -89,7 +89,7 @@ def diagonal_scatter(input, src, offset=0, dim1=0, dim2=1):
     diagonal_indices = ivy.diagonal(
         indices.reshape(input.shape), offset=offset, axis1=dim1, axis2=dim2
     )
-    if not (src.shape == diagonal_indices.shape):
+    if src.shape != diagonal_indices.shape:
         raise ivy.utils.exceptions.IvyException(
             "src must have shape equal to specified diagonal of input. src size ="
             f" {src.shape}, diagonal size = {diagonal_indices.shape}"
@@ -420,8 +420,7 @@ def swapdims(input, dim0, dim1):
 def t(input):
     if input.ndim > 2:
         raise ivy.utils.exceptions.IvyException(
-            "t(input) expects a tensor with <= 2 dimensions, but self is %dD"
-            % input.ndim
+            f"t(input) expects a tensor with <= 2 dimensions, but self is {input.ndim}D"
         )
     if input.ndim == 2:
         return ivy.swapaxes(input, 0, 1)

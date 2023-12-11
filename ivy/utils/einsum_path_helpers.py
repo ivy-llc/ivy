@@ -604,12 +604,12 @@ def parse_einsum_input(operands, subscripts=None):
             tmp_subscripts = subscripts.replace(",", "")
             for s in sorted(set(tmp_subscripts)):
                 if s not in (einsum_symbols):
-                    raise ValueError("Character %s is not a valid symbol." % s)
+                    raise ValueError(f"Character {s} is not a valid symbol.")
                 if tmp_subscripts.count(s) == 1:
                     output_subscript += s
             normal_inds = "".join(sorted(set(output_subscript) - set(out_ellipse)))
 
-            subscripts += "->" + out_ellipse + normal_inds
+            subscripts += f"->{out_ellipse}{normal_inds}"
 
     # Build output string if does not exist
     if "->" in subscripts:
@@ -621,7 +621,7 @@ def parse_einsum_input(operands, subscripts=None):
         output_subscript = ""
         for s in sorted(set(tmp_subscripts)):
             if s not in einsum_symbols:
-                raise ValueError("Character %s is not a valid symbol." % s)
+                raise ValueError(f"Character {s} is not a valid symbol.")
             if tmp_subscripts.count(s) == 1:
                 output_subscript += s
 

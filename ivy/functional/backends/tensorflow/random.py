@@ -146,7 +146,7 @@ def randint(
 
 def seed(*, seed_value: int = 0) -> None:
     tf.random.set_seed(seed_value)
-    return
+    return None
 
 
 def shuffle(

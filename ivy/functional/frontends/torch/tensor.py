@@ -285,6 +285,7 @@ class Tensor:
             - list of ints
             - torch.Size object
             - ints
+
         Parameters
         ----------
         args:int arguments

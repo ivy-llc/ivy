@@ -11,7 +11,7 @@ from ivy.functional.frontends.numpy.creation_routines.from_existing_data import 
 class EagerTensor:
     def __init__(self, array):
         self._ivy_array = (
-            ivy.array(array) if not isinstance(array, ivy.Array) else array
+            array if isinstance(array, ivy.Array) else ivy.array(array)
         )
 
     def __repr__(self):
@@ -244,9 +244,9 @@ class TensorShape:
         if self.rank is None:
             return "<unknown>"
         elif self.rank == 1:
-            return "(%s,)" % self._dims[0]
+            return f"({self._dims[0]},)"
         else:
-            return "(%s)" % ", ".join(str(d) for d in self._dims)
+            return f'({", ".join(str(d) for d in self._dims)})'
 
     # Properties #
     # ---------- #
@@ -334,7 +334,7 @@ def unknown_shape(rank=None, **kwargs):
     if rank is None and "ndims" in kwargs:
         rank = kwargs.pop("ndims")
     if kwargs:
-        raise TypeError("Unknown argument: %s" % kwargs)
+        raise TypeError(f"Unknown argument: {kwargs}")
     if rank is None:
         return TensorShape(None)
     else:

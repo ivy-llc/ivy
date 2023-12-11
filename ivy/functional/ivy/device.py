@@ -297,6 +297,7 @@ def set_soft_device_mode(mode: bool) -> None:
     ---------
     mode
         boolean whether to move input arrays
+
     Examples
     --------
     >>> ivy.set_soft_device_mode(False)

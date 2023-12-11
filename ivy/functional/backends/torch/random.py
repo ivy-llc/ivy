@@ -124,7 +124,7 @@ def seed(*, seed_value: int = 0) -> None:
             from torch import mps
 
             mps.manual_seed(seed_value)
-    return
+    return None
 
 
 def shuffle(

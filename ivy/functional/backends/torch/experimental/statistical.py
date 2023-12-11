@@ -645,7 +645,7 @@ def cummin(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if not (reverse):
+    if not reverse:
         ret = torch.cummin(x, axis)[0]
     else:
         ret = torch.cummin(torch.flip(x, dims=(axis,)), axis)[0]
