@@ -37,7 +37,7 @@ def linear(
         result = tf.einsum("...i,...ji->...j", x, weight)
 
     if bias is not None:
-        return result + add
+        return tf.add(result, bias)
     return result
 
 
