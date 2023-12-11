@@ -520,8 +520,6 @@ def test_adaptive_avg_pool1d(
 def test_adaptive_avg_pool2d(
     *, dtype_and_x, output_size, data_format, test_flags, backend_fw, fn_name, on_device
 ):
-    if backend_fw == "paddle":
-        return
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
