@@ -105,6 +105,11 @@ class ClassificationCriterion(Criterion):
         self.reset()
         return 0
 
+    def init_sum_missing(self):
+        self.sum_missing = ivy.zeros(
+            (self.n_outputs, self.max_n_classes), dtype=ivy.float64
+        )
+
     def reset(self):
         self.pos = self.start
         (
