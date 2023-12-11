@@ -831,7 +831,7 @@ def segment_sum(data, segment_ids, name="segment_sum"):
         list(segment_ids.shape), [list(data.shape)[0]], as_array=False
     )
     sum_array = ivy.zeros(
-        tuple([int(segment_ids[-1] + 1)] + (list(data.shape))[1:]), dtype=ivy.int32
+        tuple([int(segment_ids[-1] + 1)] + (list(data.shape))[1:]), dtype=data.dtype
     )
     for i in range((segment_ids).shape[0]):
         sum_array[segment_ids[i]] = sum_array[segment_ids[i]] + data[i]

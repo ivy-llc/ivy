@@ -3221,7 +3221,7 @@ def test_tensorflow_segment_sum(
     on_device,
 ):
     helpers.test_frontend_function(
-        input_dtypes=[],
+        input_dtypes=[str(data.dtype), "int32"],
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
