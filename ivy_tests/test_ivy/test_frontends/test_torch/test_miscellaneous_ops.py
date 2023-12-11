@@ -1733,6 +1733,42 @@ def test_torch_triu_indices(
     )
 
 
+# unflatten
+@handle_frontend_test(
+    fn_tree="torch.unflatten",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    offset=st.integers(min_value=-4, max_value=4),
+    test_with_out=st.just(False),
+)
+def test_torch_unflatten(
+    dtype_and_values,
+    offset,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        x=x[0],
+        offset=offset,
+    )
+
+
 # vander
 @handle_frontend_test(
     fn_tree="torch.vander",
