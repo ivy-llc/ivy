@@ -110,6 +110,24 @@ class ClassificationCriterion(Criterion):
             (self.n_outputs, self.max_n_classes), dtype=ivy.float64
         )
 
+    def init_missing(self, n_missing):
+        w = 1.0
+        self.n_missing = n_missing
+        if n_missing == 0:
+            return
+        self.sum_missing[0 : self.n_outputs, 0 : self.max_n_classes] = 0
+        self.weighted_n_missing = 0.0
+        for p in range(self.end - n_missing, self.end):
+            i = self.sample_indices[p]
+            if self.sample_weight is not None:
+                w = self.sample_weight[i]
+
+            for k in range(self.n_outputs):
+                c = int(self.y[i, k])
+                self.sum_missing[k, c] += w
+
+            self.weighted_n_missing += w
+
     def reset(self):
         self.pos = self.start
         (
