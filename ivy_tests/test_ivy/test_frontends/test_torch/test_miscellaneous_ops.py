@@ -1736,31 +1736,28 @@ def test_torch_triu_indices(
 # unflatten
 @handle_frontend_test(
     fn_tree="torch.unflatten",
-    dtype_and_values=helpers.dtype_and_values(
+    dtype_input_axes=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        valid_axis=True,
         min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
+        min_axes_size=2,
+        max_axes_size=2,
     ),
     shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-    dim=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="shape"), force_int=True
-    ),
 )
 def test_torch_unflatten(
-    dtype_and_values,
+    dtype_input_axes,
+    on_device,
+    fn_tree,
+    frontend,
     test_flags,
     backend_fw,
-    frontend,
-    fn_tree,
-    on_device,
     shape,
-    dim,
+    axis,
 ):
-    input_dtype, x = dtype_and_values
+    dtype, x, axis = dtype_input_axes
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        dtype=dtype,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -1769,7 +1766,7 @@ def test_torch_unflatten(
         test_values=False,
         x=x[0],
         shape=shape,
-        dim=dim,
+        dim=axis,
     )
 
 
