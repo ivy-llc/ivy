@@ -1,4 +1,5 @@
-"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 from functools import reduce as _reduce
@@ -513,7 +514,7 @@ def shape(
 
 
 @with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, backend_version)
-def vmap(
+def vmap_v_1p13p1_and_below(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: int = 0,
@@ -525,6 +526,24 @@ def vmap(
             return ivy.to_native(func(*args))
 
         new_func = functorch.vmap(new_fun, in_axes, out_axes)
+        return new_func(*args)
+
+    return _vmap
+
+
+@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, backend_version)
+def vmap_v_2p0p0_and_above(
+    func: Callable,
+    in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+    out_axes: int = 0,
+) -> Callable:
+    @ivy.output_to_native_arrays
+    @ivy.inputs_to_native_arrays
+    def _vmap(*args):
+        def new_fun(*args):
+            return ivy.to_native(func(*args))
+
+        new_func = torch.vmap(new_fun, in_axes, out_axes)
         return new_func(*args)
 
     return _vmap

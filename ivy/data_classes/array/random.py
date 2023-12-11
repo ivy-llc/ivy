@@ -18,10 +18,9 @@ class _ArrayWithRandom(abc.ABC):
         seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.random_uniform. This method simply
-        wraps the function, and so the docstring for ivy.random_uniform also applies to
-        this method with minimal changes.
+        """ivy.Array instance method variant of ivy.random_uniform. This method
+        simply wraps the function, and so the docstring for ivy.random_uniform
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -117,10 +116,9 @@ class _ArrayWithRandom(abc.ABC):
         seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.random_normal. This method simply wraps
-        the function, and so the docstring for ivy.random_normal also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.random_normal. This method
+        simply wraps the function, and so the docstring for ivy.random_normal
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -215,10 +213,9 @@ class _ArrayWithRandom(abc.ABC):
         seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.multinomial. This method simply wraps
-        the function, and so the docstring for ivy.multinomial also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.multinomial. This method
+        simply wraps the function, and so the docstring for ivy.multinomial
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -269,10 +266,9 @@ class _ArrayWithRandom(abc.ABC):
         seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.randint. This method simply wraps the
-        function, and so the docstring for ivy.randint also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.randint. This method simply
+        wraps the function, and so the docstring for ivy.randint also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -363,10 +359,9 @@ class _ArrayWithRandom(abc.ABC):
         seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.shuffle. This method simply wraps the
-        function, and so the docstring for ivy.shuffle also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.shuffle. This method simply
+        wraps the function, and so the docstring for ivy.shuffle also applies
+        to this method with minimal changes.
 
         Parameters
         ----------

@@ -67,9 +67,7 @@ def searchsorted(
     )
     is_sorter_provided = sorter is not None
     if is_sorter_provided:
-        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
-            sorter.dtype
-        ), TypeError(
+        assert ivy.is_int_dtype(sorter.dtype), TypeError(
             f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
         )
     if x.ndim != 1:
