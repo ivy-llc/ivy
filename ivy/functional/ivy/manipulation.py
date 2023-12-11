@@ -370,6 +370,16 @@ def unflatten(
         A View of input with the specified dimension unflattened.
 
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.permute_dims.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     >>> torch.unflatten(torch.randn(3, 4, 1), 1, (2, 2)).shape
@@ -379,7 +389,7 @@ def unflatten(
     >>> torch.unflatten(torch.randn(5, 12, 3), -2, (2, 2, 3, 1, 1)).shape
     torch.Size([5, 2, 2, 3, 1, 1, 3])
     """
-    return current_backend(x).unflatten(x, dim, shape, out)
+    return current_backend(x).unflatten(x, dim=dim, shape=shape, out=out)
 
 
 @handle_exceptions
