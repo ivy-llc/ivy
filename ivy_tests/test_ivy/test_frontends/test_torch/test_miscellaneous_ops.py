@@ -1738,12 +1738,12 @@ def test_torch_triu_indices(
     fn_tree="torch.unflatten",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
+    shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"), force_int=True
     ),
