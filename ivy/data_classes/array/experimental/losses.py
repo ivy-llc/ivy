@@ -15,10 +15,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         reduction: Optional[str] = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.l1_loss. This method simply wraps the
-        function, and so the docstring for ivy.l1_loss also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.l1_loss. This method simply
+        wraps the function, and so the docstring for ivy.l1_loss also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -59,10 +58,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         reduction: str = "none",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.log_poisson_loss. This method simply
-        wraps the function, and so the docstring for ivy.l1_loss also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.log_poisson_loss. This
+        method simply wraps the function, and so the docstring for ivy.l1_loss
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -122,10 +120,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         delta: Optional[float] = 1.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of huber_loss. This method simply wraps the
-        function, and so the docstring for huber_loss also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of huber_loss. This method simply
+        wraps the function, and so the docstring for huber_loss also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -170,10 +167,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         reduction: Optional[str] = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy. smooth_l1_loss. This method simply
-        wraps the function, and so the docstring for ivy.smooth_l1_loss also applies to
-        this method with minimal changes.
+        """ivy.Array instance method variant of ivy. smooth_l1_loss. This
+        method simply wraps the function, and so the docstring for
+        ivy.smooth_l1_loss also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -218,10 +214,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         reduction: Optional[str] = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.soft_margin_loss. This method simply
-        wraps the function, and so the docstring for ivy.soft_margin_loss also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.soft_margin_loss. This
+        method simply wraps the function, and so the docstring for
+        ivy.soft_margin_loss also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -261,10 +256,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         log_target=False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.kl_div. This method simply wraps the
-        function, and so the docstring for ivy.kl_div also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.kl_div. This method simply
+        wraps the function, and so the docstring for ivy.kl_div also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -308,8 +302,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         eps: float = 1e-8,
         reduction: str = "mean",
     ) -> ivy.Array:
-        r"""
-        Compute the Poisson Negative Log Likelihood Loss.
+        r"""Compute the Poisson Negative Log Likelihood Loss.
 
         This function calculates the negative log likelihood loss
         between the `input` and `target`under the assumption that

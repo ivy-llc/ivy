@@ -105,7 +105,7 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
 )
 @to_ivy_arrays_and_back
 def adaptive_avg_pool2d(input, output_size):
-    return ivy.adaptive_avg_pool2d(input, output_size)
+    return ivy.adaptive_avg_pool2d(input, output_size, data_format="NCHW")
 
 
 @to_ivy_arrays_and_back
@@ -345,8 +345,8 @@ def interpolate(
 
 
 def kl_div(logits, labels, reduction="mean"):
-    """
-    Computes the Kullback-Leibler (KL) Divergence between the logits and the labels.
+    """Computes the Kullback-Leibler (KL) Divergence between the logits and the
+    labels.
 
     Parameters
     ----------

@@ -132,8 +132,9 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
             self.min_impurity_decrease,
         )
         builder.build(self.tree_, X, y, sample_weight, missing_values_in_feature_mask)
-        self.n_classes_ = self.n_classes_[0]
-        self.classes_ = self.classes_[0]
+        if self.n_outputs_ == 1:
+            self.n_classes_ = self.n_classes_[0]
+            self.classes_ = self.classes_[0]
         return self
 
     def predict(self, X, check_input=True):

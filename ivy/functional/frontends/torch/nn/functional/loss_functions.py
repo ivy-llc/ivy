@@ -166,10 +166,12 @@ def cosine_embedding_loss(
     if target.ndim == 0:
         loss = calculate_loss(input1, input2, target)
     else:
-        loss = ivy.array([
-            calculate_loss(input1[i], input2[i], target[i])
-            for i in range(input1.shape[0])
-        ])
+        loss = ivy.array(
+            [
+                calculate_loss(input1[i], input2[i], target[i])
+                for i in range(input1.shape[0])
+            ]
+        )
 
     reduction = _get_reduction(reduction, size_average, reduce)
     loss = reduction(loss)

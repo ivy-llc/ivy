@@ -13,22 +13,26 @@ from ivy_tests.test_ivy.helpers.pipeline_helper import BackendHandler
 
 def _get_primals_and_tangents(x_, dtype, ivy_backend, primals_cont, tangents_cont):
     if primals_cont:
-        primals = ivy_backend.Container({
-            "l": {
-                "a": ivy_backend.array(x_[0][0], dtype=dtype),
-                "b": ivy_backend.array(x_[0][1], dtype=dtype),
+        primals = ivy_backend.Container(
+            {
+                "l": {
+                    "a": ivy_backend.array(x_[0][0], dtype=dtype),
+                    "b": ivy_backend.array(x_[0][1], dtype=dtype),
+                }
             }
-        })
+        )
     else:
         primals = ivy_backend.array(x_[0], dtype=dtype)
 
     if tangents_cont:
-        tangents = ivy_backend.Container({
-            "l": {
-                "a": ivy_backend.array([t[0] for t in x_[1]], dtype=dtype),
-                "b": ivy_backend.array([t[0] for t in x_[1]], dtype=dtype),
+        tangents = ivy_backend.Container(
+            {
+                "l": {
+                    "a": ivy_backend.array([t[0] for t in x_[1]], dtype=dtype),
+                    "b": ivy_backend.array([t[0] for t in x_[1]], dtype=dtype),
+                }
             }
-        })
+        )
     else:
         if primals_cont:
             tangents = ivy_backend.array([t[0] for t in x_[1]], dtype=dtype)

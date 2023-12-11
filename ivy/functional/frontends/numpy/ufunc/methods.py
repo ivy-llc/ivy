@@ -214,20 +214,24 @@ class ufunc:
     @property
     def nargs(self):
         sig = inspect.signature(self.func)
-        return len([
-            param
-            for param in sig.parameters.values()
-            if param.kind in [param.POSITIONAL_ONLY, param.POSITIONAL_OR_KEYWORD]
-        ])
+        return len(
+            [
+                param
+                for param in sig.parameters.values()
+                if param.kind in [param.POSITIONAL_ONLY, param.POSITIONAL_OR_KEYWORD]
+            ]
+        )
 
     @property
     def nin(self):
         sig = inspect.signature(self.func)
-        return len([
-            param
-            for param in sig.parameters.values()
-            if param.kind == param.POSITIONAL_ONLY
-        ])
+        return len(
+            [
+                param
+                for param in sig.parameters.values()
+                if param.kind == param.POSITIONAL_ONLY
+            ]
+        )
 
     @property
     def nout(self):
