@@ -105,7 +105,7 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
 )
 @to_ivy_arrays_and_back
 def adaptive_avg_pool2d(input, output_size):
-    return ivy.adaptive_avg_pool2d(input, output_size)
+    return ivy.adaptive_avg_pool2d(input, output_size, data_format="NCHW")
 
 
 @to_ivy_arrays_and_back

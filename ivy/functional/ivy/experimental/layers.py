@@ -2265,6 +2265,9 @@ adaptive_avg_pool1d.mixed_backend_wrappers = {
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
+    /,
+    *,
+    data_format: str = "NHWC",
 ) -> ivy.Array:
     """Apply a 2D adaptive average pooling over an input signal composed of
     several input planes.
@@ -2272,11 +2275,11 @@ def adaptive_avg_pool2d(
     Parameters
     ----------
     input
-        Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N is
-        the batch dimension, C is the feature dimension, and H_in and W_in are the 2
-        spatial dimensions.
+        A 3D or 4D input array. Should have a floating-point data type.
     output_size
         Spatial output size.
+    data_format
+        "NHWC" or "NCHW". Defaults to "NHWC".
 
     Returns
     -------
@@ -2292,6 +2295,12 @@ def adaptive_avg_pool2d(
             f"Got {len(input.shape)}D input, but only 3D and 4D inputs are supported.",
         )
 
+    permuted_input = False
+    if data_format == "NHWC":
+        input = ivy.permute_dims(input, (0, input.ndim - 1, *range(1, input.ndim - 1)))
+        data_format = "NCHW"
+        permuted_input = True
+
     if isinstance(output_size, int):
         output_size = (output_size, output_size)
 
@@ -2300,6 +2309,11 @@ def adaptive_avg_pool2d(
         kernel_size = stride  # Mathematically identical to the previous expression
         pooled_output = ivy.avg_pool2d(
             input, kernel_size, stride, "VALID", data_format="NCHW"
+        )
+        pooled_output = (
+            ivy.permute_dims(pooled_output, (0, *range(2, input.ndim), 1))
+            if permuted_input
+            else pooled_output
         )
         if squeeze:
             return ivy.squeeze(pooled_output, axis=0)
@@ -2313,10 +2327,15 @@ def adaptive_avg_pool2d(
     )
 
     # to numpy and back in order to bypass a slicing error in tensorflow
-    vals = ivy.array(input.to_numpy()[..., _expand_to_dim(idxh, 4), idxw])
+    vals = input[..., _expand_to_dim(idxh, 4), idxw]
 
     if not adaptive_h and not adaptive_w:
         ret = ivy.mean(vals, axis=(-3, -1))
+        ret = (
+            ivy.permute_dims(ret, (0, *range(2, input.ndim), 1))
+            if permuted_input
+            else ret
+        )
         ret = ivy.squeeze(ret, axis=0) if squeeze else ret
         return ret
 
@@ -2331,6 +2350,11 @@ def adaptive_avg_pool2d(
             ret = ret + vals[..., i, :, j]
     pooled_output = ret / (length_h * length_w).astype(vals.dtype)
 
+    pooled_output = (
+        ivy.permute_dims(pooled_output, (0, *range(2, input.ndim), 1))
+        if permuted_input
+        else pooled_output
+    )
     pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
     return pooled_output
 

@@ -1868,11 +1868,13 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def static_adaptive_avg_pool2d(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         output_size: Union[Sequence[int], int, ivy.Container],
+        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NHWC",
     ) -> ivy.Container:
         """ivy.Container static method variant of ivy.adaptive_avg_pool2d. This
         method simply wraps the function, and so the docstring for
@@ -1882,11 +1884,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         Parameters
         ----------
         input
-            Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N
-            is the batch dimension, C is the feature dimension, and H_in and W_in are
-            the 2 spatial dimensions.
+            A 3D or 4D input array. Should have a floating-point data type.
         output_size
             Spatial output size.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
 
         Returns
         -------
@@ -1901,16 +1903,19 @@ class _ContainerWithLayersExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            data_format=data_format,
         )
 
     def adaptive_avg_pool2d(
         self: ivy.Container,
         output_size: Union[int, ivy.Container],
+        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NHWC",
     ) -> ivy.Container:
         """Apply a 2D adaptive average pooling over an input signal composed of
         several input planes.
@@ -1921,6 +1926,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             Input container.
         output_size
             Spatial output size.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
 
         Returns
         -------
@@ -1933,6 +1940,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            data_format=data_format,
         )
 
     @staticmethod

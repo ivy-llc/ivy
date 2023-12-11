@@ -278,7 +278,8 @@ def array_for_adaptive(
         )
     )
     output_size = size[0] if num_out_size == 1 else size
-    return dtypes, arrays, output_size
+    data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
+    return dtypes, arrays, output_size, data_format
 
 
 # --- Main --- #
@@ -337,7 +338,7 @@ def test_adaptive_avg_pool2d_layer(
     method_flags,
     backend_fw,
 ):
-    input_dtype, x, out_size = dt_arr_size
+    input_dtype, x, out_size, data_format = dt_arr_size
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         backend_to_test=backend_fw,
@@ -345,6 +346,7 @@ def test_adaptive_avg_pool2d_layer(
         method_flags=method_flags,
         init_all_as_kwargs_np={
             "output_size": out_size,
+            "data_format": data_format,
             "device": on_device,
             "dtype": input_dtype[0],
         },

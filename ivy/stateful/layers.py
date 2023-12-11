@@ -1999,6 +1999,9 @@ class AdaptiveAvgPool2d(Module):
     def __init__(
         self,
         output_size,
+        /,
+        *,
+        data_format="NHWC",
         device=None,
         dtype=None,
     ):
@@ -2009,10 +2012,13 @@ class AdaptiveAvgPool2d(Module):
         ----------
         output_size
             the target output size of the image.
+        data_format
+            NHWC" or "NCHW". Defaults to "NHWC".
         device
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
         """
         self._output_size = output_size
+        self._data_format = data_format
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, x):
@@ -2030,8 +2036,7 @@ class AdaptiveAvgPool2d(Module):
         # TODO: test again once adaptive_avg_pool2d is
         #  implemented for the missing backends.
         return ivy.adaptive_avg_pool2d(
-            x,
-            self._output_size,
+            x, self._output_size, data_format=self._data_format
         )
 
     def _extra_repr(self):
