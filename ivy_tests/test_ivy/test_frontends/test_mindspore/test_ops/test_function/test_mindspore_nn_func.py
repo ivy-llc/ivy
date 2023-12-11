@@ -529,15 +529,17 @@ def test_mindspore_flatten(
         num_arrays=1,
         shared_dtype=True,
     ),
-    mode=st.sampled_from([
-        "nearest",
-        "linear",
-        "bilinear",
-        "bicubic",
-        "trilinear",
-        "area",
-        "nearest-exact",
-    ]),
+    mode=st.sampled_from(
+        [
+            "nearest",
+            "linear",
+            "bilinear",
+            "bicubic",
+            "trilinear",
+            "area",
+            "nearest-exact",
+        ]
+    ),
     align_corners=st.booleans(),
     recompute_scale_factor=st.booleans(),
     size_and_scale_factor=_size_and_scale_factor_strategy(),

@@ -31,7 +31,7 @@ def fftfreq(n, d=1.0, *, dtype=None):
     N = (n - 1) // 2 + 1
     val = 1.0 / (n * d)
 
-    results = ivy.zeros(tuple([n]), dtype=dtype)
+    results = ivy.zeros((n,), dtype=dtype)
     results[:N] = ivy.arange(0, N, dtype=dtype)
     results[N:] = ivy.arange(-(n // 2), 0, dtype=dtype)
 

@@ -460,24 +460,30 @@ def _x_and_filters(draw, dim=2, transpose=False, general=False):
             dim_num_st2 = st.sampled_from(["OIDHW", "DHWIO"])
         dim_seq = [*range(0, dim + 2)]
         dimension_numbers = draw(
-            st.sampled_from([
-                None,
-                (draw(dim_num_st1), draw(dim_num_st2), draw(dim_num_st1)),
-                ConvDimensionNumbers(
-                    *map(
-                        tuple,
-                        draw(
-                            st.lists(st.permutations(dim_seq), min_size=3, max_size=3)
-                        ),
-                    )
-                ),
-            ])
+            st.sampled_from(
+                [
+                    None,
+                    (draw(dim_num_st1), draw(dim_num_st2), draw(dim_num_st1)),
+                    ConvDimensionNumbers(
+                        *map(
+                            tuple,
+                            draw(
+                                st.lists(
+                                    st.permutations(dim_seq), min_size=3, max_size=3
+                                )
+                            ),
+                        )
+                    ),
+                ]
+            )
         )
     else:
         dimension_numbers = (
             ("NCH", "OIH", "NCH")
             if dim == 1
-            else ("NCHW", "OIHW", "NCHW") if dim == 2 else ("NCDHW", "OIDHW", "NCDHW")
+            else ("NCHW", "OIHW", "NCHW")
+            if dim == 2
+            else ("NCDHW", "OIDHW", "NCDHW")
         )
     dim_nums = _dimension_numbers(dimension_numbers, dim + 2, transp=transpose)
     if not transpose:

@@ -7,9 +7,9 @@ import pytest
 @pytest.mark.parametrize(("shape", "rank"), [((5, 4, 6), (3, 2, 3))])
 def test_n_param_tucker(shape, rank):
     tucker_tensor = ivy.random_tucker(shape, rank)
-    true_n_param = ivy.prod(ivy.shape(tucker_tensor[0])) + ivy.sum([
-        ivy.prod(ivy.shape(f)) for f in tucker_tensor[1]
-    ])
+    true_n_param = ivy.prod(ivy.shape(tucker_tensor[0])) + ivy.sum(
+        [ivy.prod(ivy.shape(f)) for f in tucker_tensor[1]]
+    )
     n_param = tucker_tensor.n_param
     assert np.allclose(n_param, true_n_param)
 

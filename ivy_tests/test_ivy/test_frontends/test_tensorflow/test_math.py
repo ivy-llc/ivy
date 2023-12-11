@@ -54,7 +54,7 @@ def test_tensorflow_abs(
 @handle_frontend_test(
     fn_tree="tensorflow.math.accumulate_n",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.int64]),
+        available_dtypes=(ivy.int64,),
         num_arrays=helpers.ints(min_value=2, max_value=5),
         shared_dtype=True,
     ),
@@ -1633,7 +1633,7 @@ def test_tensorflow_log_softmax(
 @handle_frontend_test(
     fn_tree="tensorflow.math.logical_and",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
+        available_dtypes=(ivy.bool,),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1665,7 +1665,7 @@ def test_tensorflow_logical_and(
 @handle_frontend_test(
     fn_tree="tensorflow.math.logical_not",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
+        available_dtypes=(ivy.bool,),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1728,7 +1728,7 @@ def test_tensorflow_logical_or(
 @handle_frontend_test(
     fn_tree="tensorflow.math.logical_xor",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
+        available_dtypes=(ivy.bool,),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -2184,7 +2184,7 @@ def test_tensorflow_reciprocal_no_nan(
 @handle_frontend_test(
     fn_tree="tensorflow.math.reduce_all",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
+        available_dtypes=(ivy.bool,),
     ),
     test_with_out=st.just(False),
 )
@@ -2213,7 +2213,7 @@ def test_tensorflow_reduce_all(
 @handle_frontend_test(
     fn_tree="tensorflow.math.reduce_any",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
+        available_dtypes=(ivy.bool,),
     ),
     test_with_out=st.just(False),
 )

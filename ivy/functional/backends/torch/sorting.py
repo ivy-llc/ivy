@@ -19,7 +19,7 @@ def argsort(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if out is not None:
-        out = tuple([torch.zeros(x.shape, dtype=x.dtype), out.long()])
+        out = (torch.zeros(x.shape, dtype=x.dtype), out.long())
     _, sorted_indices = torch.sort(
         x, dim=axis, descending=descending, stable=stable, out=out
     )
@@ -40,7 +40,7 @@ def sort(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if out is not None:
-        out = tuple([out, torch.zeros(out.shape, dtype=torch.long)])
+        out = (out, torch.zeros(out.shape, dtype=torch.long))
     sorted_tensor, _ = torch.sort(
         x, dim=axis, descending=descending, stable=stable, out=out
     )
@@ -72,14 +72,12 @@ def searchsorted(
     ret_dtype: torch.dtype = torch.int64,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    assert ivy.is_int_dtype(ret_dtype), ValueError(
+    assert ivy.is_int_dtype(ret_dtype), TypeError(
         "only Integer data types are supported for ret_dtype."
     )
     if sorter is not None:
         sorter_dtype = ivy.as_native_dtype(sorter.dtype)
-        assert ivy.is_int_dtype(sorter_dtype) and not ivy.is_uint_dtype(
-            sorter_dtype
-        ), TypeError(
+        assert ivy.is_int_dtype(sorter_dtype), TypeError(
             f"Only signed integer data type for sorter is allowed, got {sorter_dtype }."
         )
         if sorter_dtype is not torch.int64:

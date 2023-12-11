@@ -1,5 +1,4 @@
-"""
-Paddle activation functions.
+"""Paddle activation functions.
 
 Collection of Paddle activation functions, wrapped to fit Ivy syntax and
 signature.

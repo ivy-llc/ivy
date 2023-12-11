@@ -211,7 +211,7 @@ def check_unsorted_segment_valid_params(data, segment_ids, num_segments):
             num_segments = num_segments.item()
 
     if segment_ids.dtype not in valid_dtypes:
-        raise ValueError("segment_ids must have an integer dtype")
+        raise TypeError("segment_ids must have an integer dtype")
 
     if data.shape[0] != segment_ids.shape[0]:
         raise ValueError("The length of segment_ids should be equal to data.shape[0].")
