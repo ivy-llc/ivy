@@ -45,8 +45,12 @@ def unflatten(
     *,
     dim: int = 0,
     shape: Tuple[int] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.unflatten(input=x, dim=dim, sizes=shape)
+    res = torch.unflatten(input=x, dim=dim, sizes=shape)
+    if ivy.exists(out):
+        ivy.inplace_update(out, res)
+    return res
 
 
 def expand_dims(

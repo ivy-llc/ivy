@@ -345,6 +345,7 @@ def unflatten(
     *,
     dim: int,
     shape: Tuple[int],
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Expand a dimension of the input tensor over multiple dimensions.
@@ -359,6 +360,9 @@ def unflatten(
         New shape of the unflattened dimension. One of its elements can be -1 in
         which case the corresponding output dimension is inferred. Otherwise,
         the product of sizes must equal input.shape[dim].
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -375,7 +379,7 @@ def unflatten(
     >>> torch.unflatten(torch.randn(5, 12, 3), -2, (2, 2, 3, 1, 1)).shape
     torch.Size([5, 2, 2, 3, 1, 1, 3])
     """
-    return current_backend(x).unflatten(x, dim, shape)
+    return current_backend(x).unflatten(x, dim, shape, out)
 
 
 @handle_exceptions
