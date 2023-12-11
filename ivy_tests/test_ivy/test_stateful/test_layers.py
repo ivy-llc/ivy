@@ -302,7 +302,7 @@ def test_adaptive_avg_pool1d_layer(
     method_flags,
     backend_fw,
 ):
-    input_dtype, x, out_size = dt_arr_size
+    input_dtype, x, out_size, _ = dt_arr_size
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         backend_to_test=backend_fw,
