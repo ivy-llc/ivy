@@ -1756,7 +1756,7 @@ def test_torch_unflatten(
 ):
     dtype, x, axes = dtype_input_axes
     helpers.test_frontend_function(
-        dtype=dtype,
+        input_dtypes=dtype,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
