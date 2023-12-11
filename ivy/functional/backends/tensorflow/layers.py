@@ -30,11 +30,15 @@ def linear(
 ) -> Union[tf.Tensor, tf.Variable]:
     if len(x.shape) >= 2 and len(weight.shape) >= 2:
         if x.shape[-1] == weight.shape[-2]:
-            return tf.matmul(x, weight) + bias
+            result = tf.matmul(x, weight)
         elif x.shape[-1] == weight.shape[-1]:
-            return tf.matmul(x, weight, transpose_b=True) + bias
+            result = tf.matmul(x, weight, transpose_b=True)
+    else:
+        result = tf.einsum("...i,...ji->...j", x, weight)
 
-    return tf.einsum("...i,...ji->...j", x, weight) + bias
+    if bias is not None:
+        return tf.add(result, add)
+    return result
 
 
 def _x_dil_before_conv(x, dims, x_dilations, data_format):
