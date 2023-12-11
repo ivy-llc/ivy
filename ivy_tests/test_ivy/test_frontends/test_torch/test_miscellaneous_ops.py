@@ -1743,7 +1743,6 @@ def test_torch_triu_indices(
         min_axes_size=1,
         max_axes_size=1,
     ),
-    test_with_out=st.just(False),
     shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
 )
 def test_torch_unflatten(
@@ -1767,7 +1766,6 @@ def test_torch_unflatten(
         x=x[0],
         shape=shape,
         dim=axes,
-        out=None,
     )
 
 
