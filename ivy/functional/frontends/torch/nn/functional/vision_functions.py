@@ -11,10 +11,12 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 def _handle_padding_shape(padding, n, mode):
-    padding = tuple([
-        (padding[i * 2], padding[i * 2 + 1])
-        for i in range(int(len(padding) / 2) - 1, -1, -1)
-    ])
+    padding = tuple(
+        [
+            (padding[i * 2], padding[i * 2 + 1])
+            for i in range(int(len(padding) / 2) - 1, -1, -1)
+        ]
+    )
     if mode == "circular":
         padding = padding + ((0, 0),) * (n - len(padding))
     else:

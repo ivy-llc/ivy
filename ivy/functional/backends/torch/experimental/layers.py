@@ -967,8 +967,19 @@ def adaptive_avg_pool1d(input, output_size):
 
 
 @with_unsupported_dtypes({"2.1.1 and below": ("bfloat16", "float16")}, backend_version)
-def adaptive_avg_pool2d(input, output_size):
-    return torch.nn.functional.adaptive_avg_pool2d(input, output_size)
+def adaptive_avg_pool2d(input, output_size, /, *, data_format: str = "NHWC"):
+    squeeze = False
+    if input.ndim == 3:
+        input = torch.unsqueeze(input, 0)
+        squeeze = True
+    permuted_input = False
+    if data_format == "NHWC":
+        input = torch.permute(input, (0, input.ndim - 1, *range(1, input.ndim - 1)))
+        permuted_input = True
+    ret = torch.nn.functional.adaptive_avg_pool2d(input, output_size)
+    ret = torch.permute(ret, (0, *range(2, input.ndim), 1)) if permuted_input else ret
+    ret = torch.squeeze(ret, 0) if squeeze else ret
+    return ret
 
 
 @with_unsupported_dtypes({"2.1.1 and below": ("bfloat16", "float16")}, backend_version)

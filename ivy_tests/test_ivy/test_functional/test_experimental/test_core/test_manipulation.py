@@ -205,19 +205,21 @@ def _matricize_data(draw):
 @st.composite
 def _pad_helper(draw):
     mode = draw(
-        st.sampled_from([
-            "constant",
-            "dilated",
-            "edge",
-            "linear_ramp",
-            "maximum",
-            "mean",
-            "median",
-            "minimum",
-            "reflect",
-            "symmetric",
-            "wrap",
-        ])
+        st.sampled_from(
+            [
+                "constant",
+                "dilated",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+            ]
+        )
     )
     if mode in ["median", "minimum", "maximum", "linear_ramp"]:
         dtypes = "float"
