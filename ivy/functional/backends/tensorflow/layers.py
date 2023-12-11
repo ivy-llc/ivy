@@ -28,7 +28,7 @@ def linear(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.einsum("...i,...ji->...j", x, weight) + bias
+    return tf.add(tf.matmul(x, weight, transpose_b=True), bias)
 
 
 def _x_dil_before_conv(x, dims, x_dilations, data_format):
