@@ -10,9 +10,7 @@ from ivy.functional.frontends.numpy.creation_routines.from_existing_data import 
 
 class EagerTensor:
     def __init__(self, array):
-        self._ivy_array = (
-            array if isinstance(array, ivy.Array) else ivy.array(array)
-        )
+        self._ivy_array = array if isinstance(array, ivy.Array) else ivy.array(array)
 
     def __repr__(self):
         return (
