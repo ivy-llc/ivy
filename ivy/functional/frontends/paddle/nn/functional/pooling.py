@@ -15,7 +15,7 @@ def adaptive_avg_pool1d(x, output_size, name=None):
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 def adaptive_avg_pool2d(x, output_size, data_format="NCHW", name=None):
-    return ivy.adaptive_avg_pool2d(x, output_size)
+    return ivy.adaptive_avg_pool2d(x, output_size, data_format=data_format)
 
 
 @to_ivy_arrays_and_back

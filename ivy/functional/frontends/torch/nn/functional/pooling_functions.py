@@ -34,7 +34,7 @@ def adaptive_avg_pool1d(input, output_size):
 )
 @to_ivy_arrays_and_back
 def adaptive_avg_pool2d(input, output_size):
-    return ivy.adaptive_avg_pool2d(input, output_size)
+    return ivy.adaptive_avg_pool2d(input, output_size, data_format="NCHW")
 
 
 @with_unsupported_dtypes(
