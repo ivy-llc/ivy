@@ -44,9 +44,9 @@ def unflatten(
     /,
     *,
     axis: int = 0,
-    sizes: Tuple[int] = None,
+    shape: Tuple[int] = None,
 ) -> torch.Tensor:
-    return torch.unflatten(input=x, dim=axis, sizes=sizes)
+    return torch.unflatten(input=x, dim=axis, sizes=shape)
 
 
 def expand_dims(

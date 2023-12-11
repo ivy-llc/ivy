@@ -1738,22 +1738,25 @@ def test_torch_triu_indices(
     fn_tree="torch.unflatten",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
-    offset=st.integers(min_value=-4, max_value=4),
-    test_with_out=st.just(False),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"), force_int=True
+    ),
 )
 def test_torch_unflatten(
     dtype_and_values,
-    offset,
     test_flags,
     backend_fw,
     frontend,
     fn_tree,
     on_device,
+    shape,
+    dim,
 ):
     input_dtype, x = dtype_and_values
     helpers.test_frontend_function(
@@ -1765,6 +1768,8 @@ def test_torch_unflatten(
         on_device=on_device,
         test_values=False,
         x=x[0],
+        shape=shape,
+        dim=dim,
     )
 
 
