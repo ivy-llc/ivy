@@ -382,11 +382,11 @@ def unflatten(
 
     Examples
     --------
-    >>> torch.unflatten(torch.randn(3, 4, 1), 1, (2, 2)).shape
+    >>> ivy.unflatten(torch.randn(3, 4, 1), dim=1, shape=(2, 2)).shape
     torch.Size([3, 2, 2, 1])
-    >>> torch.unflatten(torch.randn(3, 4, 1), 1, (-1, 2)).shape
+    >>> ivy.unflatten(torch.randn(3, 4, 1), dim=1, shape=(-1, 2)).shape
     torch.Size([3, 2, 2, 1])
-    >>> torch.unflatten(torch.randn(5, 12, 3), -2, (2, 2, 3, 1, 1)).shape
+    >>> ivy.unflatten(torch.randn(5, 12, 3), dim=-2, shape=(2, 2, 3, 1, 1)).shape
     torch.Size([5, 2, 2, 3, 1, 1, 3])
     """
     return current_backend(x).unflatten(x, dim=dim, shape=shape, out=out)
