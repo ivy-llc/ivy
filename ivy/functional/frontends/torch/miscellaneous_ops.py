@@ -503,8 +503,8 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
 
 
 @to_ivy_arrays_and_back
-def unflatten(x, /, *, axis, shape):
-    return ivy.unflatten(x, axis, shape)
+def unflatten(x, /, *, dim, shape):
+    return ivy.unflatten(x, dim, shape)
 
 
 @to_ivy_arrays_and_back

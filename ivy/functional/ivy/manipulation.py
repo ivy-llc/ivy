@@ -343,7 +343,7 @@ def unflatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: int,
+    dim: int,
     shape: Tuple[int],
 ) -> ivy.Array:
     """
@@ -353,7 +353,7 @@ def unflatten(
     ----------
     x
         The input tensor.
-    axis
+    dim
         Dimension to be unflattened, specified as an index into input.shape.
     shape
         New shape of the unflattened dimension. One of its elements can be -1 in
@@ -375,7 +375,7 @@ def unflatten(
     >>> torch.unflatten(torch.randn(5, 12, 3), -2, (2, 2, 3, 1, 1)).shape
     torch.Size([5, 2, 2, 3, 1, 1, 3])
     """
-    return current_backend(x).unflatten(x, axis, shape)
+    return current_backend(x).unflatten(x, dim, shape)
 
 
 @handle_exceptions

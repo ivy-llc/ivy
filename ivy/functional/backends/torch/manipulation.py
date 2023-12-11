@@ -43,10 +43,10 @@ def unflatten(
     x: torch.Tensor,
     /,
     *,
-    axis: int = 0,
+    dim: int = 0,
     shape: Tuple[int] = None,
 ) -> torch.Tensor:
-    return torch.unflatten(input=x, dim=axis, sizes=shape)
+    return torch.unflatten(input=x, dim=dim, sizes=shape)
 
 
 def expand_dims(
