@@ -28,7 +28,13 @@ def linear(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.add(tf.matmul(x, weight, transpose_b=True), bias)
+    if len(x.shape) >= 2 and len(weight.shape) >= 2:
+        if x.shape[-1] == weight.shape[-2]:
+            return tf.matmul(x, weight) + bias
+        elif x.shape[-1] == weight.shape[-1]:
+            return tf.matmul(x, weight, transpose_b=True) + bias
+
+    return tf.einsum("...i,...ji->...j", x, weight) + bias
 
 
 def _x_dil_before_conv(x, dims, x_dilations, data_format):
