@@ -83,7 +83,7 @@ def _validate_poisson_nll_params(
     # Validate dtypes
     for parameter, name in zip([input, label], ["input", "label"]):
         if parameter.dtype not in allowed_dtypes:
-            raise ValueError(
+            raise TypeError(
                 "The dtype of '%s' in poisson_nll_loss should be one of %s, but"
                 " received %s." % (name, allowed_dtypes, parameter.dtype)
             )
