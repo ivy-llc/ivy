@@ -1461,7 +1461,7 @@ def test_method_backend_computation(
             return
         v_np = None
         if isinstance(ins, ivy_backend.Module):
-            if init_with_v:
+            if init_flags.init_with_v:
                 v = ivy_backend.Container(
                     ins._create_variables(
                         device=on_device, dtype=method_input_dtypes[0]
@@ -1474,7 +1474,7 @@ def test_method_backend_computation(
             v_np = v.cont_map(
                 lambda x, kc: ivy_backend.to_numpy(x) if ivy_backend.is_array(x) else x
             )
-            if method_with_v:
+            if method_flags.method_with_v:
                 kwargs_method = dict(**kwargs_method, v=v)
         ret, ret_np_flat = get_ret_and_flattened_np_array(
             backend_to_test,

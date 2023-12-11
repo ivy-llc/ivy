@@ -30,6 +30,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltFrontendArrayStrategy,
     BuiltTranspileStrategy,
     BuiltPrecisionModeStrategy,
+    BuiltWithVStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -37,7 +38,6 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
-from .globals import mod_backend
 
 cmd_line_args = (
     "with_out",
@@ -114,16 +114,9 @@ def num_positional_args(draw, *, fn_name: Optional[str] = None):
         num_positional_args=num_positional_args(fn_name="add")
     )
     """
-    if mod_backend[t_globals.CURRENT_BACKEND]:
-        proc, input_queue, output_queue = mod_backend[t_globals.CURRENT_BACKEND]
-        input_queue.put(
-            ("num_positional_args_helper", fn_name, t_globals.CURRENT_BACKEND)
-        )
-        num_positional_only, total, num_keyword_only = output_queue.get()
-    else:
-        num_positional_only, total, num_keyword_only = num_positional_args_helper(
-            fn_name, t_globals.CURRENT_BACKEND
-        )
+    num_positional_only, total, num_keyword_only = num_positional_args_helper(
+        fn_name, t_globals.CURRENT_BACKEND
+    )
     return draw(
         nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
     )
@@ -227,25 +220,11 @@ def _get_method_supported_devices_dtypes(
     supported_device_dtypes = {}
 
     for backend_str in available_frameworks:
-        if mod_backend[backend_str]:
-            # we gotta do this using multiprocessing
-            proc, input_queue, output_queue = mod_backend[backend_str]
-            input_queue.put(
-                (
-                    "method supported dtypes",
-                    method_name,
-                    class_module.__name__,
-                    class_name,
-                    backend_str,
-                )
+        supported_device_dtypes[backend_str] = (
+            _get_method_supported_devices_dtypes_helper(
+                method_name, class_module, class_name, backend_str
             )
-            supported_device_dtypes[backend_str] = output_queue.get()
-        else:
-            supported_device_dtypes[backend_str] = (
-                _get_method_supported_devices_dtypes_helper(
-                    method_name, class_module, class_name, backend_str
-                )
-            )
+        )
     return supported_device_dtypes
 
 
@@ -299,16 +278,9 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
             fn_name = f"_{fn_name}"
 
     for backend_str in available_frameworks:
-        if mod_backend[backend_str]:
-            # we know we need to use multiprocessing
-            # to get the devices and dtypes
-            proc, input_queue, output_queue = mod_backend[backend_str]
-            input_queue.put(("supported dtypes", fn_module, fn_name, backend_str))
-            supported_device_dtypes[backend_str] = output_queue.get()
-        else:
-            supported_device_dtypes[backend_str] = _get_supported_devices_dtypes_helper(
-                backend_str, fn_module, fn_name
-            )
+        supported_device_dtypes[backend_str] = _get_supported_devices_dtypes_helper(
+            backend_str, fn_module, fn_name
+        )
     return supported_device_dtypes
 
 
@@ -627,7 +599,9 @@ def handle_method(
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
+    init_test_with_v=BuiltWithVStrategy,
     method_num_positional_args=None,
+    method_test_with_v=BuiltWithVStrategy,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
     method_container_flags=BuiltContainerStrategy,
@@ -669,6 +643,7 @@ def handle_method(
             num_positional_args=init_num_positional_args,
             as_variable=_get_runtime_flag_value(init_as_variable_flags),
             native_arrays=_get_runtime_flag_value(init_native_arrays),
+            test_with_v=_get_runtime_flag_value(init_test_with_v),
             precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
@@ -682,6 +657,8 @@ def handle_method(
             as_variable=_get_runtime_flag_value(method_as_variable_flags),
             native_arrays=_get_runtime_flag_value(method_native_arrays),
             container_flags=_get_runtime_flag_value(method_container_flags),
+            test_trace=_get_runtime_flag_value(test_trace),
+            test_with_v=_get_runtime_flag_value(method_test_with_v),
             precision_mode=_get_runtime_flag_value(precision_mode),
         )
 

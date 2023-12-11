@@ -5,7 +5,8 @@ Should not be used inside any of the test functions.
 """
 
 from dataclasses import dataclass
-from .pipeline_helper import get_frontend_config
+from ivy_tests.test_ivy.pipeline.frontend.pipeline import FrontendPipeline
+from ivy_tests.test_ivy.pipeline.backend.pipeline import BackendPipeline
 
 # needed for multiversion
 available_frameworks = [
@@ -41,11 +42,11 @@ _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
-CURRENT_FRONTEND_CONFIG: _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
 CURRENT_DEVICE_STRIPPED = _Notsetval
 CURRENT_FRONTEND_STR = None
+CURRENT_PIPELINE = _Notsetval
 
 
 @dataclass(frozen=True)  # ToDo use kw_only=True when version is updated
@@ -78,6 +79,7 @@ def setup_api_test(
         _set_test_data(test_data)
     if ground_truth_backend is not None:
         _set_ground_truth_backend(ground_truth_backend)
+    _set_backend_pipeline()
     _set_backend(backend)
     _set_device(device)
 
@@ -85,6 +87,7 @@ def setup_api_test(
 def teardown_api_test():
     _unset_test_data()
     _unset_ground_truth_backend()
+    _unset_backend_pipeline()
     _unset_backend()
     _unset_device()
 
@@ -92,6 +95,7 @@ def teardown_api_test():
 def setup_frontend_test(frontend: str, backend: str, device: str, test_data: TestData):
     if test_data is not None:
         _set_test_data(test_data)
+    _set_frotnend_pipeline()
     _set_frontend(frontend)
     _set_backend(backend)
     _set_device(device)
@@ -100,6 +104,7 @@ def setup_frontend_test(frontend: str, backend: str, device: str, test_data: Tes
 def teardown_frontend_test():
     _unset_test_data()
     _unset_frontend()
+    _unset_frontend_pipeline()
     _unset_backend()
     _unset_device()
 
@@ -111,13 +116,31 @@ def _set_test_data(test_data: TestData):
     CURRENT_RUNNING_TEST = test_data
 
 
+def _set_backend_pipeline():
+    global CURRENT_PIPELINE
+    if CURRENT_PIPELINE is not _Notsetval:
+        raise InterruptedTest(CURRENT_RUNNING_TEST)
+    CURRENT_PIPELINE = BackendPipeline()
+
+
+def _unset_backend_pipeline():
+    global CURRENT_PIPELINE
+    CURRENT_PIPELINE.set_traced_fn(None)
+    CURRENT_PIPELINE = _Notsetval
+
+
 def _set_frontend(framework: str):
     global CURRENT_FRONTEND
-    global CURRENT_FRONTEND_CONFIG
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    CURRENT_FRONTEND_CONFIG = get_frontend_config(framework)
     CURRENT_FRONTEND = framework
+
+
+def _set_frotnend_pipeline():
+    global CURRENT_PIPELINE
+    if CURRENT_PIPELINE is not _Notsetval:
+        raise InterruptedTest(CURRENT_RUNNING_TEST)
+    CURRENT_PIPELINE = FrontendPipeline()
 
 
 def _set_backend(framework: str):
@@ -151,9 +174,14 @@ def _unset_test_data():
 
 
 def _unset_frontend():
-    global CURRENT_FRONTEND, CURRENT_FRONTEND_CONFIG
+    global CURRENT_FRONTEND
     CURRENT_FRONTEND = _Notsetval
-    CURRENT_FRONTEND_CONFIG = _Notsetval
+
+
+def _unset_frontend_pipeline():
+    global CURRENT_PIPELINE
+    CURRENT_PIPELINE.set_traced_fn(None)
+    CURRENT_PIPELINE = _Notsetval
 
 
 def _unset_backend():

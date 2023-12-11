@@ -10,7 +10,6 @@ import ivy
 from . import array_helpers, number_helpers, dtype_helpers
 from ..pipeline_helper import WithBackendContext
 from ivy.functional.ivy.layers import _deconv_length
-from ..globals import mod_backend
 
 
 def matrix_is_stable(x, cond_limit=30):
@@ -89,24 +88,14 @@ def apply_safety_factor(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        if mod_backend[backend]:
-            proc, input_queue, output_queue = mod_backend[backend]
-            input_queue.put(("dtype_info_helper", backend, kind_dtype, dtype))
-            dtype_info = output_queue.get()
-        else:
-            dtype_info = general_helpers_dtype_info_helper(
-                backend=backend, kind_dtype=kind_dtype, dtype=dtype
-            )
+        dtype_info = general_helpers_dtype_info_helper(
+            backend=backend, kind_dtype=kind_dtype, dtype=dtype
+        )
     elif "int" in dtype:
         kind_dtype = "int"
-        if mod_backend[backend]:
-            proc, input_queue, output_queue = mod_backend[backend]
-            input_queue.put(("dtype_info_helper", backend, kind_dtype, dtype))
-            dtype_info = output_queue.get()
-        else:
-            dtype_info = general_helpers_dtype_info_helper(
-                backend=backend, kind_dtype=kind_dtype, dtype=dtype
-            )
+        dtype_info = general_helpers_dtype_info_helper(
+            backend=backend, kind_dtype=kind_dtype, dtype=dtype
+        )
     else:
         raise TypeError(
             f"{dtype} is not a valid numeric data type only integers and floats"

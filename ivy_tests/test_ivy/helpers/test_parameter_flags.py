@@ -48,6 +48,7 @@ BuiltTraceStrategy = DynamicFlag(st.just(False))
 BuiltFrontendArrayStrategy = DynamicFlag(st.booleans())
 BuiltTranspileStrategy = DynamicFlag(st.just(False))
 BuiltPrecisionModeStrategy = DynamicFlag(st.booleans())
+BuiltWithVStrategy = DynamicFlag(st.booleans())
 
 
 flags_mapping = {
@@ -62,6 +63,7 @@ flags_mapping = {
     "test_trace": "BuiltTraceStrategy",
     "transpile": "BuiltTranspileStrategy",
     "precision_mode": "BuiltPrecisionModeStrategy",
+    "with_v": "BuiltWithVStrategy",
 }
 
 
@@ -275,11 +277,13 @@ class InitMethodTestFlags(TestFlags):
         num_positional_args,
         as_variable,
         native_arrays,
+        test_with_v,
         precision_mode,
     ):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
+        self.test_with_v = test_with_v
         self.precision_mode = precision_mode
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
@@ -299,6 +303,7 @@ class InitMethodTestFlags(TestFlags):
             f"num_positional_args={self.num_positional_args}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
+            f"test_with_v={self.test_with_v}."
             f"precision_mode={self.precision_mode}. "
         )
 
@@ -313,6 +318,7 @@ def init_method_flags(
     num_positional_args,
     as_variable,
     native_arrays,
+    test_with_v,
     precision_mode,
 ):
     return draw(
@@ -321,6 +327,7 @@ def init_method_flags(
             num_positional_args=num_positional_args,
             as_variable=as_variable,
             native_arrays=native_arrays,
+            test_with_v=test_with_v,
             precision_mode=precision_mode,
         )
     )
@@ -333,12 +340,16 @@ class MethodTestFlags(TestFlags):
         as_variable,
         native_arrays,
         container_flags,
+        test_trace,
+        test_with_v,
         precision_mode,
     ):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
         self.container = container_flags
+        self.test_trace = test_trace
+        self.test_with_v = test_with_v
         self.precision_mode = precision_mode
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
@@ -361,6 +372,8 @@ class MethodTestFlags(TestFlags):
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
             f"container_flags={self.container}. "
+            f"test_trace={self.test_trace}."
+            f"test_with_v={self.test_with_v}."
             f"precision_mode={self.precision_mode}. "
         )
 
@@ -376,6 +389,8 @@ def method_flags(
     as_variable,
     native_arrays,
     container_flags,
+    test_trace,
+    test_with_v,
     precision_mode,
 ):
     return draw(
@@ -385,6 +400,8 @@ def method_flags(
             as_variable=as_variable,
             native_arrays=native_arrays,
             container_flags=container_flags,
+            test_trace=test_trace,
+            test_with_v=test_with_v,
             precision_mode=precision_mode,
         )
     )

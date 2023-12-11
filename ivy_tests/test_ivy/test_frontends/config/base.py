@@ -129,3 +129,7 @@ class FrontendConfigWithBackend(FrontendConfig):
 
     def isscalar(self, x):
         return self.backend.isscalar(x)
+
+    def get_native_device(self, x):
+        # Todo: add this in the rest of the classes
+        return self.backend.as_native_dev(self.backend.dev(x))
