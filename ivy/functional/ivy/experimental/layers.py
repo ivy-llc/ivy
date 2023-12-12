@@ -1691,11 +1691,20 @@ def area_interpolate(x, dims, size, scale):
 def get_interpolate_kernel(mode):
     kernel_func = _triangle_kernel
     if mode == "tf_bicubic":
-        kernel_func = lambda inputs: _cubic_kernel(inputs)
+
+        def kernel_func(inputs):
+            return _cubic_kernel(inputs)
+
     elif mode == "lanczos3":
-        kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
+
+        def kernel_func(inputs):
+            return _lanczos_kernel(3, inputs)
+
     elif mode == "lanczos5":
-        kernel_func = lambda inputs: _lanczos_kernel(5, inputs)
+
+        def kernel_func(inputs):
+            return _lanczos_kernel(5, inputs)
+
     return kernel_func
 
 
