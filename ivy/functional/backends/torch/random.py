@@ -78,12 +78,10 @@ def multinomial(
 ) -> torch.Tensor:
     if probs is None:
         probs = (
-            torch.ones(
-                (
-                    batch_size,
-                    population_size,
-                )
-            )
+            torch.ones((
+                batch_size,
+                population_size,
+            ))
             / population_size
         )
     if seed:

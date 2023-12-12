@@ -1488,9 +1488,9 @@ class ContainerBase(dict, abc.ABC):
         if not sub_shapes:
             return sub_shapes
         min_num_dims = min(len(sub_shape) for sub_shape in sub_shapes)
-        sub_shapes_array = np.asarray([
-            sub_shape[0:min_num_dims] for sub_shape in sub_shapes
-        ])
+        sub_shapes_array = np.asarray(
+            [sub_shape[0:min_num_dims] for sub_shape in sub_shapes]
+        )
         sub_shapes_array = np.where(sub_shapes_array == 0, -1, sub_shapes_array)
         mask = np.prod(sub_shapes_array / sub_shapes_array[0:1], 0) == 1
         # noinspection PyTypeChecker
@@ -1843,15 +1843,11 @@ class ContainerBase(dict, abc.ABC):
         if keepdims:
             # noinspection PyTypeChecker
             return [
-                self[
-                    (
-                        slice(i, i + 1, 1)
-                        if axis == 0
-                        else tuple(
-                            [slice(None, None, None)] * axis + [slice(i, i + 1, 1)]
-                        )
-                    )
-                ]
+                self[(
+                    slice(i, i + 1, 1)
+                    if axis == 0
+                    else tuple([slice(None, None, None)] * axis + [slice(i, i + 1, 1)])
+                )]
                 for i in range(dim_size)
             ]
         # noinspection PyTypeChecker
@@ -3657,9 +3653,9 @@ class ContainerBase(dict, abc.ABC):
         # prepend these lines to the sub-container
         sub_repr = (
             "\n"
-            + "\n".join([
-                " " * num_spaces_to_add + s for s in sub_repr[1:-1].split("\n")
-            ])
+            + "\n".join(
+                [" " * num_spaces_to_add + s for s in sub_repr[1:-1].split("\n")]
+            )
             + "\n"
         )
 
@@ -3735,9 +3731,9 @@ class ContainerBase(dict, abc.ABC):
             # 10 dimensions is a sensible upper bound for the number in a single array
             for i in range(2, 10):
                 indented = indented.replace(" " * (i - 1) + "[" * i, "[" * i)
-                indented = "\n".join([
-                    s for s in indented.split("\n") if bool(s) and not s.isspace()
-                ])
+                indented = "\n".join(
+                    [s for s in indented.split("\n") if bool(s) and not s.isspace()]
+                )
             return indented
 
         def _align_arrays(str_in):
@@ -3845,9 +3841,9 @@ class ContainerBase(dict, abc.ABC):
                     for i, ss in enumerate(str_in_split)
                 ])
 
-            json_dumped_str = '":'.join([
-                _add_newline(s) for s in json_dumped_str.split('":')
-            ])
+            json_dumped_str = '":'.join(
+                [_add_newline(s) for s in json_dumped_str.split('":')]
+            )
             # improve tf formatting
             if ivy.backend_stack and ivy.current_backend_str() == "tensorflow":
                 json_dumped_str_split = json_dumped_str.split("'Variable:")
