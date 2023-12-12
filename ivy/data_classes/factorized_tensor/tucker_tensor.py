@@ -83,12 +83,10 @@ class TuckerTensor(FactorizedTensor):
         return TuckerTensor.tucker_to_unfolded(self, mode)
 
     def tucker_copy(self):
-        return TuckerTensor(
-            (
-                deepcopy(self.core),
-                [deepcopy(self.factors[i]) for i in range(len(self.factors))],
-            )
-        )
+        return TuckerTensor((
+            deepcopy(self.core),
+            [deepcopy(self.factors[i]) for i in range(len(self.factors))],
+        ))
 
     def to_vec(self):
         return TuckerTensor.tucker_to_vec(self)
@@ -288,9 +286,9 @@ class TuckerTensor(FactorizedTensor):
 
                 # number of parameters coming from the fixed modes
                 #  (these don't have a variable size as a fun of fraction_param)
-                n_fixed_params = ivy.sum([
-                    s**2 for _, s in fixed_modes
-                ])  # size of the factors
+                n_fixed_params = ivy.sum(
+                    [s**2 for _, s in fixed_modes]
+                )  # size of the factors
                 n_modes_compressed -= len(fixed_modes)
             else:
                 n_fixed_params = 0

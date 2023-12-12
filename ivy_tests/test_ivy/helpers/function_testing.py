@@ -479,17 +479,15 @@ def test_function(
     if mod_backend[backend_to_test]:
         # multiprocessing
         proc, input_queue, output_queue = mod_backend[backend_to_test]
-        input_queue.put(
-            (
-                "function_backend_computation",
-                backend_to_test,
-                test_flags,
-                all_as_kwargs_np,
-                input_dtypes,
-                on_device,
-                fn_name,
-            )
-        )
+        input_queue.put((
+            "function_backend_computation",
+            backend_to_test,
+            test_flags,
+            all_as_kwargs_np,
+            input_dtypes,
+            on_device,
+            fn_name,
+        ))
         (
             ret_from_target,
             ret_np_flat_from_target,
@@ -528,22 +526,20 @@ def test_function(
     # compute the return with a Ground Truth backend
     if mod_backend[ground_truth_backend]:
         proc, input_queue, output_queue = mod_backend[ground_truth_backend]
-        input_queue.put(
-            (
-                "function_ground_truth_computation",
-                ground_truth_backend,
-                on_device,
-                args_np,
-                arg_np_arrays,
-                arrays_args_indices,
-                kwargs_np,
-                arrays_kwargs_indices,
-                kwarg_np_arrays,
-                input_dtypes,
-                test_flags,
-                fn_name,
-            )
-        )
+        input_queue.put((
+            "function_ground_truth_computation",
+            ground_truth_backend,
+            on_device,
+            args_np,
+            arg_np_arrays,
+            arrays_args_indices,
+            kwargs_np,
+            arrays_kwargs_indices,
+            kwarg_np_arrays,
+            input_dtypes,
+            test_flags,
+            fn_name,
+        ))
         (
             ret_from_gt,
             ret_np_from_gt_flat,
@@ -575,15 +571,13 @@ def test_function(
     if test_flags.transpile:
         if mod_backend[backend_to_test]:
             proc, input_queue, output_queue = mod_backend[backend_to_test]
-            input_queue.put(
-                (
-                    "transpile_if_required_backend",
-                    backend_to_test,
-                    fn_name,
-                    args_np,
-                    kwargs_np,
-                )
-            )
+            input_queue.put((
+                "transpile_if_required_backend",
+                backend_to_test,
+                fn_name,
+                args_np,
+                kwargs_np,
+            ))
         else:
             _transpile_if_required_backend(
                 backend_to_test, fn_name, args=args_np, kwargs=kwargs_np
@@ -1221,25 +1215,23 @@ def gradient_test(
     if mod_backend[backend_to_test]:
         # do this using multiprocessing
         proc, input_queue, output_queue = mod_backend[backend_to_test]
-        input_queue.put(
-            (
-                "gradient_backend_computation",
-                backend_to_test,
-                args_np,
-                arg_np_vals,
-                args_idxs,
-                kwargs_np,
-                kwarg_np_vals,
-                kwargs_idxs,
-                input_dtypes,
-                test_flags,
-                on_device,
-                fn,
-                test_trace,
-                xs_grad_idxs,
-                ret_grad_idxs,
-            )
-        )
+        input_queue.put((
+            "gradient_backend_computation",
+            backend_to_test,
+            args_np,
+            arg_np_vals,
+            args_idxs,
+            kwargs_np,
+            kwarg_np_vals,
+            kwargs_idxs,
+            input_dtypes,
+            test_flags,
+            on_device,
+            fn,
+            test_trace,
+            xs_grad_idxs,
+            ret_grad_idxs,
+        ))
         grads_np_flat = output_queue.get()
 
     else:
@@ -1263,26 +1255,24 @@ def gradient_test(
     if mod_backend[ground_truth_backend]:
         # do this using multiprocessing
         proc, input_queue, output_queue = mod_backend[ground_truth_backend]
-        input_queue.put(
-            (
-                "gradient_ground_truth_computation",
-                ground_truth_backend,
-                on_device,
-                fn,
-                input_dtypes,
-                all_as_kwargs_np,
-                args_np,
-                arg_np_vals,
-                args_idxs,
-                kwargs_np,
-                kwarg_np_vals,
-                test_flags,
-                kwargs_idxs,
-                test_trace,
-                xs_grad_idxs,
-                ret_grad_idxs,
-            )
-        )
+        input_queue.put((
+            "gradient_ground_truth_computation",
+            ground_truth_backend,
+            on_device,
+            fn,
+            input_dtypes,
+            all_as_kwargs_np,
+            args_np,
+            arg_np_vals,
+            args_idxs,
+            kwargs_np,
+            kwarg_np_vals,
+            test_flags,
+            kwargs_idxs,
+            test_trace,
+            xs_grad_idxs,
+            ret_grad_idxs,
+        ))
         grads_np_from_gt_flat = output_queue.get()
     else:
         grads_np_from_gt_flat = test_gradient_ground_truth_computation(
@@ -1690,24 +1680,22 @@ def test_method(
     if mod_backend[backend_to_test]:
         # yep, multiprocessing
         proc, input_queue, output_queue = mod_backend[backend_to_test]
-        input_queue.put(
-            (
-                "method_backend_computation",
-                init_input_dtypes,
-                init_flags,
-                backend_to_test,
-                init_all_as_kwargs_np,
-                on_device,
-                method_input_dtypes,
-                method_flags,
-                method_all_as_kwargs_np,
-                class_name,
-                method_name,
-                init_with_v,
-                test_trace,
-                method_with_v,
-            )
-        )
+        input_queue.put((
+            "method_backend_computation",
+            init_input_dtypes,
+            init_flags,
+            backend_to_test,
+            init_all_as_kwargs_np,
+            on_device,
+            method_input_dtypes,
+            method_flags,
+            method_all_as_kwargs_np,
+            class_name,
+            method_name,
+            init_with_v,
+            test_trace,
+            method_with_v,
+        ))
         (
             ret,
             ret_np_flat,
@@ -1756,26 +1744,24 @@ def test_method(
     if mod_backend[ground_truth_backend]:
         # yep, multiprocessing
         proc, input_queue, output_queue = mod_backend[ground_truth_backend]
-        input_queue.put(
-            (
-                "method_ground_truth_computation",
-                ground_truth_backend,
-                on_device,
-                org_con_data,
-                args_np_method,
-                met_arg_np_vals,
-                met_args_idxs,
-                kwargs_np_method,
-                met_kwarg_np_vals,
-                met_kwargs_idxs,
-                method_input_dtypes,
-                method_flags,
-                class_name,
-                method_name,
-                test_trace,
-                v_np,
-            )
-        )
+        input_queue.put((
+            "method_ground_truth_computation",
+            ground_truth_backend,
+            on_device,
+            org_con_data,
+            args_np_method,
+            met_arg_np_vals,
+            met_args_idxs,
+            kwargs_np_method,
+            met_kwarg_np_vals,
+            met_kwargs_idxs,
+            method_input_dtypes,
+            method_flags,
+            class_name,
+            method_name,
+            test_trace,
+            v_np,
+        ))
         (
             ret_from_gt,
             ret_np_from_gt_flat,

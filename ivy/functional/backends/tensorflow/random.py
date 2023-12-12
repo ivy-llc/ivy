@@ -80,12 +80,10 @@ def multinomial(
 ) -> Union[tf.Tensor, tf.Variable]:
     if probs is None:
         probs = (
-            tf.ones(
-                (
-                    batch_size,
-                    population_size,
-                )
-            )
+            tf.ones((
+                batch_size,
+                population_size,
+            ))
             / population_size
         )
 

@@ -1466,9 +1466,9 @@ def nested_multi_map(
                 (
                     return_nest.append(ret)
                     if isinstance(return_nest, (list))
-                    else return_nest.update({
-                        val if is_dict else list(nest)[index]: ret
-                    })
+                    else return_nest.update(
+                        {val if is_dict else list(nest)[index]: ret}
+                    )
                 )
     else:
         values = nests
