@@ -349,11 +349,11 @@ def unflatten(
     Parameters
     ----------
     x
-        The input tensor.
+        input tensor.
     dim
-        Dimension to be unflattened, specified as an index into input.shape.
+        dimension to be unflattened, specified as an index into input.shape.
     shape
-        New shape of the unflattened dimension. One of its elements can be -1 in
+        new shape of the unflattened dimension. One of its elements can be -1 in
         which case the corresponding output dimension is inferred. Otherwise,
         the product of sizes must equal input.shape[dim].
     out
@@ -363,7 +363,7 @@ def unflatten(
     Returns
     -------
     ret
-        A View of input with the specified dimension unflattened.
+        view of input with the specified dimension unflattened.
 
 
     This function conforms to the `Array API Standard
