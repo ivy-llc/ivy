@@ -1208,7 +1208,7 @@ def test_inplace_arrays_supported(backend_fw):
         elif backend_fw in ["jax", "tensorflow", "paddle"]:
             assert not ivy_backend.inplace_arrays_supported()
         else:
-            raise Exception("Unrecognized framework")
+            raise RuntimeError("Unrecognized framework")
 
 
 # inplace_decrement
@@ -1329,7 +1329,7 @@ def test_inplace_variables_supported(backend_fw):
         elif backend_fw in ["jax", "paddle"]:
             assert not ivy_backend.inplace_variables_supported()
         else:
-            raise Exception("Unrecognized framework")
+            raise RuntimeError("Unrecognized framework")
 
 
 # is_array

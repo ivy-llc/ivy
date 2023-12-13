@@ -1827,7 +1827,7 @@ class Tensor:
 
     def apply_(self, callable, /):
         if self.device != "cpu":
-            raise Exception("apply_ is only supported on cpu tensors")
+            raise ValueError("apply_ is only supported on cpu tensors")
         self.ivy_array = callable(self.ivy_array)
         return self
 

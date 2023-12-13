@@ -383,6 +383,7 @@ def node_split_best(
         f_i -= 1
         features[f_i], features[f_j] = features[f_j], features[f_i]
         has_missing = n_missing != 0
+        criterion.init_missing(n_missing)
         n_searches = 2 if has_missing else 1
         for i in range(n_searches):
             missing_go_to_left = i == 1
