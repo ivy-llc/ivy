@@ -158,7 +158,7 @@ def test_function_backend_computation(
     if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
         getattr(ivy, fn_name)
     ).parameters:
-        raise Exception(f"Function {fn_name} does not have an out parameter")
+        raise RuntimeError(f"Function {fn_name} does not have an out parameter")
 
     # Run either as an instance method or from the API directly
     with BackendHandler.update_backend(fw) as ivy_backend:
