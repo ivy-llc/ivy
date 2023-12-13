@@ -15,7 +15,7 @@ import requests
 def get_latest_package_version(package_name):
     try:
         url = f"https://pypi.org/pypi/{package_name}/json"
-        response = requests.get(url)
+        response = requests.get(url, timeout=10)
         response.raise_for_status()
         package_info = response.json()
         return package_info["info"]["version"]
