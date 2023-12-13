@@ -120,9 +120,9 @@ def _get_traces(curr_obj, area, local_dict, target_name):
             curr_obj[3] = rooted_src_list[i]
             curr_obj[1] += i
             break
-        elif builtins.any([
-            name in rooted_src_list[i] for name in non_lib_objs_name_list
-        ]):
+        elif builtins.any(
+            [name in rooted_src_list[i] for name in non_lib_objs_name_list]
+        ):
             found = False
             for name in non_lib_objs_name_list:
                 if name in rooted_src_list[i]:

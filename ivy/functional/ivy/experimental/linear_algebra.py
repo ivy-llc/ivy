@@ -1051,14 +1051,12 @@ def svd_flip(
         )
         V = V * signs[:, None]
         if ivy.shape(U)[1] > ivy.shape(V)[0]:
-            signs = ivy.concat(
-                (
-                    signs,
-                    ivy.ones(
-                        ivy.shape(U)[1] - ivy.shape(V)[0],
-                    ),
-                )
-            )
+            signs = ivy.concat((
+                signs,
+                ivy.ones(
+                    ivy.shape(U)[1] - ivy.shape(V)[0],
+                ),
+            ))
         U = U * signs[: ivy.shape(U)[1]]
 
     return U, V
@@ -1678,13 +1676,13 @@ def tucker(
             return ivy.TuckerTensor((core, factors))
 
         fixed_factors = sorted(fixed_factors)
-        modes_fixed, factors_fixed = zip(*[
-            (i, f) for (i, f) in enumerate(factors) if i in fixed_factors
-        ])
+        modes_fixed, factors_fixed = zip(
+            *[(i, f) for (i, f) in enumerate(factors) if i in fixed_factors]
+        )
         core = multi_mode_dot(core, factors_fixed, modes=modes_fixed)
-        modes, factors = zip(*[
-            (i, f) for (i, f) in enumerate(factors) if i not in fixed_factors
-        ])
+        modes, factors = zip(
+            *[(i, f) for (i, f) in enumerate(factors) if i not in fixed_factors]
+        )
         init = (core, list(factors))
 
         rank = ivy.TuckerTensor.validate_tucker_rank(x.shape, rank=rank)

@@ -119,8 +119,7 @@ class Tree:
 
     def predict(self, X):
         X_applied = self.apply(X)
-        X_threshold = ivy.where(X_applied > X.shape[0], X.shape[0] - 1, X_applied)
-        out = ivy.gather(self.value, X_threshold, axis=0)
+        out = ivy.take(self.value, X_applied, axis=0)
         if self.n_outputs == 1:
             out = out.reshape((X.shape[0], self.max_n_classes))
         return out
