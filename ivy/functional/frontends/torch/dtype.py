@@ -44,4 +44,4 @@ def set_default_dtype(d):
     )
     global _default_dtype
     _default_dtype = d
-    return None
+    return

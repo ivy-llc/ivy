@@ -114,7 +114,7 @@ def randint(
     return (torch.rand(shape, device=device) * rand_range + low).to(dtype)
 
 
-def seed(*, seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0):
     torch.manual_seed(seed_value)
     torch.cuda.manual_seed(seed_value)
     if hasattr(torch.backends, "mps"):
@@ -122,7 +122,7 @@ def seed(*, seed_value: int = 0) -> None:
             from torch import mps
 
             mps.manual_seed(seed_value)
-    return None
+    return
 
 
 def shuffle(

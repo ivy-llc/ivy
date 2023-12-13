@@ -142,9 +142,9 @@ def randint(
     return tf.cast(tf.random.uniform(shape, low, high, "float32", seed=seed), dtype)
 
 
-def seed(*, seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0):
     tf.random.set_seed(seed_value)
-    return None
+    return
 
 
 def shuffle(
