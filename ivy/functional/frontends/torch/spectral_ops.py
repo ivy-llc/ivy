@@ -1,11 +1,18 @@
 import ivy
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
+
 @to_ivy_arrays_and_back
-def bartlett_window(window_length, periodic=True, *, dtype=None, layout=None, device=None, requires_grad=False):
-    """
-    Generate a Bartlett window.
+def bartlett_window(
+    window_length,
+    periodic=True,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    """Generate a Bartlett window.
 
     Parameters:
     - window_length (int): Length of the window.
@@ -34,4 +41,3 @@ def bartlett_window(window_length, periodic=True, *, dtype=None, layout=None, de
         )
 
         return res[:-1] if periodic else res
-
