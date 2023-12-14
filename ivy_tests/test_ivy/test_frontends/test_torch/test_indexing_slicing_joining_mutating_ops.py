@@ -14,13 +14,15 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_
 from ivy_tests.array_api_testing.test_array_api.array_api_tests import (
     hypothesis_helpers as hh,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa: E501
-    put_along_axis_helper,
-)
 
 
 # --- Helpers --- #
 # --------------- #
+
+
+# from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa: E501
+#   put_along_axis_helper,
+# )
 
 
 # noinspection DuplicatedCode
@@ -1245,19 +1247,24 @@ def test_torch_row_stack(
 # scatter
 @handle_frontend_test(
     fn_tree="torch.scatter",
-    args=put_along_axis_helper(),
+    # args=put_along_axis_helper(),
+    params_indices_others=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        indices_same_dims=True,
+    ),
     test_with_out=st.just(False),
 )
 def test_torch_scatter(
     *,
-    args,
+    params_indices_others,
     on_device,
     fn_tree,
     frontend,
     backend_fw,
     test_flags,
 ):
-    dtypes, x, indices, value, axis = args
+    dtypes, x, indices, value, axis = params_indices_others
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         frontend=frontend,
