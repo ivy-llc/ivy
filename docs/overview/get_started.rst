@@ -59,7 +59,7 @@ where OS-specific and IDE-specific instructions and video tutorials to install I
 Ivy's tracer and transpiler
 -----------------------------
 
-To use Ivy's tracer and transpiler, you'll need an **API key**. If you don't have one yet, you can  
+To use Ivy's tracer and transpiler, you'll need an **API key**. If you don't have one yet, you can
 register in `the console <https://console.unify.ai/>`_ to get it!
 
 Ivy Folder
