@@ -3,6 +3,14 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
+_SWAP_DIRECTION_MAP = {
+    None: "forward",
+    "backward": "forward",
+    "ortho": "ortho",
+    "forward": "backward",
+}
+
+
 # --- Helpers --- #
 # --------------- #
 
@@ -35,7 +43,7 @@ def fftfreq(n, d=1.0):
 
     N = (n - 1) // 2 + 1
     val = 1.0 / (n * d)
-    results = ivy.empty(tuple([n]), dtype=int)
+    results = ivy.empty((n,), dtype=int)
 
     p1 = ivy.arange(0, N, dtype=int)
     results[:N] = p1
@@ -148,11 +156,3 @@ def rfftfreq(n, d=1.0):
 def rfftn(a, s=None, axes=None, norm=None):
     a = ivy.asarray(a, dtype=ivy.complex128)
     return ivy.rfftn(a, s=s, axes=axes, norm=norm)
-
-
-_SWAP_DIRECTION_MAP = {
-    None: "forward",
-    "backward": "forward",
-    "ortho": "ortho",
-    "forward": "backward",
-}

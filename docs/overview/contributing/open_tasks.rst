@@ -3,7 +3,7 @@ Open Tasks
 
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
+.. _`open tasks channel`: https://discord.com/channels/799879767196958751/982728618469912627
 .. _`issue description`: https://github.com/unifyai/ivy/issues/1526
 .. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
 .. _`imports`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27

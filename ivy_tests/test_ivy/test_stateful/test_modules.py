@@ -513,21 +513,23 @@ def test_module_w_partial_v(
             ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
             "float32",
         )
-        v = ivy.Container({
-            "linear0": {
-                "b": _variable(ivy.random_uniform(shape=[64])),
-                "w": _variable(ivy.random_uniform(shape=[64, 4])),
-            },
-            "linear1": {
-                "b": _variable(ivy.random_uniform(shape=[64])),
-                "w": _variable(ivy.random_uniform(shape=[64, 64])),
-                "extra": _variable(ivy.random_uniform(shape=[64, 64])),
-            },
-            "linear2": {
-                "b": _variable(ivy.random_uniform(shape=[5])),
-                "w": _variable(ivy.random_uniform(shape=[5, 64])),
-            },
-        })
+        v = ivy.Container(
+            {
+                "linear0": {
+                    "b": _variable(ivy.random_uniform(shape=[64])),
+                    "w": _variable(ivy.random_uniform(shape=[64, 4])),
+                },
+                "linear1": {
+                    "b": _variable(ivy.random_uniform(shape=[64])),
+                    "w": _variable(ivy.random_uniform(shape=[64, 64])),
+                    "extra": _variable(ivy.random_uniform(shape=[64, 64])),
+                },
+                "linear2": {
+                    "b": _variable(ivy.random_uniform(shape=[5])),
+                    "w": _variable(ivy.random_uniform(shape=[5, 64])),
+                },
+            }
+        )
         try:
             TrainableModule(
                 input_channels,
@@ -542,13 +544,17 @@ def test_module_w_partial_v(
             )
         except ivy.utils.exceptions.IvyException:
             pass
-        v = ivy.Container({
-            "linear0": {
-                "b": _variable(ivy.random_uniform(shape=[64])),
-            },
-            "linear1": {"w": _variable(ivy.random_uniform(shape=[64, 64]))},
-            "linear2": {"b": _variable(ivy.random_uniform(shape=[output_channels]))},
-        })
+        v = ivy.Container(
+            {
+                "linear0": {
+                    "b": _variable(ivy.random_uniform(shape=[64])),
+                },
+                "linear1": {"w": _variable(ivy.random_uniform(shape=[64, 64]))},
+                "linear2": {
+                    "b": _variable(ivy.random_uniform(shape=[output_channels]))
+                },
+            }
+        )
         try:
             TrainableModule(input_channels, output_channels, device=on_device, v=v)
             raise Exception(

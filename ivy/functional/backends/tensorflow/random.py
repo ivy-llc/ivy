@@ -1,5 +1,4 @@
-"""
-TensorFlow random functions.
+"""TensorFlow random functions.
 
 Collection of TensorFlow random functions, wrapped to fit Ivy syntax and
 signature.
@@ -81,12 +80,10 @@ def multinomial(
 ) -> Union[tf.Tensor, tf.Variable]:
     if probs is None:
         probs = (
-            tf.ones(
-                (
-                    batch_size,
-                    population_size,
-                )
-            )
+            tf.ones((
+                batch_size,
+                population_size,
+            ))
             / population_size
         )
 

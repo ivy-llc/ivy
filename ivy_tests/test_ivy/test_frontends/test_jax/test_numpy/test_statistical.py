@@ -546,17 +546,19 @@ def test_jax_cumsum(
 # einsum
 @handle_frontend_test(
     fn_tree="jax.numpy.einsum",
-    eq_n_op=st.sampled_from([
-        (
-            "ii",
-            np.arange(25).reshape(5, 5),
-        ),
-        (
-            "ii->i",
-            np.arange(25).reshape(5, 5),
-        ),
-        ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
-    ]),
+    eq_n_op=st.sampled_from(
+        [
+            (
+                "ii",
+                np.arange(25).reshape(5, 5),
+            ),
+            (
+                "ii->i",
+                np.arange(25).reshape(5, 5),
+            ),
+            ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
+        ]
+    ),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_einsum(

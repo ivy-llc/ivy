@@ -84,8 +84,10 @@ def test_beta(
     )
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         for u, v in zip(ret, ret_gt):
-            assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
-            assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
+            assert ivy_backend.all(u >= 0)
+            assert ivy_backend.all(u <= 1)
+            assert ivy_backend.all(v >= 0)
+            assert ivy_backend.all(v <= 1)
 
 
 # dirichlet
@@ -139,8 +141,10 @@ def test_dirichlet(
             assert ivy_backend.all(
                 ivy_backend.sum(u, axis=-1) == ivy_backend.sum(v, axis=-1)
             )
-            assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
-            assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
+            assert ivy_backend.all(u >= 0)
+            assert ivy_backend.all(u <= 1)
+            assert ivy_backend.all(v >= 0)
+            assert ivy_backend.all(v <= 1)
 
 
 # gamma

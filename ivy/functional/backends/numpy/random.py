@@ -1,4 +1,5 @@
-"""Collection of Numpy random functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy random functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import numpy as np
@@ -68,12 +69,10 @@ def multinomial(
         np.random.seed(seed)
     if probs is None:
         probs = (
-            np.ones(
-                (
-                    batch_size,
-                    population_size,
-                )
-            )
+            np.ones((
+                batch_size,
+                population_size,
+            ))
             / population_size
         )
     orig_probs_shape = list(probs.shape)

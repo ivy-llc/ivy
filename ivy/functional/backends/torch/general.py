@@ -1,4 +1,5 @@
-"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of PyTorch general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 from functools import reduce as _reduce
@@ -194,17 +195,15 @@ def gather(
         param_singleton_dims_table = [1 for dim in list(params.shape)]
         param_singleton_dims = torch.Size(param_singleton_dims_table)
 
-        params_ex = params.reshape(
-            (
-                params.shape[:axis]
-                + max([
-                    ind_singleton_dims[batch_dims : batch_dims + 1],
-                    params.shape[axis : axis + 1],
-                ])
-                + ind_singleton_dims[batch_dims + 1 :]
-                + params.shape[axis + 1 :]
-            )
-        )
+        params_ex = params.reshape((
+            params.shape[:axis]
+            + max([
+                ind_singleton_dims[batch_dims : batch_dims + 1],
+                params.shape[axis : axis + 1],
+            ])
+            + ind_singleton_dims[batch_dims + 1 :]
+            + params.shape[axis + 1 :]
+        ))
         indices_ex = (
             indices
             if (params.dim() <= 1)
@@ -312,9 +311,9 @@ def gather_nd_helper(params, indices):
     indices_for_flat_tiled = torch.reshape(
         torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)
     ).repeat(*[1, implicit_indices_factor])
-    implicit_indices = torch.unsqueeze(
-        torch.arange(implicit_indices_factor), 0
-    ).repeat(*[indices_for_flat_tiled.shape[0], 1])
+    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor), 0).repeat(
+        *[indices_for_flat_tiled.shape[0], 1]
+    )
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
     flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)
@@ -551,9 +550,9 @@ def scatter_nd(
     indices_for_flat_tiled = torch.reshape(
         torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)
     ).repeat(*[1, implicit_indices_factor])
-    implicit_indices = torch.unsqueeze(
-        torch.arange(implicit_indices_factor), 0
-    ).repeat(*[indices_for_flat_tiled.shape[0], 1])
+    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor), 0).repeat(
+        *[indices_for_flat_tiled.shape[0], 1]
+    )
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
     global torch_scatter
@@ -596,7 +595,7 @@ def shape(
 
 
 @with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, backend_version)
-def vmap(
+def vmap_v_1p13p1_and_below(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: int = 0,
@@ -608,6 +607,24 @@ def vmap(
             return ivy.to_native(func(*args))
 
         new_func = functorch.vmap(new_fun, in_axes, out_axes)
+        return new_func(*args)
+
+    return _vmap
+
+
+@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, backend_version)
+def vmap_v_2p0p0_and_above(
+    func: Callable,
+    in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+    out_axes: int = 0,
+) -> Callable:
+    @ivy.output_to_native_arrays
+    @ivy.inputs_to_native_arrays
+    def _vmap(*args):
+        def new_fun(*args):
+            return ivy.to_native(func(*args))
+
+        new_func = torch.vmap(new_fun, in_axes, out_axes)
         return new_func(*args)
 
     return _vmap

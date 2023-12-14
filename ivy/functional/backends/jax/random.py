@@ -1,4 +1,5 @@
-"""Collection of Jax random functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Jax random functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import jax
@@ -82,7 +83,7 @@ def random_normal(
     return jax.random.normal(rng_input, shape, dtype=dtype) * std + mean
 
 
-@with_unsupported_dtypes({"0.4.20 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.23 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -105,12 +106,10 @@ def multinomial(
 
     if probs is None:
         probs = (
-            jnp.ones(
-                (
-                    batch_size,
-                    population_size,
-                )
-            )
+            jnp.ones((
+                batch_size,
+                population_size,
+            ))
             / population_size
         )
     orig_probs_shape = list(probs.shape)

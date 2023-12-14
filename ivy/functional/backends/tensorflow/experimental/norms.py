@@ -110,11 +110,9 @@ def batch_norm(
 
     inv = 1.0 / tf.math.sqrt(variance + eps)
     offset = 0 if offset is None else offset
-    if scale is not None and any(s != 1 for s in scale):
+    if scale is not None:
         inv = tf.math.multiply(inv, scale)
-    xnormalized = tf.math.multiply(x, inv)
-    if any(s != 0 for s in offset):
-        xnormalized = tf.math.add(xnormalized, offset)
+    xnormalized = tf.math.add(tf.math.multiply(x, inv), offset)
     xnormalized = tf.math.subtract(xnormalized, tf.math.multiply(mean, inv))
     # the above approach is faster than tf.nn.batch_normalization
 

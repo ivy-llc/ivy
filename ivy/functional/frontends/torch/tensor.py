@@ -277,8 +277,7 @@ class Tensor:
         return torch_frontend.atan2(self, other)
 
     def view(self, *args, size=None):
-        """
-        Reshape Tensor.
+        """Reshape Tensor.
 
         possible arguments are either:
             - size
@@ -424,6 +423,10 @@ class Tensor:
     @with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, "torch")
     def logical_or(self, other):
         return torch_frontend.logical_or(self, other)
+
+    @with_unsupported_dtypes({"2.1.1 and below": ("bfloat16",)}, "torch")
+    def logical_xor(self, other):
+        return torch_frontend.logical_xor(self, other)
 
     def bitwise_not(self):
         return torch_frontend.bitwise_not(self)
@@ -1823,7 +1826,7 @@ class Tensor:
 
     def apply_(self, callable, /):
         if self.device != "cpu":
-            raise Exception("apply_ is only supported on cpu tensors")
+            raise ValueError("apply_ is only supported on cpu tensors")
         self.ivy_array = callable(self.ivy_array)
         return self
 

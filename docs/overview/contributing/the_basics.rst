@@ -7,7 +7,6 @@ The Basics
 .. _`Atlassian tutorial`: https://www.atlassian.com/git/tutorials/saving-changes/git-stash
 .. _`fork management channel`: https://discord.com/channels/799879767196958751/982728689408167956
 .. _`pull requests channel`: https://discord.com/channels/799879767196958751/982728733859414056
-.. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
 .. _`PyCharm blog`: https://www.jetbrains.com/help/pycharm/finding-and-replacing-text-in-file.html
 .. _`Debugging`: https://www.jetbrains.com/help/pycharm/debugging-code.html
 
@@ -599,4 +598,4 @@ with PyCharm
 
 This should have hopefully given you a good understanding of the basics for contributing.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `todo list issues channel`_, `fork management channel`_, `pull requests channel`_, `commit frequency channel`_ depending on the question!
+If you have any questions, please feel free to reach out on `discord`_ in the `todo list issues channel`_, `fork management channel`_, `pull requests channel`_, depending on the question!

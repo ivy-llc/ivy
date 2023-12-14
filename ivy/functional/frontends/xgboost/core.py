@@ -103,11 +103,13 @@ class Booster:
         )
 
         # add num_feature, num_target and num_instances to params
-        params.update({
-            "num_feature": n_feat,
-            "num_output_group": n_output_group - 1,
-            "num_instances": n_inst,
-        })
+        params.update(
+            {
+                "num_feature": n_feat,
+                "num_output_group": n_output_group - 1,
+                "num_instances": n_inst,
+            }
+        )
 
         # create gbm(as for now only gblinear booster is available)
         self.gbm = GBLinear(params, compile=compile, cache=cache)
@@ -121,9 +123,8 @@ class Booster:
             self._comp_binary_prediction(self.gbm.obj, cache[1])
 
     def update(self, dtrain, dlabel, iteration, fobj=None):
-        """
-        Update for one iteration, with objective function calculated internally. This
-        function should not be called directly by users.
+        """Update for one iteration, with objective function calculated
+        internally. This function should not be called directly by users.
 
         Parameters
         ----------
@@ -154,11 +155,10 @@ class Booster:
         iteration_range=(0, 0),
         strict_shape=False,
     ):
-        """
-        Predict with data. The full model will be used unless `iteration_range` is
-        specified, meaning user have to either slice the model or use the
-        ``best_iteration`` attribute to get prediction from best model returned from
-        early stopping.
+        """Predict with data. The full model will be used unless
+        `iteration_range` is specified, meaning user have to either slice the
+        model or use the ``best_iteration`` attribute to get prediction from
+        best model returned from early stopping.
 
         Parameters
         ----------
