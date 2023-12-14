@@ -323,3 +323,9 @@ def nanmin(
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
     return ivy.astype(res, out_dtype, out=out, copy=False)
+
+
+@to_ivy_arrays_and_back
+def gradient(f, *varargs, axis=None, edge_order=1):
+    edge_order = edge_order if edge_order is not None else 1
+    return ivy.gradient(f, spacing=varargs, axis=axis, edge_order=edge_order)
