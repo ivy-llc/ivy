@@ -185,90 +185,107 @@ def gather(
     axis %= len(params.shape)
     axis = abs(len(params.shape) + axis) if axis < 0 else axis
     batch_dims %= len(params.shape)
-    ivy.utils.assertions.check_gather_input_valid(
-                                                  params,
-                                                  indices,
-                                                  axis,
-                                                  batch_dims
-                                                 )
+    ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
 
     def expand_p_i(params, indices):
-        res_dim_helper_table = [1 for dim in list(params.shape[:axis]
-                                + indices.shape[batch_dims:]
-                                + params.shape[axis + 1:])]
-        res_singleton_dims = torch.Size(res_dim_helper_table)
+        ind_dim_helper_table = [1 for dim in list(indices.shape)]
+        ind_singleton_dims = torch.Size(ind_dim_helper_table)
         param_singleton_dims_table = [1 for dim in list(params.shape)]
         param_singleton_dims = torch.Size(param_singleton_dims_table)
-        params_ex = params.reshape(params.shape[:axis]
-                                   + res_singleton_dims[batch_dims:]
-                                   + params.shape[axis + 1:])
-        indices_ex = indices.reshape(param_singleton_dims[:axis]
-                                     + indices.shape[batch_dims:]
-                                     + param_singleton_dims[axis + 1:])
-        if (params.shape[:axis] 
-           + indices.shape[batch_dims:] 
-           + params.shape[axis + 1:]) != params_ex.shape:
-            params_ex = params_ex.expand(params.shape[:axis]
-                                         + indices.shape[batch_dims:]
-                                         + params.shape[axis + 1:])
-        if (indices.shape[:axis]
-           + indices.shape[batch_dims:] 
-           + params.shape[axis + 1:]) != indices_ex.shape:
-            indices_ex = indices_ex.expand(params.shape[:axis]
-                                           + indices.shape[batch_dims:]
-                                           + params.shape[axis + 1:])
+
+        params_ex = (
+            params
+            if (indices.dim() - batch_dims <= 1)
+            else params.reshape(
+                params.shape[:axis]
+                + ind_singleton_dims[batch_dims:]
+                + params.shape[axis + 1 :]
+            )
+        )
+        indices_ex = (
+            indices
+            if (params.dim() <= 1)
+            else indices.reshape(
+                param_singleton_dims[:axis]
+                + indices.shape[batch_dims:]
+                + param_singleton_dims[axis + 1 :]
+            )
+        )
+
+        if (
+            params.shape[:axis] + indices.shape[batch_dims:] + params.shape[axis + 1 :]
+        ) >= params_ex.shape:
+            params_ex = params_ex.expand(
+                params.shape[:axis]
+                + indices.shape[batch_dims:]
+                + params.shape[axis + 1 :]
+            )
+        if (
+            params.shape[:axis] + indices.shape[batch_dims:] + params.shape[axis + 1 :]
+        ) >= indices_ex.shape:
+            indices_ex = indices_ex.expand(
+                params.shape[:axis]
+                + indices.shape[batch_dims:]
+                + params.shape[axis + 1 :]
+            )
         return params_ex, indices_ex
+
     if batch_dims == 0:
         dim_diff = params.dim() - indices.dim()
         if dim_diff != 0:
             params_expanded, indices_expanded = expand_p_i(params, indices)
             result = torch.gather(
-                                  params_expanded, axis,
-                                  indices_expanded.long(),
-                                  sparse_grad=False, out=out
+                params_expanded,
+                axis,
+                indices_expanded.long(),
+                sparse_grad=False,
+                out=out,
             )
             return result
         else:
-            result = torch.gather(
-                params, axis, indices.long(), sparse_grad=False, out=out)
-            result = result.reshape((params.shape[:axis]
-                                    + indices.shape[batch_dims:]
-                                    + params.shape[axis + 1:])
-                                    )
-    else:
-        dim_diff = params.dim() - indices.dim()
-        params_expanded = params
-        indices_expanded = indices
-        if dim_diff != 0:
             params_expanded, indices_expanded = expand_p_i(params, indices)
-        params_slices = torch.unbind(params_expanded, axis=0)
-        indices_slices = torch.unbind(indices_expanded, axis=0)
+            result = torch.gather(
+                params_expanded,
+                axis,
+                indices_expanded.long(),
+                sparse_grad=False,
+                out=out,
+            )
+
+    else:
+        params_slices = torch.unbind(params, axis=0) if params.dim() > 1 else params
+        indices_slices = torch.unbind(indices, axis=0) if indices.dim() > 1 else indices
         for b in range(batch_dims):
             if b == 0:
-                zip_list = [(p, i) for
-                            p, i in
-                            zip(params_slices, indices_slices)
-                            ]
+                zip_list = [(p, i) for p, i in zip(params_slices, indices_slices)]
             else:
                 zip_list = [
-                           (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list]
-                           for p, i in z
-                            ]
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
         for z in zip_list:
             p, i = z
+            dim_diff = p.dim() - i.dim()
+            p_expanded = p
+            i_expanded = i
+            if dim_diff != 0:
+                p_expanded, i_expanded = expand_p_i(p, i)
             r = torch.gather(
-                             p, (axis - batch_dims),
-                             torch.reshape(i.long(), (-1, )),
-                             sparse_grad=False, out=None
-                            )
+                p_expanded,
+                (axis - batch_dims),
+                i_expanded.long(),
+                sparse_grad=False,
+                out=None,
+            )
 
             result.append(r)
         result = torch.stack(result)
-        result = result.reshape((params.shape[:axis]
-                                 + indices.shape[batch_dims:]
-                                 + params.shape[axis + 1:])
-                                )
+        result = result.reshape(
+            params.shape[:axis]
+            + max(indices.shape[batch_dims:], torch.Size([1]))
+            + params.shape[axis + 1 :]
+        )
+
     if ivy.exists(out):
         return ivy.inplace_update(out, result)
 
