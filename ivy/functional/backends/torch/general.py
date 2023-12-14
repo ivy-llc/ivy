@@ -195,11 +195,21 @@ def gather(
         param_singleton_dims = torch.Size(param_singleton_dims_table)
 
         params_ex = (
-            params
-            if (indices.dim() - batch_dims <= 1)
+            params.reshape(
+                (
+                    params.shape[:axis]
+                    + max([
+                        ind_singleton_dims[batch_dims : batch_dims + 1],
+                        params.shape[axis : axis + 1],
+                    ])
+                    + ind_singleton_dims[batch_dims + 1 :]
+                    + params.shape[axis + 1 :]
+                )
+            )
+            if (indices.dim() - batch_dims <= 1 or params.dim() - axis <= 1)
             else params.reshape(
                 params.shape[:axis]
-                + ind_singleton_dims[batch_dims:]
+                + ind_singleton_dims[batch_dims + 1 :]
                 + params.shape[axis + 1 :]
             )
         )
