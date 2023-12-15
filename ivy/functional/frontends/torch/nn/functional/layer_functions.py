@@ -127,7 +127,7 @@ def _lstm_cell(
 ):
     init_h = ivy.squeeze(init_h, axis=0)
     init_c = ivy.squeeze(init_c, axis=0)
-    return ivy.lstm_update(
+    out, states = ivy.lstm_update(
         x,
         init_h,
         init_c,
@@ -137,6 +137,10 @@ def _lstm_cell(
         recurrent_bias=recurrent_bias,
         time_major=not batch_first,
     )
+    h, c = states
+    h = ivy.expand_dims(h) if len(h.shape) == 2 else h
+    c = ivy.expand_dims(c) if len(c.shape) == 2 else c
+    return out, (h, c)
 
 
 def _lstm_full(

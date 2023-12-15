@@ -2286,6 +2286,7 @@ def lstm_update(
     *,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    time_major: bool = False,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """Perform long-short term memory update by unrolling time dimension of
     input array.
@@ -2364,7 +2365,7 @@ def lstm_update(
 
         hts_list.append(ivy.expand_dims(ht, axis=-2))
 
-    return ivy.concat(hts_list, axis=-2), ct
+    return ivy.concat(hts_list, axis=-2), (ht, ct)
 
 
 # Helpers #
