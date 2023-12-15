@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 [tool.ruff]
 target-version = "py38"
 
-select = ["D"] # Only pydocstyle as of now (https://docs.astral.sh/ruff/rules/#pydocstyle-d)
+select = ["D"] # Enabling Only pydocstyle checks as of now (https://docs.astral.sh/ruff/rules/#pydocstyle-d)
 
 ignore = [
     "D100", # Missing docstring in public module.
