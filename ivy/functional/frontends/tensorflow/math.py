@@ -820,7 +820,7 @@ def unsorted_segment_sum(data, segment_ids, num_segments, name="unsorted_segment
 
 
 @with_unsupported_dtypes(
-    {"2.15.0 and below": ("float16", "bool")},
+    {"2.15.0 and below": ("float16", "bool", "int8")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
