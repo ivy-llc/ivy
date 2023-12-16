@@ -5,8 +5,7 @@ from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_
 
 @to_ivy_arrays_and_back
 def batched_nms(boxes, scores, idxs, iou_threshold):
-    """
-    Perform non-maximum suppression (NMS) on a batch of bounding boxes.
+    """Perform non-maximum suppression (NMS) on a batch of bounding boxes.
 
     Parameters:
     - boxes (array): Bounding box coordinates.
@@ -32,8 +31,7 @@ def batched_nms(boxes, scores, idxs, iou_threshold):
 
 @to_ivy_arrays_and_back
 def box_area(boxes):
-    """
-    Calculate the area of each bounding box.
+    """Calculate the area of each bounding box.
 
     Parameters:
     - boxes (array): Bounding box coordinates.
@@ -54,8 +52,7 @@ def box_area(boxes):
 )
 @to_ivy_arrays_and_back
 def clip_boxes_to_image(boxes, size):
-    """
-    Clip bounding boxes to be within the image dimensions.
+    """Clip bounding boxes to be within the image dimensions.
 
     Parameters:
     - boxes (array): Bounding box coordinates.
@@ -73,8 +70,7 @@ def clip_boxes_to_image(boxes, size):
 
 @to_ivy_arrays_and_back
 def nms(boxes, scores, iou_threshold):
-    """
-    Perform non-maximum suppression (NMS) on bounding boxes.
+    """Perform non-maximum suppression (NMS) on bounding boxes.
 
     Parameters:
     - boxes (array): Bounding box coordinates.
@@ -89,8 +85,7 @@ def nms(boxes, scores, iou_threshold):
 
 @to_ivy_arrays_and_back
 def remove_small_boxes(boxes, min_size):
-    """
-    Remove small bounding boxes based on a minimum size threshold.
+    """Remove small bounding boxes based on a minimum size threshold.
 
     Parameters:
     - boxes (array): Bounding box coordinates.
@@ -108,8 +103,7 @@ def remove_small_boxes(boxes, min_size):
 def roi_align(
     input, boxes, output_size, spatial_scale=1.0, sampling_ratio=1, aligned=False
 ):
-    """
-    Perform Region of Interest (ROI) pooling or align pooling.
+    """Perform Region of Interest (ROI) pooling or align pooling.
 
     Parameters:
     - input (array): Input tensor.
