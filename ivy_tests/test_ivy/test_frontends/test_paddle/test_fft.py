@@ -136,41 +136,72 @@ def test_paddle_fftfreq(
     fn_tree="paddle.fft.hfft",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("complex"),
-        min_value=-10, max_value=10, min_num_dims=1, valid_axis=True, force_int_axis=True,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
     ),
 )
-def test_paddle_hfft(dtype_x_axis, frontend, test_flags, fn_tree, on_device, backend_fw):
+def test_paddle_hfft(
+    dtype_x_axis, frontend, test_flags, fn_tree, on_device, backend_fw
+):
     input_dtype, x, axes = dtype_x_axis
     x_tf = tf.constant(x[0], dtype=tf.complex64)
     result_np = tf.signal.hfft(x_tf, name="hfft_tf").numpy()
 
     helpers.test_frontend_function(
-        input_dtypes=input_dtype, backend_to_test=backend_fw, frontend=frontend,
-        test_flags=test_flags, fn_tree=fn_tree, on_device=on_device, test_values=True,
-        x=x[0], axes=axes, expected_outputs=result_np
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        x=x[0],
+        axes=axes,
+        expected_outputs=result_np,
     )
+
 
 # Updated test for paddle.fft.hfft2
 @given(
-    s=st.one_of(st.none(), st.tuples(st.integers(min_value=1), st.integers(min_value=1))),
+    s=st.one_of(
+        st.none(), st.tuples(st.integers(min_value=1), st.integers(min_value=1))
+    ),
     axis=st.one_of(st.none(), st.tuples(st.integers(min_value=-2, max_value=-1))),
-    shape=st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=2).map(tuple),
+    shape=st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=2).map(
+        tuple
+    ),
 )
 @handle_frontend_test(
     fn_tree="paddle.fft.hfft2",
-    dtype_x_axis=helpers.dtype_values_axis(available_dtypes=helpers.get_dtypes("complex64")),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("complex64")
+    ),
 )
-def test_paddle_hfft2(dtype_x_axis, s, axis, norm, frontend, backend_fw, test_flags, fn_tree, shape):
+def test_paddle_hfft2(
+    dtype_x_axis, s, axis, norm, frontend, backend_fw, test_flags, fn_tree, shape
+):
     input_dtypes, x, axis = dtype_x_axis
     x_tf = tf.constant(x.reshape(shape), dtype=tf.complex64)
 
     for norm in ["backward", "forward", "ortho"]:
-        result_np = tf.signal.hfft2d(x_tf, s=s, axes=axis, norm=norm, name="hfft2_tf").numpy()
+        result_np = tf.signal.hfft2d(
+            x_tf, s=s, axes=axis, norm=norm, name="hfft2_tf"
+        ).numpy()
 
         helpers.test_frontend_function(
-            input_dtypes=input_dtypes, frontend=frontend, backend_to_test=backend_fw,
-            test_flags=test_flags, fn_tree=fn_tree, x=x, s=s, axis=axis, norm=norm,
-            expected_outputs=result_np
+            input_dtypes=input_dtypes,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            x=x,
+            s=s,
+            axis=axis,
+            norm=norm,
+            expected_outputs=result_np,
         )
 
 
