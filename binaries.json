@@ -41,8 +41,10 @@
                     "L.so",
 
                     "MC.so",
+                    "MD.so",
                     "MI.so",
                     "ML.so",
+                    "MM.so",
                     "MV.so",
                     "MX.so",
                     "M.so",
@@ -63,7 +65,9 @@
                     "XM.so",
                     "XV.so",
                     "XX.so",
-                    "X.so"
+                    "X.so",
+
+                    "IIC.so"
                 ]
             }
         ]
