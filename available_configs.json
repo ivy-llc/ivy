@@ -6,8 +6,5 @@
         "cp311-cp311-manylinux_2_17_x86_64",
         "cp310-cp310-macosx_arm64_darwin",
         "cp311-cp311-macosx_arm64_darwin"
-    ],
-    "engines": [
-        "cp310-cp310-manylinux_2_17_x86_64"
     ]
 }

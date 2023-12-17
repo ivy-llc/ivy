@@ -57,7 +57,12 @@ if fixed_tag:
 else:
     from pip._vendor.packaging import tags
 
-    all_tags = list(tags.sys_tags())
+    if "arm64" in os.uname().machine and os.uname().sysname == "Darwin" and os.sys.version_info[:2] >= (3, 10) and os.sys.version_info[:2] < (3, 11):
+        all_tags = ["cp310-cp310-macosx_arm64_darwin"]
+    elif "arm64" in os.uname().machine and os.uname().sysname == "Darwin" and os.sys.version_info[:2] >= (3, 11) and os.sys.version_info[:2] < (3, 12):
+        all_tags = ["cp311-cp311-macosx_arm64_darwin"]
+    else:
+        all_tags = list(tags.sys_tags())
 
 # download binaries for the tag with highest precedence
 for tag in all_tags:

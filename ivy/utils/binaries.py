@@ -75,7 +75,15 @@ def cleanup_and_fetch_binaries(clean=True):
             print("Cleaning up existing binaries --> done")
 
         print("Downloading new binaries...")
-        all_tags = list(tags.sys_tags())
+        # if apple silicon and python version os.sys.version >= 3.10.* and darwin
+        if "arm64" in os.uname().machine and os.sys.version_info[:2] >= (3, 10) and os.uname().sysname == "Darwin":
+            all_tags = ["cp310-cp310-macosx_arm64_darwin"]
+        # if apple silicon and python version os.sys.version >= 3.11.* and darwin
+        elif "arm64" in os.uname().machine and os.sys.version_info[:2] >= (3, 11) and os.uname().sysname == "Darwin":
+            all_tags = ["cp311-cp311-macosx_arm64_darwin"]
+        else:
+            all_tags = list(tags.sys_tags())
+            
         version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
         terminate = False
 
