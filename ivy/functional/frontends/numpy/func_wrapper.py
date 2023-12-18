@@ -31,7 +31,7 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
                 assert_fn = ivy.is_bool_dtype
             if ivy.is_int_dtype(dtype):
 
-                def assert_fn(x):
+                def assert_fn(x):  # noqa F811
                     return not ivy.is_float_dtype(x)
 
             if assert_fn:
@@ -60,7 +60,7 @@ def _assert_no_array(args, dtype, scalar_check=False, none=False):
 
         if scalar_check:
 
-            def assert_fn(x):
+            def assert_fn(x):  # noqa F811
                 return (
                     ivy.dtype(x) == fn_func
                     if ivy.shape(x) != ()
@@ -115,7 +115,7 @@ def _assert_scalar(args, dtype):
         assert_fn = None
         if ivy.is_int_dtype(dtype):
 
-            def assert_fn(x):
+            def assert_fn(x):  # noqa F811
                 return not isinstance(x, float)
 
         elif ivy.is_bool_dtype(dtype):

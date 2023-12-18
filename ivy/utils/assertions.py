@@ -32,7 +32,7 @@ def check_less(x1, x2, allow_equal=False, message="", as_array=True):
                 x1 >= x2 for x1, x2 in zip(x1_, x2_)
             )
 
-        def comp_fn(x1, x2):
+        def comp_fn(x1, x2):  # noqa F811
             return iter_comp_fn(*_broadcast_inputs(x1, x2))
 
     gt, gt_eq = comp_fn(x1, x2)
@@ -58,7 +58,7 @@ def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
                 x1 <= x2 for x1, x2 in zip(x1_, x2_)
             )
 
-        def comp_fn(x1, x2):
+        def comp_fn(x1, x2):  # noqa F811
             return iter_comp_fn(*_broadcast_inputs(x1, x2))
 
     lt, lt_eq = comp_fn(x1, x2)
@@ -86,7 +86,7 @@ def check_equal(x1, x2, inverse=False, message="", as_array=True):
         def iter_comp_fn(x1_, x2_):
             return any(eq_fn(x1, x2) for x1, x2 in zip(x1_, x2_))
 
-        def comp_fn(x1, x2):
+        def comp_fn(x1, x2):  # noqa F811
             return iter_comp_fn(*_broadcast_inputs(x1, x2))
 
     eq = comp_fn(x1, x2)

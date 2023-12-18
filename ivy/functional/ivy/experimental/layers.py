@@ -1690,7 +1690,7 @@ def get_interpolate_kernel(mode):
     kernel_func = _triangle_kernel
     if mode == "tf_bicubic":
 
-        def kernel_func(inputs):
+        def kernel_func(inputs):  # noqa F811
             return _cubic_kernel(inputs)
 
     elif mode == "lanczos3":
