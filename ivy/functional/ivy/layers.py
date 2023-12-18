@@ -2287,14 +2287,15 @@ def lstm_update(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     time_major: bool = False,
-) -> Tuple[ivy.Array, ivy.Array]:
+) -> Tuple[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
     """Perform long-short term memory update by unrolling time dimension of
     input array.
 
     Parameters
     ----------
     x
-        input tensor of LSTM layer *[batch_shape, t, in]*.
+        input tensor of LSTM layer *[batch_shape, t, in]* if time_major=False,
+        else *[t, batch_shape, in]*.
     init_h
         initial state tensor for the cell output *[batch_shape, out]*.
     init_c
@@ -2307,13 +2308,18 @@ def lstm_update(
         bias for cell kernel *[4 x out]*. (Default value = None)
     recurrent_bias
         bias for cell recurrent kernel *[4 x out]*. (Default value = None)
+    time_major
+        whether or not the input tensor `x` has the time dimension before batch dim.
 
     Returns
     -------
     ret
-        hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
-        timestep *[batch_shape,out]*
+        hidden state for all timesteps of shape *[batch_shape,t,out]* if time_major
+        is False, else *[t, batch_shape, out]*, and a tuple containing the final cell
+        states, both of shape *[batch_shape,out]*.
     """
+    if time_major:
+        x = ivy.swapaxes(x, 0, 1)
     # get shapes
     x_shape = list(x.shape)
     batch_shape = x_shape[:-2]
@@ -2365,7 +2371,11 @@ def lstm_update(
 
         hts_list.append(ivy.expand_dims(ht, axis=-2))
 
-    return ivy.concat(hts_list, axis=-2), (ht, ct)
+    ret = ivy.concat(hts_list, axis=-2)
+    if time_major:
+        ret = ivy.swapaxes(ret, 0, 1)
+
+    return ret, (ht, ct)
 
 
 # Helpers #

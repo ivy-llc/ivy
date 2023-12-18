@@ -759,25 +759,27 @@ def _gpu_lstm(
 
 
 def lstm_update(
-    x,
-    init_h,
-    init_c,
-    kernel,
-    recurrent_kernel,
+    x: Union[tf.Tensor, tf.Variable],
+    init_h: Union[tf.Tensor, tf.Variable],
+    init_c: Union[tf.Tensor, tf.Variable],
+    kernel: Union[tf.Tensor, tf.Variable],
+    recurrent_kernel: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    bias=None,
-    recurrent_bias=None,
-    time_major=False,
-):
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    recurrent_bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    time_major: bool = False,
+) -> Tuple[Tensor, Tuple[Tensor, Tensor]]:
     dev = x.device
     x = x.data
     init_h = init_h.data
     init_c = init_c.data
     kernel = kernel.data
     recurrent_kernel = recurrent_kernel.data
-    bias = bias.data
-    recurrent_bias = recurrent_bias.data
+    bias = bias.data if bias is not None else bias
+    recurrent_bias = (
+        recurrent_bias.data if recurrent_bias is not None else recurrent_bias
+    )
     if "cpu" in dev:
         outputs, new_states = _cpu_lstm(
             x,
