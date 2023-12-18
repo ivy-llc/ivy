@@ -109,7 +109,7 @@ def randint(
     return np.random.randint(low, high, shape, dtype=dtype)
 
 
-def seed(*, seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0):
     np.random.seed(seed_value)
     return
 

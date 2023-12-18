@@ -424,10 +424,10 @@ def node_split_best(
                         feature_values[p_prev] / 2.0 + feature_values[p] / 2.0
                     )
 
-                    if (
-                        current_split.threshold == feature_values[p]
-                        or current_split.threshold == ivy.inf
-                        or current_split.threshold == -ivy.inf
+                    if current_split.threshold in (
+                        feature_values[p],
+                        ivy.inf,
+                        -ivy.inf,
                     ):
                         current_split.threshold = feature_values[p_prev]
 
