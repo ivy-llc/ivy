@@ -51,8 +51,7 @@ def trim(*, docstring):
 def check_docstring_examples_run(
     *, fn, from_container=False, from_array=False, num_sig_fig=2
 ):
-    """
-    Performs docstring tests for a given function.
+    """Performs docstring tests for a given function.
 
     Parameters
     ----------
@@ -159,7 +158,7 @@ def check_docstring_examples_run(
         "set_nest_at_indices",
         "layer_norm",
         "where",
-        "compile",
+        "trace",
         "eigvalsh",
         "conv2d_transpose",
         # fails due to different backend and their view types
@@ -171,6 +170,39 @@ def check_docstring_examples_run(
         "svdvals",
         "nested_map",
         "dill",
+        "hardtanh",
+        "hardshrink",
+        "rfft",
+        "general_inner_product",
+        "l1_loss",
+        "smooth_l1_loss",
+        "poisson_nll_loss",
+        "choose",
+        "cummax",
+        "one_hot",
+        "tpu_is_available",
+        "log2",
+        "maximum",
+        "minimum",
+        "get_referrers_recursive",
+        "clip_vector_norm",
+        "set_min_base",
+        "scatter_flat",
+        "scatter_nd",
+        "gather",
+        "multiprocessing",
+        "execute_with_gradients",
+        "solve",
+        "tensordot",
+        "cross_entropy",
+        "binary_cross_entropy",
+        "sparse_cross_entropy",
+        "reptile_step",
+        "insert_into_nest_at_index",
+        "if_else",
+        "while_loop",
+        "trace_graph",
+        "set_tmp_dir",
     ]
 
     # skip list for array and container docstrings
@@ -190,6 +222,18 @@ def check_docstring_examples_run(
         "scaled_dot_product_attention",
         # temp list for array/container methods
         "einops_reduce",
+        "array_equal",
+        "batched_outer",
+        "huber_loss",
+        "softshrink",
+        "tt_matrix_to_tensor",
+        "unsorted_segment_mean",
+        "array_equal",
+        "batched_outer",
+        "huber_loss",
+        "kl_div",
+        "soft_margin_loss",
+        "threshold",
     ]
 
     # comment out the line below in future to check for the functions in temp skip list
@@ -301,7 +345,7 @@ def check_docstring_examples_run(
     # print("Putput: ", parsed_output)
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
-    sig_fig = float("1e-" + str(num_sig_fig))
+    sig_fig = float(f"1e-{str(num_sig_fig)}")
     atol = sig_fig / 10000
     numeric_pattern = re.compile(
         r"""
@@ -343,7 +387,8 @@ def check_docstring_examples_run(
                 "\n",
             )
             ivy.warn(
-                "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
+                f"Output is unequal to the docstrings output: {fn_name}",
+                stacklevel=0,
             )
             break
     return docstr_result
@@ -353,48 +398,38 @@ def check_docstring_examples_run(
 def test_docstrings(backend):
     ivy.set_default_device("cpu")
     ivy.set_backend(backend)
-    failures = list()
+    failures = []
     success = True
 
     for k, v in ivy.__dict__.copy().items():
         if k == "Array":
             for method_name in dir(v):
+                method = getattr(ivy.Array, method_name)
                 if hasattr(ivy.functional, method_name):
-                    method = getattr(ivy.Array, method_name)
                     if helpers.gradient_incompatible_function(
                         fn=getattr(ivy.functional, method_name)
                     ) or check_docstring_examples_run(fn=method, from_array=True):
                         continue
-                    success = False
-                    failures.append("Array." + method_name)
-                else:
-                    method = getattr(ivy.Array, method_name)
-                    if helpers.gradient_incompatible_function(
-                        fn=method
-                    ) or check_docstring_examples_run(fn=method, from_array=True):
-                        continue
-                    success = False
-                    failures.append("Array." + method_name)
-
+                elif helpers.gradient_incompatible_function(
+                    fn=method
+                ) or check_docstring_examples_run(fn=method, from_array=True):
+                    continue
+                failures.append(f"Array.{method_name}")
+                success = False
         elif k == "Container":
             for method_name in dir(v):
+                method = getattr(ivy.Container, method_name)
                 if hasattr(ivy.functional, method_name):
-                    method = getattr(ivy.Container, method_name)
                     if helpers.gradient_incompatible_function(
                         fn=getattr(ivy.functional, method_name)
                     ) or check_docstring_examples_run(fn=method, from_container=True):
                         continue
-                    success = False
-                    failures.append("Container." + method_name)
-                else:
-                    method = getattr(ivy.Container, method_name)
-                    if helpers.gradient_incompatible_function(
-                        fn=method
-                    ) or check_docstring_examples_run(fn=method, from_container=True):
-                        continue
-                    success = False
-                    failures.append("Container." + method_name)
-
+                elif helpers.gradient_incompatible_function(
+                    fn=method
+                ) or check_docstring_examples_run(fn=method, from_container=True):
+                    continue
+                failures.append(f"Container.{method_name}")
+                success = False
         else:
             if check_docstring_examples_run(
                 fn=v

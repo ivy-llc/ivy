@@ -21,9 +21,9 @@ def all(
     where=None,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
+    if where is not None:
+        a = ivy.where(where, a, True)
     ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
@@ -39,19 +39,26 @@ def any(
     where=None,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
+    if where is not None:
+        a = ivy.where(where, a, False)
     ret = ivy.any(a, axis=axis, keepdims=keepdims, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
 @to_ivy_arrays_and_back
-def isscalar(element):
-    return (
-        isinstance(element, (int, float, complex, bool, bytes, str, memoryview))
-        or isinstance(element, numbers.Number)
-        or isinstance(element, np_frontend.generic)
-    )
+def iscomplex(x):
+    return ivy.bitwise_invert(ivy.isreal(x))
+
+
+@to_ivy_arrays_and_back
+def iscomplexobj(x):
+    if x.ndim == 0:
+        return ivy.is_complex_dtype(ivy.dtype(x))
+    for ele in x:
+        if ivy.is_complex_dtype(ivy.dtype(ele)):
+            return True
+        else:
+            return False
 
 
 @to_ivy_arrays_and_back
@@ -70,16 +77,18 @@ def isrealobj(x: any):
 
 
 @to_ivy_arrays_and_back
-def iscomplexobj(x):
-    if x.ndim == 0:
-        return ivy.is_complex_dtype(ivy.dtype(x))
-    for ele in x:
-        if ivy.is_complex_dtype(ivy.dtype(ele)):
-            return True
-        else:
-            return False
-
-
-@to_ivy_arrays_and_back
-def iscomplex(x):
-    return ivy.bitwise_invert(ivy.isreal(x))
+def isscalar(element):
+    return isinstance(
+        element,
+        (
+            int,
+            float,
+            complex,
+            bool,
+            bytes,
+            str,
+            memoryview,
+            numbers.Number,
+            np_frontend.generic,
+        ),
+    )

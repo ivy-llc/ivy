@@ -5,7 +5,9 @@ import paddle
 import ivy.functional.backends.paddle as paddle_backend
 import numpy as np
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from . import backend_version
 
 
 ivy_dtype_dict = {
@@ -97,8 +99,9 @@ class Bfloat16Finfo:
         self.tiny = 1.17549e-38
 
     def __repr__(self):
-        return "finfo(resolution={}, min={}, max={}, dtype={})".format(
-            self.resolution, self.min, self.max, "bfloat16"
+        return (
+            f"finfo(resolution={self.resolution}, min={self.min}, max={self.max},"
+            " dtype=bfloat16)"
         )
 
 
@@ -116,8 +119,8 @@ def astype(
 ) -> paddle.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
-        return paddle_backend.copy_array(x).data if copy else x
-    return x.cast(dtype)
+        return x.clone() if copy else x
+    return x.clone().cast(dtype) if copy else x.cast(dtype)
 
 
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
@@ -138,6 +141,18 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
     return result
 
 
+@with_unsupported_dtypes(
+    {
+        "2.5.1 and below": (
+            "uint8",
+            "int8",
+            "int16",
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def broadcast_to(
     x: paddle.Tensor,
     /,
@@ -156,15 +171,7 @@ def broadcast_to(
     if x.ndim > len(shape):
         x = x.reshape([-1])
 
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bfloat16,
-    ]:
-        return paddle.broadcast_to(x.cast("float32"), shape).cast(x.dtype)
-    elif x.dtype in [paddle.complex64, paddle.complex128]:
+    if x.dtype in [paddle.complex64, paddle.complex128]:
         x_real = paddle.broadcast_to(x.real(), shape)
         x_imag = paddle.broadcast_to(x.imag(), shape)
         return paddle.complex(x_real, x_imag)
@@ -196,7 +203,7 @@ def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
 
 
 def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
-    return ivy.promote_types(arrays_and_dtypes[0].dtype, arrays_and_dtypes[1].dtype)
+    return ivy.promote_types_of_inputs(*arrays_and_dtypes)[0].dtype
 
 
 # Extra #
@@ -236,7 +243,7 @@ def as_native_dtype(
         return paddle.bool
     if not isinstance(dtype_in, str):
         return dtype_in
-    if dtype_in in native_dtype_dict.keys():
+    if dtype_in in native_dtype_dict:
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(

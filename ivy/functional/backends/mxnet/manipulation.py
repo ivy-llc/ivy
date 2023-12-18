@@ -81,9 +81,6 @@ def squeeze(
     copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    if copy:
-        newarr = x.copy()
-        return mx.nd.squeeze(newarr, axis=axis)
     return mx.nd.squeeze(x, axis=axis)
 
 
@@ -114,7 +111,7 @@ def repeat(
     /,
     repeats: Union[(int, List[int])],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()

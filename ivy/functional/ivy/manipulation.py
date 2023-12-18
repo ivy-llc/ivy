@@ -14,7 +14,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -43,7 +43,7 @@ def _calculate_out_shape(axis, array_shape):
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -54,8 +54,7 @@ def concat(
     axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Join a sequence of arrays along an existing axis.
+    """Join a sequence of arrays along an existing axis.
 
     Parameters
     ----------
@@ -105,7 +104,7 @@ def concat(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -114,21 +113,18 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Expand the shape of an array by inserting a new axis (dimension) of size one at the
-    position specified by axis.
+    """Expand the shape of an array by inserting a new axis (dimension) of size
+    one at the position specified by axis.
 
     Parameters
     ----------
     x
         input array.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     axis
         axis position (zero-based). If x has rank (i.e, number of dimensions) N, a
         valid axis must reside on the closed-interval [-N-1, N]. If provided a negative
@@ -245,7 +241,7 @@ def expand_dims(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -254,21 +250,18 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Reverses the order of elements in an array along the given axis. The shape of the
-    array must be preserved.
+    """Reverses the order of elements in an array along the given axis. The
+    shape of the array must be preserved.
 
     Parameters
     ----------
     x
         input array.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     axis
         axis (or axes) along which to flip. If axis is None, all input array axes are
         flipped. If axis is negative, axis is counted from the last dimension. If
@@ -342,7 +335,7 @@ def flip(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -351,8 +344,7 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Permutes the axes (dimensions) of an array x.
+    """Permutes the axes (dimensions) of an array x.
 
     Parameters
     ----------
@@ -362,12 +354,10 @@ def permute_dims(
         tuple containing a permutation of (0, 1, ..., N-1) where N is the number of axes
         (dimensions) of x.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -445,7 +435,7 @@ def permute_dims(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -456,8 +446,7 @@ def reshape(
     allowzero: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Give a new shape to an array without changing its data.
+    """Give a new shape to an array without changing its data.
 
     Parameters
     ----------
@@ -468,12 +457,10 @@ def reshape(
         can be -1. In this case, the value is inferred from the length of the array and
         remaining dimensions.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     order
         Read the elements of x using this index order, and place the elements into
         the reshaped array using this index order.
@@ -573,7 +560,7 @@ def reshape(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -582,10 +569,10 @@ def roll(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.Container]:
-    """
-    Roll array elements along a specified axis. Array elements that roll beyond the last
-    position are re-introduced at the first position. Array elements that roll beyond
-    the first position are re-introduced at the last position.
+    """Roll array elements along a specified axis. Array elements that roll
+    beyond the last position are re-introduced at the first position. Array
+    elements that roll beyond the first position are re-introduced at the last
+    position.
 
     Parameters
     ----------
@@ -687,7 +674,7 @@ def roll(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -696,8 +683,7 @@ def squeeze(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Remove singleton dimensions (axes) from x.
+    """Remove singleton dimensions (axes) from x.
 
     Parameters
     ----------
@@ -707,12 +693,10 @@ def squeeze(
         axis (or axes) to squeeze. If a specified axis has a size greater than one, a
         ValueError is. If None, then all squeezable axes are squeezed. Default: ``None``
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -733,9 +717,8 @@ def squeeze(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[[0, 1], [2, 3]]])
@@ -781,7 +764,7 @@ def squeeze(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def stack(
     arrays: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -792,8 +775,7 @@ def stack(
     axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Join a sequence of arrays along a new axis.
+    """Join a sequence of arrays along a new axis.
 
     Parameters
     ----------
@@ -871,17 +853,16 @@ def stack(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
-    x_min: Union[Number, ivy.Array, ivy.NativeArray],
-    x_max: Union[Number, ivy.Array, ivy.NativeArray],
     /,
+    x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
+    x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Clips (limits) the values in an array.
+    """Clips (limits) the values in an array.
 
     Given an interval, values outside the interval are clipped to the interval edges
     (element-wise). For example, if an interval of [0, 1] is specified, values smaller
@@ -999,7 +980,7 @@ def clip(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1008,8 +989,7 @@ def constant_pad(
     value: Number = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Pad an array with a constant value.
+    """Pad an array with a constant value.
 
     Parameters
     ----------
@@ -1035,8 +1015,8 @@ def constant_pad(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5])
@@ -1096,17 +1076,16 @@ def constant_pad(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     repeats: Union[int, Iterable[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Repeat values along a given dimension.
+    """Repeat values along a given dimension.
 
     Parameters
     ----------
@@ -1169,7 +1148,7 @@ def repeat(
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1181,20 +1160,17 @@ def split(
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[ivy.Array]:
-    """
-    Split an array into multiple sub-arrays.
+    """Split an array into multiple sub-arrays.
 
     Parameters
     ----------
     x
         array to be divided into sub-arrays.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     num_or_size_splits
         Number of equal arrays to divide the array into along the given axis if an
         integer. The size of each split element if a sequence of integers or 1-D array.
@@ -1259,7 +1235,7 @@ def split(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -1269,8 +1245,7 @@ def swapaxes(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Interchange two axes of an array.
+    """Interchange two axes of an array.
 
     Parameters
     ----------
@@ -1281,12 +1256,10 @@ def swapaxes(
     axis1
         Second axis to be swapped.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1301,8 +1274,8 @@ def swapaxes(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[0, 1, 2]])
@@ -1358,9 +1331,9 @@ def swapaxes(
                       [5.]])
     }
 
-    # Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    # Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
     """
     return current_backend(x).swapaxes(x, axis0, axis1, copy=copy, out=out)
 
@@ -1371,7 +1344,7 @@ def swapaxes(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1379,8 +1352,7 @@ def tile(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Construct an array by repeating x the number of times given by reps.
+    """Construct an array by repeating x the number of times given by reps.
 
     Parameters
     ----------
@@ -1398,8 +1370,8 @@ def tile(
         The tiled output array.
 
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1,2,3,4])
@@ -1439,9 +1411,9 @@ def tile(
     }
 
 
-    # Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    # Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
     """
     return current_backend(x).tile(x, repeats, out=out)
 
@@ -1453,7 +1425,7 @@ def tile(
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unstack(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1462,20 +1434,17 @@ def unstack(
     axis: int = 0,
     keepdims: bool = False,
 ) -> List[ivy.Array]:
-    """
-    Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
+    """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
     Parameters
     ----------
     x
         Input array to unstack.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     axis
         Axis for which to unpack the array.
     keepdims
@@ -1551,7 +1520,7 @@ def unstack(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1559,8 +1528,7 @@ def zero_pad(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Pad an array with zeros.
+    """Pad an array with zeros.
 
     Parameters
     ----------

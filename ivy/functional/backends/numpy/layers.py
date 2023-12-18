@@ -1,4 +1,5 @@
-"""Collection of Numpy network layers, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy network layers, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import numpy as np
@@ -174,6 +175,7 @@ def conv1d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[np.ndarray] = None,
@@ -181,6 +183,10 @@ def conv1d_transpose(
 ) -> np.ndarray:
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
+    if filter_format == "channel_last":
+        filters = np.transpose(filters, (0, 2, 1))
+    else:
+        filters = np.transpose(filters, (2, 0, 1))
     x, filters = _dilate_pad_conv_tranpose(
         x, filters, strides, padding, 1, dilations, output_shape
     )
@@ -259,6 +265,7 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[np.ndarray] = None,
@@ -266,6 +273,10 @@ def conv2d_transpose(
 ):
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
+    if filter_format == "channel_last":
+        filters = np.transpose(filters, (0, 1, 3, 2))
+    else:
+        filters = np.transpose(filters, (2, 3, 0, 1))
     x, filters = _dilate_pad_conv_tranpose(
         x, filters, strides, padding, 2, dilations, output_shape
     )
@@ -403,6 +414,7 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[np.ndarray] = None,
@@ -410,6 +422,10 @@ def conv3d_transpose(
 ):
     if data_format == "NCDHW":
         x = np.transpose(x, (0, 2, 3, 4, 1))
+    if filter_format == "channel_last":
+        filters = np.transpose(filters, (0, 1, 2, 4, 3))
+    else:
+        filters = np.transpose(filters, (2, 3, 4, 0, 1))
     x, filters = _dilate_pad_conv_tranpose(
         x, filters, strides, padding, 3, dilations, output_shape
     )
@@ -511,6 +527,7 @@ def conv_general_transpose(
     *,
     dims: int = 2,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
@@ -519,6 +536,10 @@ def conv_general_transpose(
 ) -> np.ndarray:
     if data_format == "channel_first":
         x = np.transpose(x, (0, *range(2, dims + 2), 1))
+    if filter_format == "channel_last":
+        filters = np.transpose(filters, (*range(dims), dims + 1, dims))
+    else:
+        filters = np.transpose(filters, (*range(2, dims + 2), 0, 1))
 
     x, filters = _dilate_pad_conv_tranpose(
         x, filters, strides, padding, dims, dilations, output_shape
