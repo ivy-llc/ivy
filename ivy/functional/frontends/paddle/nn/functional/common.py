@@ -103,7 +103,7 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
     # Input checking
     if isinstance(kernel_sizes, int):
         kernel_sizes = [kernel_sizes, kernel_sizes]
-    elif not (isinstance(kernel_sizes, (list, tuple))):
+    elif not isinstance(kernel_sizes, (list, tuple)):
         raise ivy.exceptions.IvyError(
             "Expected kernel size input as type int, tuple or list but got"
             f" {type(kernel_sizes)}"
@@ -111,14 +111,14 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
 
     if isinstance(strides, int):
         strides = [strides, strides]
-    elif not (isinstance(strides, (list, tuple))):
+    elif not isinstance(strides, (list, tuple)):
         raise ivy.exceptions.IvyError(
             f"Expected strides input as type int, tuple or list but got {type(strides)}"
         )
 
     if isinstance(dilations, int):
         dilations = [dilations, dilations]
-    elif not (isinstance(dilations, (list, tuple))):
+    elif not isinstance(dilations, (list, tuple)):
         raise ivy.exceptions.IvyError(
             "Expected dilations input as type int, tuple or list but got"
             f" {type(dilations)}"
@@ -126,7 +126,7 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
 
     if isinstance(paddings, int):
         paddings = [paddings, paddings]
-    elif not (isinstance(paddings, (list, tuple))):
+    elif not isinstance(paddings, (list, tuple)):
         raise ivy.exceptions.IvyError(
             "Expected paddings, input as type int, tuple or list but got"
             f" {type(paddings)}"

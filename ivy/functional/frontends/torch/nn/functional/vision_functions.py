@@ -388,7 +388,7 @@ def interpolate(
         mode=mode,
         scale_factor=scale_factor,
         recompute_scale_factor=recompute_scale_factor,
-        align_corners=True if align_corners else False,
+        align_corners=bool(align_corners),
         antialias=antialias,
     )
 
