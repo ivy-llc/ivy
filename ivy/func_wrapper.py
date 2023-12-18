@@ -38,6 +38,10 @@ FN_DECORATORS = [
     "handle_nans",
 ]
 
+CYTHON_WRAPPERS = [
+    "add_wrapper",
+]
+
 
 # Helpers #
 # --------#
@@ -1089,6 +1093,13 @@ def _wrap_function(
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
+        if (
+            ivy.cython_wrappers_mode
+            and to_wrap.__name__ + "_wrapper" in CYTHON_WRAPPERS
+        ):
+            print(f"Wrapping {to_wrap.__name__} with Cython wrapper", original)
+            to_wrap = getattr(ivy.wrappers, to_wrap.__name__ + "_wrapper")(to_wrap)
+            return to_wrap
         # set attributes
         for attr in original.__dict__.keys():
             # private attribute or decorator

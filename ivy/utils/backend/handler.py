@@ -437,7 +437,8 @@ def set_backend(backend: str, dynamic: bool = False):
         global ivy_original_dict
         if not backend_stack:
             ivy_original_dict = ivy.__dict__.copy()
-
+        # copy current cython_wrappers_mode to the original dict
+        ivy_original_dict["cython_wrappers_mode"] = ivy.cython_wrappers_mode
         _clear_current_sub_backends()
         if isinstance(backend, str):
             temp_stack = list()
