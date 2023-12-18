@@ -2318,6 +2318,7 @@ def lstm_update(
         is False, else *[t, batch_shape, out]*, and a tuple containing the final cell
         states, both of shape *[batch_shape,out]*.
     """
+    # ToDo: test_lstm_update needs to be fixed
     if time_major:
         x = ivy.swapaxes(x, 0, 1)
     # get shapes
