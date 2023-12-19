@@ -13,7 +13,6 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     dims = len(input.shape) - 2
-    _valid_shapes(input, weight, bias, stride, padding, groups)
 
     if isinstance(padding, str):
         padding = padding.upper()
@@ -102,65 +101,6 @@ def _get_transpose_pad(padding, output_padding, dims):
         [pad, pad - output_pad] for pad, output_pad in zip(padding, output_padding)
     ]
     return asymmetric_padding
-
-
-def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False):
-    in_channels = input.shape[1]
-    out_channels = weight.shape[0] if not transpose else weight.shape[1] * groups
-
-    ivy.utils.assertions.check_equal(
-        in_channels % groups,
-        0,
-        message="in_channels must be divisible by groups",
-        as_array=False,
-    )
-    ivy.utils.assertions.check_equal(
-        out_channels % groups,
-        0,
-        message="out_channels must be divisible by groups",
-        as_array=False,
-    )
-
-    if bias is not None:
-        ivy.utils.assertions.check_equal(
-            bias.shape[0],
-            out_channels,
-            message="bias must be same shape as out_channels",
-            as_array=False,
-        )
-
-    if padding == "same":
-        if isinstance(stride, int):
-            ivy.utils.assertions.check_equal(
-                stride,
-                1,
-                message="padding cannot be 'same' for stride > 1",
-                as_array=False,
-            )
-        else:
-            for i in stride:
-                ivy.utils.assertions.check_equal(
-                    i,
-                    1,
-                    message="padding cannot be 'same' for stride > 1",
-                    as_array=False,
-                )
-
-    if not transpose:
-        in_channels_by_groups = weight.shape[1]
-        ivy.utils.assertions.check_equal(
-            in_channels,
-            in_channels_by_groups * groups,
-            message="in_channels must be consistent between input and weight",
-            as_array=False,
-        )
-    else:
-        ivy.utils.assertions.check_equal(
-            in_channels,
-            weight.shape[0],
-            message="in_channels must be consistent between input and weight",
-            as_array=False,
-        )
 
 
 # --- Main --- #
