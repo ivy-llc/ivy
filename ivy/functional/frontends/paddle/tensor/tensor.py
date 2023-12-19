@@ -227,7 +227,6 @@ class Tensor:
                 "bool",
                 "unsigned",
                 "int8",
-                "int64",
                 "int32",
                 "float16",
                 "bfloat16",
