@@ -2213,6 +2213,21 @@ class Tensor:
     def corrcoef(self):
         return torch_frontend.corrcoef(self)
 
+    def index_put(self, indices, values, accumulate=False):
+        ret = self.clone()
+        if accumulate:
+            ret[indices[0]] += values
+        else:
+            ret[indices[0]] = values
+        return ret
+
+    def index_put_(self, indices, values, accumulate=False):
+        if accumulate:
+            self[indices] += values
+        else:
+            self[indices] = values
+        return self
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
