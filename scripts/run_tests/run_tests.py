@@ -240,7 +240,7 @@ if __name__ == "__main__":
 
     # delete pulled image before terminating
     if device == "gpu":
-        os.system("docker rmi $(docker images | grep 'unifyai/ivy:latest-gpu')")
+        os.system("docker rmi unifyai/ivy:latest-gpu")
 
     # if any tests fail, the workflow fails
     if failed:
