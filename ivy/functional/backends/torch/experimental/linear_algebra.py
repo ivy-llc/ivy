@@ -213,6 +213,7 @@ def lu_factor(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, backend_version)
 def dot(
     a: torch.Tensor,
     b: torch.Tensor,
