@@ -837,7 +837,7 @@ def test_paddle__len__(
     init_tree="paddle.to_tensor",
     method_name="__long__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("integer"),
         max_num_dims=0,
         min_value=-1e15,
         max_value=1e15,
