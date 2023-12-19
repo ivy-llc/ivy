@@ -107,10 +107,12 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
 
     # set the middle backend
     ivy.set_backend(middle_backend, dynamic=True)
-    var_cont = ivy.Container({
-        "w": ivy.gradients._variable(ivy.array([10, 20, 30])),
-        "b": ivy.gradients._variable(ivy.array([40, 50, 60])),
-    })
+    var_cont = ivy.Container(
+        {
+            "w": ivy.gradients._variable(ivy.array([10, 20, 30])),
+            "b": ivy.gradients._variable(ivy.array([40, 50, 60])),
+        }
+    )
     # set dynamic_backend to true for all objects
     ivy_cont.dynamic_backend = True
     a.dynamic_backend = True

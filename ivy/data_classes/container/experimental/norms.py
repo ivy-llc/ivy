@@ -14,10 +14,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.l1_normalize. This method simply
-        wraps the function, and so the docstring for ivy.l1_normalize also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.l1_normalize. This method
+        simply wraps the function, and so the docstring for ivy.l1_normalize
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -78,10 +77,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.l1_normalize. This method simply
-        wraps the function, and so the docstring for ivy.l1_normalize also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.l1_normalize. This
+        method simply wraps the function, and so the docstring for
+        ivy.l1_normalize also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -129,10 +127,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.l2_normalize. This method simply
-        wraps the function, and so the docstring for ivy.l2_normalize also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.l2_normalize. This method
+        simply wraps the function, and so the docstring for ivy.l2_normalize
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -193,10 +190,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.l2_normalize. This method simply
-        wraps the function, and so the docstring for ivy.l2_normalize also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.l2_normalize. This
+        method simply wraps the function, and so the docstring for
+        ivy.l2_normalize also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -272,10 +268,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
-        """
-        ivy.Container static method variant of ivy.batch_norm. This method simply wraps
-        the function, and so the docstring for ivy.batch_norm also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.batch_norm. This method
+        simply wraps the function, and so the docstring for ivy.batch_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -369,10 +364,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
-        """
-        ivy.Container instance method variant of ivy.batch_norm. This method simply
-        wraps the function, and so the docstring for ivy.batch_norm also applies to this
-        method with minimal changes.
+        """ivy.Container instance method variant of ivy.batch_norm. This method
+        simply wraps the function, and so the docstring for ivy.batch_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -466,10 +460,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
-        """
-        ivy.Container static method variant of ivy.instance_norm. This method simply
-        wraps the function, and so the docstring for ivy.instance_norm also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.instance_norm. This
+        method simply wraps the function, and so the docstring for
+        ivy.instance_norm also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -561,10 +554,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
-        """
-        ivy.Container instance method variant of ivy.instance_norm. This method simply
-        wraps the function, and so the docstring for ivy.instance_norm also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.instance_norm. This
+        method simply wraps the function, and so the docstring for
+        ivy.instance_norm also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -647,10 +639,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.group_norm. This method simply wraps
-        the function, and so the docstring for ivy.group_norm also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.group_norm. This method
+        simply wraps the function, and so the docstring for ivy.group_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -710,10 +701,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.group_norm. This method simply wraps
-        the function, and so the docstring for ivy.group_norm also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.group_norm. This method
+        simply wraps the function, and so the docstring for ivy.group_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -768,10 +758,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.lp_normalize. This method simply
-        wraps the function, and so the docstring for ivy.lp_normalize also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.lp_normalize. This method
+        simply wraps the function, and so the docstring for ivy.lp_normalize
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -836,10 +825,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.l2_normalize. This method simply
-        wraps the function, and so the docstring for ivy.l2_normalize also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.l2_normalize. This
+        method simply wraps the function, and so the docstring for
+        ivy.l2_normalize also applies to this method with minimal changes.
 
         Parameters
         ----------

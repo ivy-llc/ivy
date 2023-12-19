@@ -44,10 +44,9 @@ def _in_projection(
     w,
     b=None,
 ):
-    """
-    Projects query, key and value efficiently, depending on whether we are doing self-
-    attention (query is key is value) or cross-attention (key is value) or an attention
-    where query, key and value are all different.
+    """Projects query, key and value efficiently, depending on whether we are
+    doing self- attention (query is key is value) or cross-attention (key is
+    value) or an attention where query, key and value are all different.
 
     it is only used in
     multi_head_attention layer.
@@ -264,8 +263,7 @@ def dropout(
     noise_shape: Optional[Sequence[int]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Randomly setting a fraction of input tensor to zeroes with probability.
+    """Randomly setting a fraction of input tensor to zeroes with probability.
 
     `prob` at each update during training time to prevent possible overfitting.
     The inputs not set to 0 are scaled up `1 / (1 - prob)` by default, so that
@@ -449,8 +447,7 @@ def scaled_dot_product_attention(
     training: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply scaled dot product attention to inputs x using optional mask.
+    """Apply scaled dot product attention to inputs x using optional mask.
 
     Parameters
     ----------
@@ -751,20 +748,20 @@ def multi_head_attention(
     training: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Apply multi-head attention to inputs x. This is an implementation of multi-headed
-    attention as described in the paper "Attention is all you Need" (Vaswani et al.,
-    2017). If `query`, `key`, `value` are the same, then this is self-attention. Each
-    timestep in `query` attends to the corresponding sequence in `key`, and returns a
-    fixed-width vector. This layer first projects `query`, `key` and `value`. These are
-    (effectively) a list of tensors of length `num_attention_heads`, where the
-    corresponding shapes are `(batch_size, <query dimensions>, key_dim)`, `(batch_size,
+    """Apply multi-head attention to inputs x. This is an implementation of
+    multi-headed attention as described in the paper "Attention is all you
+    Need" (Vaswani et al., 2017). If `query`, `key`, `value` are the same, then
+    this is self-attention. Each timestep in `query` attends to the
+    corresponding sequence in `key`, and returns a fixed-width vector. This
+    layer first projects `query`, `key` and `value`. These are (effectively) a
+    list of tensors of length `num_attention_heads`, where the corresponding
+    shapes are `(batch_size, <query dimensions>, key_dim)`, `(batch_size,
     <key/value dimensions>, key_dim)`, `(batch_size, <key/value dimensions>,
-    value_dim)`. Then, the query and key tensors are dot-producted and scaled. These are
-    softmaxed to obtain attention probabilities. The value tensors are then interpolated
-    by these probabilities, then concatenated back to a single tensor. Finally, the
-    result tensor with the last dimension as value_dim can take a linear projection and
-    return.
+    value_dim)`. Then, the query and key tensors are dot-producted and scaled.
+    These are softmaxed to obtain attention probabilities. The value tensors
+    are then interpolated by these probabilities, then concatenated back to a
+    single tensor. Finally, the result tensor with the last dimension as
+    value_dim can take a linear projection and return.
 
     Parameters
     ----------
@@ -1023,8 +1020,7 @@ def conv1d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D convolution given 3-D input x and filters arrays.
+    """Compute a 1-D convolution given 3-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1134,8 +1130,8 @@ def conv1d_transpose(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D transpose convolution given 3-D input x and filters arrays.
+    """Compute a 1-D transpose convolution given 3-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -1284,8 +1280,7 @@ def conv2d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D convolution given 4-D input x and filters arrays.
+    """Compute a 2-D convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1425,8 +1420,8 @@ def conv2d_transpose(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D transpose convolution given 4-D input x and filters arrays.
+    """Compute a 2-D transpose convolution given 4-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -1562,8 +1557,8 @@ def depthwise_conv2d(
     dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
+    """Compute a 2-D depthwise convolution given 4-D input ``x`` and filters
+    arrays.
 
     Parameters
     ----------
@@ -1704,8 +1699,7 @@ def conv3d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 3-D convolution given 5-D input x and filters arrays.
+    """Compute a 3-D convolution given 5-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1826,8 +1820,8 @@ def conv3d_transpose(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 3-D transpose convolution given 5-D input x and filters arrays.
+    """Compute a 3-D transpose convolution given 5-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -1970,9 +1964,8 @@ def conv_general_dilated(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x respectively
-    and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x
+    respectively and filters arrays.
 
     Parameters
     ----------
@@ -2055,9 +2048,8 @@ def conv_general_transpose(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D input x
-    respectively and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
@@ -2197,9 +2189,8 @@ def conv(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D, 4-D and 5-D
-    input x respectively and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D,
+    4-D and 5-D input x respectively and filters arrays.
 
     Parameters
     ----------
@@ -2295,14 +2286,16 @@ def lstm_update(
     *,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Perform long-short term memory update by unrolling time dimension of input array.
+    time_major: bool = False,
+) -> Tuple[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
+    """Perform long-short term memory update by unrolling time dimension of
+    input array.
 
     Parameters
     ----------
     x
-        input tensor of LSTM layer *[batch_shape, t, in]*.
+        input tensor of LSTM layer *[batch_shape, t, in]* if time_major=False,
+        else *[t, batch_shape, in]*.
     init_h
         initial state tensor for the cell output *[batch_shape, out]*.
     init_c
@@ -2315,13 +2308,19 @@ def lstm_update(
         bias for cell kernel *[4 x out]*. (Default value = None)
     recurrent_bias
         bias for cell recurrent kernel *[4 x out]*. (Default value = None)
+    time_major
+        whether or not the input tensor `x` has the time dimension before batch dim.
 
     Returns
     -------
     ret
-        hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
-        timestep *[batch_shape,out]*
+        hidden state for all timesteps of shape *[batch_shape,t,out]* if time_major
+        is False, else *[t, batch_shape, out]*, and a tuple containing the final cell
+        states, both of shape *[batch_shape,out]*.
     """
+    # ToDo: test_lstm_update needs to be fixed
+    if time_major:
+        x = ivy.swapaxes(x, 0, 1)
     # get shapes
     x_shape = list(x.shape)
     batch_shape = x_shape[:-2]
@@ -2373,7 +2372,11 @@ def lstm_update(
 
         hts_list.append(ivy.expand_dims(ht, axis=-2))
 
-    return ivy.concat(hts_list, axis=-2), ct
+    ret = ivy.concat(hts_list, axis=-2)
+    if time_major:
+        ret = ivy.swapaxes(ret, 0, 1)
+
+    return ret, (ht, ct)
 
 
 # Helpers #
@@ -2527,8 +2530,7 @@ def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
 
 
 def _get_num_padded_values(i, p, n, k, s):
-    """
-    Get number of padded values in a specific window.
+    """Get number of padded values in a specific window.
 
     Parameters
     ----------

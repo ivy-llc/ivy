@@ -39,9 +39,9 @@ def _get_inv_square_matrices(draw):
     )
 
     shape, ind = draw(
-        st.sampled_from([
-            (generated_shape, generated_ind), (handpicked_shape, handpicked_ind)
-        ])
+        st.sampled_from(
+            [(generated_shape, generated_ind), (handpicked_shape, handpicked_ind)]
+        )
     )
 
     input_dtype = draw(
@@ -268,8 +268,8 @@ def test_jax_eig(
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
-    """Make symmetric positive-definite since ivy does not support complex data dtypes
-    currently."""
+    """Make symmetric positive-definite since ivy does not support complex data
+    dtypes currently."""
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
 
     ret, frontend_ret = helpers.test_frontend_function(

@@ -20,7 +20,7 @@ def _assert(condition, message):
 # ------------ #
 
 
-@with_supported_dtypes({"2.1.1 and above": ("int64",)}, "torch")
+@with_supported_dtypes({"2.1.2 and above": ("int64",)}, "torch")
 @to_ivy_arrays_and_back
 def bincount(x, weights=None, minlength=0):
     return ivy.bincount(x, weights=weights, minlength=minlength)

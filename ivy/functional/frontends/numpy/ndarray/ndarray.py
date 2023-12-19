@@ -329,7 +329,7 @@ class ndarray:
 
     def fill(self, num, /):
         self.ivy_array = np_frontend.full(self.shape, num).ivy_array
-        return
+        return None
 
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self, repeats, axis=axis)
@@ -732,7 +732,7 @@ def _to_bytes_helper(array, order="C"):
         elif ivy.is_uint_dtype(dtype):
             return _unsigned_int_bytes_repr(scalar_value, dtype=dtype)
         else:
-            raise ValueError("Unsupported data type for the array.")
+            raise TypeError("Unsupported data type for the array.")
     else:
         if order == "F":
             array = np_frontend.ravel(array, order="F").ivy_array
