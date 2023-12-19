@@ -5,6 +5,7 @@ from ivy.functional.frontends.torch.func_wrapper import (
 )
 from ivy.func_wrapper import outputs_to_ivy_arrays
 
+
 def vmap(func, in_dims=0, out_dims=0, randomness="error", *, chunk_size=None):
     # Wrap the input function `func` to handle native arrays
     native_arrays_func = outputs_to_native_arrays(func)
