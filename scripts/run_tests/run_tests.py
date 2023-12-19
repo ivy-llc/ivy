@@ -237,7 +237,7 @@ if __name__ == "__main__":
 
             # delete the container
             os.system("docker rm -f test-container")
-    
+
     # delete pulled image before terminating
     if device == "gpu":
         os.system("docker rmi $(docker images | grep 'unifyai/ivy:latest-gpu')")
