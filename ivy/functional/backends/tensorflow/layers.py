@@ -6,6 +6,7 @@ from typing import Optional, Tuple, Union, Sequence
 
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
+from keras.src.layers.rnn import gru_lstm_utils
 
 # local
 import ivy
@@ -698,6 +699,110 @@ def conv_general_transpose(
         if permuted_x:
             return tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
         return res
+
+
+def _cpu_lstm(
+    x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias, time_major
+):
+    def step(cell_inputs, cell_states):
+        h_tm1 = cell_states[0]  # previous memory state
+        c_tm1 = cell_states[1]  # previous carry state
+
+        z = tf.keras.backend.dot(cell_inputs, kernel) + bias
+        z += tf.keras.backend.dot(h_tm1, recurrent_kernel) + recurrent_bias
+
+        z0, z1, z2, z3 = tf.split(z, 4, axis=-1)
+
+        i = tf.sigmoid(z0)
+        f = tf.sigmoid(z1)
+        c = f * c_tm1 + i * tf.tanh(z2)
+        o = tf.sigmoid(z3)
+
+        h = o * tf.tanh(c)
+        return h, [h, c]
+
+    _, outputs, new_states = tf.keras.backend.rnn(
+        step,
+        x,
+        [init_h, init_c],
+        time_major=time_major,
+    )
+    return outputs, new_states
+
+
+def _gpu_lstm(
+    x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias, time_major
+):
+    if not time_major:
+        x = tf.transpose(x, perm=(1, 0, 2))
+
+    init_h = tf.expand_dims(init_h, axis=0)
+    init_c = tf.expand_dims(init_c, axis=0)
+
+    weights = tf.split(kernel, 4, axis=1)
+    weights += tf.split(recurrent_kernel, 4, axis=1)
+    full_bias = tf.concat((recurrent_bias, bias), axis=0)
+    params = gru_lstm_utils.canonical_to_params(
+        weights=weights,
+        biases=tf.split(full_bias, 8),
+        shape=tf.constant([-1]),
+        transpose_weights=True,
+    )
+    outputs, h, c, _ = tf.raw_ops.CudnnRNN(
+        input=x,
+        input_h=init_h,
+        input_c=init_c,
+        params=params,
+        rnn_mode="lstm",
+    )
+    return outputs, (h, c)
+
+
+def lstm_update(
+    x: Union[tf.Tensor, tf.Variable],
+    init_h: Union[tf.Tensor, tf.Variable],
+    init_c: Union[tf.Tensor, tf.Variable],
+    kernel: Union[tf.Tensor, tf.Variable],
+    recurrent_kernel: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    recurrent_bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    time_major: bool = False,
+) -> Tuple[Tensor, Tuple[Tensor, Tensor]]:
+    dev = x.device
+    x = x.data
+    init_h = init_h.data
+    init_c = init_c.data
+    kernel = kernel.data
+    recurrent_kernel = recurrent_kernel.data
+    bias = bias.data if bias is not None else bias
+    recurrent_bias = (
+        recurrent_bias.data if recurrent_bias is not None else recurrent_bias
+    )
+    if "cpu" in dev:
+        outputs, new_states = _cpu_lstm(
+            x,
+            init_h,
+            init_c,
+            kernel,
+            recurrent_kernel,
+            bias,
+            recurrent_bias,
+            time_major,
+        )
+    else:
+        outputs, new_states = _gpu_lstm(
+            x,
+            init_h,
+            init_c,
+            kernel,
+            recurrent_kernel,
+            bias,
+            recurrent_bias,
+            time_major,
+        )
+    return outputs, new_states
 
 
 def nms(

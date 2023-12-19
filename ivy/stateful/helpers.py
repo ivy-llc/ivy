@@ -360,7 +360,7 @@ class ModuleHelpers:
             The converted Module object.
         """
         if self.module_dict:
-            for _, module in self.module_dict.items():
+            for module in self.module_dict.values():
                 module._convert_tensors_to_numpy()
         self.v = self.v.to_numpy()
 
@@ -375,7 +375,7 @@ class ModuleHelpers:
             The converted Module object.
         """
         if self.module_dict:
-            for _, module in self.module_dict.items():
+            for module in self.module_dict.values():
                 module._convert_numpy_to_tensors()
                 self.v = self.v.to_ivy()
         else:

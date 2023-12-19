@@ -297,7 +297,7 @@ class IndexedSlices:
             self._indices,
             self._values,
             (
-                ", dense_shape=%s" % (self._dense_shape,)
+                f", dense_shape={self._dense_shape}"
                 if self._dense_shape is not None
                 else ""
             ),

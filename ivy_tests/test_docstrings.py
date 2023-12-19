@@ -68,7 +68,6 @@ def check_docstring_examples_run(
     -------
     None if the test passes, else marks the test as failed.
     """
-
     """
     Functions skipped as their output dependent on outside factors:
 

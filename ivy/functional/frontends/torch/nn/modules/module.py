@@ -67,7 +67,7 @@ class Module(ivy.Module):
         return v
 
     def _build(self, *args, **kwargs):
-        for _, module in self.__dict__.items():
+        for module in self.__dict__.values():
             if isinstance(module, Module) and module is not self:
                 if not module.built:
                     module.build(
