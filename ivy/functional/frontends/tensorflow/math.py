@@ -638,7 +638,7 @@ def scalar_mul(scalar, x, name="scalar_mul"):
 
 
 @with_unsupported_dtypes(
-    {"2.15.0 and below": ("float16", "bool", "int8")},
+    {"2.15.0 and below": ("float16", "bool", "int16", "int8")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back

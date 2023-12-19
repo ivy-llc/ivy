@@ -2652,9 +2652,9 @@ def test_tensorflow_scalar_mul(
 
 @handle_frontend_test(
     fn_tree="tensorflow.math.segment_sum",
-    data=helpers.array_values(dtype=helpers.get_dtypes(), shape=(5, 6)),
+    data=helpers.array_values(dtype=helpers.get_dtypes("valid"), shape=(5, 6)),
     segment_ids=helpers.array_values(
-        dtype=helpers.get_dtypes(kind="integer", prune_function=True),
+        dtype=helpers.get_dtypes("signed_integer", prune_function=True),
         shape=(5,),
         min_value=0,
         max_value=4,
