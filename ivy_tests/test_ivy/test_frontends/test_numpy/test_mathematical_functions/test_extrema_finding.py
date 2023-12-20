@@ -203,6 +203,48 @@ def test_numpy_fmin(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.gradient",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=("float32", "float64"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=4,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    varargs=helpers.ints(
+        min_value=-3,
+        max_value=3,
+    ),
+)
+def test_numpy_gradient(
+    dtype_x_axis,
+    varargs,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_axis
+    test_flags.num_positional_args = 2
+    kw = {}
+    kw["varargs"] = varargs
+    kw["axis"] = axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        f=x[0],
+        **kw,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.max",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
