@@ -1799,8 +1799,8 @@ def test_torch_unflatten(
         on_device=on_device,
         test_values=False,
         x=x[0],
-        shape=shape,
         dim=axes,
+        shape=shape,
     )
 
 
