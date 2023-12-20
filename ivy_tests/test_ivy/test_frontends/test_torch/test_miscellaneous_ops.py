@@ -1765,7 +1765,7 @@ def test_torch_unflatten(
         test_values=False,
         x=x[0],
         shape=shape,
-        dim=axes[0],
+        dim=axes,
     )
 
 
