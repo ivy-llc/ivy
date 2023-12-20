@@ -1740,8 +1740,8 @@ def test_torch_triu_indices(
         available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         min_num_dims=1,
-        min_axes_size=0,
-        max_axes_size=0,
+        min_axes_size=1,
+        max_axes_size=1,
     ),
     shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
 )
@@ -1785,7 +1785,7 @@ def test_torch_unflatten(
 
         return factors
 
-    shape = tuple(factorization(shape[axes]))
+    shape = tuple(factorization(shape[axes[0]]))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
