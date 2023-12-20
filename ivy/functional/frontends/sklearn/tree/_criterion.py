@@ -54,7 +54,6 @@ class ClassificationCriterion(Criterion):
         self.weighted_n_right = 0.0
         self.weighted_n_missing = 0.0
         self.n_classes = ivy.empty(n_outputs, dtype=ivy.int16)
-        self.n_missing = 0  # todo: remove this assumption
         max_n_classes = 0
 
         for k in range(n_outputs):
@@ -110,6 +109,12 @@ class ClassificationCriterion(Criterion):
             (self.n_outputs, self.max_n_classes), dtype=ivy.float64
         )
 
+    def node_value(self, dest, node_id):
+        for k in range(self.n_outputs):
+            n_cls = ivy.to_scalar(self.n_classes[k])
+            dest[node_id, k, :n_cls] = self.sum_total[k, :n_cls]
+        return dest
+
     def init_missing(self, n_missing):
         w = 1.0
         self.n_missing = n_missing
@@ -141,6 +146,7 @@ class ClassificationCriterion(Criterion):
             self.sum_right,
             self.weighted_n_left,
             self.weighted_n_right,
+            self.missing_go_to_left,
         )
         return 0
 
@@ -157,6 +163,7 @@ class ClassificationCriterion(Criterion):
             self.sum_left,
             self.weighted_n_right,
             self.weighted_n_left,
+            not self.missing_go_to_left,
         )
         return 0
 
@@ -237,7 +244,9 @@ class Gini(ClassificationCriterion):
 # --------------- #
 
 
-def _move_sums_classification(criterion, sum_1, sum_2, weighted_n_1, weighted_n_2):
+def _move_sums_classification(
+    criterion, sum_1, sum_2, weighted_n_1, weighted_n_2, put_missing_in_1
+):
     for k in range(criterion.n_outputs):
         n = int(criterion.n_classes[k])
         sum_1[k, :n] = 0

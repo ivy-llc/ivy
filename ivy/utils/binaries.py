@@ -76,6 +76,7 @@ def cleanup_and_fetch_binaries(clean=True):
 
         print("Downloading new binaries...")
         all_tags = list(tags.sys_tags())
+
         version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
         terminate = False
 

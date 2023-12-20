@@ -1180,7 +1180,7 @@ def _dtype_from_version(dic, version):
 
     # If version dict is empty, then there is an error
     if not dic:
-        raise Exception("No version found in the dictionary")
+        raise ValueError("No version found in the dictionary")
 
     # If key is already in the dictionary, return the value
     if version in dic:

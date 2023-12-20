@@ -1308,7 +1308,7 @@ def tridiagonal_matrix_filter(x):
     for i in range(dim):
         for j in range(dim):
             cell = x[i][j]
-            if i == j or i == j - 1 or i == j + 1:
+            if i in [j, j - 1, j + 1]:
                 if cell == 0:
                     return False
             else:

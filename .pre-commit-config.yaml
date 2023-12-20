@@ -7,7 +7,7 @@ repos:
       - id: check-toml
       - id: end-of-file-fixer
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 23.11.0
+    rev: 23.12.0
     hooks:
       - id: black
         language_version: python3
@@ -32,12 +32,12 @@ repos:
     rev: v1.7.5
     hooks:
       - id: docformatter
-  - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.3.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.8
     hooks:
-      - id: pydocstyle
-        # Exclude everything in frontends except __init__.py, and func_wrapper.py
-        exclude: 'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'
+      # Run the linter.
+      - id: ruff
+        args: [ --fix ]
   - repo: https://github.com/unifyai/lint-hook
     rev: a72ffb17562d919311653d7f593cb537d1245c19
     hooks:

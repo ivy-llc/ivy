@@ -7692,6 +7692,104 @@ def test_torch_index_fill(
     )
 
 
+# todo: remove dtype specifications
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="index_put",
+    x_and_indices=helpers.array_indices_axis(
+        array_dtypes=st.just(("float32",)),
+        indices_dtypes=st.just(("int64",)),
+    ),
+    values=helpers.dtype_and_values(
+        available_dtypes=st.just(("float32",)), max_num_dims=1, max_dim_size=1
+    ),
+    accumulate=st.booleans(),
+)
+def test_torch_index_put(
+    x_and_indices,
+    values,
+    accumulate,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, indices, *_ = x_and_indices
+    values_dtype, values = values
+    init_dtypes = [input_dtype[0]]
+    method_dtypes = [input_dtype[1], values_dtype[0]]
+    helpers.test_frontend_method(
+        init_input_dtypes=init_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=method_dtypes,
+        method_all_as_kwargs_np={
+            "indices": (indices,),
+            "values": values[0],
+            "accumulate": accumulate,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="index_put_",
+    x_and_indices=helpers.array_indices_axis(
+        array_dtypes=st.just(("float32",)),
+        indices_dtypes=st.just(("int64",)),
+    ),
+    values=helpers.dtype_and_values(
+        available_dtypes=st.just(("float32",)), max_num_dims=1, max_dim_size=1
+    ),
+    accumulate=st.booleans(),
+    test_inplace=st.just(True),
+)
+def test_torch_index_put_(
+    x_and_indices,
+    values,
+    accumulate,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, indices, *_ = x_and_indices
+    values_dtype, values = values
+    init_dtypes = [input_dtype[0]]
+    method_dtypes = [input_dtype[1], values_dtype[0]]
+    helpers.test_frontend_method(
+        init_input_dtypes=init_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=method_dtypes,
+        method_all_as_kwargs_np={
+            "indices": (indices,),
+            "values": values[0],
+            "accumulate": accumulate,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # index_select
 @handle_frontend_method(
     class_tree=CLASS_TREE,

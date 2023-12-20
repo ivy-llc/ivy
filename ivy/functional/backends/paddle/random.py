@@ -140,7 +140,7 @@ def randint(
     return _retval if shape else _retval.squeeze(axis=0)
 
 
-def seed(*, seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0):
     _ = paddle.seed(seed_value)
     return
 
