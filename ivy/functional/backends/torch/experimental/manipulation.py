@@ -654,5 +654,5 @@ def unflatten(
     shape: Tuple[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    res = torch.unflatten(x, dim=dim, sizes=shape)
+    res = torch.unflatten(input=x, dim=dim, sizes=shape)
     return res
