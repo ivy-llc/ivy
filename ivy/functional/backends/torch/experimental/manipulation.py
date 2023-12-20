@@ -17,7 +17,11 @@ import torch
 
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    handle_out_argument,
+)
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.experimental.manipulation import (
@@ -639,3 +643,16 @@ def trim_zeros(a: torch.Tensor, /, *, trim: Optional[str] = "bf") -> torch.Tenso
             else:
                 last = last - 1
     return a[first:last]
+
+
+@handle_out_argument
+def unflatten(
+    x: torch.Tensor,
+    /,
+    *,
+    dim: int = 0,
+    shape: Tuple[int] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    res = torch.unflatten(x, dim=dim, sizes=shape)
+    return res

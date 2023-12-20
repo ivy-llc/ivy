@@ -39,20 +39,6 @@ def concat(
 concat.support_native_out = True
 
 
-def unflatten(
-    x: torch.Tensor,
-    /,
-    *,
-    dim: int = 0,
-    shape: Tuple[int] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    res = torch.unflatten(x, dim=dim, sizes=shape)
-    if ivy.exists(out):
-        ivy.inplace_update(out, res)
-    return res
-
-
 def expand_dims(
     x: torch.Tensor,
     /,
