@@ -28,11 +28,14 @@ def linear(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # TODO: try to generalize this for >=2 dimensions
     if len(x.shape) == 2 and len(weight.shape) == 2:
         if x.shape[-1] == weight.shape[-2]:
             result = tf.matmul(x, weight)
         elif x.shape[-1] == weight.shape[-1]:
             result = tf.matmul(x, weight, transpose_b=True)
+        else:
+            result = tf.einsum("...i,...ji->...j", x, weight)
     else:
         result = tf.einsum("...i,...ji->...j", x, weight)
 
