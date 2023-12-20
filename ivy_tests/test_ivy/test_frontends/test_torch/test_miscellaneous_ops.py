@@ -1785,7 +1785,7 @@ def test_torch_unflatten(
 
         return factors
 
-    shape = factorization(shape[axes])
+    shape = tuple(factorization(shape[axes]))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
