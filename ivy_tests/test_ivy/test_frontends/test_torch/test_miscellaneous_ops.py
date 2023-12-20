@@ -1798,9 +1798,9 @@ def test_torch_unflatten(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        x=x[0],
+        input=x[0],
         dim=axes,
-        shape=shape,
+        sizes=shape,
     )
 
 
