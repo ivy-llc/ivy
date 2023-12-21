@@ -1,23 +1,9 @@
 version: 0.0.1
 
-achievements:
-  - achievement:
-      name: Bug Trackers
-      icon: "Badge Icon URL Placeholder"
-      description: Awarded for creating issues in the project.
-      triggers:
-        - trigger:
-            actor: author
-            action: issue
-            condition: count() >= 1
-        - trigger:
-            actor: author
-            action: issue
-            condition: created_at >= "2023-12-25"
-
+achievements: 
   - achievement:
       name: Debugging Dynamo
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_01-00.png
       description: Awarded for creating useful issues.
       triggers:
         - trigger:
@@ -27,11 +13,11 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Pull Request Pioneer
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-00.png
       description: Awarded for creating pull requests.
       triggers:
         - trigger:
@@ -41,11 +27,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Master
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_04-00.png
       description: Awarded for getting pull requests merged.
       triggers:
         - trigger:
@@ -55,11 +41,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Wizard
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_05-00.png
       description: Awarded for getting priority pull requests merged.
       triggers:
         - trigger:
@@ -73,11 +59,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Ivy Inspectors
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_06-00.png
       description: Awarded for reviewing pull requests.
       triggers:
         - trigger:
@@ -87,25 +73,11 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: created_at >= "2023-12-25"
-
-  - achievement:
-      name: Bug Trackers Bronze
-      icon: "Badge Icon URL Placeholder"
-      description: Awarded for creating 5 issues in the project.
-      triggers:
-        - trigger:
-            actor: author
-            action: issue
-            condition: count() >= 5
-        - trigger:
-            actor: author
-            action: issue
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Debugging Dynamo Bronze
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_01-02.png
       description: Awarded for creating 5 useful issues.
       triggers:
         - trigger:
@@ -115,11 +87,11 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Pull Request Pioneer Bronze
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-02.png
       description: Awarded for creating 5 pull requests.
       triggers:
         - trigger:
@@ -129,11 +101,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Master Bronze
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_04-02.png
       description: Awarded for getting 5 pull requests merged.
       triggers:
         - trigger:
@@ -143,11 +115,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Wizard Bronze
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_05-02.png
       description: Awarded for getting 5 priority pull requests merged.
       triggers:
         - trigger:
@@ -161,11 +133,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Ivy Inspectors Bronze
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_06-02.png
       description: Awarded for reviewing 5 pull requests.
       triggers:
         - trigger:
@@ -175,25 +147,11 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: created_at >= "2023-12-25"
-
-  - achievement:
-      name: Bug Trackers Silver
-      icon: "Badge Icon URL Placeholder"
-      description: Awarded for creating 15 issues in the project.
-      triggers:
-        - trigger:
-            actor: author
-            action: issue
-            condition: count() >= 15
-        - trigger:
-            actor: author
-            action: issue
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Debugging Dynamo Silver
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_01-03.png
       description: Awarded for creating 15 useful issues.
       triggers:
         - trigger:
@@ -203,11 +161,11 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Pull Request Pioneer Silver
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-03.png
       description: Awarded for creating 15 pull requests.
       triggers:
         - trigger:
@@ -217,11 +175,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Master Silver
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_04-03.png
       description: Awarded for getting 15 pull requests merged.
       triggers:
         - trigger:
@@ -231,11 +189,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Wizard Silver
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_05-03.png
       description: Awarded for getting 15 priority pull requests merged.
       triggers:
         - trigger:
@@ -249,11 +207,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Ivy Inspectors Silver
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_06-03.png
       description: Awarded for reviewing 15 pull requests.
       triggers:
         - trigger:
@@ -263,25 +221,11 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: created_at >= "2023-12-25"
-
-  - achievement:
-      name: Bug Trackers Gold
-      icon: "Badge Icon URL Placeholder"
-      description: Awarded for creating 30 issues in the project.
-      triggers:
-        - trigger:
-            actor: author
-            action: issue
-            condition: count() >= 30
-        - trigger:
-            actor: author
-            action: issue
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Debugging Dynamo Gold
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_01-04.png
       description: Awarded for creating 30 useful issues.
       triggers:
         - trigger:
@@ -291,11 +235,11 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Pull Request Pioneer Gold
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-04.png
       description: Awarded for creating 30 pull requests.
       triggers:
         - trigger:
@@ -305,11 +249,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Master Gold
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_04-04.png
       description: Awarded for getting 30 pull requests merged.
       triggers:
         - trigger:
@@ -319,11 +263,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Wizard Gold
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_05-04.png
       description: Awarded for getting 30 priority pull requests merged.
       triggers:
         - trigger:
@@ -337,11 +281,11 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Ivy Inspectors Gold
-      icon: "Badge Icon URL Placeholder"
+      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_06-04.png
       description: Awarded for reviewing 30 pull requests.
       triggers:
         - trigger:
@@ -351,4 +295,4 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: created_at >= "2023-12-25" 
