@@ -7836,10 +7836,7 @@ def test_torch_instance_to_cpu(
 test_torch_instance_to_cpu
 
 
-# argmax
-
 # index_select
- main
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
