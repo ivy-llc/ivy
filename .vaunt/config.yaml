@@ -13,7 +13,7 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Debugging Dynamo
@@ -27,7 +27,7 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Pull Request Pioneer
@@ -41,7 +41,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Master
@@ -55,7 +55,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Wizard
@@ -73,7 +73,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Ivy Inspectors
@@ -87,7 +87,7 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Bug Trackers Bronze
@@ -101,7 +101,7 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Debugging Dynamo Bronze
@@ -115,7 +115,7 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Pull Request Pioneer Bronze
@@ -129,7 +129,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Master Bronze
@@ -143,7 +143,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Wizard Bronze
@@ -161,7 +161,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Ivy Inspectors Bronze
@@ -175,7 +175,7 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Bug Trackers Silver
@@ -189,7 +189,7 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Debugging Dynamo Silver
@@ -203,7 +203,7 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Pull Request Pioneer Silver
@@ -217,7 +217,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Master Silver
@@ -231,7 +231,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Wizard Silver
@@ -249,7 +249,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Ivy Inspectors Silver
@@ -263,7 +263,7 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Bug Trackers Gold
@@ -277,7 +277,7 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Debugging Dynamo Gold
@@ -291,7 +291,7 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Pull Request Pioneer Gold
@@ -305,7 +305,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Master Gold
@@ -319,7 +319,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Merging Wizard Gold
@@ -337,7 +337,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
 
   - achievement:
       name: Ivy Inspectors Gold
@@ -351,4 +351,4 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: created_at >= "2023-12-02" # Replace this
+            condition: created_at >= "2023-12-25" 
