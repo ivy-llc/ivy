@@ -323,8 +323,8 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             If True, the matrices or vectors in in the list are transposed.
             For complex tensors, the conjugate transpose is used.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            result can broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the result can broadcast to.
 
         Returns
         -------
@@ -334,8 +334,8 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         Notes
         -----
         If no modes are specified, just assumes there is one matrix or vector per mode and returns:
-        :math:`\\text{x  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }` # noqa
-        """
+        :math:`\\text{x  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }`
+        """  # noqa: E501
         return ivy.multi_mode_dot(
             self._data, mat_or_vec_list, modes, skip, transpose, out=out
         )

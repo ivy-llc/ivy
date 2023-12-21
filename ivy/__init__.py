@@ -800,7 +800,7 @@ except:  # noqa: E722
     pass  # Added for the finally statement
 try:
     from .compiler.replace_with import replace_with, transform_function
-except:
+except:  # noqa: E722
     pass
 finally:
     # Skip framework imports done by Ivy compiler for now
