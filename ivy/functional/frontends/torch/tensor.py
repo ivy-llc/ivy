@@ -633,11 +633,6 @@ class Tensor:
         self.ivy_array = self.acos().ivy_array
         return self
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-    def arccosh_(self):
-        self.ivy_array = self.arccosh().ivy_array
-        return self
-
     @to_ivy_arrays_and_back
     def to_cpu(self):
         if (
@@ -648,16 +643,6 @@ class Tensor:
         else:
             return self
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-    def arccos(self):
-        return torch_frontend.arccos(self)
-
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-    def arccos_(self):
-        self.ivy_array = self.arccos().ivy_array
-        return self
-
- main
     def new_tensor(
         self,
         data,
