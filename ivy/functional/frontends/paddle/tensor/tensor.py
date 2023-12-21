@@ -228,7 +228,6 @@ class Tensor:
                 "unsigned",
                 "int8",
                 "int32",
-                
                 "float16",
                 "bfloat16",
             )
