@@ -13,6 +13,10 @@ from ivy.functional.frontends.jax.array import Array
 import ivy.functional.frontends.jax as jax_frontend
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _fn(x, check_default=False):
     if check_default and jax_frontend.config.jax_enable_x64:
         ivy.utils.assertions.check_equal(
@@ -22,6 +26,10 @@ def _fn(x, check_default=False):
             ivy.default_int_dtype(), "int64", as_array=False
         )
     return x
+
+
+# --- Main --- #
+# ------------ #
 
 
 @given(

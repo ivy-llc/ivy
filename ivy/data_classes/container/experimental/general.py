@@ -21,10 +21,9 @@ class _ContainerWithGeneralExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.reduce. This method simply wraps the
-        function, and so the docstring for ivy.reduce also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.reduce. This method
+        simply wraps the function, and so the docstring for ivy.reduce also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -95,10 +94,9 @@ class _ContainerWithGeneralExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.reduce. This method simply wraps
-        the function, and so the docstring for ivy.reduce also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.reduce. This method
+        simply wraps the function, and so the docstring for ivy.reduce also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -133,14 +131,13 @@ class _ContainerWithGeneralExperimental(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(
-        >>>     a=ivy.array([[1, 2, 3], [4, 5, 6]]),
-        >>>     b=ivy.native_array([[7, 8, 9], [10, 5, 1]])
-        >>> )
+        ...     a=ivy.array([[1, 2, 3], [4, 5, 6]]),
+        ...     b=ivy.native_array([[7, 8, 9], [10, 5, 1]]))
         >>> y = x.reduce(0, ivy.add)
         >>> print(y)
         {
-            a: ivy.array([6, 15]),
-            b: ivy.array([24, 16])
+            a: ivy.array([5, 7, 9]),
+            b: ivy.array([17, 13, 10])
         }
         """
         return self._static_reduce(

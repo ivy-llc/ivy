@@ -5,7 +5,7 @@ import sys
 from ivy.functional.frontends import set_frontend_to_specific_version
 from . import config
 from . import array
-from .array import Array
+from .array import *
 from . import general_functions
 from .general_functions import *
 from . import lax
@@ -26,4 +26,4 @@ if ivy.is_local():
 else:
     module = sys.modules[__name__]
 
-set_frontend_to_specific_version(module)
+__version__ = set_frontend_to_specific_version(module)

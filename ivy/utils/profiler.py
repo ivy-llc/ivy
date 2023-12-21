@@ -9,8 +9,7 @@ is_snakeviz = find_spec("snakeviz")
 
 
 class Profiler(cProfile.Profile):
-    """
-    A Profiler class that allows code profiling.
+    """A Profiler class that allows code profiling.
 
     Attributes
     ----------
@@ -50,7 +49,7 @@ class Profiler(cProfile.Profile):
                         stats.dump_stats(filename=f.name)
                         subprocess.run(["snakeviz", f"{f.name}"])
                 else:
-                    logging.warn("snakeviz must be installed for visualization")
+                    logging.warning("snakeviz must be installed for visualization")
 
             if self.print_stats:
                 stats.print_stats()
