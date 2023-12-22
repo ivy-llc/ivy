@@ -204,7 +204,11 @@ def gather(
             != torch.tensor(params.shape[axis : axis + 1])
         ).long()
         params_insert_shape = [dim for dim in params_insert_shape]
-        params_insert_shape = torch.Size(params_insert_shape)
+        params_insert_shape = (
+            torch.Size(params_insert_shape)
+            if torch.Size(params_insert_shape) != torch.Size([0])
+            else params.shape[axis : axis + 1]
+        )
 
         params_ex = (
             indices
