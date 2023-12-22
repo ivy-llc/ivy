@@ -5406,43 +5406,6 @@ def test_torch_cov(
     )
 
 
-#cpu
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="ivy.to_device",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
-    ),
-)
-def test_torch_instance_to_cpu(
-    dtype_and_x,
-    frontend,
-    backend_fw,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-):
-    input_dtype, x = dtype_and_x
-    helper.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-    )
-
-
 # cross
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -7871,6 +7834,43 @@ def test_torch_index_select(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+    )
+
+
+# cpu
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="ivy.to_device",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_to_cpu(
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x = dtype_and_x
+    helper.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
     )
 
 
@@ -14304,4 +14304,3 @@ def test_torch_zero_(
         frontend=frontend,
         on_device=on_device,
     )
-
