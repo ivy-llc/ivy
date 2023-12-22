@@ -149,11 +149,7 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: count() >= 15
-        - trigger:
-            actor: reviewer
-            action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: count(created_at >= "2023-12-25") >= 15
 
   - achievement:
       name: Debugging Dynamo Gold
