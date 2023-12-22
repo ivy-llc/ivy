@@ -214,6 +214,10 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
+    def sspaddmm(self, mat1, mat2, *, beta=1, alpha=1):
+        return torch_frontend.sspaddmm(self, mat1, mat2, beta=beta, alpha=alpha)
+
+    @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
     def asin(self):
         return torch_frontend.asin(self)
 
