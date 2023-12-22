@@ -267,6 +267,7 @@ def gather(
                 sparse_grad=False,
                 out=out,
             )
+            result = result.to(dtype=params.dtype)
 
     else:
         params_slices = torch.unbind(params, axis=0) if params.dim() > 1 else params
