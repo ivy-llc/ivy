@@ -217,6 +217,9 @@ class Tensor:
     def __xor__(self, y, /, name=None):
         return paddle_frontend.logic.bitwise_xor(self, y)
 
+    def __invert__(self, out=None, name=None):
+        return paddle_frontend.logic.bitwise_not(self)
+
     def __len__(self):
         return len(self._ivy_array)
 
