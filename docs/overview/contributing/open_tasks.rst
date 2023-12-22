@@ -3,7 +3,7 @@ Open Tasks
 
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
+.. _`open tasks channel`: https://discord.com/channels/799879767196958751/982728618469912627
 .. _`issue description`: https://github.com/unifyai/ivy/issues/1526
 .. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
 .. _`imports`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
@@ -20,6 +20,7 @@ We make no mention of task selection and allocation in the explanations below, w
 
 The tasks currently open are:
 
+#. Fixing Failing Tests
 #. Function Formatting
 #. Frontend APIs
 #. Ivy Experimental API
@@ -28,81 +29,25 @@ We try to explain these tasks as clearly as possible, but in cases where things 
 
 Please always use the latest commit on GitHub when working on any of these tasks, **DO NOT** develop your code using the latest PyPI release of :code:`ivy`.
 
-Function Formatting
--------------------
+Fixing Failing Tests
+--------------------
 
-Currently, we have many ToDo list issues `open <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Function+Reformatting%22+label%3AToDo>`_ for a general function formatting task, which is explained below.
+In the Ivy repository, we've identified a range of functions and tests that currently fall short of our quality standards. The root of these issues is not always clear-cut. In some instances, the problem may lie within the functions themselves, while in others, it could be the tests, which were crafted by various contributors, that are at fault. This situation presents a unique opportunity for community involvement. We are actively inviting contributions from our community to help tackle these challenges.
 
-Each function in each submodule should be updated to follow the implementation instructions given in the `Deep Dive`_ section.
-The updates should be applied for the:
+How to Contribute
+~~~~~~~~~~~~~~~~~
 
-#. ivy API
-#. all backend APIs
-#. array instance methods
-#. container instance methods
-#. array operators
-#. array reverse operators
-#. container operators
-#. container reverse operators
+**Identifying Issues**
 
-The `Deep Dive`_ is an **essential** resource for learning how each of these functions/methods should be implemented.
-Before starting any contribution task, you should go through the `Deep Dive`_, and familiarize yourself with the content.
+To get started, visit our issues page: `Failing Tests <https://github.com/unifyai/ivy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Failing+Test%22+label%3A%22ToDo%22>`_. Here, you will find a list of open issues labeled as "Failing Test" and "ToDo". These issues are categorised under various frameworks supported by our repository. We encourage you to select a framework you're comfortable with or interested in contributing to.
 
-At the time of writing, many of the functions are not implemented as they should be.
-You will need to make changes to the current implementations, but you do not need to address *all* sections of the `Deep Dive`_ in detail.
-Specifically, you **do not** need to address the following:
+**Selecting a Test**
 
-#. Implement the hypothesis testing for the function
-#. Get the tests passing for your function, if they are failing before you start
+Within each framework, tests are classified as either "Priority Open" or "Other Open." While we prioritize fixing the "Priority Open" tests, contributions towards any test, including those labeled "Other Open," are highly valuable. Each test issue is linked directly to the specific failing workflow. This linkage provides you with immediate access to the details of what exactly is failing and the context around it.
 
-However, everything else covered in the `Deep Dive`_ must be addressed.
-Some common important tasks are:
+**Making Your Contribution**
 
-#. Remove all :code:`lambda` and direct bindings for the backend functions (in :code:`ivy.functional.backends`), with each function instead defined using :code:`def`.
-#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
-#. Make sure that the aforementioned methods are added into the correct category-specific parent class, such as :class:`ivy.ArrayWithElementwise`, :class:`ivy.ContainerWithManipulation` etc.
-#. Correct all of the `Function Arguments <../deep_dive/function_arguments.rst>`_ and the type hints for every function **and** its *relevant methods*, including those you did not implement yourself.
-#. Add the correct `Docstrings <../deep_dive/docstrings.rst>`_ to every function **and** its *relevant methods*, including those you did not implement yourself.
-#. Add thorough `Docstring Examples <../deep_dive/docstring_examples.rst>`_ for every function **and** its *relevant methods* and ensure they pass the docstring tests.
-
-Formatting checklist
-~~~~~~~~~~~~~~~~~~~~
-
-After creating your Pull Request on github, you should then produce the checklist for the formatting task as follows:
-
-1. Add a comment with the following format: :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* is the name of the category that the function belongs to.
-   An example of this is shown below.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_generator.png?raw=true
-   :width: 420
-
-Using this formatting will then trigger our github automation bots to update your comment with the proper markdown text for the checklist.
-These updates might take a few moments to take effect, so please be patient 🙂.
-
-2. After adding the checklist to your PR, you should then modify this checklist with the status of each item according to the symbols(emojis) within the LEGEND section.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_legend.png?raw=true
-   :width: 420
-
-3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for your PR and we will start checking your implementation and marking the items as complete using the checkboxes next to them.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_checked.png?raw=true
-   :width: 420
-
-4. In case you are stuck or need help with one of the checklist items, please add the 🆘 symbol next to the item on the checklist, and proceed to add a comment elaborating on your point of struggle with this item.
-The PR assignee will then see this comment and address your issues.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_SOS.png?raw=true
-   :width: 420
-
-**Notes**:
-
-1. It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.
-2. The checklist items' statuses should be manually updated by the PR author.
-   It does not automatically run any tests to update them!
-3. Do not edit the checklist text, only the emoji symbols. 😅
-4. Please refrain from using the checkboxes next to checklist items.
-
+After selecting a test to work on, please fork the repository and create a new branch for your fix. Ensure that your solution addresses the issue effectively and doesn't introduce new errors. Once you're confident in your fix, submit a pull request to the main repository. Our team will review your contribution, provide feedback if necessary, and then merge your changes once they meet our standards.
 
 Frontend APIs
 -------------
@@ -221,6 +166,83 @@ However, you can still use the checklist as a reference in cases where you do un
 1. More details on how to update the checklist items can be found in the :ref:`overview/contributing/open_tasks:Formatting checklist` part of our docs.
 2. Do not edit the checklist text, only the emoji symbols.
 3. Please refrain from using the checkboxes next to checklist items.
+
+
+Function Formatting
+-------------------
+
+Currently, we have many ToDo list issues `open <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Function+Reformatting%22+label%3AToDo>`_ for a general function formatting task, which is explained below.
+
+Each function in each submodule should be updated to follow the implementation instructions given in the `Deep Dive`_ section.
+The updates should be applied for the:
+
+#. ivy API
+#. all backend APIs
+#. array instance methods
+#. container instance methods
+#. array operators
+#. array reverse operators
+#. container operators
+#. container reverse operators
+
+The `Deep Dive`_ is an **essential** resource for learning how each of these functions/methods should be implemented.
+Before starting any contribution task, you should go through the `Deep Dive`_, and familiarize yourself with the content.
+
+At the time of writing, many of the functions are not implemented as they should be.
+You will need to make changes to the current implementations, but you do not need to address *all* sections of the `Deep Dive`_ in detail.
+Specifically, you **do not** need to address the following:
+
+#. Implement the hypothesis testing for the function
+#. Get the tests passing for your function, if they are failing before you start
+
+However, everything else covered in the `Deep Dive`_ must be addressed.
+Some common important tasks are:
+
+#. Remove all :code:`lambda` and direct bindings for the backend functions (in :code:`ivy.functional.backends`), with each function instead defined using :code:`def`.
+#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
+#. Make sure that the aforementioned methods are added into the correct category-specific parent class, such as :class:`ivy.ArrayWithElementwise`, :class:`ivy.ContainerWithManipulation` etc.
+#. Correct all of the `Function Arguments <../deep_dive/function_arguments.rst>`_ and the type hints for every function **and** its *relevant methods*, including those you did not implement yourself.
+#. Add the correct `Docstrings <../deep_dive/docstrings.rst>`_ to every function **and** its *relevant methods*, including those you did not implement yourself.
+#. Add thorough `Docstring Examples <../deep_dive/docstring_examples.rst>`_ for every function **and** its *relevant methods* and ensure they pass the docstring tests.
+
+Formatting checklist
+~~~~~~~~~~~~~~~~~~~~
+
+After creating your Pull Request on github, you should then produce the checklist for the formatting task as follows:
+
+1. Add a comment with the following format: :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* is the name of the category that the function belongs to.
+   An example of this is shown below.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_generator.png?raw=true
+   :width: 420
+
+Using this formatting will then trigger our github automation bots to update your comment with the proper markdown text for the checklist.
+These updates might take a few moments to take effect, so please be patient 🙂.
+
+2. After adding the checklist to your PR, you should then modify this checklist with the status of each item according to the symbols(emojis) within the LEGEND section.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_legend.png?raw=true
+   :width: 420
+
+3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for your PR and we will start checking your implementation and marking the items as complete using the checkboxes next to them.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_checked.png?raw=true
+   :width: 420
+
+4. In case you are stuck or need help with one of the checklist items, please add the 🆘 symbol next to the item on the checklist, and proceed to add a comment elaborating on your point of struggle with this item.
+The PR assignee will then see this comment and address your issues.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_SOS.png?raw=true
+   :width: 420
+
+**Notes**:
+
+1. It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.
+2. The checklist items' statuses should be manually updated by the PR author.
+   It does not automatically run any tests to update them!
+3. Do not edit the checklist text, only the emoji symbols. 😅
+4. Please refrain from using the checkboxes next to checklist items.
+
 
 Ivy Experimental API
 --------------------

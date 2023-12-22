@@ -5,7 +5,7 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 @with_supported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.2 and below": (
             "float32",
             "float64",
         )
@@ -26,7 +26,7 @@ def manual_seed(seed: int):
 
 @with_supported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.2 and below": (
             "float32",
             "float64",
         )
@@ -49,7 +49,7 @@ def multinomial(input, num_samples, replacement=False, *, generator=None, out=No
 
 @with_supported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.2 and below": (
             "float32",
             "float64",
         )
@@ -64,7 +64,7 @@ def normal(mean, std, *, generator=None, out=None):
 
 @with_supported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.2 and below": (
             "float32",
             "float64",
         )
@@ -91,7 +91,7 @@ def rand(
 ):
     if not size and "size" not in kwargs:
         raise ValueError("Missing 1 required positional/keyword argument: size")
-    size = kwargs["size"] if not size else size
+    size = size if size else kwargs["size"]
     if (
         isinstance(size, (list, tuple))
         and len(size) == 1
@@ -191,7 +191,7 @@ def randn(
 ):
     if not size and "size" not in kwargs:
         raise ValueError("Missing 1 required positional/keyword argument: size")
-    size = kwargs["size"] if not size else size
+    size = size if size else kwargs["size"]
     if (
         isinstance(size, (list, tuple))
         and len(size) == 1
