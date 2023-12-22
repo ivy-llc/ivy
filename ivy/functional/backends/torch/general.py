@@ -223,7 +223,7 @@ def gather(
         params_shape = list(
             params.shape[:axis] + params_insert_shape + params.shape[axis + 1 :]
         )
-        if params.shape[axis] not in params_shape:
+        if params.shape[axis % len(params)] not in params_shape:
             params_shape[-1] = params.shape[axis]
         params_shape = torch.Size(params_shape)
 
