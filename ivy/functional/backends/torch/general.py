@@ -196,21 +196,21 @@ def gather(
         param_singleton_dims = torch.Size(param_singleton_dims_table)
 
         params_insert_shape = (
-            (torch.tensor(indices.shape[batch_dims:]) == params.shape[axis])
-            * params.shape[axis]
+            (
+                torch.tensor(indices.shape[batch_dims:])
+                == params.shape[axis % len(params)]
+            )
+            * params.shape[axis % len(params)]
         ).long() + (
-            torch.tensor(indices.shape[batch_dims:]) != params.shape[axis]
+            torch.tensor(indices.shape[batch_dims:]) != params.shape[axis % len(params)]
         ).long()
         params_insert_shape = [dim for dim in params_insert_shape]
         params_insert_shape = (
             torch.Size(params_insert_shape)
             if torch.Size(params_insert_shape) != torch.Size([0])
-            else params.shape[axis : axis + 1]
+            else indices.shape[batch_dims:]
         )
 
-        params_ex = params.reshape(
-            (params.shape[:axis] + params_insert_shape + params.shape[axis + 1 :])
-        )
         indices_ex = (
             indices
             if (params.dim() <= 1)
@@ -219,6 +219,16 @@ def gather(
                 + indices.shape[batch_dims:]
                 + param_singleton_dims[axis + 1 :]
             )
+        )
+        params_shape = list(
+            params.shape[:axis] + params_insert_shape + params.shape[axis + 1 :]
+        )
+        if params.shape[axis] not in params_shape:
+            params_shape[-1] = params.shape[axis]
+        params_shape = torch.Size(params_shape)
+
+        params_ex = (
+            params if indices_ex.dim() == params.dim() else params.reshape(params_shape)
         )
 
         params_ex_mask = torch.tensor(
@@ -234,13 +244,13 @@ def gather(
         indices_ex_mask = torch.tensor(
             params.shape[:axis] + indices.shape[batch_dims:] + params.shape[axis + 1 :]
         ) * (torch.tensor(indices_ex.shape) == 1)
-
         if any((indices_ex_mask != (torch.tensor(indices_ex.shape) == 1).flatten())):
             indices_ex = indices_ex.expand(
                 params.shape[:axis]
                 + indices.shape[batch_dims:]
                 + params.shape[axis + 1 :]
             )
+
         return params_ex, indices_ex
 
     if batch_dims == 0:
