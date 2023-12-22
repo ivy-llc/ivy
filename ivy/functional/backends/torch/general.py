@@ -214,26 +214,21 @@ def gather(
             )
         )
 
-        if (
+        params_ex_mask = torch.tensor(
             params.shape[:axis] + indices.shape[batch_dims:] + params.shape[axis + 1 :]
-        ) >= params_ex.shape and (
-            len(
-                list(
-                    params.shape[:axis]
-                    + indices.shape[batch_dims:]
-                    + params.shape[axis + 1 :]
-                )
-            )
-            != params_ex.dim()
-        ):
+        ) * (torch.tensor(params_ex.shape) == 1)
+
+        if any((params_ex_mask != (torch.tensor(params_ex.shape) == 1)).flatten()):
             params_ex = params_ex.expand(
                 params.shape[:axis]
                 + indices.shape[batch_dims:]
                 + params.shape[axis + 1 :]
             )
-        if (
+        indices_ex_mask = torch.tensor(
             params.shape[:axis] + indices.shape[batch_dims:] + params.shape[axis + 1 :]
-        ) >= indices_ex.shape:
+        ) * (torch.tensor(indices_ex.shape) == 1)
+
+        if any((indices_ex_mask != (torch.tensor(indices_ex.shape) == 1)).flatten()):
             indices_ex = indices_ex.expand(
                 params.shape[:axis]
                 + indices.shape[batch_dims:]
