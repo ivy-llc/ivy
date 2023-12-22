@@ -79,11 +79,7 @@ achievements:
         - trigger:
             actor: author
             action: pull_request
-            condition: count(merged = true) >= 5
-        - trigger:
-            actor: author
-            action: pull_request
-            condition: created_at >= "2023-12-25"
+            condition: count(merged = true & created_at >= "2023-12-25") >= 5
 
   - achievement:
       name: Merging Wizard Bronze
