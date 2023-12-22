@@ -256,6 +256,7 @@ def gather(
                 sparse_grad=False,
                 out=out,
             )
+            result = result.to(params.dtype)
             return result
         else:
             params_expanded, indices_expanded = expand_p_i(params, indices)
@@ -299,6 +300,7 @@ def gather(
             + max(indices.shape[batch_dims:], torch.Size([1]))
             + params.shape[axis + 1 :]
         )
+        result = result.to(params.dtype)
 
     if ivy.exists(out):
         return ivy.inplace_update(out, result)
