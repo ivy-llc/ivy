@@ -233,16 +233,7 @@ def gather(
             )
         if (
             params.shape[:axis] + indices.shape[batch_dims:] + params.shape[axis + 1 :]
-        ) >= indices_ex.shape and (
-            len(
-                list(
-                    params.shape[:axis]
-                    + indices.shape[batch_dims:]
-                    + params.shape[axis + 1 :]
-                )
-            )
-            != indices_ex.dim()
-        ):
+        ) >= indices_ex.shape:
             indices_ex = indices_ex.expand(
                 params.shape[:axis]
                 + indices.shape[batch_dims:]
