@@ -196,12 +196,10 @@ def gather(
         param_singleton_dims = torch.Size(param_singleton_dims_table)
 
         params_insert_shape = (
-            torch.tensor(indices.shape[batch_dims:])
-            == torch.tensor(params.shape[axis : axis + 1])
-        ).long()
-        +(
-            torch.tensor(indices.shape[batch_dims:])
-            != torch.tensor(params.shape[axis : axis + 1])
+            (torch.tensor(indices.shape[batch_dims:]) == params.shape[axis])
+            * params.shape[axis]
+        ).long() + (
+            torch.tensor(indices.shape[batch_dims:]) != params.shape[axis]
         ).long()
         params_insert_shape = [dim for dim in params_insert_shape]
         params_insert_shape = (
@@ -210,12 +208,8 @@ def gather(
             else params.shape[axis : axis + 1]
         )
 
-        params_ex = (
-            params
-            if (params.dim() <= 1)
-            else params.reshape(
-                (params.shape[:axis] + params_insert_shape + params.shape[axis + 1 :])
-            )
+        params_ex = params.reshape(
+            (params.shape[:axis] + params_insert_shape + params.shape[axis + 1 :])
         )
         indices_ex = (
             indices
