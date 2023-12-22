@@ -211,7 +211,7 @@ def gather(
         )
 
         params_ex = (
-            indices
+            params
             if (params.dim() <= 1)
             else params.reshape(
                 (params.shape[:axis] + params_insert_shape + params.shape[axis + 1 :])
