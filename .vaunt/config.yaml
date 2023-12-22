@@ -199,11 +199,7 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: count(labels in {'Useful Issue'}) >= 30
-        - trigger:
-            actor: author
-            action: issue
-            condition: created_at >= "2023-12-25"
+            condition: count(labels in {'Useful Issue'} & created_at >= "2023-12-25") >= 30
 
   - achievement:
       name: Pull Request Pioneer Gold
