@@ -6,7 +6,6 @@ from typing import Optional, Tuple, Union, Sequence
 
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from keras.src.layers.rnn import gru_lstm_utils
 
 # local
 import ivy
@@ -743,6 +742,12 @@ def _cpu_lstm(
     return outputs, new_states
 
 
+def _format_weights_for_gpu(weights, biases, shape):
+    weights = [tf.reshape(tf.transpose(x), shape) for x in weights]
+    biases = [tf.reshape(x, shape) for x in biases]
+    return tf.concat(weights + biases, axis=0)
+
+
 def _gpu_lstm(
     x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias, time_major
 ):
@@ -755,11 +760,10 @@ def _gpu_lstm(
     weights = tf.split(kernel, 4, axis=1)
     weights += tf.split(recurrent_kernel, 4, axis=1)
     full_bias = tf.concat((recurrent_bias, bias), axis=0)
-    params = gru_lstm_utils.canonical_to_params(
+    params = _format_weights_for_gpu(
         weights=weights,
         biases=tf.split(full_bias, 8),
         shape=tf.constant([-1]),
-        transpose_weights=True,
     )
     outputs, h, c, _ = tf.raw_ops.CudnnRNN(
         input=x,
