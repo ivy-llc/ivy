@@ -336,53 +336,6 @@ def flip(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device
-def unflatten(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int,
-    sizes: Tuple[int],
-) -> ivy.Array:
-    """Expand a dimension of the input tensor over multiple dimensions.
-
-    Parameters
-    ----------
-    x
-        The input tensor.
-    axis
-        Dimension to be unflattened, specified as an index into input.shape.
-    sizes
-        New shape of the unflattened dimension. One of its elements can be -1 in
-        which case the corresponding output dimension is inferred. Otherwise,
-        the product of sizes must equal input.shape[dim].
-
-    Returns
-    -------
-    ret
-        A View of input with the specified dimension unflattened.
-
-
-    Examples
-    --------
-    >>> torch.unflatten(torch.randn(3, 4, 1), 1, (2, 2)).shape
-    torch.Size([3, 2, 2, 1])
-    >>> torch.unflatten(torch.randn(3, 4, 1), 1, (-1, 2)).shape
-    torch.Size([3, 2, 2, 1])
-    >>> torch.unflatten(torch.randn(5, 12, 3), -2, (2, 2, 3, 1, 1)).shape
-    torch.Size([5, 2, 2, 3, 1, 1, 3])
-    """
-    return current_backend(x).unflatten(x, axis, sizes)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_view
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
