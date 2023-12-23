@@ -549,6 +549,7 @@ def test_numpy_lcm(
     nan=st.floats(min_value=0, max_value=10),
     copy=st.booleans(),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_numpy_nan_to_num(
     dtype_and_x,

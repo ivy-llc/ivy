@@ -28,6 +28,7 @@ UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
 
 TEST_PARAMS_CONFIG = []
+SKIP_GROUND_TRUTH = False
 UNSUPPORTED_FRAEMWORK_DEVICES = {"numpy": ["gpu", "tpu"]}
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
@@ -35,7 +36,7 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 
 def default_framework_mapper(fw, fw_path="/opt/fw/", set_too=False):
     # do a path search, get the latest
-    # so that we can get the higest version
+    # so that we can get the highest version
     # available dynamically and set that for
     # use by the rest of the code
     # eg: torch/1.11.0 and torch/1.12.0
@@ -190,21 +191,19 @@ def pytest_configure(config):
             if "/" in backend_str:
                 backend_str = backend_str.split("/")[0]
             if (
-                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES.keys()
+                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES
                 and device.partition(":")[0]
                 in UNSUPPORTED_FRAEMWORK_DEVICES[backend_str]
             ):
                 continue
             for trace_graph in trace_modes:
                 for implicit in implicit_modes:
-                    TEST_PARAMS_CONFIG.append(
-                        (
-                            device,
-                            backend_str,
-                            trace_graph,
-                            implicit,
-                        )
-                    )
+                    TEST_PARAMS_CONFIG.append((
+                        device,
+                        backend_str,
+                        trace_graph,
+                        implicit,
+                    ))
 
     process_cl_flags(config)
 
@@ -239,12 +238,13 @@ def pytest_generate_tests(metafunc):
     # Skip backend test against groud truth backend
     # This redundant and wastes resources, as we going to be comparing
     # The backend against it self
+    global SKIP_GROUND_TRUTH
     if hasattr(metafunc.function, "ground_truth_backend"):
         test_paramters = TEST_PARAMS_CONFIG.copy()
         # Find the entries that contains the ground truth backend as it's backend
         for entry in test_paramters.copy():
             # Entry 1 is backend_fw
-            if entry[1] == metafunc.function.ground_truth_backend:
+            if entry[1] == metafunc.function.ground_truth_backend and SKIP_GROUND_TRUTH:
                 test_paramters.remove(entry)
         metafunc.parametrize(
             "on_device,backend_fw,trace_graph,implicit", test_paramters
@@ -290,9 +290,13 @@ def process_cl_flags(config) -> Dict[str, bool]:
         ),
         "transpile": (
             False,
-            getopt("--with-transpile-frontend"),
+            getopt("--with-transpile"),
         ),
     }
+
+    # whether to skip gt testing or not
+    # global SKIP_GROUND_TRUTH
+    # SKIP_GROUND_TRUTH = not tmp_config["transpile"][1]
 
     # final mapping for hypothesis value generation
     for k, v in tmp_config.items():
@@ -346,7 +350,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
     parser.addoption("--with-trace-testing", action="store_true")
-    parser.addoption("--with-transpile-frontend", action="store_true")
+    parser.addoption("--with-transpile", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
         "--my_test_dump",

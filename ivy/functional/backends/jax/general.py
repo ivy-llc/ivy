@@ -1,4 +1,5 @@
-"""Collection of Jax general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Jax general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import jax
@@ -66,7 +67,7 @@ def get_item(
     /,
     query: Union[JaxArray, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> JaxArray:
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
@@ -101,7 +102,7 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-@with_unsupported_dtypes({"0.4.16 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.23 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -420,7 +421,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.23 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,

@@ -47,11 +47,11 @@ def _pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
 # ------------ #
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def binary_cross_entropy(input, label, weight=None, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
-    result = ivy.binary_cross_entropy(label, input, epsilon=0.0)
+    result = ivy.binary_cross_entropy(label, input, epsilon=0.0, reduction="none")
     if weight is not None:
         result = ivy.multiply(weight, result)
     result = reduction(result)
@@ -59,7 +59,7 @@ def binary_cross_entropy(input, label, weight=None, reduction="mean", name=None)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32",)},
+    {"2.5.2 and below": ("float32",)},
     "paddle",
 )
 @inputs_to_ivy_arrays
@@ -83,7 +83,7 @@ def binary_cross_entropy_with_logits(
 
 @handle_exceptions
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 def cosine_embedding_loss(
     input1, input2, label, margin=0.0, reduction="mean", name=None
 ):
@@ -124,7 +124,7 @@ def cosine_embedding_loss(
     return out
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def dice_loss(input, label, epsilon=0.00001, name=None):
     ivy.assertions.check_true(
@@ -135,14 +135,13 @@ def dice_loss(input, label, epsilon=0.00001, name=None):
         len(input.shape) == len(label.shape),
         message=str(
             "The rank of input and label should be equal, "
-            "but received input: %d, label: %d." % (len(input.shape), len(label.shape))
+            f"but received input: {len(input.shape)}, label: {len(label.shape)}."
         ),
     )
     ivy.assertions.check_true(
         label.shape[-1] == 1,
         message=str(
-            "The last dimension of label should be 1, but received %d."
-            % label.shape[-1]
+            f"The last dimension of label should be 1, but received {label.shape[-1]}."
         ),
     )
     ivy.assertions.check_true(
@@ -164,7 +163,7 @@ def dice_loss(input, label, epsilon=0.00001, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32",)},
+    {"2.5.2 and below": ("float32",)},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -188,7 +187,7 @@ def hinge_embedding_loss(input, label, margin=1.0, reduction="mean"):
         return loss
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def kl_div(
     input,
@@ -235,7 +234,7 @@ def l1_loss(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32",)},
+    {"2.5.2 and below": ("float32",)},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -246,7 +245,7 @@ def log_loss(input, label, epsilon=0.0001, name=None):
     return out
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
@@ -266,7 +265,7 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     return out
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @inputs_to_ivy_arrays
 def mse_loss(input, label, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
@@ -276,7 +275,7 @@ def mse_loss(input, label, reduction="mean", name=None):
     return paddle.to_tensor(ret)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def multi_label_soft_margin_loss(
     input, label, weight=None, reduction="mean", name=None
@@ -294,7 +293,7 @@ def multi_label_soft_margin_loss(
     return ret
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def nll_loss(
     input,
@@ -327,7 +326,7 @@ def nll_loss(
     return output
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def sigmoid_focal_loss(
     logit,
@@ -373,7 +372,7 @@ def sigmoid_focal_loss(
     return loss
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def smooth_l1_loss(
     input,
@@ -400,7 +399,7 @@ def smooth_l1_loss(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+    {"2.5.2 and below": ("float32", "float64")},
     "paddle",
 )
 @inputs_to_ivy_arrays
@@ -415,7 +414,7 @@ def softmax_with_cross_entropy(
 ):
     input_dims = len(list(logits.shape))
     if input_dims == 0:
-        raise ValueError("The dimention of input should be larger than zero!")
+        raise ValueError("The dimension of input should be larger than zero!")
     label_dims = len(list(label.shape))
     if input_dims - 1 != label_dims and input_dims != label_dims:
         raise ValueError(
@@ -460,13 +459,13 @@ def softmax_with_cross_entropy(
     return paddle.to_tensor(loss)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32",)}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32",)}, "paddle")
 @to_ivy_arrays_and_back
 def square_error_cost(input, label):
     return ivy.square(ivy.subtract(input, label))
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def triplet_margin_loss(
     input,
