@@ -2840,8 +2840,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container static method variant of ivy.fftn.
+        """ivy.Container static method variant of ivy.fftn.
 
         This method simply wraps the function, and so the docstring for
         ivy.fftn  also applies to this method with minimal changes.
@@ -2899,8 +2898,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ):
-        """
-        ivy.Container static method variant of ivy.fftn.
+        """ivy.Container static method variant of ivy.fftn.
 
         This method simply wraps the function, and so the docstring for
         ivy.fftn also applies to this method with minimal changes.

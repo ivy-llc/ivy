@@ -1320,8 +1320,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Compute the N-dimensional discrete Fourier Transform.
+        """Compute the N-dimensional discrete Fourier Transform.
 
         Parameters
         ----------

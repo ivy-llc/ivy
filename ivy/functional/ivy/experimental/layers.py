@@ -3251,8 +3251,7 @@ def fftn(
     norm: str = "backward",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""
-    Compute the N-dimensional discrete Fourier Transform.
+    r"""Compute the N-dimensional discrete Fourier Transform.
 
     Parameters
     ----------
