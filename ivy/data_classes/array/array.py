@@ -423,8 +423,11 @@ class Array(
     def __getattr__(self, item):
         try:
             attr = self._data.__getattribute__(item)
-        except AttributeError:
-            attr = self._data.__getattr__(item)
+        except AttributeError as e:
+            if "has no attribute '__getattribute__'" in str(e):
+                attr = self._data.__getattr__(item)
+            else:
+                raise e
         return to_ivy(attr)
 
     @handle_view_indexing
