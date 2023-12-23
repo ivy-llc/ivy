@@ -150,6 +150,57 @@ def test_cross_entropy(
     )
 
 
+# mse_loss
+@handle_test(
+    fn_tree="functional.ivy.mse_loss",
+    dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+        max_value=2,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        shape=(5,),
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+        max_value=2,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        shape=(5,),
+    ),
+    axis=helpers.ints(min_value=0, max_value=1),
+)
+def test_mse_loss(
+    dtype_and_true,
+    dtype_and_pred,
+    axis,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    pred_dtype, pred = dtype_and_pred
+    true_dtype, true = dtype_and_true
+
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=true_dtype + pred_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        true=true[0],
+        pred=pred[0],
+        axis=axis,
+    )
+
+
 # sparse_cross_entropy
 @handle_test(
     fn_tree="functional.ivy.sparse_cross_entropy",
@@ -202,55 +253,4 @@ def test_sparse_cross_entropy(
         axis=axis,
         epsilon=epsilon,
         reduction=reduction,
-    )
-
-
-#mse_loss
-@handle_test(
-    fn_tree="functional.ivy.mse_loss",
-    dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=1,
-        max_value=2,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        shape=(5,),
-    ),
-    dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=1,
-        max_value=2,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        shape=(5,),
-    ),
-    axis=helpers.ints(min_value=0, max_value=1),
-)
-def test_mse_loss(
-    dtype_and_true,
-    dtype_and_pred,
-    axis,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    pred_dtype, pred = dtype_and_pred
-    true_dtype, true = dtype_and_true
-
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=true_dtype + pred_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        true=true[0],
-        pred=pred[0],
-        axis=axis,
     )

@@ -376,26 +376,25 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
-    
+
 
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-def mse_loss(true : Union[ivy.Array, ivy.NativeArray],
-             pred : Union[ivy.Array, ivy.NativeArray],
-            /,
-            *,
-             axis : int=0,
-             out : Optional[ivy.Array] = None
-)-> ivy.Array:
-    """
-    Compute the mean square error
+def mse_loss(
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Compute the mean square error.
 
     Parameters
     ----------
-
     true
         input array containing true labels
     pred
@@ -411,7 +410,7 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],
         the mean square loss between two arrays
 
     Examples
-    -------------------
+    --------
     >>>x = ivy.array([1,2,3])
     >>>y = ivy.array([1,1,1])
     >>>z = ivy.mse_loss(x,y)
@@ -428,8 +427,7 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],
     >>>z = ivy.mse_loss(x,y,axis=-1)
     ivy.array([0.34])
     """
-
     true = ivy.negative(true)
-    diff = ivy.add(pred,true)
+    diff = ivy.add(pred, true)
     s_diff = ivy.square(diff)
-    return ivy.mean(s_diff,out=out, axis=axis)
+    return ivy.mean(s_diff, out=out, axis=axis)
