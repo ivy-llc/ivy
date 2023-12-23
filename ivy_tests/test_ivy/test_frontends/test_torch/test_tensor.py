@@ -6533,7 +6533,7 @@ def test_torch_expand_as(
     init_tree="torch.tensor",
     method_name="expm1",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_torch_expm1(
