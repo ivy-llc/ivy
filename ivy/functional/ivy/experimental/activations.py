@@ -926,8 +926,7 @@ def leaky_relu(
     alpha: float = 0.01,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the Leaky_relu activation function to each element of the input.
+    """Apply the Leaky_relu activation function to each element of the input.
 
     Parameters
     ----------
