@@ -2,7 +2,10 @@ def if_else(cond, body_fn, orelse_fn, vars):
     # back-compatibility
     if isinstance(cond, bool):
         v = cond
-        cond = lambda *_: v
+
+        def cond(*_):
+            return v
+
     cond = cond(**vars)
     if cond:
         return body_fn(**vars)

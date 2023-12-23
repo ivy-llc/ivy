@@ -68,16 +68,14 @@ class CPTensor(FactorizedTensor):
         return ivy.CPTensor.cp_to_unfolded(self, mode)
 
     def cp_copy(self):
-        return CPTensor(
-            (
-                ivy.copy_array(self.weights),
-                [ivy.copy_array(self.factors[i]) for i in range(len(self.factors))],
-            )
-        )
+        return CPTensor((
+            ivy.copy_array(self.weights),
+            [ivy.copy_array(self.factors[i]) for i in range(len(self.factors))],
+        ))
 
     def mode_dot(self, matrix_or_vector, mode, keep_dim=False, copy=True):
-        """
-        N-mode product of a CP tensor and a matrix or vector at the specified mode.
+        """N-mode product of a CP tensor and a matrix or vector at the
+        specified mode.
 
         Parameters
         ----------
@@ -107,8 +105,7 @@ class CPTensor(FactorizedTensor):
         )
 
     def norm(self):
-        """
-        Return the l2 norm of a CP tensor.
+        """Return the l2 norm of a CP tensor.
 
         Parameters
         ----------
@@ -130,8 +127,7 @@ class CPTensor(FactorizedTensor):
         return ivy.CPTensor.cp_norm(self)
 
     def normalize(self, inplace=True):
-        """
-        Normalize the factors to unit length.
+        """Normalize the factors to unit length.
 
         Turns ``factors = [|U_1, ... U_n|]`` into ``[weights; |V_1, ... V_n|]``,
         where the columns of each `V_k` are normalized to unit Euclidean length
@@ -179,8 +175,7 @@ class CPTensor(FactorizedTensor):
     # ---------------#
     @staticmethod
     def validate_cp_tensor(cp_tensor):
-        """
-        Validate a cp_tensor in the form (weights, factors)
+        """Validate a cp_tensor in the form (weights, factors)
 
             Return the rank and shape of the validated tensor
 
@@ -239,9 +234,8 @@ class CPTensor(FactorizedTensor):
 
     @staticmethod
     def cp_n_param(tensor_shape, rank, weights=False):
-        """
-        Return number of parameters of a CP decomposition for a given `rank` and full
-        `tensor_shape`.
+        """Return number of parameters of a CP decomposition for a given `rank`
+        and full `tensor_shape`.
 
         Parameters
         ----------
@@ -264,8 +258,7 @@ class CPTensor(FactorizedTensor):
 
     @staticmethod
     def validate_cp_rank(tensor_shape, rank="same", rounding="round"):
-        """
-        Return the rank of a CP Decomposition.
+        """Return the rank of a CP Decomposition.
 
         Parameters
         ----------
@@ -308,8 +301,7 @@ class CPTensor(FactorizedTensor):
 
     @staticmethod
     def cp_normalize(cp_tensor):
-        """
-        Return cp_tensor with factors normalised to unit length.
+        """Return cp_tensor with factors normalised to unit length.
 
         Turns ``factors = [|U_1, ... U_n|]`` into ``[weights;
         |V_1, ... V_n|]``, where the columns of each `V_k` are
@@ -357,10 +349,10 @@ class CPTensor(FactorizedTensor):
 
     @staticmethod
     def cp_flip_sign(cp_tensor, mode=0, func=None):
-        """
-        Return cp_tensor with factors flipped to have positive signs. The sign of a
-        given column is determined by `func`, which is the mean by default. Any negative
-        signs are assigned to the mode indicated by `mode`.
+        """Return cp_tensor with factors flipped to have positive signs. The
+        sign of a given column is determined by `func`, which is the mean by
+        default. Any negative signs are assigned to the mode indicated by
+        `mode`.
 
         Parameters
         ----------
@@ -412,8 +404,7 @@ class CPTensor(FactorizedTensor):
 
     @staticmethod
     def cp_lstsq_grad(cp_tensor, tensor, return_loss=False, mask=None):
-        r"""
-        Compute (for a third-order tensor)
+        r"""Compute (for a third-order tensor)
 
         .. math::
 
@@ -474,8 +465,7 @@ class CPTensor(FactorizedTensor):
 
     @staticmethod
     def cp_to_tensor(cp_tensor, mask=None):
-        """
-        Turn the Khatri-product of matrices into a full tensor.
+        """Turn the Khatri-product of matrices into a full tensor.
 
             ``factor_matrices = [|U_1, ... U_n|]`` becomes
             a tensor shape ``(U[1].shape[0], U[2].shape[0], ... U[-1].shape[0])``
@@ -532,8 +522,7 @@ class CPTensor(FactorizedTensor):
 
     @staticmethod
     def cp_to_unfolded(cp_tensor, mode):
-        """
-        Turn the khatri-product of matrices into an unfolded tensor.
+        """Turn the khatri-product of matrices into an unfolded tensor.
 
             turns ``factors = [|U_1, ... U_n|]`` into a mode-`mode`
             unfolding of the tensor
@@ -573,8 +562,7 @@ class CPTensor(FactorizedTensor):
 
     @staticmethod
     def cp_to_vec(cp_tensor):
-        """
-        Turn the khatri-product of matrices into a vector.
+        """Turn the khatri-product of matrices into a vector.
 
             (the tensor ``factors = [|U_1, ... U_n|]``
             is converted into a raveled mode-0 unfolding)
@@ -599,8 +587,8 @@ class CPTensor(FactorizedTensor):
 
     @staticmethod
     def cp_mode_dot(cp_tensor, matrix_or_vector, mode, keep_dim=False, copy=False):
-        """
-        N-mode product of a CP tensor and a matrix or vector at the specified mode.
+        """N-mode product of a CP tensor and a matrix or vector at the
+        specified mode.
 
         Parameters
         ----------
@@ -671,8 +659,7 @@ class CPTensor(FactorizedTensor):
 
     @staticmethod
     def cp_norm(cp_tensor):
-        """
-        Return the l2 norm of a CP tensor.
+        """Return the l2 norm of a CP tensor.
 
         Parameters
         ----------
@@ -735,7 +722,7 @@ class CPTensor(FactorizedTensor):
     #    -------
     #    permuted_tensors : permuted cp tensor or list of cp tensors
     #    permutation : list
-    #        list of permuted indices. Lenght is equal to rank of cp_tensors.
+    #        list of permuted indices. Length is equal to rank of cp_tensors.
     #    """
     #    if not isinstance(tensors_to_permute, list):
     #        permuted_tensors = [tensors_to_permute.cp_copy()]
@@ -764,8 +751,7 @@ class CPTensor(FactorizedTensor):
 
     @staticmethod
     def unfolding_dot_khatri_rao(x, cp_tensor, mode):
-        """
-        Mode-n unfolding times khatri-rao product of factors.
+        """Mode-n unfolding times khatri-rao product of factors.
 
         Parameters
         ----------

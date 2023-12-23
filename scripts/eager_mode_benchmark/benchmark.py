@@ -5,6 +5,7 @@ import os
 import copy
 import importlib
 import warnings
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -57,7 +58,10 @@ class _AvoidGPUPreallocation:
 def _move_to_device(args=None, kwargs=None, device="cpu"):
     args_idxs = ivy.nested_argwhere(args, ivy.is_array)
     kwargs_idxs = ivy.nested_argwhere(kwargs, ivy.is_array)
-    func = lambda x: ivy.to_device(x, device, out=x)
+
+    def func(x):
+        return ivy.to_device(x, device, out=x)
+
     if args is not None:
         args = ivy.map_nest_at_indices(args, args_idxs, func)
     if kwargs is not None:
@@ -100,9 +104,8 @@ def eager_benchmark(
     kwargs: Optional[Dict[str, Any]] = None,
     output_path="./report.csv",
 ):
-    """
-    Benchmark the function or module passed in input on the required backends and
-    devices.
+    """Benchmark the function or module passed in input on the required
+    backends and devices.
 
     Parameters
     ----------
@@ -233,17 +236,17 @@ def eager_benchmark(
                     )
                     if isinstance(obj_call, ivy.Module):
                         obj_call_copy = copy.deepcopy(obj_call)
-                        obj_call_copy.compile(args=args, kwargs=kwargs)
-                        compiled_fn = obj_call_copy
+                        obj_call_copy.trace(args=args, kwargs=kwargs)
+                        traced_fn = obj_call_copy
                     else:
-                        compiled_fn = ivy.compile(obj_call, args=args, kwargs=kwargs)
+                        traced_fn = ivy.trace(obj_call, args=args, kwargs=kwargs)
                     kwargs = ivy.default(kwargs, {})
                     args = ivy.default(args, ())
-                    uncompiled_time = _compute_time(obj_call)(*args, **kwargs)
-                    compiled_time = _compute_time(compiled_fn)(*args, **kwargs)
+                    untraced_time = _compute_time(obj_call)(*args, **kwargs)
+                    traced_time = _compute_time(traced_fn)(*args, **kwargs)
                     label = obj_call.__name__ if label is None else label
                     percent_speed_up = round(
-                        abs(uncompiled_time - compiled_time) / uncompiled_time * 100, 6
+                        abs(untraced_time - traced_time) / untraced_time * 100, 6
                     )
                     df = _read_or_create_csv(output_path)
                     _write_to_csv(
@@ -253,8 +256,8 @@ def eager_benchmark(
                             label,
                             backend,
                             device,
-                            uncompiled_time,
-                            compiled_time,
+                            untraced_time,
+                            traced_time,
                             percent_speed_up,
                         ],
                         output_path,
@@ -270,14 +273,13 @@ def eager_benchmark(
 
 
 def visualize_speed_up(
-    file_path: str = None,
-    output_path: str = None,
+    file_path: Optional[str] = None,
+    output_path: Optional[str] = None,
     devices: Union[List[str], str] = "all",
     backends: Union[List[str], str] = "all",
-    labels: Union[List[str], str] = None,
+    labels: Optional[Union[List[str], str]] = None,
 ):
-    """
-    Visualize the speed up results stored in the csv.
+    """Visualize the speed up results stored in the csv.
 
     Parameters
     ----------

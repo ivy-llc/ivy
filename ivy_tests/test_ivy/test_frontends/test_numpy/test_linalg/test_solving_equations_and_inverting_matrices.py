@@ -67,7 +67,7 @@ def _get_inv_square_matrices(draw):
         available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=2,
         safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: (x, x)),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     test_with_out=st.just(False),
 )
@@ -168,8 +168,8 @@ def test_numpy_pinv(
 # solve
 @handle_frontend_test(
     fn_tree="numpy.linalg.solve",
-    x=helpers.get_first_solve_matrix(adjoint=True),
-    y=helpers.get_second_solve_matrix(),
+    x=helpers.get_first_solve_batch_matrix(),
+    y=helpers.get_second_solve_batch_matrix(),
     test_with_out=st.just(False),
 )
 def test_numpy_solve(
@@ -182,7 +182,7 @@ def test_numpy_solve(
     on_device,
 ):
     dtype1, x1, _ = x
-    dtype2, x2 = y
+    dtype2, x2, _ = y
     helpers.test_frontend_function(
         input_dtypes=[dtype1, dtype2],
         backend_to_test=backend_fw,
@@ -190,6 +190,8 @@ def test_numpy_solve(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-4,
+        atol=1e-4,
         a=x1,
         b=x2,
     )
