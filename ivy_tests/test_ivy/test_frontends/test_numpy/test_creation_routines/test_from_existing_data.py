@@ -17,6 +17,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         max_dim_size=5,
     ),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_numpy_array(
     dtype_and_a,
@@ -85,6 +86,7 @@ def test_numpy_asarray(
         max_dim_size=5,
     ),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_numpy_copy(
     dtype_and_a,
@@ -125,10 +127,12 @@ def test_numpy_frombuffer(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

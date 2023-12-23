@@ -1,4 +1,5 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 from typing import Optional, Union, Sequence, Callable, Tuple
@@ -10,7 +11,6 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -35,10 +35,8 @@ def get_item(
     /,
     query: Union[np.ndarray, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> np.ndarray:
-    if copy:
-        return x.__getitem__(query).copy()
     return x.__getitem__(query)
 
 
@@ -83,8 +81,8 @@ def gather(
     batch_dims: int = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    axis = axis % len(params.shape)
-    batch_dims = batch_dims % len(params.shape)
+    axis %= len(params.shape)
+    batch_dims %= len(params.shape)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
@@ -103,7 +101,7 @@ def gather(
             result.append(r)
         result = np.array(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-    return _to_device(result)
+    return result
 
 
 def gather_nd_helper(params, indices):
@@ -146,7 +144,7 @@ def gather_nd(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
-    batch_dims = batch_dims % len(params.shape)
+    batch_dims %= len(params.shape)
     result = []
     if batch_dims == 0:
         result = gather_nd_helper(params, indices)
@@ -164,7 +162,7 @@ def gather_nd(
             result.append(r)
         result = np.array(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-    return _to_device(result)
+    return result
 
 
 def get_num_dims(x, /, *, as_array=False):
@@ -282,8 +280,8 @@ def scatter_flat(
         np.maximum.at(target, indices, updates)
     else:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
         )
     if target_given:
         return ivy.inplace_update(out, target)
@@ -324,14 +322,16 @@ def scatter_nd(
         np.minimum.at(target, indices_tuple, updates)
     elif reduction == "max":
         np.maximum.at(target, indices_tuple, updates)
+    elif reduction == "mul":
+        np.multiply.at(target, indices_tuple, updates)
     else:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max",'
+            ' "mul" or "replace"'
         )
     if ivy.exists(out):
-        return ivy.inplace_update(out, _to_device(target))
-    return _to_device(target)
+        return ivy.inplace_update(out, target)
+    return target
 
 
 scatter_nd.support_native_out = True
@@ -401,7 +401,7 @@ def vmap(
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
-            none_axis_index = list()
+            none_axis_index = []
             for index, axis in enumerate(in_axes):
                 if axis is None:
                     none_axis_index.append(index)
@@ -435,7 +435,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.25.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,

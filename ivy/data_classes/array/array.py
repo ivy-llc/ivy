@@ -144,6 +144,10 @@ class Array(
             self._data = data
         elif isinstance(data, np.ndarray):
             self._data = ivy.asarray(data)._data
+        elif ivy.is_ivy_sparse_array(data):
+            self._data = data._data
+        elif ivy.is_native_sparse_array(data):
+            self._data = data._data
         else:
             raise ivy.utils.exceptions.IvyException(
                 "data must be ivy array, native array or ndarray"
@@ -156,7 +160,7 @@ class Array(
         self._dev_str = None
         self._pre_repr = None
         self._post_repr = None
-        self._backend = ivy.backend
+        self._backend = ivy.current_backend(self._data).backend
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
@@ -184,27 +188,26 @@ class Array(
 
     @dynamic_backend.setter
     def dynamic_backend(self, value):
-        from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
-        from ivy.utils.backend.handler import _determine_backend_from_args
+        from ivy.functional.ivy.gradients import _variable
+        from ivy.utils.backend.handler import _data_to_new_backend, _get_backend_for_arg
 
-        if value == False:
-            self._backend = _determine_backend_from_args(self).backend
-
-        else:
+        if value:
             ivy_backend = ivy.with_backend(self._backend)
-            to_numpy = ivy_backend.to_numpy
 
-            if _is_variable(self.data) and not self._backend in ["jax", "numpy"]:
-                native_data = _variable_data(self.data)
-                np_data = to_numpy(native_data)
-                new_arr = ivy.array(np_data)
-                self._data = _variable(new_arr).data
+            if ivy_backend.gradients._is_variable(self.data):
+                native_var = ivy_backend.gradients._variable_data(
+                    self,
+                )
+                data = _data_to_new_backend(native_var, ivy_backend).data
+                self._data = _variable(data).data
 
             else:
-                np_data = to_numpy(self.data)
-                self._data = ivy.array(np_data).data
+                self._data = _data_to_new_backend(self, ivy_backend).data
 
             self._backend = ivy.backend
+
+        else:
+            self._backend = _get_backend_for_arg(self.data.__class__.__module__).backend
 
         self._dynamic_backend = value
 
@@ -229,8 +232,7 @@ class Array(
 
     @property
     def mT(self) -> ivy.Array:
-        """
-        Transpose of a matrix (or a stack of matrices).
+        """Transpose of a matrix (or a stack of matrices).
 
         Returns
         -------
@@ -259,6 +261,9 @@ class Array(
     def size(self) -> Optional[int]:
         """Number of elements in the array."""
         if self._size is None:
+            if ivy.current_backend_str() in ["numpy", "jax"]:
+                self._size = self._data.size
+                return self._size
             self._size = (
                 functools.reduce(mul, self._data.shape)
                 if len(self._data.shape) > 0
@@ -284,8 +289,7 @@ class Array(
 
     @property
     def T(self) -> ivy.Array:
-        """
-        Transpose of the array.
+        """Transpose of the array.
 
         Returns
         -------
@@ -300,6 +304,32 @@ class Array(
     def base(self) -> ivy.Array:
         """Original array referenced by view."""
         return self._base
+
+    @property
+    def real(self) -> ivy.Array:
+        """Real part of the array.
+
+        Returns
+        -------
+        ret
+            array containing the real part of each element in the array.
+            The returned array must have the same shape and data type as
+            the original array.
+        """
+        return ivy.real(self._data)
+
+    @property
+    def imag(self) -> ivy.Array:
+        """Imaginary part of the array.
+
+        Returns
+        -------
+        ret
+            array containing the imaginary part of each element in the array.
+            The returned array must have the same shape and data type as
+            the original array.
+        """
+        return ivy.imag(self._data)
 
     # Setters #
     # --------#
@@ -364,18 +394,12 @@ class Array(
             self._dev_str = ivy.as_ivy_dev(self.device)
             self._pre_repr = "ivy.array"
             if "gpu" in self._dev_str:
-                self._post_repr = ", dev={})".format(self._dev_str)
+                self._post_repr = f", dev={self._dev_str})"
             else:
                 self._post_repr = ")"
         sig_fig = ivy.array_significant_figures
         dec_vals = ivy.array_decimal_values
-        if self.backend == "" or ivy.is_local():
-            # If the array was constructed using implicit backend
-            backend = ivy.current_backend()
-        else:
-            # Requirerd in the case that backend is different
-            # from the currently set backend
-            backend = ivy.with_backend(self.backend, cached=True)
+        backend = ivy.with_backend(self.backend)
         arr_np = backend.to_numpy(self._data)
         rep = (
             np.array(ivy.vec_sig_fig(arr_np, sig_fig))
@@ -414,7 +438,7 @@ class Array(
         return self._data.__contains__(key)
 
     def __getstate__(self):
-        data_dict = dict()
+        data_dict = {}
 
         # only pickle the native array
         data_dict["data"] = self.data
@@ -451,10 +475,9 @@ class Array(
         return ivy.negative(self._data)
 
     def __pow__(self, power):
-        """
-        ivy.Array special method variant of ivy.pow. This method simply wraps the
-        function, and so the docstring for ivy.pow also applies to this method with
-        minimal changes.
+        """ivy.Array special method variant of ivy.pow. This method simply
+        wraps the function, and so the docstring for ivy.pow also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -493,10 +516,9 @@ class Array(
         return ivy.pow(self._data, power)
 
     def __add__(self, other):
-        """
-        ivy.Array special method variant of ivy.add. This method simply wraps the
-        function, and so the docstring for ivy.add also applies to this method with
-        minimal changes.
+        """ivy.Array special method variant of ivy.add. This method simply
+        wraps the function, and so the docstring for ivy.add also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -523,10 +545,9 @@ class Array(
         return ivy.add(self._data, other)
 
     def __radd__(self, other):
-        """
-        ivy.Array reverse special method variant of ivy.add. This method simply wraps
-        the function, and so the docstring for ivy.add also applies to this method with
-        minimal changes.
+        """ivy.Array reverse special method variant of ivy.add. This method
+        simply wraps the function, and so the docstring for ivy.add also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -556,10 +577,9 @@ class Array(
         return ivy.add(self._data, other)
 
     def __sub__(self, other):
-        """
-        ivy.Array special method variant of ivy.subtract. This method simply wraps the
-        function, and so the docstring for ivy.subtract also applies to this method with
-        minimal changes.
+        """ivy.Array special method variant of ivy.subtract. This method simply
+        wraps the function, and so the docstring for ivy.subtract also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -588,10 +608,9 @@ class Array(
         return ivy.subtract(self._data, other)
 
     def __rsub__(self, other):
-        """
-        ivy.Array reverse special method variant of ivy.subtract. This method simply
-        wraps the function, and so the docstring for ivy.subtract also applies to this
-        method with minimal changes.
+        """ivy.Array reverse special method variant of ivy.subtract. This
+        method simply wraps the function, and so the docstring for ivy.subtract
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -639,16 +658,15 @@ class Array(
         return ivy.remainder(self._data, other)
 
     def __divmod__(self, other):
-        return tuple([ivy.divide(self._data, other), ivy.remainder(self._data, other)])
+        return ivy.divide(self._data, other), ivy.remainder(self._data, other)
 
     def __rdivmod__(self, other):
-        return tuple([ivy.divide(other, self._data), ivy.remainder(other, self._data)])
+        return ivy.divide(other, self._data), ivy.remainder(other, self._data)
 
     def __truediv__(self, other):
-        """
-        ivy.Array reverse special method variant of ivy.divide. This method simply wraps
-        the function, and so the docstring for ivy.divide also applies to this method
-        with minimal changes.
+        """ivy.Array reverse special method variant of ivy.divide. This method
+        simply wraps the function, and so the docstring for ivy.divide also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -699,10 +717,9 @@ class Array(
         return ivy.matmul(self._data, other)
 
     def __abs__(self):
-        """
-        ivy.Array special method variant of ivy.abs. This method simply wraps the
-        function, and so the docstring for ivy.abs also applies to this method with
-        minimal changes.
+        """ivy.Array special method variant of ivy.abs. This method simply
+        wraps the function, and so the docstring for ivy.abs also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -731,16 +748,31 @@ class Array(
         return ivy.abs(self._data)
 
     def __float__(self):
-        res = self._data.__float__()
+        if hasattr(self._data, "__float__"):
+            if "complex" in self.dtype:
+                res = float(self.real)
+            else:
+                res = self._data.__float__()
+        else:
+            res = float(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
         return to_ivy(res)
 
     def __int__(self):
         if hasattr(self._data, "__int__"):
-            res = self._data.__int__()
+            if "complex" in self.dtype:
+                res = int(self.real)
+            else:
+                res = self._data.__int__()
         else:
             res = int(ivy.to_scalar(self._data))
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    def __complex__(self):
+        res = complex(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -749,16 +781,20 @@ class Array(
         return self._data.__bool__()
 
     def __dlpack__(self, stream=None):
-        return self._data.__dlpack__()
+        # Not completely supported yet as paddle and tf
+        # doesn't support __dlpack__ and __dlpack_device__ dunders right now
+        # created issues
+        # paddle https://github.com/PaddlePaddle/Paddle/issues/56891
+        # tf https://github.com/tensorflow/tensorflow/issues/61769
+        return ivy.to_dlpack(self)
 
     def __dlpack_device__(self):
         return self._data.__dlpack_device__()
 
     def __lt__(self, other):
-        """
-        ivy.Array special method variant of ivy.less. This method simply wraps the
-        function, and so the docstring for ivy.less also applies to this method with
-        minimal changes.
+        """ivy.Array special method variant of ivy.less. This method simply
+        wraps the function, and so the docstring for ivy.less also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -785,10 +821,9 @@ class Array(
         return ivy.less(self._data, other)
 
     def __le__(self, other):
-        """
-        ivy.Array special method variant of ivy.less_equal. This method simply wraps the
-        function, and so the docstring for ivy.less_equal also applies to this method
-        with minimal changes.
+        """ivy.Array special method variant of ivy.less_equal. This method
+        simply wraps the function, and so the docstring for ivy.less_equal also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -815,10 +850,9 @@ class Array(
         return ivy.less_equal(self._data, other)
 
     def __eq__(self, other):
-        """
-        ivy.Array special method variant of ivy.equal. This method simply wraps the
-        function, and so the docstring for ivy.equal also applies to this method with
-        minimal changes.
+        """ivy.Array special method variant of ivy.equal. This method simply
+        wraps the function, and so the docstring for ivy.equal also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -853,10 +887,9 @@ class Array(
         return ivy.equal(self._data, other)
 
     def __ne__(self, other):
-        """
-        ivy.Array special method variant of ivy.not_equal. This method simply wraps the
-        function, and so the docstring for ivy.not_equal also applies to this method
-        with minimal changes.
+        """ivy.Array special method variant of ivy.not_equal. This method
+        simply wraps the function, and so the docstring for ivy.not_equal also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -891,10 +924,9 @@ class Array(
         return ivy.not_equal(self._data, other)
 
     def __gt__(self, other):
-        """
-        ivy.Array special method variant of ivy.greater. This method simply wraps the
-        function, and so the docstring for ivy.greater also applies to this method with
-        minimal changes.
+        """ivy.Array special method variant of ivy.greater. This method simply
+        wraps the function, and so the docstring for ivy.greater also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -938,10 +970,9 @@ class Array(
         return ivy.greater(self._data, other)
 
     def __ge__(self, other):
-        """
-        ivy.Array special method variant of ivy.greater_equal. This method simply wraps
-        the function, and so the docstring for ivy.bitwise_xor also applies to this
-        method with minimal changes.
+        """ivy.Array special method variant of ivy.greater_equal. This method
+        simply wraps the function, and so the docstring for ivy.bitwise_xor
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1006,10 +1037,9 @@ class Array(
         return ivy.bitwise_invert(self._data)
 
     def __xor__(self, other):
-        """
-        ivy.Array special method variant of ivy.bitwise_xor. This method simply wraps
-        the function, and so the docstring for ivy.bitwise_xor also applies to this
-        method with minimal changes.
+        """ivy.Array special method variant of ivy.bitwise_xor. This method
+        simply wraps the function, and so the docstring for ivy.bitwise_xor
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1064,10 +1094,10 @@ class Array(
         return ivy.bitwise_left_shift(self._data, other)
 
     def __rshift__(self, other):
-        """
-        ivy.Array special method variant of ivy.bitwise_right_shift. This method simply
-        wraps the function, and so the docstring for ivy.bitwise_right_shift also
-        applies to this method with minimal changes.
+        """ivy.Array special method variant of ivy.bitwise_right_shift. This
+        method simply wraps the function, and so the docstring for
+        ivy.bitwise_right_shift also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -1097,10 +1127,10 @@ class Array(
         return ivy.bitwise_right_shift(self._data, other)
 
     def __rrshift__(self, other):
-        """
-        ivy.Array reverse special method variant of ivy.bitwise_right_shift. This method
-        simply wraps the function, and so the docstring for ivy.bitwise_right_shift also
-        applies to this method with minimal changes.
+        """ivy.Array reverse special method variant of ivy.bitwise_right_shift.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_right_shift also applies to this method with minimal
+        changes.
 
         Parameters
         ----------

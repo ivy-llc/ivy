@@ -15,6 +15,18 @@ from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 import functools
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _num_to_bit_list(value, num_dims):
+    return list(map(int, f"{value:0{num_dims}b}"))[::-1]
+
+
+# --- Main --- #
+# ------------ #
+
+
 @to_ivy_arrays_and_back
 def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
     if direction == "DESCENDING":
@@ -27,20 +39,30 @@ def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.13.0 and below": ("float16",)}, "tensorflow")
-def clip_by_value(t, clip_value_min, clip_value_max):
-    ivy.utils.assertions.check_all_or_any_fn(
-        clip_value_min,
-        clip_value_max,
-        fn=ivy.exists,
-        type="all",
-        message="clip_value_min and clip_value_max must exist",
-    )
-    t = ivy.array(t)
-    return ivy.clip(t, clip_value_min, clip_value_max)
+def boolean_mask(tensor, mask, axis=None, name=None):
+    if axis is None or axis == 0:
+        return ivy.get_item(tensor, mask)
+    else:
+        n = ivy.get_num_dims(tensor)
+        k = ivy.get_num_dims(mask)
+        if axis < 0:
+            axis = n + axis
+        ivy.utils.assertions.check_less(
+            k + axis,
+            n,
+            allow_equal=True,
+            message="Value of axis must be such that axis + dim(mask) <= dim(tensor)",
+            as_array=False,
+        )
+        tensor_shape = ivy.shape(tensor)
+        range_array = ivy.arange(axis - 1, -1, -1)
+        for i in ivy.to_list(range_array):
+            mask = ivy.expand_dims(mask, axis=0)
+            mask = ivy.repeat(mask, tensor_shape[i], axis=0)
+        return ivy.get_item(tensor, mask)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float32",)}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     if use_norm is not None:
@@ -54,7 +76,7 @@ def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     ], global_norm
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float", "complex")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float", "complex")}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_norm(t, clip_norm, axes=None):
     t, clip_norm = check_tensorflow_casting(t, clip_norm)
@@ -64,15 +86,90 @@ def clip_by_norm(t, clip_norm, axes=None):
     l2sum_safe = ivy.where(pred, l2sum, ivy.ones_like(l2sum))
     l2norm = ivy.where(pred, ivy.sqrt(l2sum_safe), l2sum)
     intermediate = t * clip_norm
-    assert t.shape == intermediate.shape, "Dimensions %s and %s are not compatible" % (
-        t.shape,
-        intermediate.shape,
-    )
+    assert (
+        t.shape == intermediate.shape
+    ), f"Dimensions {t.shape} and {intermediate.shape} are not compatible"
     t_clip = intermediate / ivy.maximum(l2norm, clip_norm)
     return t_clip
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, "tensorflow")
+def clip_by_value(t, clip_value_min, clip_value_max):
+    ivy.utils.assertions.check_all_or_any_fn(
+        clip_value_min,
+        clip_value_max,
+        fn=ivy.exists,
+        type="all",
+        message="clip_value_min and clip_value_max must exist",
+    )
+    t = ivy.array(t)
+    return ivy.clip(t, clip_value_min, clip_value_max)
+
+
+@to_ivy_arrays_and_back
+def concat(values, axis, name=None):
+    return ivy.concat(values, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def cond(pred, true_fn=None, false_fn=None, name=None):
+    if true_fn is None:
+        raise TypeError("cond(): 'true_fn' argument required")
+    if false_fn is None:
+        raise TypeError("cond(): 'false_fn' argument required")
+
+    if not callable(true_fn):
+        raise TypeError("'true_fn' must be callable.")
+    if not callable(false_fn):
+        raise TypeError("'false_fn' must be callable.")
+
+    if pred:
+        return true_fn()
+
+    if not pred:
+        return false_fn()
+
+
+@handle_tf_dtype
+def constant(value, dtype=None, shape=None, name=None):
+    if shape is not None:
+        value = ivy.reshape(value, shape=shape)
+    if dtype is not None:
+        return EagerTensor(ivy.astype(value, dtype))
+    return EagerTensor(value)
+
+
+@handle_tf_dtype
+def convert_to_tensor(value, dtype=None, dtype_hint=None, name=None):
+    if dtype:
+        return tf_frontend.cast(value, dtype)
+    elif dtype_hint:
+        return tf_frontend.cast(value, dtype_hint)
+    if hasattr(value, "ivy_array"):
+        return EagerTensor(value.ivy_array)
+    return EagerTensor(value)
+
+
+@to_ivy_arrays_and_back
+def einsum(equation, *inputs, **kwargs):
+    return ivy.einsum(equation, *inputs)
+
+
+@to_ivy_arrays_and_back
+def ensure_shape(x, shape, name=None):
+    x = EagerTensor(x)
+    x.set_shape(shape)
+
+    return x
+
+
+@to_ivy_arrays_and_back
+def expand_dims(input, axis, name=None):
+    return ivy.expand_dims(input, axis=axis)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
@@ -115,7 +212,115 @@ def foldl(
     return result
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def foldr(
+    fn,
+    elems,
+    initializer=None,
+    parallel_iterations=10,
+    back_prop=True,
+    swap_memory=False,
+    name=None,
+):
+    ivy.utils.assertions.check_isinstance(
+        elems, (list, ivy.Array), "elems must be an iterable object"
+    )
+    ivy.utils.assertions.check_true(
+        callable(fn), f"{fn.__name__} must be a callable function"
+    )
+    if len(ivy.shape(elems)) == 0 or ivy.get_num_dims(elems) == 0:
+        raise ivy.utils.exceptions.IvyValueError(
+            "elems must be a non-empty iterable object with at least one dimension"
+        )
+
+    elems = ivy.flip(elems)
+
+    if initializer is not None:
+        result = functools.reduce(fn, elems, initializer)
+    elif initializer is None and ivy.shape(elems)[0] > 0:
+        result = functools.reduce(fn, elems[1:], elems[0])
+    else:
+        result = elems
+    if all(ivy.get_num_dims(e) == 0 for e in elems):
+        result = ivy.to_scalar(result)
+    result = ivy.flip(result)
+    return result
+
+
+@to_ivy_arrays_and_back
+def gather(params, indices, validate_indices=None, axis=None, batch_dims=0, name=None):
+    if axis is None:
+        axis = batch_dims
+    else:
+        axis = axis % len(params.shape)
+    axis = max(axis, batch_dims)
+    return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
+
+
+@to_ivy_arrays_and_back
+def gather_nd(params, indices, batch_dims=0, name=None):
+    return ivy.gather_nd(params, indices, batch_dims=batch_dims)
+
+
+@to_ivy_arrays_and_back
+def identity(input, name=None):
+    return ivy.copy_array(input)
+
+
+@to_ivy_arrays_and_back
+def identity_n(input, name=None):
+    return [ivy.copy_array(x) for x in input]
+
+
+@to_ivy_arrays_and_back
+def is_tensor(x, name=None):
+    return ivy.is_array(x)
+
+
+@to_ivy_arrays_and_back
+def linspace(start, stop, num, name=None, axis=0):
+    return ivy.linspace(start, stop, num, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def meshgrid(*args, **kwargs):
+    sparse = False
+    indexing = "xy"
+    if "indexing" in kwargs:
+        indexing = kwargs["indexing"]
+
+    return ivy.meshgrid(*args, sparse=sparse, indexing=indexing)
+
+
+@to_ivy_arrays_and_back
+def no_op(name=None):
+    return
+
+
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
+@to_ivy_arrays_and_back
+def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
+    return tf_frontend.linalg.norm(
+        tensor, ord=ord, axis=axis, keepdims=keepdims, name=name
+    )
+
+
+@to_ivy_arrays_and_back
+def one_hot(
+    indices: ivy.Array,
+    depth: int,
+    on_value=None,
+    off_value=None,
+    axis=None,
+    dtype=None,
+    device=None,
+    out=None,
+):
+    return ivy.one_hot(indices, depth)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def ones(shape, dtype=ivy.float32, name=None):
@@ -124,33 +329,43 @@ def ones(shape, dtype=ivy.float32, name=None):
 
 @handle_tf_dtype
 @to_ivy_arrays_and_back
-def zeros_like(input, dtype=None, name=None):
-    return ivy.zeros_like(input, dtype=dtype)
-
-
-@handle_tf_dtype
-def constant(value, dtype=None, shape=None, name=None):
-    if shape is not None:
-        value = ivy.reshape(value, shape=shape)
-    if dtype is not None:
-        return EagerTensor(ivy.astype(value, dtype))
-    return EagerTensor(value)
-
-
-@handle_tf_dtype
-def convert_to_tensor(value, dtype=None, dtype_hint=None, name=None):
-    if dtype:
-        return tf_frontend.cast(value, dtype)
-    elif dtype_hint:
-        return tf_frontend.cast(value, dtype_hint)
-    if hasattr(value, "ivy_array"):
-        return EagerTensor(value.ivy_array)
-    return EagerTensor(value)
+def ones_like(input, dtype=None, name=None):
+    return ivy.ones_like(input, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
-def einsum(equation, *inputs, **kwargs):
-    return ivy.einsum(equation, *inputs)
+def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
+    paddings = paddings.to_list() if ivy.is_array(paddings) else paddings
+    return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@handle_tf_dtype
+@to_ivy_arrays_and_back
+def range(start, limit=None, delta=1, dtype=None, name=None):
+    return ivy.arange(start, limit, delta, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def rank(input, **kwargs):
+    return ivy.astype(ivy.array(input.ndim), ivy.int32)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("unsigned", "integer")}, "tensorflow")
+@to_ivy_arrays_and_back
+def realdiv(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def repeat(
+    input,
+    repeats,
+    axis=None,
+    name=None,
+):
+    return ivy.repeat(input, repeats, axis=axis)
 
 
 @to_ivy_arrays_and_back
@@ -160,54 +375,65 @@ def reshape(tensor, shape, name=None):
 
 
 @to_ivy_arrays_and_back
-def rank(input, **kwargs):
-    return ivy.astype(ivy.array(input.ndim), ivy.int32)
-
-
-@handle_tf_dtype
-@to_ivy_arrays_and_back
-def ones_like(input, dtype=None, name=None):
-    return ivy.ones_like(input, dtype=dtype)
-
-
-@handle_tf_dtype
-@to_ivy_arrays_and_back
-def zeros(shape, dtype=ivy.float32, name=None):
-    return ivy.zeros(shape=shape, dtype=dtype)
+def reverse(tensor, axis, name=None):
+    return ivy.flip(tensor, axis=axis)
 
 
 @to_ivy_arrays_and_back
-def expand_dims(input, axis, name=None):
-    return ivy.expand_dims(input, axis=axis)
+def roll(input, shift, axis, name=None):
+    return ivy.roll(input, shift, axis=axis)
 
 
 @to_ivy_arrays_and_back
-def squeeze(input, axis=None, name=None):
-    return ivy.squeeze(input, axis=axis)
+def scan(
+    fn,
+    elems,
+    initializer=None,
+    parallel_iterations=10,
+    back_prop=True,
+    swap_memory=False,
+    infer_shape=True,
+    reverse=False,
+    name=None,
+):
+    elems = ivy.asarray(elems)
+    return ivy.associative_scan(elems, fn, reverse=reverse)
 
 
 @to_ivy_arrays_and_back
-def concat(values, axis, name=None):
-    return ivy.concat(values, axis=axis)
+def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
+    out_type = to_ivy_dtype(out_type)
+    if out_type not in ["int32", "int64"]:
+        out_type = "int64"
+    return ivy.searchsorted(sorted_sequence, values, side=side, ret_dtype=out_type)
 
 
+@with_supported_dtypes(
+    {"2.15.0 and below": ("int8", "int16", "int32", "int64")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
-def cond(pred, true_fn=None, false_fn=None, name=None):
-    if true_fn is None:
-        raise TypeError("cond(): 'true_fn' argument required")
-    if false_fn is None:
-        raise TypeError("cond(): 'false_fn' argument required")
+def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
+    if maxlen is None:
+        maxlen = ivy.maximum(
+            ivy.max(lengths), ivy.max(ivy.arange(ivy.get_num_dims(lengths)))
+        )
+        maxlen = ivy.maximum(0, maxlen)
+    else:
+        maxlen = ivy.array(maxlen)
+    if ivy.get_num_dims(maxlen) is not None and ivy.get_num_dims(maxlen) != 0:
+        raise ValueError(
+            "Argument `maxlen` must be scalar for sequence_mask, "
+            f"received `maxlen` = {maxlen} "
+            f"with shape '{maxlen.get_shape()}' instead"
+        )
 
-    if not callable(true_fn):
-        raise TypeError("'true_fn' must be callable.")
-    if not callable(false_fn):
-        raise TypeError("'false_fn' must be callable.")
-
-    if pred:
-        return true_fn()
-
-    if not pred:
-        return false_fn()
+    row_vector = ivy.arange(0, int(maxlen), 1)
+    matrix = ivy.expand_dims(lengths, axis=-1)
+    result = row_vector < matrix
+    if dtype is None:
+        return result
+    else:
+        return ivy.astype(result, dtype)
 
 
 @to_ivy_arrays_and_back
@@ -236,18 +462,8 @@ def size(input, out_type=ivy.int32, name=None):
 
 
 @to_ivy_arrays_and_back
-def ensure_shape(x, shape, name=None):
-    x = EagerTensor(x)
-    x.set_shape(shape)
-
-    return x
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
-@handle_tf_dtype
-@to_ivy_arrays_and_back
-def range(start, limit=None, delta=1, dtype=None, name=None):
-    return ivy.arange(start, limit, delta, dtype=dtype)
+def slice(input_, begin, size, name=None):
+    return strided_slice(input_, begin, begin + size)
 
 
 @to_ivy_arrays_and_back
@@ -265,22 +481,19 @@ def sort(values, axis=-1, direction="ASCENDING", name=None):
     return ivy.sort(values, axis=axis, descending=descending)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("uint8", "uint16", "uint32", "uint64", "int16")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
-def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
-    out_type = to_ivy_dtype(out_type)
-    if out_type not in ["int32", "int64"]:
-        out_type = "int64"
-    return ivy.searchsorted(sorted_sequence, values, side=side, ret_dtype=out_type)
-
-
-@to_ivy_arrays_and_back
-def identity(input, name=None):
-    return ivy.copy_array(input)
+def split(value, num_or_size_splits, axis=0, num=None, name=None):
+    return ivy.split(
+        value, num_or_size_splits=num_or_size_splits, axis=axis, with_remainder=True
+    )
 
 
 @to_ivy_arrays_and_back
-def identity_n(input, name=None):
-    return [ivy.copy_array(x) for x in input]
+def squeeze(input, axis=None, name=None):
+    return ivy.squeeze(input, axis=axis)
 
 
 @to_ivy_arrays_and_back
@@ -289,68 +502,8 @@ def stack(values, axis=0, name="stack"):
 
 
 @to_ivy_arrays_and_back
-def is_tensor(x, name=None):
-    return ivy.is_array(x)
-
-
-@to_ivy_arrays_and_back
-def gather(params, indices, validate_indices=None, axis=None, batch_dims=0, name=None):
-    if axis is None:
-        axis = batch_dims
-    else:
-        axis = axis % len(params.shape)
-    if axis < batch_dims:
-        axis = batch_dims
-    return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
-
-
-@to_ivy_arrays_and_back
-def gather_nd(params, indices, batch_dims=0, name=None):
-    return ivy.gather_nd(params, indices, batch_dims=batch_dims)
-
-
-@to_ivy_arrays_and_back
-def boolean_mask(tensor, mask, axis=None, name=None):
-    if axis is None or axis == 0:
-        return ivy.get_item(tensor, mask)
-    else:
-        n = ivy.get_num_dims(tensor)
-        k = ivy.get_num_dims(mask)
-        if axis < 0:
-            axis = n + axis
-        ivy.utils.assertions.check_less(
-            k + axis,
-            n,
-            allow_equal=True,
-            message="Value of axis must be such that axis + dim(mask) <= dim(tensor)",
-            as_array=False,
-        )
-        tensor_shape = ivy.shape(tensor)
-        range_array = ivy.arange(axis - 1, -1, -1)
-        for i in ivy.to_list(range_array):
-            mask = ivy.expand_dims(mask, axis=0)
-            mask = ivy.repeat(mask, tensor_shape[i], axis=0)
-        return ivy.get_item(tensor, mask)
-
-
-@to_ivy_arrays_and_back
-def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
-    paddings = paddings.to_list() if ivy.is_array(paddings) else paddings
-    return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
-
-
-@to_ivy_arrays_and_back
-def transpose(a, perm=None, conjugate=False, name="transpose"):
-    # handle conjugate when ivy supports complex numbers
-    if perm is not None:
-        return ivy.permute_dims(a, axes=perm)
-    n = a.ndim
-    perm = ivy.arange(n - 1, -1, -1)
-    return ivy.permute_dims(a, axes=perm)
-
-
-def _num_to_bit_list(value, num_dims):
-    return list(map(int, "{:0{size}b}".format(value, size=num_dims)))[::-1]
+def stop_gradient(input, name=None):
+    return ivy.stop_gradient(input)
 
 
 # ToDo: find a way around for negative indexing, which torch does not support
@@ -436,8 +589,8 @@ def strided_slice(
         if new_axis_mask[i]:
             full_slice += (ivy.newaxis,)
         else:
-            b = begin[i] if not begin_mask[i] else None
-            e = end[i] if not end_mask[i] else None
+            b = None if begin_mask[i] else begin[i]
+            e = None if end_mask[i] else end[i]
             s = strides[i]
             if b is None and e is None:
                 s = 1 if ellipsis_mask[i] else s
@@ -460,113 +613,42 @@ def strided_slice(
 
 
 @to_ivy_arrays_and_back
-def slice(input_, begin, size, name=None):
-    return strided_slice(input_, begin, begin + size)
+def tensor_scatter_nd_add(tensor, indices, updates, name=None):
+    zero_tensor = ivy.zeros_like(tensor)
+    scatter_tensor = ivy.scatter_nd(indices, updates, zero_tensor.shape)
+    return ivy.add(tensor, scatter_tensor)
 
 
-@to_ivy_arrays_and_back
-def linspace(start, stop, num, name=None, axis=0):
-    return ivy.linspace(start, stop, num, axis=axis)
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("unsigned", "integer")}, "tensorflow")
-@to_ivy_arrays_and_back
-def realdiv(x, y, name=None):
-    x, y = check_tensorflow_casting(x, y)
-    return ivy.divide(x, y)
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("uint16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("uint16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def tile(input, multiples, name=None):
     return ivy.tile(input, multiples)
 
 
 @to_ivy_arrays_and_back
-def one_hot(
-    indices: ivy.Array,
-    depth: int,
-    on_value=None,
-    off_value=None,
-    axis=None,
-    dtype=None,
-    device=None,
-    out=None,
-):
-    return ivy.one_hot(indices, depth)
+def transpose(a, perm=None, conjugate=False, name="transpose"):
+    # handle conjugate when ivy supports complex numbers
+    if perm is not None:
+        return ivy.permute_dims(a, axes=perm)
+    n = a.ndim
+    perm = ivy.arange(n - 1, -1, -1)
+    return ivy.permute_dims(a, axes=perm)
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
-def where(condition: ivy.Array, x=None, y=None, name=None):
-    if x is None and y is None:
-        return ivy.argwhere(condition)
-    else:
-        return ivy.where(condition, x, y)
-
-
-@to_ivy_arrays_and_back
-def roll(input, shift, axis, name=None):
-    return ivy.roll(input, shift, axis=axis)
+def truncatediv(x, y, name=None):
+    return x.trunc_divide(y)
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("uint8", "uint16", "uint32", "uint64", "int16")}, "tensorflow"
+    {"2.15.0 and below": ("int16", "int8", "uint8", " uint16")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
-def split(value, num_or_size_splits, axis=0, num=None, name=None):
-    return ivy.split(
-        value, num_or_size_splits=num_or_size_splits, axis=axis, with_remainder=True
-    )
-
-
-@to_ivy_arrays_and_back
-def repeat(
-    input,
-    repeats,
-    axis=None,
-    name=None,
-):
-    return ivy.repeat(input, repeats, axis=axis)
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
-@to_ivy_arrays_and_back
-def unstack(value: ivy.Array, axis=0, num=None, name=None):
-    return ivy.unstack(value, axis=axis)
-
-
-@to_ivy_arrays_and_back
-def reverse(tensor, axis, name=None):
-    return ivy.flip(tensor, axis=axis)
-
-
-@to_ivy_arrays_and_back
-def scan(
-    fn,
-    elems,
-    initializer=None,
-    parallel_iterations=10,
-    back_prop=True,
-    swap_memory=False,
-    infer_shape=True,
-    reverse=False,
-    name=None,
-):
-    elems = ivy.asarray(elems)
-    return ivy.associative_scan(elems, fn, reverse=reverse)
-
-
-@to_ivy_arrays_and_back
-def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
-    return tf_frontend.linalg.norm(
-        tensor, ord=ord, axis=axis, keepdims=keepdims, name=name
-    )
-
-
-norm.supported_dtypes = (
-    "float32",
-    "float64",
-)
+def truncatemod(x, y):
+    x = ivy.broadcast_to(x, ivy.shape(y))
+    y = ivy.broadcast_to(y, ivy.shape(x))
+    return ivy.trunc(x / y) * y + (x % y)
 
 
 @to_ivy_arrays_and_back
@@ -617,6 +699,25 @@ def unique_with_counts(x, out_idx="int32", name=None):
 
 
 @to_ivy_arrays_and_back
+def unravel_index(indices, dims, out=None, name=None):
+    return ivy.unravel_index(indices, dims, out=out)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def unstack(value: ivy.Array, axis=0, num=None, name=None):
+    return ivy.unstack(value, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def where(condition: ivy.Array, x=None, y=None, name=None):
+    if x is None and y is None:
+        return ivy.argwhere(condition)
+    else:
+        return ivy.where(condition, x, y)
+
+
+@to_ivy_arrays_and_back
 def while_loop(
     cond,
     body,
@@ -631,22 +732,22 @@ def while_loop(
     return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@handle_tf_dtype
 @to_ivy_arrays_and_back
-def truncatediv(x, y, name=None):
-    return x.trunc_divide(y)
+def zeros(shape, dtype=ivy.float32, name=None):
+    return ivy.zeros(shape=shape, dtype=dtype)
 
 
-@with_unsupported_dtypes(
-    {"2.13.0 and below": ("int16", "int8", "uint8", " uint16")}, "tensorflow"
-)
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
-def truncatemod(x, y):
-    x = ivy.broadcast_to(x, ivy.shape(y))
-    y = ivy.broadcast_to(y, ivy.shape(x))
-    return ivy.trunc(x / y) * y + (x % y)
+def zeros_initializer(shape, dtype=None, name=None):
+    # todo internal: fix behaviour
+    if dtype is None:
+        dtype = ivy.default_dtype()
+    return ivy.zeros(shape, dtype=dtype)
 
 
+@handle_tf_dtype
 @to_ivy_arrays_and_back
-def unravel_index(indices, dims, out=None, name=None):
-    return ivy.unravel_index(indices, dims, out=out)
+def zeros_like(input, dtype=None, name=None):
+    return ivy.zeros_like(input, dtype=dtype)

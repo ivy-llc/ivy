@@ -8,6 +8,10 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
 def _pop_size_num_samples_replace_n_probs(draw):
     prob_dtype = draw(helpers.get_dtypes("float", full=False))
@@ -26,34 +30,39 @@ def _pop_size_num_samples_replace_n_probs(draw):
     return prob_dtype, batch_size, num_samples, replace, probs
 
 
-# multinomial
+# --- Main --- #
+# ------------ #
+
+
 @handle_frontend_test(
-    fn_tree="torch.multinomial",
-    everything=_pop_size_num_samples_replace_n_probs(),
+    fn_tree="torch.bernoulli",
+    dtype_and_probs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        min_value=0,
+        max_value=1,
+        min_num_dims=0,
+    ),
 )
-def test_torch_multinomial(
-    *,
-    everything,
+def test_torch_bernoulli(
+    dtype_and_probs,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    prob_dtype, batch_size, num_samples, replace, probs = everything
+    dtype, probs = dtype_and_probs
 
     def call():
         return helpers.test_frontend_function(
-            input_dtypes=prob_dtype,
+            input_dtypes=dtype,
             backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
-            input=probs,
-            num_samples=num_samples,
-            replacement=replace,
+            input=probs[0],
         )
 
     ret = call()
@@ -88,121 +97,34 @@ def test_torch_manual_seed(
     frontend_fw.__dict__[fn_name](seed)
 
 
+# multinomial
 @handle_frontend_test(
-    fn_tree="torch.poisson",
-    dtype_and_lam=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False),
-        min_value=0,
-        max_value=100,
-        min_num_dims=0,
-        max_num_dims=10,
-        min_dim_size=1,
-    ),
+    fn_tree="torch.multinomial",
+    everything=_pop_size_num_samples_replace_n_probs(),
 )
-def test_torch_poisson(
+def test_torch_multinomial(
     *,
-    dtype_and_lam,
+    everything,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    lam_dtype, lam = dtype_and_lam
+    prob_dtype, batch_size, num_samples, replace, probs = everything
 
     def call():
         return helpers.test_frontend_function(
-            input_dtypes=lam_dtype,
+            input_dtypes=prob_dtype,
             backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
-            input=lam[0],
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
-# randint
-@handle_frontend_test(
-    fn_tree="torch.randint",
-    low=helpers.ints(min_value=0, max_value=10),
-    high=helpers.ints(min_value=11, max_value=20),
-    size=helpers.get_shape(),
-    dtype=helpers.get_dtypes("integer"),
-)
-def test_torch_randint(
-    *,
-    low,
-    high,
-    size,
-    dtype,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-):
-    def call():
-        helpers.test_frontend_function(
-            input_dtypes=dtype,
-            backend_to_test=backend_fw,
-            frontend=frontend,
-            test_values=False,
-            fn_tree=fn_tree,
-            test_flags=test_flags,
-            low=low,
-            high=high,
-            size=size,
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
-@handle_frontend_test(
-    fn_tree="torch.rand",
-    dtype=helpers.get_dtypes("float", full=False),
-    size=helpers.get_shape(
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
-)
-def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags, backend_fw):
-    size = {f"size{i}": size[i] for i in range(len(size))}
-    test_flags.num_positional_args = len(size)
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=dtype,
-            backend_to_test=backend_fw,
-            frontend=frontend,
-            test_values=False,
-            fn_tree=fn_tree,
-            test_flags=test_flags,
-            **size,
+            input=probs,
+            num_samples=num_samples,
+            replacement=replace,
         )
 
     ret = call()
@@ -277,6 +199,91 @@ def test_torch_normal(
 
 
 @handle_frontend_test(
+    fn_tree="torch.poisson",
+    dtype_and_lam=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        min_value=0,
+        max_value=100,
+        min_num_dims=0,
+        max_num_dims=10,
+        min_dim_size=1,
+    ),
+)
+def test_torch_poisson(
+    *,
+    dtype_and_lam,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    lam_dtype, lam = dtype_and_lam
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=lam_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            input=lam[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@handle_frontend_test(
+    fn_tree="torch.rand",
+    dtype=helpers.get_dtypes("float", full=False),
+    size=helpers.get_shape(
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+)
+def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags, backend_fw):
+    size = {f"size{i}": size[i] for i in range(len(size))}
+    test_flags.num_positional_args = len(size)
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            **size,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@handle_frontend_test(
     fn_tree="torch.rand_like",
     dtype=helpers.get_dtypes("float", full=False),
     dtype_and_x=helpers.dtype_and_values(
@@ -301,6 +308,96 @@ def test_torch_rand_like(
             fn_tree=fn_tree,
             test_flags=test_flags,
             input=input[0],
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+# randint
+@handle_frontend_test(
+    fn_tree="torch.randint",
+    low=helpers.ints(min_value=0, max_value=10),
+    high=helpers.ints(min_value=11, max_value=20),
+    size=helpers.get_shape(),
+    dtype=helpers.get_dtypes("integer"),
+)
+def test_torch_randint(
+    *,
+    low,
+    high,
+    size,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            low=low,
+            high=high,
+            size=size,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@handle_frontend_test(
+    fn_tree="torch.randint_like",
+    dtype=helpers.get_dtypes("signed_integer", full=False),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"),
+        min_num_dims=1,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    low=helpers.ints(min_value=0, max_value=10),
+    high=helpers.ints(min_value=11, max_value=20),
+)
+def test_torch_randint_like(
+    dtype_and_x, low, high, *, dtype, frontend, fn_tree, test_flags, backend_fw
+):
+    input_dtype, input = dtype_and_x
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            input=input[0],
+            low=low,
+            high=high,
             dtype=dtype[0],
         )
 
@@ -396,50 +493,6 @@ def test_torch_randn_like(
         assert u.shape == v.shape
 
 
-@handle_frontend_test(
-    fn_tree="torch.bernoulli",
-    dtype_and_probs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False),
-        min_value=0,
-        max_value=1,
-        min_num_dims=0,
-    ),
-)
-def test_torch_bernoulli(
-    dtype_and_probs,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtype, probs = dtype_and_probs
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=dtype,
-            backend_to_test=backend_fw,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            test_values=False,
-            input=probs[0],
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
 # randperm
 @handle_frontend_test(
     fn_tree="torch.randperm",
@@ -481,46 +534,34 @@ def test_torch_randperm(
         assert u.shape == v.shape
 
 
+# set_rng_state
 @handle_frontend_test(
-    fn_tree="torch.randint_like",
-    dtype=helpers.get_dtypes("signed_integer", full=False),
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer"),
+    fn_tree="torch.set_rng_state",
+    new_state=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("uint8"),
+        min_value=0,
+        max_value=10,
         min_num_dims=1,
-        max_num_dims=10,
+        max_num_dims=1,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=1,
     ),
-    low=helpers.ints(min_value=0, max_value=10),
-    high=helpers.ints(min_value=11, max_value=20),
 )
-def test_torch_randint_like(
-    dtype_and_x, low, high, *, dtype, frontend, fn_tree, test_flags, backend_fw
+def test_torch_set_rng_state(
+    *,
+    new_state,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
 ):
-    input_dtype, input = dtype_and_x
-
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            backend_to_test=backend_fw,
-            frontend=frontend,
-            test_values=False,
-            fn_tree=fn_tree,
-            test_flags=test_flags,
-            input=input[0],
-            low=low,
-            high=high,
-            dtype=dtype[0],
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
+    dtype, new_state = new_state
+    helpers.test_frontend_function(
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        input_dtypes=dtype,
+        test_values=False,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        new_state=new_state[0],
+    )

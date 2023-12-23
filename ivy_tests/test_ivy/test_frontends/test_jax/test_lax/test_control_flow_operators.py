@@ -50,6 +50,48 @@ def test_jax_cond(
 
 
 @handle_frontend_test(
+    fn_tree="jax.lax.fori_loop",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-1000,
+        max_value=1000,
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    lower=st.integers(min_value=-10, max_value=10),
+    upper=st.integers(min_value=-10, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_jax_fori_loop(
+    *,
+    dtype_and_x,
+    lower,
+    upper,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+):
+    def _test_body_fn(x, y):
+        return x + y
+
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lower=lower,
+        upper=upper,
+        body_fun=_test_body_fn,
+        init_val=x[0],
+    )
+
+
+@handle_frontend_test(
     fn_tree="jax.lax.map",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -80,6 +122,51 @@ def test_jax_map(
         on_device=on_device,
         f=_test_map_fn,
         xs=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.scan",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-1000,
+        max_value=1000,
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    length=st.integers(min_value=-10, max_value=10),
+    init=st.integers(min_value=-10, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_jax_scan(
+    *,
+    dtype_and_x,
+    length,
+    init,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+):
+    if length == 0 or length != len(dtype_and_x[1][0]):
+        return
+
+    def _test_scan_fn(carry, x):
+        return carry + x, x * 2
+
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        f=_test_scan_fn,
+        init=init,
+        xs=x[0],
+        length=length,
     )
 
 
@@ -120,48 +207,6 @@ def test_jax_switch(
         index=index,
         branches=[_test_branch_1, _test_branch_2],
         operand=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.lax.fori_loop",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_value=-1000,
-        max_value=1000,
-        min_num_dims=1,
-        min_dim_size=1,
-    ),
-    lower=st.integers(min_value=-10, max_value=10),
-    upper=st.integers(min_value=-10, max_value=10),
-    test_with_out=st.just(False),
-)
-def test_jax_fori_loop(
-    *,
-    dtype_and_x,
-    lower,
-    upper,
-    test_flags,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-):
-    def _test_body_fn(x, y):
-        return x + y
-
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        lower=lower,
-        upper=upper,
-        body_fun=_test_body_fn,
-        init_val=x[0],
     )
 
 

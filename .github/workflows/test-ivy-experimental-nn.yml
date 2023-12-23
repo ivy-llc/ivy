@@ -24,6 +24,15 @@ jobs:
           submodules: "recursive"
           fetch-depth: 2
 
+      - name: Install ivy and fetch binaries
+        run: |
+          cd ivy
+          pip3 install -e .
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          cd ..
+
       - name: Check Files Changed
         shell: pwsh
         id: check_file_changed
@@ -71,10 +80,7 @@ jobs:
         id: tests
         run: |
           cd ivy
-          mkdir .ivy
-          touch .ivy/key.pem
-          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          ./run_tests_CLI/test_experimental_nn.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
+          ./scripts/shell/test_experimental_nn.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
         continue-on-error: true
 
       - name: Zip Hypothesis Examples
@@ -94,13 +100,13 @@ jobs:
         continue-on-error: true
 
       - name: Install Mongo Python Client
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.check_file_changed.outputs.changed == 'True'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_file_changed.outputs.changed == 'True'
         uses: BSFishy/pip-action@v1
         with:
           packages: |
             pymongo[srv]
       - name: Update Database
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.check_file_changed.outputs.changed == 'True'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_file_changed.outputs.changed == 'True'
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
         run: |

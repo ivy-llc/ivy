@@ -19,10 +19,9 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.unique_all. This method simply wraps
-        the function, and so the docstring for ivy.unique_all also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.unique_all. This method
+        simply wraps the function, and so the docstring for ivy.unique_all also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -97,10 +96,9 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.unique_all. This method simply
-        wraps the function, and so the docstring for ivy.unique_all also applies to this
-        method with minimal changes.
+        """ivy.Container instance method variant of ivy.unique_all. This method
+        simply wraps the function, and so the docstring for ivy.unique_all also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -136,22 +134,21 @@ class _ContainerWithSet(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
         ...                   b=ivy.array([1,2,1,3,4,1,3]))
-        >>> y = x.static_unique_all()
+        >>> y = x.unique_all()
         >>> print(y)
-        {
-            a: [
-                values = ivy.array([0., 1., 2., 3.]),
-                indices = ivy.array([0, 1, 3, 2]),
-                inverse_indices = ivy.array([0, 1, 3, 2, 1, 0]),
-                counts = ivy.array([2, 2, 1, 1])
-            ],
-            b: [
-                values = ivy.array([1, 2, 3, 4]),
-                indices = ivy.array([0, 1, 3, 4]),
-                inverse_indices = ivy.array([0, 1, 0, 2, 3, 0, 2]),
-                counts = ivy.array([3, 1, 2, 1])
-            ]
-        }
+        [{
+            a: ivy.array([0., 1., 2., 3.]),
+            b: ivy.array([1, 2, 3, 4])
+        }, {
+            a: ivy.array([0, 1, 3, 2]),
+            b: ivy.array([0, 1, 3, 4])
+        }, {
+            a: ivy.array([0, 1, 3, 2, 1, 0]),
+            b: ivy.array([0, 1, 0, 2, 3, 0, 2])
+        }, {
+            a: ivy.array([2, 2, 1, 1]),
+            b: ivy.array([3, 1, 2, 1])
+        }]
         """
         return self._static_unique_all(
             self,
@@ -173,10 +170,9 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.unique_counts. This method simply
-        wraps the function, and so the docstring for ivy.unique_counts also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.unique_counts. This
+        method simply wraps the function, and so the docstring for
+        ivy.unique_counts also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -237,10 +233,9 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.unique_counts. This method simply
-        wraps the function, and so the docstring for ivy.unique_counts also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.unique_counts. This
+        method simply wraps the function, and so the docstring for
+        ivy.unique_counts also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -280,9 +275,13 @@ class _ContainerWithSet(ContainerBase):
         ...                   b=ivy.array([1,2,1,3,4,1,3]))
         >>> y = x.unique_counts()
         >>> print(y)
-        {
-            a:[values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])],
-            b:[values=ivy.array([1,2,3,4]),counts=ivy.array([3,1,2,1])]}
+        [{
+            a: ivy.array([0., 1., 2., 3.]),
+            b: ivy.array([1, 2, 3, 4])
+        }, {
+            a: ivy.array([2, 2, 1, 1]),
+            b: ivy.array([3, 1, 2, 1])
+        }]
         """
         return self._static_unique_counts(
             self,
@@ -323,9 +322,8 @@ class _ContainerWithSet(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.unique_values. This method simply
-        wraps the function and applies it on the container.
+        """ivy.Container instance method variant of ivy.unique_values. This
+        method simply wraps the function and applies it on the container.
 
         Parameters
         ----------
@@ -360,37 +358,26 @@ class _ContainerWithSet(ContainerBase):
 
         Example
         -------
-        1. Get the unique values of a container.
-
         >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
         >>> y = x.unique_values()
         >>> print(y)
         {
-            'a': [1, 2, 3],
-            'b': [2, 3],
-            'c': [4]
+            a: ivy.array([1, 2, 3]),
+            b: ivy.array([2, 3]),
+            c: ivy.array([4])
         }
-
-        2. Get the unique values of a container along a specific key chain.
 
         >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
         >>> y = x.unique_values(key_chains=["a", "b"])
         >>> print(y)
         {
-            'a': [1, 2, 3],
-            'b': [2, 3]
-        }
-
-        3. Get the unique values of a container and store them in a new container.
-
-        >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
-        >>> y = ivy.Container()
-        >>> y = x.unique_values(out=y)
-        >>> print(y)
-        {
-            'a': [1, 2, 3],
-            'b': [2, 3],
-            'c': [4]
+            a: ivy.array([1, 2, 3]),
+            b: ivy.array([2, 3]),
+            c: [
+                4,
+                4,
+                4
+            ]
         }
         """
         return self._static_unique_values(
@@ -412,10 +399,9 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.unique_inverse. This method simply
-        wraps the function, and so the docstring for ivy.unique_inverse also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.unique_inverse. This
+        method simply wraps the function, and so the docstring for
+        ivy.unique_inverse also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -477,10 +463,9 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.unique_inverse. This method simply
-        wraps the function, and so the docstring for ivy.unique_inverse also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.unique_inverse. This
+        method simply wraps the function, and so the docstring for
+        ivy.unique_inverse also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -519,10 +504,13 @@ class _ContainerWithSet(ContainerBase):
         ...                   b=ivy.array([7,6,4,5,6,3,2]))
         >>> y = x.unique_inverse()
         >>> print(y)
-        {
-            a:[values=ivy.array([3.,4.,5.,8.,9.]),inverse_indices=ivy.array([1,3,0,2,4,1])],
-            b:[values=ivy.array([2,3,4,5,6,7]),inverse_indices=ivy.array([5,4,2,3,4,1,0])]
-        }
+        [{
+            a: ivy.array([3., 4., 5., 8., 9.]),
+            b: ivy.array([2, 3, 4, 5, 6, 7])
+        }, {
+            a: ivy.array([1, 3, 0, 2, 4, 1]),
+            b: ivy.array([5, 4, 2, 3, 4, 1, 0])
+        }]
         """
         return self._static_unique_inverse(
             self,

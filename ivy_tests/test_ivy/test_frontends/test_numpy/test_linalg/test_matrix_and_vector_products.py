@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -15,71 +16,8 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_linalg 
 )
 
 
-# outer
-@handle_frontend_test(
-    fn_tree="numpy.outer",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_value=-10,
-        max_value=10,
-        num_arrays=2,
-        min_num_dims=1,
-        max_num_dims=1,
-        shared_dtype=True,
-    ),
-)
-def test_numpy_outer(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtypes, xs = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=xs[0],
-        b=xs[1],
-    )
-
-
-# inner
-@handle_frontend_test(
-    fn_tree="numpy.inner",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_value=-10,
-        max_value=10,
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_numpy_inner(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtypes, xs = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=xs[0],
-        b=xs[1],
-    )
+# --- Helpers --- #
+# --------------- #
 
 
 # cross
@@ -146,7 +84,8 @@ def dtype_value1_value2_axis(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.cross",
+    fn_tree="numpy.linalg.cross",
+    gt_fn_tree="numpy.cross",
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -166,6 +105,7 @@ def test_numpy_cross(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -176,12 +116,166 @@ def test_numpy_cross(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         rtol=1e-3,
         atol=1e-3,
         a=x1,
         b=x2,
         axis=axis,
+    )
+
+
+# dot
+@handle_frontend_test(
+    fn_tree="numpy.linalg.matrix_and_vector_products.dot",
+    gt_fn_tree="numpy.dot",
+    dtype_a_b=np_frontend_helpers._get_dtype_input_and_vectors(),
+)
+def test_numpy_dot(
+    dtype_a_b,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    gt_fn_tree,
+    on_device,
+):
+    dtype, a, b = dtype_a_b
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        rtol=1e-01,
+        atol=1e-01,
+        a=a,
+        b=b,
+    )
+
+
+# einsum
+@handle_frontend_test(
+    fn_tree="numpy.linalg.matrix_and_vector_products.einsum",
+    gt_fn_tree="numpy.einsum",
+    args=st.sampled_from(
+        [
+            (
+                "ii",
+                np.arange(25).reshape(5, 5),
+            ),
+            (
+                "ii->i",
+                np.arange(25).reshape(5, 5),
+            ),
+            ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
+        ]
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_numpy_einsum(
+    *,
+    args,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    gt_fn_tree,
+    backend_fw,
+    on_device,
+):
+    kw = {}
+    i = 0
+    for arg in args:
+        kw[f"x{i}"] = arg
+        i += 1
+    test_flags.num_positional_args = i
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        **kw,
+        optimize=False,
+        order="K",
+        casting="safe",
+    )
+
+
+# inner
+@handle_frontend_test(
+    fn_tree="numpy.linalg.matrix_and_vector_products.inner",
+    gt_fn_tree="numpy.inner",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_inner(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    gt_fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        b=xs[1],
+    )
+
+
+# kron
+@handle_frontend_test(
+    fn_tree="numpy.linalg.matrix_and_vector_products.kron",
+    gt_fn_tree="numpy.kron",
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=2,
+        allow_inf=True,
+        allow_nan=True,
+        shared_dtype=True,
+    ),
+)
+def test_numpy_kron(
+    *,
+    dtype_and_x,
+    frontend,
+    fn_tree,
+    gt_fn_tree,
+    on_device,
+    test_flags,
+    backend_fw,
+):
+    dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        a=xs[0],
+        b=xs[1],
     )
 
 
@@ -224,12 +318,13 @@ def test_numpy_matmul(
 
 # matrix_power
 @handle_frontend_test(
-    fn_tree="numpy.linalg.matrix_power",
+    fn_tree="numpy.linalg.matrix_and_vector_products.matrix_power",
+    gt_fn_tree="numpy.linalg.matrix_power",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: (x, x)),
     ),
     n=helpers.ints(min_value=1, max_value=8),
     test_with_out=st.just(False),
@@ -240,6 +335,7 @@ def test_numpy_matrix_power(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -250,69 +346,10 @@ def test_numpy_matrix_power(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         a=x[0],
         n=n,
-    )
-
-
-# tensordot
-@handle_frontend_test(
-    fn_tree="numpy.tensordot",
-    dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
-        helpers.get_dtypes(kind="numeric")
-    ),
-    test_with_out=st.just(False),
-)
-def test_numpy_tensordot(
-    dtype_values_and_axes,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-):
-    dtype, a, b, axes = dtype_values_and_axes
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        a=a,
-        b=b,
-        axes=axes,
-    )
-
-
-# kron
-@handle_frontend_test(
-    fn_tree="numpy.kron",
-    dtype_and_x=helpers.dtype_and_values(
-        num_arrays=2,
-        allow_inf=True,
-        allow_nan=True,
-        shared_dtype=True,
-    ),
-)
-def test_numpy_kron(
-    *,
-    dtype_and_x,
-    frontend,
-    fn_tree,
-    on_device,
-    test_flags,
-    backend_fw,
-):
-    dtypes, xs = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_flags=test_flags,
-        a=xs[0],
-        b=xs[1],
     )
 
 
@@ -343,29 +380,69 @@ def test_numpy_multi_dot(
     )
 
 
-# dot
+# outer
 @handle_frontend_test(
-    fn_tree="numpy.dot",
-    dtype_a_b=np_frontend_helpers._get_dtype_input_and_vectors(),
+    fn_tree="numpy.linalg.matrix_and_vector_products.outer",
+    gt_fn_tree="numpy.outer",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        shared_dtype=True,
+    ),
 )
-def test_numpy_dot(
-    dtype_a_b,
+def test_numpy_outer(
+    dtype_and_x,
     frontend,
-    backend_fw,
     test_flags,
     fn_tree,
+    gt_fn_tree,
+    backend_fw,
     on_device,
 ):
-    dtype, a, b = dtype_a_b
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        b=xs[1],
+    )
+
+
+# tensordot
+@handle_frontend_test(
+    fn_tree="numpy.linalg.matrix_and_vector_products.tensordot",
+    gt_fn_tree="numpy.tensordot",
+    dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
+        helpers.get_dtypes(kind="numeric")
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_tensordot(
+    dtype_values_and_axes,
+    frontend,
+    test_flags,
+    fn_tree,
+    gt_fn_tree,
+    backend_fw,
+):
+    dtype, a, b, axes = dtype_values_and_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        frontend=frontend,
         backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        on_device=on_device,
+        frontend=frontend,
         test_flags=test_flags,
-        rtol=1e-01,
-        atol=1e-01,
+        fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         a=a,
         b=b,
+        axes=axes,
     )

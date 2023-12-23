@@ -1,9 +1,18 @@
 # global
+import struct
+import warnings
 
 # local
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.numpy.func_wrapper import _to_ivy_array
+from ivy.func_wrapper import (
+    with_supported_device_and_dtypes,
+)
+
+
+# --- Classes ---#
+# ---------------#
 
 
 class ndarray:
@@ -11,7 +20,7 @@ class ndarray:
         if isinstance(dtype, np_frontend.dtype):
             dtype = dtype.ivy_dtype
 
-        # in thise case shape is actually the desired array
+        # in this case shape is actually the desired array
         if _init_overload:
             self._ivy_array = (
                 ivy.array(shape) if not isinstance(shape, ivy.Array) else shape
@@ -47,7 +56,7 @@ class ndarray:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return tuple(self.ivy_array.shape.shape)
 
     @property
     def size(self):
@@ -55,7 +64,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return self.ivy_array.dtype
+        return np_frontend.dtype(self.ivy_array.dtype)
 
     @property
     def ndim(self):
@@ -140,16 +149,26 @@ class ndarray:
     def swapaxes(self, axis1, axis2, /):
         return np_frontend.swapaxes(self, axis1, axis2)
 
-    def all(self, axis=None, out=None, keepdims=False, *, where=True):
+    def all(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
+        if not (dtype is None or ivy.is_bool_dtype(dtype)):
+            raise TypeError(
+                "No loop matching the specified signature and "
+                "casting was found for ufunc logical_or"
+            )
         return np_frontend.all(self, axis, out, keepdims, where=where)
 
-    def any(self, axis=None, out=None, keepdims=False, *, where=True):
+    def any(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
+        if not (dtype is None or ivy.is_bool_dtype(dtype)):
+            raise TypeError(
+                "No loop matching the specified signature and "
+                "casting was found for ufunc logical_or"
+            )
         return np_frontend.any(self, axis, out, keepdims, where=where)
 
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self, axis=axis, kind=kind, order=order)
 
-    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
+    def mean(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return np_frontend.mean(
             self,
             axis=axis,
@@ -227,7 +246,7 @@ class ndarray:
             out=out,
         )
 
-    def conj(
+    def conjugate(
         self,
         /,
         out=None,
@@ -238,7 +257,7 @@ class ndarray:
         dtype=None,
         subok=True,
     ):
-        return np_frontend.conj(
+        return np_frontend.conjugate(
             self.ivy_array,
             out=out,
             where=where,
@@ -308,8 +327,9 @@ class ndarray:
         else:
             return np_frontend.ravel(self, order="C")
 
-    def fill(self, num):
-        return np_frontend.fill(self, num)
+    def fill(self, num, /):
+        self.ivy_array = np_frontend.full(self.shape, num).ivy_array
+        return None
 
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self, repeats, axis=axis)
@@ -333,11 +353,14 @@ class ndarray:
             where=where,
         )
 
-    def tobytes(self, order="C") -> bytes:
-        return np_frontend.tobytes(self, order=order)
+    def tobytes(self, order="C"):
+        return _to_bytes_helper(self.ivy_array, order=order)
 
-    def tostring(self, order="C") -> bytes:
-        return np_frontend.tobytes(self.data, order=order)
+    def tostring(self, order="C"):
+        warnings.warn(
+            "DeprecationWarning: tostring() is deprecated. Use tobytes() instead."
+        )
+        return self.tobytes(order=order)
 
     def prod(
         self,
@@ -359,6 +382,26 @@ class ndarray:
             out=out,
         )
 
+    def sum(
+        self,
+        *,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=True,
+    ):
+        return np_frontend.sum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            out=out,
+        )
+
     def tofile(self, fid, /, sep="", format_="%s"):
         if self.ndim == 0:
             string = str(self)
@@ -369,6 +412,31 @@ class ndarray:
 
     def tolist(self) -> list:
         return self._ivy_array.to_list()
+
+    @with_supported_device_and_dtypes(
+        {
+            "1.26.2 and below": {
+                "cpu": (
+                    "int64",
+                    "float32",
+                    "float64",
+                    "bfloat16",
+                    "complex64",
+                    "complex128",
+                    "uint64",
+                )
+            }
+        },
+        "numpy",
+    )
+    def trace(self, *, offset=0, axis1=0, axis2=1, out=None):
+        return np_frontend.trace(
+            self,
+            offset=offset,
+            axis1=axis1,
+            axis2=axis2,
+            out=out,
+        )
 
     def view(self):
         return np_frontend.reshape(self, tuple(self.shape))
@@ -437,8 +505,7 @@ class ndarray:
             return self.ivy_array != 0
 
         temp = ivy.squeeze(ivy.asarray(self.ivy_array), axis=None)
-        shape = ivy.shape(temp)
-        if shape:
+        if ivy.get_num_dims(temp) > 1:
             raise ValueError(
                 "The truth value of an array with more than one element is ambiguous. "
                 "Use a.any() or a.all()"
@@ -470,20 +537,29 @@ class ndarray:
     def __int__(
         self,
     ):
-        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.int64))
+        if "complex" in self.dtype.name:
+            raise TypeError(
+                "int() argument must be a string, a bytes-like object or a number, not"
+                " 'complex"
+            )
+        return int(self.ivy_array)
 
     def __float__(
         self,
     ):
-        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.float64))
+        if "complex" in self.dtype.name:
+            raise TypeError(
+                "float() argument must be a string or a real number, not 'complex"
+            )
+        return float(self.ivy_array)
 
     def __complex__(
         self,
     ):
-        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.complex128))
+        return complex(self.ivy_array)
 
     def __contains__(self, key, /):
-        return key in ivy.reshape(self.ivy_array, -1)
+        return np_frontend.any(self == key)
 
     def __iadd__(self, value, /):
         return np_frontend.add(self, value, out=self)
@@ -523,22 +599,19 @@ class ndarray:
 
     def __array__(self, dtype=None, /):
         if not dtype:
-            return self
-        return np_frontend.array(self, dtype=dtype)
+            return ivy.to_numpy(self.ivy_array)
+        return ivy.to_numpy(self.ivy_array).astype(dtype)
 
     def __array_wrap__(self, array, context=None, /):
-        if context is None:
-            return np_frontend.array(array)
-        else:
-            return np_frontend.asarray(self)
+        return np_frontend.array(array)
 
     def __getitem__(self, key, /):
-        ivy_args = ivy.nested_map([self, key], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, key])
         ret = ivy.get_item(*ivy_args)
         return np_frontend.ndarray(ret, _init_overload=True)
 
     def __setitem__(self, key, value, /):
-        key, value = ivy.nested_map([key, value], _to_ivy_array)
+        key, value = ivy.nested_map(_to_ivy_array, [key, value])
         self.ivy_array[key] = value
 
     def __iter__(self):
@@ -558,7 +631,7 @@ class ndarray:
     def item(self, *args):
         if len(args) == 0:
             return self[0].ivy_array.to_scalar()
-        elif len(args) == 1 and type(args[0]) == int:
+        elif len(args) == 1 and isinstance(args[0], int):
             index = args[0]
             return self.ivy_array.flatten()[index].to_scalar()
         else:
@@ -572,3 +645,128 @@ class ndarray:
 
     def __lshift__(self, value, /):
         return ivy.bitwise_left_shift(self.ivy_array, value)
+
+    def __ilshift__(self, value, /):
+        return ivy.bitwise_left_shift(self.ivy_array, value, out=self)
+
+    def round(self, decimals=0, out=None):
+        return np_frontend.round(self, decimals=decimals, out=out)
+
+    def var(
+        self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True
+    ):
+        return np_frontend.var(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=ddof,
+            keepdims=keepdims,
+            where=where,
+        )
+
+    def __irshift__(self, value, /):
+        return ivy.bitwise_right_shift(self.ivy_array, value, out=self)
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+# tobytes helper function
+def _to_bytes_helper(array, order="C"):
+    def _integers_bytes_repr(item_val, /, *, dtype=None):
+        if dtype == ivy.int8:
+            return item_val.to_bytes(1, byteorder="big", signed=True)
+        elif dtype == ivy.int16:
+            return struct.pack("h", item_val)
+        elif dtype == ivy.int32:
+            return struct.pack("i", item_val)
+        elif dtype == ivy.int64:
+            return struct.pack("q", item_val)
+
+    def _float_bytes_repr(item_val, /, *, dtype=None):
+        if dtype == ivy.float16:
+            return struct.pack("e", item_val)
+        elif dtype == ivy.float32:
+            return struct.pack("f", item_val)
+        return struct.pack("d", item_val)
+
+    def _bool_bytes_repr(item_val, /):
+        return struct.pack("?", item_val)
+
+    def _complex_bytes_repr(item_val, /, *, dtype=None):
+        if dtype == ivy.complex64:
+            # complex64 is represented as two 32-bit floats
+            return struct.pack("ff", item_val.real, item_val.imag)
+
+        elif dtype == ivy.complex128:
+            # complex128 is represented as two 64-bit floats
+            return struct.pack("dd", item_val.real, item_val.imag)
+
+    def _unsigned_int_bytes_repr(item_val, /, *, dtype=None):
+        if dtype == ivy.uint8:
+            return item_val.to_bytes(1, byteorder="little", signed=False)
+        elif dtype == ivy.uint16:
+            return struct.pack("H", item_val)
+        elif dtype == ivy.uint32:
+            return struct.pack("I", item_val)
+        elif dtype == ivy.uint64:
+            return struct.pack("Q", item_val)
+
+    if ivy.get_num_dims(array) == 0:
+        scalar_value = ivy.to_scalar(array)
+        dtype = ivy.dtype(array)
+        if ivy.is_int_dtype(dtype) and not ivy.is_uint_dtype(dtype):
+            return _integers_bytes_repr(scalar_value, dtype=dtype)
+
+        elif ivy.is_float_dtype(dtype):
+            return _float_bytes_repr(scalar_value, dtype=dtype)
+
+        elif ivy.is_bool_dtype(dtype):
+            return _bool_bytes_repr(scalar_value)
+
+        elif ivy.is_complex_dtype(dtype):
+            return _complex_bytes_repr(scalar_value, dtype=dtype)
+
+        elif ivy.is_uint_dtype(dtype):
+            return _unsigned_int_bytes_repr(scalar_value, dtype=dtype)
+        else:
+            raise TypeError("Unsupported data type for the array.")
+    else:
+        if order == "F":
+            array = np_frontend.ravel(array, order="F").ivy_array
+        array = ivy.flatten(array)
+        if ivy.is_int_dtype(array) and not ivy.is_uint_dtype(array):
+            bytes_reprs = [
+                _integers_bytes_repr(item, dtype=ivy.dtype(array))
+                for item in array.to_list()
+            ]
+            return b"".join(bytes_reprs)
+
+        elif ivy.is_float_dtype(array):
+            bytes_reprs = [
+                _float_bytes_repr(item, dtype=ivy.dtype(array))
+                for item in array.to_list()
+            ]
+            return b"".join(bytes_reprs)
+
+        elif ivy.is_bool_dtype(array):
+            bytes_reprs = [_bool_bytes_repr(item) for item in array.to_list()]
+            return b"".join(bytes_reprs)
+
+        elif ivy.is_complex_dtype(array):
+            bytes_reprs = [
+                _complex_bytes_repr(item, dtype=ivy.dtype(array))
+                for item in array.to_list()
+            ]
+            return b"".join(bytes_reprs)
+
+        elif ivy.is_uint_dtype(array):
+            bytes_reprs = [
+                _unsigned_int_bytes_repr(item, dtype=ivy.dtype(array))
+                for item in array.to_list()
+            ]
+            return b"".join(bytes_reprs)
+        else:
+            raise ValueError("Unsupported data type for the array.")

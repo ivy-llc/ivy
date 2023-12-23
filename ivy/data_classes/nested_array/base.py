@@ -32,7 +32,7 @@ class NestedArrayBase(abc.ABC):
         device = ivy.default_device(device, item=data)
 
         # convert all the leaf lists to ivy arrays, determine inner_shape and depth
-        det_inner_shape = list()
+        det_inner_shape = []
 
         # ToDo: add check for depth being the same for all nests
         def _seq_to_ivy(x, depth=0):
@@ -42,7 +42,7 @@ class NestedArrayBase(abc.ABC):
                 if x.ndim > 1:
                     det_inner_shape.append(list(x.shape[1:]))
                 else:
-                    det_inner_shape.append(list())
+                    det_inner_shape.append([])
             elif (
                 isinstance(x, (list, tuple))
                 and len(x) != 0
@@ -59,7 +59,7 @@ class NestedArrayBase(abc.ABC):
                 if x.ndim > 1:
                     det_inner_shape.append(list(x.shape[1:]))
                 else:
-                    det_inner_shape.append(list())
+                    det_inner_shape.append([])
             return x, depth
 
         if isinstance(data, (list, tuple)):
@@ -70,7 +70,7 @@ class NestedArrayBase(abc.ABC):
                 if [det_inner_shape[0]] * len(det_inner_shape) != det_inner_shape:
                     raise ValueError(
                         "All the elements of the nested array must have the same "
-                        "inner shape, got: {}".format(det_inner_shape)
+                        f"inner shape, got: {det_inner_shape}"
                     )
                 det_inner_shape = det_inner_shape[0]
 
@@ -80,7 +80,7 @@ class NestedArrayBase(abc.ABC):
                 if inner_shape is None
                 else max(0, depth - 1 - len(inner_shape))
             )
-            default_inner_shape = list() if nested_rank is None else det_inner_shape
+            default_inner_shape = [] if nested_rank is None else det_inner_shape
 
             # determining actual values for nested_rank and inner_shape
             nested_rank = (
@@ -96,9 +96,7 @@ class NestedArrayBase(abc.ABC):
                 list(inner_shape) if list(inner_shape) is not None else data.inner_shape
             )
         else:
-            raise TypeError(
-                "Input data must be pylist or tuple, got: {}".format(type(data))
-            )
+            raise TypeError(f"Input data must be pylist or tuple, got: {type(data)}")
 
         return cls(data, nested_rank, inner_shape, dtype, device, internal=True)
 
@@ -130,25 +128,32 @@ class NestedArrayBase(abc.ABC):
             return inspect_fn(*a, **kw)
 
         if num_nest == 0:
-            raise Exception(
-                "No RaggedArrays found in args or kwargs of function {}".format(fn)
+            raise ValueError(
+                f"No RaggedArrays found in args or kwargs of function {fn}"
             )
         ret = ivy.NestedArray.ragged_multi_map(map_fn, nests)
         return ret
 
     @staticmethod
     def ragged_multi_map(fn, ragged_arrays):
-        args = list()
+        args = []
         for ragged in ragged_arrays:
             args.append(ivy.copy_nest(ragged.data))
-        arg0 = ragged_arrays[0]
         ret = ivy.nested_multi_map(lambda x, _: fn(x), args)
         # infer dtype, shape, and device from the first array in the ret data
+        broadcasted_shape = ivy.NestedArray.broadcast_shapes(
+            [arg.shape for arg in ragged_arrays]
+        )
+        # infer ragged_rank from broadcasted shape
+        for i, dim in enumerate(broadcasted_shape[::-1]):
+            if dim is None:
+                nested_rank = len(broadcasted_shape) - i - 1
+                break
+        inner_shape = broadcasted_shape[nested_rank:]
         arr0_id = ivy.nested_argwhere(ret, ivy.is_ivy_array, stop_after_n_found=1)[0]
         arr0 = ivy.index_nest(ret, arr0_id)
-        inner_shape = arr0.shape.as_list()[1:]
         ragged_ret = ivy.NestedArray.nested_array(
-            ret, arg0.nested_rank, inner_shape, arr0.dtype, arr0.device
+            ret, nested_rank, inner_shape, arr0.dtype, arr0.device
         )
         return ragged_ret
 
@@ -163,9 +168,49 @@ class NestedArrayBase(abc.ABC):
             ret, ragged_array.nested_rank, inner_shape, dtype, dev
         )
 
+    @staticmethod
+    def broadcast_shapes(shapes):
+        z = []
+        max_length = max(len(x) for x in shapes)
+        shape_list = list(shapes)
+        # making every shape the same length
+        for i, shape in enumerate(shapes):
+            if len(shape) != max_length:
+                shape_list[i] = [1] * (max_length - len(shape)) + shape
+        # broadcasting
+        for x in zip(*shape_list):
+            if None in x:
+                for dims in x:
+                    if dims is not None and dims != 1:
+                        raise ValueError(
+                            f"Shapes {shapes[0]} and {shapes[1]} are not broadcastable"
+                        )
+                z.append(None)
+            elif 1 in x:
+                dim_exist = False
+                for dims in x:
+                    if dims != 1:
+                        z.append(dims)
+                        if dim_exist:
+                            raise ValueError(
+                                f"Shapes {shapes[0]} and {shapes[1]} are not"
+                                " broadcastable"
+                            )
+                        else:
+                            dim_exist = True
+                if not dim_exist:
+                    z.append(1)
+            elif len(set(x)) == 1:
+                z.append(x[0])
+            else:
+                raise ValueError(
+                    f"Shapes {shapes[0]} and {shapes[1]} are not broadcastable"
+                )
+        return z
+
     def ragged_map(self, fn):
         arg = ivy.copy_nest(self._data)
-        ivy.nested_map(arg, lambda x: fn(x), shallow=True)
+        ivy.nested_map(lambda x: fn(x), arg, shallow=True)
         # infer dtype, shape, and device from the first array in the ret data
         arr0_id = ivy.nested_argwhere(arg, ivy.is_ivy_array, stop_after_n_found=1)[0]
         arr0 = ivy.index_nest(arg, arr0_id)
