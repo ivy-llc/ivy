@@ -10,10 +10,14 @@ sys.path.append(dir_path)
 __all__ = []
 
 for so_file in so_files:
-    if os.path.basename(so_file) != "add.so":
-        continue
+    # if os.path.basename(so_file) != "add.so":
+    #     continue
     module_name = os.path.splitext(os.path.basename(so_file))[0]
-    locals()[module_name] = importlib.import_module(module_name)
+    try:
+        locals()[module_name] = importlib.import_module(module_name)
+    except:
+        print("Failed to import " + module_name)
+        continue
 
     if module_name + "_wrapper" in locals()[module_name].__dict__.keys():
         locals()[module_name + "_wrapper"] = getattr(
