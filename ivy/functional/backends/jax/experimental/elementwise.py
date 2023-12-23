@@ -1,5 +1,5 @@
 import operator
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
 
 from ivy import (
@@ -7,15 +7,53 @@ from ivy import (
     default_float_dtype,
     is_float_dtype,
 )
+from ivy.func_wrapper import (
+    with_supported_dtypes,
+)
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 import jax.scipy as js
+import jax.lax as jlax
+from .. import backend_version
 
 jax_ArrayLike = Union[JaxArray, Number]
 
 
+def amax(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = jnp.amax(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    return jnp.asarray(ret) if jnp.isscalar(ret) else ret
+
+
+def amin(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = jnp.amin(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    return jnp.asarray(ret) if jnp.isscalar(ret) else ret
+
+
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
+
+
+@with_supported_dtypes(
+    {"0.4.23 and below": ("float16", "float32", "float64")}, backend_version
+)
+def lgamma(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jlax.lgamma(x)
 
 
 def fmax(
@@ -215,7 +253,7 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
             axis = [operator.index(axis)]
         except TypeError:
             pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
     if len(set(axis)) != len(axis):
         raise ValueError("repeated axis")
     return axis
@@ -434,3 +472,30 @@ def frexp(
     x: JaxArray, /, *, out: Optional[Tuple[JaxArray, JaxArray]] = None
 ) -> Tuple[JaxArray, JaxArray]:
     return jnp.frexp(x)
+
+
+def modf(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.modf(x)
+
+
+def digamma(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return js.special.digamma(x)
+
+
+def erfc(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return js.special.erfc(x)

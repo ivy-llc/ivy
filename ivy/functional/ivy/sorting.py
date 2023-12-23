@@ -9,6 +9,8 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -18,11 +20,13 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -136,11 +140,13 @@ def argsort(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -150,8 +156,7 @@ def sort(
     stable: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a sorted copy of an array.
+    """Return a sorted copy of an array.
 
     Parameters
     ----------
@@ -241,17 +246,18 @@ def sort(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device
 def msort(
     a: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a copy of an array sorted along the first axis.
+    """Return a copy of an array sorted along the first axis.
 
     Parameters
     ----------
@@ -282,11 +288,13 @@ def msort(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],
@@ -297,8 +305,7 @@ def searchsorted(
     ret_dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the indices of the inserted elements in a sorted array.
+    """Return the indices of the inserted elements in a sorted array.
 
     Parameters
     ----------

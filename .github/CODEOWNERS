@@ -13,9 +13,9 @@ docs/make_docs.sh @KareemMAX
 docs/partial_conf.py @KareemMAX
 docs/prebuild.sh @KareemMAX
 docs/overview/contributing/building_the_docs.rst @KareemMAX
-docs/overview/deep_dive/building_the_docs_pipline.rst @KareemMAX
+docs/overview/deep_dive/building_the_docs_pipeline.rst @KareemMAX
 docs/_templates @KareemMAX
+docs/demos @KareemMAX
 
-
-# Idea files
-.idea/* @Aarsh2001 @zaeemansari70
+# README
+README.md @guillesanbri

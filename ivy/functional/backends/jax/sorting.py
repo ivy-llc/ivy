@@ -56,9 +56,7 @@ def searchsorted(
         "only Integer data types are supported for ret_dtype."
     )
     if sorter is not None:
-        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
-            sorter.dtype
-        ), TypeError(
+        assert ivy.is_int_dtype(sorter.dtype), TypeError(
             f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
         )
         x = jnp.take_along_axis(x, sorter, axis=-1)
@@ -80,7 +78,7 @@ def searchsorted(
 
 
 # msort
-@with_unsupported_dtypes({"0.4.13 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[JaxArray, list, tuple],
     /,

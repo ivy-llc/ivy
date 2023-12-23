@@ -19,7 +19,7 @@ _local_import_template = Template(
     "$name = "
     "ivy.utils.backend.handler._compiled_backends_ids[$ivy_id].utils._importlib.$name"
 )
-_unmodified_ivy_path = sys.modules["ivy"].__path__[0].rpartition("/")[0]
+_unmodified_ivy_path = sys.modules["ivy"].__path__[0].rpartition(os.path.sep)[0]
 _compiled_modules_cache = {}
 
 
@@ -28,13 +28,11 @@ def _retrive_local_modules():
     # Get Ivy package root
     wd = sys.modules["ivy"].__path__[0]
     for entry in os.scandir(wd):
-        if entry.is_file():
-            if entry.name.endswith(".py"):
-                ret.append(entry.name[:-3])
-                continue
-        if entry.is_dir():
-            if "__init__.py" in os.listdir(wd + "/" + entry.name):
-                ret.append(entry.name)
+        if entry.is_file() and entry.name.endswith(".py"):
+            ret.append(entry.name[:-3])
+            continue
+        if entry.is_dir() and "__init__.py" in os.listdir(f"{wd}/{entry.name}"):
+            ret.append(entry.name)
     return ret
 
 
@@ -158,8 +156,7 @@ def _create_attrs_from_node(node, attrs=()):
 
 
 def _create_node(stmnt: str):
-    """
-    Create an AST node from a given statement.
+    """Create an AST node from a given statement.
 
     Parameters
     ----------
@@ -201,9 +198,9 @@ class ImportTransformer(ast.NodeTransformer):
             return tree
 
         # Convenient function to insert the parse the AST import statement and insert it
-        insert_import = lambda node: tree.body.insert(
-            self.insert_index, _create_node(node)
-        )
+        def insert_import(node):
+            return tree.body.insert(self.insert_index, _create_node(node))
+
         if local_ivy_id is None:
             insert_import(
                 _global_import_template.substitute(name=importlib_abs_import_fn)
@@ -244,7 +241,7 @@ class IvyPathFinder(MetaPathFinder):
                 filename = os.path.join(entry, name, "__init__.py")
                 submodule_locations = [os.path.join(entry, name)]
             else:
-                filename = os.path.join(entry, name + ".py")
+                filename = os.path.join(entry, f"{name}.py")
                 submodule_locations = None
             if not os.path.exists(filename):
                 continue
@@ -265,7 +262,9 @@ class IvyLoader(Loader):
         if self.filename in _compiled_modules_cache:
             compiled_obj = _compiled_modules_cache[self.filename]
         else:
-            with open(self.filename) as f:
+            # enforce UTF-8 for compiling when installed as a package
+            # according to PEP 686
+            with open(self.filename, encoding="utf-8") as f:
                 data = f.read()
 
             ast_tree = parse(data)

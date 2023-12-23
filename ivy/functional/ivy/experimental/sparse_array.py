@@ -290,7 +290,7 @@ def _is_data_not_indices_values_and_shape(
             row_indices,
             values,
             dense_shape,
-            format=format,
+            format,
             fn=ivy.exists,
             type="any",
             limit=[0],
@@ -316,7 +316,7 @@ def _is_valid_format(
 ):
     valid_formats = ["coo", "csr", "csc", "csc", "bsc", "bsr"]
 
-    if not isinstance(format, str) or not format.lower() in valid_formats:
+    if not isinstance(format, str) or format.lower() not in valid_formats:
         return False
 
     if format.endswith("o"):
@@ -354,7 +354,7 @@ def _is_valid_format(
     )
 
 
-class SparseArray:
+class SparseArray(ivy.Array):
     def __init__(
         self,
         data=None,
@@ -393,7 +393,7 @@ class SparseArray:
 
             if format == "coo":
                 self._init_coo_components(coo_indices, values, dense_shape, format)
-            elif format == "csr" or format == "bsr":
+            elif format in ["csr", "bsr"]:
                 self._init_compressed_row_components(
                     crow_indices, col_indices, values, dense_shape, format
                 )
@@ -424,6 +424,9 @@ class SparseArray:
                 "dense_shape), or all bsr components (crow_indices, "
                 "col_indices, values and dense_shape)."
             )
+
+        # initialize parent class
+        super().__init__(self)
 
     def _init_data(self, data):
         if ivy.is_ivy_sparse_array(data):
@@ -535,6 +538,37 @@ class SparseArray:
         self._crow_indices = None
         self._col_indices = None
 
+    def __repr__(self):
+        if self._dev_str is None:
+            self._dev_str = ivy.as_ivy_dev(self.device)
+            self._pre_repr = "ivy.sparse_array"
+            if "gpu" in self._dev_str:
+                self._post_repr = f", dev={self._dev_str})"
+            else:
+                self._post_repr = ")"
+        if self._format == "coo":
+            repr = (
+                f"indices={self._coo_indices}, values={self._values},"
+                f" dense_shape={self._dense_shape}"
+            )
+        elif self._format in ["csr", "bsr"]:
+            repr = (
+                f"crow_indices={self._crow_indices}, col_indices={self._col_indices},"
+                f" values={self._values}, dense_shape={self._dense_shape}"
+            )
+        else:
+            repr = (
+                f"ccol_indices={self._ccol_indices}, row_indices={self._row_indices},"
+                f" values={self._values}, dense_shape={self._dense_shape}"
+            )
+        return (
+            self._pre_repr
+            + "("
+            + repr
+            + f", format={self._format}"
+            + self._post_repr.format(ivy.current_backend_str())
+        )
+
     # Properties #
     # -----------#
 
@@ -569,6 +603,10 @@ class SparseArray:
     @property
     def dense_shape(self):
         return self._dense_shape
+
+    @property
+    def format(self):
+        return self._format
 
     # Setters #
     # --------#
@@ -677,6 +715,10 @@ class SparseArray:
         )
         self._dense_shape = dense_shape
 
+    @format.setter
+    def format(self, format):
+        self._format = format
+
     # Instance Methods #
     # ---------------- #
 
@@ -724,12 +766,10 @@ class SparseArray:
             for col in cols:
                 for col_index in range(nblockcols):
                     for row_index in range(nblockrows):
-                        all_coordinates.append(
-                            [
-                                nblockrows * row + row_index,
-                                nblockcols * col + col_index,
-                            ]
-                        )
+                        all_coordinates.append([
+                            nblockrows * row + row_index,
+                            nblockcols * col + col_index,
+                        ])
         return all_coordinates
 
     def _bsc_to_dense_coordinates(self):
@@ -745,12 +785,10 @@ class SparseArray:
             for row in rows:
                 for col_index in range(nblockcols):
                     for row_index in range(nblockrows):
-                        all_coordinates.append(
-                            [
-                                nblockrows * row + row_index,
-                                nblockcols * col + col_index,
-                            ]
-                        )
+                        all_coordinates.append([
+                            nblockrows * row + row_index,
+                            nblockcols * col + col_index,
+                        ])
         return all_coordinates
 
     def to_dense_array(self, *, native=False):

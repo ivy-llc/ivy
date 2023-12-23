@@ -33,57 +33,6 @@ class TrainableModule(ivy.Module):
         return ivy.tanh(self._linear2(x))[0]
 
 
-# module training
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_module_training(batch_shape, input_channels, output_channels, on_device):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    module = TrainableModule(input_channels, output_channels, device=on_device)
-
-    def loss_fn(v_):
-        out = module(x, v=v_)
-        return ivy.mean(out)
-
-    # train
-    loss_tm1 = 1e12
-    loss = None
-    grads = None
-    for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
-        module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
-        assert loss < loss_tm1
-        loss_tm1 = loss
-
-    # type test
-    assert ivy.is_array(loss)
-    assert isinstance(grads, ivy.Container)
-    # cardinality test
-    assert loss.shape == ()
-    # value test
-    assert ivy.max(ivy.abs(grads.linear0.b)) > 0
-    assert ivy.max(ivy.abs(grads.linear0.w)) > 0
-    assert ivy.max(ivy.abs(grads.linear1.b)) > 0
-    assert ivy.max(ivy.abs(grads.linear1.w)) > 0
-    assert ivy.max(ivy.abs(grads.linear2.b)) > 0
-    assert ivy.max(ivy.abs(grads.linear2.w)) > 0
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not support **kwargs
-        return
-
-
 class TrainableModuleWithList(ivy.Module):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
         linear0 = ivy.Linear(in_size, hidden_size, device=device)
@@ -99,128 +48,6 @@ class TrainableModuleWithList(ivy.Module):
         return ivy.tanh(self._layers[2](x))[0]
 
 
-# module with list training
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_module_w_list_training(
-    batch_shape, input_channels, output_channels, on_device
-):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    module = TrainableModuleWithList(input_channels, output_channels, device=on_device)
-
-    def loss_fn(v_):
-        out = module(x, v=v_)
-        return ivy.mean(out)
-
-    # train
-    loss_tm1 = 1e12
-    loss = None
-    grads = None
-    for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
-        module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
-        assert loss < loss_tm1
-        loss_tm1 = loss
-
-    # type test
-    assert ivy.is_array(loss)
-    assert isinstance(grads, ivy.Container)
-    # cardinality test
-    assert loss.shape == ()
-    # value test
-    assert ivy.max(ivy.abs(grads.layers.v0.b)) > 0
-    assert ivy.max(ivy.abs(grads.layers.v0.w)) > 0
-    assert ivy.max(ivy.abs(grads.layers.v1.b)) > 0
-    assert ivy.max(ivy.abs(grads.layers.v1.w)) > 0
-    assert ivy.max(ivy.abs(grads.layers.v2.b)) > 0
-    assert ivy.max(ivy.abs(grads.layers.v2.w)) > 0
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not support **kwargs
-        return
-
-
-# module with partial v
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_module_w_partial_v(batch_shape, input_channels, output_channels, on_device):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-
-        return
-
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    v = ivy.Container(
-        {
-            "linear0": {
-                "b": _variable(ivy.random_uniform(shape=[64])),
-                "w": _variable(ivy.random_uniform(shape=[64, 4])),
-            },
-            "linear1": {
-                "b": _variable(ivy.random_uniform(shape=[64])),
-                "w": _variable(ivy.random_uniform(shape=[64, 64])),
-                "extra": _variable(ivy.random_uniform(shape=[64, 64])),
-            },
-            "linear2": {
-                "b": _variable(ivy.random_uniform(shape=[5])),
-                "w": _variable(ivy.random_uniform(shape=[5, 64])),
-            },
-        }
-    )
-    try:
-        TrainableModule(
-            input_channels, output_channels, device=on_device, v=v, with_partial_v=True
-        )
-        raise Exception(
-            "TrainableModule did not raise exception desipite being passed "
-            "with wrongly shaped variables."
-        )
-    except ivy.utils.exceptions.IvyException:
-        pass
-    v = ivy.Container(
-        {
-            "linear0": {
-                "b": _variable(ivy.random_uniform(shape=[64])),
-            },
-            "linear1": {"w": _variable(ivy.random_uniform(shape=[64, 64]))},
-            "linear2": {"b": _variable(ivy.random_uniform(shape=[output_channels]))},
-        }
-    )
-    try:
-        TrainableModule(input_channels, output_channels, device=on_device, v=v)
-        raise Exception(
-            "TrainableModule did not raise exception desipite being passed "
-            "with wrongly shaped variables."
-        )
-    except ivy.utils.exceptions.IvyException:
-        pass
-    module = TrainableModule(
-        input_channels, output_channels, device=on_device, v=v, with_partial_v=True
-    )
-    module(x)
-
-
 class ModuleWithNoneAttribute(ivy.Module):
     def __init__(self, device=None, hidden_size=64):
         self.some_attribute = None
@@ -228,30 +55,6 @@ class ModuleWithNoneAttribute(ivy.Module):
 
     def _forward(self, x):
         return x
-
-
-# module with none attribute
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_module_w_none_attribute(
-    batch_shape, input_channels, output_channels, on_device
-):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    module = ModuleWithNoneAttribute(device=on_device)
-    module(x)
 
 
 class TrainableModuleWithDuplicate(ivy.Module):
@@ -275,54 +78,6 @@ class TrainableModuleWithDuplicate(ivy.Module):
         return self._linear1(x)
 
 
-# module training with duplicate
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    channels=st.integers(min_value=1, max_value=64),
-    same_layer=st.booleans(),
-)
-def test_module_training_with_duplicate(batch_shape, channels, same_layer, on_device):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), "float32"
-    )
-    module = TrainableModuleWithDuplicate(channels, same_layer, device=on_device)
-
-    def loss_fn(v_):
-        out = module(x, v=v_)
-        return ivy.mean(out)
-
-    # train
-    loss_tm1 = 1e12
-    loss = None
-    grads = None
-    for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
-        module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
-        assert loss < loss_tm1
-        loss_tm1 = loss
-
-    # type test
-    assert ivy.is_array(loss)
-    assert isinstance(grads, ivy.Container)
-    # cardinality test
-    assert loss.shape == ()
-    # value test
-    assert ivy.max(ivy.abs(grads.linear0.b)) > 0
-    assert ivy.max(ivy.abs(grads.linear0.w)) > 0
-    if not same_layer:
-        assert ivy.max(ivy.abs(grads.linear1.b)) > 0
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not support **kwargs
-        return
-
-
 class TrainableModuleWithDict(ivy.Module):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
         linear0 = ivy.Linear(in_size, hidden_size, device=device)
@@ -338,59 +93,6 @@ class TrainableModuleWithDict(ivy.Module):
         return ivy.tanh(self._layers["linear2"](x))[0]
 
 
-# module with dict training
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_module_w_dict_training(
-    batch_shape, input_channels, output_channels, on_device
-):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    module = TrainableModuleWithDict(input_channels, output_channels, device=on_device)
-
-    def loss_fn(v_):
-        out = module(x, v=v_)
-        return ivy.mean(out)
-
-    # train
-    loss_tm1 = 1e12
-    loss = None
-    grads = None
-    for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
-        module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
-        assert loss < loss_tm1
-        loss_tm1 = loss
-
-    # type test
-    assert ivy.is_array(loss)
-    assert isinstance(grads, ivy.Container)
-    # cardinality test
-    assert loss.shape == ()
-    # value test
-    assert ivy.max(ivy.abs(grads.layers.linear0.b)) > 0
-    assert ivy.max(ivy.abs(grads.layers.linear0.w)) > 0
-    assert ivy.max(ivy.abs(grads.layers.linear1.b)) > 0
-    assert ivy.max(ivy.abs(grads.layers.linear1.w)) > 0
-    assert ivy.max(ivy.abs(grads.layers.linear2.b)) > 0
-    assert ivy.max(ivy.abs(grads.layers.linear2.w)) > 0
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not support **kwargs
-        return
-
-
 class WithCustomVarStructure(ivy.Module):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
         self._linear0 = ivy.Linear(in_size, hidden_size, device=device)
@@ -403,27 +105,6 @@ class WithCustomVarStructure(ivy.Module):
 
     def _forward(self, x):
         pass
-
-
-# with custom var structure
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_with_custom_var_structure(
-    batch_shape, input_channels, output_channels, on_device
-):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-    module = WithCustomVarStructure(input_channels, output_channels, device=on_device)
-    assert "x" in module.v
-    assert "y" in module.v
-    assert "z" in module.v
 
 
 class DoubleLinear(ivy.Module):
@@ -451,565 +132,33 @@ class WithNestedModules(ivy.Module):
         return x
 
 
-# top variables
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_top_variables(batch_shape, input_channels, output_channels, on_device):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-    module = WithNestedModules(input_channels, output_channels, device=on_device)
-    for key_chain in [
-        "dl0",
-        "dl0/l0",
-        "dl0/l1",
-        "dl0/l0/b",
-        "dl0/l0/w",
-        "dl0/l1/b",
-        "dl0/l1/w",
-        "dl1",
-        "dl1/l0",
-        "dl1/l1",
-        "dl1/l0/b",
-        "dl1/l0/w",
-        "dl1/l1/b",
-        "dl1/l1/w",
-    ]:
-        # depth 1
-        assert key_chain in module._dl0.top_v()
-        assert key_chain in module._dl1.top_v()
+class ModuleWithBuffer(ivy.Module):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
 
-        # depth 2
-        assert key_chain in module._dl0._l0.top_v()
-        assert key_chain in module._dl0._l1.top_v()
-        assert key_chain in module._dl1._l0.top_v()
-        assert key_chain in module._dl1._l1.top_v()
-
-
-# top module
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_top_module(batch_shape, input_channels, output_channels, on_device):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-
-    module = WithNestedModules(input_channels, output_channels, device=on_device)
-
-    # full depth
-    assert module._dl0.top_mod() is module
-    assert module._dl1.top_mod() is module
-
-    assert module._dl0._l0.top_mod() is module
-    assert module._dl0._l1.top_mod() is module
-    assert module._dl1._l0.top_mod() is module
-    assert module._dl1._l1.top_mod() is module
-
-    # depth 1
-    assert module._dl0._l0.top_mod(1) is module._dl0
-    assert module._dl0._l1.top_mod(1) is module._dl0
-    assert module._dl1._l0.top_mod(1) is module._dl1
-    assert module._dl1._l1.top_mod(1) is module._dl1
-
-
-# v with top v key chains
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_v_with_top_v_key_chains(
-    batch_shape, input_channels, output_channels, on_device
-):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-
-    module = WithNestedModules(input_channels, output_channels, device=on_device)
-
-    # full depth
-    v = module._dl0.v_with_top_v_key_chains()
-    assert "dl0" in v
-    assert v.dl0 is module._dl0.v
-
-    v = module._dl1.v_with_top_v_key_chains()
-    assert "dl1" in v
-    assert v.dl1 is module._dl1.v
-
-    v = module._dl0._l0.v_with_top_v_key_chains()
-    assert "dl0" in v
-    assert "l0" in v.dl0
-    assert v.dl0.l0 is module._dl0._l0.v
-
-    v = module._dl0._l1.v_with_top_v_key_chains()
-    assert "dl0" in v
-    assert "l1" in v.dl0
-    assert v.dl0.l1 is module._dl0._l1.v
-
-    v = module._dl1._l0.v_with_top_v_key_chains()
-    assert "dl1" in v
-    assert "l0" in v.dl1
-    assert v.dl1.l0 is module._dl1._l0.v
-
-    v = module._dl1._l1.v_with_top_v_key_chains()
-    assert "dl1" in v
-    assert "l1" in v.dl1
-    assert v.dl1.l1 is module._dl1._l1.v
-
-    # depth 1
-
-    v = module._dl0._l0.v_with_top_v_key_chains(depth=1)
-    assert "l0" in v
-    assert v.l0 is module._dl0._l0.v
-
-    v = module._dl0._l1.v_with_top_v_key_chains(depth=1)
-    assert "l1" in v
-    assert v.l1 is module._dl0._l1.v
-
-    v = module._dl1._l0.v_with_top_v_key_chains(depth=1)
-    assert "l0" in v
-    assert v.l0 is module._dl1._l0.v
-
-    v = module._dl1._l1.v_with_top_v_key_chains(depth=1)
-    assert "l1" in v
-    assert v.l1 is module._dl1._l1.v
-
-
-# module depth
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_module_depth(batch_shape, input_channels, output_channels, on_device):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-
-    module = WithNestedModules(input_channels, output_channels, device=on_device)
-
-    # depth 0
-    assert module.mod_depth() == 0
-
-    # depth 1
-    assert module._dl0.mod_depth() == 1
-    assert module._dl1.mod_depth() == 1
-
-    # depth 2
-    assert module._dl0._l0.mod_depth() == 2
-    assert module._dl0._l1.mod_depth() == 2
-    assert module._dl1._l0.mod_depth() == 2
-    assert module._dl1._l1.mod_depth() == 2
-
-
-# module height
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_module_height(batch_shape, input_channels, output_channels, on_device):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-
-    module = WithNestedModules(input_channels, output_channels, device=on_device)
-
-    # height 2
-    assert module.mod_height() == 2
-
-    # height 1
-    assert module._dl0.mod_height() == 1
-    assert module._dl1.mod_height() == 1
-
-    # height 0
-    assert module._dl0._l0.mod_height() == 0
-    assert module._dl0._l1.mod_height() == 0
-    assert module._dl1._l0.mod_height() == 0
-    assert module._dl1._l1.mod_height() == 0
-
-
-# sub modules
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_sub_modules(batch_shape, input_channels, output_channels, on_device):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-
-    module = WithNestedModules(input_channels, output_channels, device=on_device)
-
-    # depth 0
-    sub_mods = module.sub_mods(depth=0)
-    assert module.v is sub_mods
-
-    # depth 1
-    sub_mods = module.sub_mods(depth=1)
-    for v in [module._dl0.v, module._dl1.v]:
-        assert v in sub_mods
-
-    # depth 2 (full)
-    sub_mods = module.sub_mods()
-    for v in [
-        module._dl0._l0.v,
-        module._dl0._l1.v,
-        module._dl1._l0.v,
-        module._dl1._l1.v,
-    ]:
-        assert v in sub_mods
-
-
-# track submod returns
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_module_track_submod_rets(
-    batch_shape, input_channels, output_channels, on_device
-):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    module = WithNestedModules(input_channels, output_channels, device=on_device)
-
-    # depth 1
-    ret = module(x, track_submod_rets=True, submod_depth=1)
-    assert ret.shape == tuple(list(batch_shape) + [64])
-    sm_rets = module.submod_rets
-    for submod in [module._dl0, module._dl1]:
-        for ret in sm_rets[submod.get_mod_key()]:
-            assert isinstance(ret, np.ndarray)
-            assert ret.shape == tuple(list(batch_shape) + [64])
-    for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        assert (
-            ivy.Container.cont_flatten_key_chain(submod.__repr__(), "_") not in sm_rets
-        )
-
-    # depth 2 (full)
-    ret = module(x, track_submod_rets=True)
-    assert ret.shape == tuple(list(batch_shape) + [64])
-    sm_rets = module.submod_rets
-    for submod in [
-        module._dl0,
-        module._dl1,
-        module._dl0._l0,
-        module._dl0._l1,
-        module._dl1._l0,
-        module._dl1._l1,
-    ]:
-        for ret in sm_rets[submod.get_mod_key()]:
-            assert isinstance(ret, np.ndarray)
-            assert ret.shape == tuple(list(batch_shape) + [64])
-
-    # partial submodules
-    ret = module(
-        x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0]
-    )
-    assert ret.shape == tuple(list(batch_shape) + [64])
-    sm_rets = module.submod_rets
-    for submod in [module._dl1, module._dl0._l0]:
-        for ret in sm_rets[submod.get_mod_key()]:
-            assert isinstance(ret, np.ndarray)
-            assert ret.shape == tuple(list(batch_shape) + [64])
-    for submod in [module._dl0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        assert (
-            ivy.Container.cont_flatten_key_chain(submod.__repr__(), "_") not in sm_rets
-        )
-
-
-# check submod returns
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_module_check_submod_rets(
-    batch_shape, input_channels, output_channels, on_device
-):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    module = WithNestedModules(input_channels, output_channels, device=on_device)
-
-    # depth 1
-    ret = module(x, track_submod_rets=True, submod_depth=1)
-    assert ret.shape == tuple(list(batch_shape) + [64])
-    sm_rets = module.submod_rets
-    module(x, expected_submod_rets=sm_rets)
-    sm_rets.random_uniform(map_sequences=True)
-    try:
-        module(x, expected_submod_rets=sm_rets.random_uniform(map_sequences=True))
-        raise Exception(
-            "forward pass succeeded despite passing random expected_submod_rets, "
-            "assertion error expected."
-        )
-    except ivy.utils.exceptions.IvyException:
-        pass
-
-    # depth 2 (full)
-    ret = module(x, track_submod_rets=True)
-    assert ret.shape == tuple(list(batch_shape) + [64])
-    sm_rets = module.submod_rets
-    module(x, expected_submod_rets=sm_rets)
-    try:
-        module(x, expected_submod_rets=sm_rets.random_uniform(map_sequences=True))
-        raise Exception(
-            "forward pass succeeded despite passing random expected_submod_rets, "
-            "assertion error expected."
-        )
-    except ivy.utils.exceptions.IvyException:
-        pass
-
-    # partial submodules
-    ret = module(
-        x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0]
-    )
-    assert ret.shape == tuple(list(batch_shape) + [64])
-    sm_rets = module.submod_rets
-    module(x, expected_submod_rets=sm_rets)
-    try:
-        module(x, expected_submod_rets=sm_rets.random_uniform(map_sequences=True))
-        raise Exception(
-            "forward pass succeeded despite passing random expected_submod_rets, "
-            "assertion error expected."
-        )
-    except ivy.utils.exceptions.IvyException:
-        pass
-
-    # with tolerances
-    ret = module(x, track_submod_rets=True)
-    assert ret.shape == tuple(list(batch_shape) + [64])
-    sm_rets_orig = module.submod_rets
-    sm_rets = ivy.Container(
-        {
-            k: {"val": v, "atol": [1e-8] * len(v), "rtol": [1e-5] * len(v)}
-            for k, v in sm_rets_orig.items()
-        },
-        **sm_rets_orig._config
-    )
-    module(x, expected_submod_rets=sm_rets)
-    sm_rets = ivy.Container(
-        {k: {"val": v, "atol": 1e-8, "rtol": 1e-5} for k, v in sm_rets_orig.items()},
-        **sm_rets_orig._config
-    )
-    module(x, expected_submod_rets=sm_rets)
-    try:
-        module(x, expected_submod_rets=sm_rets.random_uniform(map_sequences=True))
-        raise Exception(
-            "forward pass succeeded despite passing random expected_submod_rets, "
-            "assertion error expected."
-        )
-    except ivy.utils.exceptions.IvyException:
+    def _forward(self, *args, **kwargs):
         pass
 
 
-# track submod call order
-@given(
-    batch_shape=helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
-    ),
-    input_channels=st.integers(min_value=2, max_value=5),
-    output_channels=st.integers(min_value=2, max_value=5),
-)
-def test_module_track_submod_call_order(
-    batch_shape, input_channels, output_channels, on_device
-):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
+class ModuleWithTrainEval(ivy.Module):
+    def __init__(self):
+        super().__init__()
 
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    module = WithNestedModules(input_channels, output_channels, device=on_device)
+    def _forward():
+        pass
 
-    root_key_0 = ivy.Container.cont_flatten_key_chain(module.__repr__(), "_") + "_0"
 
-    dl0_key_0 = ivy.Container.cont_flatten_key_chain(module._dl0.__repr__(), "_") + "_0"
-    dl1_key_0 = ivy.Container.cont_flatten_key_chain(module._dl1.__repr__(), "_") + "_0"
-    dl1_key_1 = ivy.Container.cont_flatten_key_chain(module._dl1.__repr__(), "_") + "_1"
+@given(buffer=st.just({"var1": np.ones((1, 2))}))
+def test_get_buffers(buffer, backend_fw):
+    with ivy.utils.backend.ContextManager(backend_fw):
+        module = ModuleWithBuffer()
+        buffers = ivy.Container()
+        for name, value in buffer.items():
+            value = ivy.array(value)
+            buffers[name] = value
+            module.register_buffer(name, value)
 
-    dl0_l0_key_0 = (
-        ivy.Container.cont_flatten_key_chain(module._dl0._l0.__repr__(), "_") + "_0"
-    )
-    dl0_l1_key_0 = (
-        ivy.Container.cont_flatten_key_chain(module._dl0._l1.__repr__(), "_") + "_0"
-    )
-    dl1_l0_key_0 = (
-        ivy.Container.cont_flatten_key_chain(module._dl1._l0.__repr__(), "_") + "_0"
-    )
-    dl1_l1_key_0 = (
-        ivy.Container.cont_flatten_key_chain(module._dl1._l1.__repr__(), "_") + "_0"
-    )
-
-    # depth 1
-    ret = module(x, track_submod_call_order=True, submod_depth=1)
-    assert ret.shape == tuple(list(batch_shape) + [64])
-
-    sm_co = module.submod_call_order
-
-    assert root_key_0 in sm_co
-
-    assert dl0_key_0 in sm_co[root_key_0]
-    assert dl1_key_0 in sm_co[root_key_0]
-    assert dl1_key_1 in sm_co[root_key_0]
-
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl0_key_0],
-            module._dl0.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl1_key_0],
-            module._dl1.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl1_key_1],
-            module._dl1.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
-
-    # depth 2 (full)
-    ret = module(x, track_submod_call_order=True)
-    assert ret.shape == tuple(list(batch_shape) + [64])
-
-    sm_co = module.submod_call_order
-
-    assert root_key_0 in sm_co
-
-    assert dl0_key_0 in sm_co[root_key_0]
-    assert dl1_key_0 in sm_co[root_key_0]
-    assert dl1_key_1 in sm_co[root_key_0]
-
-    assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
-    assert dl0_l1_key_0 in sm_co[root_key_0][dl0_key_0]
-    assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_0]
-    assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_0]
-    assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_1]
-    assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_1]
-
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
-            module._dl0._l0.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl0_key_0][dl0_l1_key_0],
-            module._dl0._l1.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl1_key_0][dl1_l0_key_0],
-            module._dl1._l0.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl1_key_0][dl1_l1_key_0],
-            module._dl1._l1.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl1_key_1][dl1_l0_key_0],
-            module._dl1._l0.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl1_key_1][dl1_l1_key_0],
-            module._dl1._l1.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
-
-    # partial submodules
-    ret = module(
-        x, track_submod_call_order=True, submods_to_track=[module._dl1, module._dl0._l0]
-    )
-    assert ret.shape == tuple(list(batch_shape) + [64])
-
-    sm_co = module.submod_call_order
-
-    assert root_key_0 in sm_co
-
-    assert dl0_key_0 in sm_co[root_key_0]
-    assert dl1_key_0 in sm_co[root_key_0]
-    assert dl1_key_1 in sm_co[root_key_0]
-
-    assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
-    assert dl0_l1_key_0 not in sm_co[root_key_0][dl0_key_0]
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl1_key_0],
-            module._dl1.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl1_key_1],
-            module._dl1.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
-
-    assert ivy.Container.cont_identical(
-        [
-            sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
-            module._dl0._l0.v.cont_flatten_key_chains().to_numpy(),
-        ]
-    )
+        assert module.buffers == buffers
 
 
 @given(
@@ -1020,42 +169,436 @@ def test_module_track_submod_call_order(
     output_channels=st.integers(min_value=2, max_value=5),
 )
 def test_module_save_and_load_as_pickled(
-    batch_shape, input_channels, output_channels, on_device
+    batch_shape, input_channels, output_channels, on_device, backend_fw
 ):
     save_filepath = "module.pickled"
 
     # smoke test
-    if ivy.current_backend_str() == "numpy":
+    if backend_fw == "numpy":
         # NumPy does not support gradients
         return
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    module = TrainableModule(input_channels, output_channels, device=on_device)
 
-    def loss_fn(v_):
-        out = module(x, v=v_)
-        return ivy.mean(out)
+    with ivy.utils.backend.ContextManager(backend_fw):
+        x = ivy.astype(
+            ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
+            "float32",
+        )
+        module = TrainableModule(input_channels, output_channels, device=on_device)
 
-    module.save(save_filepath)
-    assert os.path.exists(save_filepath)
-    loaded_module = ivy.Module.load(save_filepath)
+        def loss_fn(v_):
+            out = module(x, v=v_)
+            return ivy.mean(out)
 
-    # train
-    loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
-    module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
+        module.save(save_filepath)
+        assert os.path.exists(save_filepath)
+        loaded_module = ivy.Module.load(save_filepath)
 
-    loaded_loss, loaded_grads = ivy.execute_with_gradients(loss_fn, loaded_module.v)
-    loaded_module.v = ivy.gradient_descent_update(loaded_module.v, loaded_grads, 1e-3)
+        # train
+        loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
+        module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
 
-    # type test
-    assert ivy.is_array(loaded_loss)
-    assert isinstance(loaded_grads, ivy.Container)
-    # cardinality test
-    assert loaded_loss.shape == ()
-    # value test
-    assert ivy.all_equal(loaded_loss == loss)
-    assert ivy.Container.all(loaded_module.v == module.v).cont_all_true()
+        loaded_loss, loaded_grads = ivy.execute_with_gradients(loss_fn, loaded_module.v)
+        loaded_module.v = ivy.gradient_descent_update(
+            loaded_module.v, loaded_grads, 1e-3
+        )
 
-    os.remove(save_filepath)
+        # type test
+        assert ivy.is_array(loaded_loss)
+        assert isinstance(loaded_grads, ivy.Container)
+        # cardinality test
+        assert loaded_loss.shape == ()
+        # value test
+        assert ivy.all_equal(loaded_loss == loss)
+        assert ivy.Container.all(loaded_module.v == module.v).cont_all_true()
+
+        os.remove(save_filepath)
+
+
+@given(dummy=st.booleans())
+def test_module_to_device(dummy, on_device, backend_fw):
+    with ivy.utils.backend.ContextManager(backend_fw):
+        model = TrainableModule(5, 5)
+        model.to_device(on_device)
+
+        def assertion(x, on_device):
+            if x != on_device:
+                print(f"{x} is not equal to {on_device}")
+                raise AssertionError
+
+        def model_assert(mod, on_device):
+            for obj in mod.v.values():
+                if isinstance(obj, ivy.Module):
+                    return model_assert(obj, on_device)
+                if isinstance(obj, (ivy.Container, dict)):
+                    for item2 in obj.values():
+                        assertion(item2.device, on_device)
+
+                else:
+                    assertion(obj.device, on_device)
+            if getattr(mod, "buffers", None):
+                for obj in mod.buffers.values():
+                    if isinstance(obj, (ivy.Container, dict)):
+                        ivy.nested_map(lambda x: assertion(x.device, on_device), obj)
+                    else:
+                        assertion(obj.device, on_device)
+
+        model_assert(model, on_device)
+
+
+# module training
+@given(
+    batch_shape=helpers.get_shape(
+        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
+    ),
+    input_channels=st.integers(min_value=2, max_value=5),
+    output_channels=st.integers(min_value=2, max_value=5),
+)
+def test_module_training(
+    batch_shape, input_channels, output_channels, on_device, backend_fw
+):
+    # smoke test
+    if backend_fw == "numpy":
+        # NumPy does not support gradients
+        return
+
+    with ivy.utils.backend.ContextManager(backend_fw):
+        x = ivy.astype(
+            ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
+            "float32",
+        )
+        module = TrainableModule(input_channels, output_channels, device=on_device)
+
+        def loss_fn(v_):
+            out = module(x, v=v_)
+            return ivy.mean(out)
+
+        # train
+        loss_tm1 = 1e12
+        loss = None
+        grads = None
+        for i in range(10):
+            loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
+            module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
+            assert loss < loss_tm1
+            loss_tm1 = loss
+
+        # type test
+        assert ivy.is_array(loss)
+        assert isinstance(grads, ivy.Container)
+        # cardinality test
+        assert loss.shape == ()
+        # value test
+        assert ivy.max(ivy.abs(grads.linear0.b)) > 0
+        assert ivy.max(ivy.abs(grads.linear0.w)) > 0
+        assert ivy.max(ivy.abs(grads.linear1.b)) > 0
+        assert ivy.max(ivy.abs(grads.linear1.w)) > 0
+        assert ivy.max(ivy.abs(grads.linear2.b)) > 0
+        assert ivy.max(ivy.abs(grads.linear2.w)) > 0
+        # tracing test
+        if backend_fw == "torch":
+            # pytest scripting does not support **kwargs
+            return
+
+
+# module training with duplicate
+@given(
+    batch_shape=helpers.get_shape(
+        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
+    ),
+    channels=st.integers(min_value=1, max_value=64),
+    same_layer=st.booleans(),
+)
+def test_module_training_with_duplicate(
+    batch_shape, channels, same_layer, on_device, backend_fw
+):
+    # smoke test
+    if backend_fw == "numpy":
+        # NumPy does not support gradients
+        return
+
+    with ivy.utils.backend.ContextManager(backend_fw):
+        x = ivy.astype(
+            ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels),
+            "float32",
+        )
+        module = TrainableModuleWithDuplicate(channels, same_layer, device=on_device)
+
+        def loss_fn(v_):
+            out = module(x, v=v_)
+            return ivy.mean(out)
+
+        # train
+        loss_tm1 = 1e12
+        loss = None
+        grads = None
+        for i in range(10):
+            loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
+            module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
+            assert loss < loss_tm1
+            loss_tm1 = loss
+
+        # type test
+        assert ivy.is_array(loss)
+        assert isinstance(grads, ivy.Container)
+        # cardinality test
+        assert loss.shape == ()
+        # value test
+        assert ivy.max(ivy.abs(grads.linear0.b)) > 0
+        assert ivy.max(ivy.abs(grads.linear0.w)) > 0
+        if not same_layer:
+            assert ivy.max(ivy.abs(grads.linear1.b)) > 0
+        # tracing test
+        if backend_fw == "torch":
+            # pytest scripting does not support **kwargs
+            return
+
+
+# module with dict training
+@given(
+    batch_shape=helpers.get_shape(
+        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
+    ),
+    input_channels=st.integers(min_value=2, max_value=5),
+    output_channels=st.integers(min_value=2, max_value=5),
+)
+def test_module_w_dict_training(
+    batch_shape, input_channels, output_channels, on_device, backend_fw
+):
+    # smoke test
+    if backend_fw == "numpy":
+        # NumPy does not support gradients
+        return
+
+    with ivy.utils.backend.ContextManager(backend_fw):
+        x = ivy.astype(
+            ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
+            "float32",
+        )
+        module = TrainableModuleWithDict(
+            input_channels, output_channels, device=on_device
+        )
+
+        def loss_fn(v_):
+            out = module(x, v=v_)
+            return ivy.mean(out)
+
+        # train
+        loss_tm1 = 1e12
+        loss = None
+        grads = None
+        for i in range(10):
+            loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
+            module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
+            assert loss < loss_tm1
+            loss_tm1 = loss
+
+        # type test
+        assert ivy.is_array(loss)
+        assert isinstance(grads, ivy.Container)
+        # cardinality test
+        assert loss.shape == ()
+        # value test
+        assert ivy.max(ivy.abs(grads.layers.linear0.b)) > 0
+        assert ivy.max(ivy.abs(grads.layers.linear0.w)) > 0
+        assert ivy.max(ivy.abs(grads.layers.linear1.b)) > 0
+        assert ivy.max(ivy.abs(grads.layers.linear1.w)) > 0
+        assert ivy.max(ivy.abs(grads.layers.linear2.b)) > 0
+        assert ivy.max(ivy.abs(grads.layers.linear2.w)) > 0
+        # tracing test
+        if backend_fw == "torch":
+            # pytest scripting does not support **kwargs
+            return
+
+
+# module with list training
+@given(
+    batch_shape=helpers.get_shape(
+        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
+    ),
+    input_channels=st.integers(min_value=2, max_value=5),
+    output_channels=st.integers(min_value=2, max_value=5),
+)
+def test_module_w_list_training(
+    batch_shape, input_channels, output_channels, on_device, backend_fw
+):
+    # smoke test
+    if backend_fw == "numpy":
+        # NumPy does not support gradients
+        return
+
+    with ivy.utils.backend.ContextManager(backend_fw):
+        x = ivy.astype(
+            ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
+            "float32",
+        )
+        module = TrainableModuleWithList(
+            input_channels, output_channels, device=on_device
+        )
+
+        def loss_fn(v_):
+            out = module(x, v=v_)
+            return ivy.mean(out)
+
+        # train
+        loss_tm1 = 1e12
+        loss = None
+        grads = None
+        for i in range(10):
+            loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
+            module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
+            assert loss < loss_tm1
+            loss_tm1 = loss
+
+        # type test
+        assert ivy.is_array(loss)
+        assert isinstance(grads, ivy.Container)
+        # cardinality test
+        assert loss.shape == ()
+        # value test
+        assert ivy.max(ivy.abs(grads.layers.v0.b)) > 0
+        assert ivy.max(ivy.abs(grads.layers.v0.w)) > 0
+        assert ivy.max(ivy.abs(grads.layers.v1.b)) > 0
+        assert ivy.max(ivy.abs(grads.layers.v1.w)) > 0
+        assert ivy.max(ivy.abs(grads.layers.v2.b)) > 0
+        assert ivy.max(ivy.abs(grads.layers.v2.w)) > 0
+        # tracing test
+        if backend_fw == "torch":
+            # pytest scripting does not support **kwargs
+            return
+
+
+# module with none attribute
+@given(
+    batch_shape=helpers.get_shape(
+        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
+    ),
+    input_channels=st.integers(min_value=2, max_value=5),
+    output_channels=st.integers(min_value=2, max_value=5),
+)
+def test_module_w_none_attribute(
+    batch_shape, input_channels, output_channels, on_device, backend_fw
+):
+    # smoke test
+    if backend_fw == "numpy":
+        # NumPy does not support gradients
+        return
+
+    with ivy.utils.backend.ContextManager(backend_fw):
+        x = ivy.astype(
+            ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
+            "float32",
+        )
+        module = ModuleWithNoneAttribute(device=on_device)
+        module(x)
+
+
+# module with partial v
+@given(
+    batch_shape=helpers.get_shape(
+        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
+    ),
+    input_channels=st.integers(min_value=2, max_value=5),
+    output_channels=st.integers(min_value=2, max_value=5),
+)
+def test_module_w_partial_v(
+    batch_shape, input_channels, output_channels, on_device, backend_fw
+):
+    # smoke test
+    if backend_fw == "numpy":
+        # NumPy does not support gradients
+        return
+
+    with ivy.utils.backend.ContextManager(backend_fw):
+        x = ivy.astype(
+            ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
+            "float32",
+        )
+        v = ivy.Container(
+            {
+                "linear0": {
+                    "b": _variable(ivy.random_uniform(shape=[64])),
+                    "w": _variable(ivy.random_uniform(shape=[64, 4])),
+                },
+                "linear1": {
+                    "b": _variable(ivy.random_uniform(shape=[64])),
+                    "w": _variable(ivy.random_uniform(shape=[64, 64])),
+                    "extra": _variable(ivy.random_uniform(shape=[64, 64])),
+                },
+                "linear2": {
+                    "b": _variable(ivy.random_uniform(shape=[5])),
+                    "w": _variable(ivy.random_uniform(shape=[5, 64])),
+                },
+            }
+        )
+        try:
+            TrainableModule(
+                input_channels,
+                output_channels,
+                device=on_device,
+                v=v,
+                with_partial_v=True,
+            )
+            raise Exception(
+                "TrainableModule did not raise exception despite being passed "
+                "with wrongly shaped variables."
+            )
+        except ivy.utils.exceptions.IvyException:
+            pass
+        v = ivy.Container(
+            {
+                "linear0": {
+                    "b": _variable(ivy.random_uniform(shape=[64])),
+                },
+                "linear1": {"w": _variable(ivy.random_uniform(shape=[64, 64]))},
+                "linear2": {
+                    "b": _variable(ivy.random_uniform(shape=[output_channels]))
+                },
+            }
+        )
+        try:
+            TrainableModule(input_channels, output_channels, device=on_device, v=v)
+            raise Exception(
+                "TrainableModule did not raise exception despite being passed "
+                "with wrongly shaped variables."
+            )
+        except ivy.utils.exceptions.IvyException:
+            pass
+        module = TrainableModule(
+            input_channels, output_channels, device=on_device, v=v, with_partial_v=True
+        )
+        module(x)
+
+
+@given(mode=st.booleans())
+def test_train_eval(mode, backend_fw):
+    with ivy.utils.backend.ContextManager(backend_fw):
+        cls = ModuleWithTrainEval()
+        cls.train(mode)
+        assert mode == cls.training
+        cls.eval()
+        assert not cls.training
+
+
+# with custom var structure
+@given(
+    batch_shape=helpers.get_shape(
+        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
+    ),
+    input_channels=st.integers(min_value=2, max_value=5),
+    output_channels=st.integers(min_value=2, max_value=5),
+)
+def test_with_custom_var_structure(
+    batch_shape, input_channels, output_channels, on_device, backend_fw
+):
+    # smoke test
+    if backend_fw == "numpy":
+        # NumPy does not support gradients
+        return
+
+    with ivy.utils.backend.ContextManager(backend_fw):
+        module = WithCustomVarStructure(
+            input_channels, output_channels, device=on_device
+        )
+        assert "x" in module.v
+        assert "y" in module.v
+        assert "z" in module.v
