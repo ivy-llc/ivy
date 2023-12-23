@@ -1,4 +1,5 @@
-"""Collection of Jax general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Jax general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import jax
@@ -18,6 +19,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax.device import _to_array, _to_device
 from ivy.functional.ivy.general import _broadcast_to
 from ivy.functional.backends.jax import JaxArray, NativeArray
+from ivy.utils.exceptions import _check_inplace_update_support
 from . import backend_version
 
 
@@ -65,7 +67,7 @@ def get_item(
     /,
     query: Union[JaxArray, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> JaxArray:
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
@@ -100,7 +102,7 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.23 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -128,8 +130,8 @@ def gather(
     batch_dims: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    axis = axis % len(params.shape)
-    batch_dims = batch_dims % len(params.shape)
+    axis %= len(params.shape)
+    batch_dims %= len(params.shape)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
@@ -251,10 +253,7 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        if ensure_in_backend or ivy.is_native_array(x):
-            raise ivy.utils.exceptions.IvyException(
-                "JAX does not natively support inplace updates"
-            )
+        _check_inplace_update_support(x, ensure_in_backend)
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
@@ -336,8 +335,8 @@ def scatter_flat(
         target = target.at[indices].max(updates)
     else:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
         )
     if target_given:
         return ivy.inplace_update(out, target)
@@ -384,10 +383,12 @@ def scatter_nd(
         target = target.at[indices_tuple].min(updates)
     elif reduction == "max":
         target = target.at[indices_tuple].max(updates)
+    elif reduction == "mul":
+        target = target.at[indices_tuple].mul(updates)
     else:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max",'
+            ' "mul" or "replace"'
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, target)
@@ -420,7 +421,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.23 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,

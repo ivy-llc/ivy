@@ -118,6 +118,16 @@ def _isin_data_generation_helper(draw):
     return assume_unique, draw(dtype_and_x)
 
 
+def _supports_inplace_update(ivy_backend, test_flags) -> bool:
+    supports_array_inplace_update = (
+        not test_flags.as_variable and ivy_backend.inplace_arrays_supported()
+    )
+    supports_variable_inplace_update = (
+        test_flags.as_variable and ivy_backend.inplace_variables_supported()
+    )
+    return supports_array_inplace_update or supports_variable_inplace_update
+
+
 # fourier_encode
 # @given(
 #     x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
@@ -379,7 +389,7 @@ def test_all_equal(
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     test_flags.num_positional_args = len(arrays)
     helpers.test_function(
@@ -619,13 +629,13 @@ def test_default(x, default_val, test_flags, backend_fw):
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         with_callable = False
         if x is not None:
-            if hasattr(x, "__call__"):
+            if callable(x):
                 with_callable = True
             else:
                 x_dtype, x = x
                 x = x[0].tolist() if isinstance(x, list) else x
         else:
-            if hasattr(default_val, "__call__"):
+            if callable(default_val):
                 with_callable = True
             else:
                 dv_dtype, default_val = default_val
@@ -843,7 +853,7 @@ def test_einops_repeat(
 )
 def test_exists(x):
     if x is not None:
-        if not hasattr(x, "__call__"):
+        if not callable(x):
             dtype, x = x
     ret = ivy.exists(x)
     assert isinstance(ret, bool)
@@ -1058,6 +1068,7 @@ def test_get_all_arrays_in_memory():
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_with_copy=st.just(True),
 )
 def test_get_item(
     dtypes_x_query,
@@ -1197,7 +1208,7 @@ def test_inplace_arrays_supported(backend_fw):
         elif backend_fw in ["jax", "tensorflow", "paddle"]:
             assert not ivy_backend.inplace_arrays_supported()
         else:
-            raise Exception("Unrecognized framework")
+            raise RuntimeError("Unrecognized framework")
 
 
 # inplace_decrement
@@ -1222,9 +1233,8 @@ def test_inplace_decrement(x_val_and_dtypes, test_flags, on_device, backend_fw):
         x = ivy_backend.array(x, dtype=dtype, device=on_device)
         val = ivy_backend.array(val, dtype=dtype, device=on_device)
         new_val = x - val
-        if (not test_flags.as_variable and ivy_backend.inplace_arrays_supported()) or (
-            test_flags.as_variable and ivy_backend.inplace_variables_supported()
-        ):
+        supports_update = _supports_inplace_update(ivy_backend, test_flags)
+        if supports_update:
             x_inplace = ivy_backend.inplace_decrement(x, val)
             assert id(x_inplace) == id(x)
             x = helpers.flatten_and_to_np(ret=x, backend=backend_fw)
@@ -1259,9 +1269,8 @@ def test_inplace_increment(x_val_and_dtypes, test_flags, on_device, backend_fw):
         x = ivy_backend.array(x, dtype=dtype, device=on_device)
         val = ivy_backend.array(val, dtype=dtype, device=on_device)
         new_val = x + val
-        if (not test_flags.as_variable and ivy_backend.inplace_arrays_supported()) or (
-            test_flags.as_variable and ivy_backend.inplace_variables_supported()
-        ):
+        supports_update = _supports_inplace_update(ivy_backend, test_flags)
+        if supports_update:
             x_inplace = ivy_backend.inplace_increment(x, val)
             assert id(x_inplace) == id(x)
             x = helpers.flatten_and_to_np(ret=x, backend=backend_fw)
@@ -1280,9 +1289,10 @@ def test_inplace_increment(x_val_and_dtypes, test_flags, on_device, backend_fw):
         shared_dtype=True,
     ),
     keep_x_dtype=st.booleans(),
+    inplace_mode=st.sampled_from(["lenient", "strict"]),
 )
 def test_inplace_update(
-    x_val_and_dtypes, keep_x_dtype, test_flags, on_device, backend_fw
+    x_val_and_dtypes, keep_x_dtype, inplace_mode, test_flags, on_device, backend_fw
 ):
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype = x_val_and_dtypes[0][0]
@@ -1291,9 +1301,10 @@ def test_inplace_update(
         x, val = x_val_and_dtypes[1]
         x = ivy_backend.array(x.tolist(), dtype=dtype, device=on_device)
         val = ivy_backend.array(val.tolist(), dtype=dtype, device=on_device)
-        if (not test_flags.as_variable and ivy_backend.inplace_arrays_supported()) or (
-            test_flags.as_variable and ivy_backend.inplace_variables_supported()
-        ):
+
+        ivy_backend.set_inplace_mode(inplace_mode)
+        supports_update = _supports_inplace_update(ivy_backend, test_flags)
+        if supports_update or ivy_backend.inplace_mode == "lenient":
             if keep_x_dtype:
                 x_dtype = x.dtype
                 x_inplace = ivy_backend.inplace_update(x, val, keep_input_dtype=True)
@@ -1306,6 +1317,9 @@ def test_inplace_update(
             helpers.value_test(
                 backend=backend_fw, ret_np_flat=x, ret_np_from_gt_flat=val
             )
+        elif not supports_update and ivy_backend.inplace_mode == "strict":
+            with pytest.raises(ivy.utils.exceptions.InplaceUpdateException):
+                ivy_backend.inplace_update(x, val)
 
 
 def test_inplace_variables_supported(backend_fw):
@@ -1315,7 +1329,7 @@ def test_inplace_variables_supported(backend_fw):
         elif backend_fw in ["jax", "paddle"]:
             assert not ivy_backend.inplace_variables_supported()
         else:
-            raise Exception("Unrecognized framework")
+            raise RuntimeError("Unrecognized framework")
 
 
 # is_array
@@ -1608,10 +1622,10 @@ def test_scatter_nd(x, reduction, test_flags, backend_fw, fn_name, on_device):
 # ------#
 
 
-@given(fw_str=st.sampled_from(["numpy", "jax", "torch", "tensorflow"]))
-def test_set_framework(fw_str):
-    ivy.set_backend(fw_str)
-    ivy.previous_backend()
+@pytest.mark.parametrize("mode", ["lenient", "strict"])
+def test_set_inplace_mode(mode):
+    ivy.set_inplace_mode(mode)
+    assert ivy.inplace_mode == mode
 
 
 # set_item
@@ -1627,6 +1641,7 @@ def test_set_framework(fw_str):
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_with_copy=st.just(True),
 )
 def test_set_item(
     dtypes_x_query_val,
@@ -1747,7 +1762,7 @@ def test_stable_pow(
     *, dtypes_and_xs, min_base, test_flags, backend_fw, fn_name, on_device
 ):
     dtypes, xs = dtypes_and_xs
-    assume(all(["bfloat16" not in x for x in dtypes]))
+    assume(all("bfloat16" not in x for x in dtypes))
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
@@ -1835,6 +1850,7 @@ def test_to_list(x0_n_x1_n_res, test_flags, backend_fw, fn_name, on_device):
     copy=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_to_numpy(*, dtype_x, copy, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
@@ -1865,6 +1881,7 @@ def test_to_numpy(*, dtype_x, copy, test_flags, backend_fw, fn_name, on_device):
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_to_scalar(x0_n_x1_n_res, test_flags, backend_fw, fn_name, on_device):
     dtype, x = x0_n_x1_n_res
@@ -1889,6 +1906,13 @@ def test_try_else_none(x):
     else:
         fn = ivy.try_else_none(lambda x: x)
         assert fn is None
+
+
+@pytest.mark.parametrize("mode", ["lenient", "strict"])
+def test_unset_inplace_mode(mode):
+    ivy.set_inplace_mode(mode)
+    ivy.unset_inplace_mode()
+    assert ivy.inplace_mode == "lenient"
 
 
 def test_use_within_use_framework():

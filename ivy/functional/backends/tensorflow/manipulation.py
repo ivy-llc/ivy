@@ -10,7 +10,7 @@ import tensorflow as tf
 import ivy
 
 # noinspection PyProtectedMember
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
@@ -32,26 +32,25 @@ def concat(
     axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    is_tuple = type(xs) is tuple
-    is_axis_none = axis is None
-    if is_tuple:
-        xs = list(xs)
-    highest_dtype = xs[0].dtype
-    for i in xs:
-        highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
-
-    for i in range(len(xs)):
-        if is_axis_none:
-            xs[i] = tf.reshape(xs[i], -1)
-        xs[i] = ivy.astype(xs[i], highest_dtype, copy=False).to_native()
-    if is_axis_none:
-        axis = 0
-        if is_tuple:
-            xs = tuple(xs)
-    try:
-        return tf.concat(xs, axis)
-    except (tf.errors.InvalidArgumentError, np.AxisError) as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+    if axis is not None:
+        try:
+            return tf.concat(xs, axis)
+        except tf.errors.InvalidArgumentError as error:
+            if "(zero-based) was expected to be" in error.message:
+                highest_dtype = xs[0].dtype
+                for i in xs:
+                    highest_dtype = ivy.promote_types(highest_dtype, i.dtype)
+                highest_dtype = ivy.as_native_dtype(highest_dtype)
+                return tf.concat(
+                    [
+                        tf.cast(x, highest_dtype) if x.dtype != highest_dtype else x
+                        for x in xs
+                    ],
+                    axis,
+                )
+            else:
+                raise
+    return concat([tf.reshape(x, -1) for x in xs], axis=0)
 
 
 def expand_dims(
@@ -106,6 +105,7 @@ def permute_dims(
     return tf.transpose(x, perm=axes)
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -158,9 +158,7 @@ def squeeze(
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
         if ivy.any(x.shape[axis] > 1):
-            raise ValueError(
-                "{} must be lesser than or equal to {}".format(x.shape[axis], 1)
-            )
+            raise ValueError(f"{x.shape[axis]} must be lesser than or equal to 1")
         ret = tf.squeeze(x, axis)
     elif axis is None:
         ret = tf.squeeze(x)
@@ -178,9 +176,8 @@ def squeeze(
         for i in axis_updated_after_squeeze:
             if x.shape[i] > 1:
                 raise ValueError(
-                    "Expected dimension of size 1, but found dimension size {}".format(
-                        x.shape[i]
-                    )
+                    "Expected dimension of size 1, but found dimension size"
+                    f" {x.shape[i]}"
                 )
             else:
                 x = tf.squeeze(x, i)
@@ -188,7 +185,7 @@ def squeeze(
     return ret
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def stack(
     arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     /,
@@ -220,9 +217,8 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
         return [x]
     if num_or_size_splits is None:
@@ -243,13 +239,12 @@ def split(
     return tf.split(x, num_or_size_splits, axis)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("int32", "int64")}, backend_version)
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
     /,
     repeats: Union[int, List[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.repeat(x, repeats, axis)
@@ -257,7 +252,7 @@ def repeat(
 
 @with_unsupported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "uint8",
             "uint16",
             "uint32",
@@ -328,31 +323,42 @@ def swapaxes(
     return tf.transpose(x, config)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
-    x_min: Union[Number, tf.Tensor, tf.Variable],
-    x_max: Union[Number, tf.Tensor, tf.Variable],
     /,
+    x_min: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
+    x_max: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+    promoted_type = x.dtype
+    if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
         promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
         promoted_type = ivy.as_native_dtype(
             ivy.promote_types(promoted_type, x_max.dtype)
         )
-        x = tf.cast(x, promoted_type)
-        x_min = tf.cast(x_min, promoted_type)
         x_max = tf.cast(x_max, promoted_type)
-    if tf.size(x) == 0:
-        ret = x
-    elif x.dtype == tf.bool:
-        ret = tf.clip_by_value(tf.cast(x, tf.float16), x_min, x_max)
-        ret = tf.cast(ret, x.dtype)
+    x = tf.cast(x, promoted_type)
+    if x_min is not None:
+        x_min = tf.cast(x_min, promoted_type)
+    cond = True
+    if x_min is not None and x_max is not None:
+        if tf.math.reduce_any(tf.experimental.numpy.greater(x_min, x_max)):
+            cond = False
+    if cond:
+        return tf.experimental.numpy.clip(x, x_min, x_max)
     else:
-        ret = tf.clip_by_value(x, x_min, x_max)
-    return ret
+        return tf.experimental.numpy.minimum(
+            x_max, tf.experimental.numpy.maximum(x, x_min)
+        )
 
 
 def unstack(

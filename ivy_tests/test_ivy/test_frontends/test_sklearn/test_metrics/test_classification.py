@@ -2,6 +2,7 @@ from hypothesis import strategies as st
 
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+import numpy as np
 
 
 @handle_frontend_test(
@@ -25,8 +26,11 @@ def test_sklearn_accuracy_score(
     backend_fw,
     normalize,
 ):
-    # todo: limit array generation to classification instead of regression (contrinuous values)
     dtypes, values = arrays_and_dtypes
+    # sklearn accuracy_score does not support continuous values
+    for i in range(2):
+        if "float" in dtypes[i]:
+            values[i] = np.floor(values[i])
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         backend_to_test=backend_fw,

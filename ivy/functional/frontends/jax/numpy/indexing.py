@@ -52,7 +52,7 @@ class _AxisConcat(abc.ABC):
                 newobj = _make_1d_grid_from_slice(item)
                 item_ndim = 0
             elif isinstance(item, str):
-                raise ValueError("string directive must be placed at the beginning")
+                raise TypeError("string directive must be placed at the beginning")
             else:
                 newobj = array(item, copy=False)
                 item_ndim = newobj.ndim
@@ -107,16 +107,6 @@ def _make_1d_grid_from_slice(s):
     return newobj
 
 
-def _make_1d_grid_from_slice(s):
-    step = 1 if s.step is None else s.step
-    start = 0 if s.start is None else s.start
-    if s.step is not None and ivy.is_complex_dtype(s.step):
-        newobj = linspace(start, s.stop, int(abs(step)))
-    else:
-        newobj = arange(start, s.stop, step)
-    return newobj
-
-
 # --- Main --- #
 # ------------ #
 
@@ -132,29 +122,7 @@ def diag(v, k=0):
 
 
 @to_ivy_arrays_and_back
-def diag(v, k=0):
-    return ivy.diag(v, k=k)
-
-
-@to_ivy_arrays_and_back
 def diag_indices(n, ndim=2):
-    idx = ivy.arange(n, dtype=int)
-    return (idx,) * ndim
-
-
-@to_ivy_arrays_and_back
-def diag_indices(n, ndim=2):
-    idx = ivy.arange(n, dtype=int)
-    return (idx,) * ndim
-
-
-@to_ivy_arrays_and_back
-def diag_indices_from(arr):
-    print(arr)
-    n = arr.shape[0]
-    ndim = ivy.get_num_dims(arr)
-    if not all(arr.shape[i] == n for i in range(ndim)):
-        raise ValueError("All dimensions of input must be of equal length")
     idx = ivy.arange(n, dtype=int)
     return (idx,) * ndim
 
@@ -173,27 +141,6 @@ def diag_indices_from(arr):
 @to_ivy_arrays_and_back
 def diagonal(a, offset=0, axis1=0, axis2=1):
     return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
-
-
-@to_ivy_arrays_and_back
-def diagonal(a, offset=0, axis1=0, axis2=1):
-    return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
-
-
-@to_ivy_arrays_and_back
-def indices(dimensions, dtype=int, sparse=False):
-    if sparse:
-        return tuple(
-            ivy.arange(dim)
-            .expand_dims(
-                axis=[j for j in range(len(dimensions)) if i != j],
-            )
-            .astype(dtype)
-            for i, dim in enumerate(dimensions)
-        )
-    else:
-        grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
-        return ivy.stack(grid, axis=0).astype(dtype)
 
 
 @to_ivy_arrays_and_back
@@ -227,34 +174,8 @@ def mask_indices(n, mask_func, k=0):
 
 
 @to_ivy_arrays_and_back
-def mask_indices(n, mask_func, k=0):
-    mask_func_obj = inspect.unwrap(mask_func)
-    mask_func_name = mask_func_obj.__name__
-    try:
-        ivy_mask_func_obj = getattr(ivy.functional.frontends.jax.numpy, mask_func_name)
-        a = ivy.ones((n, n))
-        mask = ivy_mask_func_obj(a, k=k)
-        indices = ivy.argwhere(mask.ivy_array)
-        return indices[:, 0], indices[:, 1]
-    except AttributeError as e:
-        print(f"Attribute error: {e}")
-
-
-# take_along_axis
-@to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis, mode="fill"):
     return ivy.take_along_axis(arr, indices, axis, mode=mode)
-
-
-# take_along_axis
-@to_ivy_arrays_and_back
-def take_along_axis(arr, indices, axis, mode="fill"):
-    return ivy.take_along_axis(arr, indices, axis, mode=mode)
-
-
-@to_ivy_arrays_and_back
-def tril_indices(n, k=0, m=None):
-    return ivy.tril_indices(n, m, k)
 
 
 @to_ivy_arrays_and_back
@@ -268,16 +189,6 @@ def tril_indices_from(arr, k=0):
 
 
 @to_ivy_arrays_and_back
-def tril_indices_from(arr, k=0):
-    return ivy.tril_indices(arr.shape[-2], arr.shape[-1], k)
-
-
-@to_ivy_arrays_and_back
-def triu_indices(n, k=0, m=None):
-    return ivy.triu_indices(n, m, k)
-
-
-@to_ivy_arrays_and_back
 def triu_indices(n, k=0, m=None):
     return ivy.triu_indices(n, m, k)
 
@@ -287,19 +198,6 @@ def triu_indices_from(arr, k=0):
     return ivy.triu_indices(arr.shape[-2], arr.shape[-1], k)
 
 
-@to_ivy_arrays_and_back
-def triu_indices_from(arr, k=0):
-    return ivy.triu_indices(arr.shape[-2], arr.shape[-1], k)
-
-
-# unravel_index
-@to_ivy_arrays_and_back
-def unravel_index(indices, shape):
-    ret = [x.astype(indices.dtype) for x in ivy.unravel_index(indices, shape)]
-    return tuple(ret)
-
-
-# unravel_index
 @to_ivy_arrays_and_back
 def unravel_index(indices, shape):
     ret = [x.astype(indices.dtype) for x in ivy.unravel_index(indices, shape)]

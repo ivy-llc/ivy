@@ -543,6 +543,46 @@ def test_jax_ceil(
     )
 
 
+# clip
+@handle_frontend_test(
+    fn_tree="jax.numpy.clip",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        min_value=-1e3,
+        max_value=1e3,
+        max_dim_size=10,
+        max_num_dims=4,
+        min_dim_size=1,
+        min_num_dims=1,
+    ),
+    a_min=st.integers(min_value=0, max_value=5),
+    a_max=st.integers(min_value=5, max_value=10),
+)
+def test_jax_clip(
+    *,
+    dtype_and_x,
+    a_min,
+    a_max,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        a_min=a_min,
+        a_max=a_max,
+    )
+
+
 # conj
 @handle_frontend_test(
     fn_tree="jax.numpy.conj",
@@ -856,8 +896,7 @@ def test_jax_diff(
     axis,
 ):
     input_dtype, x = dtype_and_x
-    if axis > (x[0].ndim - 1):
-        axis = x[0].ndim - 1
+    axis = min(axis, x[0].ndim - 1)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -1020,6 +1059,53 @@ def test_jax_ediff1d(
         to_end=to_end,
         to_begin=to_begin,
     )
+
+
+# einsum_path
+# For the optimize parameter boolean values are not added to the samples for testing
+# as it seems that Jax einsum_path function currently fails when True or False is passed
+# as optimize values. Jax einsum_path function calls opt_einsum.contract_path function,
+# and it seems that there is an open bug on their repository for boolean values.
+# Please see link to the bug https://github.com/dgasmith/opt_einsum/issues/219
+@handle_frontend_test(
+    fn_tree="jax.numpy.einsum_path",
+    eq_n_op_n_shp=helpers.einsum_helper(),
+    dtype=helpers.get_dtypes("numeric", full=False),
+    test_with_out=st.just(False),
+    optimize=st.sampled_from(["greedy", "optimal"]),
+)
+def test_jax_einsum_path(
+    *,
+    eq_n_op_n_shp,
+    dtype,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+    optimize,
+):
+    eq, operands, dtypes = eq_n_op_n_shp
+    kw = {}
+    for i, x_ in enumerate(operands):
+        dtype = dtypes[i][0]
+        kw[f"x{i}"] = np.array(x_).astype(dtype)
+    test_flags.num_positional_args = len(operands) + 1
+    ret, ret_gt = helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        subscripts=eq,
+        **kw,
+        optimize=optimize,
+    )
+    len(ret[0]) == len(ret_gt[0])
+    all(x == y for x, y in zip(ret[0], ret_gt[0]))
+    ret[1] == str(ret_gt[1])
 
 
 # exp
@@ -1421,7 +1507,7 @@ def test_jax_frexp(
         min_dim_size=1,
         max_dim_size=3,
         num_arrays=2,
-    ).filter(lambda x: all([dtype != "uint64" for dtype in x[0]])),
+    ).filter(lambda x: all(dtype != "uint64" for dtype in x[0])),
     test_with_out=st.just(False),
 )
 def test_jax_gcd(
@@ -1443,6 +1529,49 @@ def test_jax_gcd(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# gradient
+@handle_frontend_test(
+    fn_tree="jax.numpy.gradient",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=("float32", "float16", "float64"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=4,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    varargs=helpers.ints(
+        min_value=-3,
+        max_value=3,
+    ),
+)
+def test_jax_gradient(
+    dtype_input_axis,
+    varargs,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_input_axis
+    test_flags.num_positional_args = 2
+    kw = {}
+    kw["varargs"] = varargs
+    kw["axis"] = axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        f=x[0],
+        **kw,
     )
 
 
@@ -1617,6 +1746,54 @@ def test_jax_inner(
         on_device=on_device,
         a=xs[0],
         b=xs[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.interp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    dtype_and_xp_fp=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    left=st.one_of(st.floats(min_value=-1e04, max_value=1e04), st.just(np.nan)),
+    right=st.one_of(st.floats(min_value=-1e04, max_value=1e04), st.just(np.nan)),
+    test_with_out=st.just(False),
+)
+def test_jax_interp(
+    *,
+    dtype_and_x,
+    dtype_and_xp_fp,
+    left,
+    right,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    input_dtype2, xp_fp = dtype_and_xp_fp
+    xp = xp_fp[0]
+    fp = xp_fp[1]
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype, input_dtype2],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        xp=xp,
+        fp=fp,
+        left=left,
+        right=right,
     )
 
 
@@ -2140,6 +2317,7 @@ def test_jax_multiply(
     posinf=st.floats(min_value=5e100, max_value=5e100),
     neginf=st.floats(min_value=-5e100, max_value=-5e100),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_jax_nan_to_num(
     *,

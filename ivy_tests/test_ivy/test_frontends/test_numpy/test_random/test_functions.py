@@ -2,6 +2,7 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -145,6 +146,37 @@ def test_numpy_chisquare(
     )
 
 
+@handle_frontend_test(
+    fn_tree="numpy.random.choice",
+    dtypes=helpers.get_dtypes("float", full=False),
+    a=helpers.ints(min_value=2, max_value=10),
+    size=helpers.get_shape(allow_none=True),
+)
+def test_numpy_choice(
+    dtypes,
+    size,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    a,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=a,
+        size=size,
+        replace=True,
+        p=np.array([1 / a] * a, dtype=dtypes[0]),
+    )
+
+
 # dirichlet
 @handle_frontend_test(
     fn_tree="numpy.random.dirichlet",
@@ -181,6 +213,41 @@ def test_numpy_dirichlet(
         on_device=on_device,
         alpha=x[0],
         test_values=False,
+        size=size,
+    )
+
+
+# exponential
+@handle_frontend_test(
+    fn_tree="numpy.random.exponential",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    scale=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
+    ),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_exponential(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+    scale,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        scale=scale,
         size=size,
     )
 
@@ -353,6 +420,51 @@ def test_numpy_gumbel(
     )
 
 
+@handle_frontend_test(
+    fn_tree="numpy.random.laplace",
+    input_dtypes=helpers.get_dtypes("float", full=False),
+    loc=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+    ),
+    scale=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_laplace(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+    loc,
+    scale,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        loc=loc,
+        scale=scale,
+        size=size,
+    )
+
+
 # logistic
 @handle_frontend_test(
     fn_tree="numpy.random.logistic",
@@ -439,6 +551,42 @@ def test_numpy_lognormal(
     )
 
 
+@handle_frontend_test(
+    fn_tree="numpy.random.logseries",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    p=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        min_value=0,
+        max_value=1,
+        exclude_max=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_logseries(
+    input_dtypes,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+    p,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        p=p,
+        size=size,
+    )
+
+
 # multinomial
 @handle_frontend_test(
     fn_tree="numpy.random.multinomial",
@@ -520,6 +668,47 @@ def test_numpy_negative_binomial(
         test_values=False,
         n=n,
         p=p,
+        size=size,
+    )
+
+
+# noncentral_chisquare
+@handle_frontend_test(
+    fn_tree="numpy.random.noncentral_chisquare",
+    dtype_and_df=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        exclude_min=True,
+    ),
+    dtype_and_nonc=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_noncentral_chisquare(
+    dtype_and_df,
+    dtype_and_nonc,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype_df, df = dtype_and_df
+    dtype_nonc, nonc = dtype_and_nonc
+    helpers.test_frontend_function(
+        input_dtypes=dtype_df + dtype_nonc,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        df=df[0],
+        nonc=nonc[0],
         size=size,
     )
 
@@ -783,6 +972,33 @@ def test_numpy_standard_cauchy(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.random.standard_exponential",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_standard_exponential(
+    input_dtypes,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        size=size,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.random.standard_gamma",
     shape_dtypes=helpers.get_dtypes("float", full=False),
     shape=st.floats(
@@ -842,6 +1058,41 @@ def test_numpy_standard_normal(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
+        size=size,
+    )
+
+
+# standard_t
+@handle_frontend_test(
+    fn_tree="numpy.random.standard_t",
+    df=st.floats(min_value=1, max_value=20),
+    df_dtypes=helpers.get_dtypes("integer", full=False),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+    size_dtypes=helpers.get_dtypes("integer", full=False),
+    test_with_out=st.just(False),
+)
+def test_numpy_standard_t(
+    df,
+    df_dtypes,
+    size,
+    size_dtypes,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=df_dtypes + size_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        df=df,
         size=size,
     )
 
@@ -937,6 +1188,52 @@ def test_numpy_uniform(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.random.vonmises",
+    input_dtypes=helpers.get_dtypes("float"),
+    mu=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=1,
+        exclude_min=True,
+    ),
+    kappa=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=10,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+)
+def test_numpy_vonmises(
+    input_dtypes,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    mu,
+    kappa,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        mu=mu,
+        kappa=kappa,
+        size=size,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.random.wald",
     input_dtypes=helpers.get_dtypes("float"),
     mean=st.floats(
@@ -999,6 +1296,43 @@ def test_numpy_wald(
     test_with_out=st.just(False),
 )
 def test_numpy_weibull(
+    input_dtypes,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    a,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=a,
+        size=size,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.zipf",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    a=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=1,
+        max_value=1000,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_zipf(
     input_dtypes,
     frontend,
     test_flags,

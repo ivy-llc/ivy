@@ -1,6 +1,3 @@
-# ToDo: Uncomment this after we sort out a way of installing mindspore
-# using pip and after added it to the development requirements.
-
 # global
 import pytest
 
@@ -25,12 +22,14 @@ def test_mindspore_softsign(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

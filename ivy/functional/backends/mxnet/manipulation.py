@@ -111,7 +111,7 @@ def repeat(
     /,
     repeats: Union[(int, List[int])],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()

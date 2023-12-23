@@ -1,7 +1,7 @@
 Ivy as a Transpiler
 ===================
 
-On the :ref:`Building Blocks` page, we explored the role of the backend functional APIs, the Ivy functional API, the backend handler, and the graph compiler.
+On the `Building Blocks <building_blocks.rst>`_ page, we explored the role of the Backend functional APIs, the Ivy functional API, the Backend handler, and the Tracer.
 These parts are labelled (a) in the image below.
 
 Here, we explain the role of the backend-specific frontends in Ivy, and how these enable automatic code conversions between different ML frameworks.
@@ -164,11 +164,11 @@ Again, by chaining these methods together, we can now call :func:`tf.math.cumpro
    x = torch.tensor([[0., 1., 2.]])
    ret = tf.math.cumprod(x, -1)
 
-Role of the Graph Compiler 🚧
+Role of the Tracer 🚧
 -----------------------------
 
-The very simple example above worked well, but what about even more complex PyTorch code involving Modules, Optimizers, and other higher level objects? This is where the graph compiler plays a vital role.
-The graph compiler can convert any code into its constituent functions at the functional API level for any ML framework.
+The very simple example above worked well, but what about even more complex PyTorch code involving Modules, Optimizers, and other higher level objects? This is where the tracer plays a vital role.
+The tracer can convert any code into its constituent functions at the functional API level for any ML framework.
 
 For example, let’s take the following PyTorch code and run it using JAX:
 
@@ -179,7 +179,7 @@ For example, let’s take the following PyTorch code and run it using JAX:
    class Network(torch.nn.Module):
 
        def __init__(self):
-        super(Network, self).__init__()
+        super().__init__()
         self._linear = torch.nn.Linear(3, 3)
 
        def forward(self, x):
@@ -192,7 +192,7 @@ For example, let’s take the following PyTorch code and run it using JAX:
 We cannot simply :code:`import ivy.frontends.torch` in place of :code:`import torch` as we did in the previous examples.
 This is because the Ivy frontend only supports the functional API for each framework, whereas the code above makes use of higher level classes through the use of the :mod:`torch.nn` namespace.
 
-In general, the way we convert code is by first compiling the code into its constituent functions in the core API using Ivy’s graph compiler, and then we convert this executable graph into the new framework.
+In general, the way we convert code is by first decomposing the code into its constituent functions in the core API using Ivy’s tracer, and then we convert this executable graph into the new framework.
 For the example above, this would look like:
 
 .. code-block:: python
@@ -200,11 +200,11 @@ For the example above, this would look like:
    import jax
    import ivy
 
-   jax_graph = ivy.compile_graph(net, x).to_backend('jax')
+   jax_graph = ivy.trace_graph(net, x).to_backend('jax')
    x = jax.numpy.array([1., 2., 3.])
    jax_graph(x)
 
-However, when calling :func:`ivy.compile_graph` the graph only connects the inputs to the outputs.
+However, when calling :func:`ivy.trace` the graph only connects the inputs to the outputs.
 Any other tensors or variables which are not listed in the inputs are treated as constants in the graph.
 In this case, this means the learnable weights in the Module will be treated as constants.
 This works fine if we only care about running inference on our graph post-training, but this won’t enable training of the Module in JAX.
@@ -219,15 +219,15 @@ In order to convert a model from PyTorch to JAX, we first must convert the :clas
    net = ivy.to_ivy_module(net)
 
 In its current form, the :class:`ivy.Module` instance thinly wraps the PyTorch model into the :class:`ivy.Module` interface, whilst preserving the pure PyTorch backend.
-We can compile this network into a graph using Ivy’s graph compiler like so:
+We can trace a graph of this network using Ivy’s tracer like so:
 
 .. code-block:: python
 
-   net = net.compile_graph()
+   net = net.trace_graph()
 
 In this case, the learnable weights are treated as inputs to the graph rather than constants.
 
-Now, with a compiled graph under the hood of our model, we can call :meth:`to_backend` directly on the :class:`ivy.Module` instance to convert it to any backend of our choosing, like so:
+Now, with a traced graph under the hood of our model, we can call :meth:`to_backend` directly on the :class:`ivy.Module` instance to convert it to any backend of our choosing, like so:
 
 .. code-block:: python
 

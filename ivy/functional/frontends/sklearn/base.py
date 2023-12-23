@@ -13,7 +13,9 @@ class ClassifierMixin:
     def fit(self, X, y, **kwargs):
         raise NotImplementedError
 
-    def predict(self, X):
+
+class TransformerMixin:
+    def fit_transform(self, X, y=None, **fit_params):
         raise NotImplementedError
 
 

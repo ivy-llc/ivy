@@ -6,7 +6,6 @@ import tensorflow as tf
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy.functional.backends.tensorflow.general import _check_query
 from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
@@ -62,6 +61,13 @@ def _array_and_shape(
     to_shape = [(None if draw(st.booleans()) else _) for _ in shape]
 
     return dtype, [array, to_shape]
+
+
+# same implementation as in tensorflow backend but was causing backend conflict issues
+def _check_query(query):
+    return not isinstance(query, list) and (
+        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
+    )
 
 
 # --- Main --- #
@@ -910,7 +916,7 @@ def test_tensorflow__pow__(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    if x[1].dtype == "int32" or x[1].dtype == "int64":
+    if x[1].dtype in ["int32", "int64"]:
         if x[1].ndim == 0:
             if x[1] < 0:
                 x[1] *= -1
@@ -1464,7 +1470,7 @@ def test_tensorflow__xor__(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_tensorflow_tensor_device(
+def test_tensorflow_device(
     dtype_x,
     backend_fw,
 ):
@@ -1481,7 +1487,7 @@ def test_tensorflow_tensor_device(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
     ),
 )
-def test_tensorflow_tensor_dtype(
+def test_tensorflow_dtype(
     dtype_x,
     backend_fw,
 ):
@@ -1502,7 +1508,7 @@ def test_tensorflow_tensor_dtype(
         min_dim_size=1,
     ),
 )
-def test_tensorflow_tensor_get_shape(
+def test_tensorflow_get_shape(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1533,7 +1539,7 @@ def test_tensorflow_tensor_get_shape(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_tensorflow_tensor_ivy_array(
+def test_tensorflow_ivy_array(
     dtype_x,
     backend_fw,
 ):
@@ -1559,7 +1565,7 @@ def test_tensorflow_tensor_ivy_array(
         max_num_dims=5,
     ),
 )
-def test_tensorflow_tensor_set_shape(
+def test_tensorflow_set_shape(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1589,7 +1595,7 @@ def test_tensorflow_tensor_set_shape(
         ret_shape=True,
     ),
 )
-def test_tensorflow_tensor_shape(
+def test_tensorflow_shape(
     dtype_x,
     backend_fw,
 ):

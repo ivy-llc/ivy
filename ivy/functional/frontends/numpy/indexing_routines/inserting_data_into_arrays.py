@@ -61,14 +61,12 @@ class AxisConcatenator:
                 if "," in item:
                     vec = item.split(",")
                     try:
-                        axis, ndmin = [int(x) for x in vec[:2]]
+                        axis, ndmin = (int(x) for x in vec[:2])
                         if len(vec) == 3:
                             trans1d = int(vec[2])
                         continue
                     except Exception as e:
-                        raise ValueError(
-                            "unknown special directive {!r}".format(item)
-                        ) from e
+                        raise ValueError(f"unknown special directive {item!r}") from e
                 try:
                     axis = int(item)
                     continue

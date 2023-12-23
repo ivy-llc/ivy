@@ -1,7 +1,13 @@
+# global
+from hypothesis import strategies as st
+
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa: E501
+    put_along_axis_helper,
+)
 
 
 @handle_frontend_test(
@@ -142,4 +148,99 @@ def test_torch_numel(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+    )
+
+
+# scatter
+@handle_frontend_test(
+    fn_tree="torch.scatter",
+    args=put_along_axis_helper(),
+    test_with_out=st.just(False),
+)
+def test_torch_scatter(
+    *,
+    args,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    dtypes, x, indices, value, axis = args
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        input=x,
+        dim=axis,
+        index=indices,
+        src=value,
+    )
+
+
+# scatter_add
+@handle_frontend_test(
+    fn_tree="torch.scatter_add",
+    args=put_along_axis_helper(),
+    test_with_out=st.just(False),
+)
+def test_torch_scatter_add(
+    *,
+    args,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    dtypes, x, indices, value, axis = args
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        input=x,
+        dim=axis,
+        index=indices,
+        src=value,
+    )
+
+
+# scatter_reduce
+@handle_frontend_test(
+    fn_tree="torch.scatter_reduce",
+    args=put_along_axis_helper(),
+    # ToDo: test for "mean" as soon as ivy.put_along_axis supports it
+    mode=st.sampled_from(["sum", "prod", "amin", "amax"]),
+    test_with_out=st.just(False),
+)
+def test_torch_scatter_reduce(
+    *,
+    args,
+    mode,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtypes, x, indices, value, axis = args
+    test_flags.ground_truth_backend = "torch"
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        input=x,
+        dim=axis,
+        index=indices,
+        src=value,
+        reduce=mode,
     )

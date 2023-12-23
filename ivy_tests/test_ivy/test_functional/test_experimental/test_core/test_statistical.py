@@ -16,6 +16,33 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 
 
 @st.composite
+def _get_castable_float_dtype_nan(draw, min_value=None, max_value=None):
+    available_dtypes = helpers.get_dtypes("float")
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
+    dtype3, where = draw(
+        helpers.dtype_and_values(available_dtypes=["bool"], shape=shape)
+    )
+    dtype, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            num_arrays=1,
+            large_abs_safety_factor=6,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+            shape=shape,
+            min_value=min_value,
+            max_value=max_value,
+            allow_nan=True,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    dtype1, values, dtype2 = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
+    )
+    return dtype1, [values], axis, dtype2, dtype3, where
+
+
+@st.composite
 def _get_dtype_value1_value2_cov(
     draw,
     available_dtypes,
@@ -239,17 +266,27 @@ def _quantile_helper(draw):
         )
     )
     q = draw(
-        helpers.array_values(
-            dtype=helpers.get_dtypes("float"),
-            shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1),
-            min_value=0.0,
-            max_value=1.0,
-            exclude_max=False,
-            exclude_min=False,
+        st.one_of(
+            helpers.array_values(
+                dtype=helpers.get_dtypes("float"),
+                shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1),
+                min_value=0.0,
+                max_value=1.0,
+                exclude_max=False,
+                exclude_min=False,
+            ),
+            st.floats(min_value=0.0, max_value=1.0),
         )
     )
 
-    interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
+    interpolation_names = [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]
     interpolation = draw(
         helpers.list_of_size(
             x=st.sampled_from(interpolation_names),
@@ -419,9 +456,8 @@ def test_cummax(
         atol_=1e-1,
     )
 
-    # cummin
 
-
+# cummin
 @handle_test(
     fn_tree="functional.ivy.experimental.cummin",
     dtype_x_axis_castable=_get_castable_dtype(),
@@ -460,7 +496,7 @@ def test_cummin(
 #       - Error description: typo that throws unintended exceptions when using both
 #       weights and multiple axis.
 #       - fixed in TFP 0.20 release.
-#       - Test helper needs to be modified to handle this case in older verions.
+#       - Test helper needs to be modified to handle this case in older versions.
 @handle_test(
     fn_tree="functional.ivy.experimental.histogram",
     values=_histogram_helper(),
@@ -557,7 +593,7 @@ def test_median(*, dtype_x_axis, keep_dims, test_flags, backend_fw, fn_name, on_
     fn_tree="functional.ivy.experimental.nanmean",
     dtype_x_axis=_statistical_dtype_values(function="nanmean"),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     test_gradients=st.just(False),
 )
 def test_nanmean(
@@ -583,7 +619,7 @@ def test_nanmean(
     fn_tree="functional.ivy.experimental.nanmedian",
     dtype_x_axis=_statistical_dtype_values(function="nanmedian"),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     overwriteinput=st.booleans(),
     test_gradients=st.just(False),
 )
@@ -613,6 +649,76 @@ def test_nanmedian(
     )
 
 
+@handle_test(
+    fn_tree="functional.ivy.experimental.nanmin",
+    dtype_x_axis_castable=_get_castable_float_dtype_nan(),
+    test_gradients=st.just(False),
+    initial=st.integers(min_value=-5, max_value=5),
+    keep_dims=st.booleans(),
+)
+def test_nanmin(
+    *,
+    dtype_x_axis_castable,
+    initial,
+    keep_dims,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x, axis, castable_dtype, dtype3, where = dtype_x_axis_castable
+    x = x[0]
+    helpers.test_function(
+        input_dtypes=[input_dtype, dtype3[0]],
+        test_flags=test_flags,
+        rtol_=1e-1,
+        atol_=1e-1,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x,
+        axis=axis,
+        keepdims=keep_dims,
+        initial=initial,
+        where=where[0],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.nanprod",
+    dtype_x_axis_castable=_get_castable_float_dtype_nan(),
+    keep_dims=st.booleans(),
+    test_gradients=st.just(False),
+    initial=st.integers(min_value=-5, max_value=5),
+)
+def test_nanprod(
+    *,
+    dtype_x_axis_castable,
+    keep_dims,
+    test_flags,
+    initial,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+    x = x[0]
+    helpers.test_function(
+        input_dtypes=[input_dtype],
+        test_flags=test_flags,
+        rtol_=1e-1,
+        atol_=1e-1,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x,
+        axis=axis,
+        keepdims=keep_dims,
+        dtype=castable_dtype,
+        initial=initial,
+    )
+
+
 # quantile
 @handle_test(
     fn_tree="functional.ivy.experimental.quantile",
@@ -636,4 +742,6 @@ def test_quantile(
         axis=axis,
         interpolation=interpolation[0],
         keepdims=keep_dims,
+        atol_=1e-3,
+        rtol_=1e-3,
     )

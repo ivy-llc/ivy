@@ -5,8 +5,8 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
-    x_and_ifft,
-    x_and_rfftn,
+    _x_and_ifft,
+    _x_and_rfftn,
 )
 
 
@@ -90,7 +90,7 @@ def test_numpy_fftshift(
 
 @handle_frontend_test(
     fn_tree="numpy.fft.ifft",
-    dtype_and_x=x_and_ifft(),
+    dtype_and_x=_x_and_ifft(),
 )
 def test_numpy_ifft(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device):
     input_dtype, x, dim, norm, n = dtype_and_x
@@ -110,8 +110,29 @@ def test_numpy_ifft(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_d
 
 
 @handle_frontend_test(
+    fn_tree="numpy.fft.ifft2",
+    dtype_and_x=_x_and_ifft(),
+)
+def test_numpy_ifft2(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device):
+    input_dtype, x, dim, norm, n = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        s=None,
+        axes=None,
+        norm=norm,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.fft.ifftn",
-    dtype_and_x=x_and_ifft(),
+    dtype_and_x=_x_and_ifft(),
 )
 def test_numpy_ifftn(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device):
     input_dtype, x, dim, norm, n = dtype_and_x
@@ -237,7 +258,7 @@ def test_numpy_rfftfreq(
 
 @handle_frontend_test(
     fn_tree="numpy.fft.rfftn",
-    dtype_and_x=x_and_rfftn(),
+    dtype_and_x=_x_and_rfftn(),
 )
 def test_numpy_rfftn(dtype_and_x, frontend, backend_fw, test_flags, fn_tree, on_device):
     dtype, x, s, axes, norm = dtype_and_x

@@ -30,7 +30,7 @@ def idct(x, type=2, n=None, axis=-1, norm=None, overwrite_x=False, orthogonalize
 
 # ifft
 @to_ivy_arrays_and_back
-def ifft(x, n=None, axis=-1, norm="backward", overwrite_x=False):
+def ifft(x, n=None, axis=-1, norm=None, overwrite_x=False):
     return ivy.ifft(x, axis, norm=norm, n=n)
 
 
@@ -45,4 +45,4 @@ def ifftn(
 def rfftn(
     x, s=None, axes=None, norm=None, overwrite_x=False, workers=None, *, plan=None
 ):
-    return ivy.rfftn(x, s=s, dim=axes, norm=norm)
+    return ivy.rfftn(x, s=s, axes=axes, norm=norm)

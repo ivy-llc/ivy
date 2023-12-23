@@ -18,3 +18,13 @@ def test_numpy_asmatrix(arr, backend_fw):
         ret_gt = np.asmatrix(x[0])
         assert ret.shape == ret_gt.shape
         assert ivy_backend.all(ivy_backend.flatten(ret._data) == np.ravel(ret_gt))
+
+
+@handle_frontend_test(
+    fn_tree="numpy.asscalar",
+    arr=helpers.array_values(dtype=helpers.get_dtypes("numeric"), shape=1),
+)
+def test_numpy_asscalar(arr: np.ndarray):
+    ret_1 = arr.item()
+    ret_2 = np_frontend.asscalar(arr)
+    assert ret_1 == ret_2
