@@ -128,7 +128,9 @@ class NestedArrayBase(abc.ABC):
             return inspect_fn(*a, **kw)
 
         if num_nest == 0:
-            raise Exception(f"No RaggedArrays found in args or kwargs of function {fn}")
+            raise ValueError(
+                f"No RaggedArrays found in args or kwargs of function {fn}"
+            )
         ret = ivy.NestedArray.ragged_multi_map(map_fn, nests)
         return ret
 
@@ -139,9 +141,9 @@ class NestedArrayBase(abc.ABC):
             args.append(ivy.copy_nest(ragged.data))
         ret = ivy.nested_multi_map(lambda x, _: fn(x), args)
         # infer dtype, shape, and device from the first array in the ret data
-        broadcasted_shape = ivy.NestedArray.broadcast_shapes([
-            arg.shape for arg in ragged_arrays
-        ])
+        broadcasted_shape = ivy.NestedArray.broadcast_shapes(
+            [arg.shape for arg in ragged_arrays]
+        )
         # infer ragged_rank from broadcasted shape
         for i, dim in enumerate(broadcasted_shape[::-1]):
             if dim is None:

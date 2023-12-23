@@ -26,8 +26,8 @@ class Module(ivy.Module):
             **kwargs,
         )
         super().__setattr__("_frontend_module", True)
-        super().__setattr__("_nonetype_param_dict", dict())
-        super().__setattr__("_nonetype_buffers_dict", dict())
+        super().__setattr__("_nonetype_param_dict", {})
+        super().__setattr__("_nonetype_buffers_dict", {})
         super().__setattr__(
             "_attr_mapping", {"_parameters": "v", "_modules": "module_dict"}
         )
@@ -37,11 +37,11 @@ class Module(ivy.Module):
         # using direct `__setattr__` e.g. self.weight = ...
         v = ivy.Container(
             OrderedDict(
-                ([
+                [
                     (k.replace(".", "/"), v)
                     for k, v in self.__dict__.items()
                     if isinstance(v, Parameter)
-                ])
+                ]
             ),
             dynamic_backend=self._dynamic_backend,
         )
@@ -51,14 +51,12 @@ class Module(ivy.Module):
             ivy.Container(
                 OrderedDict(
                     (
-                        dict(
-                            (
-                                (_k.replace(".", "/"), _v)
-                                for (_k, _v) in self._v.items()
-                                if _k.replace(".", "/") not in v
-                                and not isinstance(_v, ivy.Container)
-                            )
-                        )
+                        {
+                            _k.replace(".", "/"): _v
+                            for (_k, _v) in self._v.items()
+                            if _k.replace(".", "/") not in v
+                            and not isinstance(_v, ivy.Container)
+                        }
                     ),
                     **v,
                 )
@@ -69,7 +67,7 @@ class Module(ivy.Module):
         return v
 
     def _build(self, *args, **kwargs):
-        for _, module in self.__dict__.items():
+        for module in self.__dict__.values():
             if isinstance(module, Module) and module is not self:
                 if not module.built:
                     module.build(
@@ -138,7 +136,6 @@ class Module(ivy.Module):
         mod: Module = self
 
         for item in atoms:
-
             if not hasattr(mod, item):
                 raise AttributeError(
                     mod._get_name() + " has no attribute `" + item + "`"
@@ -147,7 +144,7 @@ class Module(ivy.Module):
             mod = getattr(mod, item)
 
             if not isinstance(mod, Module):
-                raise AttributeError("`" + item + "` is not an nn.Module")
+                raise TypeError("`" + item + "` is not an nn.Module")
 
         return mod
 

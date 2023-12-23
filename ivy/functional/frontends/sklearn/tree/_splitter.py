@@ -244,6 +244,28 @@ class DensePartitioner:
         self.samples = samples
 
 
+class SplitRecord:
+    def __init__(
+        self,
+        feature=0,
+        pos=0,
+        threshold=0.0,
+        improvement=-ivy.inf,
+        impurity_left=0.0,
+        impurity_right=0.0,
+        missing_go_to_left=False,
+        n_missing=0,
+    ):
+        self.feature = feature
+        self.pos = pos
+        self.threshold = threshold
+        self.improvement = improvement
+        self.impurity_left = impurity_left
+        self.impurity_right = impurity_right
+        self.missing_go_to_left = missing_go_to_left
+        self.n_missing = n_missing
+
+
 class BestSplitter(Splitter):
     def init(
         self,
@@ -254,7 +276,9 @@ class BestSplitter(Splitter):
         *args,
     ):
         Splitter.init(self, X, y, sample_weight, missing_values_in_feature_mask, *args)
-        self.partitioner = None
+        self.partitioner = DensePartitioner(
+            X, self.samples, self.feature_values, missing_values_in_feature_mask
+        )
 
     def node_split(self, impurity, split, n_constant_features):
         return node_split_best(
@@ -267,10 +291,215 @@ class BestSplitter(Splitter):
         )
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _init_split(split_record, start_pos):
+    split_record.impurity_left = ivy.inf
+    split_record.impurity_right = ivy.inf
+    split_record.pos = start_pos
+    split_record.feature = 0
+    split_record.threshold = 0.0
+    split_record.improvement = -ivy.inf
+    split_record.missing_go_to_left = False
+    split_record.n_missing = 0
+    return split_record
+
+
+# --- Main --- #
+# ------------ #
+
+
 def node_split_best(
-    splitter: Splitter, partitioner, criterion, impurity, split, n_constant_features
+    splitter, partitioner, criterion, impurity, split, n_constant_features
 ):
-    pass
+    start = splitter.start
+    end = splitter.end
+    features = splitter.features
+    constant_features = splitter.constant_features
+    n_features = splitter.n_features
+
+    feature_values = splitter.feature_values
+    max_features = splitter.max_features
+    min_samples_leaf = splitter.min_samples_leaf
+    min_weight_leaf = splitter.min_weight_leaf
+
+    best_split = SplitRecord()
+    current_split = SplitRecord()
+    best_proxy_improvement = -ivy.inf
+
+    f_i = n_features
+    p_prev = 0
+
+    n_visited_features = 0
+    # Number of features discovered to be constant during the split search
+    n_found_constants = 0
+    # Number of features known to be constant and drawn without replacement
+    n_drawn_constants = 0
+    n_known_constants = n_constant_features
+    # n_total_constants = n_known_constants + n_found_constants
+    n_total_constants = n_known_constants
+    best_split = _init_split(best_split, end)
+    partitioner.init_node_split(start, end)
+    while f_i > n_total_constants and (
+        n_visited_features < max_features
+        or n_visited_features <= n_found_constants + n_drawn_constants
+    ):
+        n_visited_features += 1
+        f_j = ivy.randint(n_drawn_constants, f_i - n_found_constants)
+
+        if f_j < n_known_constants:
+            features[n_drawn_constants], features[f_j] = (
+                features[f_j],
+                features[n_drawn_constants],
+            )
+
+            n_drawn_constants += 1
+            continue
+
+        # f_j in the interval [n_known_constants, f_i - n_found_constants[
+        f_j += n_found_constants
+        # f_j in the interval [n_total_constants, f_i[
+        current_split.feature = features[f_j]
+        partitioner.sort_samples_and_feature_values(current_split.feature)
+        n_missing = partitioner.n_missing
+        end_non_missing = end - n_missing
+
+        if (
+            end_non_missing == start
+            or feature_values[end_non_missing - 1]
+            <= feature_values[start] + FEATURE_THRESHOLD
+        ):
+            features[f_j], features[n_total_constants] = (
+                features[n_total_constants],
+                features[f_j],
+            )
+
+            n_found_constants += 1
+            n_total_constants += 1
+            continue
+
+        f_i -= 1
+        features[f_i], features[f_j] = features[f_j], features[f_i]
+        has_missing = n_missing != 0
+        criterion.init_missing(n_missing)
+        n_searches = 2 if has_missing else 1
+        for i in range(n_searches):
+            missing_go_to_left = i == 1
+            criterion.missing_go_to_left = missing_go_to_left
+            criterion.reset()
+            p = start
+
+            while p < end_non_missing:
+                p_prev, p = partitioner.next_p(p_prev, p)
+
+                if p >= end_non_missing:
+                    continue
+
+                if missing_go_to_left:
+                    n_left = p - start + n_missing
+                    n_right = end_non_missing - p
+                else:
+                    n_left = p - start
+                    n_right = end_non_missing - p + n_missing
+
+                if n_left < min_samples_leaf or n_right < min_samples_leaf:
+                    continue
+
+                current_split.pos = p
+                criterion.update(current_split.pos)
+
+                if (
+                    criterion.weighted_n_left < min_weight_leaf
+                    or criterion.weighted_n_right < min_weight_leaf
+                ):
+                    continue
+
+                current_proxy_improvement = criterion.proxy_impurity_improvement()
+
+                if current_proxy_improvement > best_proxy_improvement:
+                    best_proxy_improvement = current_proxy_improvement
+                    current_split.threshold = (
+                        feature_values[p_prev] / 2.0 + feature_values[p] / 2.0
+                    )
+
+                    if current_split.threshold in (
+                        feature_values[p],
+                        ivy.inf,
+                        -ivy.inf,
+                    ):
+                        current_split.threshold = feature_values[p_prev]
+
+                    current_split.n_missing = n_missing
+                    if n_missing == 0:
+                        current_split.missing_go_to_left = n_left > n_right
+                    else:
+                        current_split.missing_go_to_left = missing_go_to_left
+
+                    best_split = SplitRecord(**current_split.__dict__)
+
+        if has_missing:
+            n_left, n_right = end - start - n_missing, n_missing
+            p = end - n_missing
+            missing_go_to_left = 0
+
+            if not ((n_left < min_samples_leaf) or (n_right < min_samples_leaf)):
+                criterion.missing_go_to_left = missing_go_to_left
+                criterion.update(p)
+
+                if not (
+                    criterion.weighted_n_left < min_weight_leaf
+                    or criterion.weighted_n_right < min_weight_leaf
+                ):
+                    current_proxy_improvement = criterion.proxy_impurity_improvement()
+
+                    if current_proxy_improvement > best_proxy_improvement:
+                        best_proxy_improvement = current_proxy_improvement
+                        current_split.threshold = ivy.inf
+                        current_split.missing_go_to_left = missing_go_to_left
+                        current_split.n_missing = n_missing
+                        current_split.pos = p
+                        best_split = current_split
+
+    # Reorganize into samples[start:best_split.pos] + samples[best_split.pos:end]
+    if best_split.pos < end:
+        partitioner.partition_samples_final(
+            best_split.pos,
+            best_split.threshold,
+            best_split.feature,
+            best_split.n_missing,
+        )
+
+        if best_split.n_missing != 0:
+            criterion.init_missing(best_split.n_missing)
+
+        criterion.missing_go_to_left = best_split.missing_go_to_left
+        criterion.reset()
+        criterion.update(best_split.pos)
+
+        (
+            best_split.impurity_left,
+            best_split.impurity_right,
+        ) = criterion.children_impurity(
+            best_split.impurity_left, best_split.impurity_right
+        )
+
+        best_split.improvement = criterion.impurity_improvement(
+            impurity, best_split.impurity_left, best_split.impurity_right
+        )
+
+        # best_split, samples = shift_missing_values_to_left_if_required(
+        # best_split, samples, end)
+        # todo : implement shift_missing_values_to_left_if_required
+    features[0:n_known_constants] = constant_features[0:n_known_constants]
+    constant_features[n_known_constants:n_found_constants] = features[
+        n_known_constants:n_found_constants
+    ]
+
+    split = best_split
+    n_constant_features = n_total_constants
+    return 0, n_constant_features, split
 
 
 def sort(feature_values, samples, n):

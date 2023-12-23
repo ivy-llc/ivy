@@ -20,7 +20,7 @@ import functools
 
 
 def _num_to_bit_list(value, num_dims):
-    return list(map(int, "{:0{size}b}".format(value, size=num_dims)))[::-1]
+    return list(map(int, f"{value:0{num_dims}b}"))[::-1]
 
 
 # --- Main --- #
@@ -86,10 +86,9 @@ def clip_by_norm(t, clip_norm, axes=None):
     l2sum_safe = ivy.where(pred, l2sum, ivy.ones_like(l2sum))
     l2norm = ivy.where(pred, ivy.sqrt(l2sum_safe), l2sum)
     intermediate = t * clip_norm
-    assert t.shape == intermediate.shape, "Dimensions %s and %s are not compatible" % (
-        t.shape,
-        intermediate.shape,
-    )
+    assert (
+        t.shape == intermediate.shape
+    ), f"Dimensions {t.shape} and {intermediate.shape} are not compatible"
     t_clip = intermediate / ivy.maximum(l2norm, clip_norm)
     return t_clip
 

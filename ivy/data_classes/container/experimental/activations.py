@@ -16,10 +16,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.logit. This method simply wraps the
-        function, and so the docstring for ivy.logit  also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.logit. This method simply
+        wraps the function, and so the docstring for ivy.logit  also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -78,10 +77,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.logit. This method simply wraps the
-        function, and so the docstring for ivy.logit  also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.logit. This method
+        simply wraps the function, and so the docstring for ivy.logit  also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -138,10 +136,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.thresholded_relu. This method simply
-        wraps the function, and so the docstring for ivy.thresholded_relu also applies
-        to this method with minimal changes.
+        """ivy.Container static method variant of ivy.thresholded_relu. This
+        method simply wraps the function, and so the docstring for
+        ivy.thresholded_relu also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -202,10 +199,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.thresholded_relu. This method
-        simply wraps the function, and so the docstring for ivy.thresholded_relu also
-        applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.thresholded_relu. This
+        method simply wraps the function, and so the docstring for
+        ivy.thresholded_relu also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -332,10 +328,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.relu6. This method simply wraps the
-        function, and so the docstring for ivy.relu6 also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.relu6. This method simply
+        wraps the function, and so the docstring for ivy.relu6 also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -398,10 +393,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.relu6. This method simply wraps the
-        function, and so the docstring for ivy.relu6 also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.relu6. This method
+        simply wraps the function, and so the docstring for ivy.relu6 also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -463,10 +457,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.logsigmoid. This method simply wraps
-        the function, and so the docstring for ivy.logsigmoid also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.logsigmoid. This method
+        simply wraps the function, and so the docstring for ivy.logsigmoid also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -533,8 +526,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
-        """
-        Apply element-wise Log-sigmoid of x i.e. log(1 / (1 + exp(-x)).
+        """Apply element-wise Log-sigmoid of x i.e. log(1 / (1 + exp(-x)).
 
         Parameters
         ----------
@@ -579,10 +571,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.selu. This method simply wraps the
-        function, and so the docstring for ivy.selu also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.selu. This method simply
+        wraps the function, and so the docstring for ivy.selu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -639,10 +630,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.selu. This method simply wraps the
-        function, and so the docstring for ivy.selu also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.selu. This method
+        simply wraps the function, and so the docstring for ivy.selu also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -699,10 +689,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.silu. This method simply wraps the
-        function, and so the docstring for ivy.silu also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.silu. This method simply
+        wraps the function, and so the docstring for ivy.silu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -759,10 +748,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.silu. This method simply wraps the
-        function, and so the docstring for ivy.silu also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.silu. This method
+        simply wraps the function, and so the docstring for ivy.silu also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -820,10 +808,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.elu. This method simply wraps the
-        function, and so the docstring for ivy.elu also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.elu. This method simply
+        wraps the function, and so the docstring for ivy.elu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -883,10 +870,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.elu. This method simply wraps the
-        function, and so the docstring for ivy.elu also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.elu. This method simply
+        wraps the function, and so the docstring for ivy.elu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -947,10 +933,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.hardtanh.This method simply wrap the
-        function,the docstring for ivy.hardtanh also applies to this method with minimal
-        changes.
+        """ivy.Container static method variant of ivy.hardtanh.This method
+        simply wrap the function,the docstring for ivy.hardtanh also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1014,10 +999,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.hardtanh.This method simply wraps
-        the function, so the docstring for ivy.elu also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.hardtanh.This method
+        simply wraps the function, so the docstring for ivy.elu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1079,10 +1063,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.tanhshrink. This method simply wraps
-        the function, and so the docstring for ivy.tanhshrink also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.tanhshrink. This method
+        simply wraps the function, and so the docstring for ivy.tanhshrink also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1139,10 +1122,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.tanhshrink. This method simply
-        wraps the function, and so the docstring for ivy.tanhshrink also applies to this
-        method with minimal changes.
+        """ivy.Container instance method variant of ivy.tanhshrink. This method
+        simply wraps the function, and so the docstring for ivy.tanhshrink also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1201,10 +1183,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.threshold. This method simply wraps
-        the function, and so the docstring for ivy.threshold also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.threshold. This method
+        simply wraps the function, and so the docstring for ivy.threshold also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1267,10 +1248,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.threshold. This method simply wraps
-        the function, and so the docstring for ivy.threshold also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.threshold. This method
+        simply wraps the function, and so the docstring for ivy.threshold also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1332,10 +1312,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.softshrink. This method simply wraps
-        the function, and so the docstring for ivy.softshrink also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.softshrink. This method
+        simply wraps the function, and so the docstring for ivy.softshrink also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1393,8 +1372,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Apply the soft shrinkage function element-wise.
+        """Apply the soft shrinkage function element-wise.
 
         Parameters
         ----------
@@ -1454,10 +1432,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.celu. This method simply wraps the
-        function, and so the docstring for ivy.celu also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.celu. This method simply
+        wraps the function, and so the docstring for ivy.celu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1522,10 +1499,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.leaky_relu. This method simply
-        wraps the function, and so the docstring for ivy.leaky_relu also applies to this
-        method with minimal changes.
+        """ivy.Container instance method variant of ivy.leaky_relu. This method
+        simply wraps the function, and so the docstring for ivy.leaky_relu also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1591,10 +1567,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.scaled_tanh. This method simply wraps
-        the function, and so the docstring for ivy.scaled_tanh also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.scaled_tanh. This method
+        simply wraps the function, and so the docstring for ivy.scaled_tanh
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1678,10 +1653,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.scaled_tanh. This method
-        simplywraps the function, and so the docstring for ivy.scaled_tanh also applies
-        to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.scaled_tanh. This
+        method simplywraps the function, and so the docstring for
+        ivy.scaled_tanh also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1887,10 +1861,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.hardshrink. This method simply wraps
-        the function, and so the docstring for ivy.hardshrink also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.hardshrink. This method
+        simply wraps the function, and so the docstring for ivy.hardshrink also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1945,8 +1918,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Apply the hard shrinkage function element-wise.
+        """Apply the hard shrinkage function element-wise.
 
         Parameters
         ----------

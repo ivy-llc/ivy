@@ -118,6 +118,22 @@ class Tensor:
         },
         "paddle",
     )
+    def __lt__(self, y, /, name=None):
+        return paddle_frontend.logic.less_than(self, y)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
     def __ge__(self, y, /, name=None):
         return paddle_frontend.logic.greater_equal(self, y)
 
@@ -200,6 +216,9 @@ class Tensor:
 
     def __xor__(self, y, /, name=None):
         return paddle_frontend.logic.bitwise_xor(self, y)
+
+    def __invert__(self, out=None, name=None):
+        return paddle_frontend.logic.bitwise_not(self)
 
     def __len__(self):
         return len(self._ivy_array)
@@ -419,6 +438,10 @@ class Tensor:
     @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
     def tanh(self, name=None):
         return paddle_frontend.tanh(self)
+
+    @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+    def add(self, y, name=None):
+        return paddle_frontend.Tensor(ivy.add(self._ivy_array, _to_ivy_array(y)))
 
     @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
     def add_(self, y, name=None):
@@ -952,6 +975,10 @@ class Tensor:
     @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
     def inner(self, y, name=None):
         return paddle_frontend.inner(self, y, name)
+
+    @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+    def acos(self, name=None):
+        return paddle_frontend.Tensor(ivy.acos(self._ivy_array))
 
     @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
     def mean(self, axis=None, keepdim=False, name=None):
