@@ -21,10 +21,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         density: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.histogram. This method simply wraps the
-        function, and so the docstring for ivy.histogram also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.histogram. This method
+        simply wraps the function, and so the docstring for ivy.histogram also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -97,10 +96,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.median. This method simply wraps the
-        function, and so the docstring for ivy.median also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.median. This method simply
+        wraps the function, and so the docstring for ivy.median also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -139,10 +137,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.nanmean. This method simply wraps the
-        function, and so the docstring for ivy.nanmean also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.nanmean. This method simply
+        wraps the function, and so the docstring for ivy.nanmean also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -180,6 +177,119 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
             self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
 
+    def nanmin(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        initial: Optional[Union[int, float, complex]] = None,
+        where: Optional[ivy.Array] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.nanmin. This method simply
+        wraps the function, and so the docstring for ivy.min also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which the minimum is computed.
+            The default is to compute the minimum of the flattened array.
+        out
+            optional output array, for writing the result to.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a.
+        initial
+            The maximum value of an output element
+        where
+            Elements to compare for the minimum
+
+        Returns
+        -------
+        ret
+            Return minimum of an array or minimum along an axis, ignoring any NaNs.
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 2], [3, ivy.nan]])
+        >>> a.nanmin(a)
+        1.0
+        >>> a.nanmin(a, axis=0)
+        ivy.array([1., 2.])
+        """
+        return ivy.nanmin(
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            out=out,
+            initial=initial,
+            where=where,
+        )
+
+    def nanprod(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Array] = None,
+        keepdims: Optional[bool] = False,
+        initial: Optional[Union[int, float, complex]] = None,
+        where: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.nanprod. This method simply
+        wraps the function, and so the docstring for ivy.prod also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which the product is computed.
+            The default is to compute the product of the flattened array.
+        dtype
+            The desired data type of returned array. Default is None.
+        out
+            optional output array, for writing the result to.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a.
+        initial
+            The starting value for this product.
+        where
+            Elements to include in the product
+
+        Returns
+        -------
+        ret
+            The product of array elements over a given axis treating
+            Not a Numbers (NaNs) as ones
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 2], [3, ivy.nan]])
+        >>> a.nanprod(a)
+        6.0
+        >>> a.nanprod(a, axis=0)
+        ivy.array([3., 2.])
+        """
+        return ivy.nanprod(
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            out=out,
+            initial=initial,
+            where=where,
+        )
+
     def quantile(
         self: ivy.Array,
         q: Union[ivy.Array, float],
@@ -190,10 +300,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         interpolation: str = "linear",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.quantile. This method simply wraps the
-        function, and so the docstring for ivy.quantile also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.quantile. This method
+        simply wraps the function, and so the docstring for ivy.quantile also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -274,10 +383,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         rowvar: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.corrcoef. This method simply wraps the
-        function, and so the docstring for ivy.corrcoef also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.corrcoef. This method
+        simply wraps the function, and so the docstring for ivy.corrcoef also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -318,10 +426,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         overwrite_input: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.nanmedian. This method simply wraps the
-        function, and so the docstring for ivy.nanmedian also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.nanmedian. This method
+        simply wraps the function, and so the docstring for ivy.nanmedian also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -381,10 +488,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         minlength: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.bincount. This method simply wraps the
-        function, and so the docstring for ivy.bincount also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.bincount. This method
+        simply wraps the function, and so the docstring for ivy.bincount also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -427,10 +533,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         x: Union[ivy.Array, ivy.NativeArray],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.igamma. This method simply wraps the
-        function, and so the docstring for ivy.igamma also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.igamma. This method simply
+        wraps the function, and so the docstring for ivy.igamma also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -472,10 +577,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         aweights: Optional[ivy.Array] = None,
         dtype: Optional[type] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.cov. This method simply wraps the
-        function, and so the docstring for ivy.cov also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.cov. This method simply
+        wraps the function, and so the docstring for ivy.cov also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -557,10 +661,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.cummax. This method simply wraps the
-        function, and so the docstring for ivy.cummax also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.cummax. This method simply
+        wraps the function, and so the docstring for ivy.cummax also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -627,10 +730,9 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.cummin. This method simply wraps the
-        function, and so the docstring for ivy.cummin also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.cummin. This method simply
+        wraps the function, and so the docstring for ivy.cummin also applies to
+        this method with minimal changes.
 
         Parameters
         ----------

@@ -21,10 +21,9 @@ class _ArrayWithCreation(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.asarray. This method simply wraps the
-        function, and so the docstring for ivy.asarray also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.asarray. This method simply
+        wraps the function, and so the docstring for ivy.asarray also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -55,16 +54,19 @@ class _ArrayWithCreation(abc.ABC):
         Examples
         --------
         With list of lists as input:
+
         >>> ivy.asarray([[1,2],[3,4]])
         ivy.array([[1, 2],
                [3, 4]])
 
         With tuple of lists as input:
+
         >>> ivy.asarray(([1.4,5.6,5.5],[3.1,9.1,7.5]))
         ivy.array([[1.39999998, 5.5999999 , 5.5       ],
                [3.0999999 , 9.10000038, 7.5       ]])
 
         With ndarray as input:
+
         >>> x = ivy.np.ndarray(shape=(2,2), order='C')
         >>> x
         array([[6.90786433e-310, 6.90786433e-310],
@@ -84,10 +86,9 @@ class _ArrayWithCreation(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.full_like. This method simply wraps the
-        function, and so the docstring for ivy.full_like also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.full_like. This method
+        simply wraps the function, and so the docstring for ivy.full_like also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -148,10 +149,9 @@ class _ArrayWithCreation(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.ones_like. This method simply wraps the
-        function, and so the docstring for ivy.ones_like also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.ones_like. This method
+        simply wraps the function, and so the docstring for ivy.ones_like also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -182,10 +182,9 @@ class _ArrayWithCreation(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.zeros_like. This method simply wraps
-        the function, and so the docstring for ivy.zeros_like also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.zeros_like. This method
+        simply wraps the function, and so the docstring for ivy.zeros_like also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -211,10 +210,9 @@ class _ArrayWithCreation(abc.ABC):
     def tril(
         self: ivy.Array, /, *, k: int = 0, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.tril. This method simply wraps the
-        function, and so the docstring for ivy.tril also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.tril. This method simply
+        wraps the function, and so the docstring for ivy.tril also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -242,10 +240,9 @@ class _ArrayWithCreation(abc.ABC):
     def triu(
         self: ivy.Array, /, *, k: int = 0, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.triu. This method simply wraps the
-        function, and so the docstring for ivy.triu also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.triu. This method simply
+        wraps the function, and so the docstring for ivy.triu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -278,10 +275,9 @@ class _ArrayWithCreation(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.empty_like. This method simply wraps
-        the function, and so the docstring for ivy.empty_like also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.empty_like. This method
+        simply wraps the function, and so the docstring for ivy.empty_like also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -289,7 +285,7 @@ class _ArrayWithCreation(abc.ABC):
             input array from which to derive the output array shape.
         dtype
             output array data type. If dtype is None, the output array data type must be
-            inferred from ``self``. Deafult: ``None``.
+            inferred from ``self``. Default: ``None``.
         device
             device on which to place the created array. If device is None, the output
             array device must be inferred from ``self``. Default: ``None``.
@@ -312,10 +308,9 @@ class _ArrayWithCreation(abc.ABC):
         sparse: bool = False,
         indexing: str = "xy",
     ) -> List[ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.meshgrid. This method simply wraps the
-        function, and so the docstring for ivy.meshgrid also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.meshgrid. This method
+        simply wraps the function, and so the docstring for ivy.meshgrid also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -348,10 +343,9 @@ class _ArrayWithCreation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.from_dlpack. This method simply wraps
-        the function, and so the docstring for ivy.from_dlpack also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.from_dlpack. This method
+        simply wraps the function, and so the docstring for ivy.from_dlpack
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -378,10 +372,9 @@ class _ArrayWithCreation(abc.ABC):
         to_ivy_array: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.copy_array. This method simply wraps
-        the function, and so the docstring for ivy.copy_array also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.copy_array. This method
+        simply wraps the function, and so the docstring for ivy.copy_array also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -409,10 +402,9 @@ class _ArrayWithCreation(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.NativeArray:
-        """
-        ivy.Array instance method variant of ivy.native_array. This method simply wraps
-        the function, and so the docstring for ivy.native_array also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.native_array. This method
+        simply wraps the function, and so the docstring for ivy.native_array
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -442,10 +434,9 @@ class _ArrayWithCreation(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.one_hot. This method simply wraps the
-        function, and so the docstring for ivy.one_hot also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.one_hot. This method simply
+        wraps the function, and so the docstring for ivy.one_hot also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -546,10 +537,9 @@ class _ArrayWithCreation(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.logspace. This method simply wraps the
-        function, and so the docstring for ivy.logspace also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.logspace. This method
+        simply wraps the function, and so the docstring for ivy.logspace also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -589,8 +579,8 @@ class _ArrayWithCreation(abc.ABC):
         simplicity, but this function is *nestable*, and therefore also accepts
         :class:`ivy.Container` instances in place of any of the arguments.
 
-        Functional Examples
-        -------------------
+        Examples
+        --------
         With float input:
 
         >>> x = ivy.array([1, 2])

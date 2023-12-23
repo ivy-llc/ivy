@@ -1,5 +1,6 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
+from typing import Tuple
 from functools import lru_cache
 import math
 import numpy as np
@@ -9,11 +10,11 @@ import ivy
 from . import array_helpers, number_helpers, dtype_helpers
 from ..pipeline_helper import WithBackendContext
 from ivy.functional.ivy.layers import _deconv_length
+from ..globals import mod_backend
 
 
 def matrix_is_stable(x, cond_limit=30):
-    """
-    Check if a matrix is numerically stable or not.
+    """Check if a matrix is numerically stable or not.
 
     Used to avoid numerical instabilities in further computationally heavy calculations.
 
@@ -60,8 +61,7 @@ def apply_safety_factor(
     large_abs_safety_factor=1.1,
     safety_factor_scale="linear",
 ):
-    """
-    Apply safety factor scaling to numeric data type.
+    """Apply safety factor scaling to numeric data type.
 
     Parameters
     ----------
@@ -89,34 +89,47 @@ def apply_safety_factor(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        with WithBackendContext(backend) as ivy_backend:
-            dtype_info = ivy_backend.finfo(dtype)
+        if mod_backend[backend]:
+            proc, input_queue, output_queue = mod_backend[backend]
+            input_queue.put(("dtype_info_helper", backend, kind_dtype, dtype))
+            dtype_info = output_queue.get()
+        else:
+            dtype_info = general_helpers_dtype_info_helper(
+                backend=backend, kind_dtype=kind_dtype, dtype=dtype
+            )
     elif "int" in dtype:
         kind_dtype = "int"
-        with WithBackendContext(backend) as ivy_backend:
-            dtype_info = ivy_backend.iinfo(dtype)
+        if mod_backend[backend]:
+            proc, input_queue, output_queue = mod_backend[backend]
+            input_queue.put(("dtype_info_helper", backend, kind_dtype, dtype))
+            dtype_info = output_queue.get()
+        else:
+            dtype_info = general_helpers_dtype_info_helper(
+                backend=backend, kind_dtype=kind_dtype, dtype=dtype
+            )
     else:
         raise TypeError(
             f"{dtype} is not a valid numeric data type only integers and floats"
         )
 
     if min_value is None:
-        min_value = dtype_info.min
+        # 0th index is max, 1st is min, 2nd is smallest_normal
+        min_value = dtype_info[1]
     if max_value is None:
-        max_value = dtype_info.max
+        max_value = dtype_info[0]
 
     if safety_factor_scale == "linear":
         min_value = min_value / large_abs_safety_factor
         max_value = max_value / large_abs_safety_factor
         if kind_dtype == "float" and not abs_smallest_val:
-            abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
+            abs_smallest_val = dtype_info[2] * small_abs_safety_factor
     elif safety_factor_scale == "log":
         min_sign = math.copysign(1, min_value)
         min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
         max_sign = math.copysign(1, max_value)
         max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
         if kind_dtype == "float" and not abs_smallest_val:
-            m, e = math.frexp(dtype_info.smallest_normal)
+            m, e = math.frexp(dtype_info[2])
             abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
     else:
         raise ValueError(
@@ -128,16 +141,90 @@ def apply_safety_factor(
     return min_value, max_value, abs_smallest_val
 
 
+def general_helpers_dtype_info_helper(backend, kind_dtype, dtype):
+    with WithBackendContext(backend) as ivy_backend:
+        if kind_dtype == "float":
+            return (
+                ivy_backend.finfo(dtype).max,
+                ivy_backend.finfo(dtype).min,
+                getattr(ivy_backend.finfo(dtype), "smallest_normal", None),
+            )
+        elif kind_dtype == "int":
+            return (
+                ivy_backend.iinfo(dtype).max,
+                ivy_backend.iinfo(dtype).min,
+                getattr(ivy_backend.iinfo(dtype), "smallest_normal", None),
+            )
+
+
 # Hypothesis #
 # -----------#
+
+
+# from array-api repo
+class BroadcastError(ValueError):
+    """Shapes do not broadcast with each other."""
+
+
+# from array-api repo
+def _broadcast_shapes(
+    shape1: Tuple[int, ...], shape2: Tuple[int, ...]
+) -> Tuple[int, ...]:
+    N1 = len(shape1)
+    N2 = len(shape2)
+    N = max(N1, N2)
+    shape = [None for _ in range(N)]
+    i = N - 1
+    while i >= 0:
+        n1 = N1 - N + i
+        if N1 - N + i >= 0:
+            d1 = shape1[n1]
+        else:
+            d1 = 1
+        n2 = N2 - N + i
+        if N2 - N + i >= 0:
+            d2 = shape2[n2]
+        else:
+            d2 = 1
+
+        if d1 == 1:
+            shape[i] = d2
+        elif d2 == 1:
+            shape[i] = d1
+        elif d1 == d2:
+            shape[i] = d1
+        else:
+            raise BroadcastError()
+        i = i - 1
+    return tuple(shape)
+
+
+# from array-api repo
+def broadcast_shapes(*shapes: Tuple[int, ...]):
+    if len(shapes) == 0:
+        raise ValueError("shapes=[] must be non-empty")
+    elif len(shapes) == 1:
+        return shapes[0]
+    result = _broadcast_shapes(shapes[0], shapes[1])
+    for i in range(2, len(shapes)):
+        result = _broadcast_shapes(result, shapes[i])
+    return result
+
+
+# from array-api repo
+@st.composite
+def two_broadcastable_shapes(draw):
+    shape1, shape2 = draw(array_helpers.mutually_broadcastable_shapes(2))
+    assume(broadcast_shapes(shape1, shape2) == shape1)
+    return (shape1, shape2)
 
 
 # taken from
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
 def reshape_shapes(draw, *, shape):
-    """
-    Draws a random shape with the same number of elements as the given shape.
+    """Draws a random shape with the same number of elements as the given
+    shape.
 
     Parameters
     ----------
@@ -165,8 +252,7 @@ def reshape_shapes(draw, *, shape):
 # taken from https://github.com/HypothesisWorks/hypothesis/issues/1115
 @st.composite
 def subsets(draw, *, elements):
-    """
-    Draws a subset of elements from the given elements.
+    """Draws a subset of elements from the given elements.
 
     Parameters
     ----------
@@ -193,10 +279,9 @@ def get_shape(
     min_dim_size=1,
     max_dim_size=10,
 ):
-    """
-    Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size] of size
-    drawn from min_num_dims to max_num_dims. Useful for randomly drawing the shape of an
-    array.
+    """Draws a tuple of integers drawn randomly from [min_dim_size,
+    max_dim_size] of size drawn from min_num_dims to max_num_dims. Useful for
+    randomly drawing the shape of an array.
 
     Parameters
     ----------
@@ -242,9 +327,8 @@ def get_shape(
 
 @st.composite
 def get_mean_std(draw, *, dtype):
-    """
-    Draws two integers representing the mean and standard deviation for a given data
-    type.
+    """Draws two integers representing the mean and standard deviation for a
+    given data type.
 
     Parameters
     ----------
@@ -266,8 +350,8 @@ def get_mean_std(draw, *, dtype):
 
 @st.composite
 def get_bounds(draw, *, dtype):
-    """
-    Draws two numbers; low and high, for a given data type such that low < high.
+    """Draws two numbers; low and high, for a given data type such that low <
+    high.
 
     Parameters
     ----------
@@ -313,8 +397,7 @@ def get_axis(
     force_tuple=False,
     force_int=False,
 ):
-    """
-    Draws one or more axis for the given shape.
+    """Draws one or more axis for the given shape.
 
     Parameters
     ----------
@@ -400,14 +483,14 @@ def get_axis(
     axis = draw(
         st.one_of(*valid_strategies).filter(
             lambda x: (
-                all([i != axes + j for i in x for j in x])
+                all(i != axes + j for i in x for j in x)
                 if (isinstance(x, list) and unique and allow_neg)
                 else True
             )
         )
     )
 
-    if type(axis) == list:
+    if isinstance(axis, list):
         if sort_values:
 
             def sort_key(ele, max_len):
@@ -428,8 +511,7 @@ def x_and_filters(
     depthwise=False,
     mixed_fn_compos=True,
 ):
-    """
-    Draws a random x and filters for a convolution.
+    """Draws a random x and filters for a convolution.
 
     Parameters
     ----------
@@ -487,7 +569,7 @@ def x_and_filters(
         filter_shape = filter_shape + (input_channels, output_channels)
     else:
         filter_shape = filter_shape + (input_channels,)
-    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+    if data_format in ["NHWC", "NWC", "NDHWC"]:
         x_shape = (batch_size,) + x_dim + (input_channels,)
     else:
         x_shape = (batch_size, input_channels) + x_dim
@@ -525,8 +607,8 @@ def x_and_filters(
 
 @st.composite
 def embedding_helper(draw, mixed_fn_compos=True):
-    """
-    Obtain weights for embeddings, the corresponding indices, the padding indices.
+    """Obtain weights for embeddings, the corresponding indices, the padding
+    indices.
 
     Parameters
     ----------

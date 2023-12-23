@@ -13,6 +13,10 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
 )
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 # norm
 @st.composite
 def _norm_helper(draw):
@@ -66,24 +70,25 @@ def _norm_helper(draw):
     return _matrix_norm_example()
 
 
+# --- Main --- #
+# ------------ #
+
+
+# det
 @handle_frontend_test(
-    fn_tree="numpy.linalg.norm",
-    norm_values=_norm_helper(),
-    keepdims=st.booleans(),
+    fn_tree="numpy.linalg.det",
+    dtype_and_x=_get_dtype_and_matrix(),
     test_with_out=st.just(False),
 )
-def test_numpy_norm(
-    norm_values,
-    keepdims,
+def test_numpy_det(
+    dtype_and_x,
     frontend,
     test_flags,
     fn_tree,
     backend_fw,
     on_device,
 ):
-    dtype, x, axis, ord, check_stable = norm_values
-    if check_stable:
-        assume(matrix_is_stable(x[0], cond_limit=10))
+    dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -91,10 +96,9 @@ def test_numpy_norm(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        ord=ord,
-        axis=axis,
-        keepdims=keepdims,
+        rtol=1e-2,
+        atol=1e-2,
+        a=x[0],
     )
 
 
@@ -127,21 +131,24 @@ def test_numpy_matrix_rank(
     )
 
 
-# det
 @handle_frontend_test(
-    fn_tree="numpy.linalg.det",
-    dtype_and_x=_get_dtype_and_matrix(),
+    fn_tree="numpy.linalg.norm",
+    norm_values=_norm_helper(),
+    keepdims=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_numpy_det(
-    dtype_and_x,
+def test_numpy_norm(
+    norm_values,
+    keepdims,
     frontend,
     test_flags,
     fn_tree,
     backend_fw,
     on_device,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, axis, ord, check_stable = norm_values
+    if check_stable:
+        assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -149,9 +156,10 @@ def test_numpy_det(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
-        a=x[0],
+        x=x[0],
+        ord=ord,
+        axis=axis,
+        keepdims=keepdims,
     )
 
 
@@ -209,7 +217,8 @@ def test_numpy_slogdet(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.trace",
+    fn_tree="numpy.linalg.trace",
+    gt_fn_tree="numpy.trace",
     dtype_and_x_axes=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         valid_axis=True,
@@ -229,6 +238,7 @@ def test_numpy_trace(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -239,6 +249,7 @@ def test_numpy_trace(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         rtol=1e-2,
         a=x[0],

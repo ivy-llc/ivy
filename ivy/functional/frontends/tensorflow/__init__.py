@@ -53,10 +53,9 @@ half = float16
 
 @handle_exceptions
 def check_tensorflow_casting(x1, x2):
-    """
-    Check whether the two arguments provided in the function have the same dtype, unless
-    one of them is an array_like or scalar, where it gets casted to the other input's
-    dtype.
+    """Check whether the two arguments provided in the function have the same
+    dtype, unless one of them is an array_like or scalar, where it gets casted
+    to the other input's dtype.
 
     Parameters
     ----------
@@ -84,11 +83,12 @@ def check_tensorflow_casting(x1, x2):
 
 
 from . import dtypes
-from .dtypes import DType, as_dtype, cast
+from .dtypes import as_dtype, cast
 from . import ragged
 from .ragged import *
 from . import tensor
 from .tensor import EagerTensor, Tensor
+from .tensorarray import TensorArray
 from . import variable
 from .variable import Variable, IndexedSlices
 from . import keras
@@ -120,4 +120,4 @@ if ivy.is_local():
 else:
     module = sys.modules[__name__]
 
-set_frontend_to_specific_version(module)
+__version__ = set_frontend_to_specific_version(module)
