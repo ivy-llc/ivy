@@ -270,6 +270,40 @@ def _reshape_helper(draw):
     return x, dtype, reshape_shape
 
 
+# sequence_mask
+@st.composite
+def _sequence_mask_helper(draw):
+    max_val = draw(st.integers(min_value=1, max_value=100000))
+    in_dtype, lens = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=1,
+            min_value=-max_val,
+            max_value=max_val,
+        )
+    )
+
+    max_len = draw(st.integers(min_value=max_val, max_value=max_val))
+    dtype = draw(
+        st.sampled_from(
+            [
+                "float16",
+                "uint8",
+                "complex128",
+                "bool",
+                "float64",
+                "int8",
+                "int16",
+                "complex64",
+                "float32",
+                "int32",
+                "int64",
+            ]
+        )
+    )
+    return in_dtype, lens, max_len, dtype
+
+
 @st.composite
 def _slice_helper(draw):
     dtype, x, shape = draw(
@@ -1700,6 +1734,34 @@ def test_tensorflow_searchsorted(
         values=xs[1],
         side=side,
         out_type=out_type,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.sequence_mask",
+    dtype_lens_maxlen=_sequence_mask_helper(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_sequence_mask(
+    *,
+    dtype_lens_maxlen,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, lens, max_len, dtype = dtype_lens_maxlen
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lengths=lens[0],
+        maxlen=max_len,
+        dtype=dtype,
     )
 
 

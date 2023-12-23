@@ -35,7 +35,7 @@ def relu6(
     # https://github.com/google/jax/pull/14682
     def custom_grad_func(x_and_grad, one):
         return lax.select(
-            (6 > x_and_grad[0]) & (x_and_grad[0] > 0), one, lax.full_like(one, 0)
+            (x_and_grad[0] < 6) & (x_and_grad[0] > 0), one, lax.full_like(one, 0)
         )
 
     new_func = ivy.bind_custom_gradient_function(relu6_func, custom_grad_func)
@@ -112,6 +112,20 @@ def tanhshrink(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.subtract(x, jax.nn.tanh(x))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+def threshold(
+    x: JaxArray,
+    /,
+    *,
+    threshold: Union[int, float],
+    value: Union[int, float],
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    ret = jnp.where(x > threshold, x, value).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)  # type: ignore
     return ret
 
 
