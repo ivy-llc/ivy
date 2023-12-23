@@ -1,0 +1,75 @@
+{
+    "ivy": {
+        "compiler": [
+            "_compiler.so",
+            {
+                "utils": [
+                    "CC.so",
+                    "CD.so",
+                    "CI.so",
+                    "CL.so",
+                    "CM.so",
+                    "CV.so",
+                    "CX.so",
+                    "C.so",
+
+                    "DC.so",
+                    "DD.so",
+                    "DI.so",
+                    "DL.so",
+                    "DM.so",
+                    "DV.so",
+                    "DX.so",
+                    "D.so",
+
+                    "IC.so",
+                    "ID.so",
+                    "II.so",
+                    "IL.so",
+                    "IM.so",
+                    "IV.so",
+                    "IX.so",
+                    "I.so",
+
+                    "LC.so",
+                    "LD.so",
+                    "LI.so",
+                    "LL.so",
+                    "LM.so",
+                    "LV.so",
+                    "LX.so",
+                    "L.so",
+
+                    "MC.so",
+                    "MD.so",
+                    "MI.so",
+                    "ML.so",
+                    "MM.so",
+                    "MV.so",
+                    "MX.so",
+                    "M.so",
+
+                    "VC.so",
+                    "VD.so",
+                    "VI.so",
+                    "VL.so",
+                    "VM.so",
+                    "VV.so",
+                    "VX.so",
+                    "V.so",
+
+                    "XC.so",
+                    "XD.so",
+                    "XI.so",
+                    "XL.so",
+                    "XM.so",
+                    "XV.so",
+                    "XX.so",
+                    "X.so",
+
+                    "IIC.so"
+                ]
+            }
+        ]
+    }
+}

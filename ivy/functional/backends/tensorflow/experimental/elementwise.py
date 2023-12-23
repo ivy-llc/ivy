@@ -1,5 +1,5 @@
 import operator
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Tuple, List, Sequence
 from numbers import Number
 import tensorflow as tf
 from tensorflow.python.ops.numpy_ops import np_math_ops
@@ -9,6 +9,61 @@ import ivy
 from ivy import promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
+
+
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amax(
+    x: tf.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return tf.experimental.numpy.amax(x, axis=axis, keepdims=keepdims)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amin(
+    x: tf.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return tf.experimental.numpy.amin(x, axis=axis, keepdims=keepdims)
+
+
+@with_supported_dtypes(
+    {"2.15.0 and below": ("float16", "float32", "float64")},
+    backend_version,
+)
+def lgamma(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.lgamma(x)
 
 
 def sinc(
@@ -22,7 +77,7 @@ def sinc(
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float16", "float32", "float64")}, backend_version
+    {"2.15.0 and below": ("bfloat16", "float16", "float32", "float64")}, backend_version
 )
 def fmax(
     x1: Union[tf.Tensor, tf.Variable],
@@ -38,7 +93,7 @@ def fmax(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+    {"2.15.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def float_power(
     x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
@@ -90,7 +145,7 @@ def count_nonzero(
     )
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def nansum(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -153,7 +208,7 @@ def allclose(
     )
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def fix(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -163,7 +218,7 @@ def fix(
     return tf.cast(tf.where(x > 0, tf.math.floor(x), tf.math.ceil(x)), x.dtype)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bflaot16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bflaot16", "float16")}, backend_version)
 def nextafter(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -175,7 +230,7 @@ def nextafter(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+    {"2.15.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def diff(
     x: Union[tf.Tensor, tf.Variable, list, tuple],
@@ -198,7 +253,7 @@ def diff(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float32",
             "float64",
         )
@@ -227,7 +282,7 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
             axis = [operator.index(axis)]
         except TypeError:
             pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
     if len(set(axis)) != len(axis):
         raise ValueError("repeated axis")
     return axis
@@ -242,7 +297,6 @@ def gradient(
     edge_order: int = 1,
 ) -> Union[tf.Tensor, List[tf.Tensor]]:
     # https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/function_base.py#L969-L1312
-    device = x.device
     x = tf.experimental.numpy.asanyarray(x)
     N = x.ndim  # number of dimensions
     if axis is None:
@@ -275,15 +329,13 @@ def gradient(
                 raise ValueError("distances must be either scalars or 1d")
             if len(distances) != x.shape[axes[i]]:
                 raise ValueError(
-                    "when 1d, distances must match "
-                    "the length of the corresponding dimension {} {}".format(
-                        len(distances), x.shape[axes[i]]
-                    )
+                    "when 1d, distances must match the length of the corresponding"
+                    f" dimension {len(distances)} {x.shape[axes[i]]}"
                 )
             if distances.dtype.is_integer:
                 # Convert numpy integer types to float64 to avoid modular
                 # arithmetic in np.diff(distances).
-                distances = distances.astype(tf.experimental.numpy.float64)
+                distances = tf.cast(distances, tf.float64)
             diffx = tf.experimental.numpy.diff(distances)
             # if distances are constant reduce to the scalar case
             # since it brings a consistent speedup
@@ -312,7 +364,7 @@ def gradient(
     slice4 = [slice(None)] * N
 
     if x.dtype.is_integer:
-        x = x.astype(tf.experimental.numpy.float64)
+        x = tf.cast(x, tf.float64)
 
     for axis, ax_dx in zip(axes, dx):
         if x.shape[axis] < edge_order + 1:
@@ -401,8 +453,7 @@ def gradient(
                 a * x[tuple(slice2)] + b * x[tuple(slice3)] + c * x[tuple(slice4)]
             )
 
-        with tf.device(device):
-            outvals.append(tf.convert_to_tensor(out))
+        outvals.append(tf.convert_to_tensor(out))
 
         # reset the slice object in this dimension to ":"
         slice1[axis] = slice(None)
@@ -418,7 +469,7 @@ def gradient(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float16",
             "float32",
             "float64",
@@ -448,7 +499,7 @@ def conj(
     return tf.math.conj(x)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("unsigned",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("unsigned",)}, backend_version)
 def ldexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable, int],
@@ -469,7 +520,7 @@ def ldexp(
     return tf.cast(ret, out_dtype)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("unsigned",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("unsigned",)}, backend_version)
 def frexp(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -485,3 +536,30 @@ def frexp(
     m = x / tf.math.pow(2, e)
     e = tf.cast(e, tf.int32)
     return m, e
+
+
+def modf(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.modf(x)
+
+
+def digamma(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.digamma(x)
+
+
+def erfc(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.erfc(x)

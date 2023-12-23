@@ -1,5 +1,4 @@
-"""
-Ivy wrapping functions for conversions.
+"""Ivy wrapping functions for conversions.
 
 Collection of Ivy functions for wrapping functions to accept and return
 ivy.Array instances.
@@ -17,17 +16,16 @@ class _ContainerWithConversions(ContainerBase):
     @staticmethod
     def _static_to_native(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        nested: bool = False,
-        include_derived: Optional[Dict[type, bool]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        nested: Union[bool, ivy.Container] = False,
+        include_derived: Optional[Union[Dict[str, bool], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.to_native.
+        """ivy.Container static method variant of ivy.to_native.
 
         This method simply wraps the function, and so the docstring for ivy.to_native
         also applies to this method with minimal changes.
@@ -77,17 +75,16 @@ class _ContainerWithConversions(ContainerBase):
 
     def to_native(
         self: ivy.Container,
-        nested: bool = False,
-        include_derived: Optional[Dict[type, bool]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        nested: Union[bool, ivy.Container] = False,
+        include_derived: Optional[Union[Dict[str, bool], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.to_native.
+        """ivy.Container instance method variant of ivy.to_native.
 
         This method simply wraps the function, and so the docstring for ivy.to_native
         also applies to this method with minimal changes.
@@ -137,17 +134,16 @@ class _ContainerWithConversions(ContainerBase):
     @staticmethod
     def _static_to_ivy(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        nested: bool = False,
-        include_derived: Optional[Dict[type, bool]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        nested: Union[bool, ivy.Container] = False,
+        include_derived: Optional[Union[Dict[str, bool], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.to_ivy.
+        """ivy.Container static method variant of ivy.to_ivy.
 
         This method simply wraps the function, and so the docstring for ivy.to_ivy also
         applies to this method with minimal changes.
@@ -198,17 +194,16 @@ class _ContainerWithConversions(ContainerBase):
 
     def to_ivy(
         self: ivy.Container,
-        nested: bool = False,
-        include_derived: Optional[Dict[type, bool]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        nested: Union[bool, ivy.Container] = False,
+        include_derived: Optional[Union[Dict[str, bool], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.to_ivy.
+        """ivy.Container instance method variant of ivy.to_ivy.
 
         This method simply wraps the function, and so the docstring for ivy.to_ivy also
         applies to this method with minimal changes.

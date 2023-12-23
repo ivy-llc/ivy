@@ -2,11 +2,11 @@
 	"name": "Ivy GPU Development Environment (build)",
 
 	"build": {
-		"dockerfile": "../../docker/DockerfileGPUMultiCuda",
+		"dockerfile": "../../docker/DockerfileGPU",
 		"context": "../..",
 		"args": {
-            "IMAGE_NAME": "unifyai/multicuda",
-            "IMAGE_TAG": "base_and_requirements"
+            "IMAGE_NAME": "unifyai/ivy",
+            "IMAGE_TAG": "latest-gpu"
         }
 	},
 
@@ -16,12 +16,15 @@
 		"vscode": {
 			"extensions": [
 				"ms-python.python"
-			]
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/opt/miniconda/envs/multienv/bin/python3"
+			}
 		}
 	},
 
 	"postCreateCommand": {
-        "post_create": "bash .devcontainer/post_create_commands.sh", 
+        "post_create": "bash .devcontainer/post_create_commands.sh",
         "bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
     },
 

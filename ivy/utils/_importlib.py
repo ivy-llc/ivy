@@ -11,7 +11,10 @@ path_hooks = []
 # If they do, the behavior of ivy.with_backend is undefined and may not function as
 # expected. Import these modules along with Ivy initialization, as the import logic
 # assumes they exist in sys.modules.
-MODULES_TO_SKIP = ["ivy.compiler"]
+
+MODULES_TO_SKIP = ["ivy.compiler", "ivy.engines"]
+
+IS_COMPILING_WITH_BACKEND = False
 
 
 class LocalIvyImporter:
@@ -19,12 +22,16 @@ class LocalIvyImporter:
         self.finder = ast_helpers.IvyPathFinder()
 
     def __enter__(self):
+        global IS_COMPILING_WITH_BACKEND
+        IS_COMPILING_WITH_BACKEND = True
         sys.meta_path.insert(0, self.finder)
         path_hooks.insert(0, self.finder)
 
     def __exit__(self, *exc):
         path_hooks.remove(self.finder)
         sys.meta_path.remove(self.finder)
+        global IS_COMPILING_WITH_BACKEND
+        IS_COMPILING_WITH_BACKEND = False
 
 
 def _clear_cache():
@@ -67,9 +74,8 @@ def _from_import(name: str, package=None, mod_globals=None, from_list=(), level=
 
 
 def _absolute_import(name: str, asname=None, mod_globals=None):
-    """
-    Handle absolute import statement
-    :param name:
+    """Handle absolute import statement :param name:
+
     :return:
     """
     if asname is None:

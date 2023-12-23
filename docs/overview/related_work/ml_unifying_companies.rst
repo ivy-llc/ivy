@@ -19,8 +19,6 @@ ML-Unifying Companies
 .. _`OctoML`: https://octoml.ai/
 .. _`Apache TVM`: https://tvm.apache.org/
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
-.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 Quansight
 ---------
@@ -35,7 +33,7 @@ Modular
 `Modular`_ is a Startup company founded by the creators of `MLIR`_.
 Their observation is that fragmentation and technical complexity have held back the impact of AI to a privileged few.
 The rest of the world isn’t benefiting as it should be from this transformational technology.
-Their mission is to have real, positive impact in the world by reinventing the way AI technology is developed and deployed into production with a next-generation developer platform.
+Their mission is to have a real, positive impact in the world by reinventing the way AI technology is developed and deployed into production with a next-generation developer platform.
 There are very little extra details about their developer platform, but presumably it will provide a modular solution at a relatively low level of abstraction, given the `LLVM`_ and `MLIR`_ background of the founders.
 
 OctoML
@@ -46,7 +44,3 @@ They focus on efficient model execution and automation to scale services and red
 Specifically, they enable models to run on a broad set of devices, making them easier to deploy without specialized skills.
 The services include inference on the cloud, the edge, and a variety of platform and hardware vendors.
 They strive to maximize performance, with very simple deployment and benchmarking features included.
-
-**Round Up**
-
-If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_ or in the `related work forum`_!

@@ -9,8 +9,7 @@ TO_IGNORE = ["is_ivy_array", "is_native_array", "is_array", "shape"]
 
 
 def _wrap_function(function_name: str, static: bool) -> Callable:
-    """
-    Wrap the function called `function_name`.
+    """Wrap the function called `function_name`.
 
     Parameters
     ----------
@@ -27,10 +26,12 @@ def _wrap_function(function_name: str, static: bool) -> Callable:
 
     def new_function(
         *args,
-        key_chains: Optional[Union[Sequence[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[
+            Union[Sequence[str], Dict[str, str], ivy.Container]
+        ] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
         **kwargs
     ):
@@ -77,13 +78,12 @@ def _wrap_function(function_name: str, static: bool) -> Callable:
 
 def add_ivy_container_instance_methods(
     cls: Type[ivy.Container],
-    modules: List[ModuleType],
-    static: bool = False,
-    to_ignore: Iterable = (),
+    modules: Union[List[ModuleType], ivy.Container],
+    static: Union[bool, ivy.Container] = False,
+    to_ignore: Union[Iterable, ivy.Container] = (),
 ):
-    """
-    Loop over all ivy modules such as activations, general, etc. and add the module
-    functions to ivy container as instance methods using _wrap_function.
+    """Loop over all ivy modules such as activations, general, etc. and add the
+    module functions to ivy container as instance methods using _wrap_function.
 
     Parameters
     ----------

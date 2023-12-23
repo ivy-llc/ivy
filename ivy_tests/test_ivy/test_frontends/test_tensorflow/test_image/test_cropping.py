@@ -9,6 +9,10 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers im
 )
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
 def _extract_patches_helper(draw):
     sizes = [
@@ -48,6 +52,10 @@ def _extract_patches_helper(draw):
     return dtype_x, sizes, strides, rates, padding
 
 
+# --- Main --- #
+# ------------ #
+
+
 # extract_patches
 @handle_frontend_test(
     fn_tree="tensorflow.image.extract_patches",
@@ -60,11 +68,13 @@ def test_tensorflow_extract_patches(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     (x_dtype, x), sizes, strides, rates, padding = dtype_values_and_other
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -100,12 +110,14 @@ def test_tensorflow_resize(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, mode, size, _, _, preserve = dtype_x_mode
     try:
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,

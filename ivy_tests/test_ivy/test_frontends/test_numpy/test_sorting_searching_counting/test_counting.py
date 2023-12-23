@@ -14,17 +14,19 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     keepdims=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_count_nonzero(
+def test_numpy_count_nonzero(
     dtype_and_x,
     keepdims,
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

@@ -12,13 +12,12 @@ class _ContainerWithSortingExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container, list, tuple],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.invert_permutation.
+        """ivy.Container static method variant of ivy.invert_permutation.
 
         This method simply wraps the function, and so the docstring for
         ivy.invert_permutation also applies to this method with minimal
@@ -37,13 +36,12 @@ class _ContainerWithSortingExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.invert_permutation.
+        """ivy.Container instance method variant of ivy.invert_permutation.
 
         This method simply wraps the function, and so the docstring for
         ivy.invert_permutation also applies to this method with minimal
@@ -62,17 +60,16 @@ class _ContainerWithSortingExperimental(ContainerBase):
         a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        axis: int = -1,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Union[int, ivy.Container] = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.lexsort. This method simply wraps the
-        function, and so the docstring for ivy.lexsort also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.lexsort. This method
+        simply wraps the function, and so the docstring for ivy.lexsort also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -116,17 +113,16 @@ class _ContainerWithSortingExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: int = -1,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Union[int, ivy.Container] = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.lexsort. This method simply wraps
-        the function, and so the docstring for ivy.lexsort also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.lexsort. This method
+        simply wraps the function, and so the docstring for ivy.lexsort also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
