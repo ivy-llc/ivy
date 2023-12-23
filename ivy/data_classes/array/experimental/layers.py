@@ -1316,9 +1316,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
         self: ivy.Array,
         output_size: int,
     ) -> ivy.Array:
-        """
-        Apply a 1D adaptive maximum pooling over an input signal composed of several
-        input planes.
+        """Apply a 1D adaptive maximum pooling over an input signal composed of
+        several input planes.
 
         Parameters
         ----------
@@ -1328,6 +1327,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             dimension.
         output_size
             Spatial output size.
+
         Returns
         -------
             The result of the pooling operation. Will have shape (N, C, L_out) or

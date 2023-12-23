@@ -3242,9 +3242,8 @@ def adaptive_max_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
 ) -> ivy.Array:
-    """
-    Apply a 1D adaptive maximum pooling over an input signal composed of several input
-    planes.
+    """Apply a 1D adaptive maximum pooling over an input signal composed of
+    several input planes.
 
     Parameters
     ----------
@@ -3254,6 +3253,7 @@ def adaptive_max_pool1d(
         dimension.
     output_size
         Spatial output size.
+
     Returns
     -------
         The result of the pooling operation. Will have shape (N, C, L_out) or

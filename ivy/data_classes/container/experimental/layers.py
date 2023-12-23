@@ -2837,10 +2837,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.adaptive_max_pool1d. This method
-        simply wraps the function, and so the docstring for ivy.adaptive_max_pool1d also
-        applies to this method with minimal changes.
+        """ivy.Container static method variant of ivy.adaptive_max_pool1d. This
+        method simply wraps the function, and so the docstring for
+        ivy.adaptive_max_pool1d also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -2850,6 +2850,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             dimension.
         output_size
             Spatial output size.
+
         Returns
         -------
             The result of the pooling operation. Will have shape (N, C, L_out) or
@@ -2874,9 +2875,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        Apply a 1D adaptive maximum pooling over an input signal composed of several
-        input planes.
+        """Apply a 1D adaptive maximum pooling over an input signal composed of
+        several input planes.
 
         Parameters
         ----------
@@ -2884,6 +2884,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             Input container.
         output_size
             Spatial output size.
+
         Returns
         -------
             The result of the pooling operation.
