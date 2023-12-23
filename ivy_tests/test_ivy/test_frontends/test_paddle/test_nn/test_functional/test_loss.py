@@ -382,6 +382,38 @@ def test_paddle_log_loss(
 
 
 @handle_frontend_test(
+    fn_tree="paddle.nn.functional.margin_cross_entropy",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        exclude_min=True,
+        exclude_max=True,
+        shared_dtype=True,
+        min_num_dims=1,
+    ),
+)
+def test_paddle_margin_cross_entropy(
+    dtype_and_input,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], input_dtype[1]],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        target=input[1],
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.nn.functional.margin_ranking_loss",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),

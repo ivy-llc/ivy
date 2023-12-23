@@ -247,6 +247,24 @@ def log_loss(input, label, epsilon=0.0001, name=None):
 
 @with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def margin_cross_entropy(
+    input: ivy.Array, target: ivy.Array, margin: float = 0.0, reduction: str = "mean"
+) -> ivy.Array:
+    assert input.shape == target.shape, "Input and target must be the same shape"
+
+    ce_loss = -target * ivy.log(input) - (1 - target) * ivy.log(1 - input)
+
+    ce_loss = ivy.maximum(ce_loss - margin, 0)
+
+    if reduction == "mean":
+        return ivy.mean(ce_loss)
+    if reduction == "sum":
+        return ivy.sum(ce_loss)
+    return ce_loss
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
 
