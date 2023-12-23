@@ -97,7 +97,7 @@ def _validate_poisson_nll_params(
     # Validate dtypes
     for parameter, name in zip([input, label], ["input", "label"]):
         if parameter.dtype not in allowed_dtypes:
-            raise ValueError(
+            raise TypeError(
                 f"The dtype of '{name}' in poisson_nll_loss should be one of"
                 f" {allowed_dtypes}, but received {parameter.dtype}."
             )
@@ -106,14 +106,14 @@ def _validate_poisson_nll_params(
     if epsilon <= 0:
         raise ValueError(
             "The value of `epsilon` in poisson_nll_loss should be positive, but"
-            " received %f, which is not allowed" % epsilon
+            f" received {epsilon}, which is not allowed."
         )
 
     # Validate reduction
     if reduction not in ["sum", "mean", "none"]:
         raise ValueError(
             "The value of 'reduction' in poisson_nll_loss should be 'sum', 'mean' or"
-            " 'none', but received %s, which is not allowed." % reduction
+            f" 'none', but received {reduction}, which is not allowed."
         )
 
     # Validate shape

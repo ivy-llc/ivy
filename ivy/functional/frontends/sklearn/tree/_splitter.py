@@ -276,7 +276,9 @@ class BestSplitter(Splitter):
         *args,
     ):
         Splitter.init(self, X, y, sample_weight, missing_values_in_feature_mask, *args)
-        self.partitioner = None
+        self.partitioner = DensePartitioner(
+            X, self.samples, self.feature_values, missing_values_in_feature_mask
+        )
 
     def node_split(self, impurity, split, n_constant_features):
         return node_split_best(
@@ -382,9 +384,7 @@ def node_split_best(
         features[f_i], features[f_j] = features[f_j], features[f_i]
         has_missing = n_missing != 0
         criterion.init_missing(n_missing)
-
         n_searches = 2 if has_missing else 1
-
         for i in range(n_searches):
             missing_go_to_left = i == 1
             criterion.missing_go_to_left = missing_go_to_left
@@ -424,10 +424,10 @@ def node_split_best(
                         feature_values[p_prev] / 2.0 + feature_values[p] / 2.0
                     )
 
-                    if (
-                        current_split.threshold == feature_values[p]
-                        or current_split.threshold == ivy.inf
-                        or current_split.threshold == -ivy.inf
+                    if current_split.threshold in (
+                        feature_values[p],
+                        ivy.inf,
+                        -ivy.inf,
                     ):
                         current_split.threshold = feature_values[p_prev]
 
@@ -489,7 +489,8 @@ def node_split_best(
             impurity, best_split.impurity_left, best_split.impurity_right
         )
 
-        # best_split, samples = shift_missing_values_to_left_if_required(best_split, samples, end)
+        # best_split, samples = shift_missing_values_to_left_if_required(
+        # best_split, samples, end)
         # todo : implement shift_missing_values_to_left_if_required
     features[0:n_known_constants] = constant_features[0:n_known_constants]
     constant_features[n_known_constants:n_found_constants] = features[

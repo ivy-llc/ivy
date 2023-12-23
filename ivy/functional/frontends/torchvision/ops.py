@@ -25,7 +25,7 @@ def box_area(boxes):
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.1.1 and below": {
+        "2.1.2 and below": {
             "cpu": ("float16",),
         }
     },
@@ -51,7 +51,7 @@ def remove_small_boxes(boxes, min_size):
     return ivy.nonzero((w >= min_size) & (h >= min_size))[0]
 
 
-@with_supported_dtypes({"2.1.1 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def roi_align(
     input, boxes, output_size, spatial_scale=1.0, sampling_ratio=1, aligned=False

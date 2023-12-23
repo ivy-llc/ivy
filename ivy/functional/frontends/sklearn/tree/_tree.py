@@ -3,6 +3,23 @@ from ._splitter import SplitRecord
 
 EPSILON = ivy.finfo(ivy.double).eps
 INFINITY = ivy.inf
+INTPTR_MAX = ivy.iinfo(ivy.int32).max
+TREE_LEAF = -1
+TREE_UNDEFINED = -2
+_TREE_LEAF = TREE_LEAF
+_TREE_UNDEFINED = TREE_UNDEFINED
+
+
+class Node:
+    def __init__(self):
+        self.left_child = None
+        self.right_child = None
+        self.feature = None
+        self.threshold = None
+        self.impurity = None
+        self.n_node_samples = None
+        self.weighted_n_node_samples = None
+        self.missing_go_to_left = None
 
 
 class Tree:
@@ -23,11 +40,112 @@ class Tree:
         for k in range(n_outputs):
             self.n_classes[k] = n_classes[k]
 
+    def _resize(self, capacity):
+        self._resize_c(capacity)
+
+    def _resize_c(self, capacity=INTPTR_MAX):
+        if capacity == self.capacity and len(self.nodes) != 0:
+            return 0
+        if capacity == INTPTR_MAX:
+            if self.capacity == 0:
+                capacity = 3
+            else:
+                capacity = 2 * self.capacity
+        if self.value is None:
+            self.value = ivy.zeros(
+                (capacity, int(self.n_outputs), int(self.max_n_classes)),
+                dtype=ivy.float32,
+            )
+        else:
+            self.value = ivy.concat(
+                [
+                    self.value,
+                    ivy.zeros(
+                        (
+                            int(capacity - self.capacity),
+                            int(self.n_outputs),
+                            int(self.max_n_classes),
+                        ),
+                        dtype=ivy.float32,
+                    ),
+                ]
+            )
+        if capacity < self.node_count:
+            self.node_count = capacity
+        self.capacity = capacity
+        return 0
+
+    def _add_node(
+        self,
+        parent,
+        is_left,
+        is_leaf,
+        feature,
+        threshold,
+        impurity,
+        n_node_samples,
+        weighted_n_node_samples,
+        missing_go_to_left,
+    ):
+        node_id = self.node_count
+        if node_id >= self.capacity:
+            self._resize_c()
+
+        node = Node()
+        node.impurity = impurity
+        node.n_node_samples = n_node_samples
+        node.weighted_n_node_samples = weighted_n_node_samples
+
+        if parent != _TREE_UNDEFINED:
+            if is_left:
+                self.nodes[parent].left_child = node_id
+            else:
+                self.nodes[parent].right_child = node_id
+
+        if is_leaf:
+            node.left_child = _TREE_LEAF
+            node.right_child = _TREE_LEAF
+            node.feature = _TREE_UNDEFINED
+            node.threshold = _TREE_UNDEFINED
+        else:
+            node.feature = feature
+            node.threshold = threshold
+            node.missing_go_to_left = missing_go_to_left
+
+        self.nodes.append(node)
+        self.node_count += 1
+
+        return node_id
+
     def predict(self, X):
-        pass
+        X_applied = self.apply(X)
+        out = ivy.take(self.value, X_applied, axis=0)
+        if self.n_outputs == 1:
+            out = out.reshape((X.shape[0], self.max_n_classes))
+        return out
 
     def apply(self, X):
-        pass
+        return self._apply_dense(X)
+
+    def _apply_dense(self, X):
+        X_tensor = X
+        n_samples = X.shape[0]
+        out = ivy.zeros(n_samples, dtype="int32")
+        for i in range(n_samples):
+            node = self.nodes[0]  # root node
+            while node.left_child != _TREE_LEAF:
+                X_i_node_feature = X_tensor[i, node.feature]
+                if ivy.isnan(X_i_node_feature):
+                    if node.missing_go_to_left:
+                        node = self.nodes[node.left_child]
+                    else:
+                        node = self.nodes[node.right_child]
+                elif X_i_node_feature <= node.threshold:
+                    node = self.nodes[node.left_child]
+                else:
+                    node = self.nodes[node.right_child]
+            out[i] = self.nodes.index(node)  # terminal node index
+        return out
 
 
 class StackRecord:
@@ -82,7 +200,6 @@ class DepthFirstTreeBuilder(TreeBuilder):
     def build(
         self, tree, X, y, sample_weight=None, missing_values_in_feature_mask=None
     ):
-
         if tree.max_depth <= 10:
             init_capacity = int(2 ** (tree.max_depth + 1)) - 1
         else:

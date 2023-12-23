@@ -29,7 +29,7 @@ def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_
     return x, kernel, strides, depth_pooling
 
 
-@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def max_pool1d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int, ...]],
@@ -94,7 +94,7 @@ def max_pool1d(
 
 @with_unsupported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float16",
             "bfloat16",
         )
@@ -170,7 +170,7 @@ def max_pool2d(
 
 @with_unsupported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float16",
             "bfloat16",
         )
@@ -282,7 +282,7 @@ def _get_specific_pad(x_shape, kernel, strides, padding, dims):
     return padding, pad_specific
 
 
-@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def avg_pool1d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int]],
@@ -374,7 +374,7 @@ def _adjust_num_padded_values_to_ceil(
 
 @with_unsupported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float16",
             "bfloat16",
         )
@@ -478,7 +478,7 @@ def avg_pool2d(
 
 @with_unsupported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float16",
             "bfloat16",
         )
@@ -581,7 +581,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"2.1.1 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: torch.Tensor,
     /,
@@ -694,7 +694,7 @@ def idct(
 
 @with_unsupported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float16",
             "bfloat16",
         )
@@ -740,7 +740,7 @@ def fft(
 
 @with_unsupported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -774,7 +774,7 @@ dropout.partial_mixed_handler = lambda x, prob, **kwargs: (
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16",)},
+    {"2.1.2 and below": ("float16",)},
     backend_version,
 )
 def dropout1d(
@@ -797,7 +797,7 @@ def dropout1d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16",)},
+    {"2.1.2 and below": ("float16",)},
     backend_version,
 )
 def dropout2d(
@@ -822,7 +822,7 @@ def dropout2d(
 
 @with_unsupported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float16",
             "bfloat16",
         )
@@ -881,7 +881,7 @@ def ifft(
     return torch.fft.ifft(x, n, dim, norm, out=out).resolve_conj()
 
 
-@with_unsupported_dtypes({"2.1.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, backend_version)
 def embedding(
     weights: torch.Tensor,
     indices: torch.Tensor,
@@ -954,24 +954,35 @@ interpolate.partial_mixed_handler = (
 )
 
 
-@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_max_pool2d(
     input: torch.Tensor, output_size: Union[Sequence[int], int]
 ) -> torch.Tensor:
     return torch.nn.functional.adaptive_max_pool2d(input, output_size)
 
 
-@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool1d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool1d(input, output_size)
 
 
-@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16", "float16")}, backend_version)
-def adaptive_avg_pool2d(input, output_size):
-    return torch.nn.functional.adaptive_avg_pool2d(input, output_size)
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
+def adaptive_avg_pool2d(input, output_size, /, *, data_format: str = "NHWC"):
+    squeeze = False
+    if input.ndim == 3:
+        input = torch.unsqueeze(input, 0)
+        squeeze = True
+    permuted_input = False
+    if data_format == "NHWC":
+        input = torch.permute(input, (0, input.ndim - 1, *range(1, input.ndim - 1)))
+        permuted_input = True
+    ret = torch.nn.functional.adaptive_avg_pool2d(input, output_size)
+    ret = torch.permute(ret, (0, *range(2, input.ndim), 1)) if permuted_input else ret
+    ret = torch.squeeze(ret, 0) if squeeze else ret
+    return ret
 
 
-@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def fft2(
     x: torch.Tensor,
     *,
@@ -1037,7 +1048,7 @@ def rfft(
     return ret
 
 
-@with_unsupported_dtypes({"2.1.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def rfftn(
     x: torch.Tensor,
     s: Optional[Sequence[int]] = None,
@@ -1075,7 +1086,7 @@ def rfftn(
 # stft
 @with_unsupported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float16",
             "bfloat16",
         )

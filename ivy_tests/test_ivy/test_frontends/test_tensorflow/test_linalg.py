@@ -1288,11 +1288,13 @@ def tridiagonal_compact_filter(x):
     dim = diagonals[0].shape[0]
     diagonals[[0, -1], [-1, 0]] = 0
     dummy_idx = [0, 0]
-    indices = ivy.array([
-        [(i, i + 1) for i in range(dim - 1)] + [dummy_idx],
-        [(i, i) for i in range(dim)],
-        [dummy_idx] + [(i + 1, i) for i in range(dim - 1)],
-    ])
+    indices = ivy.array(
+        [
+            [(i, i + 1) for i in range(dim - 1)] + [dummy_idx],
+            [(i, i) for i in range(dim)],
+            [dummy_idx] + [(i + 1, i) for i in range(dim - 1)],
+        ]
+    )
     matrix = ivy.scatter_nd(
         indices, diagonals, ivy.array([dim, dim]), reduction="replace"
     )
@@ -1306,7 +1308,7 @@ def tridiagonal_matrix_filter(x):
     for i in range(dim):
         for j in range(dim):
             cell = x[i][j]
-            if i == j or i == j - 1 or i == j + 1:
+            if i in [j, j - 1, j + 1]:
                 if cell == 0:
                     return False
             else:

@@ -65,20 +65,22 @@ def _interp_args(draw, mode=None, mode_list=None):
             mode = draw(st.sampled_from(jax_modes))
         else:
             mode = draw(
-                st.sampled_from([
-                    "linear",
-                    "bilinear",
-                    "trilinear",
-                    "nearest",
-                    "nearest-exact",
-                    "area",
-                    "tf_area",
-                    "tf_bicubic",
-                    "lanczos3",
-                    "lanczos5",
-                    "mitchellcubic",
-                    "gaussian",
-                ])
+                st.sampled_from(
+                    [
+                        "linear",
+                        "bilinear",
+                        "trilinear",
+                        "nearest",
+                        "nearest-exact",
+                        "area",
+                        "tf_area",
+                        "tf_bicubic",
+                        "lanczos3",
+                        "lanczos5",
+                        "mitchellcubic",
+                        "gaussian",
+                    ]
+                )
             )
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
@@ -536,7 +538,7 @@ def test_adaptive_avg_pool1d(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=3,
         max_num_dims=4,
-        min_dim_size=1,
+        min_dim_size=2,
         max_value=100,
         min_value=-100,
     ),
@@ -547,11 +549,12 @@ def test_adaptive_avg_pool1d(
         ),
         helpers.ints(min_value=1, max_value=5),
     ),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
     test_with_out=st.just(False),
     ground_truth_backend="torch",
 )
 def test_adaptive_avg_pool2d(
-    *, dtype_and_x, output_size, test_flags, backend_fw, fn_name, on_device
+    *, dtype_and_x, output_size, data_format, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -562,6 +565,7 @@ def test_adaptive_avg_pool2d(
         fn_name=fn_name,
         input=x[0],
         output_size=output_size,
+        data_format=data_format,
     )
 
 

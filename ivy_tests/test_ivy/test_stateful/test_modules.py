@@ -226,17 +226,17 @@ def test_module_to_device(dummy, on_device, backend_fw):
                 raise AssertionError
 
         def model_assert(mod, on_device):
-            for key, obj in mod.v.items():
+            for obj in mod.v.values():
                 if isinstance(obj, ivy.Module):
                     return model_assert(obj, on_device)
                 if isinstance(obj, (ivy.Container, dict)):
-                    for item1, item2 in obj.items():
+                    for item2 in obj.values():
                         assertion(item2.device, on_device)
 
                 else:
                     assertion(obj.device, on_device)
             if getattr(mod, "buffers", None):
-                for key, obj in mod.buffers.items():
+                for obj in mod.buffers.values():
                     if isinstance(obj, (ivy.Container, dict)):
                         ivy.nested_map(lambda x: assertion(x.device, on_device), obj)
                     else:
@@ -513,21 +513,23 @@ def test_module_w_partial_v(
             ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
             "float32",
         )
-        v = ivy.Container({
-            "linear0": {
-                "b": _variable(ivy.random_uniform(shape=[64])),
-                "w": _variable(ivy.random_uniform(shape=[64, 4])),
-            },
-            "linear1": {
-                "b": _variable(ivy.random_uniform(shape=[64])),
-                "w": _variable(ivy.random_uniform(shape=[64, 64])),
-                "extra": _variable(ivy.random_uniform(shape=[64, 64])),
-            },
-            "linear2": {
-                "b": _variable(ivy.random_uniform(shape=[5])),
-                "w": _variable(ivy.random_uniform(shape=[5, 64])),
-            },
-        })
+        v = ivy.Container(
+            {
+                "linear0": {
+                    "b": _variable(ivy.random_uniform(shape=[64])),
+                    "w": _variable(ivy.random_uniform(shape=[64, 4])),
+                },
+                "linear1": {
+                    "b": _variable(ivy.random_uniform(shape=[64])),
+                    "w": _variable(ivy.random_uniform(shape=[64, 64])),
+                    "extra": _variable(ivy.random_uniform(shape=[64, 64])),
+                },
+                "linear2": {
+                    "b": _variable(ivy.random_uniform(shape=[5])),
+                    "w": _variable(ivy.random_uniform(shape=[5, 64])),
+                },
+            }
+        )
         try:
             TrainableModule(
                 input_channels,
@@ -542,13 +544,17 @@ def test_module_w_partial_v(
             )
         except ivy.utils.exceptions.IvyException:
             pass
-        v = ivy.Container({
-            "linear0": {
-                "b": _variable(ivy.random_uniform(shape=[64])),
-            },
-            "linear1": {"w": _variable(ivy.random_uniform(shape=[64, 64]))},
-            "linear2": {"b": _variable(ivy.random_uniform(shape=[output_channels]))},
-        })
+        v = ivy.Container(
+            {
+                "linear0": {
+                    "b": _variable(ivy.random_uniform(shape=[64])),
+                },
+                "linear1": {"w": _variable(ivy.random_uniform(shape=[64, 64]))},
+                "linear2": {
+                    "b": _variable(ivy.random_uniform(shape=[output_channels]))
+                },
+            }
+        )
         try:
             TrainableModule(input_channels, output_channels, device=on_device, v=v)
             raise Exception(

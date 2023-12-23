@@ -17,7 +17,7 @@ ndarray = Array
 
 @with_unsupported_device_and_dtypes(
     {
-        "0.4.20 and below": {
+        "0.4.23 and below": {
             "cpu": (
                 "float16",
                 "bflooat16",
@@ -196,7 +196,7 @@ def iterable(y):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.20 and below": (
+        "0.4.23 and below": (
             "float16",
             "bfloat16",
         )
@@ -217,7 +217,7 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.20 and below": (
+        "0.4.23 and below": (
             "float16",
             "bfloat16",
         )
@@ -275,7 +275,7 @@ def setdiff1d(ar1, ar2, assume_unique=False, *, size=None, fill_value=None):
     if size is None:
         return ar1[mask]
     else:
-        if not (assume_unique):
+        if not assume_unique:
             # Set mask to zero at locations corresponding to unique() padding.
             n_unique = ar1.size + 1 - (ar1 == ar1[0]).sum(dtype=ivy.int64)
             mask = ivy.where(ivy.arange(ar1.size) < n_unique, mask, False)
