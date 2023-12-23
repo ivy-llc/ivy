@@ -190,6 +190,36 @@ def _get_solve_matrices(draw):
     return input_dtype, first_matrix, second_matrix
 
 
+@st.composite
+def _lu_factor_helper(draw):
+    ip_dtype = draw(helpers.get_dtypes("float"))
+
+    dim1 = draw(helpers.ints(min_value=2, max_value=3))
+    dim2 = draw(helpers.ints(min_value=2, max_value=3))
+    batch_dim = 0
+
+    if batch_dim == 0:
+        input_matrix = draw(
+            helpers.array_values(
+                dtype=ip_dtype[0],
+                shape=(dim1, dim2),
+                min_value=-1,
+                max_value=1,
+            )
+        )
+    else:
+        input_matrix = draw(
+            helpers.array_values(
+                dtype=ip_dtype[0],
+                shape=(batch_dim, dim1, dim2),
+                min_value=-1,
+                max_value=1,
+            )
+        )
+
+    return ip_dtype, input_matrix
+
+
 # tensorinv
 @st.composite
 def _tensorinv_helper(draw):
@@ -671,6 +701,33 @@ def test_torch_inv_ex(
         rtol=1e-03,
         atol=1e-02,
         A=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.lu_factor", input_dtype_and_input=_lu_factor_helper()
+)
+def test_torch_lu(*, input_dtype_and_input, on_device, fn_tree, frontend, test_flags):
+    dtype, input = input_dtype_and_input
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        A=input,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    LU, pivot = ret
+    frontend_LU, frontend_pivot = frontend_ret
+
+    assert_all_close(
+        ret_np=[LU, pivot],
+        ret_from_gt_np=[frontend_LU, frontend_pivot],
+        ground_truth_backend=frontend,
     )
 
 
@@ -1345,60 +1402,4 @@ def test_torch_vector_norm(
         dim=axis,
         keepdim=kd,
         dtype=dtype[0],
-    )
-
-
-@st.composite
-def _lu_factor_helper(draw):
-    ip_dtype = draw(helpers.get_dtypes("float"))
-
-    dim1 = draw(helpers.ints(min_value=2, max_value=3))
-    dim2 = draw(helpers.ints(min_value=2, max_value=3))
-    batch_dim = 0
-
-    if batch_dim == 0:
-        input_matrix = draw(
-            helpers.array_values(
-                dtype=ip_dtype[0],
-                shape=(dim1, dim2),
-                min_value=-1,
-                max_value=1,
-            )
-        )
-    else:
-        input_matrix = draw(
-            helpers.array_values(
-                dtype=ip_dtype[0],
-                shape=(batch_dim, dim1, dim2),
-                min_value=-1,
-                max_value=1,
-            )
-        )
-
-    return ip_dtype, input_matrix
-
-@handle_frontend_test(
-    fn_tree="torch.linalg.lu_factor", input_dtype_and_input=_lu_factor_helper()
-)
-def test_torch_lu(*, input_dtype_and_input, on_device, fn_tree, frontend, test_flags):
-    dtype, input = input_dtype_and_input
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        A=input,
-    )
-    ret = [ivy.to_numpy(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
-
-    LU, pivot = ret
-    frontend_LU, frontend_pivot = frontend_ret
-
-    assert_all_close(
-        ret_np=[LU, pivot],
-        ret_from_gt_np=[frontend_LU, frontend_pivot],
-        ground_truth_backend=frontend,
     )
