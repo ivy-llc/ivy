@@ -44,6 +44,7 @@ def fn_name_from_version_specific_fn_name(name, version):
     version
         the version of the current framework for which the support is to be
         provided, the version is inferred by importing the framework
+
     Returns
     -------
         the name of the original function which will then point to the version
@@ -52,7 +53,7 @@ def fn_name_from_version_specific_fn_name(name, version):
     """
     # TODO: add tests
     version = str(version)
-    if version.find("+") != -1:
+    if "+" in version:
         version = tuple(map(int, version[: version.index("+")].split(".")))
     else:
         version = tuple(map(int, version.split(".")))
@@ -93,6 +94,7 @@ def fn_name_from_version_specific_fn_name_sub_backend(
     version
         the version of the current framework for which the support is to be
         provided, the version is inferred by importing the framework
+
     Returns
     -------
         the name of the original function which will then point to the version
@@ -102,12 +104,12 @@ def fn_name_from_version_specific_fn_name_sub_backend(
     # TODO: add tests
     sub_version = str(sub_backend_version)
     back_version = str(backend_version)
-    if sub_version.find("+") != -1:
+    if "+" in sub_version:
         sub_version = tuple(map(int, sub_version[: sub_version.index("+")].split(".")))
     else:
         sub_version = tuple(map(int, sub_version.split(".")))
 
-    if back_version.find("+") != -1:
+    if "+" in back_version:
         back_version = tuple(
             map(int, back_version[: back_version.index("+")].split("."))
         )
@@ -164,7 +166,7 @@ def set_sub_backend(sub_backend_str: str):
         logging.warning("You must set a backend first")
         return
 
-    if ivy.current_backend_str() not in _backend_to_sub_backends_dict.keys():
+    if ivy.current_backend_str() not in _backend_to_sub_backends_dict:
         logging.warning(
             f"backend {ivy.current_backend_str()} does not have any"
             " supported sub_backends"
@@ -184,21 +186,19 @@ def set_sub_backend(sub_backend_str: str):
         )
         return
 
-    if sub_backend_str in ivy.current_sub_backends():
+    if sub_backend_str in ivy.current_sub_backends:
         return
 
     global original_backend_dict
     if original_backend_dict is None:
         original_backend_dict = ivy.__dict__.copy()
-    sub_backend = ivy.utils.dynamic_import.import_module(
-        _sub_backend_dict[sub_backend_str]
-    )
+    sub_backend = importlib.import_module(_sub_backend_dict[sub_backend_str])
     set_sub_backend_to_specific_version(sub_backend)
     _set_sub_backend_as_ivy(ivy.__dict__.copy(), ivy, sub_backend)
-    ivy.current_backend().sub_backends._current_sub_backends.append(sub_backend_str)
+    ivy.current_sub_backends.append(sub_backend_str)
 
 
-# this is very similiar to _set_backend_as_ivy in handler.py, with a minor change
+# this is very similar to _set_backend_as_ivy in handler.py, with a minor change
 def _set_sub_backend_as_ivy(
     original: dict, target: ModuleType, sub_backend: ModuleType
 ):
@@ -240,18 +240,16 @@ def _set_sub_backend_as_ivy(
 
 
 def unset_sub_backend(sub_backend_str: str):
-    if sub_backend_str not in ivy.current_sub_backends():
+    if sub_backend_str not in ivy.current_sub_backends:
         return
     global original_backend_dict
 
     # The sub-backend is cached so this is fast
-    sub_backend = ivy.utils.dynamic_import.import_module(
-        _sub_backend_dict[sub_backend_str]
-    )
+    sub_backend = importlib.import_module(_sub_backend_dict[sub_backend_str])
     _unset_sub_backend_from_ivy(
         original_backend_dict, ivy, sub_backend, sub_backend.name
     )
-    ivy.current_backend().sub_backends._current_sub_backends.remove(sub_backend_str)
+    ivy.current_sub_backends.remove(sub_backend_str)
 
 
 def _unset_sub_backend_from_ivy(
@@ -280,23 +278,17 @@ def _unset_sub_backend_from_ivy(
 
 
 def clear_sub_backends():
-    if ivy.current_sub_backends():
+    if ivy.current_sub_backends:
         ivy.__dict__.update(original_backend_dict)
-        ivy.current_backend().sub_backends._current_sub_backends = []
+        ivy.current_sub_backends.clear()
 
 
 # This is only used in set_backend in handler.py
 def _clear_current_sub_backends():
     global original_backend_dict
     original_backend_dict = None
-    if ivy.current_sub_backends():
-        ivy.current_backend().sub_backends._current_sub_backends = []
-
-
-# this is overwritten when setting a backend
-def available_sub_backends():
-    for k, v in _backend_to_sub_backends_dict.items():
-        print(f"backend: {k} supports sub_backends: {v}")
+    if ivy.current_sub_backends:
+        ivy.current_sub_backends.clear()
 
 
 def find_available_sub_backends(sub_backends_loc):

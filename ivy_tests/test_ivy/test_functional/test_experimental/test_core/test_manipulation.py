@@ -47,7 +47,7 @@ def _associative_scan_helper(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=1, max_value=5), key="shared_size")
     )
-    shape = tuple([random_size, shared_size, shared_size])
+    shape = (random_size, shared_size, shared_size)
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
@@ -194,7 +194,7 @@ def _matricize_data(draw):
         )
     )
     ndims = len(shape)
-    dims = set([*range(ndims)])
+    dims = {*range(ndims)}
     row_modes = set(
         draw(st.lists(helpers.ints(min_value=0, max_value=ndims - 1), min_size=1))
     )
@@ -443,6 +443,48 @@ def _st_tuples_or_int(n_pairs, min_val=0):
     )
 
 
+@st.composite
+def put_along_axis_helper(draw):
+    input_dtype, x, axis, shape = draw(
+        helpers.dtype_values_axis(
+            # does not work for bool yet because scatter_nd doesn't
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=2,
+            max_num_dims=3,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=-1e2,
+            max_value=1e2,
+            valid_axis=True,
+            force_int_axis=True,
+            ret_shape=True,
+        )
+    )
+
+    idx_shape = list(shape)
+    idx_shape[axis] = 1
+
+    ind_dtype, indices = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int64"],
+            shape=idx_shape,
+            min_value=0,
+            max_value=len(idx_shape) - 2,
+        )
+    )
+
+    _, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=input_dtype,
+            shape=idx_shape,
+            min_value=0,
+            max_value=100,
+        )
+    )
+
+    return input_dtype + ind_dtype + input_dtype, x[0], indices[0], values[0], axis
+
+
 # --- Main --- #
 # ------------ #
 
@@ -463,6 +505,7 @@ def st_tuples(elements, *, min_size=0, max_size=None, unique_by=None, unique=Fal
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     ground_truth_backend="numpy",
+    test_with_copy=st.just(True),
 )
 def test_as_strided(*, all_args, test_flags, backend_fw, fn_name, on_device):
     dtype, x, shape, strides = all_args
@@ -513,12 +556,13 @@ def test_associative_scan(
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_atleast_1d(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
     kw = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
-        kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
+        kw[f"x{i}"] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(kw)
     helpers.test_function(
         input_dtypes=input_dtypes,
@@ -539,12 +583,13 @@ def test_atleast_1d(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_atleast_2d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
     kw = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
-        kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
+        kw[f"x{i}"] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(kw)
     helpers.test_function(
         input_dtypes=input_dtypes,
@@ -565,12 +610,13 @@ def test_atleast_2d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_atleast_3d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
     arrys = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
-        arrys["x{}".format(i)] = np.asarray(array, dtype=idtype)
+        arrys[f"x{i}"] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(arrys)
     helpers.test_function(
         input_dtypes=input_dtypes,
@@ -633,7 +679,7 @@ def test_column_stack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_devi
     test_instance_method=st.just(False),
 )
 def test_concat_from_sequence(
-    *, dtypes_arrays_axis, new_axis, test_flags, backend_fw, fn_name, on_device
+    *, dtypes_arrays_axis, new_axis, test_flags, backend_fw, fn_name, on_device: str
 ):
     dtypes, arrays, axis = dtypes_arrays_axis
 
@@ -643,7 +689,7 @@ def test_concat_from_sequence(
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        input_sequence=arrays,
+        *arrays,
         new_axis=new_axis,
         axis=axis,
     )
@@ -652,13 +698,7 @@ def test_concat_from_sequence(
 # dsplit
 @handle_test(
     fn_tree="functional.ivy.experimental.dsplit",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
-    ),
-    indices_or_sections=_get_splits(allow_none=False, min_num_dims=3, axis=2),
-    test_gradients=st.just(False),
-    test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_dsplit(
     dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device
@@ -666,10 +706,10 @@ def test_dsplit(
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        on_device=on_device,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        on_device=on_device,
         x=x[0],
         indices_or_sections=indices_or_sections,
     )
@@ -728,6 +768,7 @@ def test_dstack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_expand(*, dtype_and_x, shape, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
@@ -789,6 +830,7 @@ def test_fill_diagonal(
 @handle_test(
     fn_tree="functional.ivy.experimental.flatten",
     data=_flatten_data_helper(),
+    test_with_copy=st.just(True),
 )
 def test_flatten(
     *,
@@ -816,10 +858,11 @@ def test_flatten(
 @handle_test(
     fn_tree="functional.ivy.experimental.fliplr",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
     ),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_fliplr(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
     input_dtype, m = dtype_and_m
@@ -837,7 +880,7 @@ def test_fliplr(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.flipud",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-100,
         max_value=100,
         min_num_dims=1,
@@ -846,6 +889,7 @@ def test_fliplr(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
         max_dim_size=3,
     ),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_flipud(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
     input_dtype, m = dtype_and_m
@@ -920,6 +964,7 @@ def test_heaviside(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     indices_or_sections=_get_splits(allow_none=False, min_num_dims=2, axis=1),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_hsplit(
     dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device
@@ -1017,7 +1062,7 @@ def test_matricize(*, data, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.moveaxis",
     dtype_and_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-100,
         max_value=100,
         shape=st.shared(
@@ -1061,6 +1106,7 @@ def test_matricize(*, data, test_flags, backend_fw, fn_name, on_device):
         force_int=True,
     ),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_moveaxis(
     *, dtype_and_a, source, destination, test_flags, backend_fw, fn_name, on_device
@@ -1203,17 +1249,52 @@ def test_partial_vec_to_tensor(*, data, test_flags, backend_fw, fn_name, on_devi
     )
 
 
+# put_along_axis
+@handle_test(
+    fn_tree="functional.ivy.experimental.put_along_axis",
+    args=put_along_axis_helper(),
+    # ToDo: test for "mean" when support has been added
+    mode=st.sampled_from(["sum", "min", "max", "mul", "replace"]),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_put_along_axis(
+    *,
+    args,
+    mode,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, x, indices, values, axis = args
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        arr=x,
+        indices=indices,
+        values=values,
+        axis=axis,
+        mode=mode,
+    )
+
+
 # rot90
 @handle_test(
     fn_tree="functional.ivy.experimental.rot90",
     dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=10,
     ),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_rot90(dtype_m_k_axes, test_flags, backend_fw, fn_name, on_device):
     input_dtype, m, k, axes = dtype_m_k_axes
@@ -1248,11 +1329,49 @@ def test_soft_thresholding(*, data, test_flags, backend_fw, fn_name, on_device):
     )
 
 
+@handle_test(
+    fn_tree="functional.ivy.experimental.take",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=5,
+        indices_same_dims=False,
+        valid_bounds=False,
+    ),
+    mode=st.sampled_from(["clip", "wrap", "fill"]),
+    ground_truth_backend="jax",
+)
+def test_take(
+    *,
+    dtype_x_indices_axis,
+    mode,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x,
+        indices=indices,
+        axis=axis,
+        mode=mode,
+    )
+
+
 # take_along_axis
 @handle_test(
     fn_tree="functional.ivy.experimental.take_along_axis",
     dtype_x_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
+        array_dtypes=helpers.get_dtypes("valid"),
         indices_dtypes=["int32", "int64"],
         min_num_dims=1,
         max_num_dims=5,
@@ -1317,6 +1436,37 @@ def test_top_k(
         axis=axis,
         largest=largest,
         sorted=sorted,
+    )
+
+
+@handle_test(
+    fn_tree="trim_zeros",
+    dt_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=-100,
+        max_value=100,
+    ),
+    test_with_out=st.just(False),
+)
+def test_trim_zeros(
+    *,
+    dt_a,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dt, a = dt_a
+    helpers.test_function(
+        input_dtypes=dt,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        a=a[0],
     )
 
 
@@ -1389,6 +1539,7 @@ def test_unique_consecutive(
     indices_or_sections=_get_splits(allow_none=False, min_num_dims=2, axis=0),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_vsplit(
     dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device

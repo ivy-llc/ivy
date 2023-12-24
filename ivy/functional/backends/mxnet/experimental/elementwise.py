@@ -1,10 +1,32 @@
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Tuple, List, Sequence
 from numbers import Number
 import mxnet as mx
 
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_supported_dtypes
 from .. import backend_version
+
+
+def amax(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def amin(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
 
 
 @with_supported_dtypes(

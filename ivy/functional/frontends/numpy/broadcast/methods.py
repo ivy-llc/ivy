@@ -12,8 +12,8 @@ class broadcast:
         self._index = 0
         self._numiter = len(data)
         self._size = data[0].size
-        self._data = tuple((*zip(*(ivy.flatten(i) for i in data)),))
-        self._iters = tuple((iter(ivy.flatten(i)) for i in data))
+        self._data = (*zip(*(ivy.flatten(i) for i in data)),)
+        self._iters = tuple(iter(ivy.flatten(i)) for i in data)
 
     @property
     def shape(self):
