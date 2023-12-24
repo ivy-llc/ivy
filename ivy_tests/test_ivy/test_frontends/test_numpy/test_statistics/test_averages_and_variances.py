@@ -223,31 +223,24 @@ def test_numpy_mean(
     keep_dims,
 ):
     input_dtypes, x, axis = dtype_and_x
-    if isinstance(axis, tuple):
-        axis = axis[0]
-
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
-
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1e-2,
-        rtol=1e-2,
-        x=x[0],
+        a=x[0],
         axis=axis,
         dtype=dtype[0],
         out=None,
         keepdims=keep_dims,
         where=where,
-        test_values=False,
     )
 
 
@@ -280,7 +273,7 @@ def test_numpy_nanmean(
         test_flags=test_flags,
     )
 
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         backend_to_test=backend_fw,
@@ -295,7 +288,6 @@ def test_numpy_nanmean(
         out=None,
         keepdims=keep_dims,
         where=where,
-        test_values=False,
     )
 
 

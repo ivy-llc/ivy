@@ -80,7 +80,7 @@ Data Type Module
 The `data_type.py`_ module provides a variety of functions for working with data types.
 A few examples include :func:`ivy.astype` which copies an array to a specified data type, :func:`ivy.broadcast_to` which broadcasts an array to a specified shape, and :func:`ivy.result_type` which returns the dtype that results from applying the type promotion rules to the arguments.
 
-Many functions in the :mod:`data_type.py` module are *convenience* functions, which means that they do not directly modify arrays, as explained in the :ref:`Function Types` section.
+Many functions in the :mod:`data_type.py` module are *convenience* functions, which means that they do not directly modify arrays, as explained in the `Function Types <function_types.rst>`_ section.
 
 For example, the following are all convenience functions:
 `ivy.can_cast`_, which determines if one data type can be cast to another data type according to type-promotion rules, `ivy.dtype <https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096>`__, which gets the data type for the input array, `ivy.set_default_dtype`_, which sets the global default data dtype, and `ivy.default_dtype`_, which returns the correct data type to use.
@@ -95,8 +95,7 @@ Data Type Promotion
 In order to ensure that the same data type is always returned when operations are performed on arrays with different data types, regardless of which backend framework is set, Ivy has it's own set of data type promotion rules and corresponding functions.
 These rules build directly on top of the `rules <https://data-apis.org/array-api/latest/API_specification/type_promotion.html>`_ outlined in the `Array API Standard`_.
 
-The rules are simple: all data type promotions in Ivy should adhere to this `promotion table <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L366>`_,
-which is the union of the Array API Standard `promotion table <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L223>`_ and an extra `promotion table <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L292>`_.
+The rules are simple: all data type promotions in Ivy should adhere a promotion table that extends Array API Standard `promotion table <https://github.com/unifyai/ivy/blob/7a048c1ad7193bc3033a68c1c80f0dfd5d4e74df/ivy/__init__.py#L1245-L1285>`_ using this `promotion table <https://github.com/unifyai/ivy/blob/7a048c1ad7193bc3033a68c1c80f0dfd5d4e74df/ivy/__init__.py#L1290-L1354>`_, and one of two extra `promotion tables <https://github.com/unifyai/ivy/blob/7a048c1ad7193bc3033a68c1c80f0dfd5d4e74df/ivy/__init__.py#L1356-L1400>`_ depending on precision mode that will be explained in the following section.
 
 In order to ensure adherence to this promotion table, many backend functions make use of the functions `ivy.promote_types <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1804>`_, `ivy.type_promote_arrays <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1940>`_, or `ivy.promote_types_of_inputs <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L2085>`_.
 These functions: promote data types in the inputs and return the new data types, promote the data types of the arrays in the input and return new arrays, and promote the data types of the numeric or array values inputs and return new type promoted values, respectively.
@@ -182,10 +181,39 @@ Whenever the user defines data with a specific data type, they expect a certain 
 The user expects specific behaviour and memory constraints whenever they specify and use concrete data types, and those decisions should be respected.
 Therefore, Ivy does not upcast specific values to improve the stability or precision of the computation.
 
+Precise Mode
+~~~~~~~~~~~~~~~
+
+There are cases that arise in mixed promotion (Integer and Float, Complex and Float) that aren't covered by the Array API Standard promotion table, and depending on each use case,
+the mixed promotion rules differ as observed in different frameworks, for example Tensorflow leaves integer/floating mixed promotion undefined to make behavior utterly predictable (at some cost to user convenience), while Numpy avoids precision loss at all costs even if that meant casting the arrays to wider-than-necessary dtypes
+
+Precise Promotion Table
+"""""""""""""""""""""""""
+
+This table focuses on numerical accuracy at the cost of a higher memory footprint. A 16-bit signed or unsigned integer cannot be represented at full precision by a 16-bit float, which has only 10 bits of mantissa. Therefore, it might make sense to promote integers to floats represented by twice the number of bits. There are two disadvantages of this approach:
+
+#. It still leaves int64 and uint64 promotion undefined, because there is no standard floating point type with enough bits of mantissa to represent their full range of values. We could relax the precision constraint and use ``float64`` as the upper bound for this case.
+#. Some operations result in types that are much wider than necessary; for example mixed operations between ``uint16`` and float16 would promote all the way to ``float64``, which is not ideal.
+
+.. code-block:: python
+
+    with ivy.PreciseMode(True):
+        print(ivy.promote_types("float32","int32"))
+    # float64
+
+Non-Precise Promotion Table
+"""""""""""""""""""""""""""""""""
+The advantage of this approach is that, outside unsigned ints, it avoids all wider-than-necessary promotions: you can never get an f64 output without a 64-bit input, and you can never get an ``float32`` output without a 32-bit input: this results in convenient semantics for working on accelerators while avoiding unwanted 64-bit values. This feature of giving primacy to floating point types resembles the type promotion behavior of PyTorch.
+the disadvantage of this approach is that mixed float/integer promotion is very prone to precision loss: for example, ``int64`` (with a maximum value of 9.2*10^18 can be promoted to ``float16`` (with a maximum value of 6.5*10^4, meaning most representable values will become inf, but we are fine accepting potential loss of precision (but not loss of magnitude) in mixed type promotion which satisfies most of the use cases in deep learning scenarios.
+
+.. code-block:: python
+
+    with ivy.PreciseMode(False):
+        print(ivy.promote_types("float32","int32"))
+    # float32
 
 Arguments in other Functions
-----------------------------
-
+-------------------
 All ``dtype`` arguments are keyword-only.
 All creation functions include the ``dtype`` argument, for specifying the data type of the created array.
 Some other non-creation functions also support the ``dtype`` argument, such as :func:`ivy.prod` and :func:`ivy.sum`, but most functions do not include it.
@@ -193,7 +221,7 @@ The non-creation functions which do support it are generally functions that invo
 
 The ``dtype`` argument is handled in the `infer_dtype`_ wrapper, for all functions which have the decorator :code:`@infer_dtype`.
 This function calls `ivy.default_dtype`_ in order to determine the correct data type.
-As discussed in the :ref:`Function Wrapping` section, this is applied to all applicable functions dynamically during `backend setting`_.
+As discussed in the `Function Wrapping <function_wrapping.rst>`_ section, this is applied to all applicable functions dynamically during `backend setting`_.
 
 Overall, `ivy.default_dtype`_ infers the data type as follows:
 
@@ -311,7 +339,7 @@ Only one of these decorators can be specified for any given function.
 In the case of :attr:`@with_supported_dtypes` it is assumed that all unmentioned data types are unsupported, and in the case of :attr:`@with_unsupported_dtypes` it is assumed that all unmentioned data types are supported.
 
 The decorators take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding version of the backend framework and the current version of the backend framework on the user's system.
-Based on that, the version specific unsupported dtypes and devices are set for the given function everytime the function is called.
+Based on that, the version specific unsupported dtypes and devices are set for the given function every time the function is called.
 
 For Backend Functions:
 
@@ -395,7 +423,7 @@ set of dtypes is not supported by a certain device.
 
 .. code-block:: python
 
-    @with_unsupported_device_and_dtypes({"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
+    @with_unsupported_device_and_dtypes({"2.5.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
     def gcd(
         x1: Union[paddle.Tensor, int, list, tuple],
         x2: Union[paddle.Tensor, float, list, tuple],
@@ -446,6 +474,73 @@ However, torch does not support ``uint32``, and so we cannot fully adhere to the
 Rather than breaking this rule and returning arrays of type ``uint8`` only with a torch backend, we instead opt to remove official support entirely for this combination of data type, function, and backend framework.
 This will avoid all of the potential confusion that could arise if we were to have inconsistent and unexpected outputs when using officially supported data types in Ivy.
 
+Another important point to note is that for cases where an entire dtype series is not supported or supported. For example if `float16`, `float32` and `float64` are not supported or is supported by a framework which could be a backend or frontend framework,
+then we simply identify that by simply replacing the different float dtypes with the str `float`. The same logic is applied to other dtypes such as `complex`, where we simply replace the entire dtypes with the str `complex`
+
+An example is :func:`ivy.fmin` with a tensorflow backend:
+
+.. code-block:: python
+
+    @with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+    def fmin(
+        x1: Union[tf.Tensor, tf.Variable],
+        x2: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        x1, x2 = promote_types_of_inputs(x1, x2)
+        x1 = tf.where(tf.math.is_nan(x1), x2, x1)
+        x2 = tf.where(tf.math.is_nan(x2), x1, x2)
+        ret = tf.experimental.numpy.minimum(x1, x2)
+        return ret
+
+As seen in the above code, we simply use the str `float` instead of writing all the float dtypes that are supported
+
+Another example is :func:`ivy.floor_divide` with a tensorflow backend:
+
+.. code-block:: python
+
+    @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+    def floor_divide(
+        x1: Union[float, tf.Tensor, tf.Variable],
+        x2: Union[float, tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        return tf.experimental.numpy.floor_divide(x1, x2)
+
+As seen in the above code, we simply use the str `complex` instead of writing all the complex dtypes that are not supported
+
+Supported and Unsupported Data Types Attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In addition to the unsupported / supported data types decorator, we also have the :attr:`unsupported_dtypes` and :attr:`supported_dtypes` attributes. These attributes operate in a manner similar to the attr:`@with_unsupported_dtypes` and attr:`@with_supported_dtypes` decorators.
+
+Special Case
+""""""""""""
+
+However, the major difference between the attributes and the decorators is that the attributes are set and assigned in the ivy function itself :mod:`ivy/functional/ivy/<ivy_functional_API>` ,
+while the decorators are used within the frontend :mod:`ivy/functional/frontends/<some_frontend>` and backend :mod:`ivy/functional/backends/<some_backend>` to identify the supported or unsupported data types, depending on the use case.
+The attributes are set for functions that don't have a specific backend implementation for each backend, where we provide the backend as one of the arguments to the attribute of the framework agnostic function (because all ivy functions are framework agnostic), which allows it to identify the supported or unsupported dtypes for each backend.
+
+An example of an ivy function which does not have a specific backend implementation for each backend is the :attr:`einops_reduce` function. `This function <https://github.com/unifyai/ivy/blob/8516d3f12a8dfc4ec5f819789937d196c7e28566/ivy/functional/ivy/general.py#L1964>`_ , makes use of a third-party library :attr:`einops` which has its own backend-agnostic implementations.
+
+The :attr:`unsupported_dtypes` and :attr:`supported_dtypes` attributes take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding backend framework. Based on that, the specific unsupported dtypes are set for the given function every time the function is called.
+For example, we use the :attr:`unsupported_dtypes` attribute for the :attr:`einops_reduce` function within the ivy functional API as shown below:
+
+.. code-block:: python
+
+    einops_reduce.unsupported_dtypes = {
+        "torch": ("float16",),
+        "tensorflow": ("complex",),
+        "paddle": ("complex", "uint8", "int8", "int16", "float16"),
+    }
+
+With the above approach, we ensure that anytime the backend is set to torch, the :attr:`einops_reduce` function does not support float16, likewise, complex dtypes are not supported with a tensorflow backend and
+complex, uint8, int8, int16, float16 are not supported with a paddle backend.
 
 Backend Data Type Bugs
 ----------------------

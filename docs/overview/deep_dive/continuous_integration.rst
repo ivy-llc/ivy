@@ -152,7 +152,7 @@ Once the Mapping has been updated, the “Determine & Run Tests” Logic works a
        tests_to_run = determine_tests_line(tests_file, line, tests_to_run)
 
 4. Further, All the new tests added in a commit are collected (up to a max limit of 10, any more tests added are taken up in subsequent commits).
-5. Finally, All the collected tests are triggered by the run_tests.py script, and the corresponding entry in the MongoDB Database is updated with the Test Result (Details on this in the Dashboard Section below).
+5. Finally, All the collected tests are triggered by the scripts/run_tests/run_tests.py script, and the corresponding entry in the MongoDB Database is updated with the Test Result (Details on this in the Dashboard Section below).
 
 Storing (and retrieving) the Mapping
 ------------------------------------
@@ -174,7 +174,7 @@ For Push triggered testing (intelligent-tests.yml Workflow), we use the SSH Clon
 
 .. code-block::
 
-    source ./ivy/clone_mapping.sh master
+    source ./ivy/scripts/shell/clone_mapping.sh master
     Determine and Run Tests, and Update the Mapping ...
     git add .
     git commit -m "Update Mapping"
@@ -186,8 +186,8 @@ Now, that the SSH key of the Runner has permissions to push and clone the Mappin
 
 .. code-block::
 
-    USER_EMAIL="rashul.chutani@gmail.com"
-    USER_NAME="Rashul Chutani"
+    USER_EMAIL="ivy.branch@lets-unify.ai"
+    USER_NAME="ivy-branch"
     TARGET_BRANCH=$1
     GITHUB_SERVER="github.com"
     mkdir --parents "$HOME/.ssh"
@@ -289,7 +289,7 @@ Array API Tests
 ---------------
 The `array-api-intelligent-tests.yml (Push) <https://github.com/unifyai/ivy/blob/main/.github/workflows/array-api-intelligent-tests.yml>`_ and the `array-api-intelligent-tests-pr.yml (Pull Request) <https://github.com/unifyai/ivy/blob/main/.github/workflows/array-api-intelligent-tests-pr.yml>`_ workflows run the Array API Tests. Similar to Ivy Tests, The Array API tests are also determined intelligently and only relevant tests are triggered on each commit.
 
-More details about the Array API Tests are available `here <https://unify.ai/docs/ivy/overview/deep_dive/array_api_tests.html>`_.
+More details about the Array API Tests are available `here <array_api_tests.rst>`_.
 
 Periodic Testing
 ----------------
@@ -314,8 +314,7 @@ follow the following steps:
 Manual Tests are also available for PRs.
 You can also run the Manual Tests Workflow on a Fork Repository (while reviewing PRs), as follows:
 
-1. Visit https://github.com/RashulChutani/ivy/actions/workflows/manual-tests-pr.yml by going to the
-“Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
+1. Visit the “Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
 2. Trigger the Workflow by following Steps 2-4 described above.
 
 This might take some time to run as the Fork may have limited runners.

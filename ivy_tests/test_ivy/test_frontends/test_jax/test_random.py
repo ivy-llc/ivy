@@ -80,7 +80,7 @@ def get_mean_cov_vector(draw):
     dtype_mean = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size]),
+            shape=(shared_size,),
             min_value=2,
             max_value=5,
         )
@@ -90,7 +90,7 @@ def get_mean_cov_vector(draw):
     dtype_cov = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
+            shape=(shared_size, shared_size),
             min_value=2,
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
@@ -480,6 +480,68 @@ def test_jax_dirichlet(
 
 @pytest.mark.xfail
 @handle_frontend_test(
+    fn_tree="jax.random.double_sided_maxwell",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=1,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(),
+    dtype=helpers.get_dtypes("float", full=False),
+    loc=st.integers(min_value=10, max_value=100),
+    scale=st.floats(min_value=0, max_value=100, exclude_min=True),
+    test_with_out=st.just(False),
+)
+def test_jax_double_sided_maxwell(
+    *,
+    dtype_key,
+    loc,
+    scale,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            backend_to_test=backend_fw,
+            key=key[0],
+            loc=loc,
+            scale=scale,
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(backend=backend_fw, ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(backend=backend_fw, ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
     fn_tree="jax.random.exponential",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
@@ -822,6 +884,62 @@ def test_jax_loggamma(
 
 @pytest.mark.xfail
 @handle_frontend_test(
+    fn_tree="jax.random.logistic",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
+    dtype=helpers.get_dtypes("float", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_logistic(
+    *,
+    dtype_key,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            key=key[0],
+            shape=shape,
+            dtype=dtype[0],
+            test_values=False,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
     fn_tree="jax.random.maxwell",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
@@ -909,7 +1027,7 @@ def test_jax_multivariate_normal(
     spd = np.matmul(cov.T, cov) + np.identity(cov.shape[0])
 
     def call():
-        helpers.test_frontend_function(
+        return helpers.test_frontend_function(
             input_dtypes=input_dtype + [shared_dtype],
             frontend=frontend,
             test_flags=test_flags,

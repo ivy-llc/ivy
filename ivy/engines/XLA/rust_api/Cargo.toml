@@ -1,0 +1,30 @@
+[package]
+name = "xlar"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "xlar"
+crate-type = ["cdylib"]
+
+[dependencies]
+thiserror = "1"
+libc = "0.2"
+num-traits = "0.2"
+num-derive = "0.3"
+zip = "0.6.4"
+pyo3 = { version = "0.19.1", features = ["extension-module"] }
+ndarray = "0.15.6"
+numpy = "0.19.0"
+half = "2.3.1"
+
+[build-dependencies]
+bindgen = "0.64"
+cc = "1.0"
+
+[dev-dependencies]
+anyhow = "1.0"
+clap = { version = "4.2.4", features = ["derive"] }
+fancy-regex = "0.11.0"
+rand = "0.8.5"
+serde_json = "1.0.96"

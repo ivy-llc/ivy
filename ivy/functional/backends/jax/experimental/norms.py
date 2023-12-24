@@ -1,11 +1,8 @@
 import jax.numpy as jnp
 from typing import Optional
 from ivy.functional.backends.jax import JaxArray
-from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
 
 
-@with_unsupported_dtypes({"0.4.14 and below": "uint8"}, backend_version)
 def l1_normalize(
     x: JaxArray,
     /,

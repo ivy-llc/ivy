@@ -12,7 +12,6 @@ from ivy.utils.assertions import (
     check_equal,
     check_exists,
     check_false,
-    check_fill_value_and_dtype_are_compatible,
     check_gather_input_valid,
     check_gather_nd_input_valid,
     check_greater,
@@ -24,7 +23,7 @@ from ivy.utils.assertions import (
     check_shape,
     check_shapes_broadcastable,
     check_true,
-    check_unsorted_segment_min_valid_params,
+    check_unsorted_segment_valid_params,
 )
 from ivy.utils.assertions import _check_jax_x64_flag
 import ivy
@@ -41,15 +40,15 @@ import ivy
 def test_check_all(results):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_all(results)
-    except Exception as e:
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
+
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_all(results)
+        except Exception as e:
+            print(e)
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
@@ -65,7 +64,7 @@ def test_check_all(results):
 
 
 @pytest.mark.parametrize(
-    "args, fn, type, limit",
+    ("args", "fn", "type", "limit"),
     [
         # INVALID CASES
         ((1, 2, 0), ivy.array, "all", [3]),
@@ -82,23 +81,23 @@ def test_check_all(results):
 def test_check_all_or_any_fn(args, fn, type, limit):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_all_or_any_fn(*args, fn=fn, type=type, limit=limit)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
+
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_all_or_any_fn(*args, fn=fn, type=type, limit=limit)
+            local_vars = {**locals()}
+        except Exception as e:
+            local_vars = {**locals()}
+            print(e)
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
 
-    if type == "all" or type == "any":
-        if "e" in local_vars.keys():
+    if type in ["all", "any"]:
+        if "e" in local_vars:
             assert "args must exist according to" in lines.strip()
         else:
             assert not lines.strip()
@@ -117,15 +116,15 @@ def test_check_all_or_any_fn(args, fn, type, limit):
 def test_check_any(results):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_any(results)
-    except Exception as e:
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
+
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_any(results)
+        except Exception as e:
+            print(e)
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
@@ -172,26 +171,26 @@ def test_check_dev_correct_formatting(device):
 def test_check_dimensions(x):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_dimensions(x)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
 
-    sys.stdout = orig_stdout
-    f.close()
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_dimensions(x)
+            local_vars = {**locals()}
+        except Exception as e:
+            local_vars = {**locals()}
+            print(e)
+
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
 
-    if "e" in local_vars.keys():
+    if "e" in local_vars:
         assert "greater than one dimension" in lines.strip()
 
-    if "e" not in local_vars.keys():
+    if "e" not in local_vars:
         assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
@@ -199,7 +198,7 @@ def test_check_dimensions(x):
 
 
 @pytest.mark.parametrize(
-    "elem, list, inverse",
+    ("elem", "list", "inverse"),
     [
         (1, [1, 2], False),
         ("a", [1, 2], False),
@@ -210,15 +209,15 @@ def test_check_dimensions(x):
 def test_check_elem_in_list(elem, list, inverse):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_elem_in_list(elem, list, inverse)
-    except Exception as e:
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
+
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_elem_in_list(elem, list, inverse)
+        except Exception as e:
+            print(e)
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
@@ -233,7 +232,6 @@ def test_check_elem_in_list(elem, list, inverse):
     if inverse:
         if elem not in list:
             assert not lines.strip()
-
         if elem in list:
             assert "must not be one" in lines.strip()
 
@@ -242,7 +240,7 @@ def test_check_elem_in_list(elem, list, inverse):
 
 
 @pytest.mark.parametrize(
-    "x1, x2, inverse",
+    ("x1", "x2", "inverse"),
     [
         (5, 10, False),
         (10, 10, False),
@@ -253,15 +251,15 @@ def test_check_elem_in_list(elem, list, inverse):
 def test_check_equal(x1, x2, inverse):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_equal(x1, x2, inverse)
-    except Exception as e:
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
+
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_equal(x1, x2, inverse)
+        except Exception as e:
+            print(e)
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
@@ -285,21 +283,21 @@ def test_check_equal(x1, x2, inverse):
 
 
 @pytest.mark.parametrize(
-    "x, inverse",
+    ("x", "inverse"),
     [(None, False), ([], False), (None, True), ("abc", True)],
 )
 def test_check_exists(x, inverse):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_exists(x, inverse)
-    except Exception as e:
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
+
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_exists(x, inverse)
+        except Exception as e:
+            print(e)
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
@@ -334,15 +332,15 @@ def test_check_exists(x, inverse):
 def test_check_false(expression):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_false(expression)
-    except Exception as e:
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
+
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_false(expression)
+        except Exception as e:
+            print(e)
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
@@ -358,50 +356,7 @@ def test_check_false(expression):
 
 
 @pytest.mark.parametrize(
-    "fill_value, dtype",
-    [
-        # INVALID CASES
-        (1.0, ivy.int16),
-        (1, ivy.float16),
-        (1, ivy.complex64),
-        # VALID
-        (1j, ivy.complex64),
-        (1.0, ivy.complex64),
-        (1.0, ivy.float16),
-        (1, ivy.int16),
-    ],
-)
-def test_check_fill_value_and_dtype_are_compatible(fill_value, dtype):
-    filename = "except_out.txt"
-    orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_fill_value_and_dtype_are_compatible(fill_value, dtype)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
-
-    sys.stdout = orig_stdout
-    f.close()
-
-    with open(filename) as f:
-        lines += f.read()
-
-    if "e" in local_vars.keys():
-        assert "not compatible" in lines.strip()
-
-    if "e" not in local_vars.keys():
-        assert not lines.strip()
-
-    with contextlib.suppress(FileNotFoundError):
-        os.remove(filename)
-
-
-@pytest.mark.parametrize(
-    "params, indices, axis, batch_dims",
+    ("params", "indices", "axis", "batch_dims"),
     [
         # INVALID CASES
         (ivy.array([1, 2, 3]), ivy.array([1]), 2, 3),
@@ -417,29 +372,29 @@ def test_check_fill_value_and_dtype_are_compatible(fill_value, dtype):
 def test_check_gather_input_valid(params, indices, axis, batch_dims):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_gather_input_valid(params, indices, axis, batch_dims)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
 
-    sys.stdout = orig_stdout
-    f.close()
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_gather_input_valid(params, indices, axis, batch_dims)
+            local_vars = {**locals()}
+        except Exception as e:
+            local_vars = {**locals()}
+            print(e)
+
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
 
-    if "e" in local_vars.keys():
+    if "e" in local_vars:
         assert (
             "must be less than or equal" in lines.strip()
             or "batch dimensions must match in" in lines.strip()
         )
 
-    if "e" not in local_vars.keys():
+    if "e" not in local_vars:
         assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
@@ -447,7 +402,7 @@ def test_check_gather_input_valid(params, indices, axis, batch_dims):
 
 
 @pytest.mark.parametrize(
-    "params, indices, batch_dims",
+    ("params", "indices", "batch_dims"),
     [
         # INVALID CASES
         (ivy.array([1, 2, 3]), ivy.array([1]), 2),
@@ -463,23 +418,23 @@ def test_check_gather_input_valid(params, indices, axis, batch_dims):
 def test_check_gather_nd_input_valid(params, indices, batch_dims):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_gather_nd_input_valid(params, indices, batch_dims)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
 
-    sys.stdout = orig_stdout
-    f.close()
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_gather_nd_input_valid(params, indices, batch_dims)
+            local_vars = {**locals()}
+        except Exception as e:
+            local_vars = {**locals()}
+            print(e)
+
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
 
-    if "e" in local_vars.keys():
+    if "e" in local_vars:
         assert (
             "less than rank(`params`)" in lines.strip()
             or "less than rank(`indices`)" in lines.strip()
@@ -487,7 +442,7 @@ def test_check_gather_nd_input_valid(params, indices, batch_dims):
             or "index innermost dimension length must be <=" in lines.strip()
         )
 
-    if "e" not in local_vars.keys():
+    if "e" not in local_vars:
         assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
@@ -495,7 +450,7 @@ def test_check_gather_nd_input_valid(params, indices, batch_dims):
 
 
 @pytest.mark.parametrize(
-    "x1, x2, allow_equal",
+    ("x1", "x2", "allow_equal"),
     [
         (5, 10, False),
         (10, 5, False),
@@ -506,15 +461,15 @@ def test_check_gather_nd_input_valid(params, indices, batch_dims):
 def test_check_greater(x1, x2, allow_equal):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_greater(x1, x2, allow_equal)
-    except Exception as e:
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
+
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_greater(x1, x2, allow_equal)
+        except Exception as e:
+            print(e)
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
@@ -533,7 +488,7 @@ def test_check_greater(x1, x2, allow_equal):
 
 
 @pytest.mark.parametrize(
-    "var, data",
+    ("var", "data"),
     [
         # INVALID CASES
         (ivy.array([1]), ivy.array([1, 2])),
@@ -546,26 +501,26 @@ def test_check_greater(x1, x2, allow_equal):
 def test_check_inplace_sizes_valid(var, data):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_inplace_sizes_valid(var, data)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
 
-    sys.stdout = orig_stdout
-    f.close()
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_inplace_sizes_valid(var, data)
+            local_vars = {**locals()}
+        except Exception as e:
+            local_vars = {**locals()}
+            print(e)
+
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
 
-    if "e" in local_vars.keys():
+    if "e" in local_vars:
         assert "Could not output values of shape" in lines.strip()
 
-    if "e" not in local_vars.keys():
+    if "e" not in local_vars:
         assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
@@ -573,21 +528,21 @@ def test_check_inplace_sizes_valid(var, data):
 
 
 @pytest.mark.parametrize(
-    "x, allowed_types",
+    ("x", "allowed_types"),
     [(5.0, float), (ivy.array(5), type(ivy.array(8))), (5, float), ([5, 10], tuple)],
 )
 def test_check_isinstance(x, allowed_types):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_isinstance(x, allowed_types)
-    except Exception as e:
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
+
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_isinstance(x, allowed_types)
+        except Exception as e:
+            print(e)
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
@@ -620,26 +575,26 @@ def test_check_isinstance(x, allowed_types):
 def test_check_jax_x64_flag(dtype):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        _check_jax_x64_flag(dtype)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
 
-    sys.stdout = orig_stdout
-    f.close()
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            _check_jax_x64_flag(dtype)
+            local_vars = {**locals()}
+        except Exception as e:
+            local_vars = {**locals()}
+            print(e)
+
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
 
-    if "e" in local_vars.keys():
+    if "e" in local_vars:
         assert "output not supported while jax_enable_x64" in lines.strip()
 
-    if "e" not in local_vars.keys():
+    if "e" not in local_vars:
         assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
@@ -647,7 +602,7 @@ def test_check_jax_x64_flag(dtype):
 
 
 @pytest.mark.parametrize(
-    "kernel_size, padding_size",
+    ("kernel_size", "padding_size"),
     [
         # INVALID CASES
         (((2, 2), ((2, 2), (1, 1)))),
@@ -660,26 +615,26 @@ def test_check_jax_x64_flag(dtype):
 def test_check_kernel_padding_size(kernel_size, padding_size):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_kernel_padding_size(kernel_size, padding_size)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
 
-    sys.stdout = orig_stdout
-    f.close()
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_kernel_padding_size(kernel_size, padding_size)
+            local_vars = {**locals()}
+        except Exception as e:
+            local_vars = {**locals()}
+            print(e)
+
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
 
-    if "e" in local_vars.keys():
+    if "e" in local_vars:
         assert "less than or equal to half" in lines.strip()
 
-    if "e" not in local_vars.keys():
+    if "e" not in local_vars:
         assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
@@ -687,7 +642,7 @@ def test_check_kernel_padding_size(kernel_size, padding_size):
 
 
 @pytest.mark.parametrize(
-    "x1, x2, allow_equal",
+    ("x1", "x2", "allow_equal"),
     [
         (5, 10, False),
         (10, 5, False),
@@ -698,15 +653,15 @@ def test_check_kernel_padding_size(kernel_size, padding_size):
 def test_check_less(x1, x2, allow_equal):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_less(x1, x2, allow_equal)
-    except Exception as e:
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
+
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_less(x1, x2, allow_equal)
+        except Exception as e:
+            print(e)
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
@@ -725,7 +680,7 @@ def test_check_less(x1, x2, allow_equal):
 
 
 @pytest.mark.parametrize(
-    "x1, x2",
+    ("x1", "x2"),
     [
         (ivy.array([1, 2, 3]), ivy.array([4, 5, 6])),
         (ivy.array([1.0, 2.0, 3.0]), ivy.array([4, 5, 6])),
@@ -736,26 +691,26 @@ def test_check_less(x1, x2, allow_equal):
 def test_check_same_dtype(x1, x2):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_same_dtype(x1, x2)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
 
-    sys.stdout = orig_stdout
-    f.close()
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_same_dtype(x1, x2)
+            local_vars = {**locals()}
+        except Exception as e:
+            local_vars = {**locals()}
+            print(e)
+
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
 
-    if "e" in local_vars.keys():
+    if "e" in local_vars:
         assert "same dtype" in lines.strip()
 
-    if "e" not in local_vars.keys():
+    if "e" not in local_vars:
         assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
@@ -763,7 +718,7 @@ def test_check_same_dtype(x1, x2):
 
 
 @pytest.mark.parametrize(
-    "x1, x2",
+    ("x1", "x2"),
     [
         (ivy.array([1, 2, 3]), ivy.array([[4, 5, 6], [2, 3, 1]])),
         (ivy.array([[1.0, 2.0], [3.0, 4.0]]), ivy.array([4, 5, 6])),
@@ -775,26 +730,26 @@ def test_check_same_dtype(x1, x2):
 def test_check_shape(x1, x2):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_shape(x1, x2)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
 
-    sys.stdout = orig_stdout
-    f.close()
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_shape(x1, x2)
+            local_vars = {**locals()}
+        except Exception as e:
+            local_vars = {**locals()}
+            print(e)
+
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
 
-    if "e" in local_vars.keys():
+    if "e" in local_vars:
         assert "same shape" in lines.strip()
 
-    if "e" not in local_vars.keys():
+    if "e" not in local_vars:
         assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
@@ -802,7 +757,7 @@ def test_check_shape(x1, x2):
 
 
 @pytest.mark.parametrize(
-    "var, data",
+    ("var", "data"),
     [
         # INVALID CASES
         ((2, 1), (1, 2, 1)),
@@ -815,26 +770,26 @@ def test_check_shape(x1, x2):
 def test_check_shapes_broadcastable(var, data):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_shapes_broadcastable(var, data)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
 
-    sys.stdout = orig_stdout
-    f.close()
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_shapes_broadcastable(var, data)
+            local_vars = {**locals()}
+        except Exception as e:
+            local_vars = {**locals()}
+            print(e)
+
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
 
-    if "e" in local_vars.keys():
+    if "e" in local_vars:
         assert "Could not broadcast shape" in lines.strip()
 
-    if "e" not in local_vars.keys():
+    if "e" not in local_vars:
         assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
@@ -853,15 +808,15 @@ def test_check_shapes_broadcastable(var, data):
 def test_check_true(expression):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_true(expression)
-    except Exception as e:
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
+
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_true(expression)
+        except Exception as e:
+            print(e)
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
@@ -877,13 +832,12 @@ def test_check_true(expression):
 
 
 @pytest.mark.parametrize(
-    "data, segment_ids, num_segments",
+    ("data", "segment_ids", "num_segments"),
     [
         # INVALID CASES
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 2.0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), -2),
-        (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0.0, 1.0, 0.0], dtype=ivy.float16), 0),
         (ivy.array([1, 2]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1], dtype=ivy.int32), 0),
@@ -897,26 +851,26 @@ def test_check_true(expression):
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), ivy.array([2])),
     ],
 )
-def test_check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
+def test_check_unsorted_segment_valid_params(data, segment_ids, num_segments):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_unsorted_segment_min_valid_params(data, segment_ids, num_segments)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
 
-    sys.stdout = orig_stdout
-    f.close()
+    with open(filename, "w") as f:
+        sys.stdout = f
+        lines = ""
+        try:
+            check_unsorted_segment_valid_params(data, segment_ids, num_segments)
+            local_vars = {**locals()}
+        except Exception as e:
+            local_vars = {**locals()}
+            print(e)
+
+        sys.stdout = orig_stdout
 
     with open(filename) as f:
         lines += f.read()
 
-    if "e" in local_vars.keys():
+    if "e" in local_vars:
         assert (
             "num_segments must be of integer type" in lines.strip()
             or "segment_ids must have an integer dtype" in lines.strip()
@@ -925,7 +879,7 @@ def test_check_unsorted_segment_min_valid_params(data, segment_ids, num_segments
             or "num_segments must be positive" in lines.strip()
         )
 
-    if "e" not in local_vars.keys():
+    if "e" not in local_vars:
         assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):

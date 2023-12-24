@@ -1,4 +1,6 @@
-"""Collection of MXNet network layers, wrapped to fit Ivy syntax and signature."""
+"""Collection of MXNet network layers, wrapped to fit Ivy syntax and
+signature."""
+
 # global
 import mxnet as mx
 from typing import Optional, Tuple, Union, Sequence
@@ -30,6 +32,7 @@ def conv1d_transpose(
     /,
     *,
     output_shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NWC",
     dilations: Union[(int, Tuple[int])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
@@ -59,6 +62,7 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NHWC",
     dilations: Union[(int, Tuple[(int, int)])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
@@ -102,6 +106,7 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NDHWC",
     dilations: Union[(int, Tuple[(int, int, int)])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
@@ -137,6 +142,7 @@ def conv_general_transpose(
     /,
     *,
     dims: int = 2,
+    filter_format: str = "channel_last",
     data_format: str = "channel_last",
     output_shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
     dilations: Union[(int, Tuple[int], Tuple[(int, int)], Tuple[(int, int, int)])] = 1,

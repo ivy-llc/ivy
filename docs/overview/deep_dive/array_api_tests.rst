@@ -8,16 +8,14 @@ Array API Tests
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`array api tests channel`: https://discord.com/channels/799879767196958751/982738404611592256
-.. _`test_array_api.sh`: https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh
+.. _`scripts/shell/test_array_api.sh`: https://github.com/unifyai/ivy/blob/bcddc79978afe447958dfa3ea660716845c85846/scripts/shell/test_array_api.sh
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
 .. _`ivy_tests/array_api_testing/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
-.. _`here`: https://unify.ai/docs/ivy/overview/contributing/the_basics.html#running-tests-locally
 .. _`git website`: https://www.git-scm.com/book/en/v2/Git-Tools-Submodules
 .. _`hypothesis`: https://hypothesis.readthedocs.io/en/latest/
-.. _`ivy tests`: https://unify.ai/docs/ivy/overview/deep_dive/ivy_tests.html
-.. _`final section`: https://unify.ai/docs/ivy/overview/deep_dive/ivy_tests.html#re-running-failed-ivy-tests
-.. _`CI Pipeline`: https://unify.ai/docs/ivy/overview/deep_dive/continuous_integration.html
+.. _`ivy tests`: ivy_tests.rst
+.. _`CI Pipeline`: continuous_integration.html
 
 In conjunction with our own ivy unit tests, we import the array-api `test suite`_.
 These tests check that all ivy backend libraries behave according to the `Array API Standard`_ which was established in May 2020 by a group of maintainers.
@@ -32,7 +30,7 @@ Instead, the change must be made to the array-api repository directly and then o
 
 .. code-block:: none
 
-        # to initialise local config file and fetch + checkout submodule (not needed everytime)
+        # to initialise local config file and fetch + checkout submodule (not needed every time)
         git submodule update --init --recursive
 
         # pulls changes from the upstream remote repo and merges them
@@ -64,12 +62,12 @@ There are two ways to do this: using the terminal or using your IDE.
 Using Terminal
 **************
 
-Using the terminal, you can run all array-api tests in a given file for a certain backend using the bash file `test_array_api.sh`_:
+Using the terminal, you can run all array-api tests in a given file for a certain backend using the bash file `scripts/shell/test_array_api.sh`_:
 
 .. code-block:: none
 
         # /ivy
-        /bin/bash -e ./run_tests_CLI/test_array_api.sh jax test_linalg
+        /bin/bash -e ./scripts/shell/scripts/shell/test_array_api.sh jax test_linalg
 
 You can change the argument with any of our supported frameworks - tensorflow, numpy, torch, or jax - and the individual test function categories in :code:`ivy/ivy_tests/array_api_testing/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
 
@@ -99,7 +97,7 @@ Using the IDE
 You can also run a specific test or test file by using your IDE.
 To make this work, you should set the backend explicitly in the `_array_module.py` file as explained in the previous subsection.
 After that, you can run the API test files as you typically would with other tests.
-See `here`_  for instructions on how to run tests in ivy more generally.
+See :ref:`here <overview/contributing/the_basics:Running Tests Locally>`  for instructions on how to run tests in ivy more generally.
 
 *NB*: make sure to not add any changes to the array-api files to your commit.
 
@@ -107,7 +105,7 @@ Regenerating Test Failures
 --------------------------
 Array-API tests are written using `hypothesis`_ to perform property-based testing, just like the `ivy tests`_.
 However, unlike the ivy tests, the Array-API tests make liberal use of :code:`data.draw` in the main body of the test function instead of generating the data in the :code:`@given` decorator that wraps it.
-This means that failed tests cannot be re-run with the :code:`@example` decorator, as explained in the `final section`_ of the ivy tests deep dive.
+This means that failed tests cannot be re-run with the :code:`@example` decorator, as explained in the :ref:`final section <overview/deep_dive/ivy_tests:Re-Running Failed Ivy Tests>` of the ivy tests deep dive.
 Fortunately, it is possible to regenerate test failures using a unique decorator that appears in the final line of the falsifying example in the error stack trace:
 
 .. code-block:: none
