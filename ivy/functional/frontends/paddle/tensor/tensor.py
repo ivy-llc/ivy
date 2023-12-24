@@ -497,6 +497,17 @@ class Tensor:
     @with_unsupported_dtypes(
         {"2.5.2 and below": ("float16", "uint16", "int16")}, "paddle"
     )
+    def squeeze(self, axis=None, name=None):
+        if isinstance(axis, int) and self.ndim > 0:
+            if self.shape[axis] > 1:
+                return self
+        if len(self.shape) == 0:
+            return self
+        return paddle_frontend.squeeze(self, axis=axis)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("float16", "uint16", "int16")}, "paddle"
+    )
     def squeeze_(self, axis=None, name=None):
         self.ivy_array = paddle_frontend.squeeze(self, axis=axis).ivy_array
         return self
