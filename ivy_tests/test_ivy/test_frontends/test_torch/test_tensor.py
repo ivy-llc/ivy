@@ -6218,40 +6218,6 @@ def test_torch_dtype(dtype_x, backend_fw):
     ivy.previous_backend()
 
 
-# eig
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="eig",
-    dtype_and_x=_get_dtype_and_matrix(square=True),
-)
-def test_torch_tensor_eig(
-    dtype_and_x,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": x,
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend_method_data=frontend_method_data,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
@@ -12957,6 +12923,40 @@ def test_torch_tensor_corrcoef(
         method_flags=method_flags,
         frontend=frontend,
         backend_to_test=backend_fw,
+        on_device=on_device,
+    )
+
+
+# eig
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="eig",
+    dtype_and_x=_get_dtype_and_matrix(square=True),
+)
+def test_torch_tensor_eig(
+    dtype_and_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
         on_device=on_device,
     )
 
