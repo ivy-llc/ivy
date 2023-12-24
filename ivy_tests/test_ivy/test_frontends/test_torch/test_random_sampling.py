@@ -344,7 +344,7 @@ def test_torch_randint(
     backend_fw,
 ):
     def call():
-        helpers.test_frontend_function(
+        return helpers.test_frontend_function(
             input_dtypes=dtype,
             backend_to_test=backend_fw,
             frontend=frontend,
