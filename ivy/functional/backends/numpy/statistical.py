@@ -54,9 +54,7 @@ def mean(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return ivy.astype(
-        np.mean(x, axis=axis, keepdims=keepdims, out=out), x.dtype, copy=False
-    )
+    return np.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype, out=out)
 
 
 mean.support_native_out = True
@@ -171,7 +169,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bfloat16",)}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,
