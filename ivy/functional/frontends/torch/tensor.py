@@ -1981,6 +1981,12 @@ class Tensor:
             self, q, dim=dim, keepdim=keepdim, interpolation=interpolation, out=out
         )
 
+    @with_supported_dtypes(
+        {"2.1.2 and below": ("float16", "float32", "float64", "bfloat16")}, "torch"
+    )
+    def true_divide(self, other):
+        return torch_frontend.div(self, other, rounding_mode=None)
+
     @with_unsupported_dtypes(
         {
             "2.1.2 and below": (
