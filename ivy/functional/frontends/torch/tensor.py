@@ -425,6 +425,28 @@ class Tensor:
     def logical_or(self, other):
         return torch_frontend.logical_or(self, other)
 
+    @with_supported_dtypes(
+        {
+            "2.1.2 and below": (
+                "int8",
+                "int16",
+                "uint8",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+                "bfloat16",
+                "float16",
+                "bool",
+            )
+        },
+        "torch",
+    )
+    def logical_or_(self, other):
+        promoted_type = ivy.promote_types(self.dtype, "bool")
+        self.ivy_array = self.logical_or(other).to(promoted_type).ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.1.2 and below": ("bfloat16",)}, "torch")
     def logical_xor(self, other):
         return torch_frontend.logical_xor(self, other)
