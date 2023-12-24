@@ -1,5 +1,4 @@
-"""
-TensorFlow activation functions.
+"""TensorFlow activation functions.
 
 Collection of TensorFlow activation functions, wrapped to fit Ivy syntax
 and signature.
@@ -12,7 +11,6 @@ import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
 # local
-import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 import ivy.functional.backends.tensorflow as tf_backend
@@ -49,9 +47,7 @@ def relu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> T
 def sigmoid(
     x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
 ) -> Tensor:
-    if not ivy.is_array(x):
-        x = float(x)
-    return tf.nn.sigmoid(x)
+    return 1 / (1 + tf.exp(-x))
 
 
 def softmax(
@@ -71,7 +67,7 @@ def softmax(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float16",
             "bfloat16",
             "float32",
@@ -105,7 +101,7 @@ def softplus(
 # Softsign
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float16",
             "bfloat16",
             "float32",
@@ -151,6 +147,12 @@ def mish(
     return tf.multiply(x, tf.math.tanh(x_norm))
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def hardswish(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
+def hardswish(
+    x: Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[Tensor] = None,
+) -> Tensor:
     return x * tf.nn.relu6(x + 3) / 6

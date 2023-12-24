@@ -1,6 +1,5 @@
 """Collection of Ivy normalization functions."""
 
-
 # local
 from typing import List, Union, Optional
 import ivy
@@ -33,8 +32,7 @@ def layer_norm(
     new_std: float = 1.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply Layer Normalization over a mini-batch of inputs.
+    """Apply Layer Normalization over a mini-batch of inputs.
 
     Parameters
     ----------
@@ -126,9 +124,8 @@ def layer_norm(
     """
     mean = ivy.mean(x, axis=normalized_idxs, keepdims=True)
     var = ivy.var(x, axis=normalized_idxs, keepdims=True)
-    x = ivy.divide(
-        ivy.add(ivy.negative(mean), x), ivy.stable_pow(var, 0.5, min_base=eps)
-    )
+
+    x = (x - mean) / (var + eps) ** 0.5
 
     if scale is not None:
         if offset is not None:
@@ -146,7 +143,7 @@ layer_norm.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }

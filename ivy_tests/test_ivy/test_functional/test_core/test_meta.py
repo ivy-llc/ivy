@@ -104,7 +104,7 @@ def test_fomaml_step_overlapping_vars(
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
         # true gradient
-        all_outer_grads = list()
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -118,10 +118,10 @@ def test_fomaml_step_overlapping_vars(
             )
         if average_across_steps:
             true_weight_grad = (
-                sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+                sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
             )
         else:
-            true_weight_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
+            true_weight_grad = sum(og[-1] for og in all_outer_grads) / num_tasks
 
         # true latent gradient
         true_latent_grad = np.array(
@@ -275,10 +275,10 @@ def test_fomaml_step_shared_vars(
             )
 
         # true gradient
-        true_outer_grads = list()
+        true_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            ws = list()
-            grads = list()
+            ws = []
+            grads = []
             ws.append(latent_np)
             for step in range(inner_grad_steps):
                 update_grad = loss_grad_fn(sub_batch, ws[-1])
@@ -468,7 +468,7 @@ def test_fomaml_step_unique_vars(
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
         # true gradient
-        all_outer_grads = list()
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -482,10 +482,10 @@ def test_fomaml_step_unique_vars(
             )
         if average_across_steps:
             true_weight_grad = (
-                sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+                sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
             )
         else:
-            true_weight_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
+            true_weight_grad = sum(og[-1] for og in all_outer_grads) / num_tasks
 
         # true cost
         true_cost_dict = {
@@ -632,7 +632,7 @@ def test_maml_step_overlapping_vars(
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
         # true weight gradient
-        all_outer_grads = list()
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -650,10 +650,10 @@ def test_maml_step_overlapping_vars(
             )
         if average_across_steps:
             true_weight_grad = (
-                sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+                sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
             )
         else:
-            true_weight_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
+            true_weight_grad = sum(og[-1] for og in all_outer_grads) / num_tasks
 
         # true latent gradient
         true_latent_grad = np.array(
@@ -816,30 +816,28 @@ def test_maml_step_shared_vars(
                 collection_of_terms.append([t for t in terms])
             if average:
                 return [
-                    sum(
-                        [
+                    (
+                        sum(
                             t * inner_learning_rate ** (num_steps - i)
                             for i, t in enumerate(tms)
-                        ]
+                        )
+                        * w_init.latent
                     )
-                    * w_init.latent
                     for tms in collection_of_terms
                 ]
             return (
                 sum(
-                    [
-                        t * inner_learning_rate ** (num_steps - i)
-                        for i, t in enumerate(terms)
-                    ]
+                    t * inner_learning_rate ** (num_steps - i)
+                    for i, t in enumerate(terms)
                 )
                 * w_init.latent
             )
 
         # true gradient
-        true_outer_grads = list()
+        true_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            ws = list()
-            grads = list()
+            ws = []
+            grads = []
             ws.append(variables_np)
             for step in range(inner_grad_steps):
                 update_grad = loss_grad_fn(sub_batch, ws[-1])
@@ -857,15 +855,16 @@ def test_maml_step_shared_vars(
             # true outer grad
             if average_across_steps:
                 true_outer_grad = sum(
-                    [
-                        ig.latent * ug
-                        for ig, ug in zip(
-                            grads,
-                            update_grad_fn(
-                                variables_np, sub_batch, inner_grad_steps, average=True
-                            ),
-                        )
-                    ]
+                    ig.latent * ug
+                    for ig, ug in zip(
+                        grads,
+                        update_grad_fn(
+                            variables_np,
+                            sub_batch,
+                            inner_grad_steps,
+                            average=True,
+                        ),
+                    )
                 ) / len(grads)
             else:
                 true_outer_grad = ivy_backend.multiply(
@@ -1040,7 +1039,7 @@ def test_maml_step_unique_vars(
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
         # true gradient
-        all_outer_grads = list()
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -1058,10 +1057,10 @@ def test_maml_step_unique_vars(
             )
         if average_across_steps:
             true_outer_grad = (
-                sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+                sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
             )
         else:
-            true_outer_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
+            true_outer_grad = sum(og[-1] for og in all_outer_grads) / num_tasks
 
         # true cost
         true_cost_dict = {
@@ -1185,10 +1184,10 @@ def test_reptile_step(
             return -2 * sub_batch_in["x"][0] * w_in
 
         # true gradient
-        true_outer_grads = list()
+        true_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            ws = list()
-            grads = list()
+            ws = []
+            grads = []
             ws.append(latent_np)
             for step in range(inner_grad_steps):
                 update_grad = loss_grad_fn(sub_batch, ws[-1])

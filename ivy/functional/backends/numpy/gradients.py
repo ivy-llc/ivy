@@ -1,8 +1,9 @@
-"""Collection of NumPy gradient functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of NumPy gradient functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import logging
-from typing import Optional, Sequence, Union
+from typing import Sequence, Union
 import ivy
 
 
@@ -30,8 +31,8 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    xs_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
+    ret_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
 ):
     logging.warning(
         "NumPy does not support autograd, "
@@ -50,7 +51,7 @@ def value_and_grad(func):
 
     def grad_fn(xs):
         grads = ivy.nested_map(
-            xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
+            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
         )
         y = func(xs)
         y = ivy.to_ivy(y)
@@ -67,7 +68,7 @@ def jac(func):
 
     def grad_fn(xs):
         jacobian = ivy.nested_map(
-            xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
+            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
         )
         return jacobian
 
@@ -82,7 +83,7 @@ def grad(func, argnums=0):
 
     def grad_fn(xs):
         grad = ivy.nested_map(
-            xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
+            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
         )
         y = func(xs)
         y = ivy.to_ivy(y)

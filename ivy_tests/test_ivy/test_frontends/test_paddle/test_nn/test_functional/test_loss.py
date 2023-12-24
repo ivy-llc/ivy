@@ -41,6 +41,51 @@ def _cos_embd_loss_helper(draw):
 
 
 @handle_frontend_test(
+    fn_tree="paddle.nn.functional.binary_cross_entropy",
+    dtype_and_vals=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        num_arrays=3,
+        min_value=1.0013580322265625e-05,
+        max_value=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    reduction=st.sampled_from(["mean", "sum", "none"]),
+)
+def test_paddle_binary_cross_entropy(
+    dtype_and_vals,
+    reduction,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_vals
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], input_dtype[1]],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=x[1],
+        weight=x[2],
+        reduction=reduction,
+        rtol=1e-02,
+        atol=1e-02,
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.nn.functional.binary_cross_entropy_with_logits",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),

@@ -16,10 +16,9 @@ class _ArrayWithRandomExperimental(abc.ABC):
         seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.dirichlet. This method simply wraps the
-        function, and so the docstring for ivy.shuffle also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.dirichlet. This method
+        simply wraps the function, and so the docstring for ivy.shuffle also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -71,10 +70,9 @@ class _ArrayWithRandomExperimental(abc.ABC):
         seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.beta. This method simply wraps the
-        function, and so the docstring for ivy.beta also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.beta. This method simply
+        wraps the function, and so the docstring for ivy.beta also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -122,10 +120,9 @@ class _ArrayWithRandomExperimental(abc.ABC):
         seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.gamma. This method simply wraps the
-        function, and so the docstring for ivy.gamma also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.gamma. This method simply
+        wraps the function, and so the docstring for ivy.gamma also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -177,7 +174,7 @@ class _ArrayWithRandomExperimental(abc.ABC):
         Parameters
         ----------
         self
-            Input Array of rate paramter(s). It must have a shape that is broadcastable
+            Input Array of rate parameter(s). It must have a shape that is broadcastable
             to the requested shape
         shape
             If the given shape is, e.g '(m, n, k)', then 'm * n * k' samples are drawn.

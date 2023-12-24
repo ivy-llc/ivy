@@ -5,8 +5,7 @@ ivy/utils/backend @VedPatwardhan @CatB1t
 ivy/utils/backend/ast_helpers.py @CatB1t
 
 # Ivy Testing
-ivy_tests/test_ivy/helpers/ @sherry30 @CatB1t
-ivy_tests/array_api_testing/ @aarsh2001 @hirwa-nshuti
+ivy_tests/test_ivy/helpers/ @CatB1t
 
 # Docs builder
 docs/index.rst @KareemMAX
@@ -14,15 +13,9 @@ docs/make_docs.sh @KareemMAX
 docs/partial_conf.py @KareemMAX
 docs/prebuild.sh @KareemMAX
 docs/overview/contributing/building_the_docs.rst @KareemMAX
-docs/overview/deep_dive/building_the_docs_pipline.rst @KareemMAX
+docs/overview/deep_dive/building_the_docs_pipeline.rst @KareemMAX
 docs/_templates @KareemMAX
 docs/demos @KareemMAX
-
-# Docker
-docker/* @ricksanchezstoic
-
-# Idea files
-.idea/* @Aarsh2001 @zaeemansari70
 
 # README
 README.md @guillesanbri
