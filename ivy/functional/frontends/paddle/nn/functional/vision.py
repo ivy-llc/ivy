@@ -9,7 +9,7 @@ from ivy.utils.assertions import check_equal
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 def affine_grid(theta, out_shape, align_corners=True):
     if len(out_shape) == 4:
         N, C, H, W = out_shape
@@ -52,12 +52,6 @@ def affine_grid(theta, out_shape, align_corners=True):
                 ivy.expand_dims(ivy.linspace(-1, 1, D), axis=-1), axis=-1
             )
             width_values = ivy.linspace(-1, 1, D)
-            base_grid[:, :, :, :, 2] = ivy.array(
-                [[ivy.array([[width_values[i]] * W] * H) for i in range(D)]]
-            )
-            base_grid[:, :, :, :, 3] = ivy.full((D, H, W), 1)
-            grid = ivy.matmul(base_grid.view((N, D * H * W, 4)), theta.swapaxes(1, 2))
-            return grid.view((N, D, H, W, 3))
         else:
             base_grid[:, :, :, :, 0] = ivy.linspace(-1, 1, W) * (W - 1) / W
             base_grid[:, :, :, :, 1] = ivy.expand_dims(
@@ -71,22 +65,22 @@ def affine_grid(theta, out_shape, align_corners=True):
                 ivy.expand_dims(ivy.linspace(-1, 1, D) * (D - 1) / D, axis=-1), axis=-1
             )
             width_values = ivy.linspace(-1, 1, D) * (D - 1) / D
-            base_grid[:, :, :, :, 2] = ivy.array(
-                [[ivy.array([[width_values[i]] * W] * H) for i in range(D)]]
-            )
-            base_grid[:, :, :, :, 3] = ivy.full((D, H, W), 1)
-            grid = ivy.matmul(base_grid.view((N, D * H * W, 4)), theta.swapaxes(1, 2))
-            return grid.view((N, D, H, W, 3))
+
+        base_grid[:, :, :, :, 2] = ivy.array(
+            [[ivy.array([[width_values[i]] * W] * H) for i in range(D)]]
+        )
+        base_grid[:, :, :, :, 3] = ivy.full((D, H, W), 1)
+        grid = ivy.matmul(base_grid.view((N, D * H * W, 4)), theta.swapaxes(1, 2))
+        return grid.view((N, D, H, W, 3))
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 def channel_shuffle(x, groups, data_format="NCHW", name=None):
     if len(ivy.shape(x)) != 4:
         raise ValueError(
-            "Input x should be 4D tensor, but received x with the shape of {}".format(
-                ivy.shape(x)
-            )
+            "Input x should be 4D tensor, but received x with the shape of"
+            f" {ivy.shape(x)}"
         )
 
     if not isinstance(groups, int):
@@ -97,8 +91,8 @@ def channel_shuffle(x, groups, data_format="NCHW", name=None):
 
     if data_format not in ["NCHW", "NHWC"]:
         raise ValueError(
-            "Attr(data_format) should be 'NCHW' or 'NHWC'."
-            "But recevie Attr(data_format): {} ".format(data_format)
+            "Attr(data_format) should be 'NCHW' or 'NHWC'.But receive"
+            f" Attr(data_format): {data_format} "
         )
 
     if data_format == "NCHW":
@@ -124,12 +118,12 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
     )
 
     if not isinstance(upscale_factor, int):
-        raise ValueError("upscale factor must be int type")
+        raise TypeError("upscale factor must be int type")
 
     if data_format not in ["NCHW", "NHWC"]:
         raise ValueError(
-            "Attr(data_format) should be 'NCHW' or 'NHWC'."
-            "But recevie Attr(data_format): {} ".format(data_format)
+            "Attr(data_format) should be 'NCHW' or 'NHWC'.But receive"
+            f" Attr(data_format): {data_format} "
         )
 
     b = input_shape[0]
@@ -144,10 +138,9 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
         0,
         message=(
             "pixel shuffle expects input channel to be divisible by square of upscale"
-            " factor, but got input with sizes {}, upscale factor={}, and"
-            " self.size(1)={}, is not divisible by {}".format(
-                input_shape, upscale_factor, c, upscale_factor_squared
-            )
+            f" factor, but got input with sizes {input_shape}, upscale"
+            f" factor={upscale_factor}, and self.size(1)={c}, is not divisible by"
+            f" {upscale_factor_squared}"
         ),
         as_array=False,
     )
@@ -174,21 +167,20 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
 def pixel_unshuffle(x, downscale_factor, data_format="NCHW"):
     if len(ivy.shape(x)) != 4:
         raise ValueError(
-            "Input x should be 4D tensor, but received x with the shape of {}".format(
-                ivy.shape(x)
-            )
+            "Input x should be 4D tensor, but received x with the shape of"
+            f" {ivy.shape(x)}"
         )
 
     if not isinstance(downscale_factor, int):
-        raise ValueError("Downscale factor must be int type")
+        raise TypeError("Downscale factor must be int type")
 
     if downscale_factor <= 0:
         raise ValueError("Downscale factor must be positive")
 
     if data_format not in ["NCHW", "NHWC"]:
         raise ValueError(
-            "Attr(data_format) should be 'NCHW' or 'NHWC'."
-            "But recevie Attr(data_format): {} ".format(data_format)
+            "Attr(data_format) should be 'NCHW' or 'NHWC'.But receive"
+            f" Attr(data_format): {data_format} "
         )
 
     if data_format == "NCHW":

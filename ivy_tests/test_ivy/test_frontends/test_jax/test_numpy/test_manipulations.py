@@ -42,7 +42,7 @@ def _arrays_idx_n_dtypes(draw):
             size=num_arrays,
         )
     )
-    xs = list()
+    xs = []
     input_dtypes = draw(
         helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("valid")))
     )
@@ -263,7 +263,7 @@ def _pad_helper(draw):
     ndim = len(shape)
     pad_width = draw(_st_tuples_or_int(ndim, min_val=0))
     kwargs = {}
-    if mode == "reflect" or mode == "symmetric":
+    if mode in ["reflect", "symmetric"]:
         kwargs["reflect_type"] = draw(st.sampled_from(["even", "odd"]))
     if mode in ["maximum", "mean", "median", "minimum"]:
         kwargs["stat_length"] = draw(_st_tuples_or_int(ndim, min_val=2))
@@ -498,6 +498,30 @@ def test_jax_atleast_3d(
     )
 
 
+# bartlett
+@handle_frontend_test(
+    fn_tree="jax.numpy.bartlett",
+    m=helpers.ints(min_value=0, max_value=20),
+)
+def test_jax_bartlett(
+    m,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int64"],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        M=m,
+    )
+
+
 # blackman
 @handle_frontend_test(
     fn_tree="jax.numpy.blackman",
@@ -702,6 +726,41 @@ def test_jax_concat(
         on_device=on_device,
         arrays=xs,
         axis=unique_idx,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.diagflat",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=2, min_dim_size=1, max_dim_size=10
+        ),
+        small_abs_safety_factor=2.5,
+        large_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    k=st.integers(min_value=-5, max_value=5),
+)
+def test_jax_diagflat(
+    dtype_x,
+    k,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        v=x[0],
+        k=k,
     )
 
 

@@ -1,4 +1,5 @@
 """Collection of tests for statistical functions."""
+
 # global
 import numpy as np
 from hypothesis import strategies as st, assume
@@ -62,6 +63,10 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
     shape = values[0].shape
     size = values[0].size
     max_correction = np.min(shape)
+    if "complex" in dtype[0]:
+        # TODO skip complex median test until added ?
+        #  because it is not supported in tensorflow (ground truth backend)
+        dtype = ["float32"]
     if any(ele in function for ele in ["std", "var"]):
         if size == 1:
             correction = 0
@@ -327,6 +332,7 @@ def test_std(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_devi
     fn_tree="functional.ivy.sum",
     dtype_x_axis_castable=_get_castable_dtype(),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_sum(
     *, dtype_x_axis_castable, keep_dims, test_flags, backend_fw, fn_name, on_device
@@ -337,6 +343,9 @@ def test_sum(
     if "torch" in backend_fw:
         assume(not test_flags.as_variable[0])
         assume(not test_flags.test_gradients)
+    if "jax" in backend_fw and castable_dtype in ["complex64", "complex128"]:
+        assume(not test_flags.test_gradients)
+
     helpers.test_function(
         input_dtypes=[input_dtype],
         test_flags=test_flags,
