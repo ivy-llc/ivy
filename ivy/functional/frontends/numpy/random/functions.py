@@ -267,6 +267,15 @@ def standard_cauchy(size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def standard_exponential(size=None):
+    if size is None:
+        size = 1
+    U = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return -ivy.log(U)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def standard_gamma(shape, size=None):
     return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
 
@@ -346,7 +355,7 @@ def wald(mean, scale, size=None):
     Y = mean * ivy.square(Y)
     X = mean + mu_2l * (Y - ivy.sqrt(((4 * scale) * Y) + ivy.square(Y)))
 
-    condition = U <= mean / (mean + X)
+    condition = mean / (mean + X) >= U
     value1 = X
     value2 = mean * mean / X
 

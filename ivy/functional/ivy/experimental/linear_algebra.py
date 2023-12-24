@@ -41,8 +41,8 @@ def eigh_tridiagonal(
     ] = None,
     tol: Optional[float] = None,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
-    """
-    Compute the eigenvalues and eigenvectors of a Hermitian tridiagonal matrix.
+    """Compute the eigenvalues and eigenvectors of a Hermitian tridiagonal
+    matrix.
 
     Parameters
     ----------
@@ -180,8 +180,7 @@ def diagflat(
     num_cols: int = -1,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Return a two-dimensional array with the flattened input as a diagonal.
+    """Return a two-dimensional array with the flattened input as a diagonal.
 
     Parameters
     ----------
@@ -243,9 +242,8 @@ def kron(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Kronecker product, a composite array made of blocks of the second array
-    scaled by the first.
+    """Compute the Kronecker product, a composite array made of blocks of the
+    second array scaled by the first.
 
     Parameters
     ----------
@@ -285,8 +283,7 @@ def matrix_exp(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the matrix exponential of a square matrix.
+    """Compute the matrix exponential of a square matrix.
 
     Parameters
     ----------
@@ -390,8 +387,7 @@ def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> ivy.Array:
-    """
-    Compute eigenvalues of x. Returns a set of eigenvalues.
+    """Compute eigenvalues of x. Returns a set of eigenvalues.
 
     Parameters
     ----------
@@ -437,8 +433,7 @@ def adjoint(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the complex conjugate transpose of x.
+    """Compute the complex conjugate transpose of x.
 
     Parameters
     ----------
@@ -482,8 +477,8 @@ def solve_triangular(
     unit_diagonal: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the unique solution to the triangular system of linear equations AX = B.
+    """Return the unique solution to the triangular system of linear equations
+    AX = B.
 
     Parameters
     ----------
@@ -540,9 +535,8 @@ def multi_dot(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the dot product of two or more matrices in a single function call, while
-    selecting the fastest evaluation order.
+    """Compute the dot product of two or more matrices in a single function
+    call, while selecting the fastest evaluation order.
 
     Parameters
     ----------
@@ -601,8 +595,7 @@ def cond(
     p: Optional[Union[int, float, str]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the condition number of x.
+    """Compute the condition number of x.
 
     Parameters
     ----------
@@ -649,8 +642,7 @@ def kronecker(
     reverse: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Kronecker product of a list of matrices.
+    """Kronecker product of a list of matrices.
 
     Parameters
     ----------
@@ -685,7 +677,7 @@ def kronecker(
     return res
 
 
-# The code has been adapated from tensorly.khatri_rao
+# The code has been adapted from tensorly.khatri_rao
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/_khatri_rao.py#L9
 @handle_nestable
 @handle_exceptions
@@ -700,8 +692,7 @@ def khatri_rao(
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Khatri-Rao product of a sequence of matrices.
+    """Khatri-Rao product of a sequence of matrices.
 
         This can be seen as a column-wise kronecker product.
         If one matrix only is given, that matrix is directly returned.
@@ -805,8 +796,7 @@ def mode_dot(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    N-mode product of a tensor and a matrix or vector at the specified mode.
+    """N-mode product of a tensor and a matrix or vector at the specified mode.
 
     Parameters
     ----------
@@ -881,7 +871,7 @@ def mode_dot(
         return ivy.fold(res, fold_mode, new_shape, out=out)
 
 
-# The following code has been adapated from TensorLy
+# The following code has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/n_mode_product.py#L81
 @handle_nestable
 @handle_exceptions
@@ -899,8 +889,8 @@ def multi_mode_dot(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""
-    N-mode product of a tensor and several matrices or vectors over several modes.
+    r"""N-mode product of a tensor and several matrices or vectors over several
+    modes.
 
     Parameters
     ----------
@@ -968,8 +958,7 @@ def multi_mode_dot(
 
 
 def _svd_checks(x, n_eigenvecs=None):
-    """
-    Run common checks to all of the SVD methods.
+    """Run common checks to all of the SVD methods.
 
     Parameters
     ----------
@@ -1006,7 +995,7 @@ def _svd_checks(x, n_eigenvecs=None):
     return n_eigenvecs, min_dim, max_dim
 
 
-# This function has been adapated from TensorLy
+# This function has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L12
 @handle_nestable
 @handle_exceptions
@@ -1020,11 +1009,10 @@ def svd_flip(
     /,
     u_based_decision: Optional[bool] = True,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Sign correction to ensure deterministic output from SVD. Adjusts the columns of u
-    and the rows of v such that the loadings in the columns in u that are largest in
-    absolute value are always positive. This function is borrowed from scikit-
-    learn/utils/extmath.py.
+    """Sign correction to ensure deterministic output from SVD. Adjusts the
+    columns of u and the rows of v such that the loadings in the columns in u
+    that are largest in absolute value are always positive. This function is
+    borrowed from scikit- learn/utils/extmath.py.
 
     Parameters
     ----------
@@ -1063,14 +1051,12 @@ def svd_flip(
         )
         V = V * signs[:, None]
         if ivy.shape(U)[1] > ivy.shape(V)[0]:
-            signs = ivy.concat(
-                (
-                    signs,
-                    ivy.ones(
-                        ivy.shape(U)[1] - ivy.shape(V)[0],
-                    ),
-                )
-            )
+            signs = ivy.concat((
+                signs,
+                ivy.ones(
+                    ivy.shape(U)[1] - ivy.shape(V)[0],
+                ),
+            ))
         U = U * signs[: ivy.shape(U)[1]]
 
     return U, V
@@ -1093,9 +1079,8 @@ def make_svd_non_negative(
     *,
     nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Use NNDSVD method to transform SVD results into a non-negative form. This method
-    leads to more efficient solving with NNMF [1].
+    """Use NNDSVD method to transform SVD results into a non-negative form.
+    This method leads to more efficient solving with NNMF [1].
 
     Parameters
     ----------
@@ -1160,8 +1145,8 @@ def make_svd_non_negative(
         H = ivy.soft_thresholding(H, eps)
     elif nntype == "nndsvda":
         avg = ivy.mean(x)
-        W = ivy.where(W < eps, ivy.ones(ivy.shape(W)) * avg, W)
-        H = ivy.where(H < eps, ivy.ones(ivy.shape(H)) * avg, H)
+        W = ivy.where(eps > W, ivy.ones(ivy.shape(W)) * avg, W)
+        H = ivy.where(eps > H, ivy.ones(ivy.shape(H)) * avg, H)
     else:
         raise ValueError(
             f'Invalid nntype parameter: got {nntype} instead of one of ("nndsvd",'
@@ -1185,8 +1170,7 @@ def truncated_svd(
     compute_uv: bool = True,
     n_eigenvecs: Optional[int] = None,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array, ivy.Array]]:
-    """
-    Compute a truncated SVD on `x` using the standard SVD.
+    """Compute a truncated SVD on `x` using the standard SVD.
 
     Parameters
     ----------
@@ -1230,8 +1214,7 @@ def tensor_train(
     svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
     verbose: Optional[bool] = False,
 ) -> ivy.TTTensor:
-    """
-    TT decomposition via recursive SVD.
+    """TT decomposition via recursive SVD.
 
     Decomposes the input into a sequence of order-3 tensors (factors)
     Also known as Tensor-Train decomposition [1]_
@@ -1296,7 +1279,7 @@ def tensor_train(
     return ivy.TTTensor(factors)
 
 
-# TODO uncommment the code below when these svd
+# TODO uncomment the code below when these svd
 # methods have been added
 def _svd_interface(
     matrix,
@@ -1361,11 +1344,11 @@ def initialize_tucker(
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     svd_mask_repeats: Optional[int] = 5,
 ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
-    """
-    Initialize core and factors used in `tucker`. The type of initialization is set
-    using `init`. If `init == 'random'` then initialize factor matrices using
-    `random_state`. If `init == 'svd'` then initialize the `m`th factor matrix using the
-    `rank` left singular vectors of the `m`th unfolding of the input tensor.
+    """Initialize core and factors used in `tucker`. The type of initialization
+    is set using `init`. If `init == 'random'` then initialize factor matrices
+    using `random_state`. If `init == 'svd'` then initialize the `m`th factor
+    matrix using the `rank` left singular vectors of the `m`th unfolding of the
+    input tensor.
 
     Parameters
     ----------
@@ -1404,7 +1387,7 @@ def initialize_tucker(
         assert len(x.shape) >= 2
     except ValueError:
         raise ValueError(
-            "expected x to have atleast 2 dimensions but it has only"
+            "expected x to have at least 2 dimensions but it has only"
             f" {len(x.shape)} dimension(s)"
         )
 
@@ -1453,7 +1436,7 @@ def initialize_tucker(
     return (core, factors)
 
 
-# This function has been adpated from TensorLy
+# This function has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/_tucker.py#L98
 @handle_nestable
 @handle_exceptions
@@ -1477,8 +1460,7 @@ def partial_tucker(
     verbose: Optional[bool] = False,
     return_errors: Optional[bool] = False,
 ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
-    """
-    Partial tucker decomposition via Higher Order Orthogonal Iteration (HOI)
+    """Partial tucker decomposition via Higher Order Orthogonal Iteration (HOI)
 
         Decomposes `tensor` into a Tucker decomposition
         exclusively along the provided modes.
@@ -1626,8 +1608,7 @@ def tucker(
     verbose: Optional[bool] = False,
     return_errors: Optional[bool] = False,
 ):
-    """
-    Tucker decomposition via Higher Order Orthogonal Iteration (HOI)
+    """Tucker decomposition via Higher Order Orthogonal Iteration (HOI)
 
         Decomposes `tensor` into a Tucker decomposition:
         ``tensor = [| core; factors[0], ...factors[-1] |]`` [1]_
@@ -1763,10 +1744,9 @@ def tt_matrix_to_tensor(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the full tensor whose TT-Matrix decomposition is given by 'factors' Re-
-    assembles 'factors', which represent a tensor in TT-Matrix format into the
-    corresponding full tensor.
+    """Return the full tensor whose TT-Matrix decomposition is given by
+    'factors' Re- assembles 'factors', which represent a tensor in TT-Matrix
+    format into the corresponding full tensor.
 
     Parameters
     ----------
@@ -1834,10 +1814,9 @@ def dot(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the dot product between two arrays `a` and `b` using the current backend's
-    implementation. The dot product is defined as the sum of the element-wise product of
-    the input arrays.
+    """Compute the dot product between two arrays `a` and `b` using the current
+    backend's implementation. The dot product is defined as the sum of the
+    element-wise product of the input arrays.
 
     Parameters
     ----------
@@ -1895,8 +1874,7 @@ def general_inner_product(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Generalised inner products between tensors.
+    """Generalised inner products between tensors.
 
         Takes the inner product between the last (respectively first)
         `n_modes` of `a` (respectively `b`)
@@ -1985,8 +1963,7 @@ def higher_order_moment(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Higher-Order Moment.
+    """Compute the Higher-Order Moment.
 
     Parameters
     ----------
@@ -2033,8 +2010,7 @@ def batched_outer(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a generalized outer product of the tensors.
+    """Return a generalized outer product of the tensors.
 
     Parameters
     ----------

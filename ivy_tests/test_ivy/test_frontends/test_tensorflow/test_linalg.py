@@ -36,7 +36,7 @@ def _get_cholesky_matrix(draw):
     gen = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
+            shape=(shared_size, shared_size),
             min_value=2,
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
@@ -125,7 +125,7 @@ def _get_hermitian_pos_def_matrix(draw):
     gen = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
+            shape=(shared_size, shared_size),
             min_value=2,
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
@@ -148,59 +148,48 @@ def _get_second_matrix(draw):
     )
     return input_dtype, draw(
         helpers.array_values(
-            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
+            dtype=input_dtype, shape=(shared_size, 1), min_value=2, max_value=5
         )
     )
 
 
+@st.composite
+def _get_tridiagonal_dtype_matrix_format(draw):
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float_and_complex"))),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    diagonals_format = draw(st.sampled_from(["compact", "sequence", "matrix"]))
+    if diagonals_format == "matrix":
+        matrix = draw(
+            helpers.array_values(
+                dtype=input_dtype,
+                shape=(shared_size, shared_size),
+                min_value=2,
+                max_value=5,
+            ).filter(tridiagonal_matrix_filter)
+        )
+    elif diagonals_format in ["compact", "sequence"]:
+        matrix = draw(
+            helpers.array_values(
+                dtype=input_dtype,
+                shape=(3, shared_size),
+                min_value=2,
+                max_value=5,
+            ).filter(tridiagonal_compact_filter)
+        )
+        if diagonals_format == "sequence":
+            matrix = list(matrix)
+
+    return input_dtype, matrix, diagonals_format
+
+
 # --- Main --- #
 # ------------ #
-
-
-# qr
-@handle_frontend_test(
-    fn_tree="tensorflow.linalg.qr",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-    ),
-)
-def test_qr(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    backend_fw,
-):
-    dtype, x = dtype_and_x
-    x = np.asarray(x[0], dtype=dtype[0])
-    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        atol=1e-03,
-        rtol=1e-05,
-        input=x,
-    )
-    ret = [ivy.to_numpy(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
-
-    assert_all_close(
-        ret_np=ret[0],
-        ret_from_gt_np=frontend_ret[0],
-        rtol=1e-2,
-        atol=1e-2,
-        ground_truth_backend=frontend,
-    )
 
 
 # adjoint
@@ -462,7 +451,7 @@ def test_tensorflow_eigvalsh(
         num_arrays=1,
         min_value=1,
         max_value=10,
-        shape=helpers.ints(min_value=3, max_value=3).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=3, max_value=3).map(lambda x: (x, x)),
     ).filter(lambda x: "float16" not in x[0]),
     test_with_out=st.just(False),
 )
@@ -522,7 +511,7 @@ def test_tensorflow_global_norm(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=-100,
         max_value=100,
-        shape=helpers.ints(min_value=1, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=1, max_value=20).map(lambda x: (x, x)),
     ).filter(
         lambda x: "bfloat16" not in x[0]
         and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
@@ -598,7 +587,7 @@ def test_tensorflow_l2_normalize(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -937,6 +926,52 @@ def test_tensorflow_pinv(
     )
 
 
+# qr
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.qr",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
+    ),
+)
+def test_tensorflow_qr(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=dtype[0])
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        atol=1e-03,
+        rtol=1e-05,
+        input=x,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    assert_all_close(
+        ret_np=ret[0],
+        ret_from_gt_np=frontend_ret[0],
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )
+
+
 # Tests for tensorflow.linalg.set_diag function's frontend
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.set_diag",
@@ -1039,7 +1074,7 @@ def test_tensorflow_solve(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     full_matrices=st.booleans(),
     compute_uv=st.just(True),
@@ -1207,3 +1242,76 @@ def test_tensorflow_trace(
         fn_tree=fn_tree,
         x=x[0],
     )
+
+
+# tridiagonal_solve
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.tridiagonal_solve",
+    x=_get_tridiagonal_dtype_matrix_format(),
+    y=_get_second_matrix(),
+    transpose_rhs=st.just(False),
+    conjugate_rhs=st.booleans(),
+)
+def test_tensorflow_tridiagonal_solve(
+    *,
+    x,
+    y,
+    transpose_rhs,
+    conjugate_rhs,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype1, x1, diagonals_format = x
+    input_dtype2, x2 = y
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype1, input_dtype2],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
+        diagonals=x1,
+        rhs=x2,
+        diagonals_format=diagonals_format,
+        transpose_rhs=transpose_rhs,
+        conjugate_rhs=conjugate_rhs,
+    )
+
+
+def tridiagonal_compact_filter(x):
+    diagonals = ivy.array(x)
+    dim = diagonals[0].shape[0]
+    diagonals[[0, -1], [-1, 0]] = 0
+    dummy_idx = [0, 0]
+    indices = ivy.array(
+        [
+            [(i, i + 1) for i in range(dim - 1)] + [dummy_idx],
+            [(i, i) for i in range(dim)],
+            [dummy_idx] + [(i + 1, i) for i in range(dim - 1)],
+        ]
+    )
+    matrix = ivy.scatter_nd(
+        indices, diagonals, ivy.array([dim, dim]), reduction="replace"
+    )
+    return tridiagonal_matrix_filter(matrix)
+
+
+def tridiagonal_matrix_filter(x):
+    dim = x.shape[0]
+    if ivy.abs(ivy.det(x)) < 1e-3:
+        return False
+    for i in range(dim):
+        for j in range(dim):
+            cell = x[i][j]
+            if i in [j, j - 1, j + 1]:
+                if cell == 0:
+                    return False
+            else:
+                if cell != 0:
+                    return False
+    return True

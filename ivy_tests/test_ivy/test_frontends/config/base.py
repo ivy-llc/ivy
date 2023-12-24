@@ -25,9 +25,6 @@ class SupportedDtypes:
     valid_uint_dtypes: List[str]
     invalid_uint_dtypes: List[str]
 
-    valid_uint_dtypes: List[str]
-    invalid_uint_dtypes: List[str]
-
     valid_float_dtypes: List[str]
     invalid_float_dtypes: List[str]
 
@@ -81,8 +78,7 @@ class FrontendConfigWithBackend(FrontendConfig):
     backend_str = None
 
     def __init__(self):
-        # Todo: add feature to set backend handler
-        self.backend = ivy.set_backend(self.backend_str)
+        self.backend = ivy.with_backend(self.backend_str)
 
     @property
     def Dtype(self):
