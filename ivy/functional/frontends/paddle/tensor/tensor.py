@@ -274,6 +274,30 @@ class Tensor:
         else:
             raise ValueError("reshape() got no values for argument 'shape'")
 
+    def reshape_(self, *args, shape=None):
+        if args and shape:
+            raise TypeError("reshape() got multiple values for argument 'shape'")
+        if shape is not None:
+            self.ivy_array = paddle_frontend.reshape(
+                self._ivy_array, shape=shape
+            ).ivy_array
+            return self
+        if args:
+            if isinstance(args[0], (tuple, list)):
+                shape = args[0]
+                self.ivy_array = paddle_frontend.reshape(
+                    self._ivy_array, shape=shape
+                ).ivy_array
+                return self
+            else:
+                self.ivy_array = paddle_frontend.reshape(
+                    self._ivy_array, args
+                ).ivy_array
+                return self
+
+        self.ivy_array = paddle_frontend.reshape(self._ivy_array).ivy_array
+        return self
+
     def dim(self):
         return self.ivy_array.ndim
 
