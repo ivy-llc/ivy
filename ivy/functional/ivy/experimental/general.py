@@ -110,8 +110,7 @@ def sequence_length(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the length of the input array's elements.
+    """Return the length of the input array's elements.
 
     Parameters
     ----------
