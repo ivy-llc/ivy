@@ -1896,6 +1896,14 @@ class Tensor:
     def gcd(self, other, *, out=None):
         return torch_frontend.gcd(self, other, out=out)
 
+    @with_supported_dtypes(
+        {"2.1.2 and below": ("int", "uint8", "int8", "int16", "int32", "int64")},
+        "torch",
+    )
+    def gcd_(self, other, *, out=None):
+        self.ivy_array = torch_frontend.gcd(self, other, out=out).ivy_array
+        return self
+
     @with_unsupported_dtypes(
         {
             "2.1.2 and below": (
