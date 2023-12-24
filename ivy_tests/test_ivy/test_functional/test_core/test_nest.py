@@ -241,7 +241,7 @@ def test_map_nest_at_indices(nest, indices, fn, shallow):
 )
 def test_multi_index_nest(nest, multi_indices):
     rets = ivy.multi_index_nest(nest, multi_indices)
-    true_rets = list()
+    true_rets = []
     for indices in multi_indices:
         true_ret = nest
         for i in indices:
@@ -259,7 +259,7 @@ def test_nested_any(x, fn):
     map_nested_dicts(x_copy, fn)
 
     def is_true_any(ob):
-        for k, v in ob.items():
+        for v in ob.values():
             if isinstance(v, dict):
                 is_true_any(v)
             if isinstance(v, list):
