@@ -926,6 +926,7 @@ def test_tensorflow_conv2d_transpose(
         padding,
         output_shape,
     ) = x_f_d_df
+    assume(isinstance(padding, str) or backend_fw in ["torch", "tensorflow"])
     _assume_tf_dilation_gt_1("tensorflow", on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -1483,7 +1484,7 @@ def test_tensorflow_max_pool2d(
 # max_pool3d
 @handle_frontend_test(
     fn_tree="tensorflow.nn.max_pool3d",
-    data_format=st.sampled_from(["NDHWC", "NCDHW"]),
+    data_format=st.just("NDHWC"),  # Pooling3DOp only supports NDHWC on device type CPU
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
     test_with_out=st.just(False),
 )

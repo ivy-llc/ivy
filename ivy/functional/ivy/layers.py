@@ -44,10 +44,9 @@ def _in_projection(
     w,
     b=None,
 ):
-    """
-    Projects query, key and value efficiently, depending on whether we are doing self-
-    attention (query is key is value) or cross-attention (key is value) or an attention
-    where query, key and value are all different.
+    """Projects query, key and value efficiently, depending on whether we are
+    doing self- attention (query is key is value) or cross-attention (key is
+    value) or an attention where query, key and value are all different.
 
     it is only used in
     multi_head_attention layer.
@@ -264,8 +263,7 @@ def dropout(
     noise_shape: Optional[Sequence[int]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Randomly setting a fraction of input tensor to zeroes with probability.
+    """Randomly setting a fraction of input tensor to zeroes with probability.
 
     `prob` at each update during training time to prevent possible overfitting.
     The inputs not set to 0 are scaled up `1 / (1 - prob)` by default, so that
@@ -449,8 +447,7 @@ def scaled_dot_product_attention(
     training: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply scaled dot product attention to inputs x using optional mask.
+    """Apply scaled dot product attention to inputs x using optional mask.
 
     Parameters
     ----------
@@ -751,20 +748,20 @@ def multi_head_attention(
     training: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Apply multi-head attention to inputs x. This is an implementation of multi-headed
-    attention as described in the paper "Attention is all you Need" (Vaswani et al.,
-    2017). If `query`, `key`, `value` are the same, then this is self-attention. Each
-    timestep in `query` attends to the corresponding sequence in `key`, and returns a
-    fixed-width vector. This layer first projects `query`, `key` and `value`. These are
-    (effectively) a list of tensors of length `num_attention_heads`, where the
-    corresponding shapes are `(batch_size, <query dimensions>, key_dim)`, `(batch_size,
+    """Apply multi-head attention to inputs x. This is an implementation of
+    multi-headed attention as described in the paper "Attention is all you
+    Need" (Vaswani et al., 2017). If `query`, `key`, `value` are the same, then
+    this is self-attention. Each timestep in `query` attends to the
+    corresponding sequence in `key`, and returns a fixed-width vector. This
+    layer first projects `query`, `key` and `value`. These are (effectively) a
+    list of tensors of length `num_attention_heads`, where the corresponding
+    shapes are `(batch_size, <query dimensions>, key_dim)`, `(batch_size,
     <key/value dimensions>, key_dim)`, `(batch_size, <key/value dimensions>,
-    value_dim)`. Then, the query and key tensors are dot-producted and scaled. These are
-    softmaxed to obtain attention probabilities. The value tensors are then interpolated
-    by these probabilities, then concatenated back to a single tensor. Finally, the
-    result tensor with the last dimension as value_dim can take a linear projection and
-    return.
+    value_dim)`. Then, the query and key tensors are dot-producted and scaled.
+    These are softmaxed to obtain attention probabilities. The value tensors
+    are then interpolated by these probabilities, then concatenated back to a
+    single tensor. Finally, the result tensor with the last dimension as
+    value_dim can take a linear projection and return.
 
     Parameters
     ----------
@@ -1023,8 +1020,7 @@ def conv1d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D convolution given 3-D input x and filters arrays.
+    """Compute a 1-D convolution given 3-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1128,20 +1124,21 @@ def conv1d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D transpose convolution given 3-D input x and filters arrays.
+    """Compute a 1-D transpose convolution given 3-D input x and filters
+    arrays.
 
     Parameters
     ----------
     x
         Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
     filters
-        Convolution filters *[fw,d_in,d_out]*.
+        Convolution filters *[fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1149,6 +1146,9 @@ def conv1d_transpose(
         input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IOW",input data formats, while "channel_last" corresponds to "WOI".
     data_format
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
@@ -1175,7 +1175,7 @@ def conv1d_transpose(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 6, 3])
     >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 56, 6)
@@ -1188,7 +1188,7 @@ def conv1d_transpose(
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 64])
     >>> y = ivy.zeros((1, 258, 32))
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 64, 32])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 32, 64])
     >>> ivy.conv1d_transpose(x, filters, 1, 'VALID', out=y)
     >>> print(y.shape)
     ivy.Shape(1, 258, 32)
@@ -1196,9 +1196,9 @@ def conv1d_transpose(
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array(
-    ...         ivy.random_normal(mean=0, std=1, shape=[1,256,128]))
+    ...         ivy.random_normal(mean=0, std=1, shape=[1, 256, 128]))
     >>> filters = ivy.native_array(
-    ...         ivy.random_normal(mean=0, std=1, shape=[3, 128, 32]))
+    ...         ivy.random_normal(mean=0, std=1, shape=[3, 32, 128]))
     >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 512, 32)
@@ -1251,6 +1251,7 @@ def conv1d_transpose(
         strides,
         padding,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -1279,8 +1280,7 @@ def conv2d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D convolution given 4-D input x and filters arrays.
+    """Compute a 2-D convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1414,20 +1414,21 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D transpose convolution given 4-D input x and filters arrays.
+    """Compute a 2-D transpose convolution given 4-D input x and filters
+    arrays.
 
     Parameters
     ----------
     x
         Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
     filters
-        Convolution filters *[fh,fw,d_in,d_out]*.
+        Convolution filters *[fh,fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1440,8 +1441,8 @@ def conv2d_transpose(
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
     filter_format
-        Either "channel_first" or "channel_last". "channel_first" corresponds to
-        "OIDHW" input data formats, while "channel_last" corresponds to "DHWIO" .
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IOHW",input data formats, while "channel_last" corresponds to "HWOI".
     x_dilations
         The dilation factor for each dimension of input. (Default value = 1)
     dilations
@@ -1465,7 +1466,7 @@ def conv2d_transpose(
     --------
     With :class:`ivy.Array` input:
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6, 3])
     >>> y = ivy.conv2d_transpose(x,filters,2,'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 56, 56, 6)
@@ -1478,7 +1479,7 @@ def conv2d_transpose(
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])
     >>> y = ivy.zeros((1, 258, 258, 32))
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 32, 64])
     >>> ivy.conv2d_transpose(x,filters,[1, 1, 1],'VALID',out=y)
     >>> print(y.shape)
     ivy.Shape(1, 258, 258, 32)
@@ -1529,6 +1530,7 @@ def conv2d_transpose(
         strides,
         padding,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -1555,8 +1557,8 @@ def depthwise_conv2d(
     dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
+    """Compute a 2-D depthwise convolution given 4-D input ``x`` and filters
+    arrays.
 
     Parameters
     ----------
@@ -1697,8 +1699,7 @@ def conv3d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 3-D convolution given 5-D input x and filters arrays.
+    """Compute a 3-D convolution given 5-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1813,20 +1814,21 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 3-D transpose convolution given 5-D input x and filters arrays.
+    """Compute a 3-D transpose convolution given 5-D input x and filters
+    arrays.
 
     Parameters
     ----------
     x
         Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
-        Convolution filters *[fd,fh,fw,d_in,d_out]*.
+        Convolution filters *[fd,fh,fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1834,6 +1836,9 @@ def conv3d_transpose(
         input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IODHW",input data formats, while "channel_last" corresponds to "DHWOI".
     data_format
         The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
         corresponds to inputs with shape (batch_size, depth, height, width, channels),
@@ -1857,13 +1862,13 @@ def conv3d_transpose(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
     >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 6, 56, 56, 6)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
     >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
     ivy.Shape(1, 7, 129, 129, 6)
@@ -1927,6 +1932,7 @@ def conv3d_transpose(
         strides,
         padding,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -1958,9 +1964,8 @@ def conv_general_dilated(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x respectively
-    and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x
+    respectively and filters arrays.
 
     Parameters
     ----------
@@ -2036,22 +2041,22 @@ def conv_general_transpose(
     *,
     dims: int = 2,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D input x
-    respectively and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
     x
         Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
-        Convolution filters *[fd,fh,fw,d_in,d_out]*.
+        Convolution filters *[fd,fh,fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -2061,6 +2066,9 @@ def conv_general_transpose(
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     output_shape
         Shape of the output.
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IODHW",input data formats, while "channel_last" corresponds to "DHWOI".
     data_format
         Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
         "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
@@ -2084,12 +2092,12 @@ def conv_general_transpose(
     --------
     With :class:`ivy.Array` input:
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
     >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 6, 56, 56, 6)
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
     >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
     ivy.Shape(1, 7, 129, 129, 6)
@@ -2149,6 +2157,7 @@ def conv_general_transpose(
         padding,
         dims=dims,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         feature_group_count=feature_group_count,
@@ -2180,9 +2189,8 @@ def conv(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D, 4-D and 5-D
-    input x respectively and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D,
+    4-D and 5-D input x respectively and filters arrays.
 
     Parameters
     ----------
@@ -2278,14 +2286,16 @@ def lstm_update(
     *,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Perform long-short term memory update by unrolling time dimension of input array.
+    time_major: bool = False,
+) -> Tuple[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
+    """Perform long-short term memory update by unrolling time dimension of
+    input array.
 
     Parameters
     ----------
     x
-        input tensor of LSTM layer *[batch_shape, t, in]*.
+        input tensor of LSTM layer *[batch_shape, t, in]* if time_major=False,
+        else *[t, batch_shape, in]*.
     init_h
         initial state tensor for the cell output *[batch_shape, out]*.
     init_c
@@ -2298,13 +2308,19 @@ def lstm_update(
         bias for cell kernel *[4 x out]*. (Default value = None)
     recurrent_bias
         bias for cell recurrent kernel *[4 x out]*. (Default value = None)
+    time_major
+        whether or not the input tensor `x` has the time dimension before batch dim.
 
     Returns
     -------
     ret
-        hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
-        timestep *[batch_shape,out]*
+        hidden state for all timesteps of shape *[batch_shape,t,out]* if time_major
+        is False, else *[t, batch_shape, out]*, and a tuple containing the final cell
+        states, both of shape *[batch_shape,out]*.
     """
+    # ToDo: test_lstm_update needs to be fixed
+    if time_major:
+        x = ivy.swapaxes(x, 0, 1)
     # get shapes
     x_shape = list(x.shape)
     batch_shape = x_shape[:-2]
@@ -2356,7 +2372,11 @@ def lstm_update(
 
         hts_list.append(ivy.expand_dims(ht, axis=-2))
 
-    return ivy.concat(hts_list, axis=-2), ct
+    ret = ivy.concat(hts_list, axis=-2)
+    if time_major:
+        ret = ivy.swapaxes(ret, 0, 1)
+
+    return ret, (ht, ct)
 
 
 # Helpers #
@@ -2510,8 +2530,7 @@ def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
 
 
 def _get_num_padded_values(i, p, n, k, s):
-    """
-    Get number of padded values in a specific window.
+    """Get number of padded values in a specific window.
 
     Parameters
     ----------

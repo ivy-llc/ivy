@@ -78,12 +78,14 @@ def _pad_generator(draw, shape, mode):
 @st.composite
 def _pad_helper(draw):
     mode = draw(
-        st.sampled_from([
-            "constant",
-            "reflect",
-            "replicate",
-            "circular",
-        ])
+        st.sampled_from(
+            [
+                "constant",
+                "reflect",
+                "replicate",
+                "circular",
+            ]
+        )
     )
     min_v = 1
     max_v = 5
