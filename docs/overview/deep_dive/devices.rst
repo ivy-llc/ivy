@@ -214,7 +214,7 @@ This is the exception you will get while running the code above:
     File "/content/ivy/ivy/func_wrapper.py", line 863, in _handle_device_shifting
         raise ivy.utils.exceptions.IvyException(
     During the handling of the above exception, another exception occurred:
-    Expected all input arrays to be on the same device, but found atleast two devices - ('cpu', 'gpu:0'),
+    Expected all input arrays to be on the same device, but found at least two devices - ('cpu', 'gpu:0'),
     set `ivy.set_soft_device_mode(True)` to handle this problem.
 
 b. If all the input arrays are on the same device, the operation is executed without raising any device exceptions.

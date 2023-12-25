@@ -390,8 +390,8 @@ def promote_types_jax(
     type2: Union[ivy.Dtype, ivy.NativeDtype],
     /,
 ) -> ivy.Dtype:
-    """
-    Promote the datatypes type1 and type2, returning the data type they promote to.
+    """Promote the datatypes type1 and type2, returning the data type they
+    promote to.
 
     Parameters
     ----------
@@ -399,6 +399,7 @@ def promote_types_jax(
         the first of the two types to promote
     type2
         the second of the two types to promote
+
     Returns
     -------
     ret
@@ -423,9 +424,8 @@ def promote_types_of_jax_inputs(
     x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Promote the dtype of the given native array inputs to a common dtype based on type
-    promotion rules.
+    """Promote the dtype of the given native array inputs to a common dtype
+    based on type promotion rules.
 
     While passing float or integer values or any other non-array input
     to this function, it should be noted that the return will be an
