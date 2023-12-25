@@ -942,6 +942,28 @@ class Tensor:
     @with_supported_dtypes(
         {
             "2.5.2 and below": (
+                "bfloat16",
+                "float32",
+                "float64",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+            )
+        },
+        "paddle",
+    )
+    def flatten(self, start_axis=0, stop_axis=-1, name=None):
+        if len(self.shape) == 0:
+            return self.unsqueeze(axis=0)
+        return paddle_frontend.Tensor(
+            ivy.flatten(self.ivy_array, start_dim=start_axis, end_dim=stop_axis)
+        )
+
+    @with_supported_dtypes(
+        {
+            "2.5.2 and below": (
                 "float32",
                 "float64",
                 "int16",
