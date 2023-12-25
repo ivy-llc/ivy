@@ -92,7 +92,7 @@ def max_pool1d(
 
        [[16., 17., 18., 19.]]])
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
-    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True)) # noqa
+    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True))
     ivy.array([[[ 1.,  3.],
             [ 5.,  7.],
             [ 9., 11.]],
@@ -100,7 +100,7 @@ def max_pool1d(
         [[13., 15.],
             [17., 19.],
             [21., 23.]]])
-    """
+    """  # noqa: E501
     return ivy.current_backend(x).max_pool1d(
         x,
         kernel,
@@ -1689,11 +1689,20 @@ def area_interpolate(x, dims, size, scale):
 def get_interpolate_kernel(mode):
     kernel_func = _triangle_kernel
     if mode == "tf_bicubic":
-        kernel_func = lambda inputs: _cubic_kernel(inputs)
+
+        def kernel_func(inputs):  # noqa F811
+            return _cubic_kernel(inputs)
+
     elif mode == "lanczos3":
-        kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
+
+        def kernel_func(inputs):
+            return _lanczos_kernel(3, inputs)
+
     elif mode == "lanczos5":
-        kernel_func = lambda inputs: _lanczos_kernel(5, inputs)
+
+        def kernel_func(inputs):
+            return _lanczos_kernel(5, inputs)
+
     return kernel_func
 
 
