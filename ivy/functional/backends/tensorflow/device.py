@@ -1,5 +1,4 @@
-"""
-Tensorflow device functions.
+"""Tensorflow device functions.
 
 Collection of TensorFlow general functions, wrapped to fit Ivy syntax
 and signature.
@@ -66,7 +65,7 @@ def as_ivy_dev(device: str, /):
     dev_type = dev_type.lower()
     if dev_type == "cpu":
         return ivy.Device(dev_type)
-    return ivy.Device(":".join([dev_type, dev_idx]))
+    return ivy.Device(f"{dev_type}:{dev_idx}")
 
 
 def as_native_dev(device: str, /):

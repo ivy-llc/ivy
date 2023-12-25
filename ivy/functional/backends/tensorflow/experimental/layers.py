@@ -47,35 +47,42 @@ def max_pool1d(
         kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
-    if data_format == "NCW":
+    permuted_x = False
+    if data_format == "NCW" and ivy.dev(x) == "cpu":
         x = tf.transpose(x, (0, 2, 1))
         kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == (dims + 2) else kernel
         strides = (
             [strides[i] for i in [0, 2, 1]] if len(strides) == (dims + 2) else strides
         )
-        padding = (
-            [padding[i] for i in [0, 2, 1]]
-            if isinstance(padding, list) and len(padding) == (dims + 2)
-            else padding
-        )
+        data_format = "NWC"
+        permuted_x = True
 
     # determine depth pooling
     x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
-        x, kernel, strides, dims, data_format="channel_last"
+        x, kernel, strides, dims, data_format=data_format
     )
 
     if not depth_pooling:
         if ceil_mode:
             new_kernel = [kernel[0] + (kernel[0] - 1) * (dilation[0] - 1)]
+            if data_format == "NCW":
+                x_shape = x.shape[2:]
+            else:
+                x_shape = x.shape[1:-1]
             if isinstance(padding, str):
-                pad_w = _handle_padding(x.shape[1], strides[0], new_kernel[0], padding)
+                pad_w = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
                 padding = [(pad_w // 2, pad_w - pad_w // 2)]
             padding[0] = _padding_ceil_mode(
-                x.shape[1], new_kernel[0], padding[0], strides[0]
+                x_shape[0], new_kernel[0], padding[0], strides[0]
             )
-        if ceil_mode or not isinstance(padding, str):
-            padding = [(0, 0)] + list(padding) + [(0, 0)]
-            x = tf.pad(x, padding, constant_values=-math.inf)
+        if isinstance(padding, list):
+            if any(item != 0 for sublist in padding for item in sublist):
+                if len(padding) < dims + 2:
+                    if data_format == "NCW":
+                        padding = [(0, 0), (0, 0), *padding]
+                    else:
+                        padding = [(0, 0), *padding, (0, 0)]
+                x = tf.pad(x, padding, constant_values=tf.math.reduce_min(x))
             padding = "VALID"
     elif isinstance(padding, list):
         if any(item != 0 for sublist in padding for item in sublist):
@@ -84,13 +91,13 @@ def max_pool1d(
             )
         else:
             padding = "VALID"
-    res = tf.nn.pool(x, kernel, "MAX", strides, padding, dilations=dilation)
+    res = tf.nn.pool(
+        x, kernel, "MAX", strides, padding, dilations=dilation, data_format=data_format
+    )
 
     if depth_pooling:
         res = tf.transpose(res, (0, 2, 1))
-    # converting minimum value to -inf because tensorflow clips -inf to minimum value
-    res = tf.where(res <= ivy.finfo(res.dtype).min, -math.inf, res)
-    if data_format == "NCW":
+    if permuted_x:
         return tf.transpose(res, (0, 2, 1))
     return res
 
@@ -112,7 +119,8 @@ def max_pool2d(
         kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
-    if data_format == "NCHW":
+    permuted_x = False
+    if data_format == "NCHW" and ivy.dev(x) == "cpu":
         x = tf.transpose(x, (0, 2, 3, 1))
         kernel = (
             [kernel[i] for i in [0, 2, 3, 1]] if len(kernel) == (dims + 2) else kernel
@@ -122,15 +130,12 @@ def max_pool2d(
             if len(strides) == (dims + 2)
             else strides
         )
-        padding = (
-            [padding[i] for i in [0, 2, 3, 1]]
-            if isinstance(padding, list) and len(padding) == (dims + 2)
-            else padding
-        )
+        data_format = "NHWC"
+        permuted_x = True
 
     # determine depth pooling
     x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
-        x, kernel, strides, dims, data_format="channel_last"
+        x, kernel, strides, dims, data_format=data_format
     )
 
     if not depth_pooling:
@@ -138,21 +143,29 @@ def max_pool2d(
             new_kernel = [
                 kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(dims)
             ]
+            if data_format == "NCHW":
+                x_shape = x.shape[2:]
+            else:
+                x_shape = x.shape[1:-1]
             if isinstance(padding, str):
-                pad_h = _handle_padding(x.shape[1], strides[0], new_kernel[0], padding)
-                pad_w = _handle_padding(x.shape[2], strides[1], new_kernel[1], padding)
+                pad_h = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
+                pad_w = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
                 padding = [
                     (pad_h // 2, pad_h - pad_h // 2),
                     (pad_w // 2, pad_w - pad_w // 2),
                 ]
-            x_shape = x.shape[1:-1]
             for i in range(dims):
                 padding[i] = _padding_ceil_mode(
                     x_shape[i], new_kernel[i], padding[i], strides[i]
                 )
-        if ceil_mode or not isinstance(padding, str):
-            padding = [(0, 0)] + list(padding) + [(0, 0)]
-            x = tf.pad(x, padding, constant_values=-math.inf)
+        if isinstance(padding, list):
+            if any(item != 0 for sublist in padding for item in sublist):
+                if len(padding) < dims + 2:
+                    if data_format == "NCHW":
+                        padding = [(0, 0), (0, 0), *padding]
+                    else:
+                        padding = [(0, 0), *padding, (0, 0)]
+                x = tf.pad(x, padding, constant_values=tf.math.reduce_min(x))
             padding = "VALID"
     elif isinstance(padding, list):
         if any(item != 0 for sublist in padding for item in sublist):
@@ -161,13 +174,22 @@ def max_pool2d(
             )
         else:
             padding = "VALID"
-    res = tf.nn.pool(x, kernel, "MAX", strides, padding, dilations=dilation)
+    if any(d > 1 for d in dilation):
+        res = tf.nn.pool(
+            x,
+            kernel,
+            "MAX",
+            strides,
+            padding,
+            dilations=dilation,
+            data_format=data_format,
+        )
+    else:  # faster
+        res = tf.nn.max_pool2d(x, kernel, strides, padding, data_format=data_format)
 
     if depth_pooling:
         res = tf.transpose(res, (0, 2, 3, 1))
-    # converting minimum value to -inf because tensorflow clips -inf to minimum value
-    res = tf.where(res <= ivy.finfo(res.dtype).min, -math.inf, res)
-    if data_format == "NCHW":
+    if permuted_x:
         return tf.transpose(res, (0, 3, 1, 2))
     return res
 
@@ -192,7 +214,8 @@ def max_pool3d(
         kernel, strides, padding, dilation, ceil_mode, dims, data_format
     )
 
-    if data_format == "NCDHW":
+    permuted_x = False
+    if data_format == "NCDHW" and ivy.dev(x) == "cpu":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
         kernel = (
             [kernel[i] for i in [0, 2, 3, 4, 1]]
@@ -204,21 +227,23 @@ def max_pool3d(
             if len(strides) == (dims + 2)
             else strides
         )
-        padding = (
-            [padding[i] for i in [0, 2, 3, 4, 1]]
-            if isinstance(padding, list) and len(padding) == (dims + 2)
-            else padding
-        )
+        data_format = "NDHWC"
+        permuted_x = True
 
     # determine depth pooling
     x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
-        x, kernel, strides, dims, data_format="channel_last"
+        x, kernel, strides, dims, data_format=data_format
     )
 
     if not depth_pooling:
         if ceil_mode:
-            new_kernel = [dilation[i] * (kernel[i] - 1) + 1 for i in range(dims)]
-            x_shape = x.shape[1:-1]
+            new_kernel = [
+                kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(dims)
+            ]
+            if data_format == "NCDHW":
+                x_shape = x.shape[2:]
+            else:
+                x_shape = x.shape[1:-1]
             if isinstance(padding, str):
                 pad_d = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
                 pad_h = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
@@ -232,9 +257,14 @@ def max_pool3d(
                 padding[i] = _padding_ceil_mode(
                     x_shape[i], new_kernel[i], padding[i], strides[i]
                 )
-        if ceil_mode or not isinstance(padding, str):
-            padding = [(0, 0)] + list(padding) + [(0, 0)]
-            x = tf.pad(x, padding, constant_values=-math.inf)
+        if isinstance(padding, list):
+            if any(item != 0 for sublist in padding for item in sublist):
+                if len(padding) < dims + 2:
+                    if data_format == "NCDHW":
+                        padding = [(0, 0), (0, 0), *padding]
+                    else:
+                        padding = [(0, 0), *padding, (0, 0)]
+                x = tf.pad(x, padding, constant_values=tf.math.reduce_min(x))
             padding = "VALID"
     elif isinstance(padding, list):
         if any(item != 0 for sublist in padding for item in sublist):
@@ -243,13 +273,13 @@ def max_pool3d(
             )
         else:
             padding = "VALID"
-    res = tf.nn.pool(x, kernel, "MAX", strides, padding, dilations=dilation)
+    res = tf.nn.pool(
+        x, kernel, "MAX", strides, padding, dilations=dilation, data_format=data_format
+    )
 
     if depth_pooling:
         res = tf.transpose(res, (0, 2, 3, 4, 1))
-    # converting minimum value to -inf because tensorflow clips -inf to minimum value
-    res = tf.where(res <= ivy.finfo(res.dtype).min, -math.inf, res)
-    if data_format == "NCDHW":
+    if permuted_x:
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
 
@@ -726,8 +756,10 @@ def dropout(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x = ivy.astype(x, dtype) if dtype and x.dtype != dtype else x
-    res = tf.nn.dropout(x, prob, noise_shape=noise_shape, seed=seed) if training else x
-    res = res if scale else tf.multiply(res, (1.0 - prob))
+    if prob == 0 or not training:
+        return x
+    res = tf.nn.dropout(x, prob, noise_shape=noise_shape, seed=seed)
+    res = tf.multiply(res, (1.0 - prob)) if not scale else res
     return res
 
 
@@ -1270,9 +1302,9 @@ def static_output_shape(input_shape, shape, axes):
 def _right_pad_or_crop(tensor, shape):
     input_shape = tf.shape(tensor)
     shape = tf.convert_to_tensor(shape, dtype=tf.dtypes.int32)
-    with tf.control_dependencies([
-        tf.debugging.assert_less_equal(tf.size(shape), tf.size(input_shape))
-    ]):
+    with tf.control_dependencies(
+        [tf.debugging.assert_less_equal(tf.size(shape), tf.size(input_shape))]
+    ):
         shape = tf.identity(shape)
     shape = tf.concat([input_shape[: tf.size(input_shape) - tf.size(shape)], shape], 0)
 

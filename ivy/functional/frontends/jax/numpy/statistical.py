@@ -103,7 +103,7 @@ def corrcoef(x, y=None, rowvar=True):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.20 and below": ("float16", "bfloat16")}, "jax")
+@with_unsupported_dtypes({"0.4.23 and below": ("float16", "bfloat16")}, "jax")
 def correlate(a, v, mode="valid", precision=None):
     if ivy.get_num_dims(a) != 1 or ivy.get_num_dims(v) != 1:
         raise ValueError("correlate() only support 1-dimensional inputs.")
@@ -495,7 +495,7 @@ def nanpercentile(
     ):
         """Assumes that q is in [0, 1], and is an ndarray."""
         if a.size == 0:
-            return ivy.nanmean(a, axis, out=out, keepdims=keepdims)
+            return ivy.nanmean(a, axis=axis, out=out, keepdims=keepdims)
         return _ureduce(
             a,
             func=_nanquantile_ureduce_func,
@@ -572,7 +572,7 @@ def ptp(a, axis=None, out=None, keepdims=False):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.20 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    {"0.4.23 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
     "jax",
 )
 def quantile(
@@ -597,7 +597,7 @@ def quantile(
 
 
 @handle_jax_dtype
-@with_unsupported_dtypes({"0.4.20 and below": ("bfloat16",)}, "jax")
+@with_unsupported_dtypes({"0.4.23 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
 def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis

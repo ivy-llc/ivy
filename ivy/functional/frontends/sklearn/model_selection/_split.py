@@ -83,10 +83,12 @@ class StratifiedKFold(KFold):
 
         n_classes = len(y_idx)
         y_order = ivy.sort(y_encoded)
-        allocation = ivy.asarray([
-            ivy.bincount(y_order[i :: self.n_splits], minlength=n_classes)
-            for i in range(self.n_splits)
-        ])
+        allocation = ivy.asarray(
+            [
+                ivy.bincount(y_order[i :: self.n_splits], minlength=n_classes)
+                for i in range(self.n_splits)
+            ]
+        )
         test_folds = ivy.empty(len(y), dtype="int64")
         for k in range(n_classes):
             folds_for_class = ivy.arange(self.n_splits).repeat(allocation[:, k])
@@ -121,12 +123,16 @@ def train_test_split(
     n_train = (
         ivy.floor(train_size * n_samples)
         if isinstance(train_size, float)
-        else float(train_size) if isinstance(train_size, int) else None
+        else float(train_size)
+        if isinstance(train_size, int)
+        else None
     )
     n_test = (
         ivy.ceil(test_size * n_samples)
         if isinstance(test_size, float)
-        else float(test_size) if isinstance(test_size, int) else None
+        else float(test_size)
+        if isinstance(test_size, int)
+        else None
     )
     if train_size is None:
         n_train = n_samples - n_test

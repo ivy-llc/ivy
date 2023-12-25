@@ -748,13 +748,14 @@ def _EvaluatePolynomial(x, coefficients):
 
 
 def _is_scalar(x):
-    """
-    Determines if the given tensor is a scalar.
+    """Determines if the given tensor is a scalar.
 
-    Args:
+    Args
+    ----
     - x (paddle.Tensor): Input tensor.
 
-    Returns:
+    Return
+    ------
     - bool: True if the tensor is a scalar, False otherwise.
     """
     return x.size == 1 and x.dim() == 0 and tuple(x.shape) == ()
