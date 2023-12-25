@@ -19,10 +19,22 @@ def min(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
+    if where is not None:
+        max_val = (
+            ivy.iinfo(x.dtype).max
+            if ivy.is_int_dtype(x.dtype)
+            else ivy.finfo(x.dtype).max
+        )
+        x = tf.where(where, x, tf.ones_like(x) * max_val)
+    result = tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
+    if initial is not None:
+        result = tf.minimum(result, initial)
+    return result
 
 
 def max(
