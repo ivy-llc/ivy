@@ -34,7 +34,7 @@ def histogram(
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float",
             "complex",
         )
@@ -64,6 +64,32 @@ def nanmean(
 ) -> Union[tf.Tensor, tf.Variable]:
     np_math_ops.enable_numpy_methods_on_tensor()
     return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
+
+
+def nanmin(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    nan_mask = tf.math.is_nan(a)
+    if where is not None:
+        nan_mask = tf.math.logical_or(nan_mask, tf.math.logical_not(where))
+
+    masked_tensor = tf.where(nan_mask, tf.constant(float("inf"), dtype=a.dtype), a)
+
+    if axis is None:
+        result = tf.math.reduce_min(masked_tensor, keepdims=keepdims)
+    else:
+        result = tf.math.reduce_min(masked_tensor, axis=axis, keepdims=keepdims)
+    if initial is not None:
+        result = tf.minimum(result, initial)
+    return result
 
 
 def _infer_dtype(dtype: tf.DType):
@@ -103,7 +129,7 @@ def _validate_quantile(q):
             if not (0.0 <= q[i] <= 1.0):
                 return False
     else:
-        if not (tf.math.reduce_all(0 <= q) and tf.math.reduce_all(q <= 1)):
+        if not (tf.math.reduce_all(q >= 0) and tf.math.reduce_all(q <= 1)):
             return False
     return True
 
@@ -249,7 +275,7 @@ def nanmedian(
 
 @with_supported_device_and_dtypes(
     {
-        "2.13.0 and below": {
+        "2.15.0 and below": {
             "cpu": (
                 "int64",
                 "int32",
@@ -284,7 +310,7 @@ def bincount(
 
 @with_supported_device_and_dtypes(
     {
-        "2.13.0 and below": {
+        "2.15.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -297,7 +323,7 @@ def igamma(
     return tf.math.igamma(a, x)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: tf.Tensor,
     x2: tf.Tensor = None,
@@ -400,7 +426,7 @@ def cov(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bool",)},
+    {"2.15.0 and below": ("bool",)},
     backend_version,
 )
 def cummax(
@@ -529,7 +555,7 @@ def __get_index(lst, indices=None, prefix=None):
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "complex")},
+    {"2.15.0 and below": ("bfloat16", "complex")},
     backend_version,
 )
 def cummin(
