@@ -15,7 +15,7 @@ from ivy.functional.ivy.random import (
 # dirichlet
 @with_unsupported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "blfoat16",
             "float16",
         )
@@ -65,12 +65,12 @@ def gamma(
     # TODO: Implement purely in tensorflow
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, tf.Tensor, tf.Variable],
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str = None,
+    device: Optional[str] = None,
     dtype: DType,
     seed: Optional[int] = None,
     fill_value: Optional[Union[float, int]] = 0,
@@ -95,7 +95,7 @@ def bernoulli(
     *,
     logits: Union[float, tf.Tensor, tf.Variable] = None,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str = None,
+    device: Optional[str] = None,
     dtype: DType,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,

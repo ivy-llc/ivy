@@ -9,7 +9,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def argsort(
     x: paddle.Tensor,
@@ -24,7 +24,7 @@ def argsort(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def sort(
     x: paddle.Tensor,
@@ -39,7 +39,7 @@ def sort(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def searchsorted(
     x: paddle.Tensor,
@@ -52,14 +52,12 @@ def searchsorted(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     right = True if side == "right" else False
-    assert ivy.is_int_dtype(ret_dtype), ValueError(
+    assert ivy.is_int_dtype(ret_dtype), TypeError(
         "only Integer data types are supported for ret_dtype."
     )
 
     if sorter is not None:
-        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
-            sorter.dtype
-        ), TypeError(
+        assert ivy.is_int_dtype(sorter.dtype), TypeError(
             f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
         )
         if ivy.as_native_dtype(sorter.dtype) not in [paddle.int32, paddle.int64]:
@@ -76,7 +74,7 @@ def searchsorted(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16", "float16", "complex")}},
+    {"2.5.2 and below": {"cpu": ("int8", "uint8", "int16", "float16", "complex")}},
     backend_version,
 )
 def msort(
