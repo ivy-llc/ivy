@@ -12,7 +12,7 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.14.0 and below": ("int", "float16", "bfloat16")}, backend_version
+    {"2.15.0 and below": ("int", "float16", "bfloat16")}, backend_version
 )
 def eigh_tridiagonal(
     alpha: Union[tf.Tensor, tf.Variable],
@@ -96,7 +96,7 @@ def matrix_exp(
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "complex",
             "float32",
             "float64",
@@ -115,7 +115,7 @@ def eig(
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "complex",
             "float32",
             "float64",
@@ -162,7 +162,7 @@ def solve_triangular(
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -241,7 +241,7 @@ def lu_factor(
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",

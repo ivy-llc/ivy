@@ -31,6 +31,8 @@ def min(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
@@ -39,6 +41,18 @@ def min(
         imag = paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
         ret = paddle.complex(real, imag)
     else:
+        if where is not None:
+            max_val = (
+                ivy.iinfo(x.dtype).max
+                if ivy.is_int_dtype(x.dtype)
+                else ivy.finfo(x.dtype).max
+            )
+            max_val = max_val / 10
+            # max_val becomes negative after multiplying with paddle.ones_like(x)
+            # therefore reduced it
+            val = paddle.ones_like(x) * max_val
+            val = val.astype(ret_dtype)
+            x = paddle.where(where, x, val)
         ret = paddle.amin(x, axis=axis, keepdim=keepdims)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
@@ -47,6 +61,9 @@ def min(
             axis = None
     if (x.ndim == 1 or axis is None) and not keepdims:
         ret = ret.squeeze()
+    if initial is not None:
+        initial = paddle.to_tensor(initial, dtype=ret_dtype)
+        ret = paddle.minimum(ret, initial)
     return ret.astype(ret_dtype)
 
 
@@ -167,7 +184,10 @@ def std(
     return _std(x, axis, correction, keepdims).cast(x.dtype)
 
 
-@with_unsupported_dtypes({"2.5.2 and below": ("int8", "uint8")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.5.2 and below": ("int8", "int16", "uint8")},
+    backend_version,
+)
 def sum(
     x: paddle.Tensor,
     /,

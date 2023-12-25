@@ -629,13 +629,13 @@ def test_default(x, default_val, test_flags, backend_fw):
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         with_callable = False
         if x is not None:
-            if hasattr(x, "__call__"):
+            if callable(x):
                 with_callable = True
             else:
                 x_dtype, x = x
                 x = x[0].tolist() if isinstance(x, list) else x
         else:
-            if hasattr(default_val, "__call__"):
+            if callable(default_val):
                 with_callable = True
             else:
                 dv_dtype, default_val = default_val
@@ -853,7 +853,7 @@ def test_einops_repeat(
 )
 def test_exists(x):
     if x is not None:
-        if not hasattr(x, "__call__"):
+        if not callable(x):
             dtype, x = x
     ret = ivy.exists(x)
     assert isinstance(ret, bool)
@@ -1208,7 +1208,7 @@ def test_inplace_arrays_supported(backend_fw):
         elif backend_fw in ["jax", "tensorflow", "paddle"]:
             assert not ivy_backend.inplace_arrays_supported()
         else:
-            raise Exception("Unrecognized framework")
+            raise RuntimeError("Unrecognized framework")
 
 
 # inplace_decrement
@@ -1329,7 +1329,7 @@ def test_inplace_variables_supported(backend_fw):
         elif backend_fw in ["jax", "paddle"]:
             assert not ivy_backend.inplace_variables_supported()
         else:
-            raise Exception("Unrecognized framework")
+            raise RuntimeError("Unrecognized framework")
 
 
 # is_array
