@@ -18,7 +18,6 @@ __version__ = None
 import setuptools
 from setuptools import setup
 from pathlib import Path
-from pip._vendor.packaging import tags
 from urllib import request
 import os
 import json
@@ -50,12 +49,15 @@ binaries_paths = _get_paths_from_binaries(binaries_dict)
 version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
 terminate = False
 fixed_tag = os.environ["TAG"] if "TAG" in os.environ else None
-all_tags = list(tags.sys_tags())
-python_tag, plat_name, options = None, None, None
+all_tags, python_tag, plat_name, options = None, None, None, None
 if fixed_tag:
     python_tag, _, plat_name = str(fixed_tag).split("-")
     options = {"bdist_wheel": {"python_tag": python_tag, "plat_name": plat_name}}
     all_tags = [fixed_tag]
+else:
+    from pip._vendor.packaging import tags
+
+    all_tags = list(tags.sys_tags())
 
 # download binaries for the tag with highest precedence
 for tag in all_tags:
@@ -127,7 +129,6 @@ setup(
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
-    python_requires=">=3.8,<=3.11",
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
     ],

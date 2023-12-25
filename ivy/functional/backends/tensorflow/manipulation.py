@@ -105,7 +105,7 @@ def permute_dims(
     return tf.transpose(x, perm=axes)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -185,7 +185,7 @@ def squeeze(
     return ret
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def stack(
     arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     /,
@@ -244,7 +244,7 @@ def repeat(
     /,
     repeats: Union[int, List[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.repeat(x, repeats, axis)
@@ -252,7 +252,7 @@ def repeat(
 
 @with_unsupported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "uint8",
             "uint16",
             "uint32",
@@ -323,7 +323,7 @@ def swapaxes(
     return tf.transpose(x, config)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
     /,

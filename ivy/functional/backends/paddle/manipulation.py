@@ -221,7 +221,7 @@ def stack(
 
     first_shape = arrays[0].shape
     if any(arr.shape != first_shape for arr in arrays):
-        raise Exception("Shapes of all inputs must match")
+        raise ValueError("Shapes of all inputs must match")
     if 0 in first_shape:
         return ivy.empty(
             first_shape[:axis] + [len(arrays)] + first_shape[axis:], dtype=dtype
@@ -307,7 +307,7 @@ def repeat(
     /,
     repeats: Union[int, Iterable[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     # handle the case when repeats contains 0 as paddle doesn't support it
