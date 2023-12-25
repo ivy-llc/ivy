@@ -1103,6 +1103,43 @@ def test_paddle__reshape(
     )
 
 
+# reshape_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="reshape_",
+    dtype_x_shape=_reshape_helper(),
+)
+def test_paddle__reshape_(
+    dtype_x_shape,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, shape = dtype_x_shape
+    assume(len(shape) != 0)
+    shape = {
+        "shape": shape,
+    }
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np=shape,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # __rmul__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
