@@ -271,10 +271,12 @@ def _segment_ops_helper(draw):
     shape_y = draw(st.integers(min_value=3, max_value=100))
     max_val = draw(st.integers(min_value=3, max_value=9))
     s_dtype = draw(
-        st.sampled_from([
-            "int32",
-            "int64",
-        ])
+        st.sampled_from(
+            [
+                "int32",
+                "int64",
+            ]
+        )
     )
     data_dtype, data = draw(
         helpers.dtype_and_values(
