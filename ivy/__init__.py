@@ -1213,7 +1213,10 @@ current_sub_backends = []
 downcast_dtypes = False
 upcast_dtypes = False
 crosscast_dtypes = False
-cast_dtypes = lambda: downcast_dtypes and upcast_dtypes and crosscast_dtypes
+
+
+def cast_dtypes():
+    return downcast_dtypes and upcast_dtypes and crosscast_dtypes
 
 
 def downcast_data_types(val=True):
