@@ -51,11 +51,11 @@ It therefore extends what is possible in any of the specific individual framewor
 
 Graph Tracers
 -------------
-Ivy’s `Graph Compiler <../one_liners/compile>`_ exhibits similar properties to many of the framework-specific graph tracers.
-Ivy’s graph compiler employs function tracing for computing the graph, and uses this graph as an intermediate representation during the transpilation process.
-Of all the graph tracers, Ivy’s graph compiler is most similar to `torch.fx`_.
+Ivy’s `Tracer <../one_liners/trace>`_ exhibits similar properties to many of the framework-specific graph tracers.
+Ivy’s tracer employs function tracing for computing the graph, and uses this graph as an intermediate representation during the transpilation process.
+Of all the graph tracers, Ivy’s tracer is most similar to `torch.fx`_.
 This is because :code:`torch.fx` also operates entirely in Python, without deferring to lower level languages for tracing and extracting the computation graph or the intermediate representation.
-The main difference is that Ivy’s graph compiler is fully framework-agnostic; Ivy’s compiler is able to compile graphs from any framework, while framework-specific compilers are of course bound to their particular framework.
+The main difference is that Ivy’s tracer is fully framework-agnostic; Ivy’s tracer is able to trace graphs from any framework, while framework-specific tracers are of course bound to their particular framework.
 
 Exchange Formats
 ----------------
@@ -105,6 +105,6 @@ Firstly, we are adhering to the `Array API Standard`_ defined by Quansight.
 In essence, they have written the standard and we have implemented it, which is pretty much as complementary as it gets.
 Similarly, OctoML makes it easy for anyone to *deploy* their model anywhere, while Ivy makes it easy for anyone to mix and match any code from any frameworks and versions to *train* their model anywhere.
 Again very complementary objectives.
-Finally, Modular will perhaps make it possible for developers to make changes at various levels of the stack when creating ML models using their "", and this would also be a great addition to the field.
+Finally, Modular will perhaps make it possible for developers to make changes at various levels of the stack when creating ML models using their infrastructure, and this would also be a great addition to the field.
 Compared to Modular which focuses on the lower levels of the stack, Ivy instead unifies the ML frameworks at the functional API level, enabling code conversions to and from the user-facing APIs themselves, without diving into any of the lower level details.
 All of these features are entirely complementary, and together would form a powerful suite of unifying tools for ML practitioners.

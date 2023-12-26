@@ -12,7 +12,7 @@ def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("int8", "int16", "int32", "int64", "unsigned")}, "tensorflow"
+    {"2.15.0 and below": ("int8", "int16", "int32", "int64", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def normal(shape, mean=0.0, stddev=1.0, dtype=ivy.float32, seed=None, name=None):
@@ -20,7 +20,7 @@ def normal(shape, mean=0.0, stddev=1.0, dtype=ivy.float32, seed=None, name=None)
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
+    {"2.15.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 @handle_tf_dtype
@@ -34,7 +34,7 @@ def poisson(shape, lam, dtype=ivy.float32, seed=None, name=None):
 
 # implement random shuffle
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("int8", "int16", "in32", "int64", "unsigned")}, "tensorflow"
+    {"2.15.0 and below": ("int8", "int16", "in32", "int64", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def shuffle(value, seed=None, name=None):
@@ -42,7 +42,7 @@ def shuffle(value, seed=None, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
+    {"2.15.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def stateless_normal(
@@ -54,7 +54,7 @@ def stateless_normal(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
+    {"2.15.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def stateless_poisson(shape, seed, lam, dtype=ivy.int32, name=None):
@@ -71,7 +71,7 @@ def stateless_uniform(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
+    {"2.15.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def uniform(shape, minval=0, maxval=None, dtype=ivy.float32, seed=None, name=None):

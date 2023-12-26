@@ -11,4 +11,4 @@ class Generator:
 
 
 def default__rng(seed=None):
-    return Generator(seed=seed)
+    return Generator(bit_generator=seed)

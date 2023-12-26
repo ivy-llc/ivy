@@ -6,7 +6,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def mean(input, axis=None, keepdim=False, out=None):
     ret = ivy.mean(input, axis=axis, keepdims=keepdim, out=out)
@@ -14,7 +14,7 @@ def mean(input, axis=None, keepdim=False, out=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -36,7 +36,10 @@ def nanmedian(x, axis=None, keepdim=True, name=None):
     return ivy.nanmedian(x, axis=axis, keepdims=keepdim)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("complex", "int8")}, "paddle")
+@with_supported_dtypes(
+    {"2.5.2 and below": ("bool", "float16", "float32", "float64", "int32", "int64")},
+    "paddle",
+)
 @to_ivy_arrays_and_back
 def numel(x, name=None):
     prod = ivy.prod(x.size, dtype=ivy.int64)
@@ -48,7 +51,7 @@ def numel(x, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "uint16")},
+    {"2.5.2 and below": ("float32", "float64", "uint16")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -61,7 +64,7 @@ def std(x, axis=None, unbiased=True, keepdim=False, name=None):
     return ivy.std(x, axis=axis, correction=int(unbiased), keepdims=keepdim)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def var(x, axis=None, unbiased=True, keepdim=False, name=None):
     if unbiased:
