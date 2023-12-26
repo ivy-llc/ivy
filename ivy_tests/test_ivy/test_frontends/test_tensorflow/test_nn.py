@@ -111,25 +111,29 @@ def _collapse_repeated_helper(draw):
     max_val = draw(st.integers(min_value=3, max_value=9))
     batch = draw(st.integers(min_value=5, max_value=20))
     l_dtype = draw(
-        st.sampled_from([
-            "uint8",
-            "complex64",
-            "complex128",
-            "float32",
-            "float64",
-            "int8",
-            "int32",
-            "int64",
-        ])
+        st.sampled_from(
+            [
+                "uint8",
+                "complex64",
+                "complex128",
+                "float32",
+                "float64",
+                "int8",
+                "int32",
+                "int64",
+            ]
+        )
     )
     s_dtype = draw(
-        st.sampled_from([
-            "uint8",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-        ])
+        st.sampled_from(
+            [
+                "uint8",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            ]
+        )
     )
     labels_dtype, labels = draw(
         helpers.dtype_and_values(
