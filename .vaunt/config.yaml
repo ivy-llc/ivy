@@ -49,7 +49,7 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: count(created_at >= "2023-12-26") >= 1
+            condition: count(created_at >= "2023-12-26" & merged = true) >= 1
 
   - achievement:
       name: Debugging Dynamo Bronze
@@ -99,7 +99,7 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: count(created_at >= "2023-12-26") >= 5
+            condition: count(created_at >= "2023-12-26" & merged = true) >= 5
 
   - achievement:
       name: Debugging Dynamo Silver
@@ -149,7 +149,7 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: count(created_at >= "2023-12-26") >= 15
+            condition: count(created_at >= "2023-12-26" & merged = true) >= 15
 
   - achievement:
       name: Debugging Dynamo Gold
@@ -199,4 +199,4 @@ achievements:
         - trigger:
             actor: reviewer
             action: pull_request
-            condition: count(created_at >= "2023-12-26") >= 30
+            condition: count(created_at >= "2023-12-26" & merged = true) >= 30
