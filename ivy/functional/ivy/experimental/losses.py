@@ -626,5 +626,5 @@ def triplet_margin_loss(
     distance_positive = ivy.norm(anchor - positive, ord=2, axis=-1)
     distance_negative = ivy.norm(anchor - negative, ord=2, axis=-1)
     loss = ivy.clip(distance_positive - distance_negative + margin, 0.0, None)
-    
+
     return _reduce_loss(reduction, loss, axis=None, out=out)
