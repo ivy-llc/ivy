@@ -49,7 +49,7 @@ def backend_proc(input_queue, output_queue):
 
             _, fn_module, fn_name, b = data
             output_queue.put(
-                (_get_supported_devices_dtypes_helper(b, fn_module, fn_name))
+                _get_supported_devices_dtypes_helper(b, fn_module, fn_name)
             )
         elif data[0] == "method supported dtypes":
             # again stage 1, calculating and returning supported dtypes
@@ -69,17 +69,17 @@ def backend_proc(input_queue, output_queue):
         elif data[0] == "_get_type_dict_helper":
             _, framework, kind, is_frontend_test = data
             dtype_ret = _get_type_dict_helper(framework, kind, is_frontend_test)
-            output_queue.put((dtype_ret))
+            output_queue.put(dtype_ret)
 
         elif data[0] == "num_positional_args_helper":
             _, fn_name, framework = data
             dtype_ret = num_positional_args_helper(fn_name, framework)
-            output_queue.put((dtype_ret))
+            output_queue.put(dtype_ret)
 
         elif data[0] == "cast_filter_helper":
             _, d, dtype, x, current_backend = data
             dtype_ret = cast_filter_helper(d, dtype, x, current_backend)
-            output_queue.put((dtype_ret))
+            output_queue.put(dtype_ret)
 
         elif data[0] == "function_backend_computation":
             # it's the backend return computation
@@ -101,21 +101,19 @@ def backend_proc(input_queue, output_queue):
             )
             # ret_from_target to be none, because main process has
             # framework imports blocked
-            output_queue.put(
-                (
-                    (None),
-                    ret_np_flat_from_target,
-                    ret_device,
-                    args_np,
-                    arg_np_arrays,
-                    arrays_args_indices,
-                    kwargs_np,
-                    arrays_kwargs_indices,
-                    kwarg_np_arrays,
-                    test_flags,
-                    input_dtypes,
-                )
-            )
+            output_queue.put((
+                (None),
+                ret_np_flat_from_target,
+                ret_device,
+                args_np,
+                arg_np_arrays,
+                arrays_args_indices,
+                kwargs_np,
+                arrays_kwargs_indices,
+                kwarg_np_arrays,
+                test_flags,
+                input_dtypes,
+            ))
         elif data[0] == "function_ground_truth_computation":
             # it's the ground_truth return computation
             (
@@ -152,15 +150,13 @@ def backend_proc(input_queue, output_queue):
                 fn_name,
             )
             # ret_from gt is none because main process has frameworks is None
-            output_queue.put(
-                (
-                    (None),
-                    ret_np_from_gt_flat,
-                    ret_from_gt_device,
-                    test_flags,
-                    fw_list,
-                )
-            )
+            output_queue.put((
+                (None),
+                ret_np_from_gt_flat,
+                ret_from_gt_device,
+                test_flags,
+                fw_list,
+            ))
         elif data[0] == "gradient_backend_computation":
             # gradient testing , part where it uses the backend
             (
@@ -196,7 +192,7 @@ def backend_proc(input_queue, output_queue):
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
-            output_queue.put((grads_np_flat))
+            output_queue.put(grads_np_flat)
 
         elif data[0] == "gradient_ground_truth_computation":
             # gradient testing, part where it uses ground truth
@@ -283,22 +279,20 @@ def backend_proc(input_queue, output_queue):
                 method_with_v,
             )
             # ret is none here, because main process doesn't import framework
-            output_queue.put(
-                (
-                    (None),
-                    ret_np_flat,
-                    ret_device,
-                    org_con_data,
-                    args_np_method,
-                    met_arg_np_vals,
-                    met_args_idxs,
-                    kwargs_np_method,
-                    met_kwarg_np_vals,
-                    met_kwargs_idxs,
-                    v_np,
-                    fw_list,
-                )
-            )
+            output_queue.put((
+                (None),
+                ret_np_flat,
+                ret_device,
+                org_con_data,
+                args_np_method,
+                met_arg_np_vals,
+                met_args_idxs,
+                kwargs_np_method,
+                met_kwarg_np_vals,
+                met_kwargs_idxs,
+                v_np,
+                fw_list,
+            ))
 
         elif data[0] == "method_ground_truth_computation":
             (

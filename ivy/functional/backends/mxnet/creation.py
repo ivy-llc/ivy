@@ -35,18 +35,16 @@ def arange(
 @_asarray_handle_nestable
 @_asarray_inputs_to_native_shapes
 def asarray(
-    obj: Union[
-        (
-            None,
-            mx.ndarray.NDArray,
-            bool,
-            int,
-            float,
-            NestedSequence,
-            SupportsBufferProtocol,
-            np.ndarray,
-        )
-    ],
+    obj: Union[(
+        None,
+        mx.ndarray.NDArray,
+        bool,
+        int,
+        float,
+        NestedSequence,
+        SupportsBufferProtocol,
+        np.ndarray,
+    )],
     /,
     *,
     copy: Optional[bool] = None,

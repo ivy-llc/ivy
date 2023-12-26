@@ -31,31 +31,31 @@ def _interp_args(draw, mode=None, mode_list=None):
         "nearest",
         "nearest-exact",
         "area",
+        "bicubic",
     ]
-
     tf_modes = [
         "linear",
         "bilinear",
         "trilinear",
         "nearest-exact",
         "tf_area",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "lanczos3",
         "lanczos5",
         "mitchellcubic",
         "gaussian",
     ]
-
     jax_modes = [
         "linear",
         "bilinear",
         "trilinear",
         "nearest-exact",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "lanczos3",
         "lanczos5",
     ]
-
+    if mode_list == "torch":
+        mode_list = torch_modes
     if not mode and not mode_list:
         if curr_backend == "torch" and not mixed_fn_compos:
             mode = draw(st.sampled_from(torch_modes))
@@ -74,7 +74,7 @@ def _interp_args(draw, mode=None, mode_list=None):
                         "nearest-exact",
                         "area",
                         "tf_area",
-                        "bicubic_tensorflow",
+                        "tf_bicubic",
                         "lanczos3",
                         "lanczos5",
                         "mitchellcubic",
@@ -84,14 +84,11 @@ def _interp_args(draw, mode=None, mode_list=None):
             )
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
-    align_corners = draw(st.one_of(st.booleans(), st.none()))
-    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
-        align_corners = False
     if mode == "linear":
         num_dims = 3
     elif mode in [
         "bilinear",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "bicubic",
         "mitchellcubic",
         "gaussian",
@@ -113,7 +110,6 @@ def _interp_args(draw, mode=None, mode_list=None):
             )
             + 2
         )
-        align_corners = None
     if curr_backend == "tensorflow" and not mixed_fn_compos:
         num_dims = 3
     dtype, x = draw(
@@ -125,47 +121,36 @@ def _interp_args(draw, mode=None, mode_list=None):
             max_num_dims=num_dims,
             min_dim_size=2,
             max_dim_size=5,
-            large_abs_safety_factor=50,
-            small_abs_safety_factor=50,
-            safety_factor_scale="log",
+            max_value=1e04,
+            min_value=-1e04,
+            abs_smallest_val=1e-04,
         )
     )
+    align_corners = draw(st.booleans())
     if draw(st.booleans()):
-        scale_factor = draw(
-            st.one_of(
-                helpers.lists(
-                    x=helpers.floats(
-                        min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
-                    ),
-                    min_size=num_dims - 2,
-                    max_size=num_dims - 2,
-                ),
-                helpers.floats(
-                    min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
-                ),
+        if draw(st.booleans()):
+            scale_factor = draw(
+                st.floats(min_value=max([1 / d for d in x[0].shape[2:]]), max_value=3)
             )
-        )
+        else:
+            scale_factor = []
+            for s in x[0].shape[2:]:
+                scale_factor += [draw(st.floats(min_value=1 / s, max_value=3))]
         recompute_scale_factor = draw(st.booleans())
         size = None
     else:
         size = draw(
             st.one_of(
-                helpers.lists(
-                    x=helpers.ints(
-                        min_value=1, max_value=3, mixed_fn_compos=mixed_fn_compos
-                    ),
+                st.lists(
+                    st.integers(min_value=1, max_value=3 * max(x[0].shape)),
                     min_size=num_dims - 2,
                     max_size=num_dims - 2,
                 ),
-                st.integers(min_value=1, max_value=3),
+                st.integers(min_value=1, max_value=3 * max(x[0].shape)),
             )
         )
-        recompute_scale_factor = False
+        recompute_scale_factor = None
         scale_factor = None
-    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
-        if not recompute_scale_factor:
-            recompute_scale_factor = True
-
     return (dtype, x, mode, size, align_corners, scale_factor, recompute_scale_factor)
 
 
@@ -517,7 +502,7 @@ def test_adaptive_avg_pool1d(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=3,
         max_num_dims=4,
-        min_dim_size=1,
+        min_dim_size=2,
         max_value=100,
         min_value=-100,
     ),
@@ -528,11 +513,12 @@ def test_adaptive_avg_pool1d(
         ),
         helpers.ints(min_value=1, max_value=5),
     ),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
     test_with_out=st.just(False),
     ground_truth_backend="torch",
 )
 def test_adaptive_avg_pool2d(
-    *, dtype_and_x, output_size, test_flags, backend_fw, fn_name, on_device
+    *, dtype_and_x, output_size, data_format, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -543,6 +529,7 @@ def test_adaptive_avg_pool2d(
         fn_name=fn_name,
         input=x[0],
         output_size=output_size,
+        data_format=data_format,
     )
 
 
@@ -1074,13 +1061,10 @@ def test_ifftn(
 @handle_test(
     fn_tree="functional.ivy.experimental.interpolate",
     dtype_x_mode=_interp_args(),
-    antialias=st.just(False),
     test_gradients=st.just(False),
     number_positional_args=st.just(2),
 )
-def test_interpolate(
-    dtype_x_mode, antialias, test_flags, backend_fw, fn_name, on_device
-):
+def test_interpolate(dtype_x_mode, test_flags, backend_fw, fn_name, on_device):
     (
         input_dtype,
         x,
@@ -1097,12 +1081,11 @@ def test_interpolate(
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-01,
-        atol_=1e-01,
+        atol_=1e-03,
         x=x[0],
         size=size,
         mode=mode,
         align_corners=align_corners,
-        antialias=antialias,
         scale_factor=scale_factor,
         recompute_scale_factor=recompute_scale_factor,
     )
@@ -1186,12 +1169,9 @@ def test_max_pool2d(
     assume(
         not (
             backend_fw == "tensorflow"
-            and (
-                (stride[0] > kernel[0] or stride[0] > kernel[1])
-                or (
-                    (stride[0] > 1 and dilation[0] > 1)
-                    or (stride[0] > 1 and dilation[1] > 1)
-                )
+            and all(
+                stride[i] > kernel[i] or (stride[i] > 1 and dilation[i] > 1)
+                for i in range(2)
             )
         )
     )
@@ -1244,7 +1224,14 @@ def test_max_pool3d(
     on_device,
 ):
     dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
-
+    assume(
+        not (
+            backend_fw == "tensorflow"
+            and isinstance(pad, str)
+            and pad == "SAME"
+            and any(dil > 1 for dil in dilation)
+        )
+    )
     data_format = "NCDHW" if data_format == "channel_first" else "NDHWC"
     assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
     # TODO: Remove this once the paddle backend supports dilation

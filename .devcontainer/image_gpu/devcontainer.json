@@ -1,7 +1,7 @@
 {
 	"name": "Ivy GPU Development Environment (image)",
 
-	"image": "unifyai/multicuda:base_and_requirements",
+	"image": "unifyai/ivy:latest-gpu",
 	"customizations": {
 		"vscode": {
 			"extensions": [

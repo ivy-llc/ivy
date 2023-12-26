@@ -120,9 +120,9 @@ def _lstm_helper(draw):
             )
         )
         batch_sizes = np.array(draw(st.permutations(batch_sizes)))
-        input, batch_sizes = [
+        input, batch_sizes = (
             ivy.to_numpy(p) for p in _pack_padded_sequence(input, batch_sizes)
-        ]
+        )
     else:
         batch_sizes = None
 

@@ -85,7 +85,7 @@ def unique_inverse(
         values = np.append(values, np.full(nan_count - 1, np.nan), axis=axis).astype(
             x.dtype
         )
-    inverse_indices = np.reshape(inverse_indices, x.shape, axis=0)
+    inverse_indices = np.reshape(inverse_indices, x.shape)
     return Results(values, inverse_indices)
 
 
