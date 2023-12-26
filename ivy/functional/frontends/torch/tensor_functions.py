@@ -59,3 +59,6 @@ def scatter_reduce(input, dim, index, src, reduce, *, include_self=True):
     }
     reduce = mode_mappings.get(reduce, reduce)
     return ivy.put_along_axis(input, index, src, dim, mode=reduce)
+
+def erfinv_(input):
+    return ivy.assign(input, ivy.erfinv(ivy.to_numpy(input)))
