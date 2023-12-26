@@ -58,7 +58,10 @@ class _AvoidGPUPreallocation:
 def _move_to_device(args=None, kwargs=None, device="cpu"):
     args_idxs = ivy.nested_argwhere(args, ivy.is_array)
     kwargs_idxs = ivy.nested_argwhere(kwargs, ivy.is_array)
-    func = lambda x: ivy.to_device(x, device, out=x)
+
+    def func(x):
+        return ivy.to_device(x, device, out=x)
+
     if args is not None:
         args = ivy.map_nest_at_indices(args, args_idxs, func)
     if kwargs is not None:
@@ -101,9 +104,8 @@ def eager_benchmark(
     kwargs: Optional[Dict[str, Any]] = None,
     output_path="./report.csv",
 ):
-    """
-    Benchmark the function or module passed in input on the required backends and
-    devices.
+    """Benchmark the function or module passed in input on the required
+    backends and devices.
 
     Parameters
     ----------
@@ -271,14 +273,13 @@ def eager_benchmark(
 
 
 def visualize_speed_up(
-    file_path: str = None,
-    output_path: str = None,
+    file_path: Optional[str] = None,
+    output_path: Optional[str] = None,
     devices: Union[List[str], str] = "all",
     backends: Union[List[str], str] = "all",
-    labels: Union[List[str], str] = None,
+    labels: Optional[Union[List[str], str]] = None,
 ):
-    """
-    Visualize the speed up results stored in the csv.
+    """Visualize the speed up results stored in the csv.
 
     Parameters
     ----------

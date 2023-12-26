@@ -5,7 +5,7 @@ from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 import ivy.functional.frontends.tensorflow.nn as tf_nn
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, "tensorflow")
 def depthwise_conv2d(
     input,
     filter,
@@ -30,7 +30,7 @@ def depthwise_conv2d(
 
 # should have float16 as well but sqrt doesn't support it
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.13.0 and below": ("float32",)}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32",)}, "tensorflow")
 def fused_batch_norm(
     x,
     scale,
@@ -54,7 +54,7 @@ def fused_batch_norm(
             x = ivy.permute_dims(x, axes=(0, 2, 3, 4, 1))
         else:
             raise ivy.utils.exceptions.IvyException(
-                "input tensor must be of 4 or 5 dimensions, got {}".format(dims)
+                f"input tensor must be of 4 or 5 dimensions, got {dims}"
             )
 
     scale = scale.astype(ivy.float32)
@@ -105,7 +105,7 @@ def fused_batch_norm(
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("float16",)},
+    {"2.15.0 and below": ("float16",)},
     "tensorflow",
 )
 def max_pool(value, ksize, strides, padding, data_format="NHWC", name=None, input=None):
@@ -124,7 +124,7 @@ def max_pool(value, ksize, strides, padding, data_format="NHWC", name=None, inpu
 
 @with_unsupported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float16",
             "bfloat16",
         )

@@ -19,7 +19,7 @@ def cond(pred, true_fun, false_fun, *operands, operand=None, linear=None):
 
 @to_ivy_arrays_and_back
 def fori_loop(lower, upper, body_fun, init_val):
-    if not (callable(body_fun)):
+    if not callable(body_fun):
         raise ivy.exceptions.IvyException(
             "jax.lax.fori_loop: Argument body_fun should be callable."
         )

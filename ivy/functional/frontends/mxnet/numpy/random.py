@@ -62,7 +62,7 @@ def rand(*size, **kwargs):
 
 @to_ivy_arrays_and_back
 def randint(low, high=None, size=None, dtype=None, device=None, out=None):
-    return ivy.randint(low, high=high, shape=size, device=device, dtype=dtype, out=out)
+    return ivy.randint(low, high, shape=size, device=device, dtype=dtype, out=out)
 
 
 @to_ivy_arrays_and_back
