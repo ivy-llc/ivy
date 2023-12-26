@@ -223,8 +223,6 @@ def gather(
                 + params.shape[axis + 1 :]
             )
             result = result.to(dtype=params.dtype)
-            if ivy.exists(out):
-                return ivy.inplace_update(out, result)
             return result
         else:
             indices_expanded, new_axis = expand_p_i(params, indices)
@@ -249,11 +247,8 @@ def gather(
                 ]
         for z in zip_list:
             p, i = z
-            i_ex, new_axis = expand_p_i(p, i)
-            r = torch.gather(
-                p, (new_axis - batch_dims), i_ex.long(), sparse_grad=False, out=None
-            )
-
+            i_ex, new_axis = expand_p_i(p, i, axis=axis - batch_dims)
+            r = torch.gather(p, (new_axis), i_ex.long(), sparse_grad=False, out=None)
             result.append(r)
         result = torch.stack(result)
         result = result.reshape(
