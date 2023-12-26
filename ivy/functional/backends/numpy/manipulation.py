@@ -70,7 +70,7 @@ def flip(
         return x
     if axis is None:
         axis = list(range(num_dims))
-    if type(axis) is int:
+    if isinstance(axis, int):
         axis = [axis]
     axis = [item + num_dims if item < 0 else item for item in axis]
     return np.flip(x, axis)

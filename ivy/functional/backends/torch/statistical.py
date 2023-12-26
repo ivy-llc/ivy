@@ -21,6 +21,8 @@ def min(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis == ():
@@ -28,9 +30,22 @@ def min(
             return ivy.inplace_update(out, x)
         else:
             return x
+    if where is not None:
+        max_val = (
+            ivy.iinfo(x.dtype).max
+            if ivy.is_int_dtype(x.dtype)
+            else ivy.finfo(x.dtype).max
+        )
+        val = torch.ones_like(x) * max_val
+        val = val.type(x.dtype)
+        x = torch.where(where, x, val)
     if not keepdims and not axis and axis != 0:
-        return torch.amin(input=x, out=out)
-    return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
+        result = torch.amin(input=x, out=out)
+    result = torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
+    if initial is not None:
+        initial = torch.tensor(initial, dtype=x.dtype)
+        result = torch.minimum(result, initial)
+    return result
 
 
 min.support_native_out = True

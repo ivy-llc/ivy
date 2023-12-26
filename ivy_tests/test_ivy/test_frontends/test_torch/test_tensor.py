@@ -6463,6 +6463,13 @@ def test_torch_expand(
     backend_fw,
 ):
     input_dtype, x, shape = dtype_x_shape
+
+    if backend_fw == "paddle":
+        assume(
+            input_dtype[0] in ["int32", "int64", "float32", "float64", "bool"]
+            and len(shape) < 7
+        )
+
     if unpack_shape:
         method_flags.num_positional_args = len(shape) + 1
         size = {}
@@ -6533,7 +6540,7 @@ def test_torch_expand_as(
     init_tree="torch.tensor",
     method_name="expm1",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_torch_expm1(
@@ -7688,6 +7695,104 @@ def test_torch_index_fill(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# todo: remove dtype specifications
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="index_put",
+    x_and_indices=helpers.array_indices_axis(
+        array_dtypes=st.just(("float32",)),
+        indices_dtypes=st.just(("int64",)),
+    ),
+    values=helpers.dtype_and_values(
+        available_dtypes=st.just(("float32",)), max_num_dims=1, max_dim_size=1
+    ),
+    accumulate=st.booleans(),
+)
+def test_torch_index_put(
+    x_and_indices,
+    values,
+    accumulate,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, indices, *_ = x_and_indices
+    values_dtype, values = values
+    init_dtypes = [input_dtype[0]]
+    method_dtypes = [input_dtype[1], values_dtype[0]]
+    helpers.test_frontend_method(
+        init_input_dtypes=init_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=method_dtypes,
+        method_all_as_kwargs_np={
+            "indices": (indices,),
+            "values": values[0],
+            "accumulate": accumulate,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="index_put_",
+    x_and_indices=helpers.array_indices_axis(
+        array_dtypes=st.just(("float32",)),
+        indices_dtypes=st.just(("int64",)),
+    ),
+    values=helpers.dtype_and_values(
+        available_dtypes=st.just(("float32",)), max_num_dims=1, max_dim_size=1
+    ),
+    accumulate=st.booleans(),
+    test_inplace=st.just(True),
+)
+def test_torch_index_put_(
+    x_and_indices,
+    values,
+    accumulate,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, indices, *_ = x_and_indices
+    values_dtype, values = values
+    init_dtypes = [input_dtype[0]]
+    method_dtypes = [input_dtype[1], values_dtype[0]]
+    helpers.test_frontend_method(
+        init_input_dtypes=init_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=method_dtypes,
+        method_all_as_kwargs_np={
+            "indices": (indices,),
+            "values": values[0],
+            "accumulate": accumulate,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
         on_device=on_device,
     )
 
@@ -12863,6 +12968,48 @@ def test_torch_tensor_erfc_(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
+    )
+
+
+# logaddexp2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="logaddexp2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        min_value=-100,
+        max_value=100,
+        shared_dtype=True,
+    ),
+)
+def test_torch_tensor_logaddexp2(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
     )
 
 

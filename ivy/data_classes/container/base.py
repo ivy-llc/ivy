@@ -1155,7 +1155,7 @@ class ContainerBase(dict, abc.ABC):
             ),
         )
         container_dict = {}
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
             h5_obj = h5_obj_or_filepath
@@ -1238,7 +1238,7 @@ class ContainerBase(dict, abc.ABC):
                 "the size of hdf5 files."
             ),
         )
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
             h5_obj = h5_obj_or_filepath
@@ -1280,7 +1280,7 @@ class ContainerBase(dict, abc.ABC):
         )
         if seed_value is None:
             seed_value = random.randint(0, 1000)
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "a")
         else:
             h5_obj = h5_obj_or_filepath
@@ -1997,7 +1997,7 @@ class ContainerBase(dict, abc.ABC):
                 "containers to disk as hdf5 files."
             ),
         )
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, mode)
         else:
             h5_obj = h5_obj_or_filepath

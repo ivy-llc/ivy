@@ -1386,8 +1386,8 @@ class Tensor:
     def exp(self):
         return torch_frontend.exp(self)
 
-    @with_unsupported_dtypes(
-        {"2.1.2 and below": ("bfloat16", "float16", "complex")}, "torch"
+    @with_supported_dtypes(
+        {"2.1.2 and below": ("bfloat16", "float32", "float64")}, "torch"
     )
     def expm1(self):
         return torch_frontend.expm1(self)
@@ -1855,6 +1855,11 @@ class Tensor:
     def logaddexp(self, other):
         return torch_frontend.logaddexp(self, other)
 
+    @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
+    def logaddexp2(self, other):
+        self.ivy_array = torch_frontend.logaddexp2(self, other).ivy_array
+        return self
+
     def angle(self):
         return torch_frontend.angle(self)
 
@@ -2212,6 +2217,21 @@ class Tensor:
     )
     def corrcoef(self):
         return torch_frontend.corrcoef(self)
+
+    def index_put(self, indices, values, accumulate=False):
+        ret = self.clone()
+        if accumulate:
+            ret[indices[0]] += values
+        else:
+            ret[indices[0]] = values
+        return ret
+
+    def index_put_(self, indices, values, accumulate=False):
+        if accumulate:
+            self[indices] += values
+        else:
+            self[indices] = values
+        return self
 
     # Method aliases
     absolute, absolute_ = abs, abs_

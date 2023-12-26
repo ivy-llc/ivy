@@ -800,7 +800,7 @@ except:  # noqa: E722
     pass  # Added for the finally statement
 try:
     from .compiler.replace_with import replace_with, transform_function
-except:
+except:  # noqa: E722
     pass
 finally:
     # Skip framework imports done by Ivy compiler for now
@@ -1213,7 +1213,10 @@ current_sub_backends = []
 downcast_dtypes = False
 upcast_dtypes = False
 crosscast_dtypes = False
-cast_dtypes = lambda: downcast_dtypes and upcast_dtypes and crosscast_dtypes
+
+
+def cast_dtypes():
+    return downcast_dtypes and upcast_dtypes and crosscast_dtypes
 
 
 def downcast_data_types(val=True):
