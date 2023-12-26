@@ -46,12 +46,14 @@ def _asarray_helper(draw):
     )[-1]
     dtype = draw(st.sampled_from([dtype, None]))
     x = draw(
-        st.sampled_from([
-            x,
-            x_list,
-            sh,
-            # nested_values,
-        ])
+        st.sampled_from(
+            [
+                x,
+                x_list,
+                sh,
+                # nested_values,
+            ]
+        )
     )
     return x_dtype, x, dtype
 

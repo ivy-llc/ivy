@@ -1,4 +1,5 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 from typing import Optional, Union, Sequence, Callable, Tuple
@@ -34,7 +35,7 @@ def get_item(
     /,
     query: Union[np.ndarray, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> np.ndarray:
     return x.__getitem__(query)
 

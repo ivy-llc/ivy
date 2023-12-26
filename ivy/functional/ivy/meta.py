@@ -26,8 +26,7 @@ def _compute_cost_and_update_grads(
     batched,
     num_tasks,
 ):
-    """
-    Compute cost and update gradients.
+    """Compute cost and update gradients.
 
     This function computes the cost and updates gradients for optimization.
 
@@ -474,8 +473,7 @@ def fomaml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform step of first order MAML.
+    """Perform step of first order MAML.
 
     Parameters
     ----------
@@ -590,8 +588,7 @@ def reptile_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform a step of Reptile.
+    """Perform a step of Reptile.
 
     Parameters
     ----------
@@ -740,8 +737,7 @@ def maml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform step of vanilla second order MAML.
+    """Perform step of vanilla second order MAML.
 
     Parameters
     ----------
