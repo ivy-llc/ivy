@@ -199,7 +199,7 @@ To have a better idea on this, let's look at an example!
 In the :func:`full_like` function in :mod:`creation.py`, the types of :code:`fill_value` and :code:`dtype` has to be verified to avoid errors.
 This check has to be applied to all backends, which means the related code is common and identical.
 In this case, we can extract the code to be a helper function on its own, placed in its related submodule (:mod:`creation.py` here).
-In this example, the helper function is named as :func:`_assert_fill_value_and_dtype_are_compatible`.
+In this example, the helper function is named as :func:`check_fill_value_and_dtype_are_compatible`.
 
 Then, we import this submodule-specific helper function to the respective backends, where examples for each backend is shown below.
 
