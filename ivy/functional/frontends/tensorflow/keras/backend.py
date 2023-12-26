@@ -22,3 +22,31 @@ def bias_add(x, bias, data_format=None):
 @to_ivy_arrays_and_back
 def dot(x, y):
     return ivy.dot(x, y)
+
+
+def rnn(
+    step_function,
+    inputs,
+    initial_states,
+    go_backwards=False,
+    mask=None,
+    constants=None,
+    unroll=False,
+    input_length=None,
+    time_major=False,
+    zero_output_for_mask=False,
+    return_all_outputs=True,
+):
+    return ivy.rnn(
+        step_function,
+        inputs,
+        initial_states,
+        go_backward=go_backwards,
+        mask=mask,
+        constants=constants,
+        unroll=unroll,
+        input_length=input_length,
+        time_major=time_major,
+        zero_output_for_mask=zero_output_for_mask,
+        return_all_outputs=return_all_outputs,
+    )
