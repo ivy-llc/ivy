@@ -59,3 +59,11 @@ def scatter_reduce(input, dim, index, src, reduce, *, include_self=True):
     }
     reduce = mode_mappings.get(reduce, reduce)
     return ivy.put_along_axis(input, index, src, dim, mode=reduce)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.1.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+)
+def copy_(input, other):
+    return ivy.assign(input, other)
