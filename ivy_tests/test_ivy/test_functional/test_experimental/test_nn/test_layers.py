@@ -159,7 +159,7 @@ def _lstm_helper(draw):
     input_size = draw(helpers.ints(min_value=2, max_value=5))
     hidden_size = 4 * input_size
     input_length = draw(helpers.ints(min_value=2, max_value=5))
-    batch_size = draw(helpers.ints(min_value=1, max_value=4)) * 4
+    batch_size = draw(helpers.ints(min_value=1, max_value=4)) * 2
     dtype = draw(helpers.get_dtypes("float", full=False))
     (time_major, go_backwards, unroll, zero_output_for_mask, return_all_outputs) = draw(
         helpers.array_bools(size=5)
@@ -1463,6 +1463,7 @@ def test_rfftn(
     fn_tree="functional.ivy.experimental.rnn",
     rnn_args=_lstm_helper(),
     test_with_out=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_rnn(
     *,
@@ -1472,11 +1473,7 @@ def test_rnn(
     fn_name,
     on_device,
 ):
-    # ToDo : Get the test passing with paddle
-    if backend_fw == "paddle":
-        return
-    test_flags.container = [False]
-    test_flags.instance_method = False
+    # ToDo : Get the tests passing with paddle
     (
         input_dtypes,
         inputs,
@@ -1538,7 +1535,7 @@ def test_rnn(
         atol_=1e-1,
         step_function=_lstm_step,
         inputs=inputs,
-        intiial_states=initial_states,
+        initial_states=initial_states,
         go_backwards=go_backwards,
         mask=mask,
         constants=None,

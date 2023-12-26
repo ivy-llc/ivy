@@ -3242,9 +3242,9 @@ max_unpool1d.mixed_backend_wrappers = {
 @inputs_to_ivy_arrays
 @handle_device
 def rnn(
-    step_function,
-    inputs,
-    initial_states,
+    step_function: Callable,
+    inputs: ivy.Array,
+    initial_states: List[ivy.Array],
     /,
     *,
     go_backwards: bool = False,

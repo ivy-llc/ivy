@@ -1,6 +1,11 @@
+import functools
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    _ivy_array_to_tensorflow,
+    _to_ivy_array,
+    to_ivy_arrays_and_back,
+)
 
 
 def bias_add(x, bias, data_format=None):
@@ -24,6 +29,7 @@ def dot(x, y):
     return ivy.dot(x, y)
 
 
+@to_ivy_arrays_and_back
 def rnn(
     step_function,
     inputs,
@@ -37,11 +43,22 @@ def rnn(
     zero_output_for_mask=False,
     return_all_outputs=True,
 ):
+    @functools.wraps(step_function)
+    def _new_step_function(*args, **kwargs):
+        frontend_args = ivy.nested_map(
+            _ivy_array_to_tensorflow, args, include_derived=True, shallow=False
+        )
+        frontend_kwargs = ivy.nested_map(
+            _ivy_array_to_tensorflow, kwargs, include_derived=True, shallow=False
+        )
+        ret = step_function(*frontend_args, **frontend_kwargs)
+        return ivy.nested_map(_to_ivy_array, ret, include_derived=True)
+
     return ivy.rnn(
-        step_function,
+        _new_step_function,
         inputs,
         initial_states,
-        go_backward=go_backwards,
+        go_backwards=go_backwards,
         mask=mask,
         constants=constants,
         unroll=unroll,
