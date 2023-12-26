@@ -3261,11 +3261,48 @@ def rnn(
     Parameters
     ----------
     step_function
-        RNN step function
+        RNN step function.
     inputs
-        Tensor of temporal data of shape (samples, time, ...)
+        Array of temporal data of shape (samples, time, ...).
     initial_states
-        Tensor with shape (samples, state_size)
+        Array with shape (samples, state_size).
+    go_backwards
+        If True, do the iteration over the time dimension in reverse order and return
+        the reversed sequence.
+    mask
+        Binary array with shape (samples, time, 1), with a zero for every element that
+        is masked.
+    constants
+        List of constant values passed at each step.
+    unroll
+        Whether to use a pythonic while loop or ivy.while_loop
+    input_length
+        An integer or 1-D array, depending on whether the time dimension is
+        fixed-length. In case of variable length input, it is used for masking in case
+        there is no mask specified.
+    time_major
+        If True, the inputs and outputs will be in shape (timesteps, batch, ...) whereas
+        in the False case, it will be (batch, timesteps, ...).
+    zero_output_for_mask
+        If True, the otput for masked timestep will be zeros, whereas in the False case,
+        output from previous timestep is returned
+    return_all_outputs
+        If True, return the recurrent outputs for all timesteps in the sequence. If
+        False, only return the output for the last timestep.
+
+    Returns
+    -------
+    ret
+        A tuple of
+        -   the latest output of the rnn of shape (samples, ...)
+        -   the output of the rnn of shape (samples, time, ...) if
+            return_all_outputs=True else (samples, 1, ...)
+        -   list of tensors, latest states returned by the step funciton, of shape
+            (samples, ...)
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
     """
     # an ivy implementation of rnn inspired from
     # https://github.com/keras-team/keras/blob/v2.14.0/keras/backend.py#L4723-L5202
