@@ -13,11 +13,8 @@ for so_file in so_files:
     # if os.path.basename(so_file) != "add.so":
     #     continue
     module_name = os.path.splitext(os.path.basename(so_file))[0]
-    try:
-        locals()[module_name] = importlib.import_module(module_name)
-    except:
-        print("Failed to import " + module_name)
-        continue
+
+    locals()[module_name] = importlib.import_module(module_name)
 
     if module_name + "_wrapper" in locals()[module_name].__dict__.keys():
         locals()[module_name + "_wrapper"] = getattr(
@@ -27,4 +24,6 @@ for so_file in so_files:
 
 del dir_path
 del so_files
-del so_file
+
+import utils
+from utils import *
