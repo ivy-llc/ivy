@@ -92,7 +92,7 @@ def cartesian_prod(*tensors):
     return ret
 
 
-@with_unsupported_dtypes({"2.1.0 and below": "float16"}, "torch")
+@with_unsupported_dtypes({"2.1.2 and below": "float16"}, "torch")
 @to_ivy_arrays_and_back
 def cdist(x1, x2, p=2.0, compute_mode="use_mm_for_euclid_dist_if_necessary"):
     if len(x1.shape) != 3 or len(x2.shape) != 3:
