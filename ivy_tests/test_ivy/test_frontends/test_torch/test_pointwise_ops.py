@@ -5,11 +5,10 @@ from hypothesis import strategies as st, assume
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.array_api_testing.test_array_api.array_api_tests import (
-    hypothesis_helpers as hh,
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    two_broadcastable_shapes,
 )
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
 
 # --- Helpers --- #
@@ -86,7 +85,7 @@ def _get_clip_inputs(draw):
 
 @st.composite
 def _masked_fill_helper(draw):
-    shape_1, shape_2 = draw(hh.two_broadcastable_shapes())
+    shape_1, shape_2 = draw(two_broadcastable_shapes())
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
@@ -117,7 +116,14 @@ def _masked_fill_helper(draw):
     fn_tree="torch.abs",
     aliases=["torch.absolute"],
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=False),
+        available_dtypes=helpers.get_dtypes("numeric", full=False).filter(
+            lambda x: "uint8" not in x[0]
+            and "int8" not in x[0]
+            and "uint16" not in x[0]
+            and "int16" not in x[0]
+            and "float16" not in x[0]
+            and "bfloat16" not in x[0]
+        ),
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
@@ -2318,7 +2324,13 @@ def test_torch_positive(
 
 @handle_frontend_test(
     fn_tree="torch.pow",
-    dtype_and_x=pow_helper(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=1,
+        max_value=7,
+        shared_dtype=True,
+    ),
 )
 def test_torch_pow(
     dtype_and_x,

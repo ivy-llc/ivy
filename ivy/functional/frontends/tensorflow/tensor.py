@@ -10,9 +10,7 @@ from ivy.functional.frontends.numpy.creation_routines.from_existing_data import 
 
 class EagerTensor:
     def __init__(self, array):
-        self._ivy_array = (
-            ivy.array(array) if not isinstance(array, ivy.Array) else array
-        )
+        self._ivy_array = array if isinstance(array, ivy.Array) else ivy.array(array)
 
     def __repr__(self):
         return (
@@ -108,7 +106,7 @@ class EagerTensor:
         return tf_frontend.raw_ops.FloorDiv(x=self, y=y, name=name)
 
     @with_unsupported_dtypes(
-        {"2.14.0 and below": ("complex",)},
+        {"2.15.0 and below": ("complex",)},
         "tensorflow",
     )
     def __ge__(self, y, name="ge"):
@@ -120,7 +118,7 @@ class EagerTensor:
         return EagerTensor(ret)
 
     @with_unsupported_dtypes(
-        {"2.14.0 and below": ("complex",)},
+        {"2.15.0 and below": ("complex",)},
         "tensorflow",
     )
     def __gt__(self, y, name="gt"):
@@ -130,14 +128,14 @@ class EagerTensor:
         return tf_frontend.raw_ops.Invert(x=self, name=name)
 
     @with_unsupported_dtypes(
-        {"2.14.0 and below": ("complex",)},
+        {"2.15.0 and below": ("complex",)},
         "tensorflow",
     )
     def __le__(self, y, name="le"):
         return tf_frontend.raw_ops.LessEqual(x=self, y=y, name=name)
 
     @with_unsupported_dtypes(
-        {"2.14.0 and below": ("complex",)},
+        {"2.15.0 and below": ("complex",)},
         "tensorflow",
     )
     def __lt__(self, y, name="lt"):
@@ -150,7 +148,7 @@ class EagerTensor:
         return tf_frontend.math.multiply(self, y, name=name)
 
     @with_unsupported_dtypes(
-        {"2.14.0 and below": ("complex",)},
+        {"2.15.0 and below": ("complex",)},
         "tensorflow",
     )
     def __mod__(self, y, name="mod"):
@@ -244,9 +242,9 @@ class TensorShape:
         if self.rank is None:
             return "<unknown>"
         elif self.rank == 1:
-            return "(%s,)" % self._dims[0]
+            return f"({self._dims[0]},)"
         else:
-            return "(%s)" % ", ".join(str(d) for d in self._dims)
+            return f'({", ".join(str(d) for d in self._dims)})'
 
     # Properties #
     # ---------- #
@@ -334,7 +332,7 @@ def unknown_shape(rank=None, **kwargs):
     if rank is None and "ndims" in kwargs:
         rank = kwargs.pop("ndims")
     if kwargs:
-        raise TypeError("Unknown argument: %s" % kwargs)
+        raise TypeError(f"Unknown argument: {kwargs}")
     if rank is None:
         return TensorShape(None)
     else:

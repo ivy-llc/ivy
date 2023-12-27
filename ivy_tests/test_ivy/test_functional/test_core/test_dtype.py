@@ -655,7 +655,7 @@ def test_function_supported_dtypes(*, func, backend_fw):
         exp = set(ivy_backend.all_dtypes).difference(
             set(func.test_unsupported_dtypes[backend_fw])
         )
-        assert set(tuple(exp)) == set(res)
+        assert set(exp) == set(res)
 
 
 # function_unsupported_dtypes
@@ -667,7 +667,7 @@ def test_function_unsupported_dtypes(*, func, backend_fw):
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         res = ivy_backend.function_unsupported_dtypes(func)
         exp = func.test_unsupported_dtypes[backend_fw]
-        assert set(tuple(exp)) == set(res)
+        assert set(exp) == set(res)
 
 
 # iinfo

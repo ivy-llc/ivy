@@ -1,4 +1,5 @@
-"""Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Paddle general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 from numbers import Number
@@ -69,13 +70,11 @@ def _squeeze_helper(query, x_ndim):
     )
 
     if any(slice_squeeze):
-        squeeze_indices = tuple(
-            [
-                idx
-                for idx, val in enumerate(slice_squeeze)
-                if (val is False and query[idx] is not None)
-            ]
-        )
+        squeeze_indices = tuple([
+            idx
+            for idx, val in enumerate(slice_squeeze)
+            if (val is False and query[idx] is not None)
+        ])
     elif return_scalar:
         squeeze_indices = ()
     else:
@@ -97,7 +96,7 @@ def get_item(
     /,
     query: Union[paddle.Tensor, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> paddle.Tensor:
     if copy:
         x = paddle.clone(x)

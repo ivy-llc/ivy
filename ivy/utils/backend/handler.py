@@ -75,8 +75,7 @@ def _get_backend_for_arg(arg_module_name):
 
 
 def _determine_backend_from_args(args):
-    """
-    Return the appropriate Ivy backend, given some arguments.
+    """Return the appropriate Ivy backend, given some arguments.
 
     Parameters
     ----------
@@ -97,13 +96,13 @@ def _determine_backend_from_args(args):
     >>> x = jnp.array([1])
     >>> print(_determine_backend_from_args(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>    # noqa
-    """
+    """  # noqa: E501
     arg_type = type(args)
     if isinstance(args, ivy.Array):
         args = args.data
 
     if isinstance(args, dict):
-        for key, value in args.items():
+        for value in args.values():
             # recursively call the function for each value in the dictionary
             lib = _determine_backend_from_args(value)
             if lib:
@@ -121,9 +120,8 @@ def _determine_backend_from_args(args):
 
 
 def set_backend_to_specific_version(backend):
-    """
-    Update the backend dict to make the original function name point to the version
-    specific one.
+    """Update the backend dict to make the original function name point to the
+    version specific one.
 
     Parameters
     ----------
@@ -146,8 +144,8 @@ def set_backend_to_specific_version(backend):
 
 
 def current_backend(*args, **kwargs):
-    """
-    Return the current backend. Priorities: global_backend > argument's backend.
+    """Return the current backend. Priorities: global_backend > argument's
+    backend.
 
     Parameters
     ----------
@@ -177,7 +175,7 @@ def current_backend(*args, **kwargs):
     >>> x = np.array([2.0])
     >>> print(ivy.current_backend(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
-    """
+    """  # noqa: E501
     global implicit_backend
     # if a global backend has been set with
     # set_backend then this will be returned
@@ -328,8 +326,7 @@ def dynamic_backend_converter(backend_stack):
 
 @prevent_access_locally
 def set_backend(backend: str, dynamic: bool = False):
-    """
-    Set `backend` to be the global backend.
+    """Set `backend` to be the global backend.
 
     Will also convert all Array and Container objects to the new backend if `dynamic` =
     True
@@ -379,7 +376,7 @@ def set_backend(backend: str, dynamic: bool = False):
         _set_module_backend(ivy_original_dict, ivy, backend)
         # following snippet is required to update the ivy.functional namespace with
         # backend-specific functions
-        for key, _ in ivy.__dict__.items():
+        for key in ivy.__dict__.keys():
             if key in ivy.functional.__dict__ and not key.startswith("__"):
                 ivy.functional.__dict__[key] = ivy.__dict__[key]
 
@@ -394,8 +391,7 @@ def set_backend(backend: str, dynamic: bool = False):
 
 
 def set_numpy_backend():
-    """
-    Set NumPy to be the global backend.
+    """Set NumPy to be the global backend.
 
     equivalent to `ivy.set_backend("numpy")`.
     """  # noqa
@@ -403,8 +399,7 @@ def set_numpy_backend():
 
 
 def set_jax_backend():
-    """
-    Set JAX to be the global backend.
+    """Set JAX to be the global backend.
 
     equivalent to `ivy.set_backend("jax")`.
     """  # noqa
@@ -412,8 +407,7 @@ def set_jax_backend():
 
 
 def set_tensorflow_backend():
-    """
-    Set TensorFlow to be the global backend.
+    """Set TensorFlow to be the global backend.
 
     equivalent to `ivy.set_backend("tensorflow")`.
     """
@@ -421,8 +415,7 @@ def set_tensorflow_backend():
 
 
 def set_torch_backend():
-    """
-    Set torch to be the global backend.
+    """Set torch to be the global backend.
 
     equivalent to `ivy.set_backend("torch")`.
     """  # noqa
@@ -430,8 +423,7 @@ def set_torch_backend():
 
 
 def set_paddle_backend():
-    """
-    Set paddle to be the global backend.
+    """Set paddle to be the global backend.
 
     equivalent to `ivy.set_backend("paddle")`.
     """  # noqa
@@ -439,8 +431,7 @@ def set_paddle_backend():
 
 
 def set_mxnet_backend():
-    """
-    Set MXNet to be the global backend.
+    """Set MXNet to be the global backend.
 
     equivalent to `ivy.set_backend("mx")`.
     """  # noqa
@@ -449,10 +440,9 @@ def set_mxnet_backend():
 
 @prevent_access_locally
 def previous_backend():
-    """
-    Unset the current global backend, and adjusts the ivy dict such that either a
-    previously set global backend is then used as the backend, otherwise we return to
-    Ivy's implementations.
+    """Unset the current global backend, and adjusts the ivy dict such that
+    either a previously set global backend is then used as the backend,
+    otherwise we return to Ivy's implementations.
 
     Returns
     -------
@@ -568,7 +558,7 @@ def with_backend(backend: str, cached: bool = True):
             ivy_pack.__dict__.copy(), ivy_pack, backend_module
         )
         # TODO use a refactored code from ivy.set_backend
-        for key, _ in ivy_pack.__dict__.items():
+        for key in ivy_pack.__dict__.keys():
             if key in ivy_pack.functional.__dict__ and not key.startswith("__"):
                 ivy_pack.functional.__dict__[key] = ivy_pack.ivy.__dict__[key]
         ivy_pack.backend_stack.append(backend_module)

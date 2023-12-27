@@ -17,11 +17,10 @@ def _handle_padding_shape(padding, n, mode):
             for i in range(int(len(padding) / 2) - 1, -1, -1)
         ]
     )
-    while len(padding) < n:
-        if mode == "circular":
-            padding = padding + ((0, 0),)
-        else:
-            padding = ((0, 0),) + padding
+    if mode == "circular":
+        padding = padding + ((0, 0),) * (n - len(padding))
+    else:
+        padding = ((0, 0),) * (n - len(padding)) + padding
     if mode == "circular":
         padding = tuple(list(padding)[::-1])
     return padding
@@ -31,7 +30,7 @@ def _handle_padding_shape(padding, n, mode):
 # ------------ #
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def affine_grid(theta, size, align_corners=False):
     if len(size) == 4:
@@ -94,7 +93,7 @@ def cubic_conv2(A, x):
     return ((A * x - 5 * A) * x + 8 * A) * x - 4 * A
 
 
-@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def grid_sample(
     input, grid, mode="bilinear", padding_mode="zeros", align_corners=False
@@ -349,7 +348,7 @@ def grid_sample_padding(grid, padding_mode, align_corners, borders=None):
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.2 and below": (
             "bfloat16",
             "float16",
         )
@@ -389,7 +388,7 @@ def interpolate(
         mode=mode,
         scale_factor=scale_factor,
         recompute_scale_factor=recompute_scale_factor,
-        align_corners=True if align_corners else False,
+        align_corners=bool(align_corners),
         antialias=antialias,
     )
 
@@ -461,7 +460,7 @@ def pixel_unshuffle(input, downscale_factor):
             f"pixel_unshuffle expects 4D input, but got input with sizes {input_shape}"
         ),
         as_array=False,
-    ),
+    )
 
     b = input_shape[0]
     c = input_shape[1]
@@ -506,7 +505,7 @@ def reflect(x, low2, high2):
     return x
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample(
     input,
@@ -524,7 +523,7 @@ def upsample(
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample_bilinear(input, size=None, scale_factor=None):
     return interpolate(
@@ -532,7 +531,7 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample_nearest(input, size=None, scale_factor=None):
     return interpolate(input, size=size, scale_factor=scale_factor, mode="nearest")

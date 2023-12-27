@@ -17,7 +17,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     {
         "1.2.0": ("float16", "complex64", "complex128"),
         "1.8.0 and below": ("float16",),
-        "2.14.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
+        "2.15.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
     },
     "tensorflow",
 )
@@ -105,7 +105,7 @@ def atanh(x, name="atanh"):
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("int32",)},
+    {"2.15.0 and below": ("int32",)},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -297,7 +297,7 @@ def greater_equal(x, y, name=None):
 
 @with_supported_device_and_dtypes(
     {
-        "2.14.0 and below": {
+        "2.15.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -310,7 +310,7 @@ def igamma(a, x, name=None):
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.15.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -326,7 +326,7 @@ def in_top_k(target, pred, k, name=None):
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": ("int32", "int64"),
+        "2.15.0 and below": ("int32", "int64"),
     },
     "tensorflow",
 )
@@ -337,7 +337,7 @@ def invert_permutation(x, name=None):
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": ("bfloat16", "half", "float32", "float64"),
+        "2.15.0 and below": ("bfloat16", "half", "float32", "float64"),
     },
     "tensorflow",
 )
@@ -375,7 +375,7 @@ def is_strictly_increasing(x, name="is_strictly_increasing"):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.14.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
 def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
     square_sum = ivy.sum(ivy.square(x), axis=axis, keepdims=True)
     x_inv_norm = ivy.reciprocal(ivy.sqrt(ivy.maximum(square_sum, epsilon)))
@@ -396,7 +396,7 @@ def less_equal(x, y, name="LessEqual"):
 
 # lgamma
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.14.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
 def lgamma(x, name=None):
     return ivy.lgamma(x)
 
@@ -609,7 +609,7 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 
 @with_supported_device_and_dtypes(
     {
-        "2.14.0 and below": {
+        "2.15.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -637,6 +637,25 @@ def scalar_mul(scalar, x, name="scalar_mul"):
     return ivy.multiply(x, scalar).astype(x.dtype)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("float16", "bool", "int16", "int8")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def segment_sum(data, segment_ids, name="segment_sum"):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    sum_array = ivy.zeros(
+        tuple([int(segment_ids[-1] + 1)] + (list(data.shape))[1:]), dtype=data.dtype
+    )
+    for i in range((segment_ids).shape[0]):
+        sum_array[segment_ids[i]] = sum_array[segment_ids[i]] + data[i]
+    return sum_array
+
+
 @to_ivy_arrays_and_back
 def sigmoid(x, name=None):
     return ivy.sigmoid(x)
@@ -644,7 +663,7 @@ def sigmoid(x, name=None):
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -676,7 +695,7 @@ def softplus(features, name=None):
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("bfloat32", "float32", "float64")}, "tensorflow"
+    {"2.15.0 and below": ("bfloat32", "float32", "float64")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def softsign(features, name=None):
@@ -695,7 +714,7 @@ def square(x, name=None):
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -730,7 +749,7 @@ def tan(x, name=None):
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.15.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -820,7 +839,7 @@ def unsorted_segment_sum(data, segment_ids, num_segments, name="unsorted_segment
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float32", "float64", "complex64", "complex128")},
+    {"2.15.0 and below": ("float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -832,7 +851,7 @@ def xdivy(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.14.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
 def xlog1py(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return x * ivy.log1p(y)
@@ -845,7 +864,7 @@ def xlogy(x, y, name=None):
 
 @to_ivy_arrays_and_back
 def zero_fraction(value, name="zero_fraction"):
-    zero = ivy.zeros(tuple(list(value.shape)), dtype=ivy.float32)
+    zero = ivy.zeros(tuple(value.shape), dtype=ivy.float32)
     x = ivy.array(value, dtype=ivy.float32)
     count_zero = ivy.sum(ivy.equal(x, zero))
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))
@@ -855,7 +874,7 @@ def zero_fraction(value, name="zero_fraction"):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.14.0 and below": ("float32", "float64"),
+        "2.15.0 and below": ("float32", "float64"),
     },
     "tensorflow",
 )

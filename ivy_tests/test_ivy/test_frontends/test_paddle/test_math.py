@@ -1331,7 +1331,7 @@ def test_paddle_inner(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100.0,
         max_value=100.0,
-        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]

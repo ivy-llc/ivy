@@ -123,12 +123,16 @@ def train_test_split(
     n_train = (
         ivy.floor(train_size * n_samples)
         if isinstance(train_size, float)
-        else float(train_size) if isinstance(train_size, int) else None
+        else float(train_size)
+        if isinstance(train_size, int)
+        else None
     )
     n_test = (
         ivy.ceil(test_size * n_samples)
         if isinstance(test_size, float)
-        else float(test_size) if isinstance(test_size, int) else None
+        else float(test_size)
+        if isinstance(test_size, int)
+        else None
     )
     if train_size is None:
         n_train = n_samples - n_test

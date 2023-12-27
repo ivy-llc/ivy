@@ -171,7 +171,7 @@ def test_torch_adaptive_max_pool2d(
         data_format="channel_first",
         only_explicit_padding=True,
     ),
-    count_include_pad=st.just(False),
+    count_include_pad=st.booleans(),
     ceil_mode=st.booleans(),
     test_with_out=st.just(False),
 )
@@ -387,12 +387,15 @@ def test_torch_lp_pool2d(
         min_side=1,
         max_side=3,
         only_explicit_padding=True,
+        return_dilation=True,
         data_format="channel_first",
     ),
     test_with_out=st.just(False),
+    ceil_mode=st.booleans(),
 )
 def test_torch_max_pool1d(
     dtype_x_k_s,
+    ceil_mode,
     *,
     test_flags,
     frontend,
@@ -400,20 +403,22 @@ def test_torch_max_pool1d(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
+    dtype, x, kernel, stride, padding, dilation = dtype_x_k_s
     if not isinstance(padding, int):
         padding = [pad[0] for pad in padding]
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        kernel_size=kernel_size,
+        kernel_size=kernel,
         stride=stride,
         padding=padding,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -430,7 +435,7 @@ def test_torch_max_pool1d(
         data_format="channel_first",
     ),
     test_with_out=st.just(False),
-    ceil_mode=st.just(True),
+    ceil_mode=st.booleans(),
 )
 def test_torch_max_pool2d(
     x_k_s_p,

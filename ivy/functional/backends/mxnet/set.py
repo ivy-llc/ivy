@@ -6,14 +6,12 @@ from ivy.utils.exceptions import IvyNotImplementedException
 
 def unique_all(
     x: Union[(None, mx.ndarray.NDArray)], /, *, axis: Optional[int] = None
-) -> Tuple[
-    (
-        Union[(None, mx.ndarray.NDArray)],
-        Union[(None, mx.ndarray.NDArray)],
-        Union[(None, mx.ndarray.NDArray)],
-        Union[(None, mx.ndarray.NDArray)],
-    )
-]:
+) -> Tuple[(
+    Union[(None, mx.ndarray.NDArray)],
+    Union[(None, mx.ndarray.NDArray)],
+    Union[(None, mx.ndarray.NDArray)],
+    Union[(None, mx.ndarray.NDArray)],
+)]:
     raise IvyNotImplementedException()
 
 

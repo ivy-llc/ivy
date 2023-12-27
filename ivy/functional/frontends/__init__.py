@@ -2,10 +2,10 @@ import importlib
 
 
 versions = {
-    "torch": "2.1.0",
-    "tensorflow": "2.14.0",
+    "torch": "2.1.2",
+    "tensorflow": "2.15.0",
     "numpy": "1.25.2",
-    "jax": "0.4.14",
+    "jax": "0.4.23",
     "scipy": "1.10.1",
     "paddle": "2.5.2",
     "sklearn": "1.3.0",
