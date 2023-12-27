@@ -91,7 +91,7 @@ def flip(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("int16", "int8", "uint8", "bfloat16")}, backend_version
+    {"2.5.2 and below": ("uint8", "int8", "int16", "bfloat16")}, backend_version
 )
 def permute_dims(
     x: paddle.Tensor,
@@ -417,6 +417,22 @@ def zero_pad(
     return paddle_backend.constant_pad(x, pad_width=pad_width, value=0)
 
 
+@with_supported_dtypes(
+    {
+        "2.5.2 and below": (
+            "bool",
+            "int32",
+            "int64",
+            "float16",
+            "bfloat16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
 def swapaxes(
     x: paddle.Tensor,
     axis0: int,

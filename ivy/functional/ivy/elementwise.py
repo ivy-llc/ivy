@@ -121,7 +121,7 @@ def abs(
         a: ivy.array([0., 2.6, 3.5]),
         b: ivy.array([4.5, 5.3, 0., 2.3])
     }
-    """
+    """  # noqa: E501
     return ivy.current_backend(x).abs(x, out=out)
 
 
@@ -6109,7 +6109,7 @@ def sqrt(
         b: ivy.array([[7., 1.],
                       [0., 4.47]])
     }
-    """
+    """  # noqa: E501
     return ivy.current_backend(x).sqrt(x, out=out)
 
 

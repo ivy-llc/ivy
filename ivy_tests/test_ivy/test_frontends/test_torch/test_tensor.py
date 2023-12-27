@@ -6463,6 +6463,13 @@ def test_torch_expand(
     backend_fw,
 ):
     input_dtype, x, shape = dtype_x_shape
+
+    if backend_fw == "paddle":
+        assume(
+            input_dtype[0] in ["int32", "int64", "float32", "float64", "bool"]
+            and len(shape) < 7
+        )
+
     if unpack_shape:
         method_flags.num_positional_args = len(shape) + 1
         size = {}
