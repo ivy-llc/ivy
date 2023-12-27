@@ -292,7 +292,7 @@ def _transform_weights_no_bias(layer_weights, layer_index):
 
 
 @with_supported_device_and_dtypes(
-    {"2.1.1 and below": {"cpu": ("float32", "float64")}},
+    {"2.1.2 and below": {"cpu": ("float32", "float64")}},
     "torch",
 )
 @to_ivy_arrays_and_back
@@ -304,7 +304,7 @@ def lstm(*args, **kwargs):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.1.1 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
 def multi_head_attention_forward(
     query,
     key,

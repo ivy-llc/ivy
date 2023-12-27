@@ -238,6 +238,10 @@ if __name__ == "__main__":
             # delete the container
             os.system("docker rm -f test-container")
 
+    # delete pulled image before terminating
+    if device == "gpu":
+        os.system("docker rmi unifyai/ivy:latest-gpu")
+
     # if any tests fail, the workflow fails
     if failed:
         sys.exit(1)
