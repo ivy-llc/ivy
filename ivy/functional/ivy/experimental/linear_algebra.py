@@ -922,8 +922,8 @@ def multi_mode_dot(
     Notes
     -----
     If no modes are specified, just assumes there is one matrix or vector per mode and returns:
-    :math:`\\text{x  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }` # noqa
-    """
+    :math:`\\text{x  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }`
+    """  # noqa: E501
     if modes is None:
         modes = range(len(mat_or_vec_list))
 

@@ -274,6 +274,30 @@ class Tensor:
         else:
             raise ValueError("reshape() got no values for argument 'shape'")
 
+    def reshape_(self, *args, shape=None):
+        if args and shape:
+            raise TypeError("reshape() got multiple values for argument 'shape'")
+        if shape is not None:
+            self.ivy_array = paddle_frontend.reshape(
+                self._ivy_array, shape=shape
+            ).ivy_array
+            return self
+        if args:
+            if isinstance(args[0], (tuple, list)):
+                shape = args[0]
+                self.ivy_array = paddle_frontend.reshape(
+                    self._ivy_array, shape=shape
+                ).ivy_array
+                return self
+            else:
+                self.ivy_array = paddle_frontend.reshape(
+                    self._ivy_array, args
+                ).ivy_array
+                return self
+
+        self.ivy_array = paddle_frontend.reshape(self._ivy_array).ivy_array
+        return self
+
     def dim(self):
         return self.ivy_array.ndim
 
@@ -497,6 +521,17 @@ class Tensor:
     @with_unsupported_dtypes(
         {"2.5.2 and below": ("float16", "uint16", "int16")}, "paddle"
     )
+    def squeeze(self, axis=None, name=None):
+        if isinstance(axis, int) and self.ndim > 0:
+            if self.shape[axis] > 1:
+                return self
+        if len(self.shape) == 0:
+            return self
+        return paddle_frontend.squeeze(self, axis=axis)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("float16", "uint16", "int16")}, "paddle"
+    )
     def squeeze_(self, axis=None, name=None):
         self.ivy_array = paddle_frontend.squeeze(self, axis=axis).ivy_array
         return self
@@ -504,6 +539,12 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
     def multiply(self, y, name=None):
         return paddle_frontend.multiply(self, y)
+
+    @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+    def matmul(self, y, transpose_x=False, transpose_y=False, name=None):
+        return paddle_frontend.matmul(
+            self, y, transpose_x=transpose_x, transpose_y=transpose_y
+        )
 
     @with_supported_dtypes(
         {"2.5.2 and below": ("float16", "float32", "float64", "int32", "int64")},
@@ -937,6 +978,28 @@ class Tensor:
     def trace(self, offset=0, axis1=0, axis2=1, name=None):
         return paddle_frontend.Tensor(
             ivy.trace(self._ivy_array, offset=offset, axis1=axis1, axis2=axis2)
+        )
+
+    @with_supported_dtypes(
+        {
+            "2.5.2 and below": (
+                "bfloat16",
+                "float32",
+                "float64",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+            )
+        },
+        "paddle",
+    )
+    def flatten(self, start_axis=0, stop_axis=-1, name=None):
+        if len(self.shape) == 0:
+            return self.unsqueeze(axis=0)
+        return paddle_frontend.Tensor(
+            ivy.flatten(self.ivy_array, start_dim=start_axis, end_dim=stop_axis)
         )
 
     @with_supported_dtypes(

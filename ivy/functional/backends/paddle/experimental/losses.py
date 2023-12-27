@@ -66,7 +66,7 @@ def smooth_l1_loss(
     reduction: Optional[str] = "mean",
 ) -> paddle.Tensor:
     return paddle.nn.functional.smooth_l1_loss(
-        input, target, reduction=reduction, beta=beta
+        input, target, reduction=reduction, delta=beta
     )
 
 
