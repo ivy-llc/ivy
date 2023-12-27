@@ -386,8 +386,7 @@ def sparse_cross_entropy(
 def disc_wl(
     p_real: Union[ivy.Array, ivy.NativeArray], p_fake: Union[ivy.Array, ivy.NativeArray]
 ) -> ivy.Array:
-    """
-    Compute the Wasserstein loss for the discriminator (critic).
+    """Compute the Wasserstein loss for the discriminator (critic).
 
     Parameters
     ----------
@@ -409,8 +408,7 @@ def disc_wl(
 @inputs_to_ivy_arrays
 @handle_array_function
 def gan_wl(pred_fake: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Compute the Wasserstein loss for the generator.
+    """Compute the Wasserstein loss for the generator.
 
     Parameters
     ----------
