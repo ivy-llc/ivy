@@ -540,6 +540,12 @@ class Tensor:
     def multiply(self, y, name=None):
         return paddle_frontend.multiply(self, y)
 
+    @with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+    def matmul(self, y, transpose_x=False, transpose_y=False, name=None):
+        return paddle_frontend.matmul(
+            self, y, transpose_x=transpose_x, transpose_y=transpose_y
+        )
+
     @with_supported_dtypes(
         {"2.5.2 and below": ("float16", "float32", "float64", "int32", "int64")},
         "paddle",

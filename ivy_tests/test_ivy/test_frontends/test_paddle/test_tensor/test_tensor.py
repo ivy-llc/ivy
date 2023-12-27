@@ -160,6 +160,39 @@ def _get_clip_inputs_(draw):
     return x_dtype, x, min, max
 
 
+@st.composite
+def _get_dtype_and_3dbatch_matrices_for_matmul(draw):
+    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
+    shared_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    batch_size = draw(helpers.ints(min_value=2, max_value=4))
+    transpose_x = draw(st.booleans())
+    transpose_y = draw(st.booleans())
+
+    mat1_shape = (
+        (batch_size, dim_size1, shared_size)
+        if not transpose_x
+        else (batch_size, shared_size, dim_size1)
+    )
+    mat2_shape = (
+        (batch_size, shared_size, dim_size2)
+        if not transpose_y
+        else (batch_size, dim_size2, shared_size)
+    )
+
+    mat1 = draw(
+        helpers.array_values(dtype=dtype[0], shape=mat1_shape, min_value=2, max_value=5)
+    )
+    mat2 = draw(
+        helpers.array_values(dtype=dtype[0], shape=mat2_shape, min_value=2, max_value=5)
+    )
+    return dtype, mat1, mat2, transpose_x, transpose_y
+
+
 # cond
 @st.composite
 def _get_dtype_and_matrix_non_singular(draw, dtypes):
@@ -184,6 +217,16 @@ def _get_dtype_and_matrix_non_singular(draw, dtypes):
             break
 
     return matrix[0], matrix[1]
+
+
+@st.composite
+def _get_dtype_and_multiplicative_matrices(draw):
+    return draw(
+        st.one_of(
+            _get_dtype_input_and_matrices_for_matmul(),
+            _get_dtype_and_3dbatch_matrices_for_matmul(),
+        )
+    )
 
 
 @st.composite
@@ -331,6 +374,28 @@ def _get_dtype_value1_value2_cov(
     )
 
     return [dtype], value, rowVar, ddof, fweights, aweights
+
+def _get_dtype_input_and_matrices_for_matmul(draw):
+    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
+    shared_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    transpose_x = draw(st.booleans())
+    transpose_y = draw(st.booleans())
+
+    mat1_shape = (shared_size, dim_size1) if transpose_x else (dim_size1, shared_size)
+    mat2_shape = (dim_size2, shared_size) if transpose_y else (shared_size, dim_size2)
+
+    mat1 = draw(
+        helpers.array_values(dtype=dtype[0], shape=mat1_shape, min_value=2, max_value=5)
+    )
+    mat2 = draw(
+        helpers.array_values(dtype=dtype[0], shape=mat2_shape, min_value=2, max_value=5)
+    )
+    return dtype, mat1, mat2, transpose_x, transpose_y
 
 
 @st.composite
@@ -5867,6 +5932,44 @@ def test_paddle_tensor_heaviside(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# matmul
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="matmul",
+    dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
+)
+def test_paddle_tensor_matmul(
+    dtype_tensor1_tensor2,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    dtype, tensor1, tensor2, transpose_x, transpose_y = dtype_tensor1_tensor2
+
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": tensor1,
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={
+            "y": tensor2,
+            "transpose_x": transpose_x,
+            "transpose_y": transpose_y,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
     )
