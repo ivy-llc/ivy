@@ -575,56 +575,76 @@ def poisson_nll_loss(
 
 @handle_exceptions
 @handle_nestable
-@handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-def triplet_margin_loss(
+def triplet_loss(
     anchor: Union[ivy.Array, ivy.NativeArray],
     positive: Union[ivy.Array, ivy.NativeArray],
     negative: Union[ivy.Array, ivy.NativeArray],
-    /,
     *,
-    margin: float = 0.2,
+    margin: float = 1.0,
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute triplet margin loss.
+    """Compute the triplet loss between anchor, positive, and negative samples.
 
     Parameters
     ----------
-    anchor
-        input array containing anchor points.
-    positive
-        input array containing positive points.
-    negative
-        input array containing negative points.
-    margin
-        margin parameter for the triplet margin loss. Default: 0.2.
-    reduction
-        ``'none'``: No reduction will be applied to the output.
-        ``'mean'``: The output will be averaged.
-        ``'sum'``: The output will be summed. Default: ``'mean'``.
-    out
-        optional output array, for writing the result to. It must have a shape
-        that the inputs broadcast to.
+    anchor : array_like
+        Embeddings for anchor samples.
+    positive : array_like
+        Embeddings for positive samples.
+    negative : array_like
+        Embeddings for negative samples.
+    margin : float, optional
+        The margin for the triplet loss. Default is 1.0.
+    reduction : {'mean', 'sum', 'none'}, optional
+        Type of reduction to apply to the output. Default is 'mean'.
+    out : array_like, optional
+        Optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    ret
-        The triplet margin loss.
+    ret : array
+        The triplet loss between the anchor, positive, and negative samples.
 
     Examples
     --------
-    >>> anchor = ivy.array([1.0, 2.0, 3.0])
-    >>> positive = ivy.array([4.0, 5.0, 6.0])
-    >>> negative = ivy.array([7.0, 8.0, 9.0])
-    >>> loss = ivy.triplet_margin_loss(anchor, positive, negative)
-    >>> print(loss)
-    ivy.array(0.0)
-    """
-    # Implementation of the triplet margin loss
-    distance_positive = ivy.norm(anchor - positive, ord=2, axis=-1)
-    distance_negative = ivy.norm(anchor - negative, ord=2, axis=-1)
-    loss = ivy.clip(distance_positive - distance_negative + margin, 0.0, None)
+    >>> anchor = ivy.array([[1.0, 2.0], [2.0, 3.0]])
+    >>> positive = ivy.array([[2.0, 3.0], [3.0, 4.0]])
+    >>> negative = ivy.array([[0.0, 1.0], [1.0, 2.0]])
+    >>> ivy.triplet_loss(anchor, positive, negative)
+    ivy.array(1.0)
 
-    return _reduce_loss(reduction, loss, axis=None, out=out)
+    >>> anchor = ivy.array([[1.0, 2.0], [2.0, 3.0]])
+    >>> positive = ivy.array([[2.0, 3.0], [3.0, 4.0]])
+    >>> negative = ivy.array([[0.0, 1.0], [1.0, 2.0]])
+    >>> ivy.triplet_loss(anchor, positive, negative, margin=2.0)
+    ivy.array(0.0)
+
+    >>> anchor = ivy.array([[1.0, 2.0], [2.0, 3.0]])
+    >>> positive = ivy.array([[2.0, 3.0], [3.0, 4.0]])
+    >>> negative = ivy.array([[0.0, 1.0], [1.0, 2.0]])
+    >>> ivy.triplet_loss(anchor, positive, negative, reduction='sum')
+    ivy.array(2.0)
+
+    >>> anchor = ivy.array([[1.0, 2.0], [2.0, 3.0]])
+    >>> positive = ivy.array([[2.0, 3.0], [3.0, 4.0]])
+    >>> negative = ivy.array([[0.0, 1.0], [1.0, 2.0]])
+    >>> ivy.triplet_loss(anchor, positive, negative, reduction='none')
+    ivy.array([1.0, 1.0])
+    """
+    pos_distance = ivy.reduce_sum((anchor - positive)**2, axis=-1)
+    neg_distance = ivy.reduce_sum((anchor - negative)**2, axis=-1)
+    loss = ivy.maximum(0.0, pos_distance - neg_distance + margin)
+
+    if reduction == "mean":
+        loss = ivy.mean(loss, out=out)
+    elif reduction == "sum":
+        loss = ivy.sum(loss, out=out)
+    else:
+        loss = ivy.inplace_update(out, loss) if out is not None else loss
+
+    return loss
+
