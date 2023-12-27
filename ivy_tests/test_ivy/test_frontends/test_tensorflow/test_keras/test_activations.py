@@ -6,6 +6,7 @@ import sys
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from typing import Optional
 
 try:
     import tensorflow as tf
@@ -18,7 +19,7 @@ def get_callable_functions(
     module_name: str,
 ):
     module = sys.modules[module_name]
-    fn_list = list()
+    fn_list = []
     for fn_name in dir(module):
         obj = getattr(module, fn_name)
         if callable(obj):
@@ -34,7 +35,7 @@ def simple_test_two_function(
     frontend: str,
     fn_str: str,
     dtype_data: str,
-    rtol_: float = None,
+    rtol_: Optional[float] = None,
     atol_: float = 1e-06,
     ivy_submodules: list = [],
     framework_submodules: list = [],
@@ -90,7 +91,7 @@ def simple_test_two_function(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
 )
 def test_tensorflow_deserialize(
@@ -205,7 +206,7 @@ def test_tensorflow_gelu(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
 )
 def test_tensorflow_get(fn_name, dtype_and_data):
@@ -362,7 +363,7 @@ def test_tensorflow_selu(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
 )
 def test_tensorflow_serialize(

@@ -1,6 +1,7 @@
 # global
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -145,6 +146,76 @@ def test_paddle_argsort(
         x=x[0],
         axis=axis,
         descending=descending,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.index_sample",
+    array_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=2,
+        max_num_dims=2,
+        disable_random_axis=True,
+    ),
+)
+def test_paddle_index_sample(
+    *,
+    array_indices_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    dtype, x, index = array_indices_axis
+    if index.ndim == 2 and index.shape[0] == x.shape[0]:
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            x=x,
+            index=index,
+        )
+
+
+# kthvalue
+@handle_frontend_test(
+    fn_tree="paddle.kthvalue",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        valid_axis=True,
+        force_int_axis=True,
+    ).filter(lambda v: len(np.unique(v[1][0])) == len(np.ravel(v[1][0]))),
+    k=st.integers(min_value=1),
+    keepdim=st.booleans(),
+)
+def test_paddle_kthvalue(
+    *,
+    dtype_input_axis,
+    k,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_input_axis
+    assume(k <= x[0].shape[axis])
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        k=k,
+        axis=axis,
+        keepdim=keepdim,
     )
 
 

@@ -64,31 +64,11 @@ def soft_margin_loss(
         return loss
 
 
-def kl_div(
-    input: JaxArray,
-    target: JaxArray,
-    /,
-    *,
-    reduction: Optional[str] = "mean",
-) -> JaxArray:
-    size = jnp.shape(input)
-    loss = jnp.sum(input * jnp.log(input / target), axis=-1)
-
-    if reduction == "mean":
-        loss = jnp.mean(loss)
-    elif reduction == "sum":
-        loss = jnp.sum(loss)
-    elif reduction == "batchmean":
-        loss = jnp.divide(jnp.sum(loss), size[0])
-
-    return loss
-
-
-def _apply_loss_reduction(loss: JaxArray, reduction: str) -> JaxArray:
+def _apply_loss_reduction(loss: JaxArray, reduction: str, axis=None) -> JaxArray:
     if reduction == "sum":
-        return jnp.sum(loss)
+        return jnp.sum(loss, axis=axis)
     elif reduction == "mean":
-        return jnp.mean(loss)
+        return jnp.mean(loss, axis=axis)
     else:  # reduction == "none"
         return loss
 
@@ -103,30 +83,30 @@ def _validate_poisson_nll_params(
     # Validate dtypes
     for parameter, name in zip([input, label], ["input", "label"]):
         if parameter.dtype not in allowed_dtypes:
-            raise ValueError(
-                "The dtype of '%s' in poisson_nll_loss should be one of %s, but"
-                " received %s." % (name, allowed_dtypes, parameter.dtype)
+            raise TypeError(
+                f"The dtype of '{name}' in poisson_nll_loss should be one of"
+                f" {allowed_dtypes}, but received {parameter.dtype}."
             )
 
     # Validate epsilon
     if epsilon <= 0:
         raise ValueError(
             "The value of `epsilon` in poisson_nll_loss should be positive, but"
-            " received %f, which is not allowed" % epsilon
+            f" received {epsilon}, which is not allowed."
         )
 
     # Validate reduction
     if reduction not in ["sum", "mean", "none"]:
         raise ValueError(
             "The value of 'reduction' in poisson_nll_loss should be 'sum', 'mean' or"
-            " 'none', but received %s, which is not allowed." % reduction
+            f" 'none', but received {reduction}, which is not allowed."
         )
 
     # Validate shape
     if input.shape != label.shape:
         raise ValueError(
-            "The shape of 'input' (%s) must be the same as the shape of 'label' (%s)."
-            % (input.shape, label.shape)
+            f"The shape of 'input' ({input.shape}) must be the same as the shape of"
+            f" 'label' ({label.shape})."
         )
 
     return True

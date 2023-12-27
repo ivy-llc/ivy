@@ -19,7 +19,7 @@ def _remove_so_log(trace):
     transpile_frame = None
     module_frame = None
     module_st = None
-    compiled_lineno = None
+    traced_lineno = None
 
     new_stack_trace = []
     track = False
@@ -30,7 +30,7 @@ def _remove_so_log(trace):
         if "<string>" in repr(st):
             if "compiled_fn" in repr(st) and module_frame:
                 track = True
-                compiled_lineno = st.lineno
+                traced_lineno = st.lineno
 
         if "<module>" in repr(st):
             module_frame = old_frames[idx]
@@ -43,7 +43,7 @@ def _remove_so_log(trace):
             transpile_frame = old_frames[idx]
         elif track:
             ret_st = _align_source(
-                st, transpile_frame, module_frame, module_st, compiled_lineno
+                st, transpile_frame, module_frame, module_st, traced_lineno
             )
             if ret_st:
                 [new_stack_trace.append(r) for r in ret_st]
@@ -56,7 +56,7 @@ def _remove_so_log(trace):
     return new_stack_trace
 
 
-def _align_source(st, transpile_frame, module_frame, module_st, compiled_lineno):
+def _align_source(st, transpile_frame, module_frame, module_st, traced_lineno):
     from ivy.compiler.utils.VVX import trace_obj
     from ivy.compiler.utils.IIV import Graph
 
@@ -79,13 +79,13 @@ def _align_source(st, transpile_frame, module_frame, module_st, compiled_lineno)
                 curr_obj[1] = traced_data[2]
                 curr_obj[2] = v.__name__
 
-                if compiled_lineno:
-                    line = v._Graph__fn_str.split("\n")[compiled_lineno - 1]
+                if traced_lineno:
+                    line = v._Graph__fn_str.split("\n")[traced_lineno - 1]
                     line = line.split("=")[1].strip()
                     line = line.split("(")[0].strip()
                     target_name = line.split(".")[-1].strip()
                     curr_obj[3] = line
-                    area = compiled_lineno / len(v._Graph__fn_str.strip().split("\n"))
+                    area = traced_lineno / len(v._Graph__fn_str.strip().split("\n"))
 
                     curr_obj = _get_traces(curr_obj, area, t_v.locals, target_name)
 
@@ -141,8 +141,7 @@ def _get_traces(curr_obj, area, local_dict, target_name):
 
 
 def _check_if_path_found(path, full_path):
-    """
-    Check if the path is found in the full path.
+    """Check if the path is found in the full path.
 
     Parameters
     ----------
@@ -156,15 +155,11 @@ def _check_if_path_found(path, full_path):
     ret
         True if the path is found, False otherwise
     """
-    if path in full_path:
-        return True
-    else:
-        return False
+    return path in full_path
 
 
 def _configure_stack_trace(traceback):
-    """
-    Configure the stack trace to be displayed in the console.
+    """Configure the stack trace to be displayed in the console.
 
     Parameters
     ----------
@@ -179,7 +174,7 @@ def _configure_stack_trace(traceback):
     frontend_path = os.path.join("ivy", "functional", "frontends")
     wrapper_path = os.path.join("ivy", "func_wrapper.py")
 
-    while 1 and tb.tb_next:
+    while tb.tb_next:
         frame = tb.tb_next.tb_frame
         file_path = frame.f_code.co_filename
         if trace_mode == "ivy":
@@ -204,8 +199,7 @@ def _configure_stack_trace(traceback):
 
 
 def _add_native_error(default):
-    """
-    Append the native error to the message if it exists.
+    """Append the native error to the message if it exists.
 
     Parameters
     ----------
@@ -338,8 +332,7 @@ _non_ivy_exceptions_mapping = {
 def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
-        """
-        Catch all exceptions and raise them in IvyException.
+        """Catch all exceptions and raise them in IvyException.
 
         Parameters
         ----------
@@ -373,12 +366,20 @@ def handle_exceptions(fn: Callable) -> Callable:
 
 # Inplace Update
 
+# to avoid raising warnings on setting the same backend multiple times
+_inplace_warning_cache = {}
+
 
 def _handle_inplace_mode(ivy_pack=None):
     if not ivy_pack:
         ivy_pack = ivy
     current_backend = ivy_pack.current_backend_str()
-    if not ivy_pack.native_inplace_support and ivy_pack.inplace_mode == "lenient":
+    if (
+        current_backend != ""
+        and not _inplace_warning_cache.get(current_backend)
+        and not ivy_pack.native_inplace_support
+        and ivy_pack.inplace_mode == "lenient"
+    ):
         warnings.warn(
             f"The current backend: '{current_backend}' does not support "
             "inplace updates natively. Ivy would quietly create new arrays when "
@@ -388,6 +389,7 @@ def _handle_inplace_mode(ivy_pack=None):
             "should raise an error whenever an inplace update is attempted "
             "with this backend."
         )
+        _inplace_warning_cache[current_backend] = True
 
 
 def _check_inplace_update_support(x, ensure_in_backend):
