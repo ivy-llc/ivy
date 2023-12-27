@@ -3450,7 +3450,7 @@ def rnn(
                     ivy.where(m, o, fm) for m, o, fm in zip(tiled_mask_t, output, mask)
                 )
 
-        elif ivy.is_ivy_array(input_length):  # not tested yet
+        elif ivy.is_ivy_array(input_length):
             if go_backwards:
                 max_len = ivy.max(input_length)
                 rev_input_length = ivy.subtract(max_len - 1, input_length)
