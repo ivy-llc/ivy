@@ -1,9 +1,9 @@
-"""
-MXNet device functions.
+"""MXNet device functions.
 
 Collection of MXNet general functions, wrapped to fit Ivy syntax and
 signature.
 """
+
 import mxnet as mx
 from typing import Union, Optional
 import ivy
@@ -45,12 +45,12 @@ def as_ivy_dev(device):
 def as_native_dev(device: str, /):
     if isinstance(device, mx.Context):
         return device
-    if device is None or device.find("cpu") != -1:
+    if device is None or "cpu" in device:
         mx_dev = "cpu"
-    elif device.find("gpu") != -1:
+    elif "gpu" in device:
         mx_dev = "gpu"
     else:
-        raise Exception("dev input {} not supported.".format(device))
+        raise ValueError(f"dev input {device} not supported.")
     if device.find(":") != -1:
         mx_dev_id = int(device[device.find(":") + 1 :])
     else:

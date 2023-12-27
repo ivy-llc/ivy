@@ -4,6 +4,8 @@ from . import distance_functions
 from .distance_functions import *
 from . import dropout_functions
 from .dropout_functions import *
+from . import layer_functions
+from .layer_functions import *
 from . import linear_functions
 from .linear_functions import *
 from . import loss_functions
