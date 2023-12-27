@@ -635,8 +635,8 @@ def triplet_loss(
     >>> ivy.triplet_loss(anchor, positive, negative, reduction='none')
     ivy.array([1.0, 1.0])
     """
-    pos_distance = ivy.reduce_sum((anchor - positive)**2, axis=-1)
-    neg_distance = ivy.reduce_sum((anchor - negative)**2, axis=-1)
+    pos_distance = ivy.reduce_sum((anchor - positive) ** 2, axis=-1)
+    neg_distance = ivy.reduce_sum((anchor - negative) ** 2, axis=-1)
     loss = ivy.maximum(0.0, pos_distance - neg_distance + margin)
 
     if reduction == "mean":
@@ -647,4 +647,3 @@ def triplet_loss(
         loss = ivy.inplace_update(out, loss) if out is not None else loss
 
     return loss
-
