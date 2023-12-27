@@ -3228,6 +3228,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         -------
         ret
             container including the digamma function computed element-wise
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 0.5]),\
@@ -3289,6 +3290,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         -------
         ret
             container including the digamma function computed element-wise
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 0.5]), b=ivy.array([2.0, 3.0])
@@ -3348,6 +3350,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         -------
         ret
             container including the sparsified tensor computed element-wise
+
         Examples
         --------
         >>> x = ivy.Container(

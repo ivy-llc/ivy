@@ -96,9 +96,10 @@ def _get_function_list(func):
                     hasattr(nodef, "value")
                     and hasattr(nodef.value, "id")
                     and nodef.value.id not in ["ivy", "self"]
+                    and "_frontend" not in nodef.value.id
                 ):
                     continue
-                names[nodef.attr] = getattr(
+                names[ast.unparse(nodef)] = getattr(
                     func,
                     "__self__",
                     getattr(
@@ -115,13 +116,14 @@ def _get_function_list(func):
 def _get_functions_from_string(func_names, module):
     ret = set()
     # We only care about the functions in the ivy or the same module
-    for func_name in func_names.keys():
+    for orig_func_name in func_names.keys():
+        func_name = orig_func_name.split(".")[-1]
         if hasattr(ivy, func_name) and callable(getattr(ivy, func_name, None)):
             ret.add(getattr(ivy, func_name))
-        elif hasattr(module, func_name) and callable(getattr(ivy, func_name, None)):
+        elif hasattr(module, func_name) and callable(getattr(module, func_name, None)):
             ret.add(getattr(module, func_name))
-        elif callable(getattr(func_names[func_name], func_name, None)):
-            ret.add(getattr(func_names[func_name], func_name))
+        elif callable(getattr(func_names[orig_func_name], func_name, None)):
+            ret.add(getattr(func_names[orig_func_name], func_name))
     return ret
 
 
@@ -147,7 +149,10 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         # if it's einops, we need to recurse
         if not getattr(fn, "__module__", None):
             continue
-        if "backend" in fn.__module__:
+        is_frontend_fn = "frontend" in fn.__module__
+        is_backend_fn = "backend" in fn.__module__ and not is_frontend_fn
+        is_einops_fn = "einops" in fn.__name__
+        if is_backend_fn:
             f_supported = get_fn(fn, False)
             if hasattr(fn, "partial_mixed_handler"):
                 f_supported = merge_fn(
@@ -162,9 +167,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
                 )
             out = merge_fn(wrapper(f_supported), out)
             continue
-        elif "frontend" in fn.__module__ or (
-            hasattr(fn, "__name__") and "einops" in fn.__name__
-        ):
+        elif is_frontend_fn or (hasattr(fn, "__name__") and is_einops_fn):
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
 
@@ -174,10 +177,52 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             continue
 
         fl = _get_function_list(fn)
-        res = _get_functions_from_string(fl, __import__(fn.__module__))
-        to_visit.extend(res)
+        res = list(_get_functions_from_string(fl, __import__(fn.__module__)))
+        if is_frontend_fn:
+            frontends = {
+                "jax_frontend": "ivy.functional.frontends.jax",
+                "np_frontend": "ivy.functional.frontends.numpy",
+                "tf_frontend": "ivy.functional.frontends.tensorflow",
+                "torch_frontend": "ivy.functional.frontends.torch",
+                "paddle_frontend": "ivy.functional.frontends.paddle",
+            }
+            for key in fl:
+                if "frontend" in key:
+                    fn_tree = key.split(".")
+                    root, tree, fn_name = fn_tree[0], fn_tree[1:-1], fn_tree[-1]
+                    root_module = importlib.import_module(
+                        ".".join([frontends[root], *tree])
+                    )
+                    frontend_fn = getattr(root_module, fn_name)
+                    frontend_fl = _get_function_list(frontend_fn)
+                    res += list(
+                        _get_functions_from_string(
+                            frontend_fl, __import__(frontend_fn.__module__)
+                        )
+                    )
+        to_visit.extend(set(res))
 
     return out
+
+
+# allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+def _expand_typesets(dtypes):
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+    dtypes = list(dtypes)
+    typeset_list = []
+    for i, dtype in reversed(list(enumerate(dtypes))):
+        if dtype in typesets:
+            typeset_list.extend(typesets[dtype])
+            dtypes.pop(i)
+    dtypes += typeset_list
+    return dtypes
 
 
 # Get the list of dtypes supported by the function
@@ -188,8 +233,8 @@ def _get_dtypes(fn, complement=True):
     # We only care about getting dtype info from the base function
     # if we do need to at some point use dtype information from the parent function
     # we can comment out the following condition
-    is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
+    is_backend_fn = "backend" in fn.__module__ and not is_frontend_fn
     has_unsupported_dtypes_attr = hasattr(fn, "unsupported_dtypes")
     if not is_backend_fn and not is_frontend_fn and not has_unsupported_dtypes_attr:
         if complement:
@@ -204,16 +249,6 @@ def _get_dtypes(fn, complement=True):
         ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
     ]
 
-    # allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
-    typesets = {
-        "valid": ivy.valid_dtypes,
-        "numeric": ivy.valid_numeric_dtypes,
-        "float": ivy.valid_float_dtypes,
-        "integer": ivy.valid_int_dtypes,
-        "unsigned": ivy.valid_uint_dtypes,
-        "complex": ivy.valid_complex_dtypes,
-    }
-
     for key, merge_fn, base in basic:
         if hasattr(fn, key):
             dtypes = getattr(fn, key)
@@ -221,15 +256,9 @@ def _get_dtypes(fn, complement=True):
             if isinstance(dtypes, dict):
                 dtypes = dtypes.get(ivy.current_backend_str(), base)
             ivy.utils.assertions.check_isinstance(dtypes, tuple)
-            if dtypes == ():
+            if not dtypes:
                 dtypes = base
-            dtypes = list(dtypes)
-            typeset_list = []
-            for i, dtype in reversed(list(enumerate(dtypes))):
-                if dtype in typesets:
-                    typeset_list.extend(typesets[dtype])
-                    dtypes.pop(i)
-            dtypes += typeset_list
+            dtypes = _expand_typesets(dtypes)
             supported = merge_fn(supported, set(dtypes))
 
     if complement:
@@ -1817,12 +1846,12 @@ def is_bool_dtype(
     elif isinstance(dtype_in, np.ndarray):
         return "bool" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return isinstance(dtype_in, (bool, np.bool)) and not isinstance(dtype_in, bool)
+        return isinstance(dtype_in, (bool, np.bool_)) and not isinstance(dtype_in, bool)
     elif isinstance(dtype_in, (list, tuple, dict)):
         return bool(
             ivy.nested_argwhere(
                 dtype_in,
-                lambda x: isinstance(x, (bool, np.bool)) and x is not int,
+                lambda x: isinstance(x, (bool, np.bool_)) and x is not int,
             )
         )
     return "bool" in ivy.as_ivy_dtype(dtype_in)

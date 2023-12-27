@@ -1082,7 +1082,7 @@ def repeat(
     /,
     repeats: Union[int, Iterable[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Repeat values along a given dimension.

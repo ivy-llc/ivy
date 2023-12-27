@@ -68,12 +68,10 @@ class CPTensor(FactorizedTensor):
         return ivy.CPTensor.cp_to_unfolded(self, mode)
 
     def cp_copy(self):
-        return CPTensor(
-            (
-                ivy.copy_array(self.weights),
-                [ivy.copy_array(self.factors[i]) for i in range(len(self.factors))],
-            )
-        )
+        return CPTensor((
+            ivy.copy_array(self.weights),
+            [ivy.copy_array(self.factors[i]) for i in range(len(self.factors))],
+        ))
 
     def mode_dot(self, matrix_or_vector, mode, keep_dim=False, copy=True):
         """N-mode product of a CP tensor and a matrix or vector at the
@@ -410,11 +408,11 @@ class CPTensor(FactorizedTensor):
 
         .. math::
 
-            \nabla 0.5 ||\\mathcal{X} - [\\mathbf{w}; \\mathbf{A}, \\mathbf{B}, \\mathbf{C}]||^2 # noqa
+            \nabla 0.5 ||\\mathcal{X} - [\\mathbf{w}; \\mathbf{A}, \\mathbf{B}, \\mathbf{C}]||^2
 
         where :math:`[\\mathbf{w}; \\mathbf{A}, \\mathbf{B}, \\mathbf{C}]`
         is the CP decomposition with weights
-        :math:`\\mathbf{w}` and factor matrices :math:`\\mathbf{A}`, :math:`\\mathbf{B}` and :math:`\\mathbf{C}`. # noqa
+        :math:`\\mathbf{w}` and factor matrices :math:`\\mathbf{A}`, :math:`\\mathbf{B}` and :math:`\\mathbf{C}`.
         Note that this does not return the gradient
         with respect to the weights even if CP is normalized.
 
@@ -446,7 +444,7 @@ class CPTensor(FactorizedTensor):
         loss : float
             Scalar quantity of the loss function corresponding to cp_gradient. Only returned
             if return_loss = True.
-        """
+        """  # noqa: E501
         ivy.CPTensor.validate_cp_tensor(cp_tensor)
         _, factors = cp_tensor
 

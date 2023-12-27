@@ -399,6 +399,7 @@ def promote_types_jax(
         the first of the two types to promote
     type2
         the second of the two types to promote
+
     Returns
     -------
     ret

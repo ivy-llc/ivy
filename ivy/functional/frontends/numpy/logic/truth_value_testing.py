@@ -55,10 +55,7 @@ def iscomplexobj(x):
     if x.ndim == 0:
         return ivy.is_complex_dtype(ivy.dtype(x))
     for ele in x:
-        if ivy.is_complex_dtype(ivy.dtype(ele)):
-            return True
-        else:
-            return False
+        return bool(ivy.is_complex_dtype(ivy.dtype(ele)))
 
 
 @to_ivy_arrays_and_back
@@ -78,8 +75,17 @@ def isrealobj(x: any):
 
 @to_ivy_arrays_and_back
 def isscalar(element):
-    return (
-        isinstance(element, (int, float, complex, bool, bytes, str, memoryview))
-        or isinstance(element, numbers.Number)
-        or isinstance(element, np_frontend.generic)
+    return isinstance(
+        element,
+        (
+            int,
+            float,
+            complex,
+            bool,
+            bytes,
+            str,
+            memoryview,
+            numbers.Number,
+            np_frontend.generic,
+        ),
     )

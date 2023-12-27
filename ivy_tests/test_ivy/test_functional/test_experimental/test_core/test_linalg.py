@@ -162,15 +162,15 @@ def _generate_diag_args(draw):
 
 # dot
 @st.composite
-def _generate_dot_dtype_and_arrays(draw):
+def _generate_dot_dtype_and_arrays(draw, min_num_dims=0):
     shape_a = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+            min_dim_size=2, max_dim_size=5, min_num_dims=min_num_dims, max_num_dims=5
         )
     )
     shape_b = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+            min_dim_size=2, max_dim_size=5, min_num_dims=min_num_dims, max_num_dims=5
         )
     )
 
@@ -1292,7 +1292,7 @@ def test_khatri_rao(*, data, test_flags, backend_fw, fn_name, on_device):
 
 # The following two tests have been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_khatri_rao.py
-@pytest.mark.parametrize("columns, rows", [(4, [3, 4, 2])])
+@pytest.mark.parametrize(("columns", "rows"), [(4, [3, 4, 2])])
 def test_khatri_rao_tensorly_1(columns, rows):
     columns = columns
     rows = rows
@@ -1306,7 +1306,7 @@ def test_khatri_rao_tensorly_1(columns, rows):
 
 
 @pytest.mark.parametrize(
-    "t1, t2, true_res",
+    ("t1", "t2", "true_res"),
     [
         (
             [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
@@ -1477,7 +1477,7 @@ def test_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
 
 
 @pytest.mark.parametrize(
-    "X, U, true_res",
+    ("X", "U", "true_res"),
     [
         (
             [
@@ -1545,7 +1545,7 @@ def test_multi_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
 # The following 2 tests have been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_n_mode_product.py#L81
 @pytest.mark.parametrize(
-    "X, U, true_res",
+    ("X", "U", "true_res"),
     [
         ([[1, 2], [0, -1]], [[2, 1], [-1, 1]], [1]),
     ],
@@ -1556,7 +1556,12 @@ def test_multi_mode_dot_tensorly_1(X, U, true_res):
     assert np.allclose(true_res, res)
 
 
-@pytest.mark.parametrize("shape", ((3, 5, 4, 2),))
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (3, 5, 4, 2),
+    ],
+)
 def test_multi_mode_dot_tensorly_2(shape):
     print(shape)
     X = ivy.ones(shape)
@@ -1624,7 +1629,7 @@ def test_partial_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
 # test adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tucker.py#L24
 @pytest.mark.parametrize(
-    "tol_norm_2, tol_max_abs, modes, shape",
+    ("tol_norm_2", "tol_max_abs", "modes", "shape"),
     [
         (
             10e-3,
@@ -1775,7 +1780,9 @@ def test_tensor_train(*, data, svd, test_flags, backend_fw, fn_name, on_device):
 
 # The following 3 tests have been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tt_decomposition.py
-@pytest.mark.parametrize("shape, rank", [((3, 4, 5, 6, 2, 10), (1, 3, 3, 4, 2, 2, 1))])
+@pytest.mark.parametrize(
+    ("shape", "rank"), [((3, 4, 5, 6, 2, 10), (1, 3, 3, 4, 2, 2, 1))]
+)
 def test_tensor_train_tensorly_1(shape, rank):
     tensor = ivy.random_uniform(shape=shape)
     tensor_shape = tensor.shape
@@ -1800,7 +1807,9 @@ def test_tensor_train_tensorly_1(shape, rank):
         r_prev_iteration = r_k
 
 
-@pytest.mark.parametrize("shape, rank", [((3, 4, 5, 6, 2, 10), (1, 5, 4, 3, 8, 10, 1))])
+@pytest.mark.parametrize(
+    ("shape", "rank"), [((3, 4, 5, 6, 2, 10), (1, 5, 4, 3, 8, 10, 1))]
+)
 def test_tensor_train_tensorly_2(shape, rank):
     tensor = ivy.random_uniform(shape=shape)
     factors = ivy.tensor_train(tensor, rank)
@@ -1821,7 +1830,7 @@ def test_tensor_train_tensorly_2(shape, rank):
         assert r_k <= rank[k + 1], first_error_message
 
 
-@pytest.mark.parametrize("shape, rank, tol", [((3, 3, 3), (1, 3, 3, 1), (10e-5))])
+@pytest.mark.parametrize(("shape", "rank", "tol"), [((3, 3, 3), (1, 3, 3, 1), (10e-5))])
 def test_tensor_train_tensorly_3(shape, rank, tol):
     tensor = ivy.random_uniform(shape=shape)
     factors = ivy.tensor_train(tensor, rank)
@@ -1989,7 +1998,8 @@ def test_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
 # test adapted from tensorly
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tucker.py#L71
 @pytest.mark.parametrize(
-    "tol_norm_2, tol_max_abs, shape, ranks", [(10e-3, 10e-1, (3, 4, 3), [2, 3, 1])]
+    ("tol_norm_2", "tol_max_abs", "shape", "ranks"),
+    [(10e-3, 10e-1, (3, 4, 3), [2, 3, 1])],
 )
 def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
     tensor = ivy.random_uniform(shape=shape)

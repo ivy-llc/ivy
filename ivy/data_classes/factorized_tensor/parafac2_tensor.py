@@ -419,12 +419,13 @@ class Parafac2Tensor(FactorizedTensor):
             weights = None
 
         decomposition = weights, (A, B, C), projections
-        I, _ = A.shape
+        I, _ = A.shape  # noqa: E741
         return [
             ivy.Parafac2Tensor.parafac2_to_slice(decomposition, i, validate=False)
             for i in range(I)
         ]
 
+    @staticmethod
     def parafac2_to_tensor(parafac2_tensor):
         """Construct a full tensor from a PARAFAC2 decomposition.
 
@@ -485,6 +486,7 @@ class Parafac2Tensor(FactorizedTensor):
             tensor[i, :length] = slice_
         return tensor
 
+    @staticmethod
     def parafac2_to_unfolded(parafac2_tensor, mode):
         """Construct an unfolded tensor from a PARAFAC2 decomposition. Uneven
         slices are padded by zeros.
@@ -536,6 +538,7 @@ class Parafac2Tensor(FactorizedTensor):
         """
         return ivy.unfold(ivy.Parafac2Tensor.parafac2_to_tensor(parafac2_tensor), mode)
 
+    @staticmethod
     def parafac2_to_vec(parafac2_tensor):
         """Construct a vectorized tensor from a PARAFAC2 decomposition. Uneven
         slices are padded by zeros.

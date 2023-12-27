@@ -8,6 +8,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 )
 from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
 from ivy.func_wrapper import (
+    with_supported_device_and_dtypes,
     with_unsupported_dtypes,
 )
 
@@ -15,7 +16,7 @@ from ivy.func_wrapper import (
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.18 and below": (
+        "0.4.23 and below": (
             "float16",
             "bfloat16",
         )
@@ -24,6 +25,58 @@ from ivy.func_wrapper import (
 )
 def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out, dtype=ivy.int64)
+
+
+# argmin
+@to_ivy_arrays_and_back
+@with_supported_device_and_dtypes(
+    {
+        "0.4.20 and below": {
+            "cpu": (
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+            )
+        }
+    },
+    "jax",
+)
+def argmin(a, axis=None, out=None, keepdims=None):
+    if a is not None:
+        if isinstance(a, list):
+            if all(isinstance(elem, ivy.Array) for elem in a):
+                if len(a) == 1:
+                    a = a[0]
+                else:
+                    return [
+                        ivy.argmin(
+                            ivy.to_native_arrays(elem),
+                            axis=axis,
+                            out=out,
+                            keepdims=keepdims,
+                        )
+                        for elem in a
+                    ]
+            else:
+                raise ValueError(
+                    "Input 'a' must be an Ivy array or a list of Ivy arrays."
+                )
+
+        if not isinstance(a, ivy.Array):
+            raise TypeError("Input 'a' must be an array.")
+
+        if a.size == 0:
+            raise ValueError("Input 'a' must not be empty.")
+
+        return ivy.argmin(a, axis=axis, out=out, keepdims=keepdims)
+    else:
+        raise ValueError("argmin takes at least 1 argument.")
 
 
 @to_ivy_arrays_and_back
@@ -58,7 +111,7 @@ def argwhere(a, /, *, size=None, fill_value=None):
 
 @with_unsupported_dtypes(
     {
-        "0.4.18 and below": (
+        "0.4.23 and below": (
             "uint8",
             "int8",
             "bool",

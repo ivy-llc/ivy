@@ -1,4 +1,5 @@
 # global
+
 from typing import Union, Optional, Tuple, Literal, List, Dict, Sequence
 
 # local
@@ -2728,6 +2729,14 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         offset
             Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
+        axis1
+            axis to be used as the first axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``0.`` .
+        axis2
+            axis to be used as the second axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``1.`` .
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2813,6 +2822,14 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         offset
             Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
+        axis1
+            axis to be used as the first axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``0.`` .
+        axis2
+            axis to be used as the second axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``1.`` .
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply

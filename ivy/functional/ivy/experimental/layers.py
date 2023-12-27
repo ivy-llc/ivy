@@ -92,7 +92,7 @@ def max_pool1d(
 
        [[16., 17., 18., 19.]]])
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
-    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True)) # noqa
+    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True))
     ivy.array([[[ 1.,  3.],
             [ 5.,  7.],
             [ 9., 11.]],
@@ -100,7 +100,7 @@ def max_pool1d(
         [[13., 15.],
             [17., 19.],
             [21., 23.]]])
-    """
+    """  # noqa: E501
     return ivy.current_backend(x).max_pool1d(
         x,
         kernel,
@@ -294,13 +294,13 @@ def avg_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
-    division_override: Optional[int] = None,
+    divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute a 1-D avg pool given 3-D input x.
@@ -323,7 +323,7 @@ def avg_pool1d(
         Whether to include padding in the averaging calculation.
     ceil_mode
         Whether to use ceil or floor for creating the output shape.
-    division_override
+    divisor_override
         If specified, it will be used as the divisor,
         otherwise kernel_size will be used.
     out
@@ -362,7 +362,7 @@ def avg_pool1d(
         data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
-        division_override=division_override,
+        divisor_override=divisor_override,
         out=out,
     )
 
@@ -376,7 +376,7 @@ def avg_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -398,7 +398,7 @@ def avg_pool2d(
         The stride of the sliding window for each dimension of input.
     padding
         SAME" or "VALID" indicating the algorithm, or list
-        indicating the per-dimensio paddings.
+        indicating the per-dimension paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
     count_include_pad
@@ -463,7 +463,7 @@ def avg_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -1393,9 +1393,8 @@ def _tf_area_indices(dim_index, scale):
     return starting_index, ending_index, rounded_indices
 
 
-def _tf_area_interpolate(x, size, dims):
-    ret = ivy.zeros((x.shape[:2] + size))
-    scale = ivy.divide(ivy.shape(x)[2:], size)
+def _tf_area_interpolate(x, size, scale, dims):
+    ret = ivy.zeros(x.shape[:2] + size)
     area = 1.0 / ivy.prod(scale)
     for i, ba in enumerate(x):
         for j, ch in enumerate(ba):
@@ -1406,13 +1405,11 @@ def _tf_area_interpolate(x, size, dims):
                             d_in, d_in1, d_index = _tf_area_indices(d_dim, scale[0])
                             h_in, h_in1, h_index = _tf_area_indices(h_dim, scale[1])
                             w_in, w_in1, w_index = _tf_area_indices(w_dim, scale[2])
-                            sum_data = ivy.zeros(
-                                (
-                                    d_index[1] - d_index[0],
-                                    h_index[1] - h_index[0],
-                                    w_index[1] - w_index[0],
-                                )
-                            )
+                            sum_data = ivy.zeros((
+                                d_index[1] - d_index[0],
+                                h_index[1] - h_index[0],
+                                w_index[1] - w_index[0],
+                            ))
                             for d_ind in range(d_index[0], d_index[1]):
                                 scale_z = _tf_area_dim_scale(
                                     d_ind, d_in, scale[0], d_in1
@@ -1471,12 +1468,11 @@ def _tf_area_interpolate(x, size, dims):
     return ret
 
 
-def nearest_interpolate(x, dims, size, input_shape, exact):
+def nearest_interpolate(x, dims, size, scale, exact):
     off = 0.5 if exact else 0
     for d in range(dims):
-        m = input_shape[d + 2]
         n = size[d]
-        offsets = (ivy.arange(n, dtype="float32") + off) * m / n
+        offsets = (ivy.arange(n, dtype="float32") + off) * scale[d]
         offsets = ivy.astype(ivy.floor(ivy.astype(offsets, "float32")), "int32")
         x = ivy.gather(x, offsets, axis=d + 2)
     return x
@@ -1498,19 +1494,17 @@ def _lanczos_kernel(radius, x):
     return ivy.where(ivy.bitwise_and(x >= radius, x < -radius), 0.0, out)
 
 
-def _dim_scale_factor(input_size, output_size, align_corners, scales):
-    if align_corners:
-        if output_size > 1:
-            dim_scale_factor = (input_size - 1) / (output_size - 1)
+def _get_final_scale(input_size, output_size, align_corners, scale_factor):
+    scale = []
+    for i, (input, output) in enumerate(zip(input_size, output_size)):
+        if align_corners:
+            if output > 1:
+                scale.append((input - 1) / (output - 1))
+            else:
+                scale.append(1)
         else:
-            dim_scale_factor = 0.0
-    else:
-        dim_scale_factor = (
-            input_size / (input_size * scales)
-            if scales is not None
-            else input_size / output_size
-        )
-    return dim_scale_factor
+            scale.append(1 / scale_factor[i])
+    return scale
 
 
 def _mitchellcubic_kernel(x):
@@ -1526,23 +1520,16 @@ def _mitchellcubic_kernel(x):
 def _compute_weight_mat(
     input_size,
     output_size,
-    scale,
     align_corners,
     kernel_fn,
-    antialias: bool,
-    dim_scale_factor,
+    dim_scale,
 ):
-    inv_scale = 1.0 / scale
-    kernel_scale = ivy.maximum(inv_scale, 1.0) if antialias else 1.0
     if not align_corners:
-        sample_f = (ivy.arange(output_size) + 0.5) * dim_scale_factor - 0.5
+        sample_f = (ivy.arange(output_size) + 0.5) * dim_scale - 0.5
     else:
-        sample_f = ivy.arange(output_size) * dim_scale_factor
-    x = (
-        ivy.abs(
-            ivy.expand_dims(sample_f) - ivy.expand_dims(ivy.arange(input_size), axis=-1)
-        )
-        / kernel_scale
+        sample_f = ivy.arange(output_size) * dim_scale
+    x = ivy.abs(
+        ivy.expand_dims(sample_f) - ivy.expand_dims(ivy.arange(input_size), axis=-1)
     )
     weights = kernel_fn(x)
     total_weight_sum = ivy.sum(weights, axis=0, keepdims=True)
@@ -1591,18 +1578,11 @@ def _sum_tensors(ts):
 def _upsample_bicubic2d_default(
     a,
     output_size,
+    scale,
     align_corners,
-    scale_h=None,
-    scale_w=None,
 ):
     N, C, iH, iW = a.shape
     oH, oW = output_size
-
-    def compute_scale(in_size, out_size, align_corners, scale=None):
-        if align_corners:
-            return (in_size - 1) / (out_size - 1) if out_size > 1 else 0
-        else:
-            return 1 / scale if scale is not None and scale > 0 else in_size / out_size
 
     def compute_source_index(scale, dst_index, align_corners):
         if align_corners:
@@ -1610,20 +1590,19 @@ def _upsample_bicubic2d_default(
         else:
             return scale * (dst_index + 0.5) - 0.5
 
-    height_scale = compute_scale(iH, oH, align_corners, scale_h)
-    width_scale = compute_scale(iW, oW, align_corners, scale_w)
-
-    N_idx = ivy.reshape(ivy.arange(N), (N, 1, 1, 1))
-    C_idx = ivy.reshape(ivy.arange(C), (1, C, 1, 1))
+    N_idx = ivy.reshape(ivy.arange(N), (N, 1, 1, 1)).astype(ivy.int64)
+    C_idx = ivy.reshape(ivy.arange(C), (1, C, 1, 1)).astype(ivy.int64)
     out_y = ivy.reshape(ivy.arange(oH), ((1, 1, oH, 1)))
     out_x = ivy.reshape(ivy.arange(oW), ((1, 1, 1, oW)))
 
-    real_x = compute_source_index(width_scale, out_x, align_corners)
+    scale_y, scale_x = scale
+
+    real_x = compute_source_index(scale_x, out_x, align_corners)
     in_x = ivy.floor(real_x)
     t_x = real_x - in_x
     ix = ivy.astype(in_x, ivy.int64)
 
-    real_y = compute_source_index(height_scale, out_y, align_corners)
+    real_y = compute_source_index(scale_y, out_y, align_corners)
     in_y = ivy.floor(real_y)
     t_y = real_y - in_y
     iy = ivy.astype(in_y, ivy.int64)
@@ -1637,18 +1616,17 @@ def _upsample_bicubic2d_default(
         return a[N_idx, C_idx, y_idx, x_idx]
 
     def get_x_interp(y):
-        coeffs_x = tuple((load_bounded(y, x_ofs) for x_ofs in ixs_ofs))
+        coeffs_x = tuple(load_bounded(y, x_ofs) for x_ofs in ixs_ofs)
         return _upsample_cubic_interp1d(coeffs_x, t_x)
 
-    coeffs_y = tuple((get_x_interp(y_ofs) for y_ofs in iys_ofs))
+    coeffs_y = tuple(get_x_interp(y_ofs) for y_ofs in iys_ofs)
     result = _upsample_cubic_interp1d(coeffs_y, t_y)
 
     return result
 
 
 def area_interpolate(x, dims, size, scale):
-    ret = ivy.zeros((x.shape[:2] + size))
-    inv_scale = ivy.divide(1.0, scale)
+    ret = ivy.zeros(x.shape[:2] + size)
     for i, ba in enumerate(x):
         for j, ch in enumerate(ba):
             if dims == 3:
@@ -1656,16 +1634,16 @@ def area_interpolate(x, dims, size, scale):
                     for h_dim in range(size[1]):
                         for w_dim in range(size[2]):
                             d_index = (
-                                int(d_dim * inv_scale[0]),
-                                math.ceil((d_dim + 1) * inv_scale[0]),
+                                int(d_dim * scale[0]),
+                                math.ceil((d_dim + 1) * scale[0]),
                             )
                             h_index = (
-                                int(h_dim * inv_scale[1]),
-                                math.ceil((h_dim + 1) * inv_scale[1]),
+                                int(h_dim * scale[1]),
+                                math.ceil((h_dim + 1) * scale[1]),
                             )
                             w_index = (
                                 int(w_dim * scale[2]),
-                                math.ceil((w_dim + 1) * inv_scale[2]),
+                                math.ceil((w_dim + 1) * scale[2]),
                             )
                             scale_z = d_index[1] - d_index[0]
                             scale_y = h_index[1] - h_index[0]
@@ -1682,12 +1660,12 @@ def area_interpolate(x, dims, size, scale):
                 for h_dim in range(size[0]):
                     for w_dim in range(size[1]):
                         h_index = (
-                            int(h_dim * inv_scale[0]),
-                            math.ceil((h_dim + 1) * inv_scale[0]),
+                            int(h_dim * scale[0]),
+                            math.ceil((h_dim + 1) * scale[0]),
                         )
                         w_index = (
-                            int(w_dim * inv_scale[1]),
-                            math.ceil((w_dim + 1) * inv_scale[1]),
+                            int(w_dim * scale[1]),
+                            math.ceil((w_dim + 1) * scale[1]),
                         )
                         scale_y = h_index[1] - h_index[0]
                         scale_x = w_index[1] - w_index[0]
@@ -1698,8 +1676,8 @@ def area_interpolate(x, dims, size, scale):
             else:
                 for w_dim in range(size[0]):
                     w_index = (
-                        int(w_dim * inv_scale[0]),
-                        math.ceil((w_dim + 1) * inv_scale[0]),
+                        int(w_dim * scale[0]),
+                        math.ceil((w_dim + 1) * scale[0]),
                     )
                     scale_x = w_index[1] - w_index[0]
                     ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
@@ -1710,12 +1688,21 @@ def area_interpolate(x, dims, size, scale):
 
 def get_interpolate_kernel(mode):
     kernel_func = _triangle_kernel
-    if mode == "bicubic_tensorflow":
-        kernel_func = lambda inputs: _cubic_kernel(inputs)
+    if mode == "tf_bicubic":
+
+        def kernel_func(inputs):  # noqa F811
+            return _cubic_kernel(inputs)
+
     elif mode == "lanczos3":
-        kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
+
+        def kernel_func(inputs):
+            return _lanczos_kernel(3, inputs)
+
     elif mode == "lanczos5":
-        kernel_func = lambda inputs: _lanczos_kernel(5, inputs)
+
+        def kernel_func(inputs):
+            return _lanczos_kernel(5, inputs)
+
     return kernel_func
 
 
@@ -1729,26 +1716,12 @@ def generate_einsum_equation(dim):
     return einsum_string
 
 
-def _interpolate_with_kernel(
-    x, dims, size, scale, input_shape, align_corners, antialias, scale_factor, mode
-):
-    spatial_dims = [2 + i for i in range(dims)]
+def _interpolate_with_kernel(x, dims, size, input_size, align_corners, scale, mode):
     equation = generate_einsum_equation(dims)
     kernel_func = get_interpolate_kernel(mode)
-    output_shape = tuple(input_shape[:2]) + size
     operands = []
-    for i, d in enumerate(spatial_dims):
-        m = input_shape[d]
-        n = output_shape[d]
-        dim_scale_factor = _dim_scale_factor(
-            m,
-            n,
-            align_corners,
-            scale_factor[i] if scale_factor is not None else None,
-        )
-        w = _compute_weight_mat(
-            m, n, scale[i], align_corners, kernel_func, antialias, dim_scale_factor
-        ).astype(x.dtype)
+    for m, n, s in zip(input_size, size, scale):
+        w = _compute_weight_mat(m, n, align_corners, kernel_func, s).astype(x.dtype)
         operands.append(w)
     return ivy.einsum(equation, x, *operands)
 
@@ -1772,7 +1745,7 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "bicubic",
         "mitchellcubic",
         "lanczos3",
@@ -1781,8 +1754,8 @@ def interpolate(
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
-    align_corners: Optional[bool] = None,
-    antialias: bool = False,
+    align_corners: bool = False,
+    antialias: bool = False,  # ToDo: add support for antialias
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Down/up samples the input to the given size. The algorithm used for
@@ -1806,22 +1779,23 @@ def interpolate(
         - area
         - tf_area
         - bicubic
+        - tf_bicubic
         - mitchellcubic
         - lanczos3
         - lanczos5
         - gaussian
     scale_factor
         Multiplier for spatial size that defines the output size (overwriting `size`).
+    recompute_scale_factor
+        If True, then scale_factor must be provided and scale_factor is used to
+        compute the output size. The computed output size will be used to infer new
+        scales for the interpolation. If recompute_scale_factor is False, then size
+        or scale_factor will be used directly for interpolation.
     align_corners
         If True, the corner pixels of the input and output tensors are aligned,
         and thus preserving the values at the corner pixels. If False, the corner
         pixels are not aligned, and the interpolation uses edge value padding for
         out-of-boundary values.
-        only has an effect when mode is 'linear', 'bilinear',
-        'bicubic' or 'trilinear'. Default: False
-    antialias
-        If True, antialiasing is applied when downsampling an image.
-        Supported modes: 'bilinear', 'bicubic'.
     out
         Optional output array, for writing the result to. It must
         have a shape that the inputs broadcast to.
@@ -1830,132 +1804,181 @@ def interpolate(
     -------
         resized array
     """
-    input_shape = ivy.shape(x)
-    dims = len(input_shape) - 2
-    size = _get_size(scale_factor, size, dims, x.shape)
-    if recompute_scale_factor:
-        scale_factor = None
-    elif scale_factor is not None:
-        scale_factor = (
-            [scale_factor] * dims
-            if isinstance(scale_factor, (int, float))
-            else scale_factor
+    input_size = ivy.shape(x)[2:]
+    dims = len(input_size)
+    if ivy.exists(size) and ivy.exists(scale_factor):
+        raise ivy.utils.exceptions.IvyException(
+            "only one of size or scale_factor should be defined"
         )
-        scale_factor = (
-            [scale_factor[0]] * dims
-            if isinstance(scale_factor, (list, tuple)) and len(scale_factor) != dims
-            else [scale_factor] * dims
+    elif ivy.exists(size) and not ivy.exists(scale_factor):
+        if isinstance(size, (list, tuple)):
+            ivy.utils.assertions.check_equal(
+                len(size),
+                dims,
+                inverse=False,
+                message=(
+                    "Input and output must have the same number of spatial dimensions,"
+                    f" but got input with {list(input_size)} spatial dimensions and"
+                    f" output size {size}."
+                ),
+                as_array=False,
+            )
+    elif ivy.exists(scale_factor) and not ivy.exists(size):
+        if isinstance(scale_factor, (list, tuple)):
+            ivy.utils.assertions.check_equal(
+                len(scale_factor),
+                dims,
+                inverse=False,
+                message=(
+                    "Input and scale_factor must have the same number of spatial"
+                    f" dimensions, but got input with {list(input_size)} spatial"
+                    f" dimensions and scale_factor {scale_factor}."
+                ),
+                as_array=False,
+            )
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            "either size or scale_factor should be defined"
         )
-    scale = [ivy.divide(size[i], input_shape[i + 2]) for i in range(dims)]
-    if mode in [
-        "linear",
-        "bilinear",
-        "trilinear",
-        "nd",
-        "bicubic_tensorflow",
-        "lanczos3",
-        "lanczos5",
-    ]:
-        ret = _interpolate_with_kernel(
-            x,
-            dims,
-            size,
-            scale,
-            input_shape,
-            align_corners,
-            antialias,
-            scale_factor,
-            mode,
+    if ivy.exists(size) and recompute_scale_factor is not None:
+        raise ivy.utils.exceptions.IvyException(
+            "recompute_scale_factor is not meaningful with an explicit size."
         )
-    elif mode == "bicubic":
-        return _upsample_bicubic2d_default(x, size, align_corners)
-    elif mode in ["nearest-exact", "nearest"]:
-        ret = nearest_interpolate(x, dims, size, input_shape, mode == "nearest-exact")
-    elif mode == "area":
-        ret = area_interpolate(x, dims, size, scale)
-    elif mode == "mitchellcubic":
-        batch, channels, in_height, in_width = x.shape
-        out_height, out_width = size
-        scale_factor_h = out_height / in_height
-        scale_factor_w = out_width / in_width
-        ret = ivy.zeros((batch, channels, out_height, out_width))
-        for i in range(out_height):
-            for j in range(out_width):
-                p_i = i / scale_factor_h
-                p_j = j / scale_factor_w
-                left = int(math.floor(p_j - 2))
-                right = int(math.ceil(p_j + 2))
-                top = int(math.floor(p_i - 2))
-                bottom = int(math.ceil(p_i + 2))
-                kernel_w = ivy.array(
-                    [
-                        _mitchellcubic_kernel((p_j - j) / scale_factor_w)
+    if ivy.get_num_dims(x) != 4 and mode == "bilinear":
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {x.ndim}D input, but bilinear mode needs 4D input"
+        )
+    if ivy.get_num_dims(x) != 5 and mode == "trilinear":
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {x.ndim}D input, but trilinear mode needs 5D input"
+        )
+    if ivy.get_num_dims(x) != 3 and mode == "linear":
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {x.ndim}D input, but trilinear mode needs 3D input"
+        )
+    size, scale_factor = _get_size(scale_factor, size, dims, input_size)
+    ivy.utils.assertions.check_true(
+        all(s > 0 for s in size),
+        message=f"output sizes should be greater than 0, but got {size}",
+    )
+    if all(a == b for a, b in zip(size, input_size)):
+        ret = x
+    else:
+        if recompute_scale_factor:
+            scale_factor = [ivy.divide(size[i], input_size[i]) for i in range(dims)]
+        else:
+            scale_factor = [
+                1 if input_size[i] == size[i] else scale_factor[i] for i in range(dims)
+            ]
+        scale = _get_final_scale(input_size, size, align_corners, scale_factor)
+        if mode in [
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nd",
+            "tf_bicubic",
+            "lanczos3",
+            "lanczos5",
+        ]:
+            ret = _interpolate_with_kernel(
+                x,
+                dims,
+                size,
+                input_size,
+                align_corners,
+                scale,
+                mode,
+            )
+        elif mode == "bicubic":
+            ret = _upsample_bicubic2d_default(x, size, scale, align_corners)
+        elif mode in ["nearest-exact", "nearest"]:
+            ret = nearest_interpolate(x, dims, size, scale, mode == "nearest-exact")
+        elif mode == "area":
+            ret = area_interpolate(x, dims, size, scale)
+        elif mode == "mitchellcubic":
+            batch, channels, in_height, in_width = x.shape
+            out_height, out_width = size
+            scale_h, scale_w = scale
+            ret = ivy.zeros((batch, channels, out_height, out_width))
+            for i in range(out_height):
+                for j in range(out_width):
+                    p_i = i * scale_h
+                    p_j = j * scale_w
+                    left = int(math.floor(p_j - 2))
+                    right = int(math.ceil(p_j + 2))
+                    top = int(math.floor(p_i - 2))
+                    bottom = int(math.ceil(p_i + 2))
+                    kernel_w = ivy.array([
+                        _mitchellcubic_kernel((p_j - j) * scale_w)
                         for i in range(left, right)
-                    ]
-                )
-                kernel_h = ivy.array(
-                    [
-                        _mitchellcubic_kernel((p_i - i) / scale_factor_h)
+                    ])
+                    kernel_h = ivy.array([
+                        _mitchellcubic_kernel((p_i - i) * scale_h)
                         for j in range(top, bottom)
+                    ])
+                    left_pad = max(0, -left)
+                    right_pad = max(0, right - in_width)
+                    top_pad = max(0, -top)
+                    bottom_pad = max(0, bottom - in_height)
+                    pad_width = [(0, 0), (0, 0)] * (len(x.shape) - 3) + [
+                        (top_pad, bottom_pad),
+                        (left_pad, right_pad),
                     ]
-                )
-                left_pad = max(0, -left)
-                right_pad = max(0, right - in_width)
-                top_pad = max(0, -top)
-                bottom_pad = max(0, bottom - in_height)
-                pad_width = [(0, 0), (0, 0)] * (len(x.shape) - 3) + [
-                    (top_pad, bottom_pad),
-                    (left_pad, right_pad),
-                ]
-                padded_x = ivy.pad(x, pad_width, mode="edge")
-                for b in range(batch):
-                    for c in range(channels):
-                        patch = padded_x[
-                            b,
-                            c,
-                            top + top_pad : bottom + top_pad,
-                            left + left_pad : right + left_pad,
-                        ]
-                        ret[b, c, i, j] = ivy.sum(
-                            kernel_h[:, ivy.newaxis] * patch * kernel_w[ivy.newaxis, :]
-                        )
-    elif mode == "gaussian":
-        ratio_h = size[0] / x.shape[-2]
-        ratio_w = size[1] / x.shape[-1]
-        sigma = max(1 / ratio_h, 1 / ratio_w) * 0.5
-        kernel_size = 2 * int(math.ceil(3 * sigma)) + 1
-        kernel_h = ivy.zeros((kernel_size,), dtype=x.dtype)
-        kernel_w = ivy.zeros((kernel_size,), dtype=x.dtype)
-        for i in range(kernel_h.size):
-            kernel_h[i] = ivy.exp(-0.5 * ((i - kernel_h.size // 2) / sigma) ** 2)
-            kernel_w[i] = ivy.exp(-0.5 * ((i - kernel_w.size // 2) / sigma) ** 2)
-        kernel_h /= ivy.sum(kernel_h)
-        kernel_w /= ivy.sum(kernel_w)
-        pad_width = [(0, 0), (0, 0)] * (len(x.shape) - 3) + [
-            (int(math.ceil(3 * sigma)), int(math.ceil(3 * sigma))),
-            (int(math.ceil(3 * sigma)), int(math.ceil(3 * sigma))),
-        ]
-        padded_x = ivy.pad(x, pad_width, mode="constant")
-        output_shape = x.shape[:2] + size
-        ret = ivy.zeros(output_shape, dtype=x.dtype)
-        for i in range(size[0]):
-            for j in range(size[1]):
-                p_i = int(math.floor(i / ratio_h + int(math.ceil(3 * sigma))))
-                p_j = int(math.floor(j / ratio_w + int(math.ceil(3 * sigma))))
-                for b in range(x.shape[0]):
-                    for c in range(x.shape[1]):
-                        patch = padded_x[
-                            b,
-                            c,
-                            p_i - kernel_size // 2 : p_i + kernel_size // 2 + 1,
-                            p_j - kernel_size // 2 : p_j + kernel_size // 2 + 1,
-                        ]
-                        ret[b, c, i, j] = ivy.sum(
-                            kernel_h[ivy.newaxis, :] * patch * kernel_w[:, ivy.newaxis]
-                        )
-    elif mode == "tf_area":
-        ret = _tf_area_interpolate(x, size, dims)
-    return ivy.astype(ret, ivy.dtype(x), out=out)
+                    padded_x = ivy.pad(x, pad_width, mode="edge")
+                    for b in range(batch):
+                        for c in range(channels):
+                            patch = padded_x[
+                                b,
+                                c,
+                                top + top_pad : bottom + top_pad,
+                                left + left_pad : right + left_pad,
+                            ]
+                            ret[b, c, i, j] = ivy.sum(
+                                kernel_h[:, ivy.newaxis]
+                                * patch
+                                * kernel_w[ivy.newaxis, :]
+                            )
+        elif mode == "gaussian":
+            ratio_h, ratio_w = scale
+            sigma = max(ratio_h, ratio_w) * 0.5
+            kernel_size = 2 * int(math.ceil(3 * sigma)) + 1
+            kernel_h = ivy.zeros((kernel_size,), dtype=x.dtype)
+            kernel_w = ivy.zeros((kernel_size,), dtype=x.dtype)
+            for i in range(kernel_h.size):
+                kernel_h[i] = ivy.exp(-0.5 * ((i - kernel_h.size // 2) / sigma) ** 2)
+                kernel_w[i] = ivy.exp(-0.5 * ((i - kernel_w.size // 2) / sigma) ** 2)
+            kernel_h /= ivy.sum(kernel_h)
+            kernel_w /= ivy.sum(kernel_w)
+            pad_width = [(0, 0), (0, 0)] * (len(x.shape) - 3) + [
+                (int(math.ceil(3 * sigma)), int(math.ceil(3 * sigma))),
+                (int(math.ceil(3 * sigma)), int(math.ceil(3 * sigma))),
+            ]
+            padded_x = ivy.pad(x, pad_width, mode="constant")
+            output_shape = x.shape[:2] + size
+            ret = ivy.zeros(output_shape, dtype=x.dtype)
+            for i in range(size[0]):
+                for j in range(size[1]):
+                    p_i = int(math.floor(i * ratio_h + int(math.ceil(3 * sigma))))
+                    p_j = int(math.floor(j * ratio_w + int(math.ceil(3 * sigma))))
+                    for b in range(x.shape[0]):
+                        for c in range(x.shape[1]):
+                            patch = padded_x[
+                                b,
+                                c,
+                                p_i - kernel_size // 2 : p_i + kernel_size // 2 + 1,
+                                p_j - kernel_size // 2 : p_j + kernel_size // 2 + 1,
+                            ]
+                            ret[b, c, i, j] = ivy.sum(
+                                kernel_h[ivy.newaxis, :]
+                                * patch
+                                * kernel_w[:, ivy.newaxis]
+                            )
+        elif mode == "tf_area":
+            ret = _tf_area_interpolate(x, size, scale, dims)
+        ret = ivy.astype(ret, ivy.dtype(x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 interpolate.mixed_backend_wrappers = {
@@ -1967,7 +1990,7 @@ interpolate.mixed_backend_wrappers = {
 }
 
 
-def _get_size(scale_factor, size, dims, x_shape):
+def _get_size(scale_factor, size, dims, input_shape):
     if scale_factor is not None:
         if isinstance(scale_factor, (float, int)):
             scale_factor = [scale_factor] * dims
@@ -1975,11 +1998,12 @@ def _get_size(scale_factor, size, dims, x_shape):
             scale_factor = [scale_factor[0]] * dims
 
         size = tuple(
-            int(math.floor(x_shape[2 + i] * scale_factor[i])) for i in range(dims)
+            int(math.floor(input_shape[i] * scale_factor[i])) for i in range(dims)
         )
     else:
         size = (size,) * dims if isinstance(size, int) else tuple(size)
-    return size
+        scale_factor = [ivy.divide(size[i], input_shape[i]) for i in range(dims)]
+    return size, scale_factor
 
 
 def _output_ceil_shape(w, f, p, s):
@@ -1987,7 +2011,7 @@ def _output_ceil_shape(w, f, p, s):
 
 
 def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
-    remaining_pixels = (w - f + sum(p)) % s
+    remaining_pixels = (w - f + p[0]) % s
     added_padding = 0
     if s > 1 and remaining_pixels != 0 and f > 1:
         input_size = w + sum(p)
@@ -2248,6 +2272,9 @@ adaptive_avg_pool1d.mixed_backend_wrappers = {
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
+    /,
+    *,
+    data_format: str = "NHWC",
 ) -> ivy.Array:
     """Apply a 2D adaptive average pooling over an input signal composed of
     several input planes.
@@ -2255,11 +2282,11 @@ def adaptive_avg_pool2d(
     Parameters
     ----------
     input
-        Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N is
-        the batch dimension, C is the feature dimension, and H_in and W_in are the 2
-        spatial dimensions.
+        A 3D or 4D input array. Should have a floating-point data type.
     output_size
         Spatial output size.
+    data_format
+        "NHWC" or "NCHW". Defaults to "NHWC".
 
     Returns
     -------
@@ -2275,6 +2302,12 @@ def adaptive_avg_pool2d(
             f"Got {len(input.shape)}D input, but only 3D and 4D inputs are supported.",
         )
 
+    permuted_input = False
+    if data_format == "NHWC":
+        input = ivy.permute_dims(input, (0, input.ndim - 1, *range(1, input.ndim - 1)))
+        data_format = "NCHW"
+        permuted_input = True
+
     if isinstance(output_size, int):
         output_size = (output_size, output_size)
 
@@ -2283,6 +2316,11 @@ def adaptive_avg_pool2d(
         kernel_size = stride  # Mathematically identical to the previous expression
         pooled_output = ivy.avg_pool2d(
             input, kernel_size, stride, "VALID", data_format="NCHW"
+        )
+        pooled_output = (
+            ivy.permute_dims(pooled_output, (0, *range(2, input.ndim), 1))
+            if permuted_input
+            else pooled_output
         )
         if squeeze:
             return ivy.squeeze(pooled_output, axis=0)
@@ -2296,10 +2334,15 @@ def adaptive_avg_pool2d(
     )
 
     # to numpy and back in order to bypass a slicing error in tensorflow
-    vals = ivy.array(input.to_numpy()[..., _expand_to_dim(idxh, 4), idxw])
+    vals = input[..., _expand_to_dim(idxh, 4), idxw]
 
     if not adaptive_h and not adaptive_w:
         ret = ivy.mean(vals, axis=(-3, -1))
+        ret = (
+            ivy.permute_dims(ret, (0, *range(2, input.ndim), 1))
+            if permuted_input
+            else ret
+        )
         ret = ivy.squeeze(ret, axis=0) if squeeze else ret
         return ret
 
@@ -2314,6 +2357,11 @@ def adaptive_avg_pool2d(
             ret = ret + vals[..., i, :, j]
     pooled_output = ret / (length_h * length_w).astype(vals.dtype)
 
+    pooled_output = (
+        ivy.permute_dims(pooled_output, (0, *range(2, input.ndim), 1))
+        if permuted_input
+        else pooled_output
+    )
     pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
     return pooled_output
 
@@ -2665,7 +2713,7 @@ reduce_window.mixed_backend_wrappers = {
 def fft2(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
     out: Optional[ivy.Array] = None,
@@ -3025,7 +3073,7 @@ def stft(
     /,
     *,
     fft_length: Optional[int] = None,
-    window_fn: Optional = None,
+    window_fn: Optional[Callable] = None,
     pad_end: bool = False,
     name: Optional[str] = None,
     out: Optional[ivy.Array] = None,
@@ -3080,10 +3128,10 @@ def stft(
 def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
     dims = {"1d": 1, "2d": 2, "3d": 3}
     if isinstance(x, int):
-        return tuple([x for _ in range(dims[pool_dims])])
+        return tuple(x for _ in range(dims[pool_dims]))
 
     if len(x) == 1:
-        return tuple([x[0] for _ in range(dims[pool_dims])])
+        return tuple(x[0] for _ in range(dims[pool_dims]))
 
     elif len(x) == dims[pool_dims]:
         return tuple(x)
@@ -3119,7 +3167,7 @@ def max_unpool1d(
     kernel_size: Union[Tuple[int], int],
     /,
     *,
-    strides: Union[int, Tuple[int]] = None,
+    strides: Optional[Union[int, Tuple[int]]] = None,
     padding: Union[int, Tuple[int]] = 0,
     data_format: Optional[str] = "NCW",
 ) -> ivy.Array:
@@ -3194,4 +3242,301 @@ max_unpool1d.mixed_backend_wrappers = {
         "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_device
+def rnn(
+    step_function: Callable,
+    inputs: ivy.Array,
+    initial_states: List[ivy.Array],
+    /,
+    *,
+    go_backwards: bool = False,
+    mask: Optional[ivy.Array] = None,
+    constants: Optional[ivy.Array] = None,
+    unroll: bool = False,
+    input_length: Optional[int] = None,
+    time_major: bool = False,
+    zero_output_for_mask: bool = False,
+    return_all_outputs: bool = True,
+):
+    """Iterate over the time dimension of a tensor.
+
+    Parameters
+    ----------
+    step_function
+        RNN step function.
+    inputs
+        Array of temporal data of shape (samples, time, ...).
+    initial_states
+        Array with shape (samples, state_size).
+    go_backwards
+        If True, do the iteration over the time dimension in reverse order and return
+        the reversed sequence.
+    mask
+        Binary array with shape (samples, time, 1), with a zero for every element that
+        is masked.
+    constants
+        List of constant values passed at each step.
+    unroll
+        Whether to use a pythonic while loop or ivy.while_loop
+    input_length
+        An integer or 1-D array, depending on whether the time dimension is
+        fixed-length. In case of variable length input, it is used for masking in case
+        there is no mask specified.
+    time_major
+        If True, the inputs and outputs will be in shape (timesteps, batch, ...) whereas
+        in the False case, it will be (batch, timesteps, ...).
+    zero_output_for_mask
+        If True, the otput for masked timestep will be zeros, whereas in the False case,
+        output from previous timestep is returned
+    return_all_outputs
+        If True, return the recurrent outputs for all timesteps in the sequence. If
+        False, only return the output for the last timestep.
+
+    Returns
+    -------
+    ret
+        A tuple of
+        -   the latest output of the rnn of shape (samples, ...)
+        -   the output of the rnn of shape (samples, time, ...) if
+            return_all_outputs=True else (samples, 1, ...)
+        -   list of tensors, latest states returned by the step funciton, of shape
+            (samples, ...)
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+    """
+    # an ivy implementation of rnn inspired from
+    # https://github.com/keras-team/keras/blob/v2.14.0/keras/backend.py#L4723-L5202
+
+    # Swap the batch and timestep dim for the incoming tensor.
+    if not time_major:
+        inputs = ivy.permute_dims(inputs, (1, 0, *range(2, len(inputs.shape))))
+
+    time_steps = inputs.shape[0]
+    batch = inputs.shape[1]
+    time_steps_t = ivy.asarray(inputs.shape[0])
+
+    if mask is not None:
+        if not ivy.is_bool_dtype(mask):
+            mask = ivy.astype(mask, ivy.bool)
+        if len(mask.shape) == 2:
+            mask = ivy.expand_dims(mask)
+        if not time_major:
+            mask = ivy.permute_dims(mask, (1, 0, *range(2, len(mask.shape))))
+
+    if constants is None:
+        constants = []
+
+    def _expand_mask(mask_t, input_t, fixed_dim=1):
+        rank_diff = len(input_t.shape) - len(mask_t.shape)
+        for _ in range(rank_diff):
+            mask_t = ivy.expand_dims(mask_t, axis=-1)
+        multiples = [1] * fixed_dim + list(input_t.shape[fixed_dim:])
+        return ivy.tile(mask_t, repeats=multiples)
+
+    if unroll:
+        states = tuple(initial_states)
+        successive_states = []
+        successive_outputs = []
+
+        processed_input = ivy.unstack(inputs)
+        if go_backwards:
+            processed_input.reverse()
+
+        if mask is not None:
+            mask_list = ivy.unstack(mask)
+            if go_backwards:
+                mask_list.reverse()
+
+            for i in range(time_steps):
+                input_t = processed_input[i]
+                mask_t = mask_list[i]
+                output_t, new_states = step_function(
+                    input_t, tuple(states) + tuple(constants)
+                )
+                tiled_mask_t = _expand_mask(mask_t, output_t)
+
+                if not successive_outputs:
+                    prev_output = ivy.zeros_like(output_t)
+                else:
+                    prev_output = successive_outputs[-1]
+
+                output = ivy.where(tiled_mask_t, output_t, prev_output)
+
+                tiled_mask_t = tuple(_expand_mask(mask_t, s) for s in states)
+                final_states = tuple(
+                    ivy.where(m, s, ps)
+                    for m, s, ps in zip(tiled_mask_t, new_states, states)
+                )
+                states = final_states
+
+                if return_all_outputs:
+                    successive_outputs.append(output)
+                    successive_states.append(states)
+                else:
+                    successive_outputs = [output]
+                    successive_states = [states]
+            last_output = successive_outputs[-1]
+            new_states = successive_states[-1]
+            outputs = ivy.stack(successive_outputs)
+
+            if zero_output_for_mask:
+                last_output = ivy.where(
+                    _expand_mask(mask_list[-1], last_output),
+                    last_output,
+                    ivy.zeros_like(last_output),
+                )
+                outputs = ivy.where(
+                    _expand_mask(mask, outputs, fixed_dim=2),
+                    outputs,
+                    ivy.zeros_like(outputs),
+                )
+
+        else:
+            for i in range(time_steps):
+                input_t = processed_input[i]
+                output_t, states = step_function(
+                    input_t, tuple(states) + tuple(constants)
+                )
+                if return_all_outputs:
+                    successive_outputs.append(output_t)
+                    successive_states.append(states)
+                else:
+                    successive_outputs = [output_t]
+                    successive_states = [states]
+            last_output = successive_outputs[-1]
+            new_states = successive_states[-1]
+            outputs = ivy.stack(successive_outputs)
+
+    else:
+        states = tuple(initial_states)
+        input_time_zero = inputs[0]
+        output_time_zero, _ = step_function(
+            input_time_zero, tuple(initial_states) + tuple(constants)
+        )
+
+        output_size = int(time_steps_t) if return_all_outputs else 1
+        output_loop = ivy.empty(
+            (output_size, *output_time_zero.shape), dtype=output_time_zero.dtype
+        )
+
+        if go_backwards:
+            inputs = ivy.flip(inputs, axis=0)
+        time = 0
+
+        test_fn = lambda time, *_: time < time_steps_t
+        if mask is not None:
+            if go_backwards:
+                mask = ivy.flip(mask, axis=0)
+
+            mask_list = ivy.unstack(mask)
+
+            def masking_fn(time):
+                return mask_list[time]
+
+            def compute_masked_output(mask_t, output, mask):
+                tiled_mask_t = tuple(
+                    _expand_mask(mask_t, o, fixed_dim=len(mask_t.shape)) for o in output
+                )
+                return tuple(
+                    ivy.where(m, o, fm) for m, o, fm in zip(tiled_mask_t, output, mask)
+                )
+
+        elif ivy.is_ivy_array(input_length):
+            if go_backwards:
+                max_len = ivy.max(input_length)
+                rev_input_length = ivy.subtract(max_len - 1, input_length)
+
+                def masking_fn(time):
+                    return rev_input_length < time
+
+            else:
+
+                def masking_fn(time):
+                    return input_length > time
+
+            def compute_masked_output(mask_t, output, mask):
+                return ivy.where(mask_t, output, mask)
+
+        else:
+            masking_fn = None
+
+        if masking_fn is not None:
+            zero_output = ivy.zeros_like(output_time_zero)
+
+            def _step(time, output_t, prev_output, *states):
+                current_input = inputs[time]
+                mask_t = masking_fn(time)
+                output, new_states = step_function(
+                    current_input, tuple(states) + tuple(constants)
+                )
+                mask_output = zero_output if zero_output_for_mask else prev_output
+                new_output = compute_masked_output(mask_t, [output], [mask_output])[0]
+
+                for state, new_state in zip(states, new_states):
+                    if ivy.is_ivy_array(new_state):
+                        ivy.reshape(new_state, shape=state.shape, out=new_state)
+                final_states = compute_masked_output(mask_t, new_states, states)
+                new_states = final_states
+                output_t[time if return_all_outputs else 0] = new_output
+
+                return (time + 1, output_t, new_output) + tuple(new_states)
+
+            final_outputs = ivy.while_loop(
+                test_fn=test_fn,
+                body_fn=_step,
+                vars=(time, output_loop, zero_output) + states,
+            )
+            new_states = final_outputs[3:]
+        else:
+
+            def _step(time, output_t, *states):
+                current_input = inputs[time]
+                output, new_states = step_function(
+                    current_input, tuple(states) + tuple(constants)
+                )
+
+                for state, new_state in zip(states, new_states):
+                    if ivy.is_ivy_array(new_state):
+                        ivy.reshape(new_state, shape=state.shape, out=new_state)
+
+                output_t[time if return_all_outputs else 0] = output
+                return (time + 1, output_t) + tuple(new_states)
+
+            final_outputs = ivy.while_loop(
+                test_fn=test_fn, body_fn=_step, vars=(time, output_loop) + states
+            )
+            new_states = final_outputs[2:]
+
+        outputs = final_outputs[1]
+        last_output = outputs[-1]
+
+    shape = list(outputs.shape)
+    if return_all_outputs:
+        shape[0] = time_steps
+    else:
+        shape[0] = 1
+    shape[1] = batch
+    outputs = ivy.reshape(outputs, shape)
+
+    if not time_major:
+        outputs = ivy.permute_dims(outputs, (1, 0, *range(2, len(outputs.shape))))
+
+    return last_output, outputs, new_states
+
+
+rnn.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
 }

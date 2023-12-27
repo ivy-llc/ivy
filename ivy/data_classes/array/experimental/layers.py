@@ -824,6 +824,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
     def adaptive_avg_pool2d(
         self: ivy.Array,
         output_size: Union[Sequence[int], int],
+        /,
+        *,
+        data_format: str = "NHWC",
     ) -> ivy.Array:
         """Apply a 2D adaptive average pooling over an input signal composed of
         several input planes.
@@ -831,11 +834,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
         Parameters
         ----------
         self
-            Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N
-            is the batch dimension, C is the feature dimension, and H_in and W_in are
-            the 2 spatial dimensions.
+            A 3D or 4D input array. Should have a floating-point data type.
         output_size
             Spatial output size.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
 
         Returns
         -------
@@ -845,6 +848,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         return ivy.adaptive_avg_pool2d(
             self._data,
             output_size,
+            data_format=data_format,
         )
 
     def adaptive_max_pool2d(
@@ -937,7 +941,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
     def fft2(
         self: ivy.Array,
         *,
-        s: Sequence[int] = None,
+        s: Optional[Sequence[int]] = None,
         dim: Sequence[int] = (-2, -1),
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
@@ -1126,8 +1130,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
     def rfftn(
         self: ivy.Array,
-        s: Sequence[int] = None,
-        axes: Sequence[int] = None,
+        s: Optional[Sequence[int]] = None,
+        axes: Optional[Sequence[int]] = None,
         *,
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
@@ -1270,7 +1274,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         kernel_size: Union[Tuple[int], int],
         /,
         *,
-        strides: Union[int, Tuple[int]] = None,
+        strides: Optional[Union[int, Tuple[int]]] = None,
         padding: Union[int, Tuple[int]] = 0,
         data_format: Optional[str] = "NCW",
     ) -> ivy.Array:

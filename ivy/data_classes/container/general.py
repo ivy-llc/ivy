@@ -1007,6 +1007,7 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             An ivy.Container instance of True bool values if nodes of the Container \
             support in-place operations, raises IvyBackendException otherwise
+
         Examples
         --------
         >>> ivy.set_backend("numpy")
@@ -1419,7 +1420,7 @@ class _ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional array, for writing the result to. It must have a shape
+            Optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
 
@@ -1508,7 +1509,7 @@ class _ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is
             False.
         out
-            optional array, for writing the result to. It must have a shape
+            Optional array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
@@ -1544,7 +1545,7 @@ class _ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def _static_has_nans(
-        self: ivy.Container,
+        x: ivy.Container,
         /,
         *,
         include_infs: Union[bool, ivy.Container] = True,
@@ -1559,7 +1560,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
-        self
+        x
             The container to check for nans.
         include_infs
             Whether to include infs and -infs in the check. Default is True.
@@ -1592,7 +1593,7 @@ class _ContainerWithGeneral(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "has_nans",
-            self,
+            x,
             include_infs=include_infs,
             key_chains=key_chains,
             to_apply=to_apply,

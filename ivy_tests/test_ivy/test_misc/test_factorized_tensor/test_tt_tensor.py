@@ -42,7 +42,7 @@ def test_pad_tt_rank(n_pad):
 
 
 @pytest.mark.parametrize(
-    "shape, rank",
+    ("shape", "rank"),
     [((4, 5, 4, 8, 5), (1, 3, 2, 2, 4, 1))],
 )
 def test_tt_n_param(shape, rank):
@@ -53,7 +53,7 @@ def test_tt_n_param(shape, rank):
 
 
 @pytest.mark.parametrize(
-    "n1, n2, n3, shape1, shape2, shape3",
+    ("n1", "n2", "n3", "shape1", "shape2", "shape3"),
     [(3, 4, 2, (1, 3, 2), (2, 4, 2), (2, 2, 1))],
 )
 def test_tt_to_tensor(n1, n2, n3, shape1, shape2, shape3):
@@ -93,7 +93,7 @@ def test_tt_to_tensor(n1, n2, n3, shape1, shape2, shape3):
 
 @pytest.mark.parametrize(
     "coef",
-    [((0.2))],
+    [(0.2)],
 )
 def test_validate_tt_rank(coef):
     tensor_shape = tuple(ivy.random.randint(5, 10, shape=(4,)))
@@ -109,7 +109,7 @@ def test_validate_tt_rank(coef):
 
 
 @pytest.mark.parametrize(
-    "true_shape, true_rank",
+    ("true_shape", "true_rank"),
     [
         (
             (3, 4, 5),

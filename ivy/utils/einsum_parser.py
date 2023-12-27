@@ -233,6 +233,7 @@ def legalise_einsum_expr(*operands: Any) -> str:
     -------
     einsum_eqn : str
         Legalised einsum equation
+
     Examples
     --------
     The operand list is simplified to reduce printing:

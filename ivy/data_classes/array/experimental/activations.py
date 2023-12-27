@@ -351,6 +351,83 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         """
         return ivy.tanhshrink(self._data, out=out)
 
+    def threshold(
+        self: ivy.Array,
+        /,
+        *,
+        threshold: Union[int, float],
+        value: Union[int, float],
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.threshold. This method
+        simply wraps the function, and so the docstring for ivy.threshold also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        threshold
+            threshold value for thresholding operation.
+        value
+            value to replace with if thresholding condition is not met.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the thresholding function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.hreshold(threshold=0.5, value=0.0)
+        >>> print(y)
+        ivy.array([0.5, 0.5 , 1. ])
+        """
+        return ivy.threshold(self._data, threshold=threshold, value=value, out=out)
+
+    def softshrink(
+        self: ivy.Array,
+        /,
+        *,
+        lambd: float = 0.5,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.softshrink. This method
+        simply wraps the function, and so the docstring for ivy.softshrink also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        lambd
+            the value of the lower bound of the linear region range.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the softshrink activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.softshrink()
+        >>> print(y)
+        ivy.array([-0.5,  0. ,  0.5])
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.softshrink(lambd=1.0)
+        >>> print(y)
+        ivy.array([0., 0., 0.])
+        """
+        return ivy.softshrink(self._data, lambd=lambd, out=out)
+
     def celu(
         self: ivy.Array,
         /,
@@ -438,3 +515,42 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([0.1, 0.1, 0.1])
         """
         return ivy.scaled_tanh(self._data, alpha=alpha, beta=beta, out=out)
+
+    def hardshrink(
+        self: ivy.Array,
+        /,
+        *,
+        lambd: float = 0.5,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.hardshrink. This method
+        simply wraps the function, and so the docstring for ivy.hardshrink also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        lambd
+            the lambd value for the Hardshrink formulation
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the hardshrink activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.hardshrink()
+        >>> print(y)
+        ivy.array([-1.,  0.,  1.])
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.hardshrink(lambd=1.0)
+        >>> print(y)
+        ivy.array([0., 0., 0.])
+        """
+        return ivy.hardshrink(self._data, lambd=lambd, out=out)

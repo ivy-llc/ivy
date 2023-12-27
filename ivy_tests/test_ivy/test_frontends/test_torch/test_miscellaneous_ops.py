@@ -560,6 +560,7 @@ def test_torch_cdist(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_clone(
     *,
@@ -988,12 +989,10 @@ def test_torch_diff(
 @handle_frontend_test(
     fn_tree="torch.einsum",
     eq_n_op_n_shp=helpers.einsum_helper(),
-    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_einsum(
     *,
     eq_n_op_n_shp,
-    dtype,
     on_device,
     fn_tree,
     frontend,
@@ -1003,7 +1002,7 @@ def test_torch_einsum(
     eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
     for i, x_ in enumerate(operands):
-        dtype = dtypes[i][0]
+        dtype = dtypes[i]
         kw[f"x{i}"] = np.array(x_).astype(dtype)
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_frontend_function(
@@ -1068,6 +1067,7 @@ def test_torch_flatten(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         force_tuple=True,
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_flip(
     *,
@@ -1099,6 +1099,7 @@ def test_torch_flip(
         available_dtypes=helpers.get_dtypes("float"),
         shape=helpers.get_shape(min_num_dims=2),
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_fliplr(
     *,
@@ -1128,6 +1129,7 @@ def test_torch_fliplr(
         available_dtypes=helpers.get_dtypes("float"),
         shape=helpers.get_shape(min_num_dims=1),
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_flipud(
     *,

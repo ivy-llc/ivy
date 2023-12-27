@@ -8,7 +8,7 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from paddle.fluid.libpaddle import Place
+from paddle.device import core
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
@@ -26,7 +26,7 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8",)}},
+    {"2.5.2 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def random_uniform(
@@ -35,7 +35,7 @@ def random_uniform(
     high: Union[float, paddle.Tensor] = 1.0,
     shape: Optional[Union[paddle.Tensor, ivy.NativeShape, Sequence[int]]] = None,
     dtype: paddle.dtype,
-    device: Place = None,
+    device: core.Place = None,
     seed=None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -57,7 +57,7 @@ def random_uniform(
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("float16", "int16", "int8")}, backend_version
+    {"2.5.2 and below": ("float16", "int16", "int8")}, backend_version
 )
 def random_normal(
     *,
@@ -66,7 +66,7 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: paddle.dtype,
     seed: Optional[int] = None,
-    device: Place = None,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     _check_valid_scale(std)
@@ -78,7 +78,7 @@ def random_normal(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "float32",
                 "float64",
@@ -95,7 +95,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[paddle.Tensor] = None,
     replace: bool = True,
-    device: Place = None,
+    device: core.Place = None,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -109,7 +109,7 @@ def multinomial(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8",)}},
+    {"2.5.2 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def randint(
@@ -118,7 +118,7 @@ def randint(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Place = None,
+    device: core.Place = None,
     dtype: Optional[Union[paddle.dtype, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
@@ -140,7 +140,7 @@ def randint(
     return _retval if shape else _retval.squeeze(axis=0)
 
 
-def seed(*, seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0):
     _ = paddle.seed(seed_value)
     return
 

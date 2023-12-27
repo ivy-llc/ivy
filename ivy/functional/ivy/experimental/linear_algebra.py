@@ -922,8 +922,8 @@ def multi_mode_dot(
     Notes
     -----
     If no modes are specified, just assumes there is one matrix or vector per mode and returns:
-    :math:`\\text{x  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }` # noqa
-    """
+    :math:`\\text{x  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }`
+    """  # noqa: E501
     if modes is None:
         modes = range(len(mat_or_vec_list))
 
@@ -1051,14 +1051,12 @@ def svd_flip(
         )
         V = V * signs[:, None]
         if ivy.shape(U)[1] > ivy.shape(V)[0]:
-            signs = ivy.concat(
-                (
-                    signs,
-                    ivy.ones(
-                        ivy.shape(U)[1] - ivy.shape(V)[0],
-                    ),
-                )
-            )
+            signs = ivy.concat((
+                signs,
+                ivy.ones(
+                    ivy.shape(U)[1] - ivy.shape(V)[0],
+                ),
+            ))
         U = U * signs[: ivy.shape(U)[1]]
 
     return U, V
@@ -1147,8 +1145,8 @@ def make_svd_non_negative(
         H = ivy.soft_thresholding(H, eps)
     elif nntype == "nndsvda":
         avg = ivy.mean(x)
-        W = ivy.where(W < eps, ivy.ones(ivy.shape(W)) * avg, W)
-        H = ivy.where(H < eps, ivy.ones(ivy.shape(H)) * avg, H)
+        W = ivy.where(eps > W, ivy.ones(ivy.shape(W)) * avg, W)
+        H = ivy.where(eps > H, ivy.ones(ivy.shape(H)) * avg, H)
     else:
         raise ValueError(
             f'Invalid nntype parameter: got {nntype} instead of one of ("nndsvd",'

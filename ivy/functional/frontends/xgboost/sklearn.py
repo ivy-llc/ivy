@@ -118,7 +118,7 @@ class XGBModel(XGBModelBase):
 
         # take random_state into account only if it's an integer
         if isinstance(params["random_state"], int):
-            ivy.seed(params["random_state"])
+            ivy.seed(seed_value=params["random_state"])
 
         return params
 

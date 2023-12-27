@@ -3,6 +3,7 @@
 Collection of PyTorch activation functions, wrapped to fit Ivy syntax
 and signature.
 """
+
 from typing import Optional, Union, Literal
 
 # global
@@ -17,14 +18,14 @@ from . import backend_version
 import ivy.functional.backends.torch as torch_backend
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
 def relu(
     x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.relu(x)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
 def leaky_relu(
     x: torch.Tensor,
     /,
@@ -36,7 +37,7 @@ def leaky_relu(
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
 def gelu(
     x: torch.Tensor,
     /,
@@ -46,13 +47,11 @@ def gelu(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if approximate:
-        return (
-            0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
-        )
+        return 0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
     return torch.nn.functional.gelu(x)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
 def sigmoid(
     x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -64,7 +63,7 @@ def sigmoid(
 sigmoid.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def softmax(
     x: torch.Tensor,
     /,
@@ -81,7 +80,7 @@ def softmax(
     return torch.nn.functional.softmax(x, axis)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, backend_version)
 def softplus(
     x: torch.Tensor,
     /,
@@ -98,7 +97,7 @@ def softplus(
 
 
 # Softsign
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, backend_version)
 def softsign(x: torch.Tensor, /, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     # return x / (1 + torch.abs(x))
     return torch.nn.functional.softsign(x)
@@ -108,7 +107,7 @@ softsign.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("float16",)},
+    {"2.1.2 and below": ("float16",)},
     backend_version,
 )
 def log_softmax(
@@ -129,7 +128,7 @@ def log_softmax(
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("float16",)},
+    {"2.1.2 and below": ("float16",)},
     backend_version,
 )
 def mish(
@@ -147,7 +146,7 @@ def mish(
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.2 and below": (
             "complex",
             "float16",
         )

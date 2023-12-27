@@ -83,10 +83,8 @@ def general_pool(
 
     # shape of window after dilation
     new_window_shape = tuple(
-        [
-            window_shape[i - 1] + (dilation[i] - 1) * (window_shape[i - 1] - 1)
-            for i in range(1, len(dims) - 1)
-        ]
+        window_shape[i - 1] + (dilation[i] - 1) * (window_shape[i - 1] - 1)
+        for i in range(1, len(dims) - 1)
     )
     inputs, window_shape, strides, depth_pooling = _determine_depth_max_pooling(
         inputs, window_shape, strides, dim, data_format="channel_last"
@@ -136,20 +134,20 @@ def general_pool(
                 # because they are counted in average calculation
                 inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
             pad_list = [(0, 0)] * len(pad_list)
+    elif isinstance(padding, list) and any(
+        item != 0 for sublist in padding for item in sublist
+    ):
+        raise NotImplementedError(
+            "Nonzero explicit padding is not supported for depthwise max pooling"
+        )
     else:
-        if isinstance(padding, list) and any(
-            [item != 0 for sublist in padding for item in sublist]
-        ):
-            raise NotImplementedError(
-                "Nonzero explicit padding is not supported for depthwise max pooling"
-            )
         pad_list = [(0, 0)] * (dim + 2)
 
     if not ivy.is_array(inputs):
         # if dtype is not set here, jax casts it to float64
         inputs = jnp.array(inputs, dtype=jnp.float32)
     if not ivy.is_array(init):
-        init = jnp.array(init, dtype=jnp.float32)
+        init = jnp.array(init, dtype=inputs.dtype)
     promoted_type = jnp.promote_types(inputs.dtype, init.dtype)
     inputs = inputs.astype(promoted_type)
     init = init.astype(promoted_type)
@@ -291,12 +289,13 @@ def avg_pool1d(
     x: JaxArray,
     kernel: Union[int, Tuple[int]],
     strides: Union[int, Tuple[int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if data_format in ("NCW", "NCL"):
@@ -341,7 +340,7 @@ def avg_pool2d(
     x: JaxArray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -393,7 +392,7 @@ def avg_pool3d(
     x: JaxArray,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, int, List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -441,7 +440,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.18 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.23 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -455,7 +454,7 @@ def dct(
     if norm not in (None, "ortho"):
         raise ValueError("Norm must be either None or 'ortho'")
     if axis < 0:
-        axis = axis + len(x.shape)
+        axis += len(x.shape)
     if n is not None:
         signal_len = x.shape[axis]
         if n <= signal_len:
@@ -558,7 +557,7 @@ def fft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.fft(x, n, dim, norm)
 
@@ -670,7 +669,7 @@ def ifft(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.ifft(x, n, dim, norm)
 
@@ -689,7 +688,8 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
-        "bicubic_tensorflow" "bicubic",
+        "tf_bicubic",
+        "bicubic",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -697,29 +697,35 @@ def interpolate(
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
-    align_corners: Optional[bool] = None,
+    align_corners: bool = False,
     antialias: bool = False,
     out: Optional[JaxArray] = None,
 ):
-    dims = len(x.shape) - 2
-    size = _get_size(scale_factor, size, dims, x.shape)
-    mode = (
-        "nearest"
-        if mode == "nearest-exact"
-        else "bicubic" if mode == "bicubic_tensorflow" else mode
-    )
+    input_size = ivy.shape(x)[2:]
+    dims = len(input_size)
+    size, _ = _get_size(scale_factor, size, dims, input_size)
+    if all(a == b for a, b in zip(size, input_size)):
+        ret = x
+    else:
+        mode = (
+            "nearest"
+            if mode == "nearest-exact"
+            else "bicubic" if mode == "tf_bicubic" else mode
+        )
 
-    size = [x.shape[0], *size, x.shape[1]]
-    x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
-    return jnp.transpose(
-        jax.image.resize(x, shape=size, method=mode, antialias=antialias),
-        (0, dims + 1, *range(1, dims + 1)),
-    )
+        size = [x.shape[0], *size, x.shape[1]]
+        x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
+        ret = jnp.transpose(
+            jax.image.resize(x, shape=size, method=mode, antialias=antialias),
+            (0, dims + 1, *range(1, dims + 1)),
+        )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-    (align_corners is None or not align_corners)
-    and mode
+interpolate.partial_mixed_handler = (
+    lambda *args, mode="linear", recompute_scale_factor=None, align_corners=None, **kwargs: mode  # noqa: E501
     not in [
         "area",
         "nearest",
@@ -729,6 +735,8 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
         "gaussian",
         "bicubic",
     ]
+    and not align_corners
+    and recompute_scale_factor
 )
 
 
@@ -770,7 +778,7 @@ def reduce_window(
 def fft2(
     x: JaxArray,
     *,
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
     out: Optional[JaxArray] = None,
@@ -814,7 +822,7 @@ def ifftn(
 
 
 @with_unsupported_dtypes(
-    {"0.4.18 and below": ("bfloat16", "float16", "complex")}, backend_version
+    {"0.4.23 and below": ("bfloat16", "float16", "complex")}, backend_version
 )
 def embedding(
     weights: JaxArray,
@@ -862,11 +870,11 @@ def rfft(
     return ret
 
 
-@with_unsupported_dtypes({"0.4.18 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"0.4.23 and below": ("float16", "complex")}, backend_version)
 def rfftn(
     x: JaxArray,
-    s: Sequence[int] = None,
-    axes: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
+    axes: Optional[Sequence[int]] = None,
     *,
     norm: str = "backward",
     out: Optional[JaxArray] = None,
@@ -890,7 +898,7 @@ def rfftn(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
+    if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.rfftn(x, s, axes, norm).astype(jnp.complex128)
 
@@ -984,7 +992,7 @@ def stft(
             windowed_frame = jnp.asarray(windowed_frame, dtype=dtype)
 
             fft_frame = jnp.fft.fft(windowed_frame, axis=-1)
-            slit = int((fft_length // 2 + 1))
+            slit = int(fft_length // 2 + 1)
             stft_result.append(fft_frame[..., 0:slit])
 
         stft = jnp.stack(stft_result, axis=0)

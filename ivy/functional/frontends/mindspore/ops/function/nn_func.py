@@ -2,27 +2,11 @@
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.ivy.experimental.layers import _broadcast_pooling_helper
 
 
 # --- Helpers --- #
 # --------------- #
-
-
-def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
-    dims = {"1d": 1, "2d": 2, "3d": 3}
-
-    if isinstance(x, int):
-        return tuple([x for _ in range(dims[pool_dims])])
-
-    if len(x) == 1:
-        return tuple([x[0] for _ in range(dims[pool_dims])])
-    elif len(x) == dims[pool_dims]:
-        return tuple(x)
-    elif len(x) != dims[pool_dims]:
-        raise ValueError(
-            f"`{name}` must either be a single int, "
-            f"or a tuple of {dims[pool_dims]} ints. "
-        )
 
 
 def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
@@ -121,7 +105,7 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
 )
 @to_ivy_arrays_and_back
 def adaptive_avg_pool2d(input, output_size):
-    return ivy.adaptive_avg_pool2d(input, output_size)
+    return ivy.adaptive_avg_pool2d(input, output_size, data_format="NCHW")
 
 
 @to_ivy_arrays_and_back
@@ -147,14 +131,14 @@ def avg_pool2d(
     kernel_pads = list(zip(kernel_size, padding))
 
     # Padding should be less than or equal to half of kernel size
-    if not all([pad <= kernel / 2 for kernel, pad in kernel_pads]):
+    if not all(pad <= kernel / 2 for kernel, pad in kernel_pads):
         raise ValueError(
             "pad should be smaller than or equal to half of kernel size, "
             f"but got padding={padding}, kernel_size={kernel_size}. "
         )
 
     # Figure out padding string
-    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in kernel_pads]):
+    if all(pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in kernel_pads):
         padding_str = "SAME"
     else:
         padding_str = "VALID"
@@ -183,7 +167,7 @@ def conv1d(
     dilation=1,
     groups=1,
 ):
-    if pad_mode == "valid" or pad_mode == "same":
+    if pad_mode in ["valid", "same"]:
         padding = pad_mode
     elif pad_mode == "pad":
         padding = padding
@@ -204,7 +188,7 @@ def conv2d(
     dilation=1,
     groups=1,
 ):
-    if pad_mode == "valid" or pad_mode == "same":
+    if pad_mode in ["valid", "same"]:
         padding = pad_mode
     elif pad_mode == "pad":
         padding = padding
@@ -225,7 +209,7 @@ def conv3d(
     dilation=1,
     groups=1,
 ):
-    if pad_mode == "valid" or pad_mode == "same":
+    if pad_mode in ["valid", "same"]:
         padding = pad_mode
     elif pad_mode == "pad":
         padding = padding
@@ -352,7 +336,7 @@ def interpolate(
 ):
     return ivy.interpolate(
         input,
-        size=size,
+        size,
         scale_factor=scale_factor,
         mode=mode,
         align_corners=align_corners,

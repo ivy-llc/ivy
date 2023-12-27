@@ -28,7 +28,7 @@ jobs:
       - name: Install ivy and fetch binaries
         run: |
           cd ivy
-          pip3 install -e .
+          sudo pip3 install -e .
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
@@ -89,7 +89,7 @@ jobs:
         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
         run: |
           cd ivy
-          ./run_tests_CLI/test_ivy_stateful.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
+          ./scripts/shell/test_ivy_stateful.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
         continue-on-error: true
 
       - name: Zip Hypothesis Examples
