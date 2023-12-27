@@ -52,9 +52,13 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statist
     _quantile_helper,
 )
 
-
-try:
-    import torch
+import unittest
+import torch
+from unittest.mock import patch
+from ivy_test import helpers
+from ivy_test.helpers import CLASS_TREE, handle_frontend_methodtry:
+     
+     import torch
 except ImportError:
     torch = SimpleNamespace()
 
@@ -7832,41 +7836,53 @@ def test_torch_index_select(
     )
 
 
-# cpu
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="ivy.to_device",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
-    ),
-)
-def test_torch_instance_to_cpu(
-    dtype_and_x,
-    frontend,
-    backend_fw,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-):
-    input_dtype, x = dtype_and_x
-    helper.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        backend_to_test=backend_fw,
+#cpu
+@handle_frontend_method
+class TestTorchInstanceToCPU(unittest.TestCase):(
+        class_tree=CLASS_TREE,
+        init_tree="torch.tensor",
+        method_name="ivy.to_device",
+        dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            num_arrays=1,
+            min_value=-1e04,
+            max_value=1e04,
+            allow_inf=False,
+        ),
     )
+    def test_torch_instance_to_cpu(
+        self,
+        dtype_and_x,
+        frontend,
+        backend_fw,
+        frontend_method_data,
+        init_flags,
+        method_flags,
+    ):
+        input_dtype, x = dtype_and_x
+        with patch("ivy_framework.current_framework_str", return_value="torch"), \
+             patch("ivy_framework.current_device_str", return_value="cpu"):
+            instance = frontend.init_all_as_kwargs_np(
+                input_dtypes=input_dtype, data=x[0]
+            )
+
+            result = frontend.frontend_method_data(
+                instance, method_name="to_cpu", input_dtypes=input_dtype
+            )
+
+            self.assertTrue(torch.all(result.data.cpu() == instance.data.cpu()))
+
+            with patch("ivy_framework.current_framework_str", return_value="numpy"):
+                result = frontend.frontend_method_data(
+                    instance, method_name="to_cpu", input_dtypes=input_dtype
+                )
+
+
+                self.assertEqual(result, instance)
+
+
+if __name__ == "__main__":
+    unittest.main()
 
 
 # int
