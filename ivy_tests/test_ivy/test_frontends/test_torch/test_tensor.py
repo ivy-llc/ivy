@@ -58,6 +58,7 @@ from unittest.mock import patch
 from ivy_test import helpers
 from ivy_test.helpers import CLASS_TREE, handle_frontend_methodtry:
 
+try: 
      import torch
 except ImportError:
     torch = SimpleNamespace()
