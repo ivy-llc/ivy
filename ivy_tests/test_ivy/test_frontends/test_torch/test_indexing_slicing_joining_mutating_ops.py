@@ -11,11 +11,8 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
-    _get_splits,
-)
-from ivy_tests.array_api_testing.test_array_api.array_api_tests import (
-    hypothesis_helpers as hh,
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    two_broadcastable_shapes,
 )
 
 
@@ -340,7 +337,7 @@ def _dtypes_input_mask(draw):
 
 @st.composite
 def _where_helper(draw):
-    shape_1, shape_2 = draw(hh.two_broadcastable_shapes())
+    shape_1, shape_2 = draw(two_broadcastable_shapes())
     dtype_x1, x1 = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),

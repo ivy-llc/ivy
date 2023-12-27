@@ -47,7 +47,7 @@ def _associative_scan_helper(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=1, max_value=5), key="shared_size")
     )
-    shape = tuple([random_size, shared_size, shared_size])
+    shape = (random_size, shared_size, shared_size)
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
@@ -194,7 +194,7 @@ def _matricize_data(draw):
         )
     )
     ndims = len(shape)
-    dims = set([*range(ndims)])
+    dims = {*range(ndims)}
     row_modes = set(
         draw(st.lists(helpers.ints(min_value=0, max_value=ndims - 1), min_size=1))
     )

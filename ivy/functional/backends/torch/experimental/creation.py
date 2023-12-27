@@ -20,7 +20,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.1.0 and below": {"cpu": ("float16",)}},
+    {"2.1.2 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def kaiser_window(
@@ -87,7 +87,7 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
 def hann_window(
     size: int,
     /,
@@ -131,7 +131,7 @@ def unsorted_segment_min(
     segment_ids: torch.Tensor,
     num_segments: Union[int, torch.Tensor],
 ) -> torch.Tensor:
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
     if data.dtype in [torch.float32, torch.float64, torch.float16, torch.bfloat16]:
@@ -139,7 +139,7 @@ def unsorted_segment_min(
     elif data.dtype in [torch.int32, torch.int64, torch.int8, torch.int16, torch.uint8]:
         init_val = torch.iinfo(data.dtype).max
     else:
-        raise ValueError("Unsupported data type")
+        raise TypeError("Unsupported data type")
 
     res = torch.full(
         (num_segments,) + data.shape[1:], init_val, dtype=data.dtype, device=data.device
@@ -152,7 +152,7 @@ def unsorted_segment_min(
     return res
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
 def blackman_window(
     size: int,
     /,
@@ -180,7 +180,7 @@ def unsorted_segment_sum(
     # check should be same
     # Might require to change the assertion function name to
     # check_unsorted_segment_valid_params
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
 
@@ -238,13 +238,38 @@ def mel_weight_matrix(
     )
     # create overlapping frames of size 3
     mel_edges = mel_edges.unfold(0, size=3, step=1)
-    lower_edge_mel, center_mel, upper_edge_mel = [
+    lower_edge_mel, center_mel, upper_edge_mel = (
         t.reshape((1, num_mel_bins)) for t in mel_edges.split(1, dim=1)
-    ]
+    )
     lower_slopes = (spec_bin_mels - lower_edge_mel) / (center_mel - lower_edge_mel)
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = torch.maximum(zero, torch.minimum(lower_slopes, upper_slopes))
     return torch.nn.functional.pad(mel_weights, (0, 0, 1, 0))
+
+
+def unsorted_segment_mean(
+    data: torch.Tensor,
+    segment_ids: torch.Tensor,
+    num_segments: Union[int, torch.Tensor],
+) -> torch.Tensor:
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    # Initialize an array to store the sum of elements for each segment
+    segment_sum = torch.zeros(
+        (num_segments,) + data.shape[1:], dtype=data.dtype, device=data.device
+    )
+
+    # Initialize an array to keep track of the number of elements in each segment
+    counts = torch.zeros(num_segments, dtype=torch.int64, device=data.device)
+
+    for i in range(len(segment_ids)):
+        seg_id = segment_ids[i]
+        segment_sum[seg_id] += data[i]
+        counts[seg_id] += 1
+
+    return segment_sum / counts[:, None]
 
 
 @with_unsupported_dtypes({"2.0.1 and below": "float16"}, backend_version)
