@@ -3974,7 +3974,7 @@ def _expand_typesets(dtypes):
     return dtypes
 
 
-def _get_devices_and_dtypes(fn, recurse=False, complement=True):
+def _get_devices_and_dtypes(fn, recurse=True, complement=True):
     supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
     supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
 
@@ -3987,8 +3987,8 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     for device in supported_devices:
         supported[device] = supported_dtypes
 
-    is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
+    is_backend_fn = "backend" in fn.__module__ and not is_frontend_fn
     is_einops_fn = "einops" in fn.__name__
     if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
@@ -4003,7 +4003,7 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype.__get__()
 
-        if "einops" in fn.__name__ and isinstance(fn_supported_dnd, dict):
+        if is_einops_fn and isinstance(fn_supported_dnd, dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, supported)
 
         if fn_supported_dnd:
@@ -4021,7 +4021,7 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype.__get__()
 
-        if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
+        if is_einops_fn and isinstance(fn_unsupported_dnd, dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
         if fn_unsupported_dnd:
