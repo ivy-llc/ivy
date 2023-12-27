@@ -92,6 +92,46 @@ def cartesian_prod(*tensors):
     return ret
 
 
+@with_unsupported_dtypes({"2.1.2 and below": "float16"}, "torch")
+@to_ivy_arrays_and_back
+def cdist(x1, x2, p=2.0, compute_mode="use_mm_for_euclid_dist_if_necessary"):
+    if len(x1.shape) != 3 or len(x2.shape) != 3:
+        raise ivy.exceptions.IvyError(
+            "Both ivy arrays need to have 3 dimensions (BxRxM)"
+        )
+
+    if (
+        compute_mode != "use_mm_for_euclid_dist_if_necessary"
+        and compute_mode != "use_mm_for_euclid_dist"
+        and compute_mode != "donot_use_mm_for_euclid_dist"
+    ):
+        raise ivy.exceptions.IvyError(
+            f"{compute_mode} is not a valid value for compute_mode"
+        )
+    if p == 2:
+        B, P, M = x1.shape
+        _, R, _ = x2.shape
+        if (
+            compute_mode == "use_mm_for_euclid_dist_if_necessary"
+            and (P > 25 or R > 25)
+            or compute_mode == "use_mm_for_euclid_dist"
+        ):
+            return ivy.vector_norm(
+                x1[:, :, None, :] - x2[:, None, :, :], axis=-1, ord=p
+            )
+        else:
+            distances = ivy.zeros((B, P, R), dtype=x1.dtype)
+            for b in range(B):
+                for i in range(P):
+                    for j in range(R):
+                        distances[b, i, j] = ivy.vector_norm(
+                            x1[b, i, :] - x2[b, j, :], ord=p
+                        )
+            return distances
+    else:
+        return ivy.vector_norm(x1[:, :, None, :] - x2[:, None, :, :], axis=-1, ord=p)
+
+
 @to_ivy_arrays_and_back
 def clone(input, *, memory_format=None):
     return ivy.copy_array(input)
