@@ -133,7 +133,7 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
         raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
 
 
-@with_unsupported_dtypes({"1.26.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("complex",)}, backend_version)
 def broadcast_to(
     x: np.ndarray,
     /,
@@ -216,7 +216,7 @@ def as_ivy_dtype(
         )
 
 
-@with_unsupported_dtypes({"1.26.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bfloat16",)}, backend_version)
 def as_native_dtype(dtype_in: Union[np.dtype, str, bool, int, float], /) -> np.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
@@ -260,7 +260,4 @@ def dtype_bits(dtype_in: Union[np.dtype, str], /) -> int:
 def is_native_dtype(dtype_in: Union[np.dtype, str], /) -> bool:
     if not ivy.is_hashable_dtype(dtype_in):
         return False
-    if dtype_in in ivy_dtype_dict:
-        return True
-    else:
-        return False
+    return dtype_in in ivy_dtype_dict

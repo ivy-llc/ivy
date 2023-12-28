@@ -18,15 +18,13 @@ import ivy
 
 def _calculate_same_padding(kernel_size, stride, shape):
     padding = tuple(
-        [
-            max(
-                0,
-                math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
-            )
-            for i in range(len(kernel_size))
-        ]
+        max(
+            0,
+            math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
+        )
+        for i in range(len(kernel_size))
     )
-    if all([kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))]):
+    if all(kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))):
         if _is_same_padding(padding, stride, kernel_size, shape):
             return padding
     return (0, 0)
@@ -34,16 +32,12 @@ def _calculate_same_padding(kernel_size, stride, shape):
 
 def _is_same_padding(padding, stride, kernel_size, input_shape):
     output_shape = tuple(
-        [
-            (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
-            for i in range(len(padding))
-        ]
+        (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
+        for i in range(len(padding))
     )
     return all(
-        [
-            output_shape[i] == math.ceil(input_shape[i] / stride[i])
-            for i in range(len(padding))
-        ]
+        output_shape[i] == math.ceil(input_shape[i] / stride[i])
+        for i in range(len(padding))
     )
 
 
@@ -189,6 +183,7 @@ def test_mindspore_adaptive_avg_pool2d(
     output_size,
     test_flags,
     frontend,
+    backend_fw,
     on_device,
     fn_tree,
 ):
@@ -196,6 +191,7 @@ def test_mindspore_adaptive_avg_pool2d(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
         fn_tree=fn_tree,
@@ -389,12 +385,14 @@ def test_mindspore_dropout2d(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, x = d_type_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -433,12 +431,14 @@ def test_mindspore_dropout3d(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, x = d_type_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -461,6 +461,7 @@ def test_mindspore_fast_gelu(
     *,
     test_flags,
     frontend,
+    backend_fw,
     on_device,
     fn_tree,
 ):
@@ -469,6 +470,7 @@ def test_mindspore_fast_gelu(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -551,6 +553,7 @@ def test_mindspore_interpolate(
     align_corners,
     recompute_scale_factor,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -562,6 +565,7 @@ def test_mindspore_interpolate(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -604,11 +608,13 @@ def test_mindspore_kl_div(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     helpers.test_frontend_function(
         input_dtypes=p[0],
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -740,11 +746,13 @@ def test_mindspore_pad(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     helpers.test_frontend_function(
         input_dtypes=input[0],
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -771,12 +779,14 @@ def test_mindspore_selu(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

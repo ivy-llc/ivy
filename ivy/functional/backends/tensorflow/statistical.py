@@ -4,7 +4,6 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.utils.einsum_parser import legalise_einsum_expr
@@ -13,17 +12,29 @@ from ivy.utils.einsum_parser import legalise_einsum_expr
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def min(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
+    if where is not None:
+        max_val = (
+            ivy.iinfo(x.dtype).max
+            if ivy.is_int_dtype(x.dtype)
+            else ivy.finfo(x.dtype).max
+        )
+        x = tf.where(where, x, tf.ones_like(x) * max_val)
+    result = tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
+    if initial is not None:
+        result = tf.minimum(result, initial)
+    return result
 
 
 def max(
@@ -52,7 +63,7 @@ def max(
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def mean(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -164,7 +175,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"2.14.0 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -209,7 +220,7 @@ def cumsum(
 
 
 @with_unsupported_dtypes(
-    {"2.14.0 and below": ("unsigned", "int8", "int16")},
+    {"2.15.0 and below": ("unsigned", "int8", "int16")},
     backend_version,
 )
 def einsum(
@@ -217,6 +228,15 @@ def einsum(
     *operands: Union[tf.Tensor, tf.Variable],
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = _get_promoted_type_of_operands(operands)
     equation = legalise_einsum_expr(*[equation, *operands])
-    return tf.cast(tf.einsum(equation, *operands), dtype)
+    dtype_list = set(map(lambda x: x.dtype, operands))
+    dtype = dtype_list.pop()
+    if len(dtype_list) > 0:
+        for d in dtype_list:
+            dtype = ivy.promote_types(dtype, d)
+        dtype = ivy.as_native_dtype(dtype)
+        operands = list(
+            map(lambda x: tf.cast(x, dtype) if x.dtype != dtype else x, operands)
+        )
+
+    return tf.einsum(equation, *operands)

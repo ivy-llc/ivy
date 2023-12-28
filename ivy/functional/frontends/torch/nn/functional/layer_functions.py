@@ -96,6 +96,7 @@ def _generic_lstm(
             (weight_ih, weight_hh),
             (bias_i, bias_h),
             bidirectional,
+            batch_first=batch_first,
             batch_sizes=batch_sizes,
         )
         h_outs.append(h_out)
@@ -114,59 +115,32 @@ def _generic_lstm(
 
 
 def _lstm_cell(
-    x, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias, batch_sizes=None
+    x,
+    init_h,
+    init_c,
+    kernel,
+    recurrent_kernel,
+    bias,
+    recurrent_bias,
+    batch_first,
+    batch_sizes=None,
 ):
-    x_shape = list(x.shape)
-    batch_shape = x_shape[1:-1]
-    timesteps = x_shape[0]
-    input_channels = x_shape[-1]
-
-    Wi = kernel
-    Wi_x = ivy.reshape(
-        ivy.matmul(ivy.reshape(x, (-1, input_channels)), Wi)
-        + (bias if bias is not None else 0),
-        [timesteps, *batch_shape, -1],
+    init_h = ivy.squeeze(init_h, axis=0)
+    init_c = ivy.squeeze(init_c, axis=0)
+    out, states = ivy.lstm_update(
+        x,
+        init_h,
+        init_c,
+        kernel,
+        recurrent_kernel,
+        bias=bias,
+        recurrent_bias=recurrent_bias,
+        time_major=not batch_first,
     )
-    Wii_x, Wif_x, Wig_x, Wio_x = ivy.split(Wi_x, num_or_size_splits=4, axis=-1)
-    Wh = recurrent_kernel
-    ht = init_h
-    ct = init_c
-    ht_list = []
-    ct_list = []
-
-    for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
-        ivy.unstack(Wii_x, axis=0),
-        ivy.unstack(Wif_x, axis=0),
-        ivy.unstack(Wig_x, axis=0),
-        ivy.unstack(Wio_x, axis=0),
-    ):
-        htm1 = ht
-        ctm1 = ct
-        Wh_htm1 = ivy.matmul(htm1, Wh) + (
-            recurrent_bias if recurrent_bias is not None else 0
-        )
-        Whi_htm1, Whf_htm1, Whg_htm1, Who_htm1 = ivy.split(
-            Wh_htm1, num_or_size_splits=4, axis=-1
-        )
-        it = ivy.sigmoid(Wii_xt + Whi_htm1)
-        ft = ivy.sigmoid(Wif_xt + Whf_htm1)
-        gt = ivy.tanh(Wig_xt + Whg_htm1)
-        ot = ivy.sigmoid(Wio_xt + Who_htm1)
-        ct = ft * ctm1 + it * gt
-        ht = ot * ivy.tanh(ct)
-        ct_list.append(ct)
-        ht_list.append(ht)
-
-    if batch_sizes is None:
-        c = ct_list[-1]
-        h = ht_list[-1]
-        output = ivy.concat(ht_list, axis=0)
-    else:
-        ct_list = ivy.concat(ct_list, axis=0)
-        output = ht_list = ivy.concat(ht_list, axis=0)
-        c = _extract_states(ct_list, batch_sizes)
-        h = _extract_states(ht_list, batch_sizes)
-    return output, (h, c)
+    h, c = states
+    h = ivy.expand_dims(h) if len(h.shape) == 2 else h
+    c = ivy.expand_dims(c) if len(c.shape) == 2 else c
+    return out, (h, c)
 
 
 def _lstm_full(
@@ -193,10 +167,17 @@ def _lstm_full(
     )
 
 
-def _lstm_layer(x, hidden, weights, biases, bidirectional, batch_sizes=None):
+def _lstm_layer(
+    x, hidden, weights, biases, bidirectional, batch_first, batch_sizes=None
+):
     if not bidirectional:
         result, (h, c) = _lstm_cell(
-            x, *hidden, *weights, *biases, batch_sizes=batch_sizes
+            x,
+            *hidden,
+            *weights,
+            *biases,
+            batch_first=batch_first,
+            batch_sizes=batch_sizes,
         )
     else:
         result_fw, (h_fw, c_fw) = _lstm_cell(
@@ -207,6 +188,7 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional, batch_sizes=None):
             weights[1][0],
             biases[0][0],
             biases[1][0],
+            batch_first=batch_first,
             batch_sizes=batch_sizes,
         )
         x_reversed = ivy.flip(x, axis=0)
@@ -218,6 +200,7 @@ def _lstm_layer(x, hidden, weights, biases, bidirectional, batch_sizes=None):
             weights[1][1],
             biases[0][1],
             biases[1][1],
+            batch_first=batch_first,
             batch_sizes=batch_sizes,
         )
         result_bw = ivy.flip(result_bw, axis=0)
@@ -309,7 +292,7 @@ def _transform_weights_no_bias(layer_weights, layer_index):
 
 
 @with_supported_device_and_dtypes(
-    {"2.1.0 and below": {"cpu": ("float32", "float64")}},
+    {"2.1.2 and below": {"cpu": ("float32", "float64")}},
     "torch",
 )
 @to_ivy_arrays_and_back
@@ -321,7 +304,7 @@ def lstm(*args, **kwargs):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
 def multi_head_attention_forward(
     query,
     key,

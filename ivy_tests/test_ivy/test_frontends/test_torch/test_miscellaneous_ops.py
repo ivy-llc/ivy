@@ -510,6 +510,50 @@ def test_torch_cartesian_prod(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.cdist",
+    dtypes_and_x=helpers.dtype_and_values(
+        shape=st.shared(helpers.get_shape(min_num_dims=3, max_num_dims=3), key="shape"),
+        shared_dtype=True,
+        num_arrays=2,
+        allow_inf=False,
+        available_dtypes=["float32", "float64"],
+    ),
+    p=st.integers(min_value=0, max_value=1000000),
+    compute_mode=st.sampled_from(
+        [
+            "use_mm_for_euclid_dist_if_necessary",
+            "use_mm_for_euclid_dist",
+            "donot_use_mm_for_euclid_dist",
+        ]
+    ),
+)
+def test_torch_cdist(
+    *,
+    dtypes_and_x,
+    p,
+    compute_mode,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=xs[0],
+        x2=xs[1],
+        p=p,
+        compute_mode=compute_mode,
+    )
+
+
 # clone
 @handle_frontend_test(
     fn_tree="torch.clone",
@@ -945,12 +989,10 @@ def test_torch_diff(
 @handle_frontend_test(
     fn_tree="torch.einsum",
     eq_n_op_n_shp=helpers.einsum_helper(),
-    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_einsum(
     *,
     eq_n_op_n_shp,
-    dtype,
     on_device,
     fn_tree,
     frontend,
@@ -960,7 +1002,7 @@ def test_torch_einsum(
     eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
     for i, x_ in enumerate(operands):
-        dtype = dtypes[i][0]
+        dtype = dtypes[i]
         kw[f"x{i}"] = np.array(x_).astype(dtype)
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_frontend_function(
