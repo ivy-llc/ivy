@@ -429,6 +429,7 @@ class Shape(Sequence):
         if self.rank not in (None, rank):
             raise ValueError(f"Shape {self} must have rank {rank}")
 
+    @staticmethod
     def unknown_shape(rank=None, **kwargs):
         if rank is None and "ndims" in kwargs:
             rank = kwargs.pop("ndims")
@@ -457,6 +458,7 @@ class Shape(Sequence):
         else:
             return self
 
+    @staticmethod
     def as_shape(shape):
         if isinstance(shape, Shape):
             return shape
@@ -796,6 +798,10 @@ try:
     from .compiler.compiler import transpile, trace_graph, unify
 except:  # noqa: E722
     pass  # Added for the finally statement
+try:
+    from .compiler.replace_with import replace_with, transform_function
+except:  # noqa: E722
+    pass
 finally:
     # Skip framework imports done by Ivy compiler for now
     for backend_framework in _not_imported_backends.copy():
@@ -1008,8 +1014,7 @@ ivy.array_significant_figures = (
 
 
 def set_array_significant_figures(sig_figs):
-    """
-    Summary.
+    """Summary.
 
     Parameters
     ----------
@@ -1049,8 +1054,7 @@ ivy.array_decimal_values = (
 
 
 def set_array_decimal_values(dec_vals):
-    """
-    Summary.
+    """Summary.
 
     Parameters
     ----------
@@ -1076,8 +1080,7 @@ ivy.warning_level = warning_level_stack[-1] if warning_level_stack else "ivy_onl
 
 
 def set_warning_level(warn_level):
-    """
-    Summary.
+    """Summary.
 
     Parameters
     ----------
@@ -1109,8 +1112,7 @@ ivy.nan_policy = nan_policy_stack[-1] if nan_policy_stack else "nothing"
 
 
 def set_nan_policy(warn_level):
-    """
-    Summary.
+    """Summary.
 
     Parameters
     ----------
@@ -1143,7 +1145,8 @@ ivy.dynamic_backend = dynamic_backend_stack[-1] if dynamic_backend_stack else Tr
 
 
 def set_dynamic_backend(flag):
-    """Set the global dynamic backend setting to the provided flag (True or False)"""
+    """Set the global dynamic backend setting to the provided flag (True or
+    False)"""
     global dynamic_backend_stack
     if flag not in [True, False]:
         raise ValueError("dynamic_backend must be a boolean value (True or False)")
@@ -1152,8 +1155,7 @@ def set_dynamic_backend(flag):
 
 
 def unset_dynamic_backend():
-    """
-    Remove the current dynamic backend setting.
+    """Remove the current dynamic backend setting.
 
     Also restore the previous setting (if any)
     """
@@ -1211,7 +1213,10 @@ current_sub_backends = []
 downcast_dtypes = False
 upcast_dtypes = False
 crosscast_dtypes = False
-cast_dtypes = lambda: downcast_dtypes and upcast_dtypes and crosscast_dtypes
+
+
+def cast_dtypes():
+    return downcast_dtypes and upcast_dtypes and crosscast_dtypes
 
 
 def downcast_data_types(val=True):
@@ -1462,8 +1467,7 @@ class LoggingMode:
         self.logging_mode_stack.append(logging.WARNING)
 
     def set_logging_mode(self, mode):
-        """
-        Set the current logging mode for Ivy.
+        """Set the current logging mode for Ivy.
 
         Possible modes are 'DEBUG', 'INFO', 'WARNING', 'ERROR'.
         """
@@ -1476,7 +1480,8 @@ class LoggingMode:
         self.logging_mode_stack.append(mode)
 
     def unset_logging_mode(self):
-        """Remove the most recently set logging mode, returning to the previous one."""
+        """Remove the most recently set logging mode, returning to the previous
+        one."""
         if len(self.logging_mode_stack) > 1:
             # Remove the current mode
             self.logging_mode_stack.pop()

@@ -15,10 +15,9 @@ class _ArrayWithSortingExperimental(abc.ABC):
         axis: int = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.lexsort. This method simply wraps the
-        function, and so the docstring for ivy.lexsort also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.lexsort. This method simply
+        wraps the function, and so the docstring for ivy.lexsort also applies
+        to this method with minimal changes.
 
         Parameters
         ----------

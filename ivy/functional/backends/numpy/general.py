@@ -1,4 +1,5 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 from typing import Optional, Union, Sequence, Callable, Tuple
@@ -34,7 +35,7 @@ def get_item(
     /,
     query: Union[np.ndarray, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> np.ndarray:
     return x.__getitem__(query)
 
@@ -434,7 +435,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.26.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,

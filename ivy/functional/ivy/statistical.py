@@ -48,10 +48,11 @@ def min(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the minimum value of the input array ``x``.
+    """Calculate the minimum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the minimum value is zero, the
@@ -83,6 +84,11 @@ def min(
         compatible with the input array (see :ref:`broadcasting`). Otherwise,
         if ``False``, the reduced axes (dimensions) must not be included in the result.
         Default: ``False``.
+    initial
+        The maximum value of an output element.
+        Must be present to allow computation on empty slice.
+    where
+        Elements to compare for minimum
     out
         optional output array, for writing the result to.
 
@@ -140,7 +146,9 @@ def min(
         b: ivy.array(2)
     }
     """
-    return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
+    return current_backend(x).min(
+        x, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+    )
 
 
 @handle_exceptions
@@ -159,8 +167,7 @@ def max(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the maximum value of the input array ``x``.
+    """Calculate the maximum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the maximum value is zero, the
@@ -270,8 +277,7 @@ def mean(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the arithmetic mean of the input array ``x``.
+    """Calculate the arithmetic mean of the input array ``x``.
 
     **Special Cases**
 
@@ -383,8 +389,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the product of input array x elements.
+    """Calculate the product of input array x elements.
 
     **Special Cases**
 
@@ -519,8 +524,7 @@ def std(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the standard deviation of the input array ``x``.
+    """Calculate the standard deviation of the input array ``x``.
 
     **Special Cases**
 
@@ -658,8 +662,7 @@ def sum(
     keepdims: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the sum of the input array x.
+    """Calculate the sum of the input array x.
 
     **Special Cases**
 
@@ -799,8 +802,7 @@ def var(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the variance of the input array x.
+    """Calculate the variance of the input array x.
 
     **Special Cases**
 
@@ -916,8 +918,7 @@ def cumsum(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the cumulative sum of the elements along a given axis.
+    """Return the cumulative sum of the elements along a given axis.
 
     Parameters
     ----------
@@ -1062,8 +1063,7 @@ def cumprod(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the cumulative product of the elements along a given axis.
+    """Return the cumulative product of the elements along a given axis.
 
     Parameters
     ----------
@@ -1195,9 +1195,8 @@ def einsum(
     *operands: Union[ivy.Array, ivy.NativeArray],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Sum the product of the elements of the input operands along dimensions specified
-    using a notation based on the Einstein summation convention.
+    """Sum the product of the elements of the input operands along dimensions
+    specified using a notation based on the Einstein summation convention.
 
     Parameters
     ----------

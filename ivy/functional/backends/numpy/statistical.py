@@ -20,10 +20,16 @@ def min(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
+    return np.asarray(
+        np.amin(
+            a=x, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+        )
+    )
 
 
 min.support_native_out = True
@@ -169,7 +175,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.26.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.2 and below": ("bfloat16",)}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,

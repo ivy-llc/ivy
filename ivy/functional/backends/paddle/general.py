@@ -1,4 +1,5 @@
-"""Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Paddle general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 from numbers import Number
@@ -95,7 +96,7 @@ def get_item(
     /,
     query: Union[paddle.Tensor, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> paddle.Tensor:
     if copy:
         x = paddle.clone(x)

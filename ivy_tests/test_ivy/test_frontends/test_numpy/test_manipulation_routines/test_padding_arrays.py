@@ -13,18 +13,20 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @st.composite
 def _pad_helper(draw):
     mode = draw(
-        st.sampled_from([
-            "constant",
-            "edge",
-            "linear_ramp",
-            "maximum",
-            "mean",
-            "median",
-            "minimum",
-            "reflect",
-            "symmetric",
-            "wrap",
-        ])
+        st.sampled_from(
+            [
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+            ]
+        )
     )
     if mode in ["median", "mean"]:
         dtypes = "float"

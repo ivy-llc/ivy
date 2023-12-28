@@ -3545,12 +3545,14 @@ def test_numpy_sum(
     if ivy.current_backend_str() == "torch":
         assume(not method_flags.as_variable[0])
 
-    where, input_dtypes, method_flags = (
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=method_flags,
-        )
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=method_flags,
     )
     where = ivy.array(where, dtype="bool")
     helpers.test_frontend_method(
@@ -3708,6 +3710,53 @@ def test_numpy_tolist(
         frontend_method_data=frontend_method_data,
         on_device=on_device,
         test_values=False,  # Todo change this after we add __iter__ to ndarray
+    )
+
+
+# trace
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="trace",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        min_axes_size=2,
+        max_axes_size=2,
+        valid_axis=True,
+    ),
+    offset=st.integers(min_value=-2, max_value=2),
+)
+def test_numpy_trace(
+    dtype_x_axis,
+    offset,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtypes, x, axis = dtype_x_axis
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis1": axis[0],
+            "axis2": axis[1],
+            "offset": offset,
+            "out": None,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
     )
 
 

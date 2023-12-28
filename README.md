@@ -1,5 +1,5 @@
-> 🚀 We are granting pilot access to **Ivy\'s Tracer and Transpiler**
-> to some users, [join the waitlist](https://console.unify.ai/) if you
+> 🚀 We are granting access to **Ivy\'s Tracer and Transpiler**
+> to all of our users, [sign up on our console](https://console.unify.ai/) if you
 > want to test them out!
 
 <img class="only-dark" width="100%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logo_dark.png#gh-dark-mode-only"/>
