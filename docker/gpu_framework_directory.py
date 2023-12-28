@@ -53,9 +53,8 @@ def install_pkg(path, pkg, base="fw/"):
     elif pkg.split("==")[0] if "==" in pkg else pkg == "paddle":
         subprocess.run(
             "yes |pip install "
-            f" paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}.post120"
-            f" --target {path}  -f"
-            " https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
+            f" paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}"
+            f" --target {path} -f https://mirror.baidu.com/pypi/simple "
             " --no-cache-dir",
             shell=True,
         )
