@@ -311,8 +311,7 @@ class _ArrayWithCreationExperimental(abc.ABC):
         segment_ids: ivy.Array,
         num_segments: Union[int, ivy.Array],
     ) -> ivy.Array:
-        """
-        Compute the squared root of the number of elements in each segment.
+        """Compute the squared root of the number of elements in each segment.
 
         Parameters
         ----------

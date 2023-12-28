@@ -1202,9 +1202,8 @@ def unsorted_segment_sqrt_n(
     segment_ids: Union[ivy.Array, ivy.NativeArray],
     num_segments: Union[int, ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
-    """
-    Compute the square root of the number of elements along segments of an array.
-    Segments are defined by an integer array of segment IDs.
+    """Compute the square root of the number of elements along segments of an
+    array. Segments are defined by an integer array of segment IDs.
 
     Parameters
     ----------

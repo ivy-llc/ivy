@@ -1370,7 +1370,6 @@ class _ContainerWithCreationExperimental(ContainerBase):
             Output container containing simplified result of substituting x in the
             coefficients - final value of polynomial.
         """
-
         return self.static_polyval(self, coeffs, x)
 
     @staticmethod
@@ -1384,8 +1383,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        Compute the sqrt(N) of the sum along segments of a container.
+        """Compute the sqrt(N) of the sum along segments of a container.
 
         Parameters
         ----------
@@ -1430,9 +1428,8 @@ class _ContainerWithCreationExperimental(ContainerBase):
         segment_ids: ivy.Container,
         num_segments: Union[int, ivy.Container],
     ) -> ivy.Container:
-        """
-        Compute the square root of the count of values in the input array or container
-        based on segment identifiers.
+        """Compute the square root of the count of values in the input array or
+        container based on segment identifiers.
 
         Parameters
         ----------
@@ -1480,4 +1477,3 @@ class _ContainerWithCreationExperimental(ContainerBase):
             segment_ids,
             num_segments,
         )
-      
