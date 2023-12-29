@@ -3,73 +3,13 @@ import os
 import sys
 from pymongo import MongoClient
 from pymongo.errors import WriteError
-import requests
 import json
 import old_run_test_helpers as old_helpers
+from helpers import (
+    get_latest_package_version,
+    get_submodule_and_function_name,
+)
 from get_all_tests import BACKENDS
-
-
-def get_latest_package_version(package_name):
-    try:
-        url = f"https://pypi.org/pypi/{package_name}/json"
-        response = requests.get(url)
-        response.raise_for_status()
-        package_info = response.json()
-        return package_info["info"]["version"]
-    except requests.exceptions.RequestException:
-        print(f"Error: Failed to fetch package information for {package_name}.")
-        return None
-
-
-def get_submodule_and_function_name(test_path, is_frontend_test=False):
-    submodule_test = test_path.split("/")[-1]
-    submodule, test_function = submodule_test.split("::")
-    submodule = submodule.replace("test_", "").replace(".py", "")
-
-    with open(test_path.split("::")[0]) as test_file:
-        test_file_content = test_file.read()
-        test_function_idx = test_file_content.find(f"def {test_function}")
-        test_function_block_idx = test_file_content[:test_function_idx].rfind("\n\n")
-        if test_function_block_idx == -1:
-            return submodule, None
-        relevant_file_content = test_file_content[
-            test_function_block_idx:test_function_idx
-        ]
-        fn_tree_idx = relevant_file_content.rfind('fn_tree="')
-
-        # frontend test
-        if is_frontend_test:
-            function_name = relevant_file_content[fn_tree_idx + 9 :].split('"')[0]
-
-            # instance method test
-            if fn_tree_idx == -1:
-                class_tree_idx = test_file_content.find('CLASS_TREE = "')
-                method_name_idx = relevant_file_content.rfind('method_name="')
-                if class_tree_idx == -1 or method_name_idx == -1:
-                    return submodule, None
-                class_tree = test_file_content[class_tree_idx + 14 :].split('"')[0]
-                class_name = ".".join(class_tree.split(".")[3:])
-                method_name = relevant_file_content[method_name_idx + 13 :].split('"')[
-                    0
-                ]
-                function_name = f"{class_name}.{method_name}"
-
-        # ivy test
-        else:
-            function_name = test_function[5:]
-
-            # instance method test
-            if fn_tree_idx == -1:
-                method_name_idx = relevant_file_content.rfind('method_tree="')
-                if method_name_idx != -1:
-                    method_name = relevant_file_content[method_name_idx + 13 :].split(
-                        '"'
-                    )[0]
-                    function_name = f"ivy.{method_name}"
-                else:
-                    return submodule, None
-
-    return submodule, function_name
 
 
 if __name__ == "__main__":
@@ -133,7 +73,7 @@ if __name__ == "__main__":
                 backends = [backend.strip()]
                 backend_name, backend_version = backend.split("/")
                 other_backends = [
-                    fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
+                    fw for fw in BACKENDS if (fw not in (backend_name, "paddle"))
                 ]
                 for other_backend in other_backends:
                     backends.append(
@@ -155,21 +95,23 @@ if __name__ == "__main__":
 
             else:
                 device_str = ""
+                device_access_str = ""
                 image = "unifyai/ivy:latest"
 
                 # gpu tests
                 if device == "gpu":
                     image = "unifyai/ivy:latest-gpu"
                     device_str = " --device=gpu:0"
+                    device_access_str = " --gpus all"
 
                 os.system(
-                    'docker run --name test-container -v "$(pwd)":/ivy -v '
-                    f'"$(pwd)"/.hypothesis:/.hypothesis -e REDIS_URL={redis_url} '
-                    f"-e REDIS_PASSWD={redis_pass} -itd {image}"
+                    f"docker run{device_access_str} --name test-container -v "
+                    '"$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis -e '
+                    f"REDIS_URL={redis_url} -e REDIS_PASSWD={redis_pass} -itd {image}"
                 )
                 command = (
                     "docker exec test-container python3 -m pytest --tb=short"
-                    f" {test_path} {device_str} --backend {backend}"
+                    f" {test_path}{device_str} --backend {backend}"
                 )
                 os.system(command)
 
@@ -244,7 +186,7 @@ if __name__ == "__main__":
 
             # create a prefix str for the update query for frontend tests
             # (with frontend version)
-            test_info = dict()
+            test_info = {}
             prefix_str = ""
             if is_frontend_test:
                 frontend = test_path[test_path.find("test_frontends") :].split(os.sep)[
@@ -295,6 +237,10 @@ if __name__ == "__main__":
 
             # delete the container
             os.system("docker rm -f test-container")
+
+    # delete pulled image before terminating
+    if device == "gpu":
+        os.system("docker rmi unifyai/ivy:latest-gpu")
 
     # if any tests fail, the workflow fails
     if failed:

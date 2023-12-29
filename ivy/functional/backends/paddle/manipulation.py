@@ -91,7 +91,7 @@ def flip(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("int16", "int8", "uint8", "bfloat16")}, backend_version
+    {"2.5.2 and below": ("uint8", "int8", "int16", "bfloat16")}, backend_version
 )
 def permute_dims(
     x: paddle.Tensor,
@@ -220,8 +220,8 @@ def stack(
     arrays = list(map(lambda x: x.cast(dtype), arrays))
 
     first_shape = arrays[0].shape
-    if not all(arr.shape == first_shape for arr in arrays):
-        raise Exception("Shapes of all inputs must match")
+    if any(arr.shape != first_shape for arr in arrays):
+        raise ValueError("Shapes of all inputs must match")
     if 0 in first_shape:
         return ivy.empty(
             first_shape[:axis] + [len(arrays)] + first_shape[axis:], dtype=dtype
@@ -307,7 +307,7 @@ def repeat(
     /,
     repeats: Union[int, Iterable[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     # handle the case when repeats contains 0 as paddle doesn't support it
@@ -325,7 +325,7 @@ def repeat(
         repeats = repeats.item()
 
     if axis is not None:
-        axis = axis % x.ndim
+        axis %= x.ndim
     if paddle.is_complex(x):
         return paddle.complex(
             paddle.repeat_interleave(x.real(), repeats=repeats, axis=axis),
@@ -417,6 +417,22 @@ def zero_pad(
     return paddle_backend.constant_pad(x, pad_width=pad_width, value=0)
 
 
+@with_supported_dtypes(
+    {
+        "2.5.2 and below": (
+            "bool",
+            "int32",
+            "int64",
+            "float16",
+            "bfloat16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
 def swapaxes(
     x: paddle.Tensor,
     axis0: int,

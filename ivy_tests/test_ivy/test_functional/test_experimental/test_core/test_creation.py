@@ -388,7 +388,8 @@ def test_ndenumerate(dtype_and_x):
     for (index1, x1), (index2, x2) in zip(
         np.ndenumerate(values), ivy.ndenumerate(values)
     ):
-        assert index1 == index2 and x1 == x2.to_numpy()
+        assert index1 == index2
+        assert x1 == x2.to_numpy()
 
 
 # ndindex

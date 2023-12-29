@@ -1,5 +1,5 @@
-> 🚀 We are granting pilot access to **Ivy\'s Tracer and Transpiler**
-> to some users, [join the waitlist](https://console.unify.ai/) if you
+> 🚀 We are granting access to **Ivy\'s Tracer and Transpiler**
+> to all of our users, [sign up on our console](https://console.unify.ai/) if you
 > want to test them out!
 
 <img class="only-dark" width="100%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logo_dark.png#gh-dark-mode-only"/>
@@ -1337,7 +1337,7 @@ train(images, classes, num_epochs, model, device, num_classes = num_classes, bat
 
 # Diving deeper
 
-Although the [Docs](https://unify.ai/docs/ivy/) are the best place to learn more, in the next section we will take a look at how Ivy works as both a transpiler and a framework in a bit more detail to get an idea of why and where to use it.
+Although the [Docs](https://unify.ai/docs/ivy/) are the best place to learn more, in the next section we will take a look at how Ivy works both as a transpiler and a framework in a bit more detail to get an idea of why and where to use it.
 
 <details>
 <summary><b>Ivy as a transpiler</b></summary>
@@ -1589,7 +1589,7 @@ our journey to unify all ML frameworks!
 # Community
 
 
-In order to achieve the ambitious goal of unifying AI we definitely need
+In order to achieve the ambitious goal of unifying AI, we definitely need
 as many hands as possible on it! Whether you are a seasoned developer or
 just starting out, you\'ll find a place here! Join the Ivy community on
 our [Discord](https://discord.gg/sXyFF8tDtm) 👾 server, which is the
