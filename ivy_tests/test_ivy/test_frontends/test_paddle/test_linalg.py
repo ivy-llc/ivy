@@ -333,7 +333,7 @@ def test_paddle_bmm(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     upper=st.booleans(),
 )
@@ -569,7 +569,7 @@ def test_paddle_eig(
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
-    l, v = ret
+    l, v = ret  # noqa: E741
     front_l, front_v = frontend_ret
 
     assert_all_close(
@@ -619,7 +619,7 @@ def test_paddle_eigh(
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
-    l, v = ret
+    l, v = ret  # noqa: E741
     front_l, front_v = frontend_ret
 
     assert_all_close(
@@ -827,7 +827,7 @@ def test_paddle_matmul(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: (x, x)),
     ),
     n=helpers.ints(min_value=1, max_value=8),
     test_with_out=st.just(False),

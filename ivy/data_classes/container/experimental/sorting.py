@@ -17,8 +17,7 @@ class _ContainerWithSortingExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.invert_permutation.
+        """ivy.Container static method variant of ivy.invert_permutation.
 
         This method simply wraps the function, and so the docstring for
         ivy.invert_permutation also applies to this method with minimal
@@ -42,8 +41,7 @@ class _ContainerWithSortingExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.invert_permutation.
+        """ivy.Container instance method variant of ivy.invert_permutation.
 
         This method simply wraps the function, and so the docstring for
         ivy.invert_permutation also applies to this method with minimal
@@ -69,10 +67,9 @@ class _ContainerWithSortingExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.lexsort. This method simply wraps the
-        function, and so the docstring for ivy.lexsort also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.lexsort. This method
+        simply wraps the function, and so the docstring for ivy.lexsort also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -123,10 +120,9 @@ class _ContainerWithSortingExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.lexsort. This method simply wraps
-        the function, and so the docstring for ivy.lexsort also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.lexsort. This method
+        simply wraps the function, and so the docstring for ivy.lexsort also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
