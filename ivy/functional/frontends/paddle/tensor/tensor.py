@@ -89,17 +89,24 @@ class Tensor:
     def __mul__(self, y, /, name=None):
         return paddle_frontend.multiply(self, y)
 
-    @with_unsupported_dtypes({"2.5.2 and below": ("int8",
-                        "uint16",
-                        "float16",
-                        "float32",
-                        "float64",
-                        "complex64",
-                        "complex128",)}, "paddle")
+    @with_unsupported_dtypes(
+        {
+            "2.5.2 and below": (
+                "int8",
+                "uint16",
+                "float16",
+                "float32",
+                "float64",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
     def __matmul__(self, y, transpose_x=False, transpose_y=False, name=None):
         return paddle_frontend.matmul(
-            self, y, transpose_x=transpose_x, transpose_y=transpose_y)
-        
+            self, y, transpose_x=transpose_x, transpose_y=transpose_y
+        )
 
     @with_unsupported_dtypes(
         {
