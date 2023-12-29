@@ -602,7 +602,44 @@ def test_paddle___mul__(
         on_device=on_device,
     )
 
-
+# __matmul__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="__matmul__",
+    dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
+    
+)
+def test_paddle__matmul__(
+        dtype_tensor1_tensor2,
+        frontend_method_data,
+        init_flags,
+        method_flags,
+        frontend,
+        on_device,
+        backend_fw,
+):
+    input_dtype, tensor1, tensor2, transpose_x, transpose_y = dtype_tensor1_tensor2
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": tensor1,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "y": tensor2,
+            "transpose_x": transpose_x,
+            "transpose_y": transpose_y,
+            
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+       
+    )
 # __or__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
