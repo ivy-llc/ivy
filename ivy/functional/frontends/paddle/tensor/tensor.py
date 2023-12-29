@@ -980,7 +980,7 @@ class Tensor:
             ivy.trace(self._ivy_array, offset=offset, axis1=axis1, axis2=axis2)
         )
 
-    @with_supported_dtypes({"2.5.1 and below": ("float64", "float32")}, "paddle")
+    @with_supported_dtypes({"2.5.2 and below": ("float64", "float32")}, "paddle")
     def cov(self, rowvar=True, ddof=True, fweights=None, aweights=None):
         return paddle_frontend.Tensor(
             ivy.cov(
@@ -990,6 +990,7 @@ class Tensor:
                 fweights=fweights,
                 aweights=aweights,
             )
+        )
 
     @with_supported_dtypes(
         {

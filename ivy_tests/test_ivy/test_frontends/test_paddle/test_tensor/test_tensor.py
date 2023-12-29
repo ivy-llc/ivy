@@ -288,6 +288,7 @@ def _get_dtype_and_values_for_lerp(draw):
         return input_dtype, x[0], x[1], weight
 
 
+@st.composite
 def _get_dtype_input_and_matrices_for_matmul(draw):
     dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
     dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
@@ -342,7 +343,7 @@ def _get_dtype_value1_value2_cov(
     dtype = draw(st.sampled_from(draw(available_dtypes)))
 
     values = []
-    for i in range(2):
+    for i in range(1):
         values.append(
             draw(
                 helpers.array_values(
@@ -5761,9 +5762,9 @@ def test_paddle_tensor_cov(
     helpers.test_frontend_method(
         init_input_dtypes=["float64", "int64", "float64"],
         init_all_as_kwargs_np={
-            "data": x[0],
+            "data": x,
         },
-        method_input_dtypes=["float64", "int64", "float64"],
+        method_input_dtypes=["int64", "float64"],
         backend_to_test=backend_fw,
         method_all_as_kwargs_np={
             "rowvar": rowvar,
