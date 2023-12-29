@@ -162,15 +162,15 @@ def _generate_diag_args(draw):
 
 # dot
 @st.composite
-def _generate_dot_dtype_and_arrays(draw):
+def _generate_dot_dtype_and_arrays(draw, min_num_dims=0):
     shape_a = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+            min_dim_size=2, max_dim_size=5, min_num_dims=min_num_dims, max_num_dims=5
         )
     )
     shape_b = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+            min_dim_size=2, max_dim_size=5, min_num_dims=min_num_dims, max_num_dims=5
         )
     )
 

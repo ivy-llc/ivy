@@ -1510,7 +1510,7 @@ def nested_multi_map(
                     )
                 )
         ret = func(values, this_index_chain)
-        if to_ivy:
+        if to_ivy and ret is not None:
             if isinstance(nest, (ivy.Array, ivy.NativeArray)):
                 return ret
             else:
