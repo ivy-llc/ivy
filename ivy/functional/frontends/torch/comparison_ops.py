@@ -262,6 +262,7 @@ def maximum(input, other, *, out=None):
     return ivy.maximum(input, other, out=out)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex64", "complex128")}, "torch")
 @to_ivy_arrays_and_back
 def minimum(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
