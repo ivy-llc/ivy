@@ -143,7 +143,7 @@ def isfinite(input):
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")}, "torch"
+    {"2.1.2 and below": ("float16", "bfloat16", "complex", "bool")}, "torch"
 )
 @to_ivy_arrays_and_back
 def isin(elements, test_elements, *, assume_unique=False, invert=False):
