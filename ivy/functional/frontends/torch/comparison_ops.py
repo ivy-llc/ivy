@@ -59,6 +59,7 @@ def allclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
         return ivy.all(ret)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def argsort(input, dim=-1, descending=False):
     return ivy.argsort(input, axis=dim, descending=descending)
