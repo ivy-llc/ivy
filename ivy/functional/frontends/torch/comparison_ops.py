@@ -199,6 +199,7 @@ def isnan(input):
     return ivy.isnan(input)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def isneginf(input, *, out=None):
     is_inf = ivy.isinf(input)
@@ -206,6 +207,7 @@ def isneginf(input, *, out=None):
     return ivy.logical_and(is_inf, neg_sign_bit, out=out)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def isposinf(input, *, out=None):
     is_inf = ivy.isinf(input)
