@@ -271,6 +271,7 @@ def minimum(input, other, *, out=None):
     return ivy.minimum(input, other, out=out)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def msort(input, *, out=None):
     return ivy.sort(input, axis=0, out=out)
@@ -283,6 +284,7 @@ def not_equal(input, other, *, out=None):
     return ivy.not_equal(input, other, out=out)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 # TODO: the original torch.sort places * right before `out`
 def sort(input, *, dim=-1, descending=False, stable=False, out=None):
