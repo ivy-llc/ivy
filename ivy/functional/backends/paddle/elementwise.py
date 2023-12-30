@@ -841,6 +841,9 @@ def trapz(
     return ret
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def abs(
     x: Union[float, paddle.Tensor],
     /,
