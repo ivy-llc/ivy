@@ -431,6 +431,7 @@ def less_equal(
     return tf.math.less_equal(x1, x2)
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def log(
     x: Union[tf.Tensor, tf.Variable],
     /,
