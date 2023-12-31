@@ -619,7 +619,7 @@ def not_equal(
 
 
 @with_supported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("bfloat16", "float32", "float64", "complex")}},
+    {"2.5.2 and below": {"cpu": ("float32", "float64", "complex")}},
     backend_version,
 )
 def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
