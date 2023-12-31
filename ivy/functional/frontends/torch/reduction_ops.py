@@ -18,12 +18,14 @@ def all(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def amax(input, dim=None, keepdim=False, *, out=None):
     return ivy.max(input, axis=dim, keepdims=keepdim, out=out)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def amin(input, dim=None, keepdim=False, *, out=None):
