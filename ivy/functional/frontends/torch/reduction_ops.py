@@ -131,6 +131,7 @@ def mean(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex", "float16", "bool")}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def median(input, dim=None, keepdim=False, *, out=None):
