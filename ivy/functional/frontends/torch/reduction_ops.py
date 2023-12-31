@@ -32,7 +32,9 @@ def amin(input, dim=None, keepdim=False, *, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes(
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")}, "torch"
+)
 def aminmax(input, *, dim=None, keepdim=False, out=None):
     minmax_tuple = namedtuple("minmax", ["min", "max"])
     return minmax_tuple(

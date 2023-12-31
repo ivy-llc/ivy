@@ -174,7 +174,7 @@ def test_torch_amin(
 @handle_frontend_test(
     fn_tree="torch.aminmax",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_axis=-1,
         max_axis=0,
