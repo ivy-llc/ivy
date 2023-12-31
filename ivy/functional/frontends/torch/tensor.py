@@ -1237,7 +1237,18 @@ class Tensor:
     def __matmul__(self, other):
         return torch_frontend.matmul(self, other)
 
-    @with_unsupported_dtypes({"2.1.2 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes(
+        {
+            "2.1.2 and below": (
+                "float16",
+                "int8",
+                "int16",
+                "bool",
+                "uint8",
+            )
+        },
+        "torch",
+    )
     def __rmul__(self, other):
         return torch_frontend.mul(other, self)
 
