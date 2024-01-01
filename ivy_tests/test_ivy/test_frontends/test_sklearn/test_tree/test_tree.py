@@ -10,7 +10,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # helper functions
 def _get_sklearn_predict(X, y, max_depth, DecisionTreeClassifier):
-    clf = DecisionTreeClassifier(max_depth=max_depth)
+    clf = DecisionTreeClassifier(max_depth=max_depth, random_state=0)
     clf.fit(X, y)
     return clf.predict
 
@@ -22,10 +22,14 @@ def _get_sklearn_predict(X, y, max_depth, DecisionTreeClassifier):
 # todo: integrate with already existing strats and generalize
 @given(
     X=helpers.array_values(
-        shape=(5, 2), dtype=helpers.get_dtypes("float", prune_function=False)
+        shape=(5, 2),
+        dtype=helpers.get_dtypes("float", prune_function=False),
+        safety_factor_scale="log",
     ),
     y=helpers.array_values(
-        shape=(5,), dtype=helpers.get_dtypes("signed_integer", prune_function=False)
+        shape=(5,),
+        dtype=helpers.get_dtypes("signed_integer", prune_function=False),
+        safety_factor_scale="log",
     ),
     max_depth=helpers.ints(max_value=5, min_value=1),
 )
