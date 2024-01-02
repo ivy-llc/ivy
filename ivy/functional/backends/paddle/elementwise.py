@@ -116,6 +116,10 @@ def isinf(
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("int8", "int16", "bfloat16", "unsigned", "float16")},
+    backend_version,
+)
 def equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -124,16 +128,7 @@ def equal(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    diff = paddle_backend.subtract(x1, x2)
-    ret = paddle_backend.logical_and(
-        paddle_backend.less_equal(diff, 0), paddle_backend.greater_equal(diff, 0)
-    )
-    # ret result is sufficient for all cases except where the value is +/-INF of NaN
-    return paddle_backend.where(
-        paddle_backend.isnan(diff),
-        ~paddle_backend.logical_or(paddle_backend.isnan(x1), paddle_backend.isnan(x2)),
-        ret,
-    )
+    return paddle.equal(x1, x2)
 
 
 @with_unsupported_dtypes(
