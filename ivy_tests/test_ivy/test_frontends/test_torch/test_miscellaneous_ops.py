@@ -1739,7 +1739,6 @@ def test_torch_triu_indices(
     shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        valid_axis=True,
         min_num_dims=1,
         shape_key="shape",
     ),
