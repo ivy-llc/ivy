@@ -20,10 +20,18 @@ def min(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
+    if where is not None:
+        ret = np.amin(
+            a=x, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+        )
+    else:
+        ret = np.amin(a=x, axis=axis, keepdims=keepdims, initial=initial, out=out)
+    return np.asarray(ret)
 
 
 min.support_native_out = True

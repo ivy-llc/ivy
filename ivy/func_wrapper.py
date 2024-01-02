@@ -174,9 +174,13 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
 def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
-    array_fn = lambda x: (
-        ivy.is_array(x) if not hasattr(x, "_ivy_array") else ivy.is_array(x.ivy_array)
-    )
+    def array_fn(x):
+        return (
+            ivy.is_array(x)
+            if not hasattr(x, "_ivy_array")
+            else ivy.is_array(x.ivy_array)
+        )
+
     array_fn = array_fn if "array_fn" not in kwargs else kwargs["array_fn"]
     arr = None
     if args:
@@ -1180,7 +1184,7 @@ def _dtype_from_version(dic, version):
 
     # If version dict is empty, then there is an error
     if not dic:
-        raise Exception("No version found in the dictionary")
+        raise ValueError("No version found in the dictionary")
 
     # If key is already in the dictionary, return the value
     if version in dic:

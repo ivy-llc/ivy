@@ -154,9 +154,9 @@ def _should_install_backend(package_name):
     if ret.lower() == "y":
         try:
             # Install backend
-            subprocess.check_call([
-                sys.executable, "-m", "pip", "install", package_name
-            ])
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", package_name]
+            )
             global _backend_is_installed
             _backend_is_installed = True
             with open("../../requirements/optional.txt", "a") as reqr_file:

@@ -1155,7 +1155,7 @@ class ContainerBase(dict, abc.ABC):
             ),
         )
         container_dict = {}
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
             h5_obj = h5_obj_or_filepath
@@ -1238,14 +1238,14 @@ class ContainerBase(dict, abc.ABC):
                 "the size of hdf5 files."
             ),
         )
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
             h5_obj = h5_obj_or_filepath
 
         size = 0
         batch_size = 0
-        for key, value in h5_obj.items():
+        for value in h5_obj.values():
             if isinstance(value, h5py.Group):
                 size_to_add, batch_size = ivy.Container.h5_file_size(value)
                 size += size_to_add
@@ -1280,12 +1280,12 @@ class ContainerBase(dict, abc.ABC):
         )
         if seed_value is None:
             seed_value = random.randint(0, 1000)
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "a")
         else:
             h5_obj = h5_obj_or_filepath
 
-        for key, value in h5_obj.items():
+        for value in h5_obj.values():
             if isinstance(value, h5py.Group):
                 ivy.Container.shuffle_h5_file(value, seed_value)
             elif isinstance(value, h5py.Dataset):
@@ -1488,9 +1488,9 @@ class ContainerBase(dict, abc.ABC):
         if not sub_shapes:
             return sub_shapes
         min_num_dims = min(len(sub_shape) for sub_shape in sub_shapes)
-        sub_shapes_array = np.asarray([
-            sub_shape[0:min_num_dims] for sub_shape in sub_shapes
-        ])
+        sub_shapes_array = np.asarray(
+            [sub_shape[0:min_num_dims] for sub_shape in sub_shapes]
+        )
         sub_shapes_array = np.where(sub_shapes_array == 0, -1, sub_shapes_array)
         mask = np.prod(sub_shapes_array / sub_shapes_array[0:1], 0) == 1
         # noinspection PyTypeChecker
@@ -1843,15 +1843,11 @@ class ContainerBase(dict, abc.ABC):
         if keepdims:
             # noinspection PyTypeChecker
             return [
-                self[
-                    (
-                        slice(i, i + 1, 1)
-                        if axis == 0
-                        else tuple(
-                            [slice(None, None, None)] * axis + [slice(i, i + 1, 1)]
-                        )
-                    )
-                ]
+                self[(
+                    slice(i, i + 1, 1)
+                    if axis == 0
+                    else tuple([slice(None, None, None)] * axis + [slice(i, i + 1, 1)])
+                )]
                 for i in range(dim_size)
             ]
         # noinspection PyTypeChecker
@@ -2001,7 +1997,7 @@ class ContainerBase(dict, abc.ABC):
                 "containers to disk as hdf5 files."
             ),
         )
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, mode)
         else:
             h5_obj = h5_obj_or_filepath
@@ -2164,7 +2160,7 @@ class ContainerBase(dict, abc.ABC):
             Iterator for the container values.
 
         """
-        for key, value in self.items():
+        for value in self.values():
             if isinstance(value, ivy.Container) and (not include_empty or value):
                 # noinspection PyCompatibility
                 yield from value.cont_to_iterator_values(include_empty)
@@ -3657,9 +3653,9 @@ class ContainerBase(dict, abc.ABC):
         # prepend these lines to the sub-container
         sub_repr = (
             "\n"
-            + "\n".join([
-                " " * num_spaces_to_add + s for s in sub_repr[1:-1].split("\n")
-            ])
+            + "\n".join(
+                [" " * num_spaces_to_add + s for s in sub_repr[1:-1].split("\n")]
+            )
             + "\n"
         )
 
@@ -3735,9 +3731,9 @@ class ContainerBase(dict, abc.ABC):
             # 10 dimensions is a sensible upper bound for the number in a single array
             for i in range(2, 10):
                 indented = indented.replace(" " * (i - 1) + "[" * i, "[" * i)
-                indented = "\n".join([
-                    s for s in indented.split("\n") if bool(s) and not s.isspace()
-                ])
+                indented = "\n".join(
+                    [s for s in indented.split("\n") if bool(s) and not s.isspace()]
+                )
             return indented
 
         def _align_arrays(str_in):
@@ -3845,9 +3841,9 @@ class ContainerBase(dict, abc.ABC):
                     for i, ss in enumerate(str_in_split)
                 ])
 
-            json_dumped_str = '":'.join([
-                _add_newline(s) for s in json_dumped_str.split('":')
-            ])
+            json_dumped_str = '":'.join(
+                [_add_newline(s) for s in json_dumped_str.split('":')]
+            )
             # improve tf formatting
             if ivy.backend_stack and ivy.current_backend_str() == "tensorflow":
                 json_dumped_str_split = json_dumped_str.split("'Variable:")

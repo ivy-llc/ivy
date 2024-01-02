@@ -96,13 +96,13 @@ def _determine_backend_from_args(args):
     >>> x = jnp.array([1])
     >>> print(_determine_backend_from_args(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>    # noqa
-    """
+    """  # noqa: E501
     arg_type = type(args)
     if isinstance(args, ivy.Array):
         args = args.data
 
     if isinstance(args, dict):
-        for key, value in args.items():
+        for value in args.values():
             # recursively call the function for each value in the dictionary
             lib = _determine_backend_from_args(value)
             if lib:
@@ -175,7 +175,7 @@ def current_backend(*args, **kwargs):
     >>> x = np.array([2.0])
     >>> print(ivy.current_backend(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
-    """
+    """  # noqa: E501
     global implicit_backend
     # if a global backend has been set with
     # set_backend then this will be returned
@@ -376,7 +376,7 @@ def set_backend(backend: str, dynamic: bool = False):
         _set_module_backend(ivy_original_dict, ivy, backend)
         # following snippet is required to update the ivy.functional namespace with
         # backend-specific functions
-        for key, _ in ivy.__dict__.items():
+        for key in ivy.__dict__.keys():
             if key in ivy.functional.__dict__ and not key.startswith("__"):
                 ivy.functional.__dict__[key] = ivy.__dict__[key]
 
@@ -525,9 +525,9 @@ def choose_random_backend(excluded=None):
             or not installed.""",
             as_array=False,
         )
-        f = np.random.choice([
-            f_srt for f_srt in list(_backend_dict.keys()) if f_srt not in excluded
-        ])
+        f = np.random.choice(
+            [f_srt for f_srt in list(_backend_dict.keys()) if f_srt not in excluded]
+        )
         if f is None:
             excluded.append(f)
             continue
@@ -558,7 +558,7 @@ def with_backend(backend: str, cached: bool = True):
             ivy_pack.__dict__.copy(), ivy_pack, backend_module
         )
         # TODO use a refactored code from ivy.set_backend
-        for key, _ in ivy_pack.__dict__.items():
+        for key in ivy_pack.__dict__.keys():
             if key in ivy_pack.functional.__dict__ and not key.startswith("__"):
                 ivy_pack.functional.__dict__[key] = ivy_pack.ivy.__dict__[key]
         ivy_pack.backend_stack.append(backend_module)

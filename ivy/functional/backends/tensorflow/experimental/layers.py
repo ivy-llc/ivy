@@ -5,6 +5,8 @@ import tensorflow as tf
 
 # local
 from ivy.func_wrapper import (
+    inputs_to_ivy_arrays,
+    output_to_native_arrays,
     with_unsupported_dtypes,
     with_supported_dtypes,
     with_supported_device_and_dtypes,
@@ -1302,9 +1304,9 @@ def static_output_shape(input_shape, shape, axes):
 def _right_pad_or_crop(tensor, shape):
     input_shape = tf.shape(tensor)
     shape = tf.convert_to_tensor(shape, dtype=tf.dtypes.int32)
-    with tf.control_dependencies([
-        tf.debugging.assert_less_equal(tf.size(shape), tf.size(input_shape))
-    ]):
+    with tf.control_dependencies(
+        [tf.debugging.assert_less_equal(tf.size(shape), tf.size(input_shape))]
+    ):
         shape = tf.identity(shape)
     shape = tf.concat([input_shape[: tf.size(input_shape) - tf.size(shape)], shape], 0)
 
@@ -1674,4 +1676,35 @@ def sliding_window(
 
     return tf.image.extract_patches(
         images=input, sizes=kernel_size, strides=stride, rates=dilation, padding=padding
+    )
+
+
+def rnn(
+    step_function,
+    inputs,
+    initial_states,
+    /,
+    *,
+    go_backwards: bool = False,
+    mask: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    constants: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    unroll: bool = False,
+    input_length: Optional[int] = None,
+    time_major: bool = False,
+    zero_output_for_mask: bool = False,
+    return_all_outputs: bool = True,
+):
+    step_function = inputs_to_ivy_arrays(output_to_native_arrays(step_function))
+    return tf.keras.backend.rnn(
+        step_function,
+        inputs,
+        initial_states,
+        go_backwards=go_backwards,
+        mask=mask,
+        constants=constants,
+        unroll=unroll,
+        input_length=input_length,
+        time_major=time_major,
+        zero_output_for_mask=zero_output_for_mask,
+        return_all_outputs=return_all_outputs,
     )

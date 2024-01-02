@@ -160,6 +160,39 @@ def _get_clip_inputs_(draw):
     return x_dtype, x, min, max
 
 
+@st.composite
+def _get_dtype_and_3dbatch_matrices_for_matmul(draw):
+    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
+    shared_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    batch_size = draw(helpers.ints(min_value=2, max_value=4))
+    transpose_x = draw(st.booleans())
+    transpose_y = draw(st.booleans())
+
+    mat1_shape = (
+        (batch_size, dim_size1, shared_size)
+        if not transpose_x
+        else (batch_size, shared_size, dim_size1)
+    )
+    mat2_shape = (
+        (batch_size, shared_size, dim_size2)
+        if not transpose_y
+        else (batch_size, dim_size2, shared_size)
+    )
+
+    mat1 = draw(
+        helpers.array_values(dtype=dtype[0], shape=mat1_shape, min_value=2, max_value=5)
+    )
+    mat2 = draw(
+        helpers.array_values(dtype=dtype[0], shape=mat2_shape, min_value=2, max_value=5)
+    )
+    return dtype, mat1, mat2, transpose_x, transpose_y
+
+
 # cond
 @st.composite
 def _get_dtype_and_matrix_non_singular(draw, dtypes):
@@ -184,6 +217,16 @@ def _get_dtype_and_matrix_non_singular(draw, dtypes):
             break
 
     return matrix[0], matrix[1]
+
+
+@st.composite
+def _get_dtype_and_multiplicative_matrices(draw):
+    return draw(
+        st.one_of(
+            _get_dtype_input_and_matrices_for_matmul(),
+            _get_dtype_and_3dbatch_matrices_for_matmul(),
+        )
+    )
 
 
 @st.composite
@@ -243,6 +286,30 @@ def _get_dtype_and_values_for_lerp(draw):
         )
         weight = draw(st.floats())
         return input_dtype, x[0], x[1], weight
+
+
+@st.composite
+def _get_dtype_input_and_matrices_for_matmul(draw):
+    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
+    shared_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    transpose_x = draw(st.booleans())
+    transpose_y = draw(st.booleans())
+
+    mat1_shape = (shared_size, dim_size1) if transpose_x else (dim_size1, shared_size)
+    mat2_shape = (dim_size2, shared_size) if transpose_y else (shared_size, dim_size2)
+
+    mat1 = draw(
+        helpers.array_values(dtype=dtype[0], shape=mat1_shape, min_value=2, max_value=5)
+    )
+    mat2 = draw(
+        helpers.array_values(dtype=dtype[0], shape=mat2_shape, min_value=2, max_value=5)
+    )
+    return dtype, mat1, mat2, transpose_x, transpose_y
 
 
 @st.composite
@@ -832,6 +899,42 @@ def test_paddle__int__(
     )
 
 
+# invert
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="__invert__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        max_num_dims=0,
+    ),
+)
+def test_paddle__invert__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        method_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 # __len__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -859,6 +962,46 @@ def test_paddle__len__(
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# long
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="__long__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_num_dims=0,
+        min_value=-1e15,
+        max_value=1e15,
+    ),
+)
+def test_paddle__long__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+    # Numpy doesn't support complex to int conversion
+    assume(not np.issubdtype(input_dtypes[0], np.complexfloating))
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        method_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -998,6 +1141,43 @@ def test_paddle__rdiv__(
     dtype_x_shape=_reshape_helper(),
 )
 def test_paddle__reshape(
+    dtype_x_shape,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, shape = dtype_x_shape
+    assume(len(shape) != 0)
+    shape = {
+        "shape": shape,
+    }
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np=shape,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# reshape_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="reshape_",
+    dtype_x_shape=_reshape_helper(),
+)
+def test_paddle__reshape_(
     dtype_x_shape,
     frontend_method_data,
     init_flags,
@@ -5498,6 +5678,53 @@ def test_paddle_tensor_expand(
     )
 
 
+# flatten
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="flatten",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    axes=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        min_size=2,
+        max_size=2,
+        unique=False,
+        force_tuple=True,
+    ),
+)
+def test_paddle_tensor_flatten(
+    dtype_value,
+    axes,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "start_axis": axes[0],
+            "stop_axis": axes[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # floor_mod
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -5571,6 +5798,88 @@ def test_paddle_tensor_heaviside(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# matmul
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="matmul",
+    dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
+)
+def test_paddle_tensor_matmul(
+    dtype_tensor1_tensor2,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    dtype, tensor1, tensor2, transpose_x, transpose_y = dtype_tensor1_tensor2
+
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": tensor1,
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={
+            "y": tensor2,
+            "transpose_x": transpose_x,
+            "transpose_y": transpose_y,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# squeeze
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="squeeze",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
+    ),
+)
+def test_paddle_tensor_squeeze(
+    dtype_value,
+    axis,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
     )

@@ -69,12 +69,10 @@ def multinomial(
         np.random.seed(seed)
     if probs is None:
         probs = (
-            np.ones(
-                (
-                    batch_size,
-                    population_size,
-                )
-            )
+            np.ones((
+                batch_size,
+                population_size,
+            ))
             / population_size
         )
     orig_probs_shape = list(probs.shape)
@@ -111,7 +109,7 @@ def randint(
     return np.random.randint(low, high, shape, dtype=dtype)
 
 
-def seed(*, seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0):
     np.random.seed(seed_value)
     return
 

@@ -62,7 +62,7 @@ def searchsorted(
     ret_dtype: np.dtype = np.int64,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    assert ivy.is_int_dtype(ret_dtype), ValueError(
+    assert ivy.is_int_dtype(ret_dtype), TypeError(
         "only Integer data types are supported for ret_dtype."
     )
     is_sorter_provided = sorter is not None

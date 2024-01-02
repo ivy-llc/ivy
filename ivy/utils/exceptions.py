@@ -120,9 +120,9 @@ def _get_traces(curr_obj, area, local_dict, target_name):
             curr_obj[3] = rooted_src_list[i]
             curr_obj[1] += i
             break
-        elif builtins.any([
-            name in rooted_src_list[i] for name in non_lib_objs_name_list
-        ]):
+        elif builtins.any(
+            [name in rooted_src_list[i] for name in non_lib_objs_name_list]
+        ):
             found = False
             for name in non_lib_objs_name_list:
                 if name in rooted_src_list[i]:
@@ -155,10 +155,7 @@ def _check_if_path_found(path, full_path):
     ret
         True if the path is found, False otherwise
     """
-    if path in full_path:
-        return True
-    else:
-        return False
+    return path in full_path
 
 
 def _configure_stack_trace(traceback):
@@ -177,7 +174,7 @@ def _configure_stack_trace(traceback):
     frontend_path = os.path.join("ivy", "functional", "frontends")
     wrapper_path = os.path.join("ivy", "func_wrapper.py")
 
-    while 1 and tb.tb_next:
+    while tb.tb_next:
         frame = tb.tb_next.tb_frame
         file_path = frame.f_code.co_filename
         if trace_mode == "ivy":

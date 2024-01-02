@@ -64,7 +64,7 @@ def searchsorted(
     ret_dtype: tf.DType = tf.int64,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    assert ivy.is_int_dtype(ret_dtype), ValueError(
+    assert ivy.is_int_dtype(ret_dtype), TypeError(
         "only Integer data types are supported for ret_dtype."
     )
     is_supported_int_ret_dtype = ret_dtype in [tf.int32, tf.int64]

@@ -230,15 +230,13 @@ def _get_method_supported_devices_dtypes(
         if mod_backend[backend_str]:
             # we gotta do this using multiprocessing
             proc, input_queue, output_queue = mod_backend[backend_str]
-            input_queue.put(
-                (
-                    "method supported dtypes",
-                    method_name,
-                    class_module.__name__,
-                    class_name,
-                    backend_str,
-                )
-            )
+            input_queue.put((
+                "method supported dtypes",
+                method_name,
+                class_module.__name__,
+                class_name,
+                backend_str,
+            ))
             supported_device_dtypes[backend_str] = output_queue.get()
         else:
             supported_device_dtypes[backend_str] = (

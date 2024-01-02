@@ -571,7 +571,7 @@ def erfc(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if x.dtype not in [np.float16, np.float32, np.float64]:
-        raise ValueError("Input must be of type float16, float32, or float64.")
+        raise TypeError("Input must be of type float16, float32, or float64.")
 
     input_dtype = x.dtype
 
