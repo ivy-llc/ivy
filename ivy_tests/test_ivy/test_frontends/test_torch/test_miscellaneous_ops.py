@@ -1736,26 +1736,30 @@ def test_torch_triu_indices(
 # unflatten
 @handle_frontend_test(
     fn_tree="torch.unflatten",
-    dtype_input_axes=helpers.dtype_values_axis(
+    shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         min_num_dims=1,
-        min_axes_size=1,
-        max_axes_size=1,
+        shape_key="shape",
     ),
-    shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    get_axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"), max_size=1
+    ),
 )
 def test_torch_unflatten(
     *,
-    dtype_input_axes,
+    dtype_and_values,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
     shape,
+    get_axis,
 ):
-    dtype, x, axes = dtype_input_axes
+    axes = get_axis
+    dtype, x = dtype_and_values
 
     def factorization(n):
         factors = []
