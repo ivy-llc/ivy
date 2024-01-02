@@ -1790,7 +1790,7 @@ def test_torch_unflatten(
 
         return factors
 
-    shape = (
+    shape_ = (
         tuple(factorization(shape[axis]))
         if tuple(factorization(shape[axis]))
         else shape
@@ -1805,7 +1805,7 @@ def test_torch_unflatten(
         test_values=False,
         input=x[0],
         dim=axis,
-        sizes=shape,
+        sizes=shape_,
     )
 
 
