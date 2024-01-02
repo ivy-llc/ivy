@@ -195,6 +195,7 @@ def moveaxis(input, source, destination):
     return ivy.moveaxis(input, source, destination)
 
 
+@with_supported_dtypes({"2.1.2 and below": ("float",)}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
