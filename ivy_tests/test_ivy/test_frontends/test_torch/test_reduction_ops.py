@@ -106,7 +106,7 @@ def test_torch_all(
 @handle_frontend_test(
     fn_tree="torch.amax",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_axis=-1,
         max_axis=0,
@@ -140,7 +140,7 @@ def test_torch_amax(
 @handle_frontend_test(
     fn_tree="torch.amin",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_axis=-1,
         max_axis=0,
@@ -174,7 +174,7 @@ def test_torch_amin(
 @handle_frontend_test(
     fn_tree="torch.aminmax",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_axis=-1,
         max_axis=0,
@@ -476,7 +476,7 @@ def test_torch_mean(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, *_ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -495,7 +495,7 @@ def test_torch_mean(
 @handle_frontend_test(
     fn_tree="torch.median",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,

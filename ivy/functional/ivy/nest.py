@@ -1466,9 +1466,9 @@ def nested_multi_map(
                 (
                     return_nest.append(ret)
                     if isinstance(return_nest, (list))
-                    else return_nest.update({
-                        val if is_dict else list(nest)[index]: ret
-                    })
+                    else return_nest.update(
+                        {val if is_dict else list(nest)[index]: ret}
+                    )
                 )
     else:
         values = nests
@@ -1510,7 +1510,7 @@ def nested_multi_map(
                     )
                 )
         ret = func(values, this_index_chain)
-        if to_ivy:
+        if to_ivy and ret is not None:
             if isinstance(nest, (ivy.Array, ivy.NativeArray)):
                 return ret
             else:

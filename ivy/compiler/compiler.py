@@ -1,4 +1,4 @@
-from typing import Callable, Optional, List, Union, Iterable, Tuple, Mapping
+from typing import Callable, Optional, List, Union, Iterable, Sequence, Mapping
 
 
 def trace_graph(
@@ -10,17 +10,18 @@ def trace_graph(
     include_generators: bool = True,
     array_caching: bool = True,
     with_numpy: bool = True,
+    modes_to_trace: str = "all",
     backend_compile: bool = False,
     static_argnums: Optional[Union[int, Iterable[int]]] = None,
     static_argnames: Optional[Union[str, Iterable[str]]] = None,
-    mode: Optional[str] = None,
+    compile_mode: Optional[str] = None,
     graph_caching: bool = False,
-    args: Optional[Tuple] = None,
+    args: Optional[Sequence] = None,
     kwargs: Optional[Mapping] = None,
     params_v=None,
     v=None
 ):
-    """Take `fn` and traces it into a more efficient composition of backend
+    """Takes `fn` and traces it into a more efficient composition of backend
     operations.
 
     Parameters
@@ -37,14 +38,17 @@ def trace_graph(
         include array creation/generation functions as part of the graph
     array_caching
         cache the constant arrays that appear as arguments to the functions in the graph
+    modes_to_trace
+        the module mode(s) which should be traced when tracing a trainable module
+        can be either "all", "train" or "eval".
     backend_compile
         whether to apply the native compilers, i.e. tf.function, after ivy's tracing
     static_argnums
         for jax's jit compilation
     static_argnames
         for jax's jit compilation
-    mode
-        for torch's compilation
+    compile_mode
+        mode for torch's compilation
     graph_caching
         whether to cache the traced graph
     args
@@ -101,10 +105,11 @@ def trace_graph(
         include_generators=include_generators,
         array_caching=array_caching,
         with_numpy=with_numpy,
+        modes_to_trace=modes_to_trace,
         backend_compile=backend_compile,
         static_argnums=static_argnums,
         static_argnames=static_argnames,
-        mode=mode,
+        compile_mode=compile_mode,
         graph_caching=graph_caching,
         args=args,
         kwargs=kwargs,
@@ -121,12 +126,13 @@ def transpile(
     backend_compile: bool = False,
     static_argnums: Optional[Union[int, Iterable[int]]] = None,
     static_argnames: Optional[Union[str, Iterable[str]]] = None,
-    mode: Optional[str] = None,
+    compile_mode: Optional[str] = None,
     graph_caching: bool = False,
+    modes_to_trace: str = "all",
     stateful: Optional[List] = None,
     arg_stateful_idxs: Optional[List] = None,
     kwarg_stateful_idxs: Optional[List] = None,
-    args: Optional[Tuple] = None,
+    args: Optional[Sequence] = None,
     kwargs: Optional[Mapping] = None,
     params_v=None,
     v=None
@@ -162,8 +168,9 @@ def transpile(
         backend_compile=backend_compile,
         static_argnums=static_argnums,
         static_argnames=static_argnames,
-        mode=mode,
+        compile_mode=compile_mode,
         graph_caching=graph_caching,
+        modes_to_trace=modes_to_trace,
         stateful=stateful,
         arg_stateful_idxs=arg_stateful_idxs,
         kwarg_stateful_idxs=kwarg_stateful_idxs,
@@ -178,9 +185,10 @@ def unify(
     *objs: Callable,
     source: Optional[str] = None,
     graph_caching: bool = False,
-    args: Optional[Tuple] = None,
+    args: Optional[Sequence] = None,
     kwargs: Optional[Mapping] = None,
     with_numpy: bool = True,
+    modes_to_trace: str = "all",
     **transpile_kwargs
 ):
     from ._compiler import unify as _unify
@@ -192,5 +200,6 @@ def unify(
         args=args,
         kwargs=kwargs,
         with_numpy=with_numpy,
+        modes_to_trace=modes_to_trace,
         **transpile_kwargs,
     )

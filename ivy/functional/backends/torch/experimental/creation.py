@@ -20,7 +20,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.1.1 and below": {"cpu": ("float16",)}},
+    {"2.1.2 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def kaiser_window(
@@ -87,7 +87,7 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
 def hann_window(
     size: int,
     /,
@@ -139,7 +139,7 @@ def unsorted_segment_min(
     elif data.dtype in [torch.int32, torch.int64, torch.int8, torch.int16, torch.uint8]:
         init_val = torch.iinfo(data.dtype).max
     else:
-        raise ValueError("Unsupported data type")
+        raise TypeError("Unsupported data type")
 
     res = torch.full(
         (num_segments,) + data.shape[1:], init_val, dtype=data.dtype, device=data.device
@@ -152,7 +152,7 @@ def unsorted_segment_min(
     return res
 
 
-@with_unsupported_dtypes({"2.1.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
 def blackman_window(
     size: int,
     /,

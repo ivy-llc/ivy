@@ -73,7 +73,7 @@ if __name__ == "__main__":
                 backends = [backend.strip()]
                 backend_name, backend_version = backend.split("/")
                 other_backends = [
-                    fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
+                    fw for fw in BACKENDS if (fw not in (backend_name, "paddle"))
                 ]
                 for other_backend in other_backends:
                     backends.append(
@@ -237,6 +237,10 @@ if __name__ == "__main__":
 
             # delete the container
             os.system("docker rm -f test-container")
+
+    # delete pulled image before terminating
+    if device == "gpu":
+        os.system("docker rmi unifyai/ivy:latest-gpu")
 
     # if any tests fail, the workflow fails
     if failed:

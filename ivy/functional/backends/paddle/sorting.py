@@ -52,7 +52,7 @@ def searchsorted(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     right = True if side == "right" else False
-    assert ivy.is_int_dtype(ret_dtype), ValueError(
+    assert ivy.is_int_dtype(ret_dtype), TypeError(
         "only Integer data types are supported for ret_dtype."
     )
 

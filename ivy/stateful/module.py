@@ -250,7 +250,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         # build any child 'on_call' layers
         if not built and from_call:
             # update child modules to share the same device
-            for k, v in self.__dict__.items():
+            for v in self.__dict__.values():
                 if isinstance(v, ivy.Module):
                     v._device = self._device
 
@@ -375,7 +375,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     def to_device(self, device):
         """Move the weights and buffers  to the specified device."""
         self._device = ivy.default(device, self._device)
-        for _, obj in self.state_dict.items():
+        for obj in self.state_dict.values():
             if isinstance(obj, ivy.Module):
                 obj.to_device(device)
             elif ivy.is_array(obj) or ivy.is_ivy_container(obj):
@@ -544,7 +544,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         if extra_repr:
             extra_lines = extra_repr.split("\n")
         child_lines = []
-        for key, _ in self.v.items():
+        for key in self.v.keys():
             if isinstance(getattr(self, key, None), Module):
                 mod_str = repr(getattr(self, key))
                 mod_str = self._addindent(mod_str, 2)
@@ -693,7 +693,7 @@ class _HaikuIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         params_hk = self._dict_to_hk_flat_map(self.v.cont_to_dict())
         ret = self._native_module.apply(params_hk, 0, *a, **kw)
-        nested = True if isinstance(ret, tuple) else False
+        nested = isinstance(ret, tuple)
         return ivy.to_native(ret, nested=nested)
 
     def _hk_flat_map_to_dict(self, hk_flat_map):
@@ -756,7 +756,7 @@ class _FlaxIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         params_fx = flax.core.freeze(self.v.cont_to_dict())
         ret = self._native_module.apply(params_fx, *a, **kw)
-        nested = True if isinstance(ret, tuple) else False
+        nested = isinstance(ret, tuple)
         return ivy.to_native(ret, nested=nested)
 
 
@@ -782,7 +782,7 @@ class _KerasIvyModule(Module):
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
-        nested = True if isinstance(ret, tuple) else False
+        nested = isinstance(ret, tuple)
         return ivy.to_native(ret, nested=nested)
 
 
@@ -811,7 +811,7 @@ class _PaddleIvyModule(Module):
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
         ret = self._native_module(*a, **kw)
-        nested = True if isinstance(ret, tuple) else False
+        nested = isinstance(ret, tuple)
         return ivy.to_native(ret, nested=nested)
 
 
@@ -876,5 +876,5 @@ class _TorchIvyModule(Module):
         a, kw = ivy.args_to_native(*a, **kw)
         self._update_v(self.v)
         ret = self._native_module(*a, **kw)
-        nested = True if isinstance(ret, tuple) else False
+        nested = isinstance(ret, tuple)
         return ivy.to_native(ret, nested=nested)

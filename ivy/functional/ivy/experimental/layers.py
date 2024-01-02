@@ -92,7 +92,7 @@ def max_pool1d(
 
        [[16., 17., 18., 19.]]])
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
-    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True)) # noqa
+    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True))
     ivy.array([[[ 1.,  3.],
             [ 5.,  7.],
             [ 9., 11.]],
@@ -100,7 +100,7 @@ def max_pool1d(
         [[13., 15.],
             [17., 19.],
             [21., 23.]]])
-    """
+    """  # noqa: E501
     return ivy.current_backend(x).max_pool1d(
         x,
         kernel,
@@ -1405,13 +1405,11 @@ def _tf_area_interpolate(x, size, scale, dims):
                             d_in, d_in1, d_index = _tf_area_indices(d_dim, scale[0])
                             h_in, h_in1, h_index = _tf_area_indices(h_dim, scale[1])
                             w_in, w_in1, w_index = _tf_area_indices(w_dim, scale[2])
-                            sum_data = ivy.zeros(
-                                (
-                                    d_index[1] - d_index[0],
-                                    h_index[1] - h_index[0],
-                                    w_index[1] - w_index[0],
-                                )
-                            )
+                            sum_data = ivy.zeros((
+                                d_index[1] - d_index[0],
+                                h_index[1] - h_index[0],
+                                w_index[1] - w_index[0],
+                            ))
                             for d_ind in range(d_index[0], d_index[1]):
                                 scale_z = _tf_area_dim_scale(
                                     d_ind, d_in, scale[0], d_in1
@@ -1691,11 +1689,20 @@ def area_interpolate(x, dims, size, scale):
 def get_interpolate_kernel(mode):
     kernel_func = _triangle_kernel
     if mode == "tf_bicubic":
-        kernel_func = lambda inputs: _cubic_kernel(inputs)
+
+        def kernel_func(inputs):  # noqa F811
+            return _cubic_kernel(inputs)
+
     elif mode == "lanczos3":
-        kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
+
+        def kernel_func(inputs):
+            return _lanczos_kernel(3, inputs)
+
     elif mode == "lanczos5":
-        kernel_func = lambda inputs: _lanczos_kernel(5, inputs)
+
+        def kernel_func(inputs):
+            return _lanczos_kernel(5, inputs)
+
     return kernel_func
 
 
@@ -3235,4 +3242,301 @@ max_unpool1d.mixed_backend_wrappers = {
         "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_device
+def rnn(
+    step_function: Callable,
+    inputs: ivy.Array,
+    initial_states: List[ivy.Array],
+    /,
+    *,
+    go_backwards: bool = False,
+    mask: Optional[ivy.Array] = None,
+    constants: Optional[ivy.Array] = None,
+    unroll: bool = False,
+    input_length: Optional[int] = None,
+    time_major: bool = False,
+    zero_output_for_mask: bool = False,
+    return_all_outputs: bool = True,
+):
+    """Iterate over the time dimension of a tensor.
+
+    Parameters
+    ----------
+    step_function
+        RNN step function.
+    inputs
+        Array of temporal data of shape (samples, time, ...).
+    initial_states
+        Array with shape (samples, state_size).
+    go_backwards
+        If True, do the iteration over the time dimension in reverse order and return
+        the reversed sequence.
+    mask
+        Binary array with shape (samples, time, 1), with a zero for every element that
+        is masked.
+    constants
+        List of constant values passed at each step.
+    unroll
+        Whether to use a pythonic while loop or ivy.while_loop
+    input_length
+        An integer or 1-D array, depending on whether the time dimension is
+        fixed-length. In case of variable length input, it is used for masking in case
+        there is no mask specified.
+    time_major
+        If True, the inputs and outputs will be in shape (timesteps, batch, ...) whereas
+        in the False case, it will be (batch, timesteps, ...).
+    zero_output_for_mask
+        If True, the otput for masked timestep will be zeros, whereas in the False case,
+        output from previous timestep is returned
+    return_all_outputs
+        If True, return the recurrent outputs for all timesteps in the sequence. If
+        False, only return the output for the last timestep.
+
+    Returns
+    -------
+    ret
+        A tuple of
+        -   the latest output of the rnn of shape (samples, ...)
+        -   the output of the rnn of shape (samples, time, ...) if
+            return_all_outputs=True else (samples, 1, ...)
+        -   list of tensors, latest states returned by the step funciton, of shape
+            (samples, ...)
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+    """
+    # an ivy implementation of rnn inspired from
+    # https://github.com/keras-team/keras/blob/v2.14.0/keras/backend.py#L4723-L5202
+
+    # Swap the batch and timestep dim for the incoming tensor.
+    if not time_major:
+        inputs = ivy.permute_dims(inputs, (1, 0, *range(2, len(inputs.shape))))
+
+    time_steps = inputs.shape[0]
+    batch = inputs.shape[1]
+    time_steps_t = ivy.asarray(inputs.shape[0])
+
+    if mask is not None:
+        if not ivy.is_bool_dtype(mask):
+            mask = ivy.astype(mask, ivy.bool)
+        if len(mask.shape) == 2:
+            mask = ivy.expand_dims(mask)
+        if not time_major:
+            mask = ivy.permute_dims(mask, (1, 0, *range(2, len(mask.shape))))
+
+    if constants is None:
+        constants = []
+
+    def _expand_mask(mask_t, input_t, fixed_dim=1):
+        rank_diff = len(input_t.shape) - len(mask_t.shape)
+        for _ in range(rank_diff):
+            mask_t = ivy.expand_dims(mask_t, axis=-1)
+        multiples = [1] * fixed_dim + list(input_t.shape[fixed_dim:])
+        return ivy.tile(mask_t, repeats=multiples)
+
+    if unroll:
+        states = tuple(initial_states)
+        successive_states = []
+        successive_outputs = []
+
+        processed_input = ivy.unstack(inputs)
+        if go_backwards:
+            processed_input.reverse()
+
+        if mask is not None:
+            mask_list = ivy.unstack(mask)
+            if go_backwards:
+                mask_list.reverse()
+
+            for i in range(time_steps):
+                input_t = processed_input[i]
+                mask_t = mask_list[i]
+                output_t, new_states = step_function(
+                    input_t, tuple(states) + tuple(constants)
+                )
+                tiled_mask_t = _expand_mask(mask_t, output_t)
+
+                if not successive_outputs:
+                    prev_output = ivy.zeros_like(output_t)
+                else:
+                    prev_output = successive_outputs[-1]
+
+                output = ivy.where(tiled_mask_t, output_t, prev_output)
+
+                tiled_mask_t = tuple(_expand_mask(mask_t, s) for s in states)
+                final_states = tuple(
+                    ivy.where(m, s, ps)
+                    for m, s, ps in zip(tiled_mask_t, new_states, states)
+                )
+                states = final_states
+
+                if return_all_outputs:
+                    successive_outputs.append(output)
+                    successive_states.append(states)
+                else:
+                    successive_outputs = [output]
+                    successive_states = [states]
+            last_output = successive_outputs[-1]
+            new_states = successive_states[-1]
+            outputs = ivy.stack(successive_outputs)
+
+            if zero_output_for_mask:
+                last_output = ivy.where(
+                    _expand_mask(mask_list[-1], last_output),
+                    last_output,
+                    ivy.zeros_like(last_output),
+                )
+                outputs = ivy.where(
+                    _expand_mask(mask, outputs, fixed_dim=2),
+                    outputs,
+                    ivy.zeros_like(outputs),
+                )
+
+        else:
+            for i in range(time_steps):
+                input_t = processed_input[i]
+                output_t, states = step_function(
+                    input_t, tuple(states) + tuple(constants)
+                )
+                if return_all_outputs:
+                    successive_outputs.append(output_t)
+                    successive_states.append(states)
+                else:
+                    successive_outputs = [output_t]
+                    successive_states = [states]
+            last_output = successive_outputs[-1]
+            new_states = successive_states[-1]
+            outputs = ivy.stack(successive_outputs)
+
+    else:
+        states = tuple(initial_states)
+        input_time_zero = inputs[0]
+        output_time_zero, _ = step_function(
+            input_time_zero, tuple(initial_states) + tuple(constants)
+        )
+
+        output_size = int(time_steps_t) if return_all_outputs else 1
+        output_loop = ivy.empty(
+            (output_size, *output_time_zero.shape), dtype=output_time_zero.dtype
+        )
+
+        if go_backwards:
+            inputs = ivy.flip(inputs, axis=0)
+        time = 0
+
+        test_fn = lambda time, *_: time < time_steps_t
+        if mask is not None:
+            if go_backwards:
+                mask = ivy.flip(mask, axis=0)
+
+            mask_list = ivy.unstack(mask)
+
+            def masking_fn(time):
+                return mask_list[time]
+
+            def compute_masked_output(mask_t, output, mask):
+                tiled_mask_t = tuple(
+                    _expand_mask(mask_t, o, fixed_dim=len(mask_t.shape)) for o in output
+                )
+                return tuple(
+                    ivy.where(m, o, fm) for m, o, fm in zip(tiled_mask_t, output, mask)
+                )
+
+        elif ivy.is_ivy_array(input_length):
+            if go_backwards:
+                max_len = ivy.max(input_length)
+                rev_input_length = ivy.subtract(max_len - 1, input_length)
+
+                def masking_fn(time):
+                    return rev_input_length < time
+
+            else:
+
+                def masking_fn(time):
+                    return input_length > time
+
+            def compute_masked_output(mask_t, output, mask):
+                return ivy.where(mask_t, output, mask)
+
+        else:
+            masking_fn = None
+
+        if masking_fn is not None:
+            zero_output = ivy.zeros_like(output_time_zero)
+
+            def _step(time, output_t, prev_output, *states):
+                current_input = inputs[time]
+                mask_t = masking_fn(time)
+                output, new_states = step_function(
+                    current_input, tuple(states) + tuple(constants)
+                )
+                mask_output = zero_output if zero_output_for_mask else prev_output
+                new_output = compute_masked_output(mask_t, [output], [mask_output])[0]
+
+                for state, new_state in zip(states, new_states):
+                    if ivy.is_ivy_array(new_state):
+                        ivy.reshape(new_state, shape=state.shape, out=new_state)
+                final_states = compute_masked_output(mask_t, new_states, states)
+                new_states = final_states
+                output_t[time if return_all_outputs else 0] = new_output
+
+                return (time + 1, output_t, new_output) + tuple(new_states)
+
+            final_outputs = ivy.while_loop(
+                test_fn=test_fn,
+                body_fn=_step,
+                vars=(time, output_loop, zero_output) + states,
+            )
+            new_states = final_outputs[3:]
+        else:
+
+            def _step(time, output_t, *states):
+                current_input = inputs[time]
+                output, new_states = step_function(
+                    current_input, tuple(states) + tuple(constants)
+                )
+
+                for state, new_state in zip(states, new_states):
+                    if ivy.is_ivy_array(new_state):
+                        ivy.reshape(new_state, shape=state.shape, out=new_state)
+
+                output_t[time if return_all_outputs else 0] = output
+                return (time + 1, output_t) + tuple(new_states)
+
+            final_outputs = ivy.while_loop(
+                test_fn=test_fn, body_fn=_step, vars=(time, output_loop) + states
+            )
+            new_states = final_outputs[2:]
+
+        outputs = final_outputs[1]
+        last_output = outputs[-1]
+
+    shape = list(outputs.shape)
+    if return_all_outputs:
+        shape[0] = time_steps
+    else:
+        shape[0] = 1
+    shape[1] = batch
+    outputs = ivy.reshape(outputs, shape)
+
+    if not time_major:
+        outputs = ivy.permute_dims(outputs, (1, 0, *range(2, len(outputs.shape))))
+
+    return last_output, outputs, new_states
+
+
+rnn.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
 }

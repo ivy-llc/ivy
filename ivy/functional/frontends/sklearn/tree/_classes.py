@@ -57,6 +57,7 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
         check_input=True,
         missing_values_in_feature_mask=None,
     ):
+        ivy.seed(seed_value=self.random_state)
         n_samples, self.n_features_in_ = X.shape
         y = ivy.atleast_1d(y)
         if y.ndim == 1:
@@ -135,9 +136,18 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
         if self.n_outputs_ == 1:
             self.n_classes_ = self.n_classes_[0]
             self.classes_ = self.classes_[0]
+        self._prune_tree()
         return self
 
+    def _prune_tree(self):
+        if self.ccp_alpha == 0.0:
+            return
+        n_classes = ivy.atleast_1d(self.n_classes_)
+        pruned_tree = Tree(self.n_features_in_, n_classes, self.n_outputs_)
+        self.tree_ = pruned_tree
+
     def predict(self, X, check_input=True):
+        ivy.seed(seed_value=self.random_state)
         proba = self.tree_.predict(X)
         n_samples = X.shape[0]
 

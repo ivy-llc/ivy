@@ -383,6 +383,7 @@ def node_split_best(
         f_i -= 1
         features[f_i], features[f_j] = features[f_j], features[f_i]
         has_missing = n_missing != 0
+        criterion.init_missing(n_missing)
         n_searches = 2 if has_missing else 1
         for i in range(n_searches):
             missing_go_to_left = i == 1
@@ -423,10 +424,10 @@ def node_split_best(
                         feature_values[p_prev] / 2.0 + feature_values[p] / 2.0
                     )
 
-                    if (
-                        current_split.threshold == feature_values[p]
-                        or current_split.threshold == ivy.inf
-                        or current_split.threshold == -ivy.inf
+                    if current_split.threshold in (
+                        feature_values[p],
+                        ivy.inf,
+                        -ivy.inf,
                     ):
                         current_split.threshold = feature_values[p_prev]
 

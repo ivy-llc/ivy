@@ -1545,7 +1545,7 @@ class _ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def _static_has_nans(
-        self: ivy.Container,
+        x: ivy.Container,
         /,
         *,
         include_infs: Union[bool, ivy.Container] = True,
@@ -1560,7 +1560,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
-        self
+        x
             The container to check for nans.
         include_infs
             Whether to include infs and -infs in the check. Default is True.
@@ -1593,7 +1593,7 @@ class _ContainerWithGeneral(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "has_nans",
-            self,
+            x,
             include_infs=include_infs,
             key_chains=key_chains,
             to_apply=to_apply,
