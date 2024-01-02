@@ -31,7 +31,7 @@ Containers
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L399
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`containers channel`: https://discord.com/channels/799879767196958751/982738042886422598
+.. _`containers thread`: https://discord.com/channels/799879767196958751/1189906066549506048
 
 
 The `ivy.Container`_ inherits from `dict`_, and is useful for storing nested data.
@@ -252,8 +252,8 @@ There may be some compositional functions which are not implicitly nestable for 
 One such example is the :func:`ivy.linear` function which is not implicitly nestable despite being compositional. This is because of the use of special functions like :func:`__len__` and :func:`__list__` which, among other functions, are not nestable and can't be made nestable.
 But we should try to avoid this, in order to make the flow of computation as intuitive to the user as possible.
 
-When compiling the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
-The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be compiled in any case.
+When tracing the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
+The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be traced in any case.
 The distinction is only really relevant when stepping through and debugging with eager mode execution, and for the reasons outlined above, the preference is to keep compositional functions implicitly nestable where possible.
 
 **Shared Nested Structure**
@@ -334,7 +334,7 @@ This is for three reasons, (a) the key chain :code:`g` is not shared by any cont
 
 This should have hopefully given you a good feel for containers, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `containers channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `containers thread`_!
 
 
 **Video**

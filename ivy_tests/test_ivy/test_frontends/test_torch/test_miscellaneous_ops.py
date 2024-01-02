@@ -326,7 +326,7 @@ def test_torch_atleast_2d(
     input_dtype, arrays = dtype_and_x
     arys = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
-        arys["arrs{}".format(i)] = array
+        arys[f"arrs{i}"] = array
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -360,7 +360,7 @@ def test_torch_atleast_3d(
     input_dtype, arrays = dtype_and_x
     arys = {}
     for i, array in enumerate(arrays):
-        arys["arrs{}".format(i)] = array
+        arys[f"arrs{i}"] = array
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -510,12 +510,57 @@ def test_torch_cartesian_prod(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.cdist",
+    dtypes_and_x=helpers.dtype_and_values(
+        shape=st.shared(helpers.get_shape(min_num_dims=3, max_num_dims=3), key="shape"),
+        shared_dtype=True,
+        num_arrays=2,
+        allow_inf=False,
+        available_dtypes=["float32", "float64"],
+    ),
+    p=st.integers(min_value=0, max_value=1000000),
+    compute_mode=st.sampled_from(
+        [
+            "use_mm_for_euclid_dist_if_necessary",
+            "use_mm_for_euclid_dist",
+            "donot_use_mm_for_euclid_dist",
+        ]
+    ),
+)
+def test_torch_cdist(
+    *,
+    dtypes_and_x,
+    p,
+    compute_mode,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=xs[0],
+        x2=xs[1],
+        p=p,
+        compute_mode=compute_mode,
+    )
+
+
 # clone
 @handle_frontend_test(
     fn_tree="torch.clone",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_clone(
     *,
@@ -944,12 +989,10 @@ def test_torch_diff(
 @handle_frontend_test(
     fn_tree="torch.einsum",
     eq_n_op_n_shp=helpers.einsum_helper(),
-    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_einsum(
     *,
     eq_n_op_n_shp,
-    dtype,
     on_device,
     fn_tree,
     frontend,
@@ -959,8 +1002,8 @@ def test_torch_einsum(
     eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
     for i, x_ in enumerate(operands):
-        dtype = dtypes[i][0]
-        kw["x{}".format(i)] = np.array(x_).astype(dtype)
+        dtype = dtypes[i]
+        kw[f"x{i}"] = np.array(x_).astype(dtype)
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -1024,6 +1067,7 @@ def test_torch_flatten(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         force_tuple=True,
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_flip(
     *,
@@ -1055,6 +1099,7 @@ def test_torch_flip(
         available_dtypes=helpers.get_dtypes("float"),
         shape=helpers.get_shape(min_num_dims=2),
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_fliplr(
     *,
@@ -1084,6 +1129,7 @@ def test_torch_fliplr(
         available_dtypes=helpers.get_dtypes("float"),
         shape=helpers.get_shape(min_num_dims=1),
     ),
+    test_with_copy=st.just(True),
 )
 def test_torch_flipud(
     *,
@@ -1814,10 +1860,12 @@ def test_torch_view_as_real(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

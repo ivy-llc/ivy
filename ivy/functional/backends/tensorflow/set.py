@@ -6,7 +6,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def unique_all(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -59,7 +59,7 @@ def unique_all(
         values_ = tf.experimental.numpy.moveaxis(values, axis, 0)
         values_ = tf.reshape(values_, (values_.shape[0], -1))
         sort_idx = tf.stack(
-            [i[0] for i in sorted(list(enumerate(values_)), key=lambda x: tuple(x[1]))]
+            [i[0] for i in sorted(enumerate(values_), key=lambda x: tuple(x[1]))]
         )
         sort_idx = tf.cast(sort_idx, tf.int32)
         values = tf.gather(values, sort_idx, axis=axis)
@@ -78,7 +78,7 @@ def unique_all(
     )
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def unique_counts(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -90,12 +90,18 @@ def unique_counts(
     return Results(v, c)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def unique_inverse(
     x: Union[tf.Tensor, tf.Variable],
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     Results = namedtuple("Results", ["values", "inverse_indices"])
+    if axis is None:
+        x = tf.reshape(x, shape=(-1,))
+        axis = 0
+
     flat_tensor = tf.reshape(x, -1)
     values = tf.unique(tf.sort(flat_tensor))[0]
     values = tf.cast(values, dtype=x.dtype)
@@ -107,7 +113,7 @@ def unique_inverse(
     return Results(values, inverse_indices)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def unique_values(
     x: Union[tf.Tensor, tf.Variable],
     /,

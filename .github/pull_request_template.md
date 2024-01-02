@@ -16,7 +16,7 @@ Please use this format to link other issues with their numbers: Close #123
 https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword
 -->
 
-Close #
+Closes #
 
 ## Checklist
 
@@ -37,7 +37,7 @@ https://unify.ai/docs/ivy/overview/deep_dive/formatting.html#pre-commit
 
 -->
 
-### Socials:
+### Socials
 
 <!--
 If you have Twitter, please provide it here otherwise just ignore this.
