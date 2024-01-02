@@ -1757,7 +1757,7 @@ def test_torch_unflatten(
     shape,
     get_axis,
 ):
-    axes = get_axis
+    axis = get_axis
     dtype, x = dtype_and_values
 
     def factorization(n):
@@ -1789,8 +1789,8 @@ def test_torch_unflatten(
         return factors
 
     shape = (
-        tuple(factorization(shape[axes[0]]))
-        if tuple(factorization(shape[axes[0]]))
+        tuple(factorization(shape[axis]))
+        if tuple(factorization(shape[axis]))
         else shape
     )
     helpers.test_frontend_function(
@@ -1802,7 +1802,7 @@ def test_torch_unflatten(
         on_device=on_device,
         test_values=False,
         input=x[0],
-        dim=axes,
+        dim=axis,
         sizes=shape,
     )
 
