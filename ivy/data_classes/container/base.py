@@ -1155,7 +1155,7 @@ class ContainerBase(dict, abc.ABC):
             ),
         )
         container_dict = {}
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
             h5_obj = h5_obj_or_filepath
@@ -1238,14 +1238,14 @@ class ContainerBase(dict, abc.ABC):
                 "the size of hdf5 files."
             ),
         )
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
             h5_obj = h5_obj_or_filepath
 
         size = 0
         batch_size = 0
-        for key, value in h5_obj.items():
+        for value in h5_obj.values():
             if isinstance(value, h5py.Group):
                 size_to_add, batch_size = ivy.Container.h5_file_size(value)
                 size += size_to_add
@@ -1280,12 +1280,12 @@ class ContainerBase(dict, abc.ABC):
         )
         if seed_value is None:
             seed_value = random.randint(0, 1000)
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "a")
         else:
             h5_obj = h5_obj_or_filepath
 
-        for key, value in h5_obj.items():
+        for value in h5_obj.values():
             if isinstance(value, h5py.Group):
                 ivy.Container.shuffle_h5_file(value, seed_value)
             elif isinstance(value, h5py.Dataset):
@@ -1997,7 +1997,7 @@ class ContainerBase(dict, abc.ABC):
                 "containers to disk as hdf5 files."
             ),
         )
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, mode)
         else:
             h5_obj = h5_obj_or_filepath
@@ -2160,7 +2160,7 @@ class ContainerBase(dict, abc.ABC):
             Iterator for the container values.
 
         """
-        for key, value in self.items():
+        for value in self.values():
             if isinstance(value, ivy.Container) and (not include_empty or value):
                 # noinspection PyCompatibility
                 yield from value.cont_to_iterator_values(include_empty)
