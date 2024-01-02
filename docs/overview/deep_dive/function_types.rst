@@ -33,7 +33,7 @@ Function Types
 .. _`handle`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/func_wrapper.py#L1027-L1030
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`function types channel`: https://discord.com/channels/799879767196958751/982737839861145630
+.. _`function types thread`: https://discord.com/channels/799879767196958751/1189905318650576896
 
 Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
 These four function categorizations are all **mutually exclusive**, and combined they constitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
@@ -103,7 +103,7 @@ For example, the implementation of :func:`ivy.cross_entropy` in :mod:`ivy/functi
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
@@ -249,7 +249,7 @@ Feel free to have a look through all of the `submodules`_, you should be able to
 
 This should have hopefully given you a good feel for the different function types.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `function types channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `function types thread`_!
 
 **Video**
 

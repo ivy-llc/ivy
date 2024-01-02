@@ -200,7 +200,9 @@ def var(x, /, *, axis=None, ddof=0.0, keepdims=False, out=None, dtype=None, wher
     dtype = (
         dtype
         if dtype is not None
-        else ivy.float64 if ivy.is_int_dtype(x.dtype) else x.dtype
+        else ivy.float64
+        if ivy.is_int_dtype(x.dtype)
+        else x.dtype
     )
     ret = ivy.var(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     ret = (

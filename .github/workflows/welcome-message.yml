@@ -45,10 +45,10 @@ jobs:
             Congrats on making your first Pull Request and thanks for supporting Ivy! 🎉
             Join the conversation in our [Discord](https://discord.com/invite/sXyFF8tDtm).
 
-            For every PR opened, we run unit tests and comment the results in the PR to ensure the functionality remains intact.  
+            For every PR opened, we run unit tests and comment the results in the PR to ensure the functionality remains intact.
             Please make sure they are passing. 💪
 
-            If you want to check them from the action runners, you can open the `display_test_results` job. 👀 
+            If you want to check them from the action runners, you can open the `display_test_results` job. 👀
             It contains the following two sections:
               - **Combined Test Results:** This shows the results of all the ivy tests that ran on the PR. ✔️
               - **New Failures Introduced:** This lists the tests that fail on this PR.

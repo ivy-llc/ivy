@@ -1112,7 +1112,8 @@ def test_container_from_queues(on_device):
                     "a": [
                         ivy.to_native(ivy.array([1.0, 2.0, 3.0], device=on_device))
                         * worker_id
-                    ] * load_size
+                    ]
+                    * load_size
                 }
             )
 

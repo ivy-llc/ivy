@@ -18,10 +18,10 @@ class _ContainerWithUtilityExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.optional_get_element. This method
-        simply wraps the function, and so the docstring for ivy.optional_get_element
-        also applies to this method with minimal changes.
+        """ivy.Container static method variant of ivy.optional_get_element.
+        This method simply wraps the function, and so the docstring for
+        ivy.optional_get_element also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -62,10 +62,10 @@ class _ContainerWithUtilityExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.optional_get_element. This method
-        simply wraps the function, and so the docstring for ivy.optional_get_element
-        also applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.optional_get_element.
+        This method simply wraps the function, and so the docstring for
+        ivy.optional_get_element also applies to this method with minimal
+        changes.
 
         Parameters
         ----------

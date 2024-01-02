@@ -9,8 +9,8 @@ Please, follow the next process when you work on your subtask:
 1. **Choosing a Task:**
 
    - Choose a task to work on which:
-     - is not marked as completed with a tick
-     - does not have an issue created
+     - is not marked as completed with a tick.
+     - does not have an issue created.
      - is not mentioned in the comments.
 
    Currently, there are three open tasks:
@@ -39,7 +39,7 @@ Please, follow the next process when you work on your subtask:
 
 ### Important Notes
 
-- if your PR is not created within 7 days of creating the issue, then a warning message will appear on the issue, we do this in order to keep our ToDo lists moving quickly,
+- If your PR is not created within 7 days of creating the issue, then a warning message will appear on the issue, we do this in order to keep our ToDo lists moving quickly,
 - Please don't take it personally if your issue or PR gets closed because of this 7-day inactivity time limit.
 
 - Finally, we limit the maximum number of open and incomplete sub-task issues to three per person.
@@ -48,4 +48,4 @@ Please, follow the next process when you work on your subtask:
 
 [![Video](https://img.youtube.com/vi/wBKTOGmwfbo/0.jpg)](https://www.youtube.com/embed/wBKTOGmwfbo)
 
-For questions, please reach out on [discord](https://discord.gg/sd2yYCha) in the [todo list issues channel](https://discord.com/channels/799879767196958751/982728618469912627)!
+For questions, please reach out on [discord](https://discord.gg/MDK979Ga) in the [todo list issues thread](https://discord.com/channels/799879767196958751/1189903501011202128)!
