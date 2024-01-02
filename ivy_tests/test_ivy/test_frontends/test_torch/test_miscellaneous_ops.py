@@ -1759,7 +1759,10 @@ def test_torch_unflatten(
     shape,
     get_axis,
 ):
-    axis = get_axis if type(get_axis) is not tuple else get_axis[0]
+    if type(get_axis) is not tuple:
+        axis = get_axis
+    else:
+        axis = get_axis[0]
     dtype, x = dtype_and_values
 
     def factorization(n):
@@ -1804,7 +1807,7 @@ def test_torch_unflatten(
         on_device=on_device,
         test_values=False,
         input=x[0],
-        dim=axis - 1,
+        dim=axis,
         sizes=shape_,
     )
 
