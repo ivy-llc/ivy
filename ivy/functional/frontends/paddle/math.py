@@ -417,6 +417,29 @@ def logit(x, eps=None, name=None):
     return ivy.logit(x, eps=eps)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def logsumexp(x, axis=None, y=None):
+    x = ivy.asarray(x)
+    if y is not None:
+        y = ivy.asarray(y)
+        x = ivy.where(y != 0, x, -ivy.inf)
+    if axis is None:
+        amax = ivy.max(x)
+        expsub = ivy.exp(x - amax)
+        sumexp = ivy.sum(expsub)
+        out = ivy.log(sumexp) + amax
+    else:
+        amax = ivy.max(x, axis=axis, keepdims=True)
+        expsub = ivy.exp(x - amax)
+        sumexp = ivy.sum(expsub, axis=axis, keepdims=True)
+        out = ivy.log(sumexp) + amax
+    if y is not None:
+        sign = ivy.stop_gradient(ivy.sign(sumexp))
+        out = ivy.where(sign < 0, ivy.nan, out)
+    return out
+
+
 @with_supported_dtypes(
     {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
