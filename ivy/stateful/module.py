@@ -349,6 +349,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             self._buffers.update({name: value})
         else:
             super().__setattr__(name, value)
+
     def register_parameter(self, name, value):
         """Register a parameter.
 

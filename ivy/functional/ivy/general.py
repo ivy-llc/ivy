@@ -2901,10 +2901,10 @@ set_item.mixed_backend_wrappers = {
 
 def _parse_query(query, x_shape):
     query = query if isinstance(query, tuple) else (query,)
-    query_ = tuple(q.to_numpy() if ivy.is_array(q) else q for q in query)
+    tuple(q.to_numpy() if ivy.is_array(q) else q for q in query)
 
     # array containing all of x's flat indices
-    x_ = ivy.arange(0, _numel(x_shape)).reshape(x_shape)
+    ivy.arange(0, _numel(x_shape)).reshape(x_shape)
 
     # fill in missing queries
     if len(query) < len(x_shape):

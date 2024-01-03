@@ -89,11 +89,11 @@ class ModuleHelpers:
         return vs
 
     def _find_buffers(self):
-        if hasattr(self, '_module_dict'):
+        if hasattr(self, "_module_dict"):
             for key, sub_module in self._module_dict.items():
                 if len(sub_module._buffers) > 0:
                     self._buffers[key] = sub_module._buffers
-                
+
     def _build_and_return_v(self, *args, **kwargs):
         self.build(*args, **kwargs)
         return self.v
