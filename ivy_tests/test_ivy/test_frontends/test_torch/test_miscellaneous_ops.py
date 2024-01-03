@@ -1773,7 +1773,7 @@ def test_torch_unflatten(
             x_fixed = 2
             cycle_size = 2
             x = 2
-            factor = 1
+            factor = 1 if n % 2 else 2
 
             while factor == 1:
                 for count in range(cycle_size):
