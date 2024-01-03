@@ -85,7 +85,7 @@ def flip(
             new_axis = list(range(num_dims))
         else:
             new_axis = axis
-        if type(new_axis) is int:
+        if isinstance(new_axis, int):
             new_axis = [new_axis]
         else:
             new_axis = new_axis

@@ -3,9 +3,9 @@ The Basics
 
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`todo list issues channel`: https://discord.com/channels/799879767196958751/982728618469912627
+.. _`todo list issues thread`: https://discord.com/channels/799879767196958751/1189903501011202128
 .. _`Atlassian tutorial`: https://www.atlassian.com/git/tutorials/saving-changes/git-stash
-.. _`fork management channel`: https://discord.com/channels/799879767196958751/982728689408167956
+.. _`fork management thread`: https://discord.com/channels/799879767196958751/1189903708465672272
 .. _`pull requests channel`: https://discord.com/channels/799879767196958751/982728733859414056
 .. _`PyCharm blog`: https://www.jetbrains.com/help/pycharm/finding-and-replacing-text-in-file.html
 .. _`Debugging`: https://www.jetbrains.com/help/pycharm/debugging-code.html
@@ -112,7 +112,7 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 
 |
 
-For questions, please reach out on `discord`_ in the `todo list issues channel`_!
+For questions, please reach out on `discord`_ in the `todo list issues thread`_!
 
 Managing Your Fork
 ------------------
@@ -153,7 +153,7 @@ For a comprehensive explanation of git stashing, check out this `Atlassian tutor
 
 |
 
-For questions, please reach out on `discord`_ in the `fork management channel`_!
+For questions, please reach out on `discord`_ in the `fork management thread`_!
 
 Who To Ask
 ----------
@@ -248,7 +248,7 @@ The code review process is explained in more detail in the following video.
 
 |
 
-For questions, please reach out on `discord`_ in the `pull requests channel`_!
+For questions, please reach out on `discord`_ in the `pull requests thread`_!
 
 Small Commits Often
 -------------------
@@ -294,7 +294,7 @@ As a final note, a beautiful commit history is not something we particularly car
 We're much more concerned that the code itself is good, that things are updated as quickly as possible, and that all developers are able to work efficiently.
 If a mistake is committed into the history, it's generally not too difficult to simply undo this in future commits, so don't stress about this too much 🙂
 
-For questions, please reach out on the on `discord`_ in the `commit frequency channel`_!
+For questions, please reach out on the on `discord`_ in the `commit frequency thread`_!
 
 Interactive Ivy Docker Container
 --------------------------------
@@ -598,4 +598,4 @@ with PyCharm
 
 This should have hopefully given you a good understanding of the basics for contributing.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `todo list issues channel`_, `fork management channel`_, `pull requests channel`_, depending on the question!
+If you have any questions, please feel free to reach out on `discord`_ in the `todo list issues thread`_, `fork management thread`_, `pull requests thread`_, depending on the question!

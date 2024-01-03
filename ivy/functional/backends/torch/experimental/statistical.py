@@ -3,7 +3,7 @@ from typing import Optional, Union, Tuple, Sequence
 import torch
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 import ivy
 from ..statistical import _infer_dtype
@@ -170,6 +170,7 @@ def median(
 median.support_native_out = False
 
 
+@with_supported_dtypes({"2.1.2 and below": ("float",)}, backend_version)
 def nanmean(
     a: torch.Tensor,
     /,

@@ -72,6 +72,7 @@ class Finfo:
 # -------------------#
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def astype(
     x: torch.Tensor,
     dtype: torch.dtype,

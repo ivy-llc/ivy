@@ -3,7 +3,7 @@ Open Tasks
 
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`open tasks channel`: https://discord.com/channels/799879767196958751/982728618469912627
+.. _`open tasks thread`: https://discord.com/channels/799879767196958751/1189903501011202128
 .. _`issue description`: https://github.com/unifyai/ivy/issues/1526
 .. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
 .. _`imports`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
@@ -25,7 +25,7 @@ The tasks currently open are:
 #. Frontend APIs
 #. Ivy Experimental API
 
-We try to explain these tasks as clearly as possible, but in cases where things are not clear, then please feel free to reach out on `discord`_ in the `open tasks channel`_!
+We try to explain these tasks as clearly as possible, but in cases where things are not clear, then please feel free to reach out on `discord`_ in the `open tasks thread`_!
 
 Please always use the latest commit on GitHub when working on any of these tasks, **DO NOT** develop your code using the latest PyPI release of :code:`ivy`.
 
@@ -338,4 +338,4 @@ Creating an Issue on Ivy's GitHub using a Template
 
 This should have hopefully given you a good understanding of the basics for contributing.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `open tasks channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `open tasks thread`_!

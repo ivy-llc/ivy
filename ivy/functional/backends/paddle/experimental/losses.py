@@ -66,7 +66,7 @@ def smooth_l1_loss(
     reduction: Optional[str] = "mean",
 ) -> paddle.Tensor:
     return paddle.nn.functional.smooth_l1_loss(
-        input, target, reduction=reduction, beta=beta
+        input, target, reduction=reduction, delta=beta
     )
 
 
@@ -239,3 +239,27 @@ def poisson_nll_loss(
         cond = paddle.logical_and(target_arr >= zeroes, target_arr <= ones)
         loss = loss + paddle.where(cond, zeroes, striling_approx_term)
     return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def hinge_embedding_loss(
+    input: paddle.Tensor,
+    target: paddle.Tensor,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+) -> paddle.Tensor:
+    return paddle.nn.functional.hinge_embedding_loss(
+        input,
+        target,
+        margin=margin,
+        reduction=reduction,
+    )

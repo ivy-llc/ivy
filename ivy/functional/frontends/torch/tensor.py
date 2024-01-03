@@ -1237,7 +1237,18 @@ class Tensor:
     def __matmul__(self, other):
         return torch_frontend.matmul(self, other)
 
-    @with_unsupported_dtypes({"2.1.2 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes(
+        {
+            "2.1.2 and below": (
+                "float16",
+                "int8",
+                "int16",
+                "bool",
+                "uint8",
+            )
+        },
+        "torch",
+    )
     def __rmul__(self, other):
         return torch_frontend.mul(other, self)
 
@@ -1386,8 +1397,8 @@ class Tensor:
     def exp(self):
         return torch_frontend.exp(self)
 
-    @with_unsupported_dtypes(
-        {"2.1.2 and below": ("bfloat16", "float16", "complex")}, "torch"
+    @with_supported_dtypes(
+        {"2.1.2 and below": ("bfloat16", "float32", "float64")}, "torch"
     )
     def expm1(self):
         return torch_frontend.expm1(self)
@@ -1854,6 +1865,11 @@ class Tensor:
     @with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, "torch")
     def logaddexp(self, other):
         return torch_frontend.logaddexp(self, other)
+
+    @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
+    def logaddexp2(self, other):
+        self.ivy_array = torch_frontend.logaddexp2(self, other).ivy_array
+        return self
 
     def angle(self):
         return torch_frontend.angle(self)
