@@ -2901,184 +2901,25 @@ set_item.mixed_backend_wrappers = {
 
 def _parse_query(query, x_shape):
     query = query if isinstance(query, tuple) else (query,)
-    tuple(q.to_numpy() if ivy.is_array(q) else q for q in query)
+    query_ = tuple(q.to_numpy() if ivy.is_array(q) else q for q in query)
 
     # array containing all of x's flat indices
-    ivy.arange(0, _numel(x_shape)).reshape(x_shape)
+    x_ = ivy.arange(0, _numel(x_shape)).reshape(x_shape)
 
-    # fill in missing queries
-    if len(query) < len(x_shape):
-        query += [ivy.arange(0, s, 1).astype(ivy.int64) for s in x_shape[len(query) :]]
+    # use numpy's __getitem__ to get the queried indices
+    x_idxs = ivy.array(x_.to_numpy()[query_])
+    target_shape = x_idxs.shape
 
-    # calculate target_shape, i.e. the shape the gathered values should be in
-    if len(array_inds) and to_front:
-        target_shape = (
-            [list(new_arrays[0].shape)]
-            + [list(query[i].shape) for i in range(len(query)) if i not in array_inds]
-            + [[] for _ in range(len(array_inds) - 1)]
-        )
-    elif len(array_inds):
-        target_shape = (
-            [list(query[i].shape) for i in range(0, array_inds[0])]
-            + [list(new_arrays[0].shape)]
-            + [[] for _ in range(len(array_inds) - 1)]
-            + [list(query[i].shape) for i in range(array_inds[-1] + 1, len(query))]
-        )
-    else:
-        target_shape = [list(q.shape) for q in query]
-    if ellipsis_inds is not None:
-        target_shape = (
-            target_shape[: ellipsis_inds[0]]
-            + [target_shape[ellipsis_inds[0] : ellipsis_inds[1]]]
-            + target_shape[ellipsis_inds[1] :]
-        )
-    if not scatter:
-        for ax in new_axes:
-            if len(array_inds) and to_front and ax <= array_inds[-1]:
-                ax = array_inds[0] + 1
-            target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
-    target_shape = _deep_flatten(target_shape)
+    if 0 in x_idxs.shape or 0 in x_shape:
+        return None, target_shape
 
-    # calculate the indices mesh (indices in gather_nd/scatter_nd format)
-    query = [ivy.expand_dims(q) if not len(q.shape) else q for q in query]
-    if len(array_inds):
-        new_arrays = [
-            (
-                arr.reshape((-1,))
-                if len(arr.shape) > 1
-                else ivy.expand_dims(arr) if not len(arr.shape) else arr
-            )
-            for arr in new_arrays
-        ]
-    if len(array_inds) and to_front:
-        i = (
-            ivy.stack(
-                ivy.meshgrid(
-                    *[v for i, v in enumerate(query) if i not in array_inds],
-                    indexing="ij",
-                ),
-                axis=-1,
-            )
-            if len(array_inds) < len(query)
-            else []
-        )
-        k = [k for k in zip(*new_arrays)]
-        indices = ivy.array([(*k, *i)]).reshape((*target_shape, len(x_shape)))
-    elif len(array_inds):
-        i = (
-            ivy.stack(
-                ivy.meshgrid(
-                    *[v for i, v in enumerate(query) if i < array_inds[0]],
-                    indexing="ij",
-                ),
-                axis=-1,
-            )
-            if array_inds[0] > 0
-            else []
-        )
-        j = (
-            ivy.stack(
-                ivy.meshgrid(
-                    *[v for i, v in enumerate(query) if i > array_inds[-1]],
-                    indexing="ij",
-                ),
-                axis=-1,
-            )
-            if array_inds[-1] < len(query) - 1
-            else []
-        )
-        k = [k for k in zip(*new_arrays)]
-        indices = ivy.array([(*i, *k, *j)]).reshape((*target_shape, len(x_shape)))
-    else:
-        grid = ivy.meshgrid(*query, indexing="ij")
-        indices = ivy.stack(grid, axis=-1)
-    if scatter:
-        return indices.astype(ivy.int64), target_shape
-    else:
-        return (
-            indices.astype(ivy.int64),
-            target_shape,
-            array_inds if len(array_inds) and to_front else None,
-        )
+    # convert the flat indices to multi-D indices
+    x_idxs = ivy.unravel_index(x_idxs, x_shape)
 
+    # stack the multi-D indices to bring them to gather_nd/scatter_nd format
+    x_idxs = ivy.stack(x_idxs, axis=-1).astype(ivy.int64)
 
-def _parse_ellipsis(so, ndims):
-    pre = list()
-    for s in so:
-        if s is Ellipsis:
-            break
-        pre.append(s)
-    post = list()
-    for s in reversed(so):
-        if s is Ellipsis:
-            break
-        post.append(s)
-    ret = list(
-        pre
-        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
-        + list(reversed(post))
-    )
-    return ret, (len(pre), ndims - len(post))
-
-
-def _parse_slice(idx, s):
-    step = 1 if idx.step is None else idx.step
-    if step > 0:
-        start = 0 if idx.start is None else idx.start
-        if start >= s:
-            stop = start
-        else:
-            if start <= -s:
-                start = 0
-            elif start < 0:
-                start = start + s
-            stop = s if idx.stop is None else idx.stop
-            if stop > s:
-                stop = s
-            elif start <= -s:
-                stop = 0
-            elif stop < 0:
-                stop = stop + s
-    else:
-        start = s - 1 if idx.start is None else idx.start
-        if start <= -s:
-            stop = start
-        else:
-            if start >= s:
-                start = s - 1
-            elif start < 0:
-                start = start + s
-            if idx.stop is None:
-                stop = -1
-            else:
-                stop = idx.stop
-                if stop > s:
-                    stop = s
-                elif stop <= -s:
-                    stop = 0
-                    if start == 0:
-                        stop = -1
-                elif stop < 0:
-                    stop = stop + s
-    q_i = ivy.arange(start, stop, step).to_list()
-    q_i = [q for q in q_i if 0 <= q < s]
-    q_i = (
-        ivy.array(q_i)
-        if len(q_i) or start == stop or idx.stop is not None
-        else ivy.arange(0, s, 1)
-    )
-    return q_i
-
-
-def _deep_flatten(iterable):
-    def _flatten_gen(iterable):
-        for item in iterable:
-            if isinstance(item, list):
-                yield from _flatten_gen(item)
-            else:
-                yield item
-
-    return list(_flatten_gen(iterable))
+    return x_idxs, target_shape
 
 
 def _numel(shape):
