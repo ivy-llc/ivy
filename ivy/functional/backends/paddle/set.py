@@ -135,7 +135,7 @@ def unique_inverse(
             x.dtype
         )
         unique = paddle.concat(
-            input=[unique.astype(x.dtype), paddle.reshape(unique_nan, [nan_count])],
+            [unique.astype(x.dtype), paddle.reshape(unique_nan, [nan_count])],
             axis=-1,
         )
     inverse_val = paddle.reshape(inverse_val, shape=x.shape)
