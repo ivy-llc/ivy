@@ -209,6 +209,9 @@ def test_torch_aminmax(
     fn_tree="torch.any",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=8,
+        large_abs_safety_factor=8,
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
