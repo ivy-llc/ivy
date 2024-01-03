@@ -10,6 +10,16 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 import ivy.functional.frontends.numpy as np_frontend
 
 
+@to_ivy_arrays_and_back
+def column_stack(tup):
+    out_dtype = ivy.dtype(tup[0])
+    for i in tup:
+        out_dtype = ivy.as_ivy_dtype(
+            np_frontend.promote_numpy_dtypes(i.dtype, out_dtype)
+        )
+    return ivy.column_stack(tup)
+
+
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -25,6 +35,16 @@ def concatenate(arrays, /, *, axis=0, out=None, dtype=None, casting="same_kind")
                 np_frontend.promote_numpy_dtypes(i.dtype, out_dtype)
             )
     return ivy.concat(arrays, axis=axis, out=out).astype(out_dtype, copy=False)
+
+
+@to_ivy_arrays_and_back
+def hstack(tup):
+    out_dtype = ivy.dtype(tup[0])
+    for i in tup:
+        out_dtype = ivy.as_ivy_dtype(
+            np_frontend.promote_numpy_dtypes(i.dtype, out_dtype)
+        )
+    return ivy.hstack(tup)
 
 
 @handle_numpy_out
@@ -49,13 +69,3 @@ def vstack(tup):
 
 
 row_stack = vstack
-
-
-@to_ivy_arrays_and_back
-def hstack(tup):
-    out_dtype = ivy.dtype(tup[0])
-    for i in tup:
-        out_dtype = ivy.as_ivy_dtype(
-            np_frontend.promote_numpy_dtypes(i.dtype, out_dtype)
-        )
-    return ivy.hstack(tup)

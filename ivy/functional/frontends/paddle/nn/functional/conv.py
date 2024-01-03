@@ -5,6 +5,10 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.torch.nn.functional import convolution_functions
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _channel_first_input(x, data_format):
     ndims = len(x.shape)
     dims = ndims - 2
@@ -32,7 +36,7 @@ def _conv(
 ):
     x = _channel_first_input(x, data_format)
 
-    if padding == 'same':
+    if padding == "same":
         dilation = 1
     return convolution_functions._conv(
         x,
@@ -57,7 +61,7 @@ def _conv_transpose(
     data_format="NLC",
 ):
     x = _channel_first_input(x, data_format)
-    if padding == 'same':
+    if padding == "same":
         dilation = 1
     return convolution_functions._conv_transpose(
         x,
@@ -71,7 +75,11 @@ def _conv_transpose(
     )
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+# --- Main --- #
+# ------------ #
+
+
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def conv1d(
     x,
@@ -87,39 +95,7 @@ def conv1d(
     return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def conv2d(
-    x,
-    weight,
-    bias=None,
-    stride=1,
-    padding=0,
-    dilation=1,
-    groups=1,
-    data_format="NCHW",
-    name=None,
-):
-    return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def conv3d(
-    x,
-    weight,
-    bias=None,
-    stride=1,
-    padding=0,
-    dilation=1,
-    groups=1,
-    data_format="NCDHW",
-    name=None,
-):
-    return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def conv1d_transpose(
     x,
@@ -139,7 +115,23 @@ def conv1d_transpose(
     )
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def conv2d(
+    x,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    dilation=1,
+    groups=1,
+    data_format="NCHW",
+    name=None,
+):
+    return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
+
+
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def conv2d_transpose(
     x,
@@ -159,7 +151,23 @@ def conv2d_transpose(
     )
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def conv3d(
+    x,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    dilation=1,
+    groups=1,
+    data_format="NCDHW",
+    name=None,
+):
+    return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
+
+
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
     x,

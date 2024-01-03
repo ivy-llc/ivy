@@ -15,7 +15,7 @@ def _is_optional(typ):
         ):
             return True
     except BaseException as error:
-        print("Exception occured: {}".format(error))
+        print(f"Exception occurred: {error}")
     return False
 
 
@@ -26,7 +26,7 @@ def _is_union(typ):
         if rep.startswith("Union"):
             return True
     except BaseException as error:
-        print("Exception occured: {}".format(error))
+        print(f"Exception occurred: {error}")
     return False
 
 
@@ -37,7 +37,7 @@ def _is_dict(typ):
         if rep.startswith("Dict"):
             return True
     except BaseException as error:
-        print("Exception occured: {}".format(error))
+        print(f"Exception occurred: {error}")
     return False
 
 
@@ -48,7 +48,7 @@ def _is_iterable(typ):
         if rep.startswith("List") or rep.startswith("Tuple"):
             return True
     except BaseException as error:
-        print("Exception occured: {}".format(error))
+        print(f"Exception occurred: {error}")
     return False
 
 
@@ -63,8 +63,8 @@ def _correct_index(is_opt, is_dict, is_iter):
 
 
 def _get_array_idxs(typ, idx_so_far=None):
-    idx_so_far = ivy.default(idx_so_far, list())
-    these_idxs = list()
+    idx_so_far = ivy.default(idx_so_far, [])
+    these_idxs = []
     if not hasattr(typ, "__args__"):
         return these_idxs
     is_opt = _is_optional(typ)
@@ -90,9 +90,8 @@ def _get_array_idxs(typ, idx_so_far=None):
 
 
 def fn_array_spec(fn):
-    """
-    Return a specification of the function, indicating all arguments which include
-    arrays, and the indexes of these.
+    """Return a specification of the function, indicating all arguments which
+    include arrays, and the indexes of these.
 
     Parameters
     ----------
@@ -107,8 +106,8 @@ def fn_array_spec(fn):
     try:  # this is because it raises error if python version 3.8.0, in certain cases
         type_hints = get_type_hints(fn)
     except Exception:
-        type_hints = dict()
-    array_idxs = list()
+        type_hints = {}
+    array_idxs = []
     for i, (k, v) in enumerate(type_hints.items()):
         a_idxs = _get_array_idxs(v)
         if not a_idxs:

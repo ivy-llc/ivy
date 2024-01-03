@@ -6,15 +6,14 @@ import numpy as np
 
 # local
 import ivy
-from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.ivy.creation import (
-    asarray_to_native_arrays_and_back,
-    asarray_infer_device,
-    asarray_infer_dtype,
-    asarray_handle_nestable,
+    _asarray_to_native_arrays_and_back,
+    _asarray_infer_device,
+    _asarray_infer_dtype,
+    _asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
-    asarray_inputs_to_native_shapes,
+    _asarray_inputs_to_native_shapes,
 )
 from .data_type import as_native_dtype
 
@@ -30,12 +29,12 @@ def arange(
     step: float = 1,
     *,
     dtype: Optional[np.dtype] = None,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype:
         dtype = as_native_dtype(dtype)
-    res = _to_device(np.arange(start, stop, step, dtype=dtype), device=device)
+    res = np.arange(start, stop, step, dtype=dtype)
     if not dtype:
         if res.dtype == np.float64:
             return res.astype(np.float32)
@@ -44,11 +43,11 @@ def arange(
     return res
 
 
-@asarray_to_native_arrays_and_back
-@asarray_infer_device
-@asarray_handle_nestable
-@asarray_inputs_to_native_shapes
-@asarray_infer_dtype
+@_asarray_to_native_arrays_and_back
+@_asarray_infer_device
+@_asarray_handle_nestable
+@_asarray_inputs_to_native_shapes
+@_asarray_infer_dtype
 def asarray(
     obj: Union[
         np.ndarray, bool, int, float, tuple, NestedSequence, SupportsBufferProtocol
@@ -57,10 +56,10 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[np.dtype] = None,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = _to_device(np.asarray(obj, dtype=dtype), device=device)
+    ret = np.asarray(obj, dtype=dtype)
     return np.copy(ret) if copy else ret
 
 
@@ -68,16 +67,21 @@ def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: np.dtype,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.empty(shape, dtype), device=device)
+    return np.empty(shape, dtype)
 
 
 def empty_like(
-    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    dtype: np.dtype,
+    device: Optional[str] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.empty_like(x, dtype=dtype), device=device)
+    return np.empty_like(x, dtype=dtype)
 
 
 def eye(
@@ -88,23 +92,39 @@ def eye(
     k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: np.dtype,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if n_cols is None:
         n_cols = n_rows
     i = np.eye(n_rows, n_cols, k, dtype)
     if batch_shape is None:
-        return _to_device(i, device=device)
+        return i
     else:
         reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
         tile_dims = list(batch_shape) + [1, 1]
         return_mat = np.tile(np.reshape(i, reshape_dims), tile_dims)
-        return _to_device(return_mat, device=device)
+        return return_mat
+
+
+def to_dlpack(x, /, *, out: Optional[np.ndarray] = None):
+    return x.__dlpack__()
+
+
+class _dlpack_wrapper:
+    def __init__(self, capsule) -> None:
+        self.capsule = capsule
+
+    def dlpack(self):
+        return self.capsule
 
 
 def from_dlpack(x, /, *, out: Optional[np.ndarray] = None):
-    return np.from_dlpack(x)
+    if not hasattr(x, "__dlpack__"):
+        capsule = _dlpack_wrapper(x)
+    else:
+        capsule = x
+    return np.from_dlpack(capsule)
 
 
 def full(
@@ -112,15 +132,11 @@ def full(
     fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
-    return _to_device(
-        np.full(shape, fill_value, dtype),
-        device=device,
-    )
+    return np.full(shape, fill_value, dtype)
 
 
 def full_like(
@@ -129,11 +145,10 @@ def full_like(
     fill_value: Number,
     *,
     dtype: np.dtype,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
-    return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
+    return np.full_like(x, fill_value, dtype=dtype)
 
 
 def linspace(
@@ -145,7 +160,7 @@ def linspace(
     axis: Optional[int] = None,
     endpoint: bool = True,
     dtype: np.dtype,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
@@ -158,7 +173,7 @@ def linspace(
         and (not isinstance(stop, np.ndarray))
     ):
         ans[0] = start
-    return _to_device(ans, device=device)
+    return ans
 
 
 def meshgrid(
@@ -174,16 +189,21 @@ def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: np.dtype,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.ones(shape, dtype), device=device)
+    return np.ones(shape, dtype)
 
 
 def ones_like(
-    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    dtype: np.dtype,
+    device: Optional[str] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.ones_like(x, dtype=dtype), device=device)
+    return np.ones_like(x, dtype=dtype)
 
 
 def tril(
@@ -202,16 +222,21 @@ def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: np.dtype,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.zeros(shape, dtype), device=device)
+    return np.zeros(shape, dtype)
 
 
 def zeros_like(
-    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    dtype: np.dtype,
+    device: Optional[str] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.zeros_like(x, dtype=dtype), device=device)
+    return np.zeros_like(x, dtype=dtype)
 
 
 # Extra #
@@ -241,7 +266,7 @@ def one_hot(
     off_value: Optional[Number] = None,
     axis: Optional[int] = None,
     dtype: Optional[np.dtype] = None,
-    device: str,
+    device: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     on_none = on_value is None
@@ -285,8 +310,6 @@ def triu_indices(
     k: int = 0,
     /,
     *,
-    device: str,
+    device: Optional[str] = None,
 ) -> Tuple[np.ndarray]:
-    return tuple(
-        _to_device(np.asarray(np.triu_indices(n=n_rows, k=k, m=n_cols)), device=device)
-    )
+    return tuple(np.asarray(np.triu_indices(n=n_rows, k=k, m=n_cols)))

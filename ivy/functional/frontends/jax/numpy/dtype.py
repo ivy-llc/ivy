@@ -37,7 +37,7 @@ def can_cast(from_, to, casting="safe"):
             "to must be one of dtype, or dtype specifier"
         )
 
-    if casting == "no" or casting == "equiv":
+    if casting in ["no", "equiv"]:
         return from_ == to
 
     if casting == "safe":
@@ -72,6 +72,24 @@ def can_cast(from_, to, casting="safe"):
     return False
 
 
+@with_supported_dtypes(
+    {"2.15.0 and below": ("float16", "float32", "float64")},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def finfo(dtype):
+    return ivy.finfo(dtype)
+
+
+@with_supported_dtypes(
+    {"2.15.0 and below": ("integer",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def iinfo(int_type):
+    return ivy.iinfo(int_type)
+
+
 def promote_types(type1, type2, /):
     if isinstance(type1, np_dtype):
         type1 = type1._ivy_dtype
@@ -83,21 +101,3 @@ def promote_types(type1, type2, /):
 @to_ivy_arrays_and_back
 def result_type(*args):
     return ivy.result_type(*args)
-
-
-@with_supported_dtypes(
-    {"2.13.0 and below": ("integer",)},
-    "jax",
-)
-@to_ivy_arrays_and_back
-def iinfo(int_type):
-    return ivy.iinfo(int_type)
-
-
-@with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64")},
-    "jax",
-)
-@to_ivy_arrays_and_back
-def finfo(dtype):
-    return ivy.finfo(dtype)

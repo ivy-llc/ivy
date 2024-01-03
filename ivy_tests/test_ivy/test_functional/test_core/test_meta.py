@@ -8,17 +8,10 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
-from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
+from ivy_tests.test_ivy.helpers.pipeline_helper import BackendHandler
 
 
-# ToDo: replace dict checks for verifying costs with analytic calculations
-
-
-# First Order #
-# ------------#
-
-
-# fomaml step unique vars
+# fomaml step overlapping vars
 @handle_test(
     fn_tree="functional.ivy.fomaml_step",
     inner_grad_steps=helpers.ints(min_value=1, max_value=3),
@@ -29,7 +22,7 @@ from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
     num_tasks=helpers.ints(min_value=1, max_value=2),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
-def test_fomaml_step_unique_vars(
+def test_fomaml_step_overlapping_vars(
     on_device,
     inner_grad_steps,
     with_outer_cost_fn,
@@ -40,12 +33,12 @@ def test_fomaml_step_unique_vars(
     return_inner_v,
     backend_fw,
 ):
-    # Numpy does not support gradients, and jax does not support gradients on
-    # custom nested classes
+    # Numpy does not support gradients, jax does not support gradients on custom
+    # nested classes
     if backend_fw == "numpy":
-        return
+        pytest.skip()
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -91,7 +84,7 @@ def test_fomaml_step_unique_vars(
                 batch_in.cont_unstack_conts(0, keepdims=True),
                 v.cont_unstack_conts(0, keepdims=True),
             ):
-                cost = cost - (sub_v["latent"] * sub_batch_in["x"] * sub_v["weight"])[0]
+                cost = cost - (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
             return cost / batch_size
 
         # outer cost function
@@ -102,16 +95,16 @@ def test_fomaml_step_unique_vars(
                 batch_in.cont_unstack_conts(0, keepdims=True),
                 v.cont_unstack_conts(0, keepdims=True),
             ):
-                cost = cost + (sub_v["latent"] * sub_batch_in["x"] * sub_v["weight"])[0]
+                cost = cost + (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
             return cost / batch_size
 
         # numpy
-        weight_np = ivy_backend.to_numpy(variables.weight[0:1])
         latent_np = ivy_backend.to_numpy(variables.latent[0:1])
+        weight_np = ivy_backend.to_numpy(variables.weight[0:1])
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
         # true gradient
-        all_outer_grads = list()
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -125,10 +118,15 @@ def test_fomaml_step_unique_vars(
             )
         if average_across_steps:
             true_weight_grad = (
-                sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+                sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
             )
         else:
-            true_weight_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
+            true_weight_grad = sum(og[-1] for og in all_outer_grads) / num_tasks
+
+        # true latent gradient
+        true_latent_grad = np.array(
+            [(-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)]
+        )
 
         # true cost
         true_cost_dict = {
@@ -160,7 +158,6 @@ def test_fomaml_step_unique_vars(
             average_across_steps=average_across_steps,
             batched=batched,
             inner_v="latent",
-            outer_v="weight",
             return_inner_v=return_inner_v,
             stop_gradients=stop_gradients,
         )
@@ -174,6 +171,9 @@ def test_fomaml_step_unique_vars(
         outer_grads = rets[1]
         assert np.allclose(
             ivy_backend.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad)
+        )
+        assert np.allclose(
+            ivy_backend.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad)
         )
         if return_inner_v:
             inner_v_rets = rets[2]
@@ -211,7 +211,7 @@ def test_fomaml_step_shared_vars(
     if backend_fw == "numpy":
         return
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -275,10 +275,10 @@ def test_fomaml_step_shared_vars(
             )
 
         # true gradient
-        true_outer_grads = list()
+        true_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            ws = list()
-            grads = list()
+            ws = []
+            grads = []
             ws.append(latent_np)
             for step in range(inner_grad_steps):
                 update_grad = loss_grad_fn(sub_batch, ws[-1])
@@ -368,7 +368,14 @@ def test_fomaml_step_shared_vars(
                 assert list(inner_v_rets.cont_shape) == [1, 1]
 
 
-# fomaml step overlapping vars
+# ToDo: replace dict checks for verifying costs with analytic calculations
+
+
+# First Order #
+# ------------#
+
+
+# fomaml step unique vars
 @handle_test(
     fn_tree="functional.ivy.fomaml_step",
     inner_grad_steps=helpers.ints(min_value=1, max_value=3),
@@ -379,7 +386,7 @@ def test_fomaml_step_shared_vars(
     num_tasks=helpers.ints(min_value=1, max_value=2),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
-def test_fomaml_step_overlapping_vars(
+def test_fomaml_step_unique_vars(
     on_device,
     inner_grad_steps,
     with_outer_cost_fn,
@@ -390,12 +397,12 @@ def test_fomaml_step_overlapping_vars(
     return_inner_v,
     backend_fw,
 ):
-    # Numpy does not support gradients, jax does not support gradients on custom
-    # nested classes
+    # Numpy does not support gradients, and jax does not support gradients on
+    # custom nested classes
     if backend_fw == "numpy":
-        pytest.skip()
+        return
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -441,7 +448,7 @@ def test_fomaml_step_overlapping_vars(
                 batch_in.cont_unstack_conts(0, keepdims=True),
                 v.cont_unstack_conts(0, keepdims=True),
             ):
-                cost = cost - (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
+                cost = cost - (sub_v["latent"] * sub_batch_in["x"] * sub_v["weight"])[0]
             return cost / batch_size
 
         # outer cost function
@@ -452,16 +459,16 @@ def test_fomaml_step_overlapping_vars(
                 batch_in.cont_unstack_conts(0, keepdims=True),
                 v.cont_unstack_conts(0, keepdims=True),
             ):
-                cost = cost + (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
+                cost = cost + (sub_v["latent"] * sub_batch_in["x"] * sub_v["weight"])[0]
             return cost / batch_size
 
         # numpy
-        latent_np = ivy_backend.to_numpy(variables.latent[0:1])
         weight_np = ivy_backend.to_numpy(variables.weight[0:1])
+        latent_np = ivy_backend.to_numpy(variables.latent[0:1])
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
         # true gradient
-        all_outer_grads = list()
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -475,15 +482,10 @@ def test_fomaml_step_overlapping_vars(
             )
         if average_across_steps:
             true_weight_grad = (
-                sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+                sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
             )
         else:
-            true_weight_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
-
-        # true latent gradient
-        true_latent_grad = np.array(
-            [(-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)]
-        )
+            true_weight_grad = sum(og[-1] for og in all_outer_grads) / num_tasks
 
         # true cost
         true_cost_dict = {
@@ -515,6 +517,7 @@ def test_fomaml_step_overlapping_vars(
             average_across_steps=average_across_steps,
             batched=batched,
             inner_v="latent",
+            outer_v="weight",
             return_inner_v=return_inner_v,
             stop_gradients=stop_gradients,
         )
@@ -529,9 +532,6 @@ def test_fomaml_step_overlapping_vars(
         assert np.allclose(
             ivy_backend.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad)
         )
-        assert np.allclose(
-            ivy_backend.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad)
-        )
         if return_inner_v:
             inner_v_rets = rets[2]
             assert isinstance(inner_v_rets, ivy_backend.Container)
@@ -541,137 +541,7 @@ def test_fomaml_step_overlapping_vars(
                 assert list(inner_v_rets.cont_shape) == [1, 1]
 
 
-# reptile step
-@pytest.mark.parametrize("inner_grad_steps", [1, 2, 3])
-@pytest.mark.parametrize("batched", [True, False])
-@pytest.mark.parametrize("stop_gradients", [True, False])
-@pytest.mark.parametrize("num_tasks", [1, 2])
-@pytest.mark.parametrize("return_inner_v", ["first", "all", False])
-def test_reptile_step(
-    on_device,
-    inner_grad_steps,
-    batched,
-    stop_gradients,
-    num_tasks,
-    return_inner_v,
-    backend_fw,
-):
-    if backend_fw == "numpy":
-        # Numpy does not support gradients, jax does not support gradients on custom
-        # nested classes,
-        pytest.skip()
-
-    with update_backend(backend_fw) as ivy_backend:
-        # config
-        inner_learning_rate = 1e-2
-        variable_fn = ivy_backend.functional.ivy._variable
-
-        # create variable
-        if batched:
-            variables = ivy_backend.Container(
-                {
-                    "latent": variable_fn(
-                        ivy_backend.repeat(
-                            ivy_backend.array([[1.0]], device=on_device),
-                            num_tasks,
-                            axis=0,
-                        )
-                    )
-                }
-            )
-        else:
-            variables = ivy_backend.Container(
-                {"latent": variable_fn(ivy_backend.array([1.0], device=on_device))}
-            )
-
-        # batch
-        batch = ivy_backend.Container(
-            {"x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")}
-        )
-
-        # inner cost function
-        def inner_cost_fn(batch_in, v):
-            cost = 0
-            batch_size = batch_in.cont_shape[0]
-            for sub_batch_in, sub_v in zip(
-                batch_in.cont_unstack_conts(0, keepdims=True),
-                v.cont_unstack_conts(0, keepdims=True),
-            ):
-                cost = cost - (sub_batch_in["x"] * sub_v["latent"] ** 2)[0]
-            return cost / batch_size
-
-        # numpy
-        latent_np = ivy_backend.to_numpy(variables.latent[0:1])
-        batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
-
-        # loss grad function
-        def loss_grad_fn(sub_batch_in, w_in):
-            return -2 * sub_batch_in["x"][0] * w_in
-
-        # true gradient
-        true_outer_grads = list()
-        for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            ws = list()
-            grads = list()
-            ws.append(latent_np)
-            for step in range(inner_grad_steps):
-                update_grad = loss_grad_fn(sub_batch, ws[-1])
-                w = ws[-1] - inner_learning_rate * update_grad
-                grads.append(update_grad)
-                ws.append(w)
-            grads.append(loss_grad_fn(sub_batch, ws[-1]))
-
-            # true outer grad
-            true_outer_grad = sum(grads) / len(grads)
-            true_outer_grads.append(true_outer_grad)
-        true_outer_grad = (
-            sum(true_outer_grads) / len(true_outer_grads)
-        ) / inner_learning_rate
-
-        # true cost
-        true_cost_dict = {
-            1: {1: -1.0202, 2: -1.5509},
-            2: {1: -1.0409441, 2: -1.6042916},
-            3: {1: -1.0622487, 2: -1.6603187},
-        }
-        true_cost = true_cost_dict[inner_grad_steps][num_tasks]
-
-        # meta update
-        rets = ivy_backend.reptile_step(
-            batch,
-            inner_cost_fn,
-            variables,
-            inner_grad_steps,
-            inner_learning_rate,
-            batched=batched,
-            return_inner_v=return_inner_v,
-            stop_gradients=stop_gradients,
-        )
-        calc_cost = rets[0]
-        if stop_gradients:
-            assert ivy_backend.equal(
-                ivy_backend.functional.ivy._is_variable(calc_cost, exclusive=True),
-                False,
-            )
-        assert np.allclose(ivy_backend.to_scalar(calc_cost), true_cost)
-        outer_grads = rets[1]
-        assert np.allclose(
-            ivy_backend.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad)
-        )
-        if return_inner_v:
-            inner_v_rets = rets[2]
-            assert isinstance(inner_v_rets, ivy_backend.Container)
-            if return_inner_v == "all":
-                assert list(inner_v_rets.cont_shape) == [num_tasks, 1]
-            elif return_inner_v == "first":
-                assert list(inner_v_rets.cont_shape) == [1, 1]
-
-
-# Second Order #
-# -------------#
-
-
-# maml step unique vars
+# maml step overlapping vars
 @pytest.mark.parametrize("inner_grad_steps", [1, 2, 3])
 @pytest.mark.parametrize("with_outer_cost_fn", [True, False])
 @pytest.mark.parametrize("average_across_steps", [True, False])
@@ -679,7 +549,7 @@ def test_reptile_step(
 @pytest.mark.parametrize("stop_gradients", [True, False])
 @pytest.mark.parametrize("num_tasks", [1, 2])
 @pytest.mark.parametrize("return_inner_v", ["first", "all", False])
-def test_maml_step_unique_vars(
+def test_maml_step_overlapping_vars(
     on_device,
     inner_grad_steps,
     with_outer_cost_fn,
@@ -696,7 +566,7 @@ def test_maml_step_unique_vars(
         # nested classes
         pytest.skip()
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -757,12 +627,12 @@ def test_maml_step_unique_vars(
             return cost / batch_size
 
         # numpy
-        weight_np = ivy_backend.to_numpy(variables.weight[0:1])
-        latent_np = ivy_backend.to_numpy(variables.latent[0:1])
+        latent_np = ivy_backend.to_numpy(variables.latent)
+        weight_np = ivy_backend.to_numpy(variables.weight)
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
-        # true gradient
-        all_outer_grads = list()
+        # true weight gradient
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -779,11 +649,16 @@ def test_maml_step_unique_vars(
                 ]
             )
         if average_across_steps:
-            true_outer_grad = (
-                sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+            true_weight_grad = (
+                sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
             )
         else:
-            true_outer_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
+            true_weight_grad = sum(og[-1] for og in all_outer_grads) / num_tasks
+
+        # true latent gradient
+        true_latent_grad = np.array(
+            [(-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)]
+        )
 
         # true cost
         true_cost_dict = {
@@ -815,7 +690,6 @@ def test_maml_step_unique_vars(
             average_across_steps=average_across_steps,
             batched=batched,
             inner_v="latent",
-            outer_v="weight",
             return_inner_v=return_inner_v,
             stop_gradients=stop_gradients,
         )
@@ -828,7 +702,10 @@ def test_maml_step_unique_vars(
         assert np.allclose(ivy_backend.to_scalar(calc_cost), true_cost)
         outer_grads = rets[1]
         assert np.allclose(
-            ivy_backend.to_numpy(outer_grads.weight), np.array(true_outer_grad)
+            ivy_backend.to_numpy(outer_grads.weight), np.array(true_weight_grad)
+        )
+        assert np.allclose(
+            ivy_backend.to_numpy(outer_grads.latent), np.array(true_latent_grad)
         )
         if return_inner_v:
             inner_v_rets = rets[2]
@@ -864,7 +741,7 @@ def test_maml_step_shared_vars(
         # nested classes
         pytest.skip()
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -939,30 +816,28 @@ def test_maml_step_shared_vars(
                 collection_of_terms.append([t for t in terms])
             if average:
                 return [
-                    sum(
-                        [
+                    (
+                        sum(
                             t * inner_learning_rate ** (num_steps - i)
                             for i, t in enumerate(tms)
-                        ]
+                        )
+                        * w_init.latent
                     )
-                    * w_init.latent
                     for tms in collection_of_terms
                 ]
             return (
                 sum(
-                    [
-                        t * inner_learning_rate ** (num_steps - i)
-                        for i, t in enumerate(terms)
-                    ]
+                    t * inner_learning_rate ** (num_steps - i)
+                    for i, t in enumerate(terms)
                 )
                 * w_init.latent
             )
 
         # true gradient
-        true_outer_grads = list()
+        true_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
-            ws = list()
-            grads = list()
+            ws = []
+            grads = []
             ws.append(variables_np)
             for step in range(inner_grad_steps):
                 update_grad = loss_grad_fn(sub_batch, ws[-1])
@@ -980,15 +855,16 @@ def test_maml_step_shared_vars(
             # true outer grad
             if average_across_steps:
                 true_outer_grad = sum(
-                    [
-                        ig.latent * ug
-                        for ig, ug in zip(
-                            grads,
-                            update_grad_fn(
-                                variables_np, sub_batch, inner_grad_steps, average=True
-                            ),
-                        )
-                    ]
+                    ig.latent * ug
+                    for ig, ug in zip(
+                        grads,
+                        update_grad_fn(
+                            variables_np,
+                            sub_batch,
+                            inner_grad_steps,
+                            average=True,
+                        ),
+                    )
                 ) / len(grads)
             else:
                 true_outer_grad = ivy_backend.multiply(
@@ -1068,7 +944,11 @@ def test_maml_step_shared_vars(
                 assert list(inner_v_rets.cont_shape) == [1, 1]
 
 
-# maml step overlapping vars
+# Second Order #
+# -------------#
+
+
+# maml step unique vars
 @pytest.mark.parametrize("inner_grad_steps", [1, 2, 3])
 @pytest.mark.parametrize("with_outer_cost_fn", [True, False])
 @pytest.mark.parametrize("average_across_steps", [True, False])
@@ -1076,7 +956,7 @@ def test_maml_step_shared_vars(
 @pytest.mark.parametrize("stop_gradients", [True, False])
 @pytest.mark.parametrize("num_tasks", [1, 2])
 @pytest.mark.parametrize("return_inner_v", ["first", "all", False])
-def test_maml_step_overlapping_vars(
+def test_maml_step_unique_vars(
     on_device,
     inner_grad_steps,
     with_outer_cost_fn,
@@ -1093,7 +973,7 @@ def test_maml_step_overlapping_vars(
         # nested classes
         pytest.skip()
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -1154,12 +1034,12 @@ def test_maml_step_overlapping_vars(
             return cost / batch_size
 
         # numpy
-        latent_np = ivy_backend.to_numpy(variables.latent)
-        weight_np = ivy_backend.to_numpy(variables.weight)
+        weight_np = ivy_backend.to_numpy(variables.weight[0:1])
+        latent_np = ivy_backend.to_numpy(variables.latent[0:1])
         batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
 
-        # true weight gradient
-        all_outer_grads = list()
+        # true gradient
+        all_outer_grads = []
         for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
             all_outer_grads.append(
                 [
@@ -1176,16 +1056,11 @@ def test_maml_step_overlapping_vars(
                 ]
             )
         if average_across_steps:
-            true_weight_grad = (
-                sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+            true_outer_grad = (
+                sum(sum(og) / len(og) for og in all_outer_grads) / num_tasks
             )
         else:
-            true_weight_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
-
-        # true latent gradient
-        true_latent_grad = np.array(
-            [(-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)]
-        )
+            true_outer_grad = sum(og[-1] for og in all_outer_grads) / num_tasks
 
         # true cost
         true_cost_dict = {
@@ -1217,6 +1092,7 @@ def test_maml_step_overlapping_vars(
             average_across_steps=average_across_steps,
             batched=batched,
             inner_v="latent",
+            outer_v="weight",
             return_inner_v=return_inner_v,
             stop_gradients=stop_gradients,
         )
@@ -1229,10 +1105,7 @@ def test_maml_step_overlapping_vars(
         assert np.allclose(ivy_backend.to_scalar(calc_cost), true_cost)
         outer_grads = rets[1]
         assert np.allclose(
-            ivy_backend.to_numpy(outer_grads.weight), np.array(true_weight_grad)
-        )
-        assert np.allclose(
-            ivy_backend.to_numpy(outer_grads.latent), np.array(true_latent_grad)
+            ivy_backend.to_numpy(outer_grads.weight), np.array(true_outer_grad)
         )
         if return_inner_v:
             inner_v_rets = rets[2]
@@ -1243,11 +1116,127 @@ def test_maml_step_overlapping_vars(
                 assert list(inner_v_rets.cont_shape) == [1, 1]
 
 
-# Still to Add #
-# ---------------#
+# reptile step
+@pytest.mark.parametrize("inner_grad_steps", [1, 2, 3])
+@pytest.mark.parametrize("batched", [True, False])
+@pytest.mark.parametrize("stop_gradients", [True, False])
+@pytest.mark.parametrize("num_tasks", [1, 2])
+@pytest.mark.parametrize("return_inner_v", ["first", "all", False])
+def test_reptile_step(
+    on_device,
+    inner_grad_steps,
+    batched,
+    stop_gradients,
+    num_tasks,
+    return_inner_v,
+    backend_fw,
+):
+    if backend_fw == "numpy":
+        # Numpy does not support gradients, jax does not support gradients on custom
+        # nested classes,
+        pytest.skip()
 
-# _compute_cost_and_update_grads
-# _train_tasks
-# _train_tasks_batched
-# _train_tasks_with_for_loop
-# _fomaml_step
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        # config
+        inner_learning_rate = 1e-2
+        variable_fn = ivy_backend.functional.ivy._variable
+
+        # create variable
+        if batched:
+            variables = ivy_backend.Container(
+                {
+                    "latent": variable_fn(
+                        ivy_backend.repeat(
+                            ivy_backend.array([[1.0]], device=on_device),
+                            num_tasks,
+                            axis=0,
+                        )
+                    )
+                }
+            )
+        else:
+            variables = ivy_backend.Container(
+                {"latent": variable_fn(ivy_backend.array([1.0], device=on_device))}
+            )
+
+        # batch
+        batch = ivy_backend.Container(
+            {"x": ivy_backend.arange(1, num_tasks + 1, dtype="float32")}
+        )
+
+        # inner cost function
+        def inner_cost_fn(batch_in, v):
+            cost = 0
+            batch_size = batch_in.cont_shape[0]
+            for sub_batch_in, sub_v in zip(
+                batch_in.cont_unstack_conts(0, keepdims=True),
+                v.cont_unstack_conts(0, keepdims=True),
+            ):
+                cost = cost - (sub_batch_in["x"] * sub_v["latent"] ** 2)[0]
+            return cost / batch_size
+
+        # numpy
+        latent_np = ivy_backend.to_numpy(variables.latent[0:1])
+        batch_np = batch.cont_map(lambda x, kc: ivy_backend.to_numpy(x))
+
+        # loss grad function
+        def loss_grad_fn(sub_batch_in, w_in):
+            return -2 * sub_batch_in["x"][0] * w_in
+
+        # true gradient
+        true_outer_grads = []
+        for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
+            ws = []
+            grads = []
+            ws.append(latent_np)
+            for step in range(inner_grad_steps):
+                update_grad = loss_grad_fn(sub_batch, ws[-1])
+                w = ws[-1] - inner_learning_rate * update_grad
+                grads.append(update_grad)
+                ws.append(w)
+            grads.append(loss_grad_fn(sub_batch, ws[-1]))
+
+            # true outer grad
+            true_outer_grad = sum(grads) / len(grads)
+            true_outer_grads.append(true_outer_grad)
+        true_outer_grad = (
+            sum(true_outer_grads) / len(true_outer_grads)
+        ) / inner_learning_rate
+
+        # true cost
+        true_cost_dict = {
+            1: {1: -1.0202, 2: -1.5509},
+            2: {1: -1.0409441, 2: -1.6042916},
+            3: {1: -1.0622487, 2: -1.6603187},
+        }
+        true_cost = true_cost_dict[inner_grad_steps][num_tasks]
+
+        # meta update
+        rets = ivy_backend.reptile_step(
+            batch,
+            inner_cost_fn,
+            variables,
+            inner_grad_steps,
+            inner_learning_rate,
+            batched=batched,
+            return_inner_v=return_inner_v,
+            stop_gradients=stop_gradients,
+        )
+        calc_cost = rets[0]
+        if stop_gradients:
+            assert ivy_backend.equal(
+                ivy_backend.functional.ivy._is_variable(calc_cost, exclusive=True),
+                False,
+            )
+        assert np.allclose(ivy_backend.to_scalar(calc_cost), true_cost)
+        outer_grads = rets[1]
+        assert np.allclose(
+            ivy_backend.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad)
+        )
+        if return_inner_v:
+            inner_v_rets = rets[2]
+            assert isinstance(inner_v_rets, ivy_backend.Container)
+            if return_inner_v == "all":
+                assert list(inner_v_rets.cont_shape) == [num_tasks, 1]
+            elif return_inner_v == "first":
+                assert list(inner_v_rets.cont_shape) == [1, 1]

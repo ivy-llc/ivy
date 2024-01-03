@@ -41,11 +41,10 @@ def cross_entropy(
     *,
     axis: int = -1,
     epsilon: float = 1e-7,
-    reduction: str = "sum",
+    reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute cross-entropy between predicted and true discrete distributions.
+    """Compute cross-entropy between predicted and true discrete distributions.
 
     Parameters
     ----------
@@ -97,13 +96,12 @@ def binary_cross_entropy(
     *,
     from_logits: bool = False,
     epsilon: float = 0.0,
-    reduction: str = "none",
+    reduction: str = "mean",
     pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the binary cross entropy loss.
+    """Compute the binary cross entropy loss.
 
     Parameters
     ----------
@@ -136,9 +134,8 @@ def binary_cross_entropy(
         The binary cross entropy between the given distributions.
 
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 1, 0, 0])
@@ -162,7 +159,7 @@ def binary_cross_entropy(
     >>> x = ivy.array([[0, 1, 1, 0]])
     >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
     >>> pos_weight = ivy.array([1, 2, 3, 4])
-    >>> z = ivy.binary_cross_entropy(x, y, pos_weight=pos_weight, from_logits=True, reduction='sum', axis=1) # noqa: E501
+    >>> z = ivy.binary_cross_entropy(x, y, pos_weight=pos_weight, from_logits=True, reduction='sum', axis=1)
     ivy.array([8.05393649])
 
     >>> x = ivy.array([[0, 1, 1, 0]])
@@ -211,8 +208,7 @@ def binary_cross_entropy(
     }
 
     Instance Method Examples
-    ------------------------
-
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([1, 0, 0, 0])
@@ -220,7 +216,7 @@ def binary_cross_entropy(
     >>> z = ivy.binary_cross_entropy(x, y)
     >>> print(z)
     ivy.array([0.223, 0.223, 0.223, 0.223])
-    """
+    """  # noqa: E501
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
 
     if not (0.0 <= epsilon <= 1.0):
@@ -280,11 +276,10 @@ def sparse_cross_entropy(
     *,
     axis: int = -1,
     epsilon: float = 1e-7,
-    reduction: str = "sum",
+    reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute sparse cross entropy between logits and labels.
+    """Compute sparse cross entropy between logits and labels.
 
     Parameters
     ----------
@@ -307,9 +302,8 @@ def sparse_cross_entropy(
     ret
         The sparse cross-entropy loss between the given distributions
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >> x = ivy.array([2])
@@ -360,8 +354,7 @@ def sparse_cross_entropy(
     }
 
     Instance Method Examples
-    ------------------------
-
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2])

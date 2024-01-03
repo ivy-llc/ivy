@@ -29,10 +29,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.moveaxis. This method simply wraps the
-        function, and so the docstring for ivy.unstack also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.moveaxis. This method
+        simply wraps the function, and so the docstring for ivy.unstack also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -46,10 +45,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning a view
+             of the input array.
         out
             optional output array, for writing the result to.
 
@@ -75,10 +73,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.heaviside. This method simply wraps the
-        function, and so the docstring for ivy.heaviside also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.heaviside. This method
+        simply wraps the function, and so the docstring for ivy.heaviside also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -117,10 +114,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.flipud. This method simply wraps the
-        function, and so the docstring for ivy.flipud also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.flipud. This method simply
+        wraps the function, and so the docstring for ivy.flipud also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -129,10 +125,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+            a view of the input array.
         out
             optional output array, for writing the result to.
 
@@ -162,10 +157,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.vstack. This method simply wraps the
-        function, and so the docstring for ivy.vstack also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.vstack. This method simply
+        wraps the function, and so the docstring for ivy.vstack also applies to
+        this method with minimal changes.
 
         Examples
         --------
@@ -194,10 +188,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.hstack. This method simply wraps the
-        function, and so the docstring for ivy.hstack also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.hstack. This method simply
+        wraps the function, and so the docstring for ivy.hstack also applies to
+        this method with minimal changes.
 
         Examples
         --------
@@ -219,20 +212,25 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: bool = None,
+        copy: Optional[bool] = None,
         k: int = 1,
         axes: Tuple[int, int] = (0, 1),
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.rot90. This method simply wraps the
-        function, and so the docstring for ivy.rot90 also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.rot90. This method simply
+        wraps the function, and so the docstring for ivy.rot90 also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
         self
             Input array of two or more dimensions.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         k
             Number of times the array is rotated by 90 degrees.
         axes
@@ -280,17 +278,16 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         sorted: bool = True,
         out: Optional[tuple] = None,
     ) -> Tuple[ivy.Array, ivy.NativeArray]:
-        """
-        ivy.Array instance method variant of ivy.top_k. This method simply wraps the
-        function, and so the docstring for ivy.top_k also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.top_k. This method simply
+        wraps the function, and so the docstring for ivy.top_k also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
         self
             The array to compute top_k for.
         k
-            Number of top elements to retun must not exceed the array size.
+            Number of top elements to return must not exceed the array size.
         axis
             The axis along which we must return the top elements default value is 1.
         largest
@@ -325,10 +322,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.fliplr. This method simply wraps the
-        function, and so the docstring for ivy.fliplr also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.fliplr. This method simply
+        wraps the function, and so the docstring for ivy.fliplr also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -337,10 +333,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning a
+             view of the input array.
         out
             optional output array, for writing the result to.
 
@@ -366,10 +361,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.i0. This method simply wraps the
-        function, and so the docstring for ivy.i0 also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.i0. This method simply
+        wraps the function, and so the docstring for ivy.i0 also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -401,10 +395,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         order: str = "C",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.flatten. This method simply wraps the
-        function, and so the docstring for ivy.flatten also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.flatten. This method simply
+        wraps the function, and so the docstring for ivy.flatten also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -413,10 +406,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning a
+             view of the input array.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -538,8 +530,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
         **kwargs: Optional[Any],
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.pad.
+        """ivy.Array instance method variant of ivy.pad.
 
         This method simply wraps the function, and so the docstring for
         ivy.pad also applies to this method with minimal changes.
@@ -564,10 +555,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.vsplit. This method simply wraps the
-        function, and so the docstring for ivy.vsplit also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.vsplit. This method simply
+        wraps the function, and so the docstring for ivy.vsplit also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -576,10 +566,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
@@ -612,10 +601,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.dsplit. This method simply wraps the
-        function, and so the docstring for ivy.dsplit also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.dsplit. This method simply
+        wraps the function, and so the docstring for ivy.dsplit also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -629,10 +617,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -659,10 +646,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *arys: Union[ivy.Array, bool, Number],
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.atleast_1d. This method simply wraps
-        the function, and so the docstring for ivy.atleast_1d also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.atleast_1d. This method
+        simply wraps the function, and so the docstring for ivy.atleast_1d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -673,10 +659,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+            a view of the input array.
 
         Returns
         -------
@@ -703,10 +688,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.dstack. This method simply wraps the
-        function, and so the docstring for ivy.dstack also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.dstack. This method simply
+        wraps the function, and so the docstring for ivy.dstack also applies to
+        this method with minimal changes.
 
         Examples
         --------
@@ -731,10 +715,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *arys: ivy.Array,
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.atleast_2d. This method simply wraps
-        the function, and so the docstring for ivy.atleast_2d also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.atleast_2d. This method
+        simply wraps the function, and so the docstring for ivy.atleast_2d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -745,10 +728,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -771,10 +753,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *arys: Union[ivy.Array, bool, Number],
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.atleast_3d. This method simply wraps
-        the function, and so the docstring for ivy.atleast_3d also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.atleast_3d. This method
+        simply wraps the function, and so the docstring for ivy.atleast_3d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -785,10 +766,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -819,10 +799,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         mode: str = "fill",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.take_along_axis. This method simply
-        wraps the function, and so the docstring for ivy.take_along_axis also applies to
-        this method with minimal changes.
+        """ivy.Array instance method variant of ivy.take_along_axis. This
+        method simply wraps the function, and so the docstring for
+        ivy.take_along_axis also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -861,10 +840,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.hsplit. This method simply wraps the
-        function, and so the docstring for ivy.hsplit also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.hsplit. This method simply
+        wraps the function, and so the docstring for ivy.hsplit also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -878,10 +856,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -917,8 +894,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Broadcast the input Array following the given shape and the broadcast rule.
+        """Broadcast the input Array following the given shape and the
+        broadcast rule.
 
         Parameters
         ----------
@@ -930,10 +907,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         out
             optional output array, for writing the result to.
 
@@ -950,8 +926,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         strides: Sequence[int],
         /,
     ) -> ivy.Array:
-        """
-        Create a copy of the input array with the given shape and strides.
+        """Create a copy of the input array with the given shape and strides.
 
         Parameters
         ----------
@@ -982,8 +957,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         axis: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Concatenate a sequence of arrays along a new or an existing axis.
+        """Concatenate a sequence of arrays along a new or an existing axis.
 
         Parameters
         ----------
@@ -1030,8 +1004,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         reverse: bool = False,
         axis: int = 0,
     ) -> ivy.Array:
-        """
-        Perform an associative scan over the given array.
+        """Perform an associative scan over the given array.
 
         Parameters
         ----------
@@ -1057,8 +1030,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         axis: Optional[int] = None,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.unique_consecutive.
+        """ivy.Array instance method variant of ivy.unique_consecutive.
 
         This method simply wraps the function, and so the docstring for
         ivy.unique_consecutive also applies to this method with minimal
@@ -1073,13 +1045,133 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         wrap: bool = False,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.fill_diag.
+        """ivy.Array instance method variant of ivy.fill_diag.
 
         This method simply wraps the function, and so the docstring for
         ivy.fill_diag also applies to this method with minimal changes.
         """
         return ivy.fill_diagonal(self._data, v, wrap=wrap)
+
+    def take(
+        self: ivy.Array,
+        indices: Union[int, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: Optional[int] = None,
+        mode: str = "fill",
+        fill_value: Optional[Number] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.take.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.take also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        indices
+            array indices. Must have an integer data type.
+        axis
+            axis over which to select values. If `axis` is negative,
+            the function must determine the axis along which to select values
+            by counting from the last dimension.
+            By default, the flattened input array is used.
+        mode
+            specifies how out-of-bounds `indices` will behave.
+            -   ‘raise’ – raise an error
+            -   ‘wrap’ – wrap around
+            -   ‘clip’ – clip to the range (all indices that are too large are
+            replaced by the index that addresses the last element along that axis.
+            Note that this disables indexing with negative numbers.)
+            -   'fill' (default) = returns invalid values (e.g. NaN)
+            for out-of bounds indices (see also fill_value below)
+        fill_value
+            fill value to return for out-of-bounds slices
+            (Defaults to NaN for inexact types,
+            the largest negative value for signed types,
+            the largest positive value for unsigned types, and True for booleans.)
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+            ret
+                an array having the same data type as `x`.
+                The output array must have the same rank
+                (i.e., number of dimensions) as `x` and
+                must have the same shape as `x`, except
+                for the axis specified by `axis`
+                whose size must equal the number of elements in `indices`.
+
+        Examples
+        --------
+        With `ivy.Array` input:
+
+        >>> x = ivy.array([4,5,6])
+        >>> indices = ivy.array([2,1,0])
+        >>> y = x.take(indices)
+        >>> print(y)
+        ivy.array([6, 5, 4])
+
+        >>> x = ivy.array([4.7,5.2,6.5])
+        >>> indices = ivy.array([[0,1]])
+        >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+        >>> x.take(indices, out=y)
+        >>> print(y)
+        ivy.array([[4.7, 5.2]])
+
+        >>> x = ivy.array([False, False, True])
+        >>> indices = ivy.array([[4,3,2]])
+        >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+        >>> x.take(indices, out=y, mode="wrap")
+        >>> print(y)
+        ivy.array([[False, False, True]])
+        """
+        return ivy.take(
+            self, indices, axis=axis, mode=mode, fill_value=fill_value, out=out
+        )
+
+    def trim_zeros(
+        self: ivy.Array,
+        /,
+        *,
+        trim: Optional[str] = "fb",
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.trim_zeros.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.trim_zeros also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self : 1-D array
+            Input array.
+        trim : str, optional
+            A string with 'f' representing trim from front and 'b' to trim from
+            back. Default is 'fb', trim zeros from both front and back of the
+            array.
+
+        Returns
+        -------
+            1-D array
+            The result of trimming the input. The input data type is preserved.
+
+        Examples
+        --------
+        >>> a = ivy.array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1, 0])
+        >>> ivy.trim_zeros(a)
+        array([8, 3, 0, 0, 7, 1])
+
+        >>> ivy.trim_zeros(a, 'b')
+        array([0, 0, 0, 0, 8, 3, 0, 0, 7, 1])
+
+        >>> ivy.trim_zeros([0, 8, 3, 0, 0])
+        [8, 3]
+        """
+        return ivy.trim_zeros(self, trim=trim)
 
     def unfold(
         self: Union[ivy.Array, ivy.NativeArray],
@@ -1088,10 +1180,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.unfold. This method simply wraps the
-        function, and so the docstring for ivy.unfold also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.unfold. This method simply
+        wraps the function, and so the docstring for ivy.unfold also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1117,10 +1208,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.fold. This method simply wraps the
-        function, and so the docstring for ivy.fold also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.fold. This method simply
+        wraps the function, and so the docstring for ivy.fold also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1150,10 +1240,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.partial_unfold. This method simply
-        wraps the function, and so the docstring for ivy.partial_unfold also applies to
-        this method with minimal changes.
+        """ivy.Array instance method variant of ivy.partial_unfold. This method
+        simply wraps the function, and so the docstring for ivy.partial_unfold
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1193,10 +1282,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.partial_fold. This method simply wraps
-        the function, and so the docstring for ivy.partial_fold also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.partial_fold. This method
+        simply wraps the function, and so the docstring for ivy.partial_fold
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1225,10 +1313,10 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.partial_tensor_to_vec. This method
-        simply wraps the function, and so the docstring for ivy.partial_tensor_to_vec
-        also applies to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.partial_tensor_to_vec. This
+        method simply wraps the function, and so the docstring for
+        ivy.partial_tensor_to_vec also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -1256,10 +1344,10 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.partial_vec_to_tensor. This method
-        simply wraps the function, and so the docstring for ivy.partial_vec_to_tensor
-        also applies to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.partial_vec_to_tensor. This
+        method simply wraps the function, and so the docstring for
+        ivy.partial_vec_to_tensor also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -1287,10 +1375,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.matricize. This method simply wraps the
-        function, and so the docstring for ivy.matricize also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.matricize. This method
+        simply wraps the function, and so the docstring for ivy.matricize also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1317,10 +1404,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.soft_thresholding. This method simply
-        wraps the function, and so the docstring for ivy.soft_thresholding also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.soft_thresholding. This
+        method simply wraps the function, and so the docstring for
+        ivy.soft_thresholding also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1339,3 +1425,56 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             thresholded tensor on which the operator has been applied
         """
         return ivy.soft_thresholding(self._data, threshold, out=out)
+
+    def column_stack(
+        self: ivy.Array,
+        arrays: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.column_stack.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.column_stack also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            Array that will be stacked at the beginning of the provided array iterable.
+        arrays
+            Arrays to be stacked.
+        out
+            Output array.
+
+        Returns
+        -------
+        ret
+            Stacked input.
+        """
+        if not isinstance(arrays, (list, tuple)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.column_stack(x, out=out)
+
+    def put_along_axis(
+        self: ivy.Array,
+        indices: ivy.Array,
+        values: ivy.Array,
+        axis: int,
+        /,
+        *,
+        mode: Literal["sum", "min", "max", "mul", "mean", "replace"] = "replace",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.put_along_axis.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.put_along_axis also applies to this method with minimal
+        changes.
+        """
+        return ivy.put_along_axis(self._data, indices, values, axis, mode=mode, out=out)

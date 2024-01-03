@@ -1,14 +1,18 @@
 """Collection of tests for unified gradient functions."""
 
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 import pytest
 import numpy as np
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
+
+
+# --- Helpers --- #
+# --------------- #
 
 
 @st.composite
@@ -69,245 +73,6 @@ def get_gradient_arguments_with_lr(
     return dtypes, arrays, lr
 
 
-# stop_gradient
-@handle_test(
-    fn_tree="functional.ivy.stop_gradient",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-    preserve_type=st.booleans(),
-    test_instance_method=st.just(False),
-    test_gradients=st.just(False),
-)
-def test_stop_gradient(
-    *, dtype_and_x, preserve_type, test_flags, backend_fw, fn_name, on_device
-):
-    dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-        preserve_type=preserve_type,
-    )
-
-
-# execute_with_gradients
-@handle_test(
-    fn_tree="functional.ivy.execute_with_gradients",
-    dtype_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        min_dim_size=1,
-        min_value=0,
-        max_value=100,
-    ),
-    retain_grads=st.booleans(),
-    test_instance_method=st.just(False),
-    test_with_out=st.just(False),
-    test_gradients=st.just(False),
-)
-def test_execute_with_gradients(
-    *, dtype_and_xs, retain_grads, test_flags, backend_fw, fn_name, on_device
-):
-    assume(not backend_fw == "numpy")
-
-    def func(xs):
-        with update_backend(backend_fw) as ivy_backend:
-            if isinstance(xs, ivy_backend.Container):
-                array_idxs = ivy_backend.nested_argwhere(xs, ivy_backend.is_array)
-                array_vals = ivy_backend.multi_index_nest(xs, array_idxs)
-                if len(array_vals) == 0:
-                    final_array = None
-                else:
-                    final_array = ivy_backend.stack(array_vals)
-            else:
-                final_array = xs
-            ret = ivy_backend.mean(final_array)
-            return ret
-
-    dtype, xs = dtype_and_xs
-    helpers.test_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        func=func,
-        rtol_=1e-1,
-        atol_=1e-1,
-        on_device=on_device,
-        xs=xs[0],
-        retain_grads=retain_grads,
-    )
-
-
-# value_and_grad
-@pytest.mark.parametrize(
-    "x", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
-)
-@pytest.mark.parametrize("dtype", ["float32", "float64"])
-@pytest.mark.parametrize(
-    "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
-)
-def test_value_and_grad(x, dtype, func, backend_fw):
-    if backend_fw == "numpy":
-        return
-    with update_backend(backend_fw) as ivy_backend:
-        var = ivy_backend.ivy.functional.ivy.gradients._variable(
-            ivy_backend.array(x, dtype=dtype)
-        )
-        fn = ivy_backend.value_and_grad(func)
-        value, grad = fn(var)
-        value_np, grad_np = helpers.flatten_and_to_np(
-            ret=value, backend=backend_fw
-        ), helpers.flatten_and_to_np(ret=grad, backend=backend_fw)
-
-    with update_backend("tensorflow") as gt_backend:
-        var = gt_backend.ivy.functional.ivy.gradients._variable(
-            gt_backend.array(x, dtype=dtype)
-        )
-        fn = gt_backend.value_and_grad(func)
-        value_gt, grad_gt = fn(var)
-        value_np_from_gt, grad_np_from_gt = helpers.flatten_and_to_np(
-            ret=value_gt, backend="tensorflow"
-        ), helpers.flatten_and_to_np(ret=grad_gt, backend="tensorflow")
-
-    for value, value_from_gt in zip(value_np, value_np_from_gt):
-        assert value.shape == value_from_gt.shape
-        assert np.allclose(value, value_from_gt)
-    for grad, grad_from_gt in zip(grad_np, grad_np_from_gt):
-        assert grad.shape == grad_from_gt.shape
-        assert np.allclose(grad, grad_from_gt)
-
-
-# jac
-@pytest.mark.parametrize(
-    "x", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
-)
-@pytest.mark.parametrize("dtype", ["float32", "float64"])
-@pytest.mark.parametrize("func_str", ["square", "cos"])
-def test_jac(x, dtype, func_str, backend_fw):
-    if backend_fw == "numpy":
-        pytest.skip()
-
-    with update_backend(backend_fw) as ivy_backend:
-        f = ivy_backend.__dict__[func_str]
-        func = lambda x: ivy_backend.mean(f(x))
-        _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
-        var = _variable_fn(ivy_backend.array(x, dtype=dtype))
-        fn = ivy_backend.jac(func)
-        jacobian = fn(var)
-        jacobian_np = helpers.flatten_and_to_np(ret=jacobian, backend=backend_fw)
-        assert jacobian_np != []
-
-    with update_backend("tensorflow") as gt_backend:
-        f = gt_backend.__dict__[func_str]
-        func = lambda x: gt_backend.mean(f(x))
-        _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
-        var = _variable_fn(gt_backend.array(x, dtype=dtype))
-        fn = gt_backend.jac(func)
-        jacobian_gt = fn(var)
-        jacobian_np_from_gt = helpers.flatten_and_to_np(
-            ret=jacobian_gt, backend="tensorflow"
-        )
-        for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
-            assert jacobian.shape == jacobian_from_gt.shape
-            assert np.allclose(jacobian, jacobian_from_gt)
-
-    # Test nested input
-    func = lambda xs: (2 * xs[1]["x2"], xs[0])
-
-    with update_backend(backend_fw) as ivy_backend:
-        _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
-        var1 = _variable_fn(ivy_backend.array(x[0], dtype=dtype))
-        var2 = _variable_fn(ivy_backend.array(x[1], dtype=dtype))
-        var = [var1, {"x2": var2}]
-        fn = ivy_backend.jac(func)
-        jacobian = fn(var)
-        jacobian_np = helpers.flatten_and_to_np(ret=jacobian, backend=backend_fw)
-
-    with update_backend("tensorflow") as gt_backend:
-        _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
-        var1 = _variable_fn(gt_backend.array(x[0], dtype=dtype))
-        var2 = _variable_fn(gt_backend.array(x[1], dtype=dtype))
-        var = [var1, {"x2": var2}]
-        fn = gt_backend.jac(func)
-        jacobian_gt = fn(var)
-        jacobian_np_from_gt = helpers.flatten_and_to_np(
-            ret=jacobian_gt, backend="tensorflow"
-        )
-
-    for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
-        assert jacobian.shape == jacobian_from_gt.shape
-        assert np.allclose(jacobian, jacobian_from_gt)
-
-    # Test func with non 0-dim output
-    with update_backend(backend_fw) as ivy_backend:
-        func = ivy_backend.__dict__[func_str]
-        _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
-        var = _variable_fn(ivy_backend.array(x, dtype=dtype))
-        fn = ivy_backend.jac(func)
-        jacobian = fn(var)
-        jacobian_np = helpers.flatten_and_to_np(ret=jacobian, backend=backend_fw)
-
-    with update_backend("tensorflow") as gt_backend:
-        func = gt_backend.__dict__[func_str]
-        _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
-        var = _variable_fn(gt_backend.array(x, dtype=dtype))
-        fn = gt_backend.jac(func)
-        jacobian_gt = fn(var)
-        jacobian_np_from_gt = helpers.flatten_and_to_np(
-            ret=jacobian_gt, backend="tensorflow"
-        )
-        for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
-            assert jacobian.shape == jacobian_from_gt.shape
-            assert np.allclose(jacobian, jacobian_from_gt)
-
-
-# grad
-@pytest.mark.parametrize(
-    "x", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
-)
-@pytest.mark.parametrize("dtype", ["float32", "float64"])
-@pytest.mark.parametrize(
-    "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
-)
-@pytest.mark.parametrize("nth", [1, 2, 3])
-def test_grad(x, dtype, func, backend_fw, nth):
-    # ToDo: Remove skipping for paddle and jax for nth > 1
-    if backend_fw == "numpy" or (
-        (backend_fw == "paddle" or backend_fw == "jax") and nth > 1
-    ):
-        return
-
-    with update_backend(backend_fw) as ivy_backend:
-        _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
-        var = _variable_fn(ivy_backend.array(x, dtype=dtype))
-        fn = ivy_backend.grad(func)
-        if nth > 1:
-            for _ in range(1, nth):
-                fn = ivy_backend.grad(fn)
-        grad = fn(var)
-        grad_np = helpers.flatten_and_to_np(ret=grad, backend=backend_fw)
-
-    with update_backend("tensorflow") as gt_backend:
-        _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
-        var = _variable_fn(ivy.array(x, dtype=dtype))
-        fn = gt_backend.grad(func)
-        if nth > 1:
-            for _ in range(1, nth):
-                fn = gt_backend.grad(fn)
-
-        grad_gt = fn(var)
-        grad_np_from_gt = helpers.flatten_and_to_np(ret=grad_gt, backend="tensorflow")
-
-    for grad, grad_from_gt in zip(grad_np, grad_np_from_gt):
-        assert grad.shape == grad_from_gt.shape
-        assert np.allclose(grad, grad_from_gt)
-
-
 # adam_step
 @handle_test(
     fn_tree="functional.ivy.adam_step",
@@ -356,107 +121,6 @@ def test_adam_step(
         beta1=beta1,
         beta2=beta2,
         epsilon=epsilon,
-    )
-
-
-# optimizer_update
-@handle_test(
-    fn_tree="functional.ivy.optimizer_update",
-    dtype_n_ws_n_effgrad_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
-    stop_gradients=st.booleans(),
-)
-def test_optimizer_update(
-    *,
-    dtype_n_ws_n_effgrad_n_lr,
-    stop_gradients,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    input_dtypes, [w, effective_grad], lr = dtype_n_ws_n_effgrad_n_lr
-    helpers.test_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        w=w,
-        effective_grad=effective_grad,
-        lr=lr,
-        stop_gradients=stop_gradients,
-    )
-
-
-# gradient_descent_update
-@handle_test(
-    fn_tree="functional.ivy.gradient_descent_update",
-    dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
-    stop_gradients=st.booleans(),
-)
-def test_gradient_descent_update(
-    *,
-    dtype_n_ws_n_dcdw_n_lr,
-    stop_gradients,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
-    helpers.test_function(
-        input_dtypes=input_dtypes,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        w=w,
-        dcdw=dcdw,
-        lr=lr,
-        stop_gradients=stop_gradients,
-    )
-
-
-# lars_update
-@handle_test(
-    fn_tree="functional.ivy.lars_update",
-    dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(
-        num_arrays=2,
-    ),
-    decay_lambda=helpers.floats(min_value=1e-2, max_value=1),
-    stop_gradients=st.booleans(),
-)
-def test_lars_update(
-    *,
-    dtype_n_ws_n_dcdw_n_lr,
-    decay_lambda,
-    stop_gradients,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
-    # ToDo: Add testing for bfloat16 back when it returns consistent gradients for jax
-    if "bfloat16" in input_dtypes:
-        return
-    helpers.test_function(
-        input_dtypes=input_dtypes,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-1,
-        atol_=1e-1,
-        w=w,
-        dcdw=dcdw,
-        lr=lr,
-        decay_lambda=decay_lambda,
-        stop_gradients=stop_gradients,
     )
 
 
@@ -510,6 +174,220 @@ def test_adam_update(
         epsilon=epsilon,
         stop_gradients=stop_gradients,
     )
+
+
+# execute_with_gradients
+@handle_test(
+    fn_tree="functional.ivy.execute_with_gradients",
+    dtype_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        min_dim_size=1,
+        min_value=0,
+        max_value=100,
+    ),
+    retain_grads=st.booleans(),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_execute_with_gradients(
+    *, dtype_and_xs, retain_grads, test_flags, backend_fw, fn_name, on_device
+):
+    if backend_fw == "numpy":
+        return
+
+    def func(xs):
+        with BackendHandler.update_backend(
+            ivy.current_backend(xs.to_native()).backend
+        ) as ivy_backend:
+            if isinstance(xs, ivy_backend.Container):
+                array_idxs = ivy_backend.nested_argwhere(xs, ivy_backend.is_array)
+                array_vals = ivy_backend.multi_index_nest(xs, array_idxs)
+                if len(array_vals) == 0:
+                    final_array = None
+                else:
+                    final_array = ivy_backend.stack(array_vals)
+            else:
+                final_array = xs
+            ret = ivy_backend.mean(final_array)
+            return ret
+
+    dtype, xs = dtype_and_xs
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        func=func,
+        rtol_=1e-1,
+        atol_=1e-1,
+        on_device=on_device,
+        xs=xs[0],
+        retain_grads=retain_grads,
+    )
+
+
+# grad
+@pytest.mark.parametrize(
+    "x", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
+)
+@pytest.mark.parametrize("dtype", ["float32", "float64"])
+@pytest.mark.parametrize(
+    "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
+)
+@pytest.mark.parametrize("nth", [1, 2, 3])
+def test_grad(x, dtype, func, backend_fw, nth):
+    # ToDo: Remove skipping for paddle and jax for nth > 1
+    if backend_fw == "numpy" or (backend_fw in ["paddle", "jax"] and nth > 1):
+        return
+
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
+        var = _variable_fn(ivy_backend.array(x, dtype=dtype))
+        fn = ivy_backend.grad(func)
+        if nth > 1:
+            for _ in range(1, nth):
+                fn = ivy_backend.grad(fn)
+        grad = fn(var)
+        grad_np = helpers.flatten_and_to_np(ret=grad, backend=backend_fw)
+
+    with BackendHandler.update_backend("tensorflow") as gt_backend:
+        _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
+        var = _variable_fn(ivy.array(x, dtype=dtype))
+        fn = gt_backend.grad(func)
+        if nth > 1:
+            for _ in range(1, nth):
+                fn = gt_backend.grad(fn)
+
+        grad_gt = fn(var)
+        grad_np_from_gt = helpers.flatten_and_to_np(ret=grad_gt, backend="tensorflow")
+
+    for grad, grad_from_gt in zip(grad_np, grad_np_from_gt):
+        assert grad.shape == grad_from_gt.shape
+        assert np.allclose(grad, grad_from_gt)
+
+
+# gradient_descent_update
+@handle_test(
+    fn_tree="functional.ivy.gradient_descent_update",
+    dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
+    stop_gradients=st.booleans(),
+)
+def test_gradient_descent_update(
+    *,
+    dtype_n_ws_n_dcdw_n_lr,
+    stop_gradients,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
+        stop_gradients=stop_gradients,
+    )
+
+
+# jac
+@pytest.mark.parametrize(
+    "x", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
+)
+@pytest.mark.parametrize("dtype", ["float32", "float64"])
+@pytest.mark.parametrize("func_str", ["square", "cos"])
+def test_jac(x, dtype, func_str, backend_fw):
+    if backend_fw == "numpy":
+        pytest.skip()
+
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        f = ivy_backend.__dict__[func_str]
+
+        def func(x):
+            return ivy_backend.mean(f(x))
+
+        _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
+        var = _variable_fn(ivy_backend.array(x, dtype=dtype))
+        fn = ivy_backend.jac(func)
+        jacobian = fn(var)
+        jacobian_np = helpers.flatten_and_to_np(ret=jacobian, backend=backend_fw)
+        assert jacobian_np != []
+
+    with BackendHandler.update_backend("tensorflow") as gt_backend:
+        f = gt_backend.__dict__[func_str]
+
+        def func(x):
+            return gt_backend.mean(f(x))
+
+        _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
+        var = _variable_fn(gt_backend.array(x, dtype=dtype))
+        fn = gt_backend.jac(func)
+        jacobian_gt = fn(var)
+        jacobian_np_from_gt = helpers.flatten_and_to_np(
+            ret=jacobian_gt, backend="tensorflow"
+        )
+        for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
+            assert jacobian.shape == jacobian_from_gt.shape
+            assert np.allclose(jacobian, jacobian_from_gt)
+
+    # Test nested input
+    def func(xs):
+        return 2 * xs[1]["x2"], xs[0]
+
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
+        var1 = _variable_fn(ivy_backend.array(x[0], dtype=dtype))
+        var2 = _variable_fn(ivy_backend.array(x[1], dtype=dtype))
+        var = [var1, {"x2": var2}]
+        fn = ivy_backend.jac(func)
+        jacobian = fn(var)
+        jacobian_np = helpers.flatten_and_to_np(ret=jacobian, backend=backend_fw)
+
+    with BackendHandler.update_backend("tensorflow") as gt_backend:
+        _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
+        var1 = _variable_fn(gt_backend.array(x[0], dtype=dtype))
+        var2 = _variable_fn(gt_backend.array(x[1], dtype=dtype))
+        var = [var1, {"x2": var2}]
+        fn = gt_backend.jac(func)
+        jacobian_gt = fn(var)
+        jacobian_np_from_gt = helpers.flatten_and_to_np(
+            ret=jacobian_gt, backend="tensorflow"
+        )
+
+    for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
+        assert jacobian.shape == jacobian_from_gt.shape
+        assert np.allclose(jacobian, jacobian_from_gt)
+
+    # Test func with non 0-dim output
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        func = ivy_backend.__dict__[func_str]
+        _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
+        var = _variable_fn(ivy_backend.array(x, dtype=dtype))
+        fn = ivy_backend.jac(func)
+        jacobian = fn(var)
+        jacobian_np = helpers.flatten_and_to_np(ret=jacobian, backend=backend_fw)
+
+    with BackendHandler.update_backend("tensorflow") as gt_backend:
+        func = gt_backend.__dict__[func_str]
+        _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
+        var = _variable_fn(gt_backend.array(x, dtype=dtype))
+        fn = gt_backend.jac(func)
+        jacobian_gt = fn(var)
+        jacobian_np_from_gt = helpers.flatten_and_to_np(
+            ret=jacobian_gt, backend="tensorflow"
+        )
+        for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
+            assert jacobian.shape == jacobian_from_gt.shape
+            assert np.allclose(jacobian, jacobian_from_gt)
 
 
 # lamb_update
@@ -578,3 +456,137 @@ def test_lamb_update(
         decay_lambda=decay_lambda,
         stop_gradients=stop_gradients,
     )
+
+
+# lars_update
+@handle_test(
+    fn_tree="functional.ivy.lars_update",
+    dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(
+        num_arrays=2,
+    ),
+    decay_lambda=helpers.floats(min_value=1e-2, max_value=1),
+    stop_gradients=st.booleans(),
+)
+def test_lars_update(
+    *,
+    dtype_n_ws_n_dcdw_n_lr,
+    decay_lambda,
+    stop_gradients,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
+    # ToDo: Add testing for bfloat16 back when it returns consistent gradients for jax
+    if "bfloat16" in input_dtypes:
+        return
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
+        decay_lambda=decay_lambda,
+        stop_gradients=stop_gradients,
+    )
+
+
+# optimizer_update
+@handle_test(
+    fn_tree="functional.ivy.optimizer_update",
+    dtype_n_ws_n_effgrad_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
+    stop_gradients=st.booleans(),
+)
+def test_optimizer_update(
+    *,
+    dtype_n_ws_n_effgrad_n_lr,
+    stop_gradients,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtypes, [w, effective_grad], lr = dtype_n_ws_n_effgrad_n_lr
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        w=w,
+        effective_grad=effective_grad,
+        lr=lr,
+        stop_gradients=stop_gradients,
+    )
+
+
+# stop_gradient
+@handle_test(
+    fn_tree="functional.ivy.stop_gradient",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    preserve_type=st.booleans(),
+    test_instance_method=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_stop_gradient(
+    *, dtype_and_x, preserve_type, test_flags, backend_fw, fn_name, on_device
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        preserve_type=preserve_type,
+    )
+
+
+# value_and_grad
+@pytest.mark.parametrize(
+    "x", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
+)
+@pytest.mark.parametrize("dtype", ["float32", "float64"])
+@pytest.mark.parametrize(
+    "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
+)
+def test_value_and_grad(x, dtype, func, backend_fw):
+    if backend_fw == "numpy":
+        return
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        var = ivy_backend.ivy.functional.ivy.gradients._variable(
+            ivy_backend.array(x, dtype=dtype)
+        )
+        fn = ivy_backend.value_and_grad(func)
+        value, grad = fn(var)
+        value_np, grad_np = helpers.flatten_and_to_np(
+            ret=value, backend=backend_fw
+        ), helpers.flatten_and_to_np(ret=grad, backend=backend_fw)
+
+    with BackendHandler.update_backend("tensorflow") as gt_backend:
+        var = gt_backend.ivy.functional.ivy.gradients._variable(
+            gt_backend.array(x, dtype=dtype)
+        )
+        fn = gt_backend.value_and_grad(func)
+        value_gt, grad_gt = fn(var)
+        value_np_from_gt, grad_np_from_gt = helpers.flatten_and_to_np(
+            ret=value_gt, backend="tensorflow"
+        ), helpers.flatten_and_to_np(ret=grad_gt, backend="tensorflow")
+
+    for value, value_from_gt in zip(value_np, value_np_from_gt):
+        assert value.shape == value_from_gt.shape
+        assert np.allclose(value, value_from_gt)
+    for grad, grad_from_gt in zip(grad_np, grad_np_from_gt):
+        assert grad.shape == grad_from_gt.shape
+        assert np.allclose(grad, grad_from_gt)

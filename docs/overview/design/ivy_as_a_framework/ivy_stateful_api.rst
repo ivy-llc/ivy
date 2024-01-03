@@ -1,7 +1,7 @@
 Ivy Stateful API
 ================
 
-Here we explain how Ivy’s stateful API builds on the functional API and the :class:`ivy.Container` class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!
+Here we explain how Ivy’s stateful API builds on the functional API and the :class:`ivy.Container` class to provide other convenient classes in the form of optimizers, network layers, and custom trainable modules, which help get your ML projects up and running very quickly!
 
 So, without further ado, let’s walk through what the stateful API has to offer!
 
@@ -39,7 +39,7 @@ For example, we can create a linear layer by deriving from :class:`ivy.Module` l
               inputs, self.v.w,
               self.v.b if self._with_bias else None)
 
-For simplicity, this is slightly different to the builtin :class:`ivy.Linear` in a couple of ways, as we will explain in the Initializer section below.
+For simplicity, this is slightly different from the builtin :class:`ivy.Linear` in a couple of ways, as we will explain in the Initializer section below.
 
 All :class:`ivy.Module` instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an :class:`ivy.Container`.
 For our example above, the hierarchical structure of these variables is the same as that defined in the method :meth:`_create_variables`.
@@ -370,7 +370,7 @@ The actual implementation for the :class:`ivy.Linear` layer exposed in the Ivy s
               self.v.b if self._with_bias else None)
 
 The :class:`ivy.Initializer` class has a single abstract method, :code:`create_variables(var_shape, dev, fan_out=None, fan_in=None, *args, **kwargs)`.
-Check out the `code <https://github.com/unifyai/ivy/blob/main/ivy/stateful/initializers.py>`_ or `docs <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html#initializers>`_ for more details.
+Check out the `code <https://github.com/unifyai/ivy/blob/main/ivy/stateful/initializers.py>`_ or :ref:`docs <overview/design/ivy_as_a_framework/ivy_stateful_api:Initializers>` for more details.
 The default initializer for the weights is :class:`ivy.GlorotUniform` and for this bias is :class:`ivy.Zeros`.
 Let’s take a quick look at what these look like.
 :class:`ivy.GlorotUniform` derives from a more general :class:`ivy.Uniform` initializer class, and is then simply implemented as follows:
@@ -427,18 +427,18 @@ The implementation is as follows:
 
         def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999,
                      epsilon=1e-07, inplace=None,
-                     stop_gradients=True, compile_on_next_step=False,
+                     stop_gradients=True, trace_on_next_step=False,
                      dev=None):
             ivy.Optimizer.__init__(
                 self, lr, inplace, stop_gradients, True,
-                compile_on_next_step, dev)
+                trace_on_next_step, dev)
             self._beta1 = beta1
             self._beta2 = beta2
             self._epsilon = epsilon
             self._mw = None
             self._vw = None
             self._first_pass = True
-            self._should_compile = False
+            self._should_trace = False
 
         # Custom Step
 
