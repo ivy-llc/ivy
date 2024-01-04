@@ -38,10 +38,6 @@ FN_DECORATORS = [
     "handle_nans",
 ]
 
-CYTHON_WRAPPERS = [
-    "add_wrapper",
-]
-
 
 # Helpers #
 # --------#

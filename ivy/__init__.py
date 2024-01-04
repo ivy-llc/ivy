@@ -591,8 +591,7 @@ warning_level_stack = []
 nan_policy_stack = []
 dynamic_backend_stack = []
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
-cython_wrappers_mode = False
-
+cython_wrappers_stack = []
 
 # local
 import threading
@@ -963,7 +962,7 @@ globals_vars = GlobalsDict({
     "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
     "nan_policy_stack": nan_policy_stack,
     "dynamic_backend_stack": dynamic_backend_stack,
-    "cython_wrappers_mode": cython_wrappers_mode,
+    "cython_wrappers_stack": cython_wrappers_stack,
 })
 
 _default_globals = copy.deepcopy(globals_vars)
@@ -1171,16 +1170,16 @@ def unset_dynamic_backend():
 
 # Cython wrappers
 
-ivy.cython_wrappers_mode = False
+ivy.cython_wrappers_mode = cython_wrappers_stack[-1] if cython_wrappers_stack else False
 
 
 @handle_exceptions
-def set_cython_wrappers_mode(mode: bool = True) -> None:
+def set_cython_wrappers_mode(flag: bool = True) -> None:
     """Set the mode of whether to use cython wrappers for functions.
 
     Parameter
     ---------
-    mode
+    flag
         boolean whether to use cython wrappers for functions
 
     Examples
@@ -1193,7 +1192,11 @@ def set_cython_wrappers_mode(mode: bool = True) -> None:
     >>> ivy.cython_wrappers_mode
     True
     """
-    ivy.__setattr__("cython_wrappers_mode", mode)
+    global cython_wrappers_stack
+    if flag not in [True, False]:
+        raise ValueError("cython_wrappers_mode must be a boolean value (True or False)")
+    cython_wrappers_stack.append(flag)
+    ivy.__setattr__("cython_wrappers_mode", flag, True)
 
 
 # Context Managers

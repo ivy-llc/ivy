@@ -553,8 +553,6 @@ def with_backend(backend: str, cached: bool = True):
         )
         _handle_backend_specific_vars(ivy_pack, backend_module)
         set_backend_to_specific_version(backend_module)
-        # set cython_mode equal to the one in the original ivy
-        ivy_pack.cython_wrappers_mode = ivy.cython_wrappers_mode
         # We know for sure that the backend stack is empty
         # no need to do backend unsetting
         ivy_pack.utils.backend.handler._set_module_backend(
