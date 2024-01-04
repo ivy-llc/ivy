@@ -67,6 +67,3 @@ ignore = [
 'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)' = ["D"]
 "**/__init__.py" = ["F401","F403","F405","F811","F821", "E501"]
 "ivy/functional/frontends/paddle/**" = ["F401", "F403", "F405"]
-
-[tool.ruff.lint.isort]
-lines-after-imports = 2
