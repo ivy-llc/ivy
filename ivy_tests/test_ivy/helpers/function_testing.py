@@ -932,7 +932,7 @@ def test_frontend_function(
                 first_array = first_array.data
             ret_ = ret_.data
             if hasattr(first_array, "requires_grad"):
-                first_array.requires_grad = False
+                first_array = first_array.detach()
             assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
             assert _is_frontend_array(ret)
