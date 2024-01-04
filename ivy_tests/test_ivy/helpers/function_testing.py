@@ -39,7 +39,31 @@ def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=Non
     with BackendHandler.update_backend(backend) as ivy_backend:
         if test_trace:
             try:
-                fn = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+                ivy_backend.trace_graph(fn)
+                if (
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                    in t_globals.CURRENT_TRACED_DATA
+                    and backend
+                    not in t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ]
+                ):
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ][backend] = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+                elif (
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                    not in t_globals.CURRENT_TRACED_DATA
+                ):
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ] = {}
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ][backend] = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+                fn = t_globals.CURRENT_TRACED_DATA[
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                ][backend]
             except Exception:
                 import logging
 
