@@ -4573,60 +4573,6 @@ def test_torch_byte(
     )
 
 
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="cauchy_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    mean=helpers.floats(min_value=-1, max_value=1),
-    std=helpers.floats(min_value=0, max_value=1),
-)
-def test_torch_tensor_cauchy_(
-    dtype_and_x,
-    mean,
-    std,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
-    backend_fw,
-):
-    dtype, x = dtype_and_x
-
-    def call():
-        return helpers.test_frontend_method(
-            init_input_dtypes=dtype,
-            backend_to_test=backend_fw,
-            init_all_as_kwargs_np={"data": x[0]},
-            method_input_dtypes=dtype,
-            method_all_as_kwargs_np={
-                "mean": mean,
-                "std": std,
-            },
-            frontend_method_data=frontend_method_data,
-            init_flags=init_flags,
-            method_flags=method_flags,
-            frontend=frontend,
-            on_device=on_device,
-            test_values=False,
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for u, v in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
-
-
 # ceil
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -12951,6 +12897,60 @@ def test_torch_tanh_(
         frontend=frontend,
         on_device=on_device,
     )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="cauchy_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    mean=helpers.floats(min_value=-1, max_value=1),
+    std=helpers.floats(min_value=0, max_value=1),
+)
+def test_torch_tensor_cauchy_(
+    dtype_and_x,
+    mean,
+    std,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+
+    def call():
+        return helpers.test_frontend_method(
+            init_input_dtypes=dtype,
+            backend_to_test=backend_fw,
+            init_all_as_kwargs_np={"data": x[0]},
+            method_input_dtypes=dtype,
+            method_all_as_kwargs_np={
+                "mean": mean,
+                "std": std,
+            },
+            frontend_method_data=frontend_method_data,
+            init_flags=init_flags,
+            method_flags=method_flags,
+            frontend=frontend,
+            on_device=on_device,
+            test_values=False,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
 
 
 # corrcoef
