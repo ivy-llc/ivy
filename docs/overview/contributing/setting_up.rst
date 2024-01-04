@@ -3,10 +3,10 @@ Setting Up
 
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
-.. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
-.. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
-.. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
+.. _`pycharm thread`: https://discord.com/channels/799879767196958751/1186628916522262629
+.. _`docker thread`: https://discord.com/channels/799879767196958751/1186629067966009424
+.. _`pre-commit thread`: https://discord.com/channels/799879767196958751/1186629635694399539
+.. _`pip packages thread`: https://discord.com/channels/799879767196958751/1186629837515935765
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
 .. _`ivy/scripts`: https://github.com/unifyai/ivy/tree/bcddc79978afe447958dfa3ea660716845c85846/scripts
@@ -66,7 +66,7 @@ In order to install and properly set up pre-commit, these steps should be follow
 
 That's it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.
 
-For questions, please reach out on `discord`_ in the `pre-commit channel`_!
+For questions, please reach out on `discord`_ in the `pre-commit thread`_!
 
 
 PyCharm
@@ -83,7 +83,7 @@ Many people seem to miss this option, so we thought we would add an explicit rem
 #. To continue using PyCharm Professional, you can use the trial version making a jetbrains account but that would be only valid for 1 month.
 #. After the trial expires you have to buy the paid version of PyCharm Professional.
 
-For questions, please reach out on `discord`_ in the `pycharm channel`_!
+For questions, please reach out on `discord`_ in the `pycharm thread`_!
 
 Virtual environments - No Docker
 --------------------------------
@@ -445,7 +445,7 @@ This is a common error which you might face. If you are not successfully able to
    sudo chmod a+rwx /var/run/docker.pid
 
 
-For questions, please reach out on `discord`_ in the `docker channel`_!
+For questions, please reach out on `discord`_ in the `docker thread`_!
 
 **Video**
 
@@ -560,7 +560,7 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true
    :width: 420
 
-For questions, please reach out on `discord`_ in the `docker channel`_!
+For questions, please reach out on `discord`_ in the `docker thread`_!
 
 **"Empty Suite" error fix:**
 
@@ -893,4 +893,4 @@ Running a :code:`pip install -e .` is sufficient to download the binaries if the
 
 This should have hopefully given you a good understanding of how to get things properly set up.
 
-If you have any questions, please feel free to reach out on `discord`_  in the `pycharm channel`_, `docker channel`_, `pre-commit channel`_, `pip packages channel`_ depending on the question!
+If you have any questions, please feel free to reach out on `discord`_  in the `pycharm thread`_, `docker thread`_, `pre-commit thread`_, `pip packages thread`_ depending on the question!

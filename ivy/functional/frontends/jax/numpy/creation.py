@@ -275,7 +275,7 @@ def setdiff1d(ar1, ar2, assume_unique=False, *, size=None, fill_value=None):
     if size is None:
         return ar1[mask]
     else:
-        if not (assume_unique):
+        if not assume_unique:
             # Set mask to zero at locations corresponding to unique() padding.
             n_unique = ar1.size + 1 - (ar1 == ar1[0]).sum(dtype=ivy.int64)
             mask = ivy.where(ivy.arange(ar1.size) < n_unique, mask, False)

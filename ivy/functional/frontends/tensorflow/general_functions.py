@@ -20,7 +20,7 @@ import functools
 
 
 def _num_to_bit_list(value, num_dims):
-    return list(map(int, "{:0{size}b}".format(value, size=num_dims)))[::-1]
+    return list(map(int, f"{value:0{num_dims}b}"))[::-1]
 
 
 # --- Main --- #

@@ -2650,6 +2650,39 @@ def test_tensorflow_scalar_mul(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.math.segment_sum",
+    data=helpers.array_values(dtype=helpers.get_dtypes("valid"), shape=(5, 6)),
+    segment_ids=helpers.array_values(
+        dtype=helpers.get_dtypes("signed_integer", prune_function=True),
+        shape=(5,),
+        min_value=0,
+        max_value=4,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_segment_sum(
+    *,
+    data,
+    segment_ids,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[str(data.dtype), "int32", "int64"],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=data,
+        segment_ids=np.sort(segment_ids),
+    )
+
+
 # sigmoid
 @handle_frontend_test(
     fn_tree="tensorflow.math.sigmoid",

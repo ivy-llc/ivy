@@ -135,14 +135,13 @@ def dice_loss(input, label, epsilon=0.00001, name=None):
         len(input.shape) == len(label.shape),
         message=str(
             "The rank of input and label should be equal, "
-            "but received input: %d, label: %d." % (len(input.shape), len(label.shape))
+            f"but received input: {len(input.shape)}, label: {len(label.shape)}."
         ),
     )
     ivy.assertions.check_true(
         label.shape[-1] == 1,
         message=str(
-            "The last dimension of label should be 1, but received %d."
-            % label.shape[-1]
+            f"The last dimension of label should be 1, but received {label.shape[-1]}."
         ),
     )
     ivy.assertions.check_true(

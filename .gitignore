@@ -20,7 +20,6 @@ with_time_logs/
 *.ods
 *.jpg
 *.jpeg
-*.png
 *.gif
 *.so
 .hypothesis
