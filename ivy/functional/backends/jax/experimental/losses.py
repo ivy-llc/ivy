@@ -1,8 +1,6 @@
 import jax.numpy as jnp
-import jax
 from typing import Optional
 from ivy.functional.backends.jax import JaxArray
-import ivy
 
 # local
 from ivy.func_wrapper import (
@@ -66,11 +64,11 @@ def soft_margin_loss(
         return loss
 
 
-def _apply_loss_reduction(loss: JaxArray, reduction: str, axis=None) -> JaxArray:
+def _apply_loss_reduction(loss: JaxArray, reduction: str) -> JaxArray:
     if reduction == "sum":
-        return jnp.sum(loss, axis=axis)
+        return jnp.sum(loss)
     elif reduction == "mean":
-        return jnp.mean(loss, axis=axis)
+        return jnp.mean(loss)
     else:  # reduction == "none"
         return loss
 
@@ -85,30 +83,30 @@ def _validate_poisson_nll_params(
     # Validate dtypes
     for parameter, name in zip([input, label], ["input", "label"]):
         if parameter.dtype not in allowed_dtypes:
-            raise ValueError(
-                "The dtype of '%s' in poisson_nll_loss should be one of %s, but"
-                " received %s." % (name, allowed_dtypes, parameter.dtype)
+            raise TypeError(
+                f"The dtype of '{name}' in poisson_nll_loss should be one of"
+                f" {allowed_dtypes}, but received {parameter.dtype}."
             )
 
     # Validate epsilon
     if epsilon <= 0:
         raise ValueError(
             "The value of `epsilon` in poisson_nll_loss should be positive, but"
-            " received %f, which is not allowed" % epsilon
+            f" received {epsilon}, which is not allowed."
         )
 
     # Validate reduction
     if reduction not in ["sum", "mean", "none"]:
         raise ValueError(
             "The value of 'reduction' in poisson_nll_loss should be 'sum', 'mean' or"
-            " 'none', but received %s, which is not allowed." % reduction
+            f" 'none', but received {reduction}, which is not allowed."
         )
 
     # Validate shape
     if input.shape != label.shape:
         raise ValueError(
-            "The shape of 'input' (%s) must be the same as the shape of 'label' (%s)."
-            % (input.shape, label.shape)
+            f"The shape of 'input' ({input.shape}) must be the same as the shape of"
+            f" 'label' ({label.shape})."
         )
 
     return True
@@ -116,7 +114,7 @@ def _validate_poisson_nll_params(
 
 @with_supported_device_and_dtypes(
     {
-        "0.4.14 and below": {
+        "0.4.18 and below": {
             "cpu": ("float16", "float32", "float64"),
         }
     },
@@ -159,64 +157,24 @@ def poisson_nll_loss(
 
 @with_supported_device_and_dtypes(
     {
-        "0.4.14 and below": {
-            "cpu": ("float16", "float32", "float64"),
+        "0.4.18 and below": {
+            "cpu": ("float32", "float64"),
         }
     },
     backend_version,
 )
-def binary_cross_entropy(
+def hinge_embedding_loss(
     input: JaxArray,
     target: JaxArray,
-    /,
     *,
-    from_logits: bool = False,
-    epsilon: float = 1e-7,
-    reduction: str = "none",
-    pos_weight: Optional[JaxArray] = None,
-    axis: Optional[int] = None,
-    out: Optional[JaxArray] = None,
+    margin: float = 1.0,
+    reduction: str = "mean",
 ) -> JaxArray:
-    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    zero_ = jnp.zeros([1], dtype=input.dtype)
 
-    if not (0.0 <= epsilon <= 1.0):
-        raise ValueError("epsilon should be a float in [0, 1]")
+    relu_part = jnp.maximum(margin - input, 0)
 
-    if not from_logits and pos_weight is not None:
-        raise ValueError("pos_weight is only allowed when from_logits is set to True")
-
-    if out is not None:
-        raise NotImplementedError(
-            "The 'out' argument to jnp.binary_cross_entropy is not supported."
-        )
-
-    input_arr = jnp.asarray(input, dtype=input.dtype)
-    target_arr = jnp.asarray(target, dtype=input.dtype)
-
-    if from_logits:
-        input = jax.nn.sigmoid(input_arr)
-        if pos_weight is not None:
-            pos_weight = jnp.asarray(pos_weight, dtype=input.dtype)
-            num_classes = (
-                input_arr.shape[0] if len(input_arr.shape) == 1 else input_arr.shape[1]
-            )
-            if pos_weight.shape[0] != num_classes:
-                raise ValueError(
-                    "pos_weight must have the same size as the number of classes in"
-                    " pred at non-singleton dimension 1"
-                )
-            loss = -1.0 * (
-                (pos_weight * target_arr * jnp.log(input_arr + epsilon))
-                + (1.0 - target_arr) * jnp.log(1.0 - input_arr + epsilon)
-            )
-        else:
-            loss = -1.0 * (
-                target_arr * jnp.log(input_arr + epsilon)
-                + (1.0 - target_arr) * jnp.log(1.0 - input_arr + epsilon)
-            )
-    else:
-        loss = -1.0 * (
-            target_arr * jnp.log(input_arr + epsilon)
-            + (1.0 - target_arr) * jnp.log(1.0 - input_arr + epsilon)
-        )
-    return _apply_loss_reduction(loss, reduction, axis=axis)
+    loss = jnp.where(target == 1.0, input, zero_) + jnp.where(
+        target == -1.0, relu_part, zero_
+    )
+    return _apply_loss_reduction(loss, reduction)

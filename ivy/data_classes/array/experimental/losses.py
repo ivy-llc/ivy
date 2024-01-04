@@ -15,10 +15,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         reduction: Optional[str] = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.l1_loss. This method simply wraps the
-        function, and so the docstring for ivy.l1_loss also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.l1_loss. This method simply
+        wraps the function, and so the docstring for ivy.l1_loss also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -59,10 +58,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         reduction: str = "none",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.log_poisson_loss. This method simply
-        wraps the function, and so the docstring for ivy.l1_loss also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.log_poisson_loss. This
+        method simply wraps the function, and so the docstring for ivy.l1_loss
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -122,10 +120,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         delta: Optional[float] = 1.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of huber_loss. This method simply wraps the
-        function, and so the docstring for huber_loss also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of huber_loss. This method simply
+        wraps the function, and so the docstring for huber_loss also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -170,10 +167,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         reduction: Optional[str] = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy. smooth_l1_loss. This method simply
-        wraps the function, and so the docstring for ivy.smooth_l1_loss also applies to
-        this method with minimal changes.
+        """ivy.Array instance method variant of ivy. smooth_l1_loss. This
+        method simply wraps the function, and so the docstring for
+        ivy.smooth_l1_loss also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -218,10 +214,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         reduction: Optional[str] = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.soft_margin_loss. This method simply
-        wraps the function, and so the docstring for ivy.soft_margin_loss also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.soft_margin_loss. This
+        method simply wraps the function, and so the docstring for
+        ivy.soft_margin_loss also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -261,10 +256,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         log_target=False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.kl_div. This method simply wraps the
-        function, and so the docstring for ivy.kl_div also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.kl_div. This method simply
+        wraps the function, and so the docstring for ivy.kl_div also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -308,8 +302,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         eps: float = 1e-8,
         reduction: str = "mean",
     ) -> ivy.Array:
-        r"""
-        Compute the Poisson Negative Log Likelihood Loss.
+        r"""Compute the Poisson Negative Log Likelihood Loss.
 
         This function calculates the negative log likelihood loss
         between the `input` and `target`under the assumption that
@@ -373,69 +366,83 @@ class _ArrayWithLossesExperimental(abc.ABC):
             reduction=reduction,
         )
 
-    def binary_cross_entropy(
+    def hinge_embedding_loss(
         self: Union[ivy.Array, ivy.NativeArray],
         target: Union[ivy.Array, ivy.NativeArray],
-        /,
         *,
-        from_logits: bool = False,
-        epsilon: float = 0.0,
-        reduction: str = "none",
-        pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        axis: Optional[int] = None,
-        out: Optional[ivy.Array] = None,
+        margin: float = 1.0,
+        reduction: str = "mean",
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.binary_cross_entropy. This method
-        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
-        also applies to this method with minimal changes.
+        r"""Measures loss from input `x` and label `y` with values 1 or -1. It
+        evaluates if two inputs are similar or not, often used for embedding or
+        semi-supervised learning.
+
+        Loss for the `n`-th sample:
+            .. math::
+                l_n = \begin{cases}
+                    x_n, & \text{if}\; y_n = 1,\\
+                    \max \{0, margin - x_n\}, & \text{if}\; y_n = -1,
+                \end{cases}
+
+        Total loss:
+            .. math::
+                \ell(x, y) = \begin{cases}
+                    \operatorname{mean}(L), & \text{if reduction} = \text{`mean';}\\
+                    \operatorname{sum}(L),  & \text{if reduction} = \text{`sum'.}
+                \end{cases}
+
+        where :math:`L = \{l_1,\dots,l_N\}^\top`
 
         Parameters
         ----------
-        self
-            input array of arbitrary shape containing probabilities.
-        target
-            input array same shape as input with values between 0 and 1.
-        from_logits
-            Whether `pred` is expected to be a logits tensor. By
-            default, we assume that `pred` encodes a probability distribution.
-        epsilon
-            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
-            the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+        input
+            Input tensor with dtype float.
+            The shape is [N, \*], where N is batch size and `\*` represents
+            any number of additional dimensions.
+        label
+            Label tensor containing 1 or -1 with dtype float32 or float64.
+            Its shape matches that of the input.
+        margin
+            Sets the hyperparameter margin. Determines the necessary input size
+            for hinge_embedding_loss calculations when label is -1. Inputs smaller
+            than the margin are minimized with hinge_embedding_loss.
+            Default is 1.0.
         reduction
-            ``'none'``: No reduction will be applied to the output.
-            ``'mean'``: The output will be averaged.
-            ``'sum'``: The output will be summed. Default: ``'none'``.
-        pos_weight
-            a weight for positive examples. Must be an array with length equal to the
-            number of classes.
-        axis
-            Axis along which to compute crossentropy.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+            Specifies how to aggregate the loss across the batch. Options are:
+            - ``'none'``: Returns the unreduced loss.
+            - ``'mean'``: Returns the mean loss.
+            - ``'sum'``: Returns the summed loss.
+            Default is ``'mean'``.
+
+        Shape
+        -----
+            - Input: :math:`(*)` where :math:`*` means, any number of dimensions. \
+            The sum operation operates over all the elements.
+            - Target: :math:`(*)`, same shape as the input
+            - Output: scalar. If :attr:`reduction` is ``'none'``,
+            then same shape as the input
 
         Returns
         -------
         ret
-            The Binary Cross Entropy loss between the input array and the
-            target values.
+            Hinge embedding loss calculated from the input and label,
+            shaped based on the reduction method.
 
         Examples
         --------
-        >>> input = ivy.array([0.7, 0.6, 0.6])
-        >>> target = ivy.array([1.0, 0.0, 1.0])
-        >>> output= x.binary_cross_entropy(y)
-        >>> print(z)
-        ivy.array(0.5946)
+        >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
+        >>> target_tensor = ivy.array([1, 1, 1, 1], dtype=ivy.float64)
+        >>> input_tensor.hinge_embedding_loss(target_tensor,reduction="sum")
+        ivy.array(10.)
+
+        >>> input_tensor = ivy.array([1, 2, 3], dtype=ivy.float64)
+        >>> target_tensor = ivy.array([1, -1, -1], dtype=ivy.float64)
+        >>> input_tensor.hinge_embedding_loss(target_tensor, margin=2.0)
+        ivy.array(0.33333333)
         """
-        return ivy.binary_cross_entropy(
+        return ivy.hinge_embedding_loss(
             self._data,
             target,
-            from_logits=from_logits,
-            epsilon=epsilon,
+            margin=margin,
             reduction=reduction,
-            pos_weight=pos_weight,
-            axis=axis,
-            out=out,
         )

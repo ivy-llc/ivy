@@ -113,11 +113,18 @@ class Booster:
 
         # create gbm(as for now only gblinear booster is available)
         self.gbm = GBLinear(params, compile=compile, cache=cache)
+        self.compile = compile
+        if self.compile:
+            self._comp_binary_prediction = ivy.trace_graph(
+                _binary_prediction, backend_compile=True, static_argnums=(0,)
+            )
+
+            # invoke function to get its compiled version
+            self._comp_binary_prediction(self.gbm.obj, cache[1])
 
     def update(self, dtrain, dlabel, iteration, fobj=None):
-        """
-        Update for one iteration, with objective function calculated internally. This
-        function should not be called directly by users.
+        """Update for one iteration, with objective function calculated
+        internally. This function should not be called directly by users.
 
         Parameters
         ----------
@@ -148,11 +155,10 @@ class Booster:
         iteration_range=(0, 0),
         strict_shape=False,
     ):
-        """
-        Predict with data. The full model will be used unless `iteration_range` is
-        specified, meaning user have to either slice the model or use the
-        ``best_iteration`` attribute to get prediction from best model returned from
-        early stopping.
+        """Predict with data. The full model will be used unless
+        `iteration_range` is specified, meaning user have to either slice the
+        model or use the ``best_iteration`` attribute to get prediction from
+        best model returned from early stopping.
 
         Parameters
         ----------
@@ -212,9 +218,20 @@ class Booster:
         # currently supports prediction for binary task
         # get raw predictions
         pred = self.gbm.pred(data)
+        args = (self.gbm.obj, pred)
 
-        # apply activation function
-        pred = self.gbm.obj.pred_transform(pred)
+        if self.compile:
+            return self._comp_binary_prediction(*args)
+        else:
+            return _binary_prediction(*args)
 
-        # apply probability thresholding
-        return ivy.where(pred >= 0.5, 1.0, 0.0)
+
+# --- Helpers --- #
+# --------------- #
+
+
+def _binary_prediction(obj, raw_pred):
+    # apply activation function
+    pred = obj.pred_transform(raw_pred)
+    # apply probability thresholding
+    return ivy.where(pred >= 0.5, 1.0, 0.0)

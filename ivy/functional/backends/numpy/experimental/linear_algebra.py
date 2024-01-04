@@ -90,7 +90,7 @@ kron.support_native_out = False
 
 
 @with_supported_dtypes(
-    {"1.26.0 and below": ("float32", "float64", "complex64", "complex128")},
+    {"1.26.3 and below": ("float32", "float64", "complex64", "complex128")},
     backend_version,
 )
 def matrix_exp(
@@ -106,7 +106,7 @@ def matrix_exp(
     return exp_mat.astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
 def eig(
     x: np.ndarray,
     /,
@@ -120,7 +120,7 @@ def eig(
 eig.support_native_out = False
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
 def eigvals(x: np.ndarray, /) -> np.ndarray:
     e = np.linalg.eigvals(x)
     return e.astype(complex)

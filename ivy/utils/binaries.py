@@ -1,7 +1,7 @@
 import os
 import logging
 import json
-from pip._vendor.packaging import tags
+from packaging import tags
 from urllib import request
 from tqdm import tqdm
 
@@ -33,12 +33,10 @@ def check_for_binaries():
         for path in binaries_paths:
             if not os.path.exists(path):
                 if initial:
-                    config_str = "\n".join(
-                        [
-                            f"{module} : {', '.join(configs)}"
-                            for module, configs in available_configs.items()
-                        ]
-                    )
+                    config_str = "\n".join([
+                        f"{module} : {', '.join(configs)}"
+                        for module, configs in available_configs.items()
+                    ])
                     logging.warning(
                         "\tSome binaries seem to be missing in your system. This could "
                         "be either because we don't have compatible binaries for your "
@@ -65,19 +63,20 @@ def cleanup_and_fetch_binaries(clean=True):
         binaries_dict = json.load(open(binaries_path))
         available_configs = json.load(open(available_configs_path))
         binaries_paths = _get_paths_from_binaries(binaries_dict, folder_path)
-        binaries_exts = set([path.split(".")[-1] for path in binaries_paths])
+        binaries_exts = {path.split(".")[-1] for path in binaries_paths}
 
         # clean up existing binaries
         if clean:
-            print("Cleaning up existing binaries", end="\r")
+            print("Cleaning up existing binaries...", end="\r")
             for root, _, files in os.walk(folder_path, topdown=True):
                 for file in files:
                     if file.split(".")[-1] in binaries_exts:
                         os.remove(os.path.join(root, file))
             print("Cleaning up existing binaries --> done")
 
-        print("Downloading new binaries")
+        print("Downloading new binaries...")
         all_tags = list(tags.sys_tags())
+
         version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
         terminate = False
 
@@ -110,3 +109,10 @@ def cleanup_and_fetch_binaries(clean=True):
                         pbar.update(1)
                     except request.HTTPError:
                         break
+        if terminate:
+            print("Downloaded all binaries!")
+        else:
+            print(
+                "Couldn't download all binaries. Try importing ivy to get more "
+                "details about the missing binaries."
+            )

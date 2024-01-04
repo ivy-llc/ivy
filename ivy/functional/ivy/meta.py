@@ -26,8 +26,7 @@ def _compute_cost_and_update_grads(
     batched,
     num_tasks,
 ):
-    """
-    Compute cost and update gradients.
+    """Compute cost and update gradients.
 
     This function computes the cost and updates gradients for optimization.
 
@@ -89,12 +88,10 @@ def _compute_cost_and_update_grads(
             else variables.cont_prune_key_chains(outer_v, ignore_none=True)
         )
 
-        inner_grads = ivy.Container(
-            {
-                k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
-                for k, v in var.cont_to_iterator()
-            }
-        )
+        inner_grads = ivy.Container({
+            k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
+            for k, v in var.cont_to_iterator()
+        })
 
         if batched:
             inner_grads = ivy.multiply(inner_grads, num_tasks)
@@ -154,16 +151,14 @@ def _train_task(
             if keep_innver_v
             else variables.cont_prune_key_chains(inner_v, ignore_none=True)
         )
-        inner_update_grads = ivy.Container(
-            {
-                k: (
-                    ivy.zeros_like(v)
-                    if k not in inner_update_grads
-                    else inner_update_grads[k]
-                )
-                for k, v in var.cont_to_iterator()
-            }
-        )
+        inner_update_grads = ivy.Container({
+            k: (
+                ivy.zeros_like(v)
+                if k not in inner_update_grads
+                else inner_update_grads[k]
+            )
+            for k, v in var.cont_to_iterator()
+        })
         if batched:
             inner_update_grads = ivy.multiply(inner_update_grads, num_tasks)
 
@@ -478,8 +473,7 @@ def fomaml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform step of first order MAML.
+    """Perform step of first order MAML.
 
     Parameters
     ----------
@@ -594,8 +588,7 @@ def reptile_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform a step of Reptile.
+    """Perform a step of Reptile.
 
     Parameters
     ----------
@@ -744,8 +737,7 @@ def maml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform step of vanilla second order MAML.
+    """Perform step of vanilla second order MAML.
 
     Parameters
     ----------
@@ -805,6 +797,32 @@ def maml_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
+
+    Examples
+    --------
+    With :class:`ivy.Container` input:
+
+    >>> import ivy
+    >>> from ivy.functional.ivy.gradients import _variable
+
+    >>> ivy.set_backend("torch")
+
+    >>> def inner_cost_fn(sub_batch, v):
+    ...     return sub_batch.mean().x / v.mean().latent
+    >>> def outer_cost_fn(sub_batch,v):
+    ...     return sub_batch.mean().x / v.mean().latent
+
+    >>> num_tasks = 2
+    >>> batch = ivy.Container({"x": ivy.arange(1, num_tasks + 1, dtype="float32")})
+    >>> variables = ivy.Container({
+    ...     "latent": _variable(ivy.repeat(ivy.array([[1.0]]), num_tasks, axis=0))
+    ... })
+
+    >>> cost = ivy.maml_step(batch, inner_cost_fn, outer_cost_fn, variables, 5, 0.01)
+    >>> print(cost)
+    (ivy.array(1.40069818), {
+    latent: ivy.array([-1.13723135])
+    }, ())
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]

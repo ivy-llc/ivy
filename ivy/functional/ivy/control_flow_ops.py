@@ -3,8 +3,12 @@ import ivy
 from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_like_without_promotion,
+    handle_backend_invalid,
+    handle_device,
+    outputs_to_ivy_arrays,
     to_native_arrays_and_back,
 )
+from ivy.utils.exceptions import handle_exceptions
 
 
 def if_else(
@@ -13,10 +17,9 @@ def if_else(
     orelse_fn: Callable,
     vars: Dict[str, Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
-    """
-    Take a condition function and two functions as input. If the condition is True, the
-    first function is executed and its result is returned. Otherwise, the second
-    function is executed and its result is returned.
+    """Take a condition function and two functions as input. If the condition
+    is True, the first function is executed and its result is returned.
+    Otherwise, the second function is executed and its result is returned.
 
     Parameters
     ----------
@@ -62,14 +65,18 @@ def if_else(
     return _if_else(cond, body_fn, orelse_fn, **vars)
 
 
+@handle_exceptions
+@handle_backend_invalid
+@outputs_to_ivy_arrays
+@handle_device
 def while_loop(
     test_fn: Callable,
     body_fn: Callable,
     vars: Dict[str, Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
-    """
-    Take a test function, a body function and a set of variables as input. The body
-    function is executed repeatedly while the test function returns True.
+    """Take a test function, a body function and a set of variables as input.
+    The body function is executed repeatedly while the test function returns
+    True.
 
     Parameters
     ----------
@@ -119,9 +126,8 @@ def for_loop(
     body_fn: Callable,
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ):
-    """
-    Loops over an iterable, passing the current iteration along with a tuple of
-    variables into the provided body function.
+    """Loops over an iterable, passing the current iteration along with a tuple
+    of variables into the provided body function.
 
     Parameters
     ----------

@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statist
 @st.composite
 def _get_axis_and_p(draw, kind="valid"):
     p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
-    if p == "fro" or p == "nuc":
+    if p in ["fro", "nuc"]:
         max_axes_size = 2
         min_axes_size = 2
     else:
@@ -106,7 +106,7 @@ def test_torch_all(
 @handle_frontend_test(
     fn_tree="torch.amax",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_axis=-1,
         max_axis=0,
@@ -140,7 +140,7 @@ def test_torch_amax(
 @handle_frontend_test(
     fn_tree="torch.amin",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_axis=-1,
         max_axis=0,
@@ -174,7 +174,7 @@ def test_torch_amin(
 @handle_frontend_test(
     fn_tree="torch.aminmax",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_axis=-1,
         max_axis=0,
@@ -209,6 +209,9 @@ def test_torch_aminmax(
     fn_tree="torch.any",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=8,
+        large_abs_safety_factor=8,
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
@@ -476,7 +479,7 @@ def test_torch_mean(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, *_ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -495,7 +498,7 @@ def test_torch_mean(
 @handle_frontend_test(
     fn_tree="torch.median",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
@@ -656,7 +659,7 @@ def test_torch_nanmean(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, *_ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -760,14 +763,14 @@ def test_torch_norm(
 
     helpers.test_frontend_function(
         backend_to_test=backend_fw,
-        input_dtypes=[x_dtype],
+        input_dtypes=x_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-01,
         atol=1e-08,
-        input=x,
+        input=x[0],
         p=p,
         dim=axis,
         keepdim=keepdim,
