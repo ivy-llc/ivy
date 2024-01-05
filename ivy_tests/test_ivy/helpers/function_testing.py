@@ -39,7 +39,6 @@ def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=Non
     with BackendHandler.update_backend(backend) as ivy_backend:
         if test_trace:
             try:
-                ivy_backend.trace_graph(fn)
                 if (
                     t_globals.CURRENT_RUNNING_TEST.fn_name
                     in t_globals.CURRENT_TRACED_DATA
