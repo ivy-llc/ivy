@@ -68,6 +68,7 @@ def atan2(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.arctan2(x1, x2)
 
 
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def atanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arctanh(x)
 
