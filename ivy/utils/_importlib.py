@@ -74,8 +74,7 @@ def _from_import(name: str, package=None, mod_globals=None, from_list=(), level=
 
 
 def _absolute_import(name: str, asname=None, mod_globals=None):
-    """
-    Handle absolute import statement :param name:
+    """Handle absolute import statement :param name:
 
     :return:
     """

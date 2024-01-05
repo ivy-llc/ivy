@@ -44,8 +44,7 @@ def cross_entropy(
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute cross-entropy between predicted and true discrete distributions.
+    """Compute cross-entropy between predicted and true discrete distributions.
 
     Parameters
     ----------
@@ -102,8 +101,7 @@ def binary_cross_entropy(
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the binary cross entropy loss.
+    """Compute the binary cross entropy loss.
 
     Parameters
     ----------
@@ -281,8 +279,7 @@ def sparse_cross_entropy(
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute sparse cross entropy between logits and labels.
+    """Compute sparse cross entropy between logits and labels.
 
     Parameters
     ----------

@@ -38,8 +38,7 @@ def histogram(
     density: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the histogram of the array ``a``.
+    """Compute the histogram of the array ``a``.
 
     .. note::
         Given bins = [c0, ..., cK], defining intervals I0 = [c0, c1), I1 = [c1, c2),
@@ -165,8 +164,7 @@ def median(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the median along the specified axis.
+    """Compute the median along the specified axis.
 
     Parameters
     ----------
@@ -213,8 +211,7 @@ def nanmean(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the mean of all non-NaN elements along the specified dimensions.
+    """Compute the mean of all non-NaN elements along the specified dimensions.
 
     Parameters
     ----------
@@ -269,8 +266,7 @@ def nanmin(
     initial: Optional[Union[int, float, complex]] = None,
     where: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return minimum of an array or minimum along an axis, ignoring any NaNs.
+    """Return minimum of an array or minimum along an axis, ignoring any NaNs.
 
     Parameters
     ----------
@@ -333,9 +329,8 @@ def nanprod(
     initial: Optional[Union[int, float, complex]] = None,
     where: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the product of array elements over a given axis treating Not a Numbers
-    (NaNs) as ones.
+    """Compute the product of array elements over a given axis treating Not a
+    Numbers (NaNs) as ones.
 
     Parameters
     ----------
@@ -399,8 +394,7 @@ def quantile(
     interpolation: str = "linear",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the q-th quantile of the data along the specified axis.
+    """Compute the q-th quantile of the data along the specified axis.
 
     Parameters
     ----------
@@ -502,10 +496,9 @@ def nanmedian(
     overwrite_input: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    ivy.Array instance method variant of ivy.nanmedian. This method simply wraps the
-    function, and so the docstring for ivy.nanmedian also applies to this method with
-    minimal changes.
+    """ivy.Array instance method variant of ivy.nanmedian. This method simply
+    wraps the function, and so the docstring for ivy.nanmedian also applies to
+    this method with minimal changes.
 
     Parameters
     ----------
@@ -574,8 +567,7 @@ def bincount(
     minlength: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Count the number of occurrences of each value in an integer array.
+    """Count the number of occurrences of each value in an integer array.
 
     Parameters
     ----------
@@ -617,8 +609,7 @@ def igamma(
     x: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Compute the regularized lower gamma function of ``a`` and ``x``.
+    """Compute the regularized lower gamma function of ``a`` and ``x``.
 
     Parameters
     ----------
@@ -662,8 +653,7 @@ def cov(
     aweights: Optional[ivy.Array] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
 ) -> ivy.Array:
-    """
-    Compute the covariance of matrix x1, or variables x1 and x2.
+    """Compute the covariance of matrix x1, or variables x1 and x2.
 
     Parameters
     ----------
@@ -806,9 +796,9 @@ def cummax(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a tuple containing the cumulative maximum of elements of input along the
-    given axis and index location of each maximum value found along the given axis.
+    """Return a tuple containing the cumulative maximum of elements of input
+    along the given axis and index location of each maximum value found along
+    the given axis.
 
     Parameters
     ----------
@@ -907,8 +897,7 @@ def cummin(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the cumulative minimum of the elements along a given axis.
+    """Return the cumulative minimum of the elements along a given axis.
 
     Parameters
     ----------
