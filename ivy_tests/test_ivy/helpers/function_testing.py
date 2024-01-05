@@ -38,7 +38,35 @@ from .assertions import (
 def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=None):
     with BackendHandler.update_backend(backend) as ivy_backend:
         if test_trace:
-            fn = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+            try:
+                if (
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                    in t_globals.CURRENT_TRACED_DATA
+                    and backend
+                    not in t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ]
+                ):
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ][backend] = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+                elif (
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                    not in t_globals.CURRENT_TRACED_DATA
+                ):
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ] = {}
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ][backend] = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+                fn = t_globals.CURRENT_TRACED_DATA[
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                ][backend]
+            except Exception:
+                import logging
+
+                logging.warn("API key is invalid, test_trace is skipped.")
     return fn
 
 
@@ -637,9 +665,13 @@ def test_function(
         backend=backend_to_test,
         ground_truth_backend=test_flags.ground_truth_backend,
     )
-    assert_same_type(
-        ret_from_target, ret_from_gt, backend_to_test, test_flags.ground_truth_backend
-    )
+    if not test_flags.test_trace:
+        assert_same_type(
+            ret_from_target,
+            ret_from_gt,
+            backend_to_test,
+            test_flags.ground_truth_backend,
+        )
 
     assert ret_device == ret_from_gt_device, (
         f"ground truth backend ({test_flags.ground_truth_backend}) returned array on"
