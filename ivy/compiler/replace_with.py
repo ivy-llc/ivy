@@ -6,7 +6,8 @@ replace_map = {}
 
 
 def replace_with(new_func):
-    """Decorate a function/method/attribute to be replaced by another.
+    """
+    Decorate a function/method/attribute to be replaced by another.
 
     Parameters
     ----------
@@ -42,8 +43,7 @@ def replace_with(new_func):
 
 
 class ReplaceFunction(ast.NodeTransformer):
-    """AST Node Transformer to replace function calls, methods, and
-    attributes."""
+    """AST Node Transformer to replace function calls, methods, and attributes."""
 
     def visit_Attribute(self, node):
         if (
@@ -69,8 +69,7 @@ class ReplaceFunction(ast.NodeTransformer):
 
 
 def transform_function(func):
-    """Transform the function by replacing its calls based on the
-    replace_map."""
+    """Transform the function by replacing its calls based on the replace_map."""
     source = inspect.getsource(func)
     tree = ast.parse(source)
     transformed_tree = ReplaceFunction().visit(tree)

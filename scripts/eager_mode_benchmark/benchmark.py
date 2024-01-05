@@ -104,8 +104,9 @@ def eager_benchmark(
     kwargs: Optional[Dict[str, Any]] = None,
     output_path="./report.csv",
 ):
-    """Benchmark the function or module passed in input on the required
-    backends and devices.
+    """
+    Benchmark the function or module passed in input on the required backends and
+    devices.
 
     Parameters
     ----------
@@ -279,7 +280,8 @@ def visualize_speed_up(
     backends: Union[List[str], str] = "all",
     labels: Optional[Union[List[str], str]] = None,
 ):
-    """Visualize the speed up results stored in the csv.
+    """
+    Visualize the speed up results stored in the csv.
 
     Parameters
     ----------

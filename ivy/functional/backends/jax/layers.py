@@ -1,5 +1,4 @@
-"""Collection of Jax network layers, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
 import jax.lax as jlax

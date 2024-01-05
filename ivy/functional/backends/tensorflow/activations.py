@@ -1,4 +1,5 @@
-"""TensorFlow activation functions.
+"""
+TensorFlow activation functions.
 
 Collection of TensorFlow activation functions, wrapped to fit Ivy syntax
 and signature.
