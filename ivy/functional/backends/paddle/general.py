@@ -1,5 +1,4 @@
-"""Collection of Paddle general functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 from numbers import Number

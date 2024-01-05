@@ -72,7 +72,8 @@ class ContainerBase(dict, abc.ABC):
         build_callable=False,
         **kwargs,
     ):
-        """Initialize container object from input dict representation.
+        """
+        Initialize container object from input dict representation.
 
         Parameters
         ----------
@@ -271,8 +272,9 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_handle_inplace(ret, out):
-        """Return an inplace update of out, provided it is not None, by
-        updating with the values in ret.
+        """
+        Return an inplace update of out, provided it is not None, by updating with the
+        values in ret.
 
         Parameters
         ----------
@@ -293,7 +295,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_list_join(containers, config=None):
-        """Join containers of lists together along the specified dimension.
+        """
+        Join containers of lists together along the specified dimension.
 
         Parameters
         ----------
@@ -325,7 +328,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_list_stack(containers, dim, config=None):
-        """List stack containers together along the specified dimension.
+        """
+        List stack containers together along the specified dimension.
 
         Parameters
         ----------
@@ -375,8 +379,9 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_unify(containers, device, mode, axis=0):
-        """Unify a list of containers, on arbitrary devices, to a single
-        container on the specified device.
+        """
+        Unify a list of containers, on arbitrary devices, to a single container on the
+        specified device.
 
         Parameters
         ----------
@@ -402,8 +407,9 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_combine(*containers, config=None):
-        """Combine keys and values in a sequence of containers, with priority
-        given to the right-most container in the case of duplicates.
+        """
+        Combine keys and values in a sequence of containers, with priority given to the
+        right-most container in the case of duplicates.
 
         Parameters
         ----------
@@ -460,9 +466,10 @@ class ContainerBase(dict, abc.ABC):
         detect_shape_diffs=True,
         config=None,
     ):
-        """Compare keys and values in a sequence of containers, returning the
-        single shared values where they are the same, and new nested sub-dicts
-        with all values where they are different.
+        """
+        Compare keys and values in a sequence of containers, returning the single shared
+        values where they are the same, and new nested sub-dicts with all values where
+        they are different.
 
         Parameters
         ----------
@@ -606,9 +613,10 @@ class ContainerBase(dict, abc.ABC):
         detect_shape_diffs=True,
         config=None,
     ):
-        """Compare keys and shapes in a sequence of containers, returning the
-        single shared values where they are the same, and new nested sub-dicts
-        with all values where they are different.
+        """
+        Compare keys and shapes in a sequence of containers, returning the single shared
+        values where they are the same, and new nested sub-dicts with all values where
+        they are different.
 
         Parameters
         ----------
@@ -658,7 +666,8 @@ class ContainerBase(dict, abc.ABC):
         map_nests=False,
         assert_identical=False,
     ):
-        """Apply function to all array values from a collection of containers.
+        """
+        Apply function to all array values from a collection of containers.
 
         Parameters
         ----------
@@ -777,7 +786,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_common_key_chains(containers):
-        """Return the key-chains common across all containers.
+        """
+        Return the key-chains common across all containers.
 
         Parameters
         ----------
@@ -806,8 +816,9 @@ class ContainerBase(dict, abc.ABC):
         key_chain="",
         assert_and_assign=False,
     ):
-        """Return a single boolean as to whether the input containers have
-        identical key- chains and data types.
+        """
+        Return a single boolean as to whether the input containers have identical key-
+        chains and data types.
 
         Parameters
         ----------
@@ -919,8 +930,9 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         partial=False,
     ):
-        """Assert whether the input containers are identical. Otherwise, the
-        diff is shown in an exception.
+        """
+        Assert whether the input containers are identical. Otherwise, the diff is shown
+        in an exception.
 
         Parameters
         ----------
@@ -971,8 +983,9 @@ class ContainerBase(dict, abc.ABC):
         key_chain="",
         assert_and_assign=False,
     ):
-        """Return a single boolean as to whether the input containers have
-        identical structure.
+        """
+        Return a single boolean as to whether the input containers have identical
+        structure.
 
         Parameters
         ----------
@@ -1025,8 +1038,9 @@ class ContainerBase(dict, abc.ABC):
         partial=False,
         assert_and_assign=False,
     ):
-        """Assert whether the input containers have identical structure.
-        Otherwise, the diff is shown in an exception.
+        """
+        Assert whether the input containers have identical structure. Otherwise, the
+        diff is shown in an exception.
 
         Parameters
         ----------
@@ -1066,8 +1080,9 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_identical_configs(containers):
-        """Return a single boolean as to whether the input containers all have
-        identical configs.
+        """
+        Return a single boolean as to whether the input containers all have identical
+        configs.
 
         Parameters
         ----------
@@ -1083,9 +1098,9 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_identical_array_shapes(containers, exclusive=False):
-        """Determine whether all of the containers have identical number of
-        arrays and identical array shapes, regardless of their key-chain
-        structures.
+        """
+        Determine whether all of the containers have identical number of arrays and
+        identical array shapes, regardless of their key-chain structures.
 
         Parameters
         ----------
@@ -1127,8 +1142,9 @@ class ContainerBase(dict, abc.ABC):
     def cont_from_disk_as_hdf5(
         h5_obj_or_filepath, slice_obj=slice(None), alphabetical_keys=True, ivyh=None
     ):
-        """Load container object from disk, as an h5py file, at the specified
-        hdf5 filepath.
+        """
+        Load container object from disk, as an h5py file, at the specified hdf5
+        filepath.
 
         Parameters
         ----------
@@ -1177,7 +1193,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_from_disk_as_pickled(pickle_filepath, ivyh=None):
-        """Load container object from disk at the specified pickle filepath.
+        """
+        Load container object from disk at the specified pickle filepath.
 
         Parameters
         ----------
@@ -1199,9 +1216,9 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_from_disk_as_json(json_filepath, ivyh=None):
-        """Load container object from disk at the specified json filepath. If
-        some objects were not json-able during saving, then they will be loaded
-        as strings.
+        """
+        Load container object from disk at the specified json filepath. If some objects
+        were not json-able during saving, then they will be loaded as strings.
 
         Parameters
         ----------
@@ -1220,7 +1237,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def h5_file_size(h5_obj_or_filepath):
-        """Get file size of h5 file contents.
+        """
+        Get file size of h5 file contents.
 
         Parameters
         ----------
@@ -1261,8 +1279,9 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def shuffle_h5_file(h5_obj_or_filepath, seed_value=0):
-        """Shuffle entries in all datasets of h5 file, such that they are still
-        aligned along axis 0.
+        """
+        Shuffle entries in all datasets of h5 file, such that they are still aligned
+        along axis 0.
 
         Parameters
         ----------
@@ -1301,7 +1320,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_reduce(containers, reduction, config=None):
-        """Reduce containers.
+        """
+        Reduce containers.
 
         Parameters
         ----------
@@ -1343,7 +1363,8 @@ class ContainerBase(dict, abc.ABC):
     def cont_flatten_key_chain(
         key_chain, replacement="__", above_height=None, below_depth=None
     ):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -1379,7 +1400,8 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def cont_trim_key(key, max_length):
-        """Summary. Returns a trimmed key with a maximum length of max_length.
+        """
+        Summary. Returns a trimmed key with a maximum length of max_length.
 
         Parameters
         ----------
@@ -1619,8 +1641,9 @@ class ContainerBase(dict, abc.ABC):
     def cont_inplace_update(
         self, dict_in: Union[ivy.Container, dict], **config
     ) -> ivy.Container:
-        """Update the contents of this container inplace, using either a new
-        dict or container.
+        """
+        Update the contents of this container inplace, using either a new dict or
+        container.
 
         Parameters
         ----------
@@ -1672,8 +1695,8 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Determine whether all the entries in the container boolean evaluate
-        to True.
+        """
+        Determine whether all the entries in the container boolean evaluate to True.
 
         Parameters
         ----------
@@ -1717,8 +1740,8 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Determine whether all the entries in the container boolean evaluate
-        to False.
+        """
+        Determine whether all the entries in the container boolean evaluate to False.
 
         Parameters
         ----------
@@ -1755,7 +1778,8 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def cont_slice_via_key(self, slice_key):
-        """Get slice of container, based on key.
+        """
+        Get slice of container, based on key.
 
         Parameters
         ----------
@@ -1784,7 +1808,8 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Return boolean evaluation for all nested items in the container.
+        """
+        Return boolean evaluation for all nested items in the container.
 
         Parameters
         ----------
@@ -1823,7 +1848,8 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def cont_unstack_conts(self, axis, keepdims=False, dim_size=None):
-        """Unstack containers along specified dimension.
+        """
+        Unstack containers along specified dimension.
 
         Parameters
         ----------
@@ -1866,7 +1892,8 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Split a container into multiple sub-containers.
+        """
+        Split a container into multiple sub-containers.
 
         The function does that by splitting their constituent arrays.
 
@@ -1921,8 +1948,9 @@ class ContainerBase(dict, abc.ABC):
         ).cont_unstack_conts(0, dim_size=dim_size)
 
     def cont_num_arrays(self, exclusive=False):
-        """Compute the number of arrays present at the leaf nodes, including
-        variables by default.
+        """
+        Compute the number of arrays present at the leaf nodes, including variables by
+        default.
 
         Parameters
         ----------
@@ -1937,8 +1965,9 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def cont_size_ordered_arrays(self, exclusive=False):
-        """Return a container with keychains mapped to flat keys, and arrays
-        given in order of smallest to largest.
+        """
+        Return a container with keychains mapped to flat keys, and arrays given in order
+        of smallest to largest.
 
         Parameters
         ----------
@@ -1973,8 +2002,8 @@ class ContainerBase(dict, abc.ABC):
     def cont_to_disk_as_hdf5(
         self, h5_obj_or_filepath, starting_index=0, mode="a", max_batch_size=None
     ):
-        """Save container object to disk, as an h5py file, at the specified
-        filepath.
+        """
+        Save container object to disk, as an h5py file, at the specified filepath.
 
         Parameters
         ----------
@@ -2033,8 +2062,8 @@ class ContainerBase(dict, abc.ABC):
                     )
 
     def cont_to_disk_as_pickled(self, pickle_filepath):
-        """Save container object to disk, as an pickled file, at the specified
-        filepath.
+        """
+        Save container object to disk, as an pickled file, at the specified filepath.
 
         Parameters
         ----------
@@ -2063,8 +2092,8 @@ class ContainerBase(dict, abc.ABC):
         return return_dict
 
     def cont_to_disk_as_json(self, json_filepath):
-        """Save container object to disk, as an json file, at the specified
-        filepath.
+        """
+        Save container object to disk, as an json file, at the specified filepath.
 
         Parameters
         ----------
@@ -2084,7 +2113,8 @@ class ContainerBase(dict, abc.ABC):
         return return_list
 
     def cont_to_raw(self):
-        """Convert container to its original form.
+        """
+        Convert container to its original form.
 
         Returns
         -------
@@ -2106,7 +2136,8 @@ class ContainerBase(dict, abc.ABC):
         return return_item
 
     def cont_to_dict(self):
-        """Summary.
+        """
+        Summary.
 
         Returns
         -------
@@ -2200,7 +2231,8 @@ class ContainerBase(dict, abc.ABC):
                 yield kc
 
     def cont_to_flat_list(self):
-        """Summary.
+        """
+        Summary.
 
         Returns
         -------
@@ -2210,8 +2242,9 @@ class ContainerBase(dict, abc.ABC):
         return [item for key, item in self.cont_to_iterator()]
 
     def cont_from_flat_list(self, flat_list):
-        """Return new container object with the same hierarchy, but with values
-        replaced from flat list.
+        """
+        Return new container object with the same hierarchy, but with values replaced
+        from flat list.
 
         Parameters
         ----------
@@ -2232,8 +2265,9 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(new_dict, **self._config)
 
     def cont_has_key(self, query_key):
-        """Determine whether container object has specified key somewhere in
-        the nested structure.
+        """
+        Determine whether container object has specified key somewhere in the nested
+        structure.
 
         Parameters
         ----------
@@ -2266,7 +2300,8 @@ class ContainerBase(dict, abc.ABC):
         return has_key
 
     def cont_has_key_chain(self, key_chain):
-        """Determine whether container object has specified key-chain.
+        """
+        Determine whether container object has specified key-chain.
 
         Parameters
         ----------
@@ -2288,7 +2323,8 @@ class ContainerBase(dict, abc.ABC):
         return True
 
     def cont_find_sub_container(self, sub_cont_to_find, partial=False):
-        """Find the sub-container in the current container if it exists.
+        """
+        Find the sub-container in the current container if it exists.
 
         Parameters
         ----------
@@ -2319,8 +2355,9 @@ class ContainerBase(dict, abc.ABC):
         return key_chain_found
 
     def cont_contains_sub_container(self, sub_cont, partial=False):
-        """Determine whether the current container contains the sub-container,
-        with matching structure and array values.
+        """
+        Determine whether the current container contains the sub-container, with
+        matching structure and array values.
 
         Parameters
         ----------
@@ -2337,8 +2374,9 @@ class ContainerBase(dict, abc.ABC):
         return isinstance(self.cont_find_sub_container(sub_cont, partial), str)
 
     def cont_assert_contains_sub_container(self, sub_cont, partial=False):
-        """Assert that the current container contains the sub-container,
-        otherwise exception raised with the diff printed to screen.
+        """
+        Assert that the current container contains the sub-container, otherwise
+        exception raised with the diff printed to screen.
 
         Parameters
         ----------
@@ -2367,8 +2405,8 @@ class ContainerBase(dict, abc.ABC):
     def cont_find_sub_structure(
         self, sub_struc_to_find, check_shapes=True, partial=False
     ):
-        """Find the sub-container structure in the current container if it
-        exists.
+        """
+        Find the sub-container structure in the current container if it exists.
 
         Parameters
         ----------
@@ -2412,8 +2450,8 @@ class ContainerBase(dict, abc.ABC):
         return key_chain_found
 
     def cont_contains_sub_structure(self, sub_cont, check_shapes=True, partial=False):
-        """Determine whether the current container contains the sub-container
-        structure.
+        """
+        Determine whether the current container contains the sub-container structure.
 
         Parameters
         ----------
@@ -2432,8 +2470,9 @@ class ContainerBase(dict, abc.ABC):
     def cont_assert_contains_sub_structure(
         self, sub_cont, check_shapes=True, partial=False
     ):
-        """Assert that the current container contains the sub-container
-        structure, otherwise exception raised with the diff printed to screen.
+        """
+        Assert that the current container contains the sub-container structure,
+        otherwise exception raised with the diff printed to screen.
 
         Parameters
         ----------
@@ -2471,8 +2510,8 @@ class ContainerBase(dict, abc.ABC):
     def cont_at_keys(
         self, queries, ignore_none=True, containing=False, ignore_key_errors=False
     ):
-        """Query container object at specified keys, either as list or nested
-        dict.
+        """
+        Query container object at specified keys, either as list or nested dict.
 
         Parameters
         ----------
@@ -2515,7 +2554,8 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def cont_at_key_chain(self, key_chain, ignore_key_errors=False):
-        """Query container object at a specified key-chain.
+        """
+        Query container object at a specified key-chain.
 
         Parameters
         ----------
@@ -2541,8 +2581,8 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def cont_at_key_chains(self, key_chains, ignore_none=True, ignore_key_errors=False):
-        """Query container object at specified key-chains, either as list or
-        nested dict.
+        """
+        Query container object at specified key-chains, either as list or nested dict.
 
         Parameters
         ----------
@@ -2607,7 +2647,8 @@ class ContainerBase(dict, abc.ABC):
         ]
 
     def cont_set_at_keys(self, target_dict):
-        """Set values of container object at specified keys.
+        """
+        Set values of container object at specified keys.
 
         Parameters
         ----------
@@ -2630,7 +2671,8 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(return_dict, **self._config)
 
     def cont_set_at_key_chain(self, key_chain, val, inplace=False):
-        """Set value of container object at a specified key-chain.
+        """
+        Set value of container object at a specified key-chain.
 
         Parameters
         ----------
@@ -2660,7 +2702,8 @@ class ContainerBase(dict, abc.ABC):
         return cont
 
     def cont_overwrite_at_key_chain(self, key_chain, val, inplace=False):
-        """Overwrite value of container object at a specified key-chain.
+        """
+        Overwrite value of container object at a specified key-chain.
 
         Parameters
         ----------
@@ -2704,7 +2747,8 @@ class ContainerBase(dict, abc.ABC):
         return cont
 
     def cont_set_at_key_chains(self, target_dict, return_dict=None, inplace=False):
-        """Set values of container object at specified key-chains.
+        """
+        Set values of container object at specified key-chains.
 
         Parameters
         ----------
@@ -2735,7 +2779,8 @@ class ContainerBase(dict, abc.ABC):
     def cont_overwrite_at_key_chains(
         self, target_dict, return_dict=None, inplace=False
     ):
-        """Overwrite values of container object at specified key-chains.
+        """
+        Overwrite values of container object at specified key-chains.
 
         Parameters
         ----------
@@ -2775,7 +2820,8 @@ class ContainerBase(dict, abc.ABC):
         return return_dict
 
     def cont_prune_keys(self, query_keys, ignore_none=True):
-        """Recursively prune set of keys.
+        """
+        Recursively prune set of keys.
 
         Parameters
         ----------
@@ -2815,7 +2861,8 @@ class ContainerBase(dict, abc.ABC):
         return self.cont_prune_key_chains(key_chains_to_prune)
 
     def cont_prune_key_chain(self, key_chain):
-        """Recursively prune chain of keys, specified as 'key1/key2/key3/...'.
+        """
+        Recursively prune chain of keys, specified as 'key1/key2/key3/...'.
 
         Parameters
         ----------
@@ -2849,7 +2896,8 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(out_dict, **self._config)
 
     def cont_prune_key_chains(self, key_chains, ignore_none=True):
-        """Recursively prune set of key chains.
+        """
+        Recursively prune set of key chains.
 
         Parameters
         ----------
@@ -2878,7 +2926,8 @@ class ContainerBase(dict, abc.ABC):
             )
 
     def cont_format_key_chains(self, format_fn):
-        """Format all key-chains, using the formatting function.
+        """
+        Format all key-chains, using the formatting function.
 
         Parameters
         ----------
@@ -2903,8 +2952,9 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(new_dict, **self._config)
 
     def cont_prune_empty(self, keep_nones=False, base=True):
-        """Recursively prunes empty keys from the container dict structure.
-        Returns None if the entire container is empty.
+        """
+        Recursively prunes empty keys from the container dict structure. Returns None if
+        the entire container is empty.
 
         Parameters
         ----------
@@ -2933,8 +2983,9 @@ class ContainerBase(dict, abc.ABC):
         return
 
     def cont_prune_key_from_key_chains(self, absolute=None, containing=None):
-        """Recursively prune absolute key or key containing a certain substring
-        from all key chains.
+        """
+        Recursively prune absolute key or key containing a certain substring from all
+        key chains.
 
         Parameters
         ----------
@@ -2974,8 +3025,9 @@ class ContainerBase(dict, abc.ABC):
         return out_cont
 
     def cont_prune_keys_from_key_chains(self, absolute=None, containing=None):
-        """Recursively prune absolute keys or keys containing certain
-        substrings from all key chains.
+        """
+        Recursively prune absolute keys or keys containing certain substrings from all
+        key chains.
 
         Parameters
         ----------
@@ -3021,9 +3073,9 @@ class ContainerBase(dict, abc.ABC):
     def cont_restructure_key_chains(
         self, keychain_mapping, keep_orig=True, replace=True
     ):
-        """Create a new container with the same contents, but a new key-chain
-        structure. Given by the mapping with keys as old key-chains and values
-        as new key-chains.
+        """
+        Create a new container with the same contents, but a new key-chain structure.
+        Given by the mapping with keys as old key-chains and values as new key-chains.
 
         Parameters
         ----------
@@ -3045,9 +3097,10 @@ class ContainerBase(dict, abc.ABC):
         return new_cont
 
     def cont_restructure(self, mapping, keep_orig=True, replace=True):
-        """Create a new container with the same contents, but a new key-chain
-        structure, and transposes and/or reshaped arrays. Given by the mapping
-        with keys as old key-chains and values as new key-chains.
+        """
+        Create a new container with the same contents, but a new key-chain structure,
+        and transposes and/or reshaped arrays. Given by the mapping with keys as old
+        key-chains and values as new key-chains.
 
         Parameters
         ----------
@@ -3083,7 +3136,8 @@ class ContainerBase(dict, abc.ABC):
     def cont_flatten_key_chains(
         self, include_empty=False, above_height=None, below_depth=None
     ):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3105,7 +3159,8 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def cont_copy(self):
-        """Create a copy of this container.
+        """
+        Create a copy of this container.
 
         Returns
         -------
@@ -3114,7 +3169,8 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(self.cont_to_dict(), **self._config)
 
     def cont_deep_copy(self):
-        """Create a deep copy (copying all internal tensors) of this container.
+        """
+        Create a deep copy (copying all internal tensors) of this container.
 
         return: A deep copy of the container
         """
@@ -3137,7 +3193,8 @@ class ContainerBase(dict, abc.ABC):
         inplace=False,
         key_chain="",
     ):
-        """Apply function to all array values of container.
+        """
+        Apply function to all array values of container.
 
         Parameters
         ----------
@@ -3212,7 +3269,8 @@ class ContainerBase(dict, abc.ABC):
         key_chain="",
         include_self=True,
     ):
-        """Apply function to all sub-contains in the container.
+        """
+        Apply function to all sub-contains in the container.
 
         Parameters
         ----------
@@ -3274,8 +3332,9 @@ class ContainerBase(dict, abc.ABC):
         return self.cont_map(to_list)
 
     def cont_reshape_like(self, target_dict, leading_shape=None, return_cont=None):
-        """Set shapes of container entries to shapes specified by new container
-        with the same key structure.
+        """
+        Set shapes of container entries to shapes specified by new container with the
+        same key structure.
 
         Parameters
         ----------
@@ -3306,8 +3365,9 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(return_cont, **self._config)
 
     def cont_create_if_absent(self, key, value, inplace=True):
-        """Add a key to the container with corresponding value, if it is not
-        already present. otherwise, do nothing.
+        """
+        Add a key to the container with corresponding value, if it is not already
+        present. otherwise, do nothing.
 
         Parameters
         ----------
@@ -3322,8 +3382,8 @@ class ContainerBase(dict, abc.ABC):
         self.cont_set_at_key_chain(key, value, inplace)
 
     def cont_if_exists(self, key):
-        """Return the sub-container at the following key if it exists,
-        otherwise None.
+        """
+        Return the sub-container at the following key if it exists, otherwise None.
 
         Parameters
         ----------
@@ -3335,7 +3395,8 @@ class ContainerBase(dict, abc.ABC):
             return
 
     def cont_try_kc(self, key):
-        """Try the following key or key chain, returning self if not present.
+        """
+        Try the following key or key chain, returning self if not present.
 
         Parameters
         ----------
@@ -3347,7 +3408,8 @@ class ContainerBase(dict, abc.ABC):
             return self
 
     def cont_cutoff_at_depth(self, depth_cutoff, inplace=False):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3372,7 +3434,8 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def cont_cutoff_at_height(self, height_cutoff, inplace=False):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3411,7 +3474,8 @@ class ContainerBase(dict, abc.ABC):
         return ret.cont_at_key_chains(desired_keys)
 
     def cont_slice_keys(self, key_slice, all_depths=False):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3442,7 +3506,8 @@ class ContainerBase(dict, abc.ABC):
         return self._cont_slice_keys(key_slice)
 
     def cont_with_print_limit(self, print_limit, inplace=False):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3463,7 +3528,8 @@ class ContainerBase(dict, abc.ABC):
 
     # noinspection PyTypeChecker
     def cont_remove_print_limit(self, inplace=False):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3473,7 +3539,8 @@ class ContainerBase(dict, abc.ABC):
         return self.cont_with_print_limit(None, inplace)
 
     def cont_with_key_length_limit(self, key_length_limit, inplace=False):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3493,7 +3560,8 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def cont_remove_key_length_limit(self, inplace=False):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3503,7 +3571,8 @@ class ContainerBase(dict, abc.ABC):
         return self.cont_with_key_length_limit(None, inplace)
 
     def cont_with_print_indent(self, print_indent, inplace=False):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3523,7 +3592,8 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def cont_with_print_line_spacing(self, print_line_spacing, inplace=False):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3543,7 +3613,8 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def cont_with_default_key_color(self, default_key_color, inplace=False):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3563,7 +3634,8 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def cont_with_ivy_backend(self, ivy_backend: str, inplace=False):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3586,7 +3658,8 @@ class ContainerBase(dict, abc.ABC):
 
     # noinspection PyUnresolvedReferences
     def cont_show_sub_container(self, sub_cont_or_keychain):
-        """Summary.
+        """
+        Summary.
 
         Parameters
         ----------
@@ -3976,7 +4049,8 @@ class ContainerBase(dict, abc.ABC):
         return combined_cont[shifted_query]
 
     def __getitem__(self, query):
-        """Get slice, key or key chain of container object.
+        """
+        Get slice, key or key chain of container object.
 
         Parameters
         ----------
@@ -4017,7 +4091,8 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def __setitem__(self, query, val):
-        """Set key or key chain of container object.
+        """
+        Set key or key chain of container object.
 
         Parameters
         ----------
@@ -4126,7 +4201,8 @@ class ContainerBase(dict, abc.ABC):
 
     @property
     def cont_shape(self):
-        """The shape of the arrays in the container.
+        """
+        The shape of the arrays in the container.
 
         None is placed in indices which are not consistent across
         arrays.
@@ -4135,7 +4211,8 @@ class ContainerBase(dict, abc.ABC):
 
     @property
     def cont_dtype(self):
-        """The dtype of the arrays in the container.
+        """
+        The dtype of the arrays in the container.
 
         None is returned if the dtypes are not consistent.
         """
@@ -4143,7 +4220,8 @@ class ContainerBase(dict, abc.ABC):
 
     @property
     def cont_shapes(self):
-        """The shapes of each array in the container.
+        """
+        The shapes of each array in the container.
 
         None is placed in leaf entries without a shape attribute.
         """
@@ -4151,7 +4229,8 @@ class ContainerBase(dict, abc.ABC):
 
     @property
     def cont_dev(self):
-        """The device to which the arrays in the container belong.
+        """
+        The device to which the arrays in the container belong.
 
         None returned if the devices are not consistent.
         """
@@ -4159,7 +4238,8 @@ class ContainerBase(dict, abc.ABC):
 
     @property
     def cont_dev_str(self):
-        """The device to which the arrays in the container belong.
+        """
+        The device to which the arrays in the container belong.
 
         None returned if the devices are not consistent.
         """

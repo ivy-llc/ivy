@@ -120,11 +120,11 @@ def local_response_norm(
     data_format: Optional[Literal["NHWC", "NCHW"]] = "NHWC",
     out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
 ) -> ivy.Array:
-    """Apply local response normalization across the channels of a 4D input
-    array. The 4-D array is treated as a 3-D array of 1-D vectors (along the
-    channel dimension), and each vector is normalized independently. Within a
-    given vector, each component is divided by the squared sum of the
-    neighbouring components.
+    """
+    Apply local response normalization across the channels of a 4D input array. The 4-D
+    array is treated as a 3-D array of 1-D vectors (along the channel dimension), and
+    each vector is normalized independently. Within a given vector, each component is
+    divided by the squared sum of the neighbouring components.
 
     Parameters
     ----------
@@ -453,8 +453,8 @@ def group_norm(
     data_format: Optional[str] = "NSC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply group normalization to the input array and returns the normalized
-    input.
+    """
+    Apply group normalization to the input array and returns the normalized input.
 
     Parameters
     ----------
