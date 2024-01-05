@@ -154,6 +154,11 @@ def test_function_backend_computation(
             test_flags.container[0] for _ in range(total_num_arrays)
         ]
 
+    if test_flags.test_cython_wrapper:
+        ivy.set_cython_wrappers_mode(True)
+    else:
+        ivy.set_cython_wrappers_mode(False)
+
     with BackendHandler.update_backend(fw) as ivy_backend:
         # Update variable flags to be compatible with float dtype and with_out args
         test_flags.as_variable = [
