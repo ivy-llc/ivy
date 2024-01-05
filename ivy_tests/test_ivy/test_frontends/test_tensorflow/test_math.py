@@ -54,7 +54,7 @@ def test_tensorflow_abs(
 @handle_frontend_test(
     fn_tree="tensorflow.math.accumulate_n",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.int64]),
+        available_dtypes=(ivy.int64,),
         num_arrays=helpers.ints(min_value=2, max_value=5),
         shared_dtype=True,
     ),
@@ -1513,6 +1513,37 @@ def test_tensorflow_less_equal(
     )
 
 
+# lgamma
+@handle_frontend_test(
+    fn_tree="tensorflow.math.lgamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_lgamma(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-04,
+        x=xs[0],
+    )
+
+
 # log
 @handle_frontend_test(
     fn_tree="tensorflow.math.log",
@@ -1637,7 +1668,7 @@ def test_tensorflow_log_softmax(
 @handle_frontend_test(
     fn_tree="tensorflow.math.logical_and",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
+        available_dtypes=(ivy.bool,),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1669,7 +1700,7 @@ def test_tensorflow_logical_and(
 @handle_frontend_test(
     fn_tree="tensorflow.math.logical_not",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
+        available_dtypes=(ivy.bool,),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1732,7 +1763,7 @@ def test_tensorflow_logical_or(
 @handle_frontend_test(
     fn_tree="tensorflow.math.logical_xor",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
+        available_dtypes=(ivy.bool,),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -2188,7 +2219,7 @@ def test_tensorflow_reciprocal_no_nan(
 @handle_frontend_test(
     fn_tree="tensorflow.math.reduce_all",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
+        available_dtypes=(ivy.bool,),
     ),
     test_with_out=st.just(False),
 )
@@ -2217,7 +2248,7 @@ def test_tensorflow_reduce_all(
 @handle_frontend_test(
     fn_tree="tensorflow.math.reduce_any",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
+        available_dtypes=(ivy.bool,),
     ),
     test_with_out=st.just(False),
 )
@@ -2654,6 +2685,39 @@ def test_tensorflow_scalar_mul(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.math.segment_sum",
+    data=helpers.array_values(dtype=helpers.get_dtypes("valid"), shape=(5, 6)),
+    segment_ids=helpers.array_values(
+        dtype=helpers.get_dtypes("signed_integer", prune_function=True),
+        shape=(5,),
+        min_value=0,
+        max_value=4,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_segment_sum(
+    *,
+    data,
+    segment_ids,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[str(data.dtype), "int32", "int64"],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=data,
+        segment_ids=np.sort(segment_ids),
+    )
+
+
 # sigmoid
 @handle_frontend_test(
     fn_tree="tensorflow.math.sigmoid",
@@ -3085,6 +3149,38 @@ def test_tensorflow_truediv(
     test_with_out=st.just(False),
 )
 def test_tensorflow_unsorted_segment_mean(
+    *,
+    data,
+    segment_ids,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int32", "int64"],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=np.max(segment_ids) + 1,
+    )
+
+
+# unsorted_segment_min
+@handle_frontend_test(
+    fn_tree="tensorflow.math.unsorted_segment_min",
+    data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
+    segment_ids=helpers.array_values(
+        dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_unsorted_segment_min(
     *,
     data,
     segment_ids,

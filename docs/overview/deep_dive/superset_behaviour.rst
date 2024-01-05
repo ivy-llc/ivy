@@ -3,7 +3,7 @@ Superset Behaviour
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
+.. _`superset behavior thread`: https://discord.com/channels/799879767196958751/1189905520686014514
 .. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/functional/backends/tensorflow/experimental/layers.py#L817
 .. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/func_wrapper.py#L981
 
@@ -241,7 +241,7 @@ Ivy allows this using the `partial_mixed_handler`_ attribute on the backend-spec
 
     interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
         "tf_area",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -266,7 +266,7 @@ This should have hopefully given you a good feel of what should and should not b
 In many cases, there is not a clear right and wrong answer, and we arrive at the final decision via open discussion.
 If you find yourself proposing the addition of a new function in Ivy, then we will most likely have this discussion on your Pull Request!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `superset behavior channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `superset behavior thread`_!
 
 
 **Video**

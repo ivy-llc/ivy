@@ -629,13 +629,13 @@ def test_default(x, default_val, test_flags, backend_fw):
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         with_callable = False
         if x is not None:
-            if hasattr(x, "__call__"):
+            if callable(x):
                 with_callable = True
             else:
                 x_dtype, x = x
                 x = x[0].tolist() if isinstance(x, list) else x
         else:
-            if hasattr(default_val, "__call__"):
+            if callable(default_val):
                 with_callable = True
             else:
                 dv_dtype, default_val = default_val
@@ -853,7 +853,7 @@ def test_einops_repeat(
 )
 def test_exists(x):
     if x is not None:
-        if not hasattr(x, "__call__"):
+        if not callable(x):
             dtype, x = x
     ret = ivy.exists(x)
     assert isinstance(ret, bool)
@@ -1068,6 +1068,7 @@ def test_get_all_arrays_in_memory():
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_with_copy=st.just(True),
 )
 def test_get_item(
     dtypes_x_query,
@@ -1207,7 +1208,7 @@ def test_inplace_arrays_supported(backend_fw):
         elif backend_fw in ["jax", "tensorflow", "paddle"]:
             assert not ivy_backend.inplace_arrays_supported()
         else:
-            raise Exception("Unrecognized framework")
+            raise RuntimeError("Unrecognized framework")
 
 
 # inplace_decrement
@@ -1328,7 +1329,7 @@ def test_inplace_variables_supported(backend_fw):
         elif backend_fw in ["jax", "paddle"]:
             assert not ivy_backend.inplace_variables_supported()
         else:
-            raise Exception("Unrecognized framework")
+            raise RuntimeError("Unrecognized framework")
 
 
 # is_array
@@ -1640,6 +1641,7 @@ def test_set_inplace_mode(mode):
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_with_copy=st.just(True),
 )
 def test_set_item(
     dtypes_x_query_val,
@@ -1760,7 +1762,7 @@ def test_stable_pow(
     *, dtypes_and_xs, min_base, test_flags, backend_fw, fn_name, on_device
 ):
     dtypes, xs = dtypes_and_xs
-    assume(all(["bfloat16" not in x for x in dtypes]))
+    assume(all("bfloat16" not in x for x in dtypes))
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
@@ -1848,6 +1850,7 @@ def test_to_list(x0_n_x1_n_res, test_flags, backend_fw, fn_name, on_device):
     copy=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_to_numpy(*, dtype_x, copy, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
@@ -1878,6 +1881,7 @@ def test_to_numpy(*, dtype_x, copy, test_flags, backend_fw, fn_name, on_device):
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_to_scalar(x0_n_x1_n_res, test_flags, backend_fw, fn_name, on_device):
     dtype, x = x0_n_x1_n_res

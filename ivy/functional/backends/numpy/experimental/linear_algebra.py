@@ -90,7 +90,7 @@ kron.support_native_out = False
 
 
 @with_supported_dtypes(
-    {"1.26.0 and below": ("float32", "float64", "complex64", "complex128")},
+    {"1.26.3 and below": ("float32", "float64", "complex64", "complex128")},
     backend_version,
 )
 def matrix_exp(
@@ -106,7 +106,7 @@ def matrix_exp(
     return exp_mat.astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
 def eig(
     x: np.ndarray,
     /,
@@ -120,7 +120,7 @@ def eig(
 eig.support_native_out = False
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
 def eigvals(x: np.ndarray, /) -> np.ndarray:
     e = np.linalg.eigvals(x)
     return e.astype(complex)
@@ -139,6 +139,47 @@ def adjoint(
     axes = list(range(len(x.shape)))
     axes[-1], axes[-2] = axes[-2], axes[-1]
     return np.conjugate(np.transpose(x, axes=axes))
+
+
+_adjoint = adjoint
+
+
+def solve_triangular(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    # NumPy does not expose an API for `trsm`, so we have to implement substitution
+    # in Python. There is no need to support gradients for this backend.
+    # Pre: `x1` is square, `x1` and `x2` have the same number `n` of rows.
+    n = x1.shape[-2]
+    ret = x2.copy()
+
+    if adjoint:
+        x1 = _adjoint(x1)
+        upper = not upper
+
+    if unit_diagonal:
+        for i in range(n):
+            x1[..., i, i] = 1
+
+    if upper:
+        for i in reversed(range(n)):
+            ret[..., i, :] /= x1[..., i, np.newaxis, i]
+            ret[..., :i, :] -= x1[..., :i, np.newaxis, i] * ret[..., np.newaxis, i, :]
+    else:
+        for i in range(n):
+            ret[..., i, :] /= x1[..., i, np.newaxis, i]
+            ret[..., i + 1 :, :] -= (
+                x1[..., i + 1 :, np.newaxis, i] * ret[..., np.newaxis, i, :]
+            )
+
+    return ret
 
 
 def multi_dot(

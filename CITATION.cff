@@ -39,5 +39,4 @@ preferred-citation:
   - given-names: Ronald
     family-names: Clark
   doi: 10.48550/arXiv.2102.02886
-  title: "Ivy: Templated deep learning for inter-framework
-  portability"
+  title: "Ivy: Templated deep learning for inter-framework portability"
