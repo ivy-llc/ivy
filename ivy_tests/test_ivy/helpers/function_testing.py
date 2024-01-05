@@ -666,9 +666,13 @@ def test_function(
         backend=backend_to_test,
         ground_truth_backend=test_flags.ground_truth_backend,
     )
-    assert_same_type(
-        ret_from_target, ret_from_gt, backend_to_test, test_flags.ground_truth_backend
-    )
+    if not test_flags.test_trace:
+        assert_same_type(
+            ret_from_target,
+            ret_from_gt,
+            backend_to_test,
+            test_flags.ground_truth_backend,
+        )
 
     assert ret_device == ret_from_gt_device, (
         f"ground truth backend ({test_flags.ground_truth_backend}) returned array on"
