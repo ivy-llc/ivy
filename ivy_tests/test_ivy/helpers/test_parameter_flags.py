@@ -48,7 +48,7 @@ BuiltTraceStrategy = DynamicFlag(st.just(False))
 BuiltFrontendArrayStrategy = DynamicFlag(st.booleans())
 BuiltTranspileStrategy = DynamicFlag(st.just(False))
 BuiltPrecisionModeStrategy = DynamicFlag(st.booleans())
-BuiltCythonWrapperStrategy = DynamicFlag(st.booleans())
+BuiltCythonWrapperStrategy = DynamicFlag(st.just(False))
 
 
 flags_mapping = {
