@@ -514,6 +514,9 @@ def trapz(
     return jnp.trapz(y, x=x, dx=dx, axis=axis)
 
 
+@with_unsupported_dtypes(
+    {"0.4.23 and below": ("complex", "float16", "bfloat16")}, backend_version
+)
 def tan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tan(x)
 
