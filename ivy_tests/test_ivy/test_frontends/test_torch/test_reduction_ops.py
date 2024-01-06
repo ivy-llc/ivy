@@ -846,6 +846,8 @@ def test_torch_quantile(
     input_dtype, x, axis, interpolation, q = dtype_and_x
     if type(axis) is tuple:
         axis = axis[0]
+    if interpolation == "nearest_jax":
+        interpolation = "nearest"
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
