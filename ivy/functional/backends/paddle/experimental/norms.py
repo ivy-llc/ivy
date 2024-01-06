@@ -12,7 +12,7 @@ from . import backend_version
 # use numpy implementation with ivy functions
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -105,9 +105,9 @@ batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
 )
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, backend_version)
 def l1_normalize(
-    x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
+    x: paddle.Tensor, /, *, axis: Optional[int] = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
     if not isinstance(x, paddle.Tensor):
         x = paddle.to_tensor(x)
@@ -131,7 +131,7 @@ def l1_normalize(
 
 
 def l2_normalize(
-    x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
+    x: paddle.Tensor, /, *, axis: Optional[int] = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
@@ -155,11 +155,20 @@ def instance_norm(
             paddle.Tensor,
         ]
     ] = None,
-) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor,]:
+) -> Tuple[
+    paddle.Tensor,
+    paddle.Tensor,
+    paddle.Tensor,
+]:
     raise IvyNotImplementedException()
 
 
 def lp_normalize(
-    x: paddle.Tensor, /, *, p: float = 2, axis: int = None, out: paddle.Tensor = None
+    x: paddle.Tensor,
+    /,
+    *,
+    p: float = 2,
+    axis: Optional[int] = None,
+    out: paddle.Tensor = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()

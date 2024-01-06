@@ -208,7 +208,7 @@ def _copy_tree(backend_reference_path: str, backend_generation_path: str):
 
 
 def _create_type_mapping(config: dict, reference_backend_init_path: str):
-    with open(reference_backend_init_path) as file:
+    with open(reference_backend_init_path, "r") as file:
         file_src = file.read()
 
     init_tree = ast.parse(file_src)
@@ -232,7 +232,7 @@ def _create_type_mapping(config: dict, reference_backend_init_path: str):
 def generate(config_file):
     global _config
 
-    with open(config_file) as file:
+    with open(config_file, "r") as file:
         _config = json.load(file)
 
     global _target_backend
@@ -269,11 +269,11 @@ def generate(config_file):
             "valid_uint_dtypes",
         ]
         for key in valids:
-            params[key + "_dict"] = {
-                "None": tuple(["ivy." + x for x in _config[key]])
+            params[f"{key}_dict"] = {
+                "None": tuple(f"ivy.{x}" for x in _config[key])
             }.__str__()
-            params["in" + key + "_dict"] = {
-                "None": tuple(["ivy." + x for x in _config["in" + key]])
+            params[f"in{key}_dict"] = {
+                "None": tuple(f"ivy.{x}" for x in _config[f"in{key}"])
             }.__str__()
         InitFileTransformer(params).visit(tree_to_write)
     except Exception as e:
@@ -289,17 +289,15 @@ def generate(config_file):
         generated_file.write(astunparse.unparse(tree_to_write))
 
     subprocess.run(["black", "-q", backend_generation_path])
-    subprocess.run(
-        [
-            "autoflake",
-            "-i",
-            "--remove-all-unused-imports",
-            "--ignore-init-module-imports",
-            "--quiet",
-            "-r",
-            backend_generation_path,
-        ]
-    )
+    subprocess.run([
+        "autoflake",
+        "-i",
+        "--remove-all-unused-imports",
+        "--ignore-init-module-imports",
+        "--quiet",
+        "-r",
+        backend_generation_path,
+    ])
 
 
 if __name__ == "__main__":

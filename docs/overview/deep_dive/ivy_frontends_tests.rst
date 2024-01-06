@@ -2,7 +2,7 @@ Ivy Frontend Tests
 ==================
 
 .. _`here`: ../design/ivy_as_a_transpiler.rst
-.. _`ivy frontends tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
+.. _`ivy frontends tests thread`: https://discord.com/channels/799879767196958751/1190246804940402738
 .. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`discord`: https://discord.gg/sXyFF8tDtm
@@ -61,7 +61,7 @@ Frontend Test Examples
 -----------------------
 
 Before you begin writing a frontend test, make sure you are placing it in the correct location.
-See the 'Where to place a frontend function' sub-section of the frontend APIs `open task`_ for more details.
+See the :ref:`/overview/contributing/open_tasks:Where to place a frontend function` sub-section of the frontend APIs `open task`_ for more details.
 
 ivy.tan()
 ^^^^^^^^^
@@ -619,7 +619,7 @@ Frontend Instance Method Tests
 
 The frontend instance method tests are similar to the frontend function test, but instead of testing the function directly we test the instance method of the frontend class.
 major difference is that we have more flags to pass now, most initialization functions take an array as an input. also some methods may take an array as input,
-for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate seperate flags for each.
+for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate separate flags for each.
 
 **Important Helper Functions**
 
@@ -630,8 +630,8 @@ for example, :code:`ndarray.__add__` would expect an array as input, despite the
 
 :func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`. A few important arguments for this function are following:
   - :code:`init_input_dtypes` Input dtypes of the arguments on which we are initializing the array on.
-  - :code:`init_all_as_kwargs_np` The data to be passed when intializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
-  - :code:`method_input_dtypes` The input dtypes of the argument which are to be passed to the instance method after the intialization of the array.
+  - :code:`init_all_as_kwargs_np` The data to be passed when initializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
+  - :code:`method_input_dtypes` The input dtypes of the argument which are to be passed to the instance method after the initialization of the array.
   - :code:`method_all_as_kwargs_np` All the arguments which are to be passed to the instance method.
 
 
@@ -816,7 +816,7 @@ The configuration files are located at: :code:`ivy_tests/test_ivy/test_frontends
 
 This should have hopefully given you a good understanding of Ivy Frontend Tests!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests thread`_!
 
 
 **Video**

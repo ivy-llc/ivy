@@ -277,12 +277,14 @@ class IndexedSlices:
 
     @property
     def dense_shape(self):
-        """A 1-D `Tensor` containing the shape of the corresponding dense tensor."""
+        """A 1-D `Tensor` containing the shape of the corresponding dense
+        tensor."""
         return self._dense_shape
 
     @property
     def device(self):
-        """The name of the device on which `values` will be produced, or `None`."""
+        """The name of the device on which `values` will be produced, or
+        `None`."""
         return self.values.device
 
     @property
@@ -291,7 +293,7 @@ class IndexedSlices:
         return self.values.dtype
 
     def __repr__(self):
-        return "IndexedSlices(\nindices={},\nvalues={}{}\n)".format(
+        return "IndexedSlices(\nindices=%s,\nvalues=%s%s\n)" % (
             self._indices,
             self._values,
             (

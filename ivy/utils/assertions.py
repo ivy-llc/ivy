@@ -32,7 +32,7 @@ def check_less(x1, x2, allow_equal=False, message="", as_array=True):
                 x1 >= x2 for x1, x2 in zip(x1_, x2_)
             )
 
-        def comp_fn(x1, x2):
+        def comp_fn(x1, x2):  # noqa F811
             return iter_comp_fn(*_broadcast_inputs(x1, x2))
 
     gt, gt_eq = comp_fn(x1, x2)
@@ -58,7 +58,7 @@ def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
                 x1 <= x2 for x1, x2 in zip(x1_, x2_)
             )
 
-        def comp_fn(x1, x2):
+        def comp_fn(x1, x2):  # noqa F811
             return iter_comp_fn(*_broadcast_inputs(x1, x2))
 
     lt, lt_eq = comp_fn(x1, x2)
@@ -86,7 +86,7 @@ def check_equal(x1, x2, inverse=False, message="", as_array=True):
         def iter_comp_fn(x1_, x2_):
             return any(eq_fn(x1, x2) for x1, x2 in zip(x1_, x2_))
 
-        def comp_fn(x1, x2):
+        def comp_fn(x1, x2):  # noqa F811
             return iter_comp_fn(*_broadcast_inputs(x1, x2))
 
     eq = comp_fn(x1, x2)
@@ -157,7 +157,7 @@ def check_all_or_any_fn(
     *args,
     fn,
     type="all",
-    limit=[0],
+    limit=(0,),
     message="args must exist according to type and limit given",
     as_array=True,
 ):
@@ -203,9 +203,9 @@ def check_same_dtype(x1, x2, message=""):
 # -------- #
 
 
-def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
-    if not (isinstance(num_segments, int)):
-        raise ValueError("num_segments must be of integer type")
+def check_unsorted_segment_valid_params(data, segment_ids, num_segments):
+    if not isinstance(num_segments, int):
+        raise TypeError("num_segments must be of integer type")
 
     valid_dtypes = [
         ivy.int32,
@@ -232,7 +232,7 @@ def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
             num_segments = num_segments.item()
 
     if segment_ids.dtype not in valid_dtypes:
-        raise ValueError("segment_ids must have an integer dtype")
+        raise TypeError("segment_ids must have an integer dtype")
 
     if data.shape[0] != segment_ids.shape[0]:
         raise ValueError("The length of segment_ids should be equal to data.shape[0].")
@@ -290,7 +290,7 @@ def check_one_way_broadcastable(x1, x2):
     if len(x1) > len(x2):
         return False
     for a, b in zip(x1[::-1], x2[::-1]):
-        if a == 1 or a == b:
+        if a in (1, b):
             pass
         else:
             return False

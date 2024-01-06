@@ -31,7 +31,7 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
                 assert_fn = ivy.is_bool_dtype
             if ivy.is_int_dtype(dtype):
 
-                def assert_fn(x):
+                def assert_fn(x):  # noqa F811
                     return not ivy.is_float_dtype(x)
 
             if assert_fn:
@@ -60,7 +60,7 @@ def _assert_no_array(args, dtype, scalar_check=False, none=False):
 
         if scalar_check:
 
-            def assert_fn(x):
+            def assert_fn(x):  # noqa F811
                 return (
                     ivy.dtype(x) == fn_func
                     if ivy.shape(x) != ()
@@ -115,7 +115,7 @@ def _assert_scalar(args, dtype):
         assert_fn = None
         if ivy.is_int_dtype(dtype):
 
-            def assert_fn(x):
+            def assert_fn(x):  # noqa F811
                 return not isinstance(x, float)
 
         elif ivy.is_bool_dtype(dtype):
@@ -227,9 +227,9 @@ def _to_ivy_array(x):
 def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _from_zero_dim_arrays_to_scalar(*args, **kwargs):
-        """
-        Call the function, and then convert all 0 dimensional array instances in the
-        function to float numbers if out argument is not provided.
+        """Call the function, and then convert all 0 dimensional array
+        instances in the function to float numbers if out argument is not
+        provided.
 
         Parameters
         ----------
@@ -258,10 +258,10 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                         ret_idx,
                         lambda x: np_frontend.numpy_dtype_to_scalar[ivy.dtype(x)](x),
                     )
-                except KeyError:
+                except KeyError as e:
                     raise ivy.utils.exceptions.IvyException(
                         "Casting to specified type is unsupported"
-                    )
+                    ) from e
                 return tuple(data)
             else:
                 # converting the scalar to float
@@ -269,10 +269,10 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                 if data.shape == ():
                     try:
                         return np_frontend.numpy_dtype_to_scalar[ivy.dtype(data)](data)
-                    except KeyError:
+                    except KeyError as e:
                         raise ivy.utils.exceptions.IvyException(
                             f"Casting to {ivy.dtype(data)} is unsupported"
-                        )
+                        ) from e
         return ret
 
     _from_zero_dim_arrays_to_scalar.from_zero_dim_arrays_to_scalar = True
@@ -282,8 +282,7 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
 def handle_numpy_casting(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_numpy_casting(*args, casting="same_kind", dtype=None, **kwargs):
-        """
-        Check numpy casting type.
+        """Check numpy casting type.
 
         Parameters
         ----------
@@ -344,8 +343,8 @@ def handle_numpy_casting(fn: Callable) -> Callable:
 def handle_numpy_casting_special(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_numpy_casting_special(*args, casting="same_kind", dtype=None, **kwargs):
-        """
-        Check numpy casting type for special cases where output must be type bool.
+        """Check numpy casting type for special cases where output must be type
+        bool.
 
         Parameters
         ----------
@@ -433,10 +432,9 @@ def handle_numpy_out(fn: Callable) -> Callable:
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_np(*args, **kwargs):
-        """
-        Convert all `ndarray` instances in both the positional and keyword arguments
-        into `ivy.Array` instances, and then call the function with the updated
-        arguments.
+        """Convert all `ndarray` instances in both the positional and keyword
+        arguments into `ivy.Array` instances, and then call the function with
+        the updated arguments.
 
         Parameters
         ----------
@@ -463,9 +461,8 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays(*args, order="K", **kwargs):
-        """
-        Call the function, and then convert all `ivy.Array` instances returned by the
-        function into `ndarray` instances.
+        """Call the function, and then convert all `ivy.Array` instances
+        returned by the function into `ndarray` instances.
 
         Returns
         -------
@@ -527,8 +524,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so it receives and returns `ivy.Array` instances.
+    """Wrap `fn` so it receives and returns `ivy.Array` instances.
 
     Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
     return arrays are all converted to `ndarray` instances.

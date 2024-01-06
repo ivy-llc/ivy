@@ -2,11 +2,11 @@ Error Handling
 ==============
 
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
-.. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
-.. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
-.. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
-.. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
+.. _`pycharm thread`: https://discord.com/channels/799879767196958751/1186628916522262629
+.. _`docker thread`: https://discord.com/channels/799879767196958751/1186629067966009424
+.. _`pre-commit thread`: https://discord.com/channels/799879767196958751/1186629635694399539
+.. _`pip packages thread`: https://discord.com/channels/799879767196958751/1186629837515935765
+.. _`ivy tests thread`: https://discord.com/channels/799879767196958751/1189907526226034698
 
 This section, "Error Handling" aims to assist you in navigating through some common errors you might encounter while working with the Ivy's Functional API. We'll go through some common errors which you might encounter while working as a contributor or a developer.
 
@@ -26,7 +26,7 @@ This section, "Error Handling" aims to assist you in navigating through some com
         E               with_out=False,
         E               instance_method=False,
         E               test_gradients=False,
-        E               test_compile=None,
+        E               test_trace=None,
         E               as_variable=[False],
         E               native_arrays=[False],
         E               container=[False],
@@ -65,7 +65,7 @@ This section, "Error Handling" aims to assist you in navigating through some com
         E               with_out=False,
         E               instance_method=False,
         E               test_gradients=True,
-        E               test_compile=None,
+        E               test_trace=None,
         E               as_variable=[False],
         E               native_arrays=[False],
         E               container=[False],
@@ -129,7 +129,7 @@ This section, "Error Handling" aims to assist you in navigating through some com
         E               with_out=False,
         E               instance_method=False,
         E               test_gradients=False,
-        E               test_compile=None,
+        E               test_trace=None,
         E               as_variable=[False],
         E               native_arrays=[False],
         E               container=[False],
@@ -150,4 +150,4 @@ This section is specifically targeted towards dealing with the Ivy Functional AP
 
 This should have hopefully given you an understanding of how to deal with common errors while working with the the functional API.
 
-If you have any questions, please feel free to reach out on `discord`_  in the `ivy tests channel`_, `pycharm channel`_, `docker channel`_, `pre-commit channel`_, `pip packages channel`_ depending on the question!
+If you have any questions, please feel free to reach out on `discord`_  in the `ivy tests thread`_, `pycharm thread`_, `docker thread`_, `pre-commit thread`_, `pip packages thread`_ depending on the question!

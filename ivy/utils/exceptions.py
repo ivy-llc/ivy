@@ -141,8 +141,7 @@ def _get_traces(curr_obj, area, local_dict, target_name):
 
 
 def _check_if_path_found(path, full_path):
-    """
-    Check if the path is found in the full path.
+    """Check if the path is found in the full path.
 
     Parameters
     ----------
@@ -156,15 +155,11 @@ def _check_if_path_found(path, full_path):
     ret
         True if the path is found, False otherwise
     """
-    if path in full_path:
-        return True
-    else:
-        return False
+    return path in full_path
 
 
 def _configure_stack_trace(traceback):
-    """
-    Configure the stack trace to be displayed in the console.
+    """Configure the stack trace to be displayed in the console.
 
     Parameters
     ----------
@@ -179,7 +174,7 @@ def _configure_stack_trace(traceback):
     frontend_path = os.path.join("ivy", "functional", "frontends")
     wrapper_path = os.path.join("ivy", "func_wrapper.py")
 
-    while 1 and tb.tb_next:
+    while tb.tb_next:
         frame = tb.tb_next.tb_frame
         file_path = frame.f_code.co_filename
         if trace_mode == "ivy":
@@ -204,8 +199,7 @@ def _configure_stack_trace(traceback):
 
 
 def _add_native_error(default):
-    """
-    Append the native error to the message if it exists.
+    """Append the native error to the message if it exists.
 
     Parameters
     ----------
@@ -338,8 +332,7 @@ _non_ivy_exceptions_mapping = {
 def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
-        """
-        Catch all exceptions and raise them in IvyException.
+        """Catch all exceptions and raise them in IvyException.
 
         Parameters
         ----------
@@ -374,7 +367,7 @@ def handle_exceptions(fn: Callable) -> Callable:
 # Inplace Update
 
 # to avoid raising warnings on setting the same backend multiple times
-_inplace_warning_cache = dict()
+_inplace_warning_cache = {}
 
 
 def _handle_inplace_mode(ivy_pack=None):
@@ -383,7 +376,7 @@ def _handle_inplace_mode(ivy_pack=None):
     current_backend = ivy_pack.current_backend_str()
     if (
         current_backend != ""
-        and not _inplace_warning_cache.get(current_backend, None)
+        and not _inplace_warning_cache.get(current_backend)
         and not ivy_pack.native_inplace_support
         and ivy_pack.inplace_mode == "lenient"
     ):
