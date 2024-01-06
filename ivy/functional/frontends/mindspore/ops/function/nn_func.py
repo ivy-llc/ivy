@@ -114,7 +114,7 @@ def avg_pool2d(
     kernel_size,
     stride=None,
     padding=0,
-    pad_mode=False,
+    ceil_mode=False,
     count_include_pad=True,
     divisor_override=None,
 ):
@@ -149,7 +149,7 @@ def avg_pool2d(
         stride,
         padding_str,
         data_format=data_format,
-        pad_mode=pad_mode,
+        ceil_mode=ceil_mode,
         count_include_pad=count_include_pad,
         divisor_override=divisor_override,
     )
