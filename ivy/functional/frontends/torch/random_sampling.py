@@ -255,7 +255,10 @@ def seed() -> int:
     return int(ivy.randint(-(2**63), 2**63 - 1))
 
 
-@with_supported_dtypes({"2.1.2 and below": ("uint8",)}, "torch",)
+@with_supported_dtypes(
+    {"2.1.2 and below": ("uint8",)},
+    "torch",
+)
 @to_ivy_arrays_and_back
 def set_rng_state(new_state):
     return ivy.seed(seed_value=new_state)
