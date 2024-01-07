@@ -1,5 +1,6 @@
 # local
 from typing import (
+    Iterable,
     Optional,
     Union,
     Sequence,
@@ -146,7 +147,7 @@ def _to_nested_tuple(nested_list):
 
 def pad(
     input: JaxArray,
-    pad_width: Union[Sequence[Sequence[int]], JaxArray, int],
+    pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
     mode: Union[
@@ -166,9 +167,9 @@ def pad(
         ],
         Callable,
     ] = "constant",
-    stat_length: Union[Sequence[Sequence[int]], int] = 1,
-    constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
-    end_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> JaxArray:
@@ -461,7 +462,7 @@ def take(
     # clip, wrap, fill
     ret = jnp.take(x, indices, axis=axis, mode=mode, fill_value=fill_value)
     if ivy.exists(out):
-        ivy.inplace_update(out)
+        ivy.inplace_update(out, ret)
     return ret
 
 

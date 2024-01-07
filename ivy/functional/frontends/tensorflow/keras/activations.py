@@ -17,7 +17,7 @@ ACTIVATION_FUNCTIONS = [
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float16", "float32", "float64")},
+    {"2.15.0 and below": ("float16", "float32", "float64")},
     "tensorflow",
 )
 def deserialize(name, custom_objects=None):
@@ -47,7 +47,7 @@ def deserialize(name, custom_objects=None):
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("bfloat16", "float16", "float32", "float64")},
+    {"2.15.0 and below": ("bfloat16", "float16", "float32", "float64")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -103,7 +103,7 @@ def relu(x, alpha=0.0, max_value=None, threshold=0.0):
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float16", "float32", "float64")},
+    {"2.15.0 and below": ("float16", "float32", "float64")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -112,7 +112,7 @@ def selu(x):
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float16", "float32", "float64")},
+    {"2.15.0 and below": ("float16", "float32", "float64")},
     "tensorflow",
 )
 def serialize(activation, use_legacy_format=False, custom_objects=None):

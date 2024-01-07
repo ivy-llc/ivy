@@ -10,7 +10,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def unique_all(
     x: paddle.Tensor,
@@ -63,14 +63,12 @@ def unique_all(
             axis = 0
         values_ = paddle.moveaxis(values, axis, 0)
         values_ = paddle.reshape(values_, (values_.shape[0], -1))
-        sort_idx = paddle.to_tensor(
-            [
-                i[0]
-                for i in sorted(
-                    list(enumerate(values_.numpy().tolist())), key=lambda x: tuple(x[1])
-                )
-            ]
-        )
+        sort_idx = paddle.to_tensor([
+            i[0]
+            for i in sorted(
+                enumerate(values_.numpy().tolist()), key=lambda x: tuple(x[1])
+            )
+        ])
     values = paddle.gather(values, sort_idx, axis=axis)
     counts = paddle.gather(counts, sort_idx)
     indices = paddle.gather(indices, sort_idx)
@@ -88,7 +86,7 @@ def unique_all(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
     unique, counts = paddle.unique(x, return_counts=True)
@@ -111,7 +109,7 @@ def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def unique_inverse(
     x: paddle.Tensor,
@@ -137,7 +135,7 @@ def unique_inverse(
             x.dtype
         )
         unique = paddle.concat(
-            input=[unique.astype(x.dtype), paddle.reshape(unique_nan, [nan_count])],
+            [unique.astype(x.dtype), paddle.reshape(unique_nan, [nan_count])],
             axis=-1,
         )
     inverse_val = paddle.reshape(inverse_val, shape=x.shape)
@@ -146,7 +144,7 @@ def unique_inverse(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def unique_values(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None

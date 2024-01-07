@@ -63,15 +63,14 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        x = x.copy()
     num_dims = len(x.shape)
     if not num_dims:
-        if copy:
-            newarr = x.copy()
-            return newarr
         return x
     if axis is None:
         axis = list(range(num_dims))
-    if type(axis) is int:
+    if isinstance(axis, int):
         axis = [axis]
     axis = [item + num_dims if item < 0 else item for item in axis]
     return np.flip(x, axis)
@@ -190,7 +189,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.26.1 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,

@@ -47,7 +47,7 @@ Ivy Tests
 .. _`artifact`: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
+.. _`ivy tests thread`: https://discord.com/channels/799879767196958751/1189907526226034698
 .. _`test helpers`:  https://github.com/unifyai/ivy/tree/main/ivy_tests/test_ivy/helpers/hypothesis_helpers
 .. _`get_dtypes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L60
 .. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
@@ -895,7 +895,7 @@ This ensures that the given example is always tested while running the test, all
 
 This should have hopefully given you a good feel for how the tests are implemented in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `ivy tests channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy tests thread`_!
 
 
 **Video**

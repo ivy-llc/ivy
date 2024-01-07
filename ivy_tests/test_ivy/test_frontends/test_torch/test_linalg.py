@@ -63,7 +63,7 @@ def _generate_multi_dot_dtype_and_arrays(draw):
 @st.composite
 def _get_axis_and_p(draw):
     p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
-    if p == "fro" or p == "nuc":
+    if p in ["fro", "nuc"]:
         max_axes_size = 2
         min_axes_size = 2
     else:
@@ -458,7 +458,7 @@ def test_torch_eig(
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
-    l, v = ret
+    l, v = ret  # noqa: E741
     front_l, front_v = frontend_ret
 
     assert_all_close(
@@ -467,6 +467,7 @@ def test_torch_eig(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
@@ -511,6 +512,7 @@ def test_torch_eigh(
         ret_np=Q @ np.diag(L) @ Q.T,
         ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
         atol=1e-02,
+        backend=backend_fw,
     )
 
 
@@ -541,7 +543,8 @@ def test_torch_eigvals(
         test_values=False,
     )
     """In "ret" we have out eigenvalues calculated with our backend and in
-    "frontend_ret" are our eigenvalues calculated with the specified frontend."""
+    "frontend_ret" are our eigenvalues calculated with the specified
+    frontend."""
 
     """
     Depending on the chosen framework there may be small differences between our
@@ -580,6 +583,7 @@ def test_torch_eigvals(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
@@ -1000,6 +1004,7 @@ def test_torch_qr(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
     ivy.previous_backend()
 
@@ -1149,6 +1154,7 @@ def test_torch_svd(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
@@ -1156,10 +1162,12 @@ def test_torch_svd(
 @handle_frontend_test(
     fn_tree="torch.linalg.svdvals",
     dtype_and_x=_get_dtype_and_matrix(batch=True),
+    driver=st.sampled_from([None, "gesvd", "gesvdj", "gesvda"]),
 )
 def test_torch_svdvals(
     *,
     dtype_and_x,
+    driver,
     on_device,
     fn_tree,
     frontend,
@@ -1174,6 +1182,7 @@ def test_torch_svdvals(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        driver=driver,
         A=x[0],
     )
 
