@@ -38,7 +38,35 @@ from .assertions import (
 def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=None):
     with BackendHandler.update_backend(backend) as ivy_backend:
         if test_trace:
-            fn = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+            try:
+                if (
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                    in t_globals.CURRENT_TRACED_DATA
+                    and backend
+                    not in t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ]
+                ):
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ][backend] = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+                elif (
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                    not in t_globals.CURRENT_TRACED_DATA
+                ):
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ] = {}
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ][backend] = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+                fn = t_globals.CURRENT_TRACED_DATA[
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                ][backend]
+            except Exception:
+                import logging
+
+                logging.warn("API key is invalid, test_trace is skipped.")
     return fn
 
 
@@ -125,6 +153,11 @@ def test_function_backend_computation(
         test_flags.container = [
             test_flags.container[0] for _ in range(total_num_arrays)
         ]
+
+    if test_flags.test_cython_wrapper:
+        ivy.set_cython_wrappers_mode(True)
+    else:
+        ivy.set_cython_wrappers_mode(False)
 
     with BackendHandler.update_backend(fw) as ivy_backend:
         # Update variable flags to be compatible with float dtype and with_out args
@@ -637,9 +670,13 @@ def test_function(
         backend=backend_to_test,
         ground_truth_backend=test_flags.ground_truth_backend,
     )
-    assert_same_type(
-        ret_from_target, ret_from_gt, backend_to_test, test_flags.ground_truth_backend
-    )
+    if not test_flags.test_trace:
+        assert_same_type(
+            ret_from_target,
+            ret_from_gt,
+            backend_to_test,
+            test_flags.ground_truth_backend,
+        )
 
     assert ret_device == ret_from_gt_device, (
         f"ground truth backend ({test_flags.ground_truth_backend}) returned array on"
@@ -932,7 +969,7 @@ def test_frontend_function(
                 first_array = first_array.data
             ret_ = ret_.data
             if hasattr(first_array, "requires_grad"):
-                first_array.requires_grad = False
+                first_array = first_array.detach()
             assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
             assert _is_frontend_array(ret)

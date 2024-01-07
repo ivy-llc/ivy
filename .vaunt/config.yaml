@@ -47,7 +47,7 @@ achievements:
       description: Awarded for reviewing pull requests.
       triggers:
         - trigger:
-            actor: reviewer
+            actor: reviewers
             action: pull_request
             condition: count(created_at >= "2023-12-26" & merged = true) >= 1
 
@@ -97,7 +97,7 @@ achievements:
       description: Awarded for reviewing 5 pull requests.
       triggers:
         - trigger:
-            actor: reviewer
+            actor: reviewers
             action: pull_request
             condition: count(created_at >= "2023-12-26" & merged = true) >= 5
 
@@ -147,7 +147,7 @@ achievements:
       description: Awarded for reviewing 15 pull requests.
       triggers:
         - trigger:
-            actor: reviewer
+            actor: reviewers
             action: pull_request
             condition: count(created_at >= "2023-12-26" & merged = true) >= 15
 
@@ -197,6 +197,6 @@ achievements:
       description: Awarded for reviewing 30 pull requests.
       triggers:
         - trigger:
-            actor: reviewer
+            actor: reviewers
             action: pull_request
             condition: count(created_at >= "2023-12-26" & merged = true) >= 30

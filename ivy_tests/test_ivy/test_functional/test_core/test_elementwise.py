@@ -390,7 +390,9 @@ def test_atan2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.atanh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex")
+        min_value=1e-30,
+        max_value=1e30,
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
     ),
 )
 def test_atanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):

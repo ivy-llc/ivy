@@ -301,7 +301,7 @@ def quantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=N
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bool", "integer")}, "torch")
 def std(input, dim=None, unbiased=True, keepdim=False, *, out=None):
     return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
 
