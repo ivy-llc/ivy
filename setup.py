@@ -18,7 +18,6 @@ __version__ = None
 import setuptools
 from setuptools import setup
 from pathlib import Path
-from pip._vendor.packaging import tags
 from urllib import request
 import os
 import json
@@ -44,30 +43,37 @@ def _strip(line):
 
 
 # Download all relevant binaries in binaries.json
-all_tags = list(tags.sys_tags())
 binaries_dict = json.load(open("binaries.json"))
+available_configs = json.load(open("available_configs.json"))
 binaries_paths = _get_paths_from_binaries(binaries_dict)
+version = os.environ.get("VERSION", "main")
+fixed_tag = os.environ.get("TAG", None)
+clean = os.environ.get("CLEAN", None)
 terminate = False
-version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
-configs_response = request.urlopen(
-    "https://github.com/unifyai/binaries/raw/main/configs.txt",
-    timeout=40,
-)
-available_configs = repr(f"{configs_response.read()}").strip(r"\"b\'").split(r"\\n")
+all_tags, python_tag, plat_name, options = None, None, None, None
+if fixed_tag:
+    python_tag, _, plat_name = str(fixed_tag).split("-")
+    options = {"bdist_wheel": {"python_tag": python_tag, "plat_name": plat_name}}
+    all_tags = [fixed_tag]
+else:
+    from pip._vendor.packaging import tags
+
+    all_tags = list(tags.sys_tags())
 
 # download binaries for the tag with highest precedence
 for tag in all_tags:
     if terminate:
         break
-    if str(tag) not in available_configs:
-        continue
     for path in binaries_paths:
-        if os.path.exists(path):
+        module = path.split(os.sep)[1]
+        if (os.path.exists(path) and not clean) or str(tag) not in available_configs[
+            module
+        ]:
             continue
         folders = path.split(os.sep)
         folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
         file_name = f"{file_path[:-3]}_{tag}.so"
-        search_path = f"compiler/{file_name}"
+        search_path = f"{module}/{file_name}"
         try:
             response = request.urlopen(
                 f"https://github.com/unifyai/binaries/raw/{version}/{search_path}",
@@ -79,17 +85,6 @@ for tag in all_tags:
             terminate = path == binaries_paths[-1]
         except request.HTTPError:
             break
-
-# verify if all binaries are available
-for idx, path in enumerate(binaries_paths):
-    if not os.path.exists(path):
-        if idx == 0:
-            config_str = "\n".join(available_configs)
-            print(f"\nFollowing are the supported configurations :\n{config_str}\n")
-        print(
-            f"Could not download {path}.",
-            end="\n\n" if idx == len(binaries_paths) - 1 else "\n",
-        )
 
 
 this_directory = Path(__file__).parent
@@ -137,6 +132,9 @@ setup(
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
-    classifiers=["License :: OSI Approved :: Apache Software License"],
+    classifiers=[
+        "License :: OSI Approved :: Apache Software License",
+    ],
     license="Apache 2.0",
+    options=options,
 )

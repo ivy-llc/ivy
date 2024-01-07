@@ -1,7 +1,7 @@
 Exception Handling
 ==================
 
-.. _`exception handling channel`: https://discord.com/channels/799879767196958751/1028267924043092068
+.. _`exception handling thread`: https://discord.com/channels/799879767196958751/1189908450570928149
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
 As Ivy is unifying multiple backends, various issues are seen during exception handling:
@@ -511,14 +511,16 @@ Let's look at an example!
       # less_equal
       if allow_equal and ivy.any(x1 > x2):
           raise ivy.exceptions.IvyException(
-              "{} must be lesser than or equal to {}".format(x1, x2)
+              f"{x1} must be lesser than or equal to {x2}"
               if message == ""
               else message
           )
       # less
       elif not allow_equal and ivy.any(x1 >= x2):
           raise ivy.exceptions.IvyException(
-              "{} must be lesser than {}".format(x1, x2) if message == "" else message
+              f"{x1} must be lesser than {x2}"
+              if message == ""
+              else message
           )
 
 **ivy.set_split_factor**
@@ -543,7 +545,7 @@ Instead of coding a conditional block and raising an exception if the conditions
 
 This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `exception handling channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `exception handling thread`_!
 
 **Video**
 

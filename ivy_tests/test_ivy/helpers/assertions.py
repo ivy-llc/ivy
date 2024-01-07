@@ -18,9 +18,8 @@ def assert_all_close(
     atol=1e-08,
     ground_truth_backend="TensorFlow",
 ):
-    """
-    Match the ret_np and ret_from_gt_np inputs element-by-element to ensure that they
-    are the same.
+    """Match the ret_np and ret_from_gt_np inputs element-by-element to ensure
+    that they are the same.
 
     Parameters
     ----------
@@ -46,7 +45,7 @@ def assert_all_close(
         f" {ret_from_gt_dtype} datatype while the backend {backend} returned a"
         f" {ret_dtype} datatype"
     )
-    # TODO eanble
+    # TODO enable
     # if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
     #     ivy.Container.cont_multi_map(assert_all_close, [ret_np, ret_from_gt_np])
     # else:
@@ -77,9 +76,8 @@ def assert_same_type_and_shape(values, this_key_chain=None):
 
 
 def assert_same_type(ret_from_target, ret_from_gt, backend_to_test, gt_backend):
-    """
-    Assert that the return types from the target and ground truth frameworks are the
-    same.
+    """Assert that the return types from the target and ground truth frameworks
+    are the same.
 
     checks with a string comparison because with_backend returns
     different objects. Doesn't check recursively.
@@ -108,8 +106,8 @@ def value_test(
     backend: str,
     ground_truth_backend="TensorFlow",
 ):
-    """
-    Perform a value test for matching the arrays in ret_np_flat and ret_from_np_gt_flat.
+    """Perform a value test for matching the arrays in ret_np_flat and
+    ret_from_np_gt_flat.
 
     Parameters
     ----------
@@ -141,7 +139,8 @@ def value_test(
     assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
         f"The length of results from backend {backend} and ground truth framework"
         f" {ground_truth_backend} does not match\n\nlen(ret_np_flat) !="
-        f" len(ret_np_from_gt_flat):\n\nret_np_flat:\n\n{ret_np_flat}\n\nret_np_from_gt_flat:\n\n{ret_np_from_gt_flat}"
+        f" len(ret_np_from_gt_flat):\n\nret_np_flat:\n\n{ret_np_flat}\n\n"
+        f"ret_np_from_gt_flat:\n\n{ret_np_from_gt_flat}"
     )
     # value tests, iterating through each array in the flattened returns
     if specific_tolerance_dict is not None:
@@ -183,9 +182,8 @@ def value_test(
 
 
 def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
-    """
-    Check whether a function does not support the input data types or the output data
-    type.
+    """Check whether a function does not support the input data types or the
+    output data type.
 
     Parameters
     ----------
@@ -228,8 +226,7 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
 
 
 def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
-    """
-    Check whether a function does not support a given device.
+    """Check whether a function does not support a given device.
 
     Parameters
     ----------
@@ -267,8 +264,7 @@ def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
 
 
 def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwargs_np):
-    """
-    Check whether a function does not support a given device or data types.
+    """Check whether a function does not support a given device or data types.
 
     Parameters
     ----------
@@ -303,8 +299,7 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
 
 
 def test_unsupported_function(*, fn, args, kwargs):
-    """
-    Test a function with an unsupported datatype to raise an exception.
+    """Test a function with an unsupported datatype to raise an exception.
 
     Parameters
     ----------

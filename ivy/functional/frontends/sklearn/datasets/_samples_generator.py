@@ -1,7 +1,9 @@
 import ivy
 import numbers
+from ivy.functional.frontends.numpy.func_wrapper import outputs_to_frontend_arrays
 
 
+@outputs_to_frontend_arrays
 def make_circles(
     n_samples=100, *, shuffle=True, noise=None, random_state=None, factor=0.8
 ):
@@ -41,6 +43,7 @@ def make_circles(
     return X, y
 
 
+@outputs_to_frontend_arrays
 def make_moons(n_samples=100, *, shuffle=True, noise=None, random_state=None):
     if isinstance(n_samples, numbers.Integral):
         n_samples_out = n_samples // 2
