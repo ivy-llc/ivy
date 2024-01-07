@@ -2331,8 +2331,7 @@ def loadtxt(
     unpack: bool = False,
     ndmin: int = 0,
 ) -> ivy.Array:
-    r"""
-    Load data from a text file.
+    r"""Load data from a text file.
 
     Parameters
     ----------

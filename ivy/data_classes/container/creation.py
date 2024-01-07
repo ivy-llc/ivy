@@ -1667,10 +1667,9 @@ class _ContainerWithCreation(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""
-        ivy.Container static method variant of ivy.loadtxt. This method simply wraps the
-        function, and so the docstring for ivy.loadtxt also applies to this method with
-        minimal changes.
+        r"""ivy.Container static method variant of ivy.loadtxt. This method
+        simply wraps the function, and so the docstring for ivy.loadtxt also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

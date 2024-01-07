@@ -345,4 +345,3 @@ def loadtxt(
         encoding=encoding,
         max_rows=max_rows,
     )
-
