@@ -462,7 +462,7 @@ def take(
     # clip, wrap, fill
     ret = jnp.take(x, indices, axis=axis, mode=mode, fill_value=fill_value)
     if ivy.exists(out):
-        ivy.inplace_update(out)
+        ivy.inplace_update(out, ret)
     return ret
 
 
