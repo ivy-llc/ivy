@@ -14,6 +14,7 @@ from ivy.utils.exceptions import IvyNotImplementedException
 
 Acos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acos))
 Acosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acosh))
+Add = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
 AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 ArgMax = to_ivy_arrays_and_back(
@@ -248,6 +249,7 @@ Sigmoid = to_ivy_arrays_and_back(
 )
 Sin = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.sin))
 Size = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.size))
+Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
 Softmax = to_ivy_arrays_and_back(
     with_unsupported_dtypes(
         {
@@ -280,6 +282,7 @@ SquaredDifference = to_ivy_arrays_and_back(
 Squeeze = to_ivy_arrays_and_back(
     map_raw_ops_alias(tf_frontend.general_functions.squeeze)
 )
+Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))
 Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
 Tile = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.tile))
@@ -850,6 +853,39 @@ def Unpack(*, value, num, axis=0, name="Unpack"):
     return ivy.unstack(value, axis=axis)[:num]
 
 
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def UnsortedSegmentProd(*, data, segment_ids, num_segments, name=None):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
+
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    ivy.utils.assertions.check_greater(int(num_segments), int(ivy.max(segment_ids)))
+
+    shape = list(ivy.shape(data))
+    shape[0] = int(num_segments)
+    x = ivy.ones(shape, dtype=data.dtype)
+    for i in range((segment_ids).shape[0]):
+        x[segment_ids[i]] = ivy.multiply(x[segment_ids[i]], data[i])
+    return x
+
+
 @to_ivy_arrays_and_back
 def Xdivy(*, x, y, name="Xdivy"):
     if (x == 0).all():
@@ -868,8 +904,3 @@ def Xlog1py(*, x, y, name="Xlog1py"):
 @to_ivy_arrays_and_back
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
-
-
-Add = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
-Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
-Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))

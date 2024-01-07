@@ -5,7 +5,7 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 @with_supported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float32",
             "float64",
         )
@@ -26,7 +26,7 @@ def manual_seed(seed: int):
 
 @with_supported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float32",
             "float64",
         )
@@ -49,7 +49,7 @@ def multinomial(input, num_samples, replacement=False, *, generator=None, out=No
 
 @with_supported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float32",
             "float64",
         )
@@ -64,7 +64,7 @@ def normal(mean, std, *, generator=None, out=None):
 
 @with_supported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float32",
             "float64",
         )
@@ -255,6 +255,10 @@ def seed() -> int:
     return int(ivy.randint(-(2**63), 2**63 - 1))
 
 
+@with_supported_dtypes(
+    {"2.1.2 and below": ("uint8",)},
+    "torch",
+)
 @to_ivy_arrays_and_back
 def set_rng_state(new_state):
     return ivy.seed(seed_value=new_state)

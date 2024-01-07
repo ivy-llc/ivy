@@ -1,4 +1,5 @@
-"""Collection of Numpy random functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy random functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import numpy as np
@@ -51,7 +52,7 @@ def random_normal(
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
 
-@with_unsupported_dtypes({"1.26.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -68,12 +69,10 @@ def multinomial(
         np.random.seed(seed)
     if probs is None:
         probs = (
-            np.ones(
-                (
-                    batch_size,
-                    population_size,
-                )
-            )
+            np.ones((
+                batch_size,
+                population_size,
+            ))
             / population_size
         )
     orig_probs_shape = list(probs.shape)
@@ -110,7 +109,7 @@ def randint(
     return np.random.randint(low, high, shape, dtype=dtype)
 
 
-def seed(*, seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0):
     np.random.seed(seed_value)
     return
 

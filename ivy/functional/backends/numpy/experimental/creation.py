@@ -98,7 +98,7 @@ def unsorted_segment_min(
     elif data.dtype in [np.int32, np.int64, np.int8, np.int16, np.uint8]:
         init_val = np.iinfo(data.dtype).max
     else:
-        raise ValueError("Unsupported data type")
+        raise TypeError("Unsupported data type")
 
     res = np.full((num_segments,) + data.shape[1:], init_val, dtype=data.dtype)
 

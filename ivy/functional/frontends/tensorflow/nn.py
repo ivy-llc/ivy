@@ -127,8 +127,8 @@ def bias_add(value, bias, data_format=None, name=None):
     if data_format is None:
         data_format = "N...C"
 
-    chanel_index = data_format.find("C")
-    if chanel_index != 1:
+    channel_index = data_format.find("C")
+    if channel_index != 1:
         return ivy.add(value, bias)
     else:
         value = ivy.swapaxes(value, 1, -1)
@@ -160,7 +160,6 @@ def conv1d_transpose(
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(1, strides, dilations)
-    filters = filters.swapaxes(-2, -1)
     return ivy.conv1d_transpose(
         input,
         filters,
@@ -198,7 +197,6 @@ def conv2d_transpose(
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     padding = _reduce_padding(padding, data_format)
-    filters = filters.swapaxes(-2, -1)
     return ivy.conv2d_transpose(
         input,
         filters,
@@ -235,7 +233,6 @@ def conv3d_transpose(
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(3, strides, dilations)
-    filters = filters.swapaxes(-2, -1)
     return ivy.conv3d_transpose(
         input,
         filters,
@@ -317,9 +314,9 @@ def depthwise_conv2d(
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     fc = filter.shape[-2]
-    filter = filter.reshape([
-        *filter.shape[0:2], 1, filter.shape[-2] * filter.shape[-1]
-    ])
+    filter = filter.reshape(
+        [*filter.shape[0:2], 1, filter.shape[-2] * filter.shape[-1]]
+    )
     return ivy.conv_general_dilated(
         input,
         filter,
@@ -333,7 +330,7 @@ def depthwise_conv2d(
 
 @to_ivy_arrays_and_back
 def dropout(x, rate, noise_shape=None, seed=None, name=None):
-    return ivy.dropout(x, rate, noise_shape=noise_shape, seed=seed)
+    return ivy.dropout(x, rate, noise_shape=noise_shape, training=True, seed=seed)
 
 
 @with_unsupported_dtypes({"2.11.1 and below": ("complex",)}, "tensorflow")

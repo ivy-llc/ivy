@@ -458,7 +458,7 @@ def test_torch_eig(
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
-    l, v = ret
+    l, v = ret  # noqa: E741
     front_l, front_v = frontend_ret
 
     assert_all_close(
@@ -467,6 +467,7 @@ def test_torch_eig(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
@@ -511,6 +512,7 @@ def test_torch_eigh(
         ret_np=Q @ np.diag(L) @ Q.T,
         ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
         atol=1e-02,
+        backend=backend_fw,
     )
 
 
@@ -541,7 +543,8 @@ def test_torch_eigvals(
         test_values=False,
     )
     """In "ret" we have out eigenvalues calculated with our backend and in
-    "frontend_ret" are our eigenvalues calculated with the specified frontend."""
+    "frontend_ret" are our eigenvalues calculated with the specified
+    frontend."""
 
     """
     Depending on the chosen framework there may be small differences between our
@@ -580,6 +583,7 @@ def test_torch_eigvals(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
@@ -1000,6 +1004,7 @@ def test_torch_qr(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
     ivy.previous_backend()
 
@@ -1149,6 +1154,7 @@ def test_torch_svd(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 

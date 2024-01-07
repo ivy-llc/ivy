@@ -28,7 +28,7 @@ def _elementwise_helper(x1, x2):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("int8", "uint8", "float16", "bool", "bfloat16")},
+    {"2.5.2 and below": ("int8", "uint8", "float16", "bool", "bfloat16")},
     backend_version,
 )
 def add(
@@ -619,7 +619,7 @@ def not_equal(
 
 
 @with_supported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("bfloat16", "float32", "float64", "complex")}},
+    {"2.5.2 and below": {"cpu": ("float32", "float64", "complex")}},
     backend_version,
 )
 def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -841,6 +841,10 @@ def trapz(
     return ret
 
 
+@with_supported_device_and_dtypes(
+    {"2.5.2 and below": {"cpu": ("float32", "float64", "int32", "int64", "complex")}},
+    backend_version,
+)
 def abs(
     x: Union[float, paddle.Tensor],
     /,

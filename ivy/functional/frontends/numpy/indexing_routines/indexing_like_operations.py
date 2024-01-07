@@ -84,6 +84,12 @@ def put_along_axis(arr, indices, values, axis):
 
 
 @to_ivy_arrays_and_back
+@handle_numpy_out
+def take(a, indices, /, *, axis=None, out=None, mode="raise"):
+    return ivy.take(a, indices, axis=axis, out=out, mode=mode)
+
+
+@to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
