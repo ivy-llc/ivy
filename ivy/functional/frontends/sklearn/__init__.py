@@ -1,3 +1,4 @@
+from . import tree
 import ivy
 from ivy.functional.frontends.numpy import array
 

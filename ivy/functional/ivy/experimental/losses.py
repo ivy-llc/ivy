@@ -28,13 +28,13 @@ def log_poisson_loss(
     reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the log-likelihood loss between the prediction and the target under the
-    assumption that the target has a Poisson distribution. Caveat: By default, this is
-    not the exact loss, but the loss minus a constant term [log(z!)]. That has no effect
-    for optimization, but does not play well with relative loss comparisons. To compute
-    an approximation of the log factorial term, specify ``compute_full_loss=True`` to
-    enable Stirling's Approximation.
+    """Compute the log-likelihood loss between the prediction and the target
+    under the assumption that the target has a Poisson distribution. Caveat: By
+    default, this is not the exact loss, but the loss minus a constant term
+    [log(z!)]. That has no effect for optimization, but does not play well with
+    relative loss comparisons. To compute an approximation of the log factorial
+    term, specify ``compute_full_loss=True`` to enable Stirling's
+    Approximation.
 
     Parameters
     ----------
@@ -169,8 +169,8 @@ def huber_loss(
     reduction: Optional[str] = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Huber loss (smooth L1 loss) between true and predicted values.
+    """Compute the Huber loss (smooth L1 loss) between true and predicted
+    values.
 
     Parameters
     ----------
@@ -234,8 +234,7 @@ def smooth_l1_loss(
     reduction: Optional[str] = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the smooth L1 loss between two input tensors.
+    """Compute the smooth L1 loss between two input tensors.
 
     Parameters
     ----------
@@ -363,8 +362,8 @@ def soft_margin_loss(
     reduction: Optional[str] = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the soft-margin hinge loss between predicted scores and true binary labels.
+    """Compute the soft-margin hinge loss between predicted scores and true
+    binary labels.
 
     Parameters
     ----------
@@ -424,8 +423,7 @@ def kl_div(
     log_target=False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Kullback-Leibler divergence loss between two input tensors
+    """Compute the Kullback-Leibler divergence loss between two input tensors
     (conventionally, probability distributions).
 
     Parameters
@@ -511,8 +509,7 @@ def poisson_nll_loss(
     eps: float = 1e-8,
     reduction: str = "mean",
 ) -> ivy.Array:
-    r"""
-    Compute the Poisson Negative Log Likelihood Loss.
+    r"""Compute the Poisson Negative Log Likelihood Loss.
 
     This function calculates the negative log likelihood loss
     between the `input` and `target`under the assumption that
@@ -580,77 +577,86 @@ def poisson_nll_loss(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
-def binary_cross_entropy(
+def hinge_embedding_loss(
     input: Union[ivy.Array, ivy.NativeArray],
     target: Union[ivy.Array, ivy.NativeArray],
-    /,
     *,
-    from_logits: bool = False,
-    epsilon: float = 0.0,
-    reduction: str = "none",
-    pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    axis: Optional[int] = None,
-    out: Optional[ivy.Array] = None,
+    margin: float = 1.0,
+    reduction: str = "mean",
 ) -> ivy.Array:
-    """
-    Compute the binary cross entropy loss between predicted scores and true binary
-    labels.
+    r"""Measures loss from input `x` and label `y` with values 1 or -1. It
+    evaluates if two inputs are similar or not, often used for embedding or
+    semi-supervised learning.
+
+    Loss for the `n`-th sample:
+        .. math::
+            l_n = \begin{cases}
+                x_n, & \text{if}\; y_n = 1,\\
+                \max \{0, margin - x_n\}, & \text{if}\; y_n = -1,
+            \end{cases}
+
+    Total loss:
+        .. math::
+            \ell(x, y) = \begin{cases}
+                \operatorname{mean}(L), & \text{if reduction} = \text{`mean';}\\
+                \operatorname{sum}(L),  & \text{if reduction} = \text{`sum'.}
+            \end{cases}
+
+    where :math:`L = \{l_1,\dots,l_N\}^\top` .
 
     Parameters
     ----------
-    input : array_like
-        array of arbitrary shape containing probabilities.
-    target : array_like
-        array same shape as input with values between 0 and 1.
-    from_logits
-        Whether `pred` is expected to be a logits tensor. By
-        default, we assume that `pred` encodes a probability distribution.
-    epsilon
-        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
-        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+    input
+        Input tensor with dtype float.
+        The shape is [N, \*], where N is batch size and `\*` represents
+        any number of additional dimensions.
+    label
+        Label tensor containing 1 or -1 with dtype float32 or float64.
+        Its shape matches that of the input.
+    margin
+        Sets the hyperparameter margin. Determines the necessary input size
+        for hinge_embedding_loss calculations when label is -1. Inputs smaller
+        than the margin are minimized with hinge_embedding_loss.
+        Default is 1.0.
     reduction
-        ``'none'``: No reduction will be applied to the output.
-        ``'mean'``: The output will be averaged.
-        ``'sum'``: The output will be summed. Default: ``'none'``.
-    pos_weight
-        a weight for positive examples. Must be an array with length equal to the number
-        of classes.
-    axis
-        Axis along which to compute crossentropy.
-    out
-        optional output array, for writing the result to. It must have a shape
-        that the inputs broadcast to.
+        Specifies how to aggregate the loss across the batch. Options are:
+        - ``'none'``: Returns the unreduced loss.
+        - ``'mean'``: Returns the mean loss.
+        - ``'sum'``: Returns the summed loss.
+        Default is ``'mean'``.
+
+    Shape
+    -----
+        - Input: :math:`(*)` where :math:`*` means, any number of dimensions. \
+        The sum operation operates over all the elements.
+        - Target: :math:`(*)`, same shape as the input
+        - Output: scalar. If :attr:`reduction` is ``'none'``,
+        then same shape as the input
 
     Returns
     -------
-    ret : array
-        The binary cross entropy loss between the predicted scores
-        and true binary labels.
+    ret
+        Hinge embedding loss calculated from the input and label,
+        shaped based on the reduction method.
 
     Examples
     --------
-    >>> input = ivy.array([0.8, 0.2, 0.6, 0.4])
-    >>> target = ivy.array([1, 0, 1, 0])
-    >>> ivy.binary_cross_entropy(input, target)
-    ivy.array(0.3670)
+    >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
+    >>> target_tensor = ivy.array([1, 1, 1, 1], dtype=ivy.float64)
+    >>> loss = ivy.hinge_embedding_loss(input_tensor, target_tensor, reduction="none")
+    >>> loss
+    ivy.array([1., 2., 3., 4.])
 
-    >>> input = ivy.array([0.8, 0.7, 0.2, 0.1])
-    >>> target = ivy.array([1, 1, 0, 0])
-    >>> ivy.binary_cross_entropy(input, target, reduction='sum')
-    ivy.array(0.9083)
-
-    >>> input = ivy.array([0.8, 0.7, 0.2, 0.1])
-    >>> target = ivy.array([1, 1, 0, 0])
-    >>> ivy.binary_cross_entropy(input, target, reduction='none')
-    ivy.array([0.2231, 0.3567, 0.2231, 0.1054])
+    >>> input_tensor = ivy.array([21, 22], dtype=ivy.float32)
+    >>> target_tensor = ivy.array([-1, 1], dtype=ivy.float32)
+    >>> loss = ivy.hinge_embedding_loss(input_tensor,target_tensor,
+    ...                                 margin=2.0, reduction="sum")
+    >>> loss
+    ivy.array(22.)
     """
-    return ivy.current_backend(input).binary_cross_entropy(
+    return ivy.current_backend().hinge_embedding_loss(
         input,
         target,
-        from_logits=from_logits,
-        epsilon=epsilon,
+        margin=margin,
         reduction=reduction,
-        pos_weight=pos_weight,
-        axis=axis,
-        out=out,
     )

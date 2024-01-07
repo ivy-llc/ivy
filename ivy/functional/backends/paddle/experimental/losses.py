@@ -14,7 +14,7 @@ from . import backend_version
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -42,7 +42,7 @@ def l1_loss(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -66,13 +66,13 @@ def smooth_l1_loss(
     reduction: Optional[str] = "mean",
 ) -> paddle.Tensor:
     return paddle.nn.functional.smooth_l1_loss(
-        input, target, reduction=reduction, beta=beta
+        input, target, reduction=reduction, delta=beta
     )
 
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -100,7 +100,7 @@ def huber_loss(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -127,7 +127,7 @@ def soft_margin_loss(
 
 
 @with_supported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float32", "float64")}},
+    {"2.5.2 and below": {"cpu": ("float32", "float64")}},
     backend_version,
 )
 def kl_div(
@@ -165,29 +165,29 @@ def _validate_poisson_nll_params(
     for parameter, name in zip([input, label], ["input", "label"]):
         if parameter.dtype not in allowed_dtypes:
             raise ValueError(
-                "The dtype of '%s' in poisson_nll_loss should be one of %s, but"
-                " received %s." % (name, allowed_dtypes, parameter.dtype)
+                f"The dtype of '{name}' in poisson_nll_loss should be one of"
+                f" {allowed_dtypes}, but received {parameter.dtype}."
             )
 
     # Validate epsilon
     if epsilon <= 0:
         raise ValueError(
             "The value of `epsilon` in poisson_nll_loss should be positive, but"
-            " received %f, which is not allowed" % epsilon
+            f" received {epsilon}, which is not allowed."
         )
 
     # Validate reduction
     if reduction not in ["sum", "mean", "none"]:
         raise ValueError(
             "The value of 'reduction' in poisson_nll_loss should be 'sum', 'mean' or"
-            " 'none', but received %s, which is not allowed." % reduction
+            f" 'none', but received {reduction}, which is not allowed."
         )
 
     # Validate shape
     if input.shape != label.shape:
         raise ValueError(
-            "The shape of 'input' (%s) must be the same as the shape of 'label' (%s)."
-            % (input.shape, label.shape)
+            f"The shape of 'input' ({input.shape}) must be the same as the shape of"
+            f" 'label' ({label.shape})."
         )
 
     return True
@@ -195,7 +195,7 @@ def _validate_poisson_nll_params(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.5.2 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -245,47 +245,21 @@ def poisson_nll_loss(
     {
         "2.5.1 and below": {
             "cpu": ("float32", "float64"),
-            "gpu": ("bfloat16", "float16", "float32", "float64"),
+            "gpu": ("float16", "float32", "float64"),
         }
     },
     backend_version,
 )
-def binary_cross_entropy(
+def hinge_embedding_loss(
     input: paddle.Tensor,
     target: paddle.Tensor,
-    /,
     *,
-    from_logits: bool = False,
-    epsilon: float = 0.0,
-    reduction: str = "none",
-    pos_weight: Optional[paddle.Tensor] = None,
-    axis: Optional[int] = None,
-    out: Optional[paddle.Tensor] = None,
+    margin: float = 1.0,
+    reduction: str = "mean",
 ) -> paddle.Tensor:
-    if not (0.0 <= epsilon <= 1.0):
-        raise ValueError("epsilon should be a float in [0, 1]")
-
-    if not from_logits and pos_weight is not None:
-        raise ValueError("pos_weight is only allowed when from_logits is set to True")
-
-    if out is not None:
-        raise NotImplementedError(
-            "The 'out' argument to paddle.binary_cross_entropy is not supported."
-        )
-    if axis is not None:
-        raise NotImplementedError(
-            "The 'axis' argument to paddle.binary_cross_entropy is not supported."
-        )
-
-    if pos_weight is not None:
-        raise NotImplementedError(
-            "The 'pos_weight' argument to paddle.binary_cross_entropy is not supported."
-        )
-    input_arr = paddle.to_tensor(input)
-    target_arr = paddle.to_tensor(target, dtype=input.dtype)
-    if from_logits:
-        return F.binary_cross_entropy(
-            paddle.nn.Sigmoid(input_arr), target_arr, reduction=reduction
-        )
-    else:
-        return F.binary_cross_entropy(input_arr, target_arr, reduction=reduction)
+    return paddle.nn.functional.hinge_embedding_loss(
+        input,
+        target,
+        margin=margin,
+        reduction=reduction,
+    )

@@ -117,7 +117,7 @@ native_bool = paddle.bool
 
 # update these to add new dtypes
 valid_dtypes = {
-    "2.4.0 and below": (
+    "2.4.2 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -130,7 +130,7 @@ valid_dtypes = {
         ivy.complex128,
         ivy.bool,
     ),
-    "2.4.1 and above": (
+    "2.5.0 and above": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -146,7 +146,7 @@ valid_dtypes = {
     ),
 }
 valid_numeric_dtypes = {
-    "2.4.0 and below": (
+    "2.4.2 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -159,7 +159,7 @@ valid_numeric_dtypes = {
         ivy.complex128,
         ivy.bool,
     ),
-    "2.4.1 and above": (
+    "2.5.0 and above": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -175,20 +175,20 @@ valid_numeric_dtypes = {
     ),
 }
 valid_int_dtypes = {
-    "2.5.1 and below": (
+    "2.5.2 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
         ivy.int64,
         ivy.uint8,
-    )
+    ),
 }
 valid_float_dtypes = {
-    "2.4.0 and below": (ivy.float16, ivy.float32, ivy.float64),
-    "2.4.1 and above": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64),
+    "2.4.2 and below": (ivy.float16, ivy.float32, ivy.float64),
+    "2.5.0 and above": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64),
 }
-valid_uint_dtypes = {"2.5.1 and below": (ivy.uint8,)}
-valid_complex_dtypes = {"2.5.1 and below": (ivy.complex64, ivy.complex128)}
+valid_uint_dtypes = {"2.5.2 and below": (ivy.uint8,)}
+valid_complex_dtypes = {"2.5.2 and below": (ivy.complex64, ivy.complex128)}
 
 # leave these untouched
 valid_dtypes = _dtype_from_version(valid_dtypes, backend_version)
@@ -201,13 +201,13 @@ valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version
 
 # update these to add new dtypes
 invalid_dtypes = {
-    "2.4.0 and below": (
+    "2.4.2 and below": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
         ivy.bfloat16,
     ),
-    "2.4.1 and above": (
+    "2.5.0 and above": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
@@ -215,23 +215,23 @@ invalid_dtypes = {
 }
 
 invalid_numeric_dtypes = {
-    "2.4.0 and below": (
+    "2.4.2 and below": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
         ivy.bfloat16,
     ),
-    "2.4.1 and above": (
+    "2.5.0 and above": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
     ),
 }
 
-invalid_int_dtypes = {"2.5.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_float_dtypes = {"2.4.0 and below": (ivy.bfloat16,), "2.4.1 and above": ()}
-invalid_uint_dtypes = {"2.5.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_complex_dtypes = {"2.5.1 and below": ()}
+invalid_int_dtypes = {"2.5.2 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_float_dtypes = {"2.4.2 and below": (ivy.bfloat16,), "2.5.0 and above": ()}
+invalid_uint_dtypes = {"2.5.2 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_complex_dtypes = {"2.5.2 and below": ()}
 
 # leave these untouched
 invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)

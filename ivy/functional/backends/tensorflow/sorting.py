@@ -8,7 +8,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("complex", "bool")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex", "bool")}, backend_version)
 def argsort(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -24,7 +24,7 @@ def argsort(
     return tf.cast(ret, dtype=tf.int64)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("complex", "bool")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex", "bool")}, backend_version)
 def sort(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -43,7 +43,7 @@ def sort(
 
 
 # msort
-@with_unsupported_dtypes({"2.14.0 and below": ("complex", "bool")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex", "bool")}, backend_version)
 def msort(
     a: Union[tf.Tensor, tf.Variable, list, tuple],
     /,
@@ -53,7 +53,7 @@ def msort(
     return tf.sort(a, axis=0)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def searchsorted(
     x: Union[tf.Tensor, tf.Variable],
     v: Union[tf.Tensor, tf.Variable],
@@ -64,14 +64,12 @@ def searchsorted(
     ret_dtype: tf.DType = tf.int64,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    assert ivy.is_int_dtype(ret_dtype), ValueError(
+    assert ivy.is_int_dtype(ret_dtype), TypeError(
         "only Integer data types are supported for ret_dtype."
     )
     is_supported_int_ret_dtype = ret_dtype in [tf.int32, tf.int64]
     if sorter is not None:
-        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
-            sorter.dtype
-        ), TypeError(
+        assert ivy.is_int_dtype(sorter.dtype), TypeError(
             f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
         )
         if sorter.dtype not in [tf.int32, tf.int64]:

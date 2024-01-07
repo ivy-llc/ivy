@@ -10,7 +10,7 @@ import tensorflow as tf
 import ivy
 
 # noinspection PyProtectedMember
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
@@ -32,26 +32,25 @@ def concat(
     axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    is_tuple = type(xs) is tuple
-    is_axis_none = axis is None
-    if is_tuple:
-        xs = list(xs)
-    highest_dtype = xs[0].dtype
-    for i in xs:
-        highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
-
-    for i in range(len(xs)):
-        if is_axis_none:
-            xs[i] = tf.reshape(xs[i], -1)
-        xs[i] = ivy.astype(xs[i], highest_dtype, copy=False).to_native()
-    if is_axis_none:
-        axis = 0
-        if is_tuple:
-            xs = tuple(xs)
-    try:
-        return tf.concat(xs, axis)
-    except (tf.errors.InvalidArgumentError, np.AxisError) as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+    if axis is not None:
+        try:
+            return tf.concat(xs, axis)
+        except tf.errors.InvalidArgumentError as error:
+            if "(zero-based) was expected to be" in error.message:
+                highest_dtype = xs[0].dtype
+                for i in xs:
+                    highest_dtype = ivy.promote_types(highest_dtype, i.dtype)
+                highest_dtype = ivy.as_native_dtype(highest_dtype)
+                return tf.concat(
+                    [
+                        tf.cast(x, highest_dtype) if x.dtype != highest_dtype else x
+                        for x in xs
+                    ],
+                    axis,
+                )
+            else:
+                raise
+    return concat([tf.reshape(x, -1) for x in xs], axis=0)
 
 
 def expand_dims(
@@ -86,7 +85,7 @@ def flip(
             new_axis = list(range(num_dims))
         else:
             new_axis = axis
-        if type(new_axis) is int:
+        if isinstance(new_axis, int):
             new_axis = [new_axis]
         else:
             new_axis = new_axis
@@ -106,7 +105,7 @@ def permute_dims(
     return tf.transpose(x, perm=axes)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -186,7 +185,7 @@ def squeeze(
     return ret
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def stack(
     arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     /,
@@ -240,13 +239,12 @@ def split(
     return tf.split(x, num_or_size_splits, axis)
 
 
-@with_supported_dtypes({"2.14.0 and below": ("int32", "int64")}, backend_version)
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
     /,
     repeats: Union[int, List[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.repeat(x, repeats, axis)
@@ -254,7 +252,7 @@ def repeat(
 
 @with_unsupported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "uint8",
             "uint16",
             "uint32",
@@ -325,7 +323,7 @@ def swapaxes(
     return tf.transpose(x, config)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
     /,

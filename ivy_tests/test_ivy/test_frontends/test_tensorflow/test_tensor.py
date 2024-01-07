@@ -916,7 +916,7 @@ def test_tensorflow__pow__(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    if x[1].dtype == "int32" or x[1].dtype == "int64":
+    if x[1].dtype in ["int32", "int64"]:
         if x[1].ndim == 0:
             if x[1] < 0:
                 x[1] *= -1
@@ -1470,7 +1470,7 @@ def test_tensorflow__xor__(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_tensorflow_tensor_device(
+def test_tensorflow_device(
     dtype_x,
     backend_fw,
 ):
@@ -1487,7 +1487,7 @@ def test_tensorflow_tensor_device(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
     ),
 )
-def test_tensorflow_tensor_dtype(
+def test_tensorflow_dtype(
     dtype_x,
     backend_fw,
 ):
@@ -1508,7 +1508,7 @@ def test_tensorflow_tensor_dtype(
         min_dim_size=1,
     ),
 )
-def test_tensorflow_tensor_get_shape(
+def test_tensorflow_get_shape(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1539,7 +1539,7 @@ def test_tensorflow_tensor_get_shape(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_tensorflow_tensor_ivy_array(
+def test_tensorflow_ivy_array(
     dtype_x,
     backend_fw,
 ):
@@ -1552,6 +1552,7 @@ def test_tensorflow_tensor_ivy_array(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
         ground_truth_backend="tensorflow",
+        backend=backend_fw,
     )
     ivy.previous_backend()
 
@@ -1565,7 +1566,7 @@ def test_tensorflow_tensor_ivy_array(
         max_num_dims=5,
     ),
 )
-def test_tensorflow_tensor_set_shape(
+def test_tensorflow_set_shape(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1595,7 +1596,7 @@ def test_tensorflow_tensor_set_shape(
         ret_shape=True,
     ),
 )
-def test_tensorflow_tensor_shape(
+def test_tensorflow_shape(
     dtype_x,
     backend_fw,
 ):

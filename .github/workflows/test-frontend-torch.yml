@@ -16,6 +16,15 @@ jobs:
           persist-credentials: false
           submodules: "recursive"
 
+      - name: Install ivy and fetch binaries
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          cd ..
+
       - name: Download artifact
         if: github.event_name == 'pull_request'
         uses: dawidd6/action-download-artifact@v2
