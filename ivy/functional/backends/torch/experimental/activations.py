@@ -62,7 +62,7 @@ def silu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.nn.functional.silu(x)
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, backend_version)
 def elu(
     x: torch.Tensor, /, *, alpha: float = 1.0, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
