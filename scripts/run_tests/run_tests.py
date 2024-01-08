@@ -20,15 +20,21 @@ if __name__ == "__main__":
     gpu_flag = sys.argv[5]
     workflow_id = sys.argv[6]
     priority_flag = sys.argv[7]
+    tracer_flag = sys.argv[8]
 
-    if len(sys.argv) > 8 and sys.argv[8] != "null":
-        run_id = sys.argv[8]
+    if len(sys.argv) > 9 and sys.argv[9] != "null":
+        run_id = sys.argv[9]
     else:
         run_id = f"https://github.com/unifyai/ivy/actions/runs/{workflow_id}"
 
     device = "cpu"
     if gpu_flag == "true":
         device = "gpu"
+
+    tracer_str = ""
+    if tracer_flag == "true":
+        tracer_flag = "tracer_"
+        tracer_str = " --with-trace-testing"
 
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
@@ -111,7 +117,7 @@ if __name__ == "__main__":
                 )
                 command = (
                     "docker exec test-container python3 -m pytest --tb=short"
-                    f" {test_path}{device_str} --backend {backend}"
+                    f" {test_path}{device_str} --backend {backend}{tracer_str}"
                 )
                 os.system(command)
 
@@ -207,8 +213,12 @@ if __name__ == "__main__":
                 "_id": function_name,
                 "test_path": test_path,
                 "submodule": submodule,
-                f"{prefix_str}{backend}.{version}.status.{device}": not failed,
-                f"{prefix_str}{backend}.{version}.workflow.{device}": run_id,
+                f"{prefix_str}{backend}.{version}.{tracer_flag}status.{device}": (
+                    not failed
+                ),
+                f"{prefix_str}{backend}.{version}.{tracer_flag}workflow.{device}": (
+                    run_id
+                ),
             }
 
             # add transpilation metrics if report generated
