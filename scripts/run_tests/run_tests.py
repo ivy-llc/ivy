@@ -35,6 +35,8 @@ if __name__ == "__main__":
     if tracer_flag == "true":
         tracer_flag = "tracer_"
         tracer_str = " --with-trace-testing"
+    else:
+        tracer_flag = ""
 
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
