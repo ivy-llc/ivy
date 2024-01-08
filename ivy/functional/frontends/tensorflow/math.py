@@ -237,7 +237,7 @@ def atanh(x, name="atanh"):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64")}, "tensorflow"
+    {"2.15.0 and below": ("float16", "float32", "float64")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def bessel_i1(x, name=None):
@@ -247,7 +247,7 @@ def bessel_i1(x, name=None):
     mask1 = z <= 8.0
 
     if ivy.any(mask1) > 0:
-        y = (z[mask1] / 2.0) - 2.0
+        y = (z[mask1] / ivy.array([2.0])) - ivy.array([2.0])
         result[mask1] = (
             _chbevl(y, _get_chebyshev_coefficients_for_exp_i1(), 29)
             * z[mask1]
@@ -259,7 +259,7 @@ def bessel_i1(x, name=None):
         result[mask2] = (
             ivy.exp(z[mask2])
             * _chbevl(
-                32.0 / z[mask2] - 2.0, _get_chebyshev_coefficients_for_exp_sqrt_i1(), 25
+                ivy.array([32.0]) / z[mask2] - ivy.array([2.0]), _get_chebyshev_coefficients_for_exp_sqrt_i1(), 25
             )
             / ivy.sqrt(z[mask2])
         )
