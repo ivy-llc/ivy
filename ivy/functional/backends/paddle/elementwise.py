@@ -179,7 +179,7 @@ def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64", "complex")},
+    {"2.5.1 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
