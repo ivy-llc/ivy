@@ -5,7 +5,10 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 import ivy.functional.frontends.torch as torch_frontend
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    with_crosscast,
+)
 
 
 @to_ivy_arrays_and_back
@@ -154,6 +157,7 @@ def copysign(input, other, *, out=None):
 
 @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
+@with_crosscast
 def cos(input, *, out=None):
     return ivy.cos(input, out=out)
 
@@ -195,6 +199,7 @@ def erfc(input, *, out=None):
 
 @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
+@with_crosscast
 def exp(input, *, out=None):
     return ivy.exp(input, out=out)
 
@@ -302,6 +307,7 @@ def lgamma(input, *, out=None):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
+@with_crosscast
 def log(input, *, out=None):
     return ivy.log(input, out=out)
 
