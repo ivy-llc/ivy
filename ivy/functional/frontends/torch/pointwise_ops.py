@@ -463,10 +463,10 @@ def remainder(input, other, *, out=None):
 @with_unsupported_dtypes({"2.1.2 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def round(input, *, decimals=0, out=None):
-    m = ivy.full(input.shape, 10.0**decimals, dtype=input.dtype)
+    m = ivy.full(input.shape, 10.0**decimals)
     upscale = ivy.multiply(input, m)
     rounded = ivy.round(upscale)
-    return ivy.divide(rounded, m, out=out)
+    return ivy.divide(rounded, m, out=out).astype(input.dtype)
 
 
 @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
