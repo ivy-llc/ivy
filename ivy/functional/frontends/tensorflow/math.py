@@ -259,7 +259,9 @@ def bessel_i1(x, name=None):
         result[mask2] = (
             ivy.exp(z[mask2])
             * _chbevl(
-                ivy.array([32.0]) / z[mask2] - ivy.array([2.0]), _get_chebyshev_coefficients_for_exp_sqrt_i1(), 25
+                ivy.array([32.0]) / z[mask2] - ivy.array([2.0]),
+                _get_chebyshev_coefficients_for_exp_sqrt_i1(),
+                25,
             )
             / ivy.sqrt(z[mask2])
         )
