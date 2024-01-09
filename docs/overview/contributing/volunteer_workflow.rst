@@ -11,7 +11,7 @@ Start as a Contributor by earning any of the Initial Badges. It's straightforwar
 
 Core Contributor
 ----------------
-Attain Core Contributor status by securing any Bronze Badge. 
+Elevate to Core Contributor status by earning a Bronze Badge. As a Core Contributor, you're recognized not just for your skills but also for your growing commitment to our mission. You'll have the opportunity to engage more deeply with our projects and play an important role in shaping the future of our initiatives. This tier is a testament to your dedication and a stepping stone to even greater achievements within our community.
 
 Rising Contributor
 ------------------
@@ -19,7 +19,7 @@ Ascend to the Rising Contributor level by acquiring a Silver Badge. This tier gr
 
 Top Contributor
 ---------------
-Achieve a Gold Badge to reach the peak of our program as a Top Contributor. This tier is for those who demonstrate exceptional dedication and expertise. You'll gain the privilege to engage with bounty-holding internal tasks and join our Bounty Program, where completing top-priority issues can earn you cash rewards ranging from $10 to $100. Once you've reached this level, we're honoured to offer you a personalised reference letter celebrating your achievements with Ivy.
+Achieve a Gold Badge to reach the peak of our program as a Top Contributor. This tier is for those who demonstrate exceptional dedication and expertise. You'll gain the privilege of engaging with bounty-holding internal tasks and join our Bounty Program, where completing top-priority issues can earn you cash rewards ranging from $10 to $100. Once you've reached this level, we're honoured to offer you a personalised reference letter celebrating your achievements with Ivy.
 
 
 
