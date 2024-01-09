@@ -11,7 +11,7 @@ GitHub Rewards
      - Silver (15 Tasks)
      - Gold (30 Tasks
    * - Debugging Dynamos
-     - .. image:: .vaunt/badges/badge_01-01.png
+     - .. image:: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_01-00.png
           :width: 400
           :alt: Alternative text
      -
