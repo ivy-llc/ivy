@@ -1,4 +1,4 @@
-name: test-ivy-cron
+name: test-ivy-tracer-cron
 on:
   workflow_dispatch:
   schedule:
