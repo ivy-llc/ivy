@@ -3,7 +3,7 @@ Volunteer Workflow
 
 We've created a promotion workflow to help you advance through the different tiers of contribution, from Contributor to Core Contributor, Rising Contributor, and finally, Top Contributor.
 
-Refer Github Rewards for information about the badges.
+Refer to Github Rewards for information about the badges.
 
 Contributor
 -----------
@@ -19,7 +19,7 @@ Ascend to the Rising Contributor level by acquiring a Silver Badge. This tier gr
 
 Top Contributor
 ---------------
-Achieve a Gold Badge to reach the peak of our program as a Top Contributor. This tier is for those who demonstrate exceptional dedication and expertise. You'll gain the privilege of engaging with bounty-holding internal tasks and join our Bounty Program, where completing top-priority issues can earn you cash rewards ranging from $10 to $100. Once you've reached this level, we're honoured to offer you a personalised reference letter celebrating your achievements with Ivy.
+Achieve a Gold Badge to reach the peak of our program as a Top Contributor. This tier is for those who demonstrate exceptional dedication and expertise. You'll gain the privilege of engaging with bounty-holding internal tasks and join our Bounty Program, where completing top-priority issues can earn you cash rewards ranging from $10 to $100. Upon reaching this level, we will be delighted to acknowledge your contributions to Ivy with a special token of appreciation.
 
 
 
