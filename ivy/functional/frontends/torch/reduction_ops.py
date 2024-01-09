@@ -361,7 +361,7 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     "torch",
 )
 @to_ivy_arrays_and_back
-def unique_consecutive(input, return_inverse, return_counts, dim):
+def unique_consecutive(input, return_inverse=False, return_counts=False, dim=None):
     output, inverse_indices, counts = ivy.unique_consecutive(input, axis=dim)
     ret = (output,)
     if return_inverse:
