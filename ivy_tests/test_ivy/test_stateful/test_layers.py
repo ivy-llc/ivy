@@ -1053,7 +1053,7 @@ def test_dropout_layer(
         test_values=False,
         on_device=on_device,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
     for u in ret:
         # cardinality test
         assert u.shape == x[0].shape
