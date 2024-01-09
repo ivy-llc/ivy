@@ -224,7 +224,7 @@ if __name__ == "__main__":
             }
 
             # add transpilation metrics if report generated
-            if not failed and report_content:
+            if not failed and report_content and not tracer_flag:
                 if is_frontend_test:
                     test_info = {
                         **test_info,
