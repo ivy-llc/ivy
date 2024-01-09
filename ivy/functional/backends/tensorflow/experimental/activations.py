@@ -59,7 +59,7 @@ def selu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return ivy.astype(ret, x.dtype)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
 def silu(
     x: Tensor,
     /,

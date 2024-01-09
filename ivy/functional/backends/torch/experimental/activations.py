@@ -57,7 +57,7 @@ def selu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return ivy.astype(ret, x.dtype)
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, backend_version)
 def silu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.silu(x)
 
