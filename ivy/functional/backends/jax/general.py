@@ -91,6 +91,7 @@ def set_item(
 ) -> JaxArray:
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         query, expected_shape = _mask_to_index(query, x)
+    if ivy.is_array(val):
         val = _broadcast_to(val, expected_shape)._data
     ret = x.at[query].set(val)
     if copy:
