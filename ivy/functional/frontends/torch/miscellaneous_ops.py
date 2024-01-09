@@ -137,6 +137,7 @@ def clone(input, *, memory_format=None):
     return ivy.copy_array(input)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bool")}, "torch")
 @to_ivy_arrays_and_back
 def corrcoef(input):
     if len(ivy.shape(input)) > 2:

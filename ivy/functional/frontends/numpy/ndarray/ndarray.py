@@ -415,7 +415,7 @@ class ndarray:
 
     @with_supported_device_and_dtypes(
         {
-            "1.26.2 and below": {
+            "1.26.3 and below": {
                 "cpu": (
                     "int64",
                     "float32",

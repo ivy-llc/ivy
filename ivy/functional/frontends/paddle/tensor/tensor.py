@@ -237,6 +237,13 @@ class Tensor:
         {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
         "paddle",
     )
+    def __rtruediv__(self, y, /, name=None):
+        return paddle_frontend.divide(y, self)
+
+    @with_unsupported_dtypes(
+        {"2.5.2 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
     def __int__(self):
         return int(self._ivy_array)
 
@@ -294,9 +301,8 @@ class Tensor:
                     self._ivy_array, args
                 ).ivy_array
                 return self
-
-        self.ivy_array = paddle_frontend.reshape(self._ivy_array).ivy_array
-        return self
+        else:
+            raise ValueError("reshape_() got no values for argument 'shape'")
 
     def dim(self):
         return self.ivy_array.ndim

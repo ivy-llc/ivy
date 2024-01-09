@@ -179,7 +179,7 @@ def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64", "complex")},
+    {"2.5.1 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -841,8 +841,9 @@ def trapz(
     return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
+@with_supported_device_and_dtypes(
+    {"2.5.2 and below": {"cpu": ("float32", "float64", "int32", "int64", "complex")}},
+    backend_version,
 )
 def abs(
     x: Union[float, paddle.Tensor],

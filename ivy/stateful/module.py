@@ -288,11 +288,11 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             # ToDo: verify variables in self.v are released once this method exits
             self._v = ivy.Container()
 
-        # once all variables built, find and assign buffers
-        self._find_buffers()
-
         # compute the module dict
         self._compute_module_dict()
+
+        # once all variables built, find and assign buffers
+        self._find_buffers()
 
         return v_ret if bool(v_ret) or isinstance(built, bool) else built
 
@@ -345,7 +345,10 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         value
             Value of the buffer
         """
-        self._buffers.update({name: value})
+        if value is not None:
+            self._buffers.update({name: value})
+        else:
+            super().__setattr__(name, value)
 
     def register_parameter(self, name, value):
         """Register a parameter.
@@ -353,9 +356,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         Parameters
         ----------
         name
-            Name of the buffer
+            Name of the parameter
         value
-            Value of the buffer
+            Value of the parameter
         """
         self._v.update({name: value})
 

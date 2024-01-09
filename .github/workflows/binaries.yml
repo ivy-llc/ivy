@@ -6,11 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Binaries
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: unifyai/binaries
+          token: ${{ secrets.IVY_BRANCH_TOKEN }}
           path: binaries
-          persist-credentials: false
 
       - name: Add Tag to Binaries
         run: |
