@@ -20,7 +20,3 @@ Ascend to the Rising Contributor level by acquiring a Silver Badge. This tier gr
 Top Contributor
 ---------------
 Achieve a Gold Badge to reach the peak of our program as a Top Contributor. This tier is for those who demonstrate exceptional dedication and expertise. You'll gain the privilege of engaging with bounty-holding internal tasks and join our Bounty Program, where completing top-priority issues can earn you cash rewards ranging from $10 to $100. Upon reaching this level, we will be delighted to acknowledge your contributions to Ivy with a special token of appreciation.
-
-
-
-

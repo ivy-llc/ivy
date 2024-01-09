@@ -75,6 +75,3 @@ GitHub Rewards
      - .. image:: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_06-04.png
           :width: 110
           :alt: Alternative text
-
-
-
