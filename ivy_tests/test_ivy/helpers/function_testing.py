@@ -66,7 +66,7 @@ def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=Non
             except Exception:
                 import logging
 
-                logging.warn("API key is invalid, test_trace is skipped.")
+                logging.warning("API key is invalid, test_trace is skipped.")
     return fn
 
 
