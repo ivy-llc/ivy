@@ -46,6 +46,7 @@ CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
 CURRENT_DEVICE_STRIPPED = _Notsetval
 CURRENT_FRONTEND_STR = None
+CURRENT_TRACED_DATA = {}
 
 
 @dataclass(frozen=True)  # ToDo use kw_only=True when version is updated

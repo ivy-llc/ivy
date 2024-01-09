@@ -1455,9 +1455,10 @@ class Tensor:
         return torch_frontend.reciprocal(self)
 
     def fill_(self, value):
-        self.ivy_array = torch_frontend.full_like(
+        ret = torch_frontend.full_like(
             self, value, dtype=self.dtype, device=self.device
-        ).ivy_array
+        )
+        self.ivy_array = ivy.inplace_update(self.ivy_array, ret)
         return self
 
     def nonzero(self, as_tuple=False):
@@ -1502,7 +1503,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.1.2 and below": ("uint16",)}, "torch")
     def zero_(self):
-        self.ivy_array = torch_frontend.zeros_like(self).ivy_array
+        ret = torch_frontend.zeros_like(self)
+        self.ivy_array = ivy.inplace_update(self.ivy_array, ret)
         return self
 
     def short(self, memory_format=None):

@@ -304,3 +304,16 @@ def to_ivy_shape(fn: Callable) -> Callable:
 
     to_ivy_shape_torch.to_ivy_shape_torch = True
     return to_ivy_shape_torch
+
+
+def with_crosscast(fn: Callable) -> Callable:
+    # todo: check for any unwanted side effects
+    @functools.wraps(fn)
+    def with_crosscast_(*args, **kwargs):
+        ivy.crosscast_data_types(True)
+        ret = fn(*args, **kwargs)
+        ivy.crosscast_data_types(False)
+        return ret
+
+    with_crosscast.with_crosscast_ = True
+    return with_crosscast_

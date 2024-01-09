@@ -209,6 +209,9 @@ def test_torch_aminmax(
     fn_tree="torch.any",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=8,
+        large_abs_safety_factor=8,
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
@@ -656,7 +659,7 @@ def test_torch_nanmean(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, *_ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -760,14 +763,14 @@ def test_torch_norm(
 
     helpers.test_frontend_function(
         backend_to_test=backend_fw,
-        input_dtypes=[x_dtype],
+        input_dtypes=x_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-01,
         atol=1e-08,
-        input=x,
+        input=x[0],
         p=p,
         dim=axis,
         keepdim=keepdim,
@@ -843,6 +846,8 @@ def test_torch_quantile(
     input_dtype, x, axis, interpolation, q = dtype_and_x
     if type(axis) is tuple:
         axis = axis[0]
+    if interpolation == "nearest_jax":
+        interpolation = "nearest"
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
