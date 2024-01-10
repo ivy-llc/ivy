@@ -1,7 +1,27 @@
 GitHub Rewards
 ==============
 
-.. list-table:: Title
+Our GitHub Rewards program offers a range of badges, each designed to formally recognize the specific achievements of our contributors in various key areas of project development.
+
+Badges 
+~~~~~~~
+
+**Debugging Dynamos** - These badges are awarded to contributors who demonstrate exceptional skill in identifying and reporting issues. It recognizes the crucial role of pinpointing problems which is fundamental in maintaining the integrity and performance of our codebase.
+
+**Pull Request Pioneer** - These awards are granted to those who actively contribute to the development of our projects by initiating pull requests. This badge acknowledges the importance of collaborative development and the initiative taken in proposing valuable code changes and improvements.
+
+**Merging Master** - These badges are formal recognitions for contributors whose pull requests consistently meet our high standards of quality and are successfully merged into the main codebase.
+
+**Merging Wizard** - These exclusive badges are awarded to contributors who successfully get *priority* pull requests merged. This recognition is for handling complex, high-priority tasks that have a substantial impact on the project's progress and success.
+
+**Ivy Inspectors** - These badges are given in acknowledgment of the essential role played by those who review our pull requests. It honours the commitment to quality and diligence in ensuring that each code merge aligns with our high standards.
+
+Each badge comes in four distinct tiers – Initial, Bronze, Silver, and Gold, mirroring your growing expertise and commitment in these areas.
+
+Badge Tiers
+~~~~~~~~~~~~
+
+.. list-table:: 
    :widths: 50 25 30 30 30
    :header-rows: 1
 
