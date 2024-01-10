@@ -3,7 +3,7 @@ Volunteer Workflow
 
 We've created a promotion workflow to help you advance through the different tiers of contribution, from Contributor to Core Contributor, Rising Contributor, and finally, Top Contributor.
 
-Refer to `Github Rewards <contributing/github_rewards.rst>`_ for information about the badges.
+Our promotion structure is based on our GitHub badge system. Check out `Github Rewards <contributing/github_rewards.rst>`_ for more information about them!
 
 Contributor
 -----------
