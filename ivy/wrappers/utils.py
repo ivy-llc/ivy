@@ -14,7 +14,7 @@ wrapers_dir = os.path.join(folder_path, "ivy/wrappers")
 def download_cython_wrapper(func_name: str):
     """Get the wrapper for the given function name."""
     if func_name + ".so" not in wrappers["ivy"]["functional"]:
-        logging.warn(f"Wrapper for {func_name} not found.")
+        logging.warning(f"Wrapper for {func_name} not found.")
         return False
     try:
         response = request.urlopen(
@@ -29,7 +29,7 @@ def download_cython_wrapper(func_name: str):
         print("Downloaded wrapper for " + func_name)
         return True
     except request.HTTPError:
-        logging.warn(f"Unable to download wrapper for {func_name}.")
+        logging.warning(f"Unable to download wrapper for {func_name}.")
         return False
 
 
