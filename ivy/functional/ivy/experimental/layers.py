@@ -3423,7 +3423,13 @@ def rnn(
             input_time_zero, tuple(initial_states) + tuple(constants)
         )
 
-        output_size = time_steps_t if return_all_outputs else 1
+        if return_all_outputs:
+            if ivy.is_array(time_steps_t):
+                output_size = time_steps_t.to_scalar()
+            else:
+                output_size = time_steps_t
+        else:
+            output_size = 1
         output_loop = ivy.empty(
             (output_size, *output_time_zero.shape), dtype=output_time_zero.dtype
         )
