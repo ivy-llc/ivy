@@ -335,8 +335,6 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     if return_counts:
         fields.append("counts")
 
-    Results = namedtuple("Results", fields)
-
     values = [results.values]
     if return_inverse:
         inverse_indices = results.inverse_indices
@@ -348,7 +346,9 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     if return_counts:
         values.append(results.counts)
 
-    return Results(*values)
+    if len(values) == 1:
+        return values[0]
+    return tuple(values)
 
 
 @with_unsupported_dtypes(
