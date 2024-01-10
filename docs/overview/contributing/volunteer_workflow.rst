@@ -15,8 +15,8 @@ Elevate to Core Contributor status by earning a Bronze Badge. As a Core Contribu
 
 Rising Contributor
 ------------------
-Ascend to the Rising Contributor level by acquiring a Silver Badge. This tier grants you access to our internal Discord channels and follow along with the internal meetings. You'll join our GitHub team, enabling you to directly commit changes, and modify issues. For those eager to lead, you can volunteer to be a liaison for Core Contributors and oversee PR reviews. As a Rising Contributor, you're encouraged to tackle complex tasks, pushing your skills to new heights.
+Ascend to the Rising Contributor level by acquiring a Silver Badge. This tier will allow you to be more deeply involved with our core group. You'll join our GitHub team, enabling you to directly commit changes, and modify issues.  As a Rising Contributor, you're encouraged to tackle complex tasks, pushing your skills to new heights.
 
 Top Contributor
 ---------------
-Achieve a Gold Badge to reach the peak of our program as a Top Contributor. This tier is for those who demonstrate exceptional dedication and expertise. You'll gain the privilege of engaging with bounty-holding internal tasks and join our Bounty Program, where completing top-priority issues can earn you cash rewards ranging from $10 to $100. Upon reaching this level, we will be delighted to acknowledge your contributions to Ivy with a special token of appreciation.
+Achieve a Gold Badge to reach the peak of our program as a Top Contributor. This tier is for those who demonstrate exceptional dedication and expertise. You'll gain the privilege of engaging with bounty-holding internal tasks and join our Bounty Program, where completing top-priority issues can earn you cash rewards. Upon reaching this level, we will be delighted to acknowledge your contributions to Ivy with a special token of appreciation.
