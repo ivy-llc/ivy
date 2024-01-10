@@ -30,7 +30,7 @@ The contributor guide is split into the sections below, it's best to go from sta
 | (e) `Open Tasks <contributing/open_tasks.rst>`_
 | See where you can help us out! 🙋
 | 
-| (f) GitHub Rewards <contributing/github_rewards.rst>`_
+| (f) `GitHub Rewards <contributing/github_rewards.rst>`_
 | Check out our GitHub badges and achievements! 🏅
 |
 | (g) `Helpful Resources <contributing/helpful_resources.rst>`_
