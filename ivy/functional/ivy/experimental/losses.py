@@ -660,8 +660,8 @@ def hinge_embedding_loss(
         margin=margin,
         reduction=reduction,
     )
-  
-  
+
+
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
