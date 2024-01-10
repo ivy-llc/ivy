@@ -4,7 +4,7 @@ Navigating the Code
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`navigating the code channel`: https://discord.com/channels/799879767196958751/982737793476345888
+.. _`navigating the code thread`: https://discord.com/channels/799879767196958751/1189905165373935616
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
 
@@ -299,7 +299,7 @@ This helps to prevent our work from culminating over a fixed version while strid
 
 This should have hopefully given you a good feel for how to navigate the Ivy codebase.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code thread`_!
 
 
 **Video**

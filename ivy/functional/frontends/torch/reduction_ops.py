@@ -18,12 +18,14 @@ def all(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def amax(input, dim=None, keepdim=False, *, out=None):
     return ivy.max(input, axis=dim, keepdims=keepdim, out=out)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def amin(input, dim=None, keepdim=False, *, out=None):
@@ -32,7 +34,9 @@ def amin(input, dim=None, keepdim=False, *, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes(
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")}, "torch"
+)
 def aminmax(input, *, dim=None, keepdim=False, out=None):
     minmax_tuple = namedtuple("minmax", ["min", "max"])
     return minmax_tuple(
@@ -127,6 +131,7 @@ def mean(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex", "float16", "bool")}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def median(input, dim=None, keepdim=False, *, out=None):
@@ -190,6 +195,7 @@ def moveaxis(input, source, destination):
     return ivy.moveaxis(input, source, destination)
 
 
+@with_supported_dtypes({"2.1.2 and below": ("float",)}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
@@ -295,7 +301,7 @@ def quantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=N
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bool", "integer")}, "torch")
 def std(input, dim=None, unbiased=True, keepdim=False, *, out=None):
     return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
 
@@ -329,8 +335,6 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     if return_counts:
         fields.append("counts")
 
-    Results = namedtuple("Results", fields)
-
     values = [results.values]
     if return_inverse:
         inverse_indices = results.inverse_indices
@@ -342,7 +346,9 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     if return_counts:
         values.append(results.counts)
 
-    return Results(*values)
+    if len(values) == 1:
+        return values[0]
+    return tuple(values)
 
 
 @with_unsupported_dtypes(
@@ -355,7 +361,7 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     "torch",
 )
 @to_ivy_arrays_and_back
-def unique_consecutive(input, return_inverse, return_counts, dim):
+def unique_consecutive(input, return_inverse=False, return_counts=False, dim=None):
     output, inverse_indices, counts = ivy.unique_consecutive(input, axis=dim)
     ret = (output,)
     if return_inverse:

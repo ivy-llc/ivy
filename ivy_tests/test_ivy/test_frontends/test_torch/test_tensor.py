@@ -1177,7 +1177,7 @@ def test_torch___radd__(
     init_tree="torch.tensor",
     method_name="__rmul__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         min_value=-1e04,
         max_value=1e04,
@@ -10384,8 +10384,8 @@ def test_torch_normal_(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -10510,9 +10510,10 @@ def test_torch_numpy(
     )
     # manual testing required as function return is numpy frontend
     helpers.value_test(
-        ret_np_flat=helpers.flatten_and_to_np(ret=ret),
+        ret_np_flat=helpers.flatten_and_to_np(ret=ret, backend=backend_fw),
         ret_np_from_gt_flat=frontend_ret[0],
         ground_truth_backend="torch",
+        backend=backend_fw,
     )
 
 
