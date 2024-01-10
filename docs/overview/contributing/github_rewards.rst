@@ -3,7 +3,7 @@ GitHub Rewards
 
 Our GitHub Rewards program offers a range of badges, each designed to formally recognize the specific achievements of our contributors in various key areas of project development.
 
-Badges 
+Badges
 ~~~~~~~
 
 **Debugging Dynamos** - These badges are awarded to contributors who demonstrate exceptional skill in identifying and reporting issues. It recognizes the crucial role of pinpointing problems which is fundamental in maintaining the integrity and performance of our codebase.
@@ -21,7 +21,7 @@ Each badge comes in four distinct tiers – Initial, Bronze, Silver, and Gold, m
 Badge Tiers
 ~~~~~~~~~~~~
 
-.. list-table:: 
+.. list-table::
    :widths: 50 25 30 30 30
    :header-rows: 1
 
