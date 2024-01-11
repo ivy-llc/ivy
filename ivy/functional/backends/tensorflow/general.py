@@ -65,7 +65,7 @@ def get_item(
 
 get_item.partial_mixed_handler = lambda x, query, **kwargs: (
     all(_check_query(i) for i in query)
-    and len({i.shape for i in query if ivy.is_array(i)}) == 1
+    and len({i.shape for i in query if ivy.is_array(i)}) <= 1
     if isinstance(query, tuple)
     else _check_query(query)
 )

@@ -50,6 +50,8 @@ def add(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if x1.dtype.is_bool and x2.dtype.is_bool:
+        return tf.math.logical_or(x1, x2)
     if alpha not in (1, None):
         with ivy.ArrayMode(False):
             x2 = multiply(x2, alpha)
