@@ -328,27 +328,15 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     if dim is not None:
         sorted = True
     results = ivy.unique_all(input, axis=dim, by_value=sorted)
-
-    fields = ["output"]
-    if return_inverse:
-        fields.append("inverse_indices")
-    if return_counts:
-        fields.append("counts")
-
-    values = [results.values]
+    ret = (results.values,) if return_counts or return_inverse else results.values
     if return_inverse:
         inverse_indices = results.inverse_indices
-
         if dim is None:
             inverse_indices = inverse_indices.reshape(input.shape)
-
-        values.append(inverse_indices)
+        ret += (results.inverse_indices,)
     if return_counts:
-        values.append(results.counts)
-
-    if len(values) == 1:
-        return values[0]
-    return tuple(values)
+        ret += (results.counts,)
+    return ret
 
 
 @with_unsupported_dtypes(
