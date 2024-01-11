@@ -167,9 +167,7 @@ class _ArrayWithCreationExperimental(abc.ABC):
         ivy.array([-1.38777878e-17,  1.30000000e-01,  6.30000000e-01,  1.00000000e+00,
         6.30000000e-01,  1.30000000e-01, -1.38777878e-17])
         """
-        return ivy.blackman_window(
-            self._data, periodic=periodic, dtype=dtype, device=device, out=out
-        )
+        return ivy.blackman_window(self._data, periodic=periodic, dtype=dtype, out=out)
 
     def trilu(
         self: ivy.Array,
