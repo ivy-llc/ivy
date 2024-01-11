@@ -60,6 +60,8 @@ def get_item(
     *,
     copy: Optional[bool] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(query, (tf.Tensor, tf.Variable)):
+        return tf.gather(x, query)
     return x.__getitem__(query)
 
 
