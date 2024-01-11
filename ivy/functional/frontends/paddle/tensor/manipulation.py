@@ -35,7 +35,7 @@ def index_add_(x, index, axis, value, *, name=None):
 
     ret = ivy.add(x, _to_adds)
     ret = ivy.swapaxes(ret, axis, 0)
-    ivy.inplace_update(x, ret)
+    x = ret
     return x
 
 
@@ -50,6 +50,5 @@ def index_add_(x, index, axis, value, *, name=None):
 )
 @to_ivy_arrays_and_back
 def reshape_(x, shape):
-    ret = ivy.reshape(x, shape)
-    ivy.inplace_update(x, ret)
+    ivy.reshape(x, shape)
     return x

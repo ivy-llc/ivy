@@ -86,7 +86,7 @@ def dtypes_x_reshape_(draw):
 
 
 @handle_frontend_test(
-    fn_tree="paddle.index_add_",
+    fn_tree="paddle.tensor.manipulation.index_add_",
     xs_dtypes_dim_idx=_arrays_dim_idx_n_dtypes(),
 )
 def test_paddle_index_add_(
