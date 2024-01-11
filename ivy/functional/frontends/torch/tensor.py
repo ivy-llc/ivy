@@ -949,7 +949,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.1.2 and below": ("bfloat16",)}, "torch")
     def type_as(self, other):
         if self.dtype != other.dtype:
-            self.ivy_array = ivy.astype(self.ivy_array, other.dtype)
+            return torch_frontend.tensor(ivy.astype(self.ivy_array, other.dtype))
         return self
 
     def byte(self, memory_format=None):
@@ -1185,7 +1185,7 @@ class Tensor:
 
     def __bool__(self):
         if len(self.shape) == sum(self.shape):
-            return torch_frontend.tensor(self.ivy_array.to_scalar().__bool__())
+            return self.ivy_array.to_scalar().__bool__()
         raise ValueError(
             "The truth value of an array with more than one element is ambiguous. "
             "Use a.any() or a.all()"

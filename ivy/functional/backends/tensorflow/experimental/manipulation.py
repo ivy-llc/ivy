@@ -349,7 +349,9 @@ def expand(
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
-            shape[i] = x.shape[i]
+            shape[i] = x.shape.num_elements() / tf.reduce_prod(
+                [s for s in shape if s > 0]
+            )
     return tf.broadcast_to(x, shape)
 
 
