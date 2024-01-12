@@ -347,11 +347,13 @@ def expand(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     shape = list(shape)
+    n_extra_dims = len(shape) - len(x.shape)
+    if n_extra_dims > 0:
+        new_shape = (1,) * n_extra_dims + tuple(x.shape)
+        x = tf.reshape(x, new_shape)
     for i, dim in enumerate(shape):
         if dim < 0:
-            shape[i] = x.shape.num_elements() / tf.reduce_prod(
-                [s for s in shape if s > 0]
-            )
+            shape[i] = x.shape[i]
     return tf.broadcast_to(x, shape)
 
 
