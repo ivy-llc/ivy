@@ -23,4 +23,4 @@ Achieve a Gold Badge to reach the peak of our program as a Top Contributor. This
 
 Join Our Team
 -------------
-Embark on a rewarding journey with Unify by signing up as a volunteer. We invite you to complete our `Google Form <https://docs.google.com/forms/d/1AO6VmwQWP3wIqe6lAJ5tDL_Tyg67EVbjsfrSBdAVS_E/edit#settings>`_, where you can share your details and get started. This is your first step towards making an impact in the world of AI technology. Join us, and let's innovate together!
+Embark on a rewarding journey with Unify by signing up as a volunteer. We invite you to complete our `Google Form <https://docs.google.com/forms/d/1AO6VmwQWP3wIqe6lAJ5tDL_Tyg67EVbjsfrSBdAVS_E/edit#settings>`_, where you can share your details and get started. Join us, and let's innovate together!
