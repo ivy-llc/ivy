@@ -1,7 +1,7 @@
 Volunteer Workflow
 ==================
 
-Embark on a rewarding journey with Unify by signing up<https://forms.gle/Fs6WK3GtsmizZn9SA>`_ as a volunteer. Let's innovate together!
+Embark on a rewarding journey with Unify by signing up <https://forms.gle/Fs6WK3GtsmizZn9SA>`_ as a volunteer. Let's innovate together!
 
 We've created a promotion workflow to help you advance through the different tiers of contribution, from Contributor to Core Contributor, Rising Contributor, and finally, Top Contributor.
 
