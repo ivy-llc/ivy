@@ -449,3 +449,39 @@ def test_soft_margin_loss(
         target=target[0],
         reduction=reduction,
     )
+
+
+# triplet_loss
+@handle_test(
+    fn_tree="functional.ivy.experimental.triplet_loss",
+    dtype_and_inputs=_triplet_loss_input(),
+    margin=st.floats(min_value=0, max_value=10),
+    reduction=st.sampled_from(["mean", "sum", "none"]),
+    test_with_out=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_triplet_loss(
+    dtype_and_inputs,
+    margin,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    # Unpack input values
+    anchor, positive, negative, _, _ = dtype_and_inputs
+
+    # Run the test
+    helpers.test_function(
+        input_dtypes=ivy.dtype(anchor) + ivy.dtype(positive) + ivy.dtype(negative),
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        anchor=anchor,
+        positive=positive,
+        negative=negative,
+        margin=margin,
+        reduction=reduction,
+    )
