@@ -415,7 +415,7 @@ def modf(
     /,
     *,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+) -> Tuple[torch.Tensor, torch.Tensor]:
     fractional_part = torch.frac(x)
     integer_part = torch.floor(x)
     return fractional_part, integer_part

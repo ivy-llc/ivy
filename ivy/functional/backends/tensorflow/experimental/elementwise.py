@@ -544,7 +544,7 @@ def modf(
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     integer_part = tf.math.floor(x)
     fractional_part = x - integer_part
     return fractional_part, integer_part
