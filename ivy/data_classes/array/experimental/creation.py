@@ -342,6 +342,4 @@ def polyval(
     return ivy.polyval(
         coeffs,
         x,
-        dtype=dtype,
-        device=device,
     )
