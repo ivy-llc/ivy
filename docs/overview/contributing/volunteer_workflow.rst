@@ -22,5 +22,5 @@ Top Contributor
 Achieve a Gold Badge to reach the peak of our program as a Top Contributor. This tier is for those who demonstrate exceptional dedication and expertise. You'll gain the privilege of engaging with bounty-holding internal tasks and join our Bounty Program, where completing top-priority issues can earn you cash rewards. Upon reaching this level, we will be delighted to acknowledge your contributions to Ivy with a special token of appreciation.
 
 Join Our Team
-~~~~~~
+-------------
 Embark on a rewarding journey with Unify by signing up as a volunteer. We invite you to complete our `Google Form <https://docs.google.com/forms/d/1AO6VmwQWP3wIqe6lAJ5tDL_Tyg67EVbjsfrSBdAVS_E/edit#settings>`_, where you can share your details and get started. This is your first step towards making an impact in the world of AI technology. Join us, and let's innovate together!
