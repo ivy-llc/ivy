@@ -1,6 +1,8 @@
 Volunteer Workflow
 ==================
 
+Embark on a rewarding journey with Unify by signing up<https://forms.gle/Fs6WK3GtsmizZn9SA>`_ as a volunteer. Let's innovate together!
+
 We've created a promotion workflow to help you advance through the different tiers of contribution, from Contributor to Core Contributor, Rising Contributor, and finally, Top Contributor.
 
 Our promotion structure is based on our GitHub badge system. Check out `Github Rewards <github_rewards.rst>`_ for more information about them!
@@ -20,7 +22,3 @@ Ascend to the Rising Contributor level by acquiring a Silver Badge. This tier wi
 Top Contributor
 ---------------
 Achieve a Gold Badge to reach the peak of our program as a Top Contributor. This tier is for those who demonstrate exceptional dedication and expertise. You'll gain the privilege of engaging with bounty-holding internal tasks and join our Bounty Program, where completing top-priority issues can earn you cash rewards. Upon reaching this level, we will be delighted to acknowledge your contributions to Ivy with a special token of appreciation.
-
-Join Our Team
--------------
-Embark on a rewarding journey with Unify by signing up as a volunteer. We invite you to complete our `Google Form <https://docs.google.com/forms/d/1AO6VmwQWP3wIqe6lAJ5tDL_Tyg67EVbjsfrSBdAVS_E/edit#settings>`_, where you can share your details and get started. Join us, and let's innovate together!
