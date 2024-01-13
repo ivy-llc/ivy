@@ -13,7 +13,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @from_zero_dim_arrays_to_scalar
 def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
     axis = tuple(axis) if isinstance(axis, list) else axis
-    global avg
     avg = 0
 
     if keepdims is None:

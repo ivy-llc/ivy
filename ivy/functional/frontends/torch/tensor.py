@@ -86,6 +86,10 @@ class Tensor:
         return torch_frontend.permute(self, list(range(self.ndim))[::-1])
 
     @property
+    def mH(self):
+        return torch_frontend.adjoint(self)
+
+    @property
     def data(self):
         return torch_frontend.tensor(
             ivy.stop_gradient(self.ivy_array, preserve_type=False)

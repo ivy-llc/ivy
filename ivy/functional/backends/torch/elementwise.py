@@ -95,6 +95,7 @@ def isfinite(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch
     return torch.isfinite(x)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def isinf(
     x: torch.Tensor,

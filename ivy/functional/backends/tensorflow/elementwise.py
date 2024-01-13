@@ -2,7 +2,6 @@
 from typing import Union, Optional
 import tensorflow as tf
 
-
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
@@ -50,6 +49,8 @@ def add(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if x1.dtype.is_bool and x2.dtype.is_bool:
+        return tf.math.logical_or(x1, x2)
     if alpha not in (1, None):
         with ivy.ArrayMode(False):
             x2 = multiply(x2, alpha)
@@ -857,14 +858,15 @@ def reciprocal(
     return tf.math.reciprocal(x)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
 def deg2rad(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.deg2rad(x)
+    radians = x * ivy.pi / 180.0
+    return radians
 
 
 def rad2deg(
