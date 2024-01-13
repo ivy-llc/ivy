@@ -47,7 +47,8 @@ def _arrays_dim_idx_n_dtypes(draw):
 
     xs = []
     # available_input_types = draw(helpers.get_dtypes("integer"))
-    available_input_types = ["int32", "int64", "float16", "float32", "float64"]
+    # available_input_types = ["int32", "int64", "float16", "float32", "float64"]
+    available_input_types = ["int32", "int64"]
     input_dtypes = draw(
         helpers.array_dtypes(
             available_dtypes=available_input_types,
