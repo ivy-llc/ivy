@@ -1,5 +1,44 @@
 Volunteer Ranks
 ==============
+Top Contributors
+-----------------
+.. list-table::
+   :widths: 50 50 50
+   :header-rows: 1
+
+   * - Full Name
+     - Github ID
+     - Badges
+Rising Contributors
+--------------------
+.. list-table::
+   :widths: 50 50 50
+   :header-rows: 1
+
+   * - Full Name
+     - Github ID
+     - Badges
+   * - samunder singh
+     - `samthakur587 <https://github.com/samthakur587>`_
+     - Debugging Dynamo Silver, Merging Master Bronze, Debugging Dynamo Bronze, Pull Request Pioneer Bronze, Pull Request Pioneer, Debugging Dynamo, Merging Master
+Core Contributors
+------------------
+.. list-table::
+   :widths: 50 50 50
+   :header-rows: 1
+
+   * - Full Name
+     - Github ID
+     - Badges
+   * - Ved Patwardhan
+     - `vedpatwardhan <https://github.com/vedpatwardhan>`_
+     - Ivy Inspectors Bronze, Merging Master Bronze, Pull Request Pioneer Bronze, Ivy Inspectors, Pull Request Pioneer, Merging Master
+   * - Matthew Barrett
+     - `mattbarrett98 <https://github.com/mattbarrett98>`_
+     - Pull Request Pioneer Bronze, Pull Request Pioneer, Merging Master
+   * - Nripesh Niketan
+     - `NripeshN <https://github.com/NripeshN>`_
+     - Ivy Inspectors Bronze, Debugging Dynamo Bronze, Debugging Dynamo, Ivy Inspectors, Pull Request Pioneer, Merging Master
 Contributors
 ------------
 .. list-table::
@@ -42,42 +81,3 @@ Contributors
    * - Kareem Morsy
      - `KareemMAX <https://github.com/KareemMAX>`_
      - Ivy Inspectors
-Core Contributors
-------------------
-.. list-table::
-   :widths: 50 50 50
-   :header-rows: 1
-
-   * - Full Name
-     - Github ID
-     - Badges
-   * - Ved Patwardhan
-     - `vedpatwardhan <https://github.com/vedpatwardhan>`_
-     - Ivy Inspectors Bronze, Merging Master Bronze, Pull Request Pioneer Bronze, Ivy Inspectors, Pull Request Pioneer, Merging Master
-   * - Matthew Barrett
-     - `mattbarrett98 <https://github.com/mattbarrett98>`_
-     - Pull Request Pioneer Bronze, Pull Request Pioneer, Merging Master
-   * - Nripesh Niketan
-     - `NripeshN <https://github.com/NripeshN>`_
-     - Ivy Inspectors Bronze, Debugging Dynamo Bronze, Debugging Dynamo, Ivy Inspectors, Pull Request Pioneer, Merging Master
-Rising Contributors
---------------------
-.. list-table::
-   :widths: 50 50 50
-   :header-rows: 1
-
-   * - Full Name
-     - Github ID
-     - Badges
-   * - samunder singh
-     - `samthakur587 <https://github.com/samthakur587>`_
-     - Debugging Dynamo Silver, Merging Master Bronze, Debugging Dynamo Bronze, Pull Request Pioneer Bronze, Pull Request Pioneer, Debugging Dynamo, Merging Master
-Top Contributors
------------------
-.. list-table::
-   :widths: 50 50 50
-   :header-rows: 1
-
-   * - Full Name
-     - Github ID
-     - Badges
