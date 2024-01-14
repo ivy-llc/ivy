@@ -529,7 +529,8 @@ def logical_xor(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        return _apply_for_real_and_imag(paddle.logical_xor, x1, x2)
+        x1 = paddle.cast(x1, paddle.bool)
+        x2 = paddle.cast(x2, paddle.bool)
     return paddle.logical_xor(x1, x2)
 
 
