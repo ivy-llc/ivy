@@ -293,6 +293,7 @@ def test_angle(
     fn_tree="functional.ivy.asin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
+        safety_factor_scale="log",
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
