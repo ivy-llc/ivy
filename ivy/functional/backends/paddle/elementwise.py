@@ -377,7 +377,7 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return paddle.cos(x)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("uint", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.5.1 and below": ("uint8", "float16")}, backend_version)
 def logical_not(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
