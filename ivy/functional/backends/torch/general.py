@@ -387,10 +387,10 @@ def scatter_flat(
     if torch_scatter is None:
         try:
             import torch_scatter as torch_scatter
-        except ImportError:
+        except ImportError as e:
             raise ivy.utils.exceptions.IvyException(
                 "Unable to import torch_scatter, verify this is correctly installed."
-            )
+            ) from e
     if reduction == "replace":
         output[indices.type(torch.int64)] = updates
         res = output
@@ -478,10 +478,10 @@ def scatter_nd(
     if torch_scatter is None:
         try:
             import torch_scatter as torch_scatter
-        except ImportError:
+        except ImportError as e:
             raise ivy.utils.exceptions.IvyException(
                 "Unable to import torch_scatter, verify this is correctly installed."
-            )
+            ) from e
     if reduction == "replace":
         flat_output[flat_indices_for_flat] = flat_updates
         flat_scatter = flat_output
