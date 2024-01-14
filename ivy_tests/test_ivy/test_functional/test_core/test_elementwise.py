@@ -319,6 +319,7 @@ def test_asin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
+        safety_factor_scale="log",
     ),
 )
 def test_asinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):

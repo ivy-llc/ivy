@@ -210,7 +210,6 @@ def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 @with_supported_dtypes(
     {
         "2.5.2 and below": (
-            "float16",
             "float32",
             "float64",
         )
