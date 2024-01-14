@@ -96,7 +96,7 @@ def _generic_lstm(
             (weight_ih, weight_hh),
             (bias_i, bias_h),
             bidirectional,
-            batch_first=batch_first,
+            batch_first=False,
             batch_sizes=batch_sizes,
         )
         h_outs.append(h_out)

@@ -98,6 +98,10 @@ def isfinite(
     return paddle.isfinite(x)
 
 
+@with_unsupported_dtypes(
+    {"2.5.2 and below": ("complex", "uint8")},
+    backend_version,
+)
 def isinf(
     x: paddle.Tensor,
     /,

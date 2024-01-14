@@ -248,6 +248,7 @@ def isfinite(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isfinite(x)
 
 
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def isinf(
     x: JaxArray,
     /,
