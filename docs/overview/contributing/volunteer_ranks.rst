@@ -1,7 +1,7 @@
 Volunteer Leaderboard
 ==============
 
-This page lists all of our amazing volunteers who have contributed to the project! We are grateful for your contributions and we hope to see you grow with the project! The ranks listed here are based on the `level of contribution <https://unify.ai/docs/ivy/overview/contributing/volunteer_workflow.html>`_\.
+This page lists all of our amazing volunteers who have contributed to the project! We are grateful for your contributions and we hope to see you grow with the project! The ranks listed here are based on the `level of contribution <https://unify.ai/docs/ivy/overview/contributing/volunteer_workflow.html>`_\. 
 
 Rising Contributors
 -------------------
@@ -9,7 +9,7 @@ Rising Contributors
    :widths: 50 50 50
    :header-rows: 1
 
-   * - Full Name
+   * - Name
      - Github ID
      - Badges
    * - V\. Sai Suraj
