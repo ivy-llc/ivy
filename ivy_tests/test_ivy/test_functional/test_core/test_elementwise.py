@@ -177,9 +177,10 @@ def test_abs(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.acos",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("valid"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
+        safety_factor_scale="log",
     ),
 )
 def test_acos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
