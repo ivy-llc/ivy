@@ -1,9 +1,9 @@
-Volunteer Program
+Contributor Program
 =================
 
-The goal of the volunteer program is to facilitate contributors in the community that would like to work more closely
+The goal of the Contributor program is to facilitate contributors in the community that would like to work more closely
 with our team.
-Embark on a rewarding journey with Unify by `signing up <https://forms.gle/Fs6WK3GtsmizZn9SA>`_ as a volunteer.
+Embark on a rewarding journey with Unify by `signing up <https://forms.gle/Fs6WK3GtsmizZn9SA>`_ as a Contributor.
 Let's innovate together!
 
 We've created a promotion workflow to help you advance through the different tiers of contribution,

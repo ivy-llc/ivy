@@ -27,10 +27,10 @@ The contributor guide is split into the sections below, it's best to go from sta
 | (d) `Contributor Rewards <contributing/contributor_rewards.rst>`_
 | Check out our contributor badges and achievements! 🏅
 |
-| (e) `Volunteer Program <contributing/volunteer_program.rst>`_
-| How to climb up the ranks in our Volunteer program 🧗
+| (e) `Contributor Program <contributing/volunteer_program.rst>`_
+| How to climb up the ranks in our Contributor program 🧗
 |
-| (f) `Volunteer Leaderboard <contributing/volunteer_ranks.rst>`_
+| (f) `Contributor Leaderboard <contributing/volunteer_ranks.rst>`_
 | See where you stand on our leaderboard 🏆
 |
 | (g) `Building the Docs <contributing/building_the_docs.rst>`_
