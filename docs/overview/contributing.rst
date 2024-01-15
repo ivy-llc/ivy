@@ -21,25 +21,28 @@ The contributor guide is split into the sections below, it's best to go from sta
 | (b) `The Basics <contributing/the_basics.rst>`_
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
 |
-| (c) `Building the Docs <contributing/building_the_docs.rst>`_
-| How to build the documentation locally 🏗️
-|
-| (d) `Deep Dive <deep_dive.rst>`_
-| Take a deep dive into the codebase 🤿
-|
-| (e) `Open Tasks <contributing/open_tasks.rst>`_
+| (c) `Open Tasks <contributing/open_tasks.rst>`_
 | See where you can help us out! 🙋
 |
-| (f) `Volunteer Workflow <contributing/volunteer_workflow.rst>`_
+| (d) `Contributor Rewards <contributing/contributor_rewards.rst>`_
+| Check out our contributor badges and achievements! 🏅
+|
+| (e) `Volunteer Program <contributing/volunteer_program.rst>`_
 | How to climb up the ranks in our Volunteer program 🧗
 |
-| (g) `GitHub Rewards <contributing/github_rewards.rst>`_
-| Check out our GitHub badges and achievements! 🏅
+| (f) `Volunteer Leaderboard <contributing/volunteer_ranks.rst>`_
+| See where you stand on our leaderboard 🏆
 |
-| (h) `Helpful Resources <contributing/helpful_resources.rst>`_
+| (g) `Building the Docs <contributing/building_the_docs.rst>`_
+| How to build the documentation locally 🏗️
+|
+| (h) `Deep Dive <deep_dive.rst>`_
+| Take a deep dive into the codebase 🤿
+|
+| (i) `Helpful Resources <contributing/helpful_resources.rst>`_
 | Resources you would find useful when learning Ivy 📖
 |
-| (i) `Error Handling <contributing/error_handling.rst>`_
+| (j) `Error Handling <contributing/error_handling.rst>`_
 | Common errors you will be facing contributing to Ivy ❌
 
 .. toctree::
@@ -52,8 +55,9 @@ The contributor guide is split into the sections below, it's best to go from sta
    contributing/building_the_docs.rst
    Deep Dive <https://unify.ai/docs/ivy/overview/deep_dive.html>
    contributing/open_tasks.rst
-   contributing/volunteer_workflow.rst
-   contributing/github_rewards.rst
+   contributing/volunteer_program.rst
+   contributing/contributor_rewards.rst
+   contributing/volunteer_ranks.rst
    contributing/helpful_resources.rst
    contributing/error_handling.rst
 

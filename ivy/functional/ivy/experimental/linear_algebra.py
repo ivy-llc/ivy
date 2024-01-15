@@ -1385,11 +1385,11 @@ def initialize_tucker(
     """
     try:
         assert len(x.shape) >= 2
-    except ValueError:
+    except ValueError as e:
         raise ValueError(
             "expected x to have at least 2 dimensions but it has only"
             f" {len(x.shape)} dimension(s)"
-        )
+        ) from e
 
     # Initialisation
     if init == "svd":
@@ -1667,11 +1667,11 @@ def tucker(
     if fixed_factors:
         try:
             (core, factors) = init
-        except ValueError:
+        except ValueError as e:
             raise ValueError(
                 f"Got fixed_factor={fixed_factors} but no appropriate Tucker tensor was"
                 ' passed for "init".'
-            )
+            ) from e
         if len(fixed_factors) == len(factors):
             return ivy.TuckerTensor((core, factors))
 

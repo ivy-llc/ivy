@@ -23,7 +23,7 @@ def cholesky_ex(input, *, upper=False, check_errors=False, out=None):
         return matrix, info
     except RuntimeError as e:
         if check_errors:
-            raise RuntimeError(e)
+            raise RuntimeError(e) from e
         else:
             matrix = input * math.nan
             info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
@@ -292,7 +292,7 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
         return result, info
     except RuntimeError as e:
         if check_errors:
-            raise RuntimeError(e)
+            raise RuntimeError(e) from e
         else:
             result = A * math.nan
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)

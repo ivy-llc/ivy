@@ -814,11 +814,11 @@ class Tensor:
             return shape
         try:
             return shape[dim]
-        except IndexError:
+        except IndexError as e:
             raise IndexError(
                 f"Dimension out of range (expected to be in range of [{len(shape)},"
                 f" {len(shape) - 1}], but got {dim}"
-            )
+            ) from e
 
     def matmul(self, other):
         return torch_frontend.matmul(self, other)
@@ -2290,8 +2290,10 @@ class Size(tuple):
                 continue
             try:
                 new_iterable.append(int(item))
-            except Exception:
-                raise TypeError(f"Expected int, but got {type(item)} at index {i}")
+            except Exception as e:
+                raise TypeError(
+                    f"Expected int, but got {type(item)} at index {i}"
+                ) from e
         return super().__new__(cls, tuple(new_iterable))
 
     def __init__(self, shape) -> None:

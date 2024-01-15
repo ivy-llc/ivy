@@ -774,7 +774,7 @@ def take(
         if ivy.exists(axis):
             try:
                 x_shape = x.shape[axis]
-            except Exception:
+            except Exception as e:
                 rank = len(x.shape)
                 raise IndexError(
                     "(OutOfRange) Attr(axis) is out of range, "
@@ -784,7 +784,7 @@ def take(
                     "(0 - input_dim.size()) == true, "
                     "but received axis < input_dim.size() && axis >= "
                     "(0 - input_dim.size()):0 != true:1.]"
-                )
+                ) from e
         else:
             x_shape = paddle.prod(paddle.to_tensor(x.shape))
 

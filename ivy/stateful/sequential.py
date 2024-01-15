@@ -34,13 +34,13 @@ class Sequential(Module):
             for i, submod in enumerate(sub_modules):
                 try:
                     submod.v = v["submodules"][f"v{str(i)}"]
-                except KeyError:
+                except KeyError as e:
                     if submod.v:
                         raise ivy.utils.exceptions.IvyException(
                             "variables v passed to Sequential class must have key "
                             "chains in the form of "
                             '"submodules/v{}", where {} is an idx'
-                        )
+                        ) from e
         self._submodules = list(sub_modules)
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
@@ -64,13 +64,13 @@ class Sequential(Module):
         for i, submod in enumerate(self._submodules):
             try:
                 x = submod(x, v=self.v.submodules[f"v{str(i)}"])
-            except KeyError:
+            except KeyError as e:
                 if submod.v:
                     raise ivy.utils.exceptions.IvyException(
                         "variables v passed to Sequential class must have key chains "
                         "in the form of "
                         '"submodules/v{}", where {} is an idx'
-                    )
+                    ) from e
                 x = submod(x)
         return x
 
