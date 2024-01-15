@@ -34,7 +34,6 @@ select = [
     "E", "W",
     # pydocstyle
     "D",
-    # isort
     "I002",     # Missing required import.
     "UP008",    # Checks for super calls that pass redundant arguments.
     "PGH002",   # deprecated-log-warn.
