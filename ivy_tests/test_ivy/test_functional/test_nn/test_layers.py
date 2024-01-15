@@ -1529,6 +1529,7 @@ def test_linear(*, dtype_x_weight_bias, test_flags, backend_fw, fn_name, on_devi
     )
 
 
+# TODO: fix this test
 # lstm
 @handle_test(
     fn_tree="functional.ivy.lstm",

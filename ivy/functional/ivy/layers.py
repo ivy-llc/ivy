@@ -2397,6 +2397,53 @@ def lstm(
     batch_first: bool = False,
     batch_sizes: Sequence = None,
 ):
+    """Applies a multi-layer long-short term memory to an input sequence.
+
+    Parameters
+    ----------
+    input
+        input array of shape (seq_len, batch, input_size) when `batch_first` is False
+        or (batch, seq_len, input_size) when `batch_first` is True
+    initial_states
+        tuple of two arrays (h_0, c_0) where h_0 is the initial hidden state of shape
+        (num_layers * num_directions, batch, hidden_size) and c_0 is the initial cell
+        state of shape (num_layers * num_directions, batch, hidden_size)
+
+        (num_directions being 2 when `bidirectional`, otherwise 1)
+    all_weights
+        tuple of arrays representing the learnable weights of the lstm, with each
+        layer having either four arrays (w_ih, w_hh, b_ih, b_hh), when has_biases=True,
+        or two (w_ih, w_hh), when has_biases=False
+
+        w_ih: weight of shape (4 * hidden_size, input_size)
+        w_hh: weight of shape (4 * hidden_size, hidden_size)
+        b_ih: bias of shape (4 * hidden_size,)
+        b_hh: bias of shape (4 * hidden_size,)
+    has_biases
+        indicates whether the `all_weights` argument includes biases
+    num_layers
+        number of layers for the lstm to use
+    dropout
+        dropout rate
+    train
+        whether to run the lstm in train mode or eval mode
+    bidirectional
+        whether the lstm is bidirectional or unidirectional
+    batch_first
+        defines the data format of the input and output arrays
+    batch_sizes
+        specifies the batch size at each timestep, when the input is a packed sequence
+
+    Returns
+    -------
+    output
+        output array of shape (seq_len, batch, num_directions * hidden_size) or
+        (batch, seq_len, num_directions * hidden_size), depending on `batch_first`
+    h_outs
+        final hidden state of shape (num_layers * num_directions, batch, hidden_size)
+    c_outs
+        final cell state of shape (num_layers * num_directions, batch, hidden_size)
+    """
     weights_per_layer = 4 if has_biases else 2
 
     assert len(all_weights) == num_layers * weights_per_layer * (1 + bidirectional)
