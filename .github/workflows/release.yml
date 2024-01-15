@@ -12,7 +12,7 @@ jobs:
 
   publish-binaries:
     name: Publish Binaries
-    uses: unifyai/workflows/.github/workflows/bniaries.yml@main
+    uses: ./.github/workflows/binaries.yml
     secrets: inherit
 
   deploy:

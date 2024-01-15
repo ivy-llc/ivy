@@ -38,6 +38,21 @@ def atleast_3d(*arys):
 
 
 @to_ivy_arrays_and_back
+def bartlett(M):
+    if M < 1:
+        return ivy.array([])
+    if M == 1:
+        return ivy.ones(M, dtype=ivy.float64)
+    res = ivy.arange(0, M)
+    res = ivy.where(
+        ivy.less_equal(res, (M - 1) / 2.0),
+        2.0 * res / (M - 1),
+        2.0 - 2.0 * res / (M - 1),
+    )
+    return res
+
+
+@to_ivy_arrays_and_back
 def blackman(M):
     if M < 1:
         return ivy.array([])
@@ -113,6 +128,14 @@ def concatenate(arrays, axis=0, dtype=None):
     ret = ivy.concat(arrays, axis=axis)
     if dtype:
         ret = ivy.array(ret, dtype=dtype)
+    return ret
+
+
+@to_ivy_arrays_and_back
+def diagflat(v, k=0):
+    ret = ivy.diagflat(v, offset=k)
+    while len(ivy.shape(ret)) < 2:
+        ret = ret.expand_dims(axis=0)
     return ret
 
 
@@ -308,7 +331,7 @@ def transpose(a, axes=None):
         return a
     if not axes:
         axes = list(range(len(a.shape)))[::-1]
-    if type(axes) is int:
+    if isinstance(axes, int):
         axes = [axes]
     if (len(a.shape) == 0 and not axes) or (len(a.shape) == 1 and axes[0] == 0):
         return a

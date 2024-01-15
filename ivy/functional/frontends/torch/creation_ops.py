@@ -12,7 +12,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
 def arange(
     start=0,
     end=None,
@@ -74,7 +74,7 @@ def asarray(
     return ivy.asarray(obj, copy=copy, dtype=dtype, device=device)
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def complex(
     real,
@@ -82,7 +82,7 @@ def complex(
     *,
     out=None,
 ):
-    assert real.dtype == imag.dtype, ValueError(
+    assert real.dtype == imag.dtype, TypeError(
         "Expected real and imag to have the same dtype, "
         f" but got real.dtype = {real.dtype} and imag.dtype = {imag.dtype}."
     )
@@ -108,6 +108,8 @@ def empty(
         raise TypeError("empty() got multiple values for argument 'shape'")
     if size is None:
         size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
+    if isinstance(size, (tuple, list)):
+        size = tuple(s.to_scalar() if ivy.is_array(s) else s for s in size)
     return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -208,7 +210,7 @@ def heaviside(input, values, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
 def linspace(
     start,
     end,
@@ -225,7 +227,7 @@ def linspace(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
 def logspace(
     start,
     end,
@@ -273,7 +275,7 @@ def ones_like_v_0p4p0_and_above(
     return ret
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def polar(
     abs,
@@ -285,7 +287,7 @@ def polar(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
 def range(
     *args,
     dtype=None,

@@ -63,15 +63,14 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        x = x.copy()
     num_dims = len(x.shape)
     if not num_dims:
-        if copy:
-            newarr = x.copy()
-            return newarr
         return x
     if axis is None:
         axis = list(range(num_dims))
-    if type(axis) is int:
+    if isinstance(axis, int):
         axis = [axis]
     axis = [item + num_dims if item < 0 else item for item in axis]
     return np.flip(x, axis)
@@ -132,7 +131,7 @@ def squeeze(
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+            f"tried to squeeze a zero-dimensional input by axis {axis}"
         )
     return np.squeeze(x, axis=axis)
 
@@ -166,9 +165,8 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
         return [x]
     if num_or_size_splits is None:
@@ -191,7 +189,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,

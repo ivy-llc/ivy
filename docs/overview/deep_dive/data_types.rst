@@ -24,7 +24,7 @@ Data Types
 .. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`data types channel`: https://discord.com/channels/799879767196958751/982738078445760532
+.. _`data type thread`: https://discord.com/channels/799879767196958751/1190234670806351892
 
 
 The data types supported by Ivy are as follows:
@@ -339,7 +339,7 @@ Only one of these decorators can be specified for any given function.
 In the case of :attr:`@with_supported_dtypes` it is assumed that all unmentioned data types are unsupported, and in the case of :attr:`@with_unsupported_dtypes` it is assumed that all unmentioned data types are supported.
 
 The decorators take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding version of the backend framework and the current version of the backend framework on the user's system.
-Based on that, the version specific unsupported dtypes and devices are set for the given function everytime the function is called.
+Based on that, the version specific unsupported dtypes and devices are set for the given function every time the function is called.
 
 For Backend Functions:
 
@@ -423,7 +423,7 @@ set of dtypes is not supported by a certain device.
 
 .. code-block:: python
 
-    @with_unsupported_device_and_dtypes({"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
+    @with_unsupported_device_and_dtypes({"2.5.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
     def gcd(
         x1: Union[paddle.Tensor, int, list, tuple],
         x2: Union[paddle.Tensor, float, list, tuple],
@@ -528,7 +528,7 @@ The attributes are set for functions that don't have a specific backend implemen
 
 An example of an ivy function which does not have a specific backend implementation for each backend is the :attr:`einops_reduce` function. `This function <https://github.com/unifyai/ivy/blob/8516d3f12a8dfc4ec5f819789937d196c7e28566/ivy/functional/ivy/general.py#L1964>`_ , makes use of a third-party library :attr:`einops` which has its own backend-agnostic implementations.
 
-The :attr:`unsupported_dtypes` and :attr:`supported_dtypes` attributes take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding backend framework. Based on that, the specific unsupported dtypes are set for the given function everytime the function is called.
+The :attr:`unsupported_dtypes` and :attr:`supported_dtypes` attributes take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding backend framework. Based on that, the specific unsupported dtypes are set for the given function every time the function is called.
 For example, we use the :attr:`unsupported_dtypes` attribute for the :attr:`einops_reduce` function within the ivy functional API as shown below:
 
 .. code-block:: python
@@ -539,7 +539,7 @@ For example, we use the :attr:`unsupported_dtypes` attribute for the :attr:`eino
         "paddle": ("complex", "uint8", "int8", "int16", "float16"),
     }
 
-With the above aproach, we ensure that anytime the backend is set to torch, the :attr:`einops_reduce` function does not support float16, likewise, complex dtypes are not supported with a tensorflow backend and
+With the above approach, we ensure that anytime the backend is set to torch, the :attr:`einops_reduce` function does not support float16, likewise, complex dtypes are not supported with a tensorflow backend and
 complex, uint8, int8, int16, float16 are not supported with a paddle backend.
 
 Backend Data Type Bugs
@@ -739,7 +739,7 @@ As with all superset design decisions, this behavior makes it much easier to sup
 
 This should have hopefully given you a good feel for data types, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `data types channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `data types thread`_!
 
 
 **Video**

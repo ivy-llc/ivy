@@ -1,7 +1,8 @@
-"""Collection of MXNet gradient functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of MXNet gradient functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
-from typing import Optional, Sequence, Union
+from typing import Sequence, Union
 import mxnet as mx
 
 # local
@@ -26,8 +27,8 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    xs_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
+    ret_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
 ):
     raise IvyNotImplementedException()
 
