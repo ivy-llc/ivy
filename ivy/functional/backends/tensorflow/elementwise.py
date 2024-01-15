@@ -22,6 +22,7 @@ def abs(
     return tf.abs(x)
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("unsigned", "bool")}, backend_version)
 def acos(
     x: Union[tf.Tensor, tf.Variable],
     /,

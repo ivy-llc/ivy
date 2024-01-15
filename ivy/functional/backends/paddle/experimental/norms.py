@@ -55,11 +55,11 @@ def batch_norm(
             if data_format[-1] == "C"
             else data_formats[0:4][x.ndim - 2]
         )
-    except IndexError:
+    except IndexError as e:
         raise IndexError(
             "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', 'NLC', 'NHWC',"
             f" 'NDHWC' but receive {data_format}"
-        )
+        ) from e
 
     with ivy.ArrayMode(False):
         if training:

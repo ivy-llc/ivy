@@ -32,22 +32,35 @@ Please always use the latest commit on GitHub when working on any of these tasks
 Fixing Failing Tests
 --------------------
 
-In the Ivy repository, we've identified a range of functions and tests that currently fall short of our quality standards. The root of these issues is not always clear-cut. In some instances, the problem may lie within the functions themselves, while in others, it could be the tests, which were crafted by various contributors, that are at fault. This situation presents a unique opportunity for community involvement. We are actively inviting contributions from our community to help tackle these challenges.
+We've identified a range of functions and tests that fail the tests.
+The root of these issues is not always straightforward.
+In some instances, the problem may lie within the function implementations, while in others, it could be the way the tests were added previously.
+Certain failing tests are more urgent to fix than others, as mentioned in the sub-section below.
+We encourage contributions from the community to help tackle these challenges.
 
 How to Contribute
 ~~~~~~~~~~~~~~~~~
 
 **Identifying Issues**
 
-To get started, visit our issues page: `Failing Tests <https://github.com/unifyai/ivy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Failing+Test%22+label%3A%22ToDo%22>`_. Here, you will find a list of open issues labeled as "Failing Test" and "ToDo". These issues are categorised under various frameworks supported by our repository. We encourage you to select a framework you're comfortable with or interested in contributing to.
+To get started, visit our issues page: `Failing Tests <https://github.com/unifyai/ivy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Failing+Test%22+label%3A%22ToDo%22>`_.
+Here, you will find a list of open issues labeled as "Failing Test" and "ToDo".
+These issues are categorised under various frameworks supported by our repository.
+We encourage you to select a framework you're comfortable with or interested in contributing to.
 
 **Selecting a Test**
 
-Within each framework, tests are classified as either "Priority Open" or "Other Open." While we prioritize fixing the "Priority Open" tests, contributions towards any test, including those labeled "Other Open," are highly valuable. Each test issue is linked directly to the specific failing workflow. This linkage provides you with immediate access to the details of what exactly is failing and the context around it.
+Within each framework, tests are classified as either "Priority Open" or "Other Open."
+While we prioritize fixing the "Priority Open" tests, contributions towards any test, including those labeled "Other Open," are highly valuable.
+Each test issue is linked directly to the specific failing workflow.
+This linkage provides you with immediate access to the details of what exactly is failing and the context around it.
 
 **Making Your Contribution**
 
-After selecting a test to work on, please fork the repository and create a new branch for your fix. Ensure that your solution addresses the issue effectively and doesn't introduce new errors. Once you're confident in your fix, submit a pull request to the main repository. Our team will review your contribution, provide feedback if necessary, and then merge your changes once they meet our standards.
+After selecting a test to work on, please make the necessary changes and create a PR referring to `the basics <the_basics.rst>`_.
+Ensure that your solution addresses the issue effectively and doesn't introduce new errors.
+Once you're confident in your fix, submit a pull request to the main repository.
+Our team will review your contribution, provide feedback if necessary, and then merge your changes once we're good to go.
 
 Frontend APIs
 -------------

@@ -442,11 +442,11 @@ def take(
         if ivy.exists(axis):
             try:
                 x_shape = x.shape[axis]
-            except Exception:
+            except Exception as e:
                 raise ValueError(
                     f"axis {axis} is out of bounds for array of dimension"
                     f" {len(x.shape)}"
-                )
+                ) from e
         else:
             x_shape = jnp.prod(x.shape)
 

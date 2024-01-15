@@ -210,7 +210,6 @@ def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 @with_supported_dtypes(
     {
         "2.5.2 and below": (
-            "float16",
             "float32",
             "float64",
         )
@@ -378,7 +377,7 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return paddle.cos(x)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("uint", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.5.1 and below": ("uint8", "float16")}, backend_version)
 def logical_not(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -530,7 +529,8 @@ def logical_xor(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        return _apply_for_real_and_imag(paddle.logical_xor, x1, x2)
+        x1 = paddle.cast(x1, paddle.bool)
+        x2 = paddle.cast(x2, paddle.bool)
     return paddle.logical_xor(x1, x2)
 
 
