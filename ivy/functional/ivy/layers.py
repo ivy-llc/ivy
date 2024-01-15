@@ -18,7 +18,6 @@ from ivy.func_wrapper import (
     handle_device,
     handle_backend_invalid,
 )
-from ivy.functional.ivy.experimental.manipulation import _slice_along_axis
 from ivy.utils.exceptions import handle_exceptions
 
 # Extra #
@@ -2896,6 +2895,14 @@ def _transform_weights_no_bias(layer_weights, layer_index):
     weights = layer_weights[layer_index]
     weight_ih, weight_hh = weights
     return ivy.swapaxes(weight_ih, 0, 1), ivy.swapaxes(weight_hh, 0, 1)
+
+
+def _slice_along_axis(x, start=0, stop=None, stride=1, axis=0):
+    if axis >= 0:
+        slices = [slice(None)] * axis + [slice(start, stop, stride)]
+    else:
+        slices = [Ellipsis, slice(start, stop, stride)] + [slice(None)] * (-1 - axis)
+    return x[tuple(slices)]
 
 
 @handle_exceptions
