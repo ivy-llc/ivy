@@ -12,16 +12,6 @@ achievements:
             condition: count(created_at >= "2023-12-26") >= 1
 
   - achievement:
-      name: Pull Request Pioneer
-      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-00.png
-      description: Awarded for creating pull requests.
-      triggers:
-        - trigger:
-            actor: author
-            action: pull_request
-            condition: count(created_at >= "2023-12-26") >= 1
-
-  - achievement:
       name: Merging Master
       icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_04-00.png
       description: Awarded for getting pull requests merged.
@@ -59,16 +49,6 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: count(created_at >= "2023-12-26") >= 5
-
-  - achievement:
-      name: Pull Request Pioneer Bronze
-      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-02.png
-      description: Awarded for creating 5 pull requests.
-      triggers:
-        - trigger:
-            actor: author
-            action: pull_request
             condition: count(created_at >= "2023-12-26") >= 5
 
   - achievement:
@@ -112,16 +92,6 @@ achievements:
             condition: count(created_at >= "2023-12-26") >= 15
 
   - achievement:
-      name: Pull Request Pioneer Silver
-      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-03.png
-      description: Awarded for creating 15 pull requests.
-      triggers:
-        - trigger:
-            actor: author
-            action: pull_request
-            condition: count(created_at >= "2023-12-26") >= 15
-
-  - achievement:
       name: Merging Master Silver
       icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_04-03.png
       description: Awarded for getting 15 pull requests merged.
@@ -159,16 +129,6 @@ achievements:
         - trigger:
             actor: author
             action: issue
-            condition: count(created_at >= "2023-12-26") >= 30
-
-  - achievement:
-      name: Pull Request Pioneer Gold
-      icon: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-04.png
-      description: Awarded for creating 30 pull requests.
-      triggers:
-        - trigger:
-            actor: author
-            action: pull_request
             condition: count(created_at >= "2023-12-26") >= 30
 
   - achievement:

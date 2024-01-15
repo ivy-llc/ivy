@@ -9,8 +9,6 @@ Badges
 **Debugging Dynamos** - These badges are awarded to contributors who demonstrate exceptional skill in identifying and reporting issues.
 It recognizes the crucial role of pinpointing problems which is fundamental in maintaining the integrity and performance of our codebase.
 
-**Pull Request Pioneer** - These awards are granted to those who actively contribute to the development of our projects by initiating pull requests. This badge acknowledges the importance of collaborative development and the initiative taken in proposing valuable code changes and improvements.
-
 **Merging Master** - These badges are formal recognitions for contributors whose pull requests consistently meet our high standards of quality and are successfully merged into the main codebase.
 
 **Merging Wizard** - These exclusive badges are awarded to contributors who successfully get *priority* pull requests merged. This recognition is for handling complex, high-priority tasks that have a substantial impact on the project's progress and success.
@@ -42,19 +40,6 @@ Badge Tiers
           :width: 110
           :alt: Alternative text
      - .. image:: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_01-04.png
-          :width: 110
-          :alt: Alternative text
-   * - Pull Request Pioneer
-     - .. image:: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-00.png
-          :width: 110
-          :alt: Alternative text
-     - .. image:: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-02.png
-          :width: 110
-          :alt: Alternative text
-     - .. image:: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-03.png
-          :width: 110
-          :alt: Alternative text
-     - .. image:: https://raw.githubusercontent.com/unifyai/ivy/main/.vaunt/badges/badge_03-04.png
           :width: 110
           :alt: Alternative text
    * - Merging Master
