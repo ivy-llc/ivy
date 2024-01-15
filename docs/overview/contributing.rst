@@ -36,10 +36,13 @@ The contributor guide is split into the sections below, it's best to go from sta
 | (g) `GitHub Rewards <contributing/github_rewards.rst>`_
 | Check out our GitHub badges and achievements! 🏅
 |
-| (h) `Helpful Resources <contributing/helpful_resources.rst>`_
+| (h) `Volunteer Leaderboard <contributing/volunteer_ranks.rst>`_
+| See where you stand on our leaderboard 🏆
+|
+| (i) `Helpful Resources <contributing/helpful_resources.rst>`_
 | Resources you would find useful when learning Ivy 📖
 |
-| (i) `Error Handling <contributing/error_handling.rst>`_
+| (j) `Error Handling <contributing/error_handling.rst>`_
 | Common errors you will be facing contributing to Ivy ❌
 
 .. toctree::
@@ -54,6 +57,7 @@ The contributor guide is split into the sections below, it's best to go from sta
    contributing/open_tasks.rst
    contributing/volunteer_workflow.rst
    contributing/github_rewards.rst
+   contributing/volunteer_ranks.rst
    contributing/helpful_resources.rst
    contributing/error_handling.rst
 
