@@ -1,12 +1,13 @@
-GitHub Rewards
-==============
+Contributor Rewards
+===================
 
-Our GitHub Rewards program offers a range of badges, each designed to formally recognize the specific achievements of our contributors in various key areas of project development.
+We award a range of badges, each designed to formally recognize the specific achievements of our contributors in various key areas of ivy's development.
 
 Badges
 ~~~~~~~
 
-**Debugging Dynamos** - These badges are awarded to contributors who demonstrate exceptional skill in identifying and reporting issues. It recognizes the crucial role of pinpointing problems which is fundamental in maintaining the integrity and performance of our codebase.
+**Debugging Dynamos** - These badges are awarded to contributors who demonstrate exceptional skill in identifying and reporting issues.
+It recognizes the crucial role of pinpointing problems which is fundamental in maintaining the integrity and performance of our codebase.
 
 **Pull Request Pioneer** - These awards are granted to those who actively contribute to the development of our projects by initiating pull requests. This badge acknowledges the importance of collaborative development and the initiative taken in proposing valuable code changes and improvements.
 
