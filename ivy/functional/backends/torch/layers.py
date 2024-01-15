@@ -871,9 +871,9 @@ def scaled_dot_product_attention_v_2p0p0_and_above(
 
 
 def lstm(
-    input: ivy.Array,
-    initial_states: Tuple[ivy.Array],
-    all_weights: Tuple[ivy.Array],
+    input: torch.Tensor,
+    initial_states: Tuple[torch.Tensor],
+    all_weights: Tuple[torch.Tensor],
     has_biases: bool,
     num_layers: int,
     dropout: float,
