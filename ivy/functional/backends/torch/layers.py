@@ -868,3 +868,28 @@ def scaled_dot_product_attention_v_2p0p0_and_above(
     if isinstance(mask, torch.Tensor):
         mask = torch.where(mask == 0, -torch.inf, 0)
     return torch.nn.functional.scaled_dot_product_attention(q, k, v, attn_mask=mask)
+
+
+def lstm(
+    input: torch.Tensor,
+    initial_states: Tuple[torch.Tensor],
+    all_weights: Tuple[torch.Tensor],
+    has_biases: bool,
+    num_layers: int,
+    dropout: float,
+    train: bool,
+    bidirectional: bool,
+    batch_first: bool = False,
+    batch_sizes: Sequence = None,
+):
+    return torch._VF.lstm(
+        input,
+        initial_states,
+        all_weights,
+        has_biases,
+        num_layers,
+        dropout,
+        train,
+        bidirectional,
+        batch_first,
+    )

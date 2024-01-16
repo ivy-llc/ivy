@@ -4,10 +4,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy.functional.ivy.layers import _get_embed_dim
-from ivy.functional.frontends.torch.nn.functional.layer_functions import (
-    _pack_padded_sequence,
-)
+from ivy.functional.ivy.layers import _get_embed_dim, _pack_padded_sequence
 from ivy_tests.test_ivy import helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _mha_helper
