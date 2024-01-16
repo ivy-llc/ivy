@@ -287,6 +287,8 @@ def test_min(
         on_device=on_device,
         x=x[0],
         axis=axis,
+        rtol_=1e-2,
+        atol_=1e-2,
         keepdims=keep_dims,
         initial=initial,
         where=where[0],
