@@ -28,7 +28,7 @@ UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
 
 TEST_PARAMS_CONFIG = []
-SKIP_GROUND_TRUTH = True
+SKIP_GROUND_TRUTH = False
 UNSUPPORTED_FRAEMWORK_DEVICES = {"numpy": ["gpu", "tpu"]}
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
@@ -36,7 +36,7 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 
 def default_framework_mapper(fw, fw_path="/opt/fw/", set_too=False):
     # do a path search, get the latest
-    # so that we can get the higest version
+    # so that we can get the highest version
     # available dynamically and set that for
     # use by the rest of the code
     # eg: torch/1.11.0 and torch/1.12.0
@@ -191,21 +191,19 @@ def pytest_configure(config):
             if "/" in backend_str:
                 backend_str = backend_str.split("/")[0]
             if (
-                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES.keys()
+                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES
                 and device.partition(":")[0]
                 in UNSUPPORTED_FRAEMWORK_DEVICES[backend_str]
             ):
                 continue
             for trace_graph in trace_modes:
                 for implicit in implicit_modes:
-                    TEST_PARAMS_CONFIG.append(
-                        (
-                            device,
-                            backend_str,
-                            trace_graph,
-                            implicit,
-                        )
-                    )
+                    TEST_PARAMS_CONFIG.append((
+                        device,
+                        backend_str,
+                        trace_graph,
+                        implicit,
+                    ))
 
     process_cl_flags(config)
 
@@ -294,11 +292,15 @@ def process_cl_flags(config) -> Dict[str, bool]:
             False,
             getopt("--with-transpile"),
         ),
+        "test_cython_wrapper": (
+            getopt("--skip-cython-wrapper-testing"),
+            getopt("--with-cython-wrapper-testing"),
+        ),
     }
 
     # whether to skip gt testing or not
-    global SKIP_GROUND_TRUTH
-    SKIP_GROUND_TRUTH = not tmp_config["transpile"][1]
+    # global SKIP_GROUND_TRUTH
+    # SKIP_GROUND_TRUTH = not tmp_config["transpile"][1]
 
     # final mapping for hypothesis value generation
     for k, v in tmp_config.items():
@@ -360,6 +362,8 @@ def pytest_addoption(parser):
         default=None,
         help="Print test items in my custom format",
     )
+    parser.addoption("--skip-cython-wrapper-testing", action="store_true")
+    parser.addoption("--with-cython-wrapper-testing", action="store_true")
 
 
 def pytest_collection_finish(session):

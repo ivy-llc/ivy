@@ -3,13 +3,13 @@ Setting Up
 
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
-.. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
-.. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
-.. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
+.. _`pycharm thread`: https://discord.com/channels/799879767196958751/1186628916522262629
+.. _`docker thread`: https://discord.com/channels/799879767196958751/1186629067966009424
+.. _`pre-commit thread`: https://discord.com/channels/799879767196958751/1186629635694399539
+.. _`pip packages thread`: https://discord.com/channels/799879767196958751/1186629837515935765
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
-.. _`ivy/run_tests_CLI`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI
+.. _`ivy/scripts`: https://github.com/unifyai/ivy/tree/bcddc79978afe447958dfa3ea660716845c85846/scripts
 .. _`platform compatibility tags`: https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
 .. _`logging level`: https://docs.python.org/3/library/logging.html#logging.Logger.setLevel
 
@@ -66,7 +66,7 @@ In order to install and properly set up pre-commit, these steps should be follow
 
 That's it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.
 
-For questions, please reach out on `discord`_ in the `pre-commit channel`_!
+For questions, please reach out on `discord`_ in the `pre-commit thread`_!
 
 
 PyCharm
@@ -83,7 +83,7 @@ Many people seem to miss this option, so we thought we would add an explicit rem
 #. To continue using PyCharm Professional, you can use the trial version making a jetbrains account but that would be only valid for 1 month.
 #. After the trial expires you have to buy the paid version of PyCharm Professional.
 
-For questions, please reach out on `discord`_ in the `pycharm channel`_!
+For questions, please reach out on `discord`_ in the `pycharm thread`_!
 
 Virtual environments - No Docker
 --------------------------------
@@ -432,7 +432,7 @@ Ubuntu
    d. Choosing "Docker" from the left panel.
       Type python3 (with the number) in python interpreter path and press ok.
 
-**Docker Connection not Successfull**
+**Docker Connection not Successful**
 
 This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
 
@@ -445,7 +445,7 @@ This is a common error which you might face. If you are not successfully able to
    sudo chmod a+rwx /var/run/docker.pid
 
 
-For questions, please reach out on `discord`_ in the `docker channel`_!
+For questions, please reach out on `discord`_ in the `docker thread`_!
 
 **Video**
 
@@ -488,31 +488,31 @@ Click this and you should see a progress bar of all the tests running in the fil
   :width: 420
 
 It is also possible to run the entire set of ivy tests or the array api test suite using pre-written shell scripts that can be run from the 'Terminal' tab in PyCharm.
-There are a number of such shell scripts in `ivy/run_tests_CLI`_:
+There are a number of such shell scripts in `ivy/scripts`_:
 
 .. code-block:: bash
     :emphasize-lines: 4,5,8,9,10
 
-    run_ivy_core_test.py
-    run_ivy_nn_test.py
-    run_ivy_stateful_test.py
-    run_tests.sh
-    test_array_api.sh
-    test_dependencies.py
-    test_dependencies.sh
-    test_ivy_core.sh
-    test_ivy_nn.sh
-    test_ivy_stateful.sh
+    scripts/setup_tests/run_ivy_core_test.py
+    scripts/setup_tests/run_ivy_nn_test.py
+    scripts/setup_tests/run_ivy_stateful_test.py
+    scripts/shell/run_tests.sh
+    scripts/shell/test_array_api.sh
+    scripts/test_dependencies.py
+    scripts/shell/test_dependencies.sh
+    scripts/shell/test_ivy_core.sh
+    scripts/shell/test_ivy_nn.sh
+    scripts/shell/test_ivy_stateful.sh
 
 **For Unix-based systems (Linux and macOS):**
 
-* :code:`run_tests.sh` is run by typing :code:`./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory.
+* :code:`scripts/shell/run_tests.sh` is run by typing :code:`./scripts/shell/run_tests.sh` in the :code:`/ivy` directory.
   This runs all tests in :code:`ivy/ivy_tests`.
-* :code:`test_array_api.sh` is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`.
+* :code:`scripts/shell/test_array_api.sh` is run by typing :code:`./scripts/shell/test_array_api.sh [backend] test_[submodule]`.
   This runs all array-api tests for a certain submodule in a certain backend.
-* :code:`test_ivy_core.sh` is run by typing :code:`./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
+* :code:`scripts/shell/test_ivy_core.sh` is run by typing :code:`./scripts/shell/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
   This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
-* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh`.
+* :code:`scripts/shell/test_ivy_nn.sh`, :code:`scripts/shell/test_ivy_stateful.sh` are run in a similar manner to :code:`scripts/shell/test_ivy_core.sh`.
   Make sure to check the submodule names in the source code before running.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_array_api_tests.png?raw=true
@@ -524,19 +524,19 @@ There are a number of such shell scripts in `ivy/run_tests_CLI`_:
 For Windows users, you may need to specify that the shell scripts should be run by :code:`sh`, which comes with Git. In the Terminal, prepend sh to the script commands like so:
 
 
-* To run :code:`run_tests.sh` on Windows, type :code:`sh ./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory.
+* To run :code:`scripts/shell/run_tests.sh` on Windows, type :code:`sh ./scripts/shell/run_tests.sh` in the :code:`/ivy` directory.
   This runs all tests in :code:`ivy/ivy_tests`.
-* To run :code:`test_array_api.sh` on Windows, type :code:`sh ./test_array_api.sh [backend] test_[submodule]`.
+* To run :code:`scripts/shell/test_array_api.sh` on Windows, type :code:`sh ./scripts/shell/test_array_api.sh [backend] test_[submodule]`.
   This runs all array-api tests for a certain submodule in a certain backend.
-* To run :code:`test_ivy_core.sh` on Windows, type :code:`sh ./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
+* To run :code:`scripts/shell/test_ivy_core.sh` on Windows, type :code:`sh ./scripts/shell/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
   This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
-* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh` on Windows.
+* :code:`scripts/shell/test_ivy_nn.sh`, :code:`scripts/shell/test_ivy_stateful.sh` are run in a similar manner to :code:`scripts/shell/test_ivy_core.sh` on Windows.
   Make sure to check the submodule names in the source code before running.
 
 The above instructions for running tests on Windows assume that you have installed Git and have access to the Git Bash terminal. If you do not have Git Bash, you can download it from the `official Git website <https://git-scm.com/downloads>`_.
 
-If you wish to run tests of all submodules of `ivy_core`, `ivy_nn` or `ivy_stateful`, there are :code:`.py` available in :code:`run_tests_CLI`.
-All are run like: :code:`python run_tests_CLI/run_ivy_nn_test.py 1`, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.
+If you wish to run tests of all submodules of `ivy_core`, `ivy_nn` or `ivy_stateful`, there are :code:`.py` available in :code:`scripts/shell`.
+All are run like: :code:`python scripts/setup_tests/run_ivy_nn_test.py 1`, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.
 
 
 More Detailed Hypothesis Logs in PyCharm
@@ -560,7 +560,7 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true
    :width: 420
 
-For questions, please reach out on `discord`_ in the `docker channel`_!
+For questions, please reach out on `discord`_ in the `docker thread`_!
 
 **"Empty Suite" error fix:**
 
@@ -762,7 +762,7 @@ If you want to setup a GPU instance on codespaces and also have access to it, ki
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/Selecting_the_GPU.png?raw=true
    :width: 420
 
-2. Refer to the ref:`Setting up Codespaces` section for the other configurations such as the "Dev conatiner configuration". Your Machine Type section will look like the following image shown below. Feel free to click on the green button to create the instance.
+2. Refer to the ref:`Setting up Codespaces` section for the other configurations such as the "Dev container configuration". Your Machine Type section will look like the following image shown below. Feel free to click on the green button to create the instance.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/Interface_after_selecting_the_GPU_1.png?raw=true
    :width: 420
@@ -893,4 +893,4 @@ Running a :code:`pip install -e .` is sufficient to download the binaries if the
 
 This should have hopefully given you a good understanding of how to get things properly set up.
 
-If you have any questions, please feel free to reach out on `discord`_  in the `pycharm channel`_, `docker channel`_, `pre-commit channel`_, `pip packages channel`_ depending on the question!
+If you have any questions, please feel free to reach out on `discord`_  in the `pycharm thread`_, `docker thread`_, `pre-commit thread`_, `pip packages thread`_ depending on the question!
