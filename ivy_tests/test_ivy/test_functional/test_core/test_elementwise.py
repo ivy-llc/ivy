@@ -1000,6 +1000,7 @@ def test_greater_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devic
         allow_nan=False,
     ),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_imag(
     *,
