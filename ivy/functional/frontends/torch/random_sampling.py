@@ -95,7 +95,7 @@ def rand(
     if (
         isinstance(size, (list, tuple))
         and len(size) == 1
-        and isinstance(size[0], (list, tuple))
+        and isinstance(size[0], (list, tuple, ivy.Shape))
     ):
         size = size[0]
     seed = generator.initial_seed() if generator is not None else None
@@ -195,7 +195,7 @@ def randn(
     if (
         isinstance(size, (list, tuple))
         and len(size) == 1
-        and isinstance(size[0], (list, tuple))
+        and isinstance(size[0], (list, tuple, ivy.Shape))
     ):
         size = size[0]
     seed = generator.initial_seed() if generator is not None else None

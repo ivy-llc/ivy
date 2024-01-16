@@ -856,6 +856,8 @@ def reciprocal(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if x.dtype.is_integer:
+        x = tf.cast(x, tf.float32)
     return tf.math.reciprocal(x)
 
 
