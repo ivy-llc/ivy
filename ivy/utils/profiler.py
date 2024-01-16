@@ -4,6 +4,7 @@ import subprocess
 import logging
 from tempfile import NamedTemporaryFile
 from importlib.util import find_spec
+from typing import Iterable, Optional
 
 is_snakeviz = find_spec("snakeviz")
 
