@@ -664,7 +664,10 @@ class Tensor:
                 size = args[0]
             else:
                 size = args
-
+        if isinstance(size, (tuple, list)):
+            size = tuple(
+                s.item() if isinstance(s, torch_frontend.Tensor) else s for s in size
+            )
         return torch_frontend.tensor(ivy.expand(self.ivy_array, tuple(size)))
 
     def expand_as(self, other):
