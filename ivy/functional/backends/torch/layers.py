@@ -882,7 +882,7 @@ def lstm(
     batch_first: bool = False,
     batch_sizes: Sequence = None,
 ):
-    return torch._VF.lstm(
+    return torch.lstm(
         input,
         initial_states,
         all_weights,

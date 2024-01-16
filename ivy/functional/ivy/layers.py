@@ -2785,7 +2785,7 @@ def _lstm_cell(
 ):
     init_h = ivy.squeeze(init_h, axis=0)
     init_c = ivy.squeeze(init_c, axis=0)
-    out, states = lstm_update(
+    out, states = ivy.lstm_update(
         x,
         init_h,
         init_c,
