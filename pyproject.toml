@@ -34,8 +34,18 @@ select = [
     "E", "W",
     # pydocstyle
     "D",
-    # isort (Missing required import)
-    "I002"
+    "I002",     # Missing required import.
+    "UP008",    # Checks for super calls that pass redundant arguments.
+    "PGH002",   # deprecated-log-warn.
+    "PLR0203",  # Static method defined without decorator.
+    "PLR0202",  # Class method defined without decorator.
+    "PLW0245",  # super call is missing parentheses.
+    "PLR1722",  # Use sys.exit() instead of exit() and quit().
+    "TRY004",   # Prefer TypeError exception for invalid type.
+    "PT014",    # pytest-duplicate-parametrize-test-cases.
+    "PT006",    # Checks for the type of parameter names passed to pytest.mark.parametrize.
+    "PT007",    # Checks for the type of parameter values passed to pytest.mark.parametrize.
+    "PT018",    # Checks for assertions that combine multiple independent conditions.
 ]
 
 
