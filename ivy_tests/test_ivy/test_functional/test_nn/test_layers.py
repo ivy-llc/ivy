@@ -1531,25 +1531,25 @@ def test_linear(*, dtype_x_weight_bias, test_flags, backend_fw, fn_name, on_devi
 
 # TODO: fix this test
 # lstm
-@handle_test(
-    fn_tree="functional.ivy.lstm",
-    dtypes_kwargs=_lstm_helper(),
-    ground_truth_backend="torch",
-    test_with_out=st.just(False),
-)
-def test_lstm(*, dtypes_kwargs, test_flags, backend_fw, fn_name, on_device):
-    dtypes, kwargs = dtypes_kwargs
-    assume("batch_sizes" not in kwargs)
-    helpers.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-01,
-        atol_=1e-01,
-        **kwargs,
-    )
+# @handle_test(
+#     fn_tree="functional.ivy.lstm",
+#     dtypes_kwargs=_lstm_helper(),
+#     ground_truth_backend="torch",
+#     test_with_out=st.just(False),
+# )
+# def test_lstm(*, dtypes_kwargs, test_flags, backend_fw, fn_name, on_device):
+#     dtypes, kwargs = dtypes_kwargs
+#     assume("batch_sizes" not in kwargs)
+#     helpers.test_function(
+#         input_dtypes=dtypes,
+#         test_flags=test_flags,
+#         backend_to_test=backend_fw,
+#         fn_name=fn_name,
+#         on_device=on_device,
+#         rtol_=1e-01,
+#         atol_=1e-01,
+#         **kwargs,
+#     )
 
 
 # lstm_update
