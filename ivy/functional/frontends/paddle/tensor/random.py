@@ -19,23 +19,21 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 def exponential_(x, lam=1.0, name=None):
     return ivy.multiply(lam, ivy.exp(ivy.multiply(-lam, x)))
 
+
 @with_supported_dtypes(
     {"2.5.0 and below": ("int32", "int64", "float32", "float64")},
     "paddle",
 )
-
-
-def randperm(n, dtype=ivy.int64,name=None):
-        arr = ivy.arange(n, dtype=dtype)
-        ret = ivy.shuffle(arr)
-        return ret
+def randperm(n, dtype=ivy.int64, name=None):
+    arr = ivy.arange(n, dtype=dtype)
+    ret = ivy.shuffle(arr)
+    return ret
 
 
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64")},
     "paddle",
 )
-
 @to_ivy_arrays_and_back
 def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
     x = ivy.array(x)
