@@ -30,10 +30,11 @@ def _convert_to_list(value, n, name="padding", _type=int):
     else:
         try:
             value_list = list(value)
-        except TypeError:
-            raise ValueError(
-                f"The input {name}'s type must be list or tuple. Received: {value}"
-            )
+        except TypeError as e:
+            raise TypeError(
+                f"The input {value}'s type must be list or tuple. Received:"
+                f" {type(value)}"
+            ) from e
         else:
             return value_list
 
