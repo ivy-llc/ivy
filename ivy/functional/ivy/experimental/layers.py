@@ -3328,7 +3328,7 @@ def rnn(
         if not ivy.is_bool_dtype(mask):
             mask = ivy.astype(mask, ivy.bool)
         if len(mask.shape) == 2:
-            mask = ivy.expand_dims(mask)
+            mask = ivy.expand_dims(mask, axis=-1)
         if not time_major:
             mask = ivy.permute_dims(mask, (1, 0, *range(2, len(mask.shape))))
 
@@ -3423,7 +3423,13 @@ def rnn(
             input_time_zero, tuple(initial_states) + tuple(constants)
         )
 
-        output_size = int(time_steps_t) if return_all_outputs else 1
+        if return_all_outputs:
+            if ivy.is_array(time_steps_t):
+                output_size = time_steps_t.to_scalar()
+            else:
+                output_size = time_steps_t
+        else:
+            output_size = 1
         output_loop = ivy.empty(
             (output_size, *output_time_zero.shape), dtype=output_time_zero.dtype
         )
@@ -3437,10 +3443,8 @@ def rnn(
             if go_backwards:
                 mask = ivy.flip(mask, axis=0)
 
-            mask_list = ivy.unstack(mask)
-
             def masking_fn(time):
-                return mask_list[time]
+                return mask[time]
 
             def compute_masked_output(mask_t, output, mask):
                 tiled_mask_t = tuple(

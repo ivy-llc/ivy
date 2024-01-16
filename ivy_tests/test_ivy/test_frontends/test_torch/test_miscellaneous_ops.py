@@ -513,7 +513,7 @@ def test_torch_cartesian_prod(
 @handle_frontend_test(
     fn_tree="torch.cdist",
     dtypes_and_x=helpers.dtype_and_values(
-        shape=st.shared(helpers.get_shape(min_num_dims=3, max_num_dims=3), key="shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=3), key="shape"),
         shared_dtype=True,
         num_arrays=2,
         allow_inf=False,
@@ -587,7 +587,7 @@ def test_torch_clone(
 @handle_frontend_test(
     fn_tree="torch.corrcoef",
     dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
         min_num_dims=2,
         max_num_dims=2,
@@ -607,7 +607,7 @@ def test_torch_corrcoef(
 ):
     input_dtypes, x = dtypes_and_x
     helpers.test_frontend_function(
-        input_dtypes=["float64"],
+        input_dtypes=input_dtypes,
         frontend=frontend,
         fn_tree=fn_tree,
         test_flags=test_flags,

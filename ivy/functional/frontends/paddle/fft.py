@@ -280,7 +280,7 @@ def irfft2(x, s=None, axes=(-2, -1), norm="backward"):
     # Calculate the normalization factor 'n' based on the shape 's'
     n = ivy.prod(ivy.array(s))
 
-    result = ivy.ifftn(x, dim=axes[0], norm=norm)
+    result = ivy.ifftn(x, axes=axes[0], norm=norm)
 
     # Normalize the result based on the 'norm' parameter
     if norm == "backward":

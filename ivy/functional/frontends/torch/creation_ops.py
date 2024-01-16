@@ -108,6 +108,8 @@ def empty(
         raise TypeError("empty() got multiple values for argument 'shape'")
     if size is None:
         size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
+    if isinstance(size, (tuple, list)):
+        size = tuple(s.to_scalar() if ivy.is_array(s) else s for s in size)
     return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
 
 

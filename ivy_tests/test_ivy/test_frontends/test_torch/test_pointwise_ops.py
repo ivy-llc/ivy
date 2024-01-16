@@ -1211,7 +1211,7 @@ def test_torch_erfc(
 @handle_frontend_test(
     fn_tree="torch.exp",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_torch_exp(

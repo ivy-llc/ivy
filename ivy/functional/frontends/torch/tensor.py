@@ -86,6 +86,10 @@ class Tensor:
         return torch_frontend.permute(self, list(range(self.ndim))[::-1])
 
     @property
+    def mH(self):
+        return torch_frontend.adjoint(self)
+
+    @property
     def data(self):
         return torch_frontend.tensor(
             ivy.stop_gradient(self.ivy_array, preserve_type=False)
@@ -810,11 +814,11 @@ class Tensor:
             return shape
         try:
             return shape[dim]
-        except IndexError:
+        except IndexError as e:
             raise IndexError(
                 f"Dimension out of range (expected to be in range of [{len(shape)},"
                 f" {len(shape) - 1}], but got {dim}"
-            )
+            ) from e
 
     def matmul(self, other):
         return torch_frontend.matmul(self, other)
@@ -949,7 +953,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.1.2 and below": ("bfloat16",)}, "torch")
     def type_as(self, other):
         if self.dtype != other.dtype:
-            self.ivy_array = ivy.astype(self.ivy_array, other.dtype)
+            return torch_frontend.tensor(ivy.astype(self.ivy_array, other.dtype))
         return self
 
     def byte(self, memory_format=None):
@@ -1185,7 +1189,7 @@ class Tensor:
 
     def __bool__(self):
         if len(self.shape) == sum(self.shape):
-            return torch_frontend.tensor(self.ivy_array.to_scalar().__bool__())
+            return self.ivy_array.to_scalar().__bool__()
         raise ValueError(
             "The truth value of an array with more than one element is ambiguous. "
             "Use a.any() or a.all()"
@@ -1455,9 +1459,10 @@ class Tensor:
         return torch_frontend.reciprocal(self)
 
     def fill_(self, value):
-        self.ivy_array = torch_frontend.full_like(
+        ret = torch_frontend.full_like(
             self, value, dtype=self.dtype, device=self.device
-        ).ivy_array
+        )
+        self.ivy_array = ivy.inplace_update(self.ivy_array, ret)
         return self
 
     def nonzero(self, as_tuple=False):
@@ -1502,7 +1507,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.1.2 and below": ("uint16",)}, "torch")
     def zero_(self):
-        self.ivy_array = torch_frontend.zeros_like(self).ivy_array
+        ret = torch_frontend.zeros_like(self)
+        self.ivy_array = ivy.inplace_update(self.ivy_array, ret)
         return self
 
     def short(self, memory_format=None):
@@ -2284,8 +2290,10 @@ class Size(tuple):
                 continue
             try:
                 new_iterable.append(int(item))
-            except Exception:
-                raise TypeError(f"Expected int, but got {type(item)} at index {i}")
+            except Exception as e:
+                raise TypeError(
+                    f"Expected int, but got {type(item)} at index {i}"
+                ) from e
         return super().__new__(cls, tuple(new_iterable))
 
     def __init__(self, shape) -> None:

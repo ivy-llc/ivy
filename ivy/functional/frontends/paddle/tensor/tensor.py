@@ -301,9 +301,8 @@ class Tensor:
                     self._ivy_array, args
                 ).ivy_array
                 return self
-
-        self.ivy_array = paddle_frontend.reshape(self._ivy_array).ivy_array
-        return self
+        else:
+            raise ValueError("reshape_() got no values for argument 'shape'")
 
     def dim(self):
         return self.ivy_array.ndim
@@ -561,9 +560,9 @@ class Tensor:
         return paddle_frontend.isfinite(self)
 
     @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
-    def all(self, axis=None, keepdim=False, dtype=None, name=None):
+    def all(self, axis=None, keepdim=False, name=None):
         return paddle_frontend.Tensor(
-            ivy.all(self.ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
+            ivy.all(self.ivy_array, axis=axis, keepdims=keepdim)
         )
 
     @with_supported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")

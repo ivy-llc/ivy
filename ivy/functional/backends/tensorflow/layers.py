@@ -716,8 +716,13 @@ def _cpu_lstm(
         h_tm1 = cell_states[0]  # previous memory state
         c_tm1 = cell_states[1]  # previous carry state
 
-        z = tf.keras.backend.dot(cell_inputs, kernel) + bias
-        z += tf.keras.backend.dot(h_tm1, recurrent_kernel) + recurrent_bias
+        z = tf.keras.backend.dot(cell_inputs, kernel)
+        if bias is not None:
+            z += bias
+
+        z += tf.keras.backend.dot(h_tm1, recurrent_kernel)
+        if recurrent_bias is not None:
+            z += recurrent_bias
 
         z0, z1, z2, z3 = tf.split(z, 4, axis=-1)
 
