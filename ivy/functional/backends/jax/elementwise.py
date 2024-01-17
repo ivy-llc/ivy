@@ -28,6 +28,7 @@ def abs(
     return jnp.where(x != 0, jnp.absolute(x), 0)
 
 
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def acos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arccos(x)
 
