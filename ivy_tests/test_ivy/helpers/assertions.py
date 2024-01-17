@@ -58,6 +58,8 @@ def assert_all_close(
         f" the results from backend {backend} "
         f"and ground truth framework {ground_truth_backend} "
         f"do not match\n {ret_np}!={ret_from_gt_np} \n\n"
+        "The mismatching elements are at `False` indices:\n\n"
+        f"{ret_np == ret_from_gt_np} \n\n"
     )
 
 
