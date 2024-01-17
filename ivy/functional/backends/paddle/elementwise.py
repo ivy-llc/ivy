@@ -340,13 +340,13 @@ def less(
     return paddle.less_than(x1, x2)
 
 
-@with_unsupported_dtypes(
+@with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "float16",
+            "int32",
+            "int64",
+            "float32",
+            "float64",
         )
     },
     backend_version,
