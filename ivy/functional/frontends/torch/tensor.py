@@ -5,7 +5,6 @@ import math
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
-import ivy.functional.frontends.torch.nn.functional as torch_frontend_nn
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import (
     array as np_frontend_array,
 )
@@ -390,7 +389,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, "torch")
     def relu(self):
-        return torch_frontend_nn.relu(self)
+        return torch_frontend.nn.functional.relu(self)
 
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
