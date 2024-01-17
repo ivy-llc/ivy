@@ -266,14 +266,24 @@ def test_function_backend_computation(
                     ret_from_target,
                     ret_np_flat_from_target,
                 ) = get_ret_and_flattened_np_array(
-                    fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out, precision_mode=test_flags.precision_mode
+                    fw,
+                    instance.__getattribute__(fn_name),
+                    *args,
+                    **kwargs,
+                    out=out,
+                    precision_mode=test_flags.precision_mode,
                 )
             else:
                 (
                     ret_from_target,
                     ret_np_flat_from_target,
                 ) = get_ret_and_flattened_np_array(
-                    fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out, precision_mode=test_flags.precision_mode
+                    fw,
+                    ivy_backend.__dict__[fn_name],
+                    *args,
+                    **kwargs,
+                    out=out,
+                    precision_mode=test_flags.precision_mode,
                 )
             test_ret = (
                 ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
