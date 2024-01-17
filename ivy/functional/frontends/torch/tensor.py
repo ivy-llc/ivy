@@ -151,7 +151,7 @@ class Tensor:
             raise ValueError("reshape() got no values for argument 'shape'")
 
     @with_unsupported_dtypes({"2.1.2 and below": ("bfloat16",)}, "torch")
-    @with_unsupported_dtypes({"2.5.1 and below": ("float16",)}, "paddle")
+    @with_unsupported_dtypes({"2.6.0 and below": ("float16",)}, "paddle")
     def reshape_as(self, other):
         return torch_frontend.reshape(self, other.shape)
 

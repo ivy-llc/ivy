@@ -87,7 +87,7 @@ def gather_nd(x, index, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
+    {"2.6.0 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back

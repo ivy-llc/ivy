@@ -417,7 +417,7 @@ def logit(x, eps=None, name=None):
     return ivy.logit(x, eps=eps)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def logsumexp(x, axis=None, y=None):
     x = ivy.asarray(x)

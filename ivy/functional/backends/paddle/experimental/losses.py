@@ -243,7 +243,7 @@ def poisson_nll_loss(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.6.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("float16", "float32", "float64"),
         }
