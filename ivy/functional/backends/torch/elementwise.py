@@ -204,7 +204,7 @@ def fmin(
 fmin.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def asin(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
