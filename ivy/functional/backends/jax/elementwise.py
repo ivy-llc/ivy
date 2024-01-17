@@ -56,6 +56,7 @@ def asin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsin(x)
 
 
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def asinh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsinh(x)
 
