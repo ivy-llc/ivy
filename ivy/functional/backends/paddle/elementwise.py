@@ -140,8 +140,8 @@ def equal(
     )
 
 
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("int8", "int16", "bfloat16", "unsigned", "float16")},
+@with_supported_dtypes(
+    {"2.5.2 and below": ("bool", "float32", "float64", "int32", "int64", "complex")},
     backend_version,
 )
 def less_equal(
@@ -153,7 +153,7 @@ def less_equal(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        if paddle.is_complex(x1):
+        if paddle.is_complex(x2):
             real = paddle.less_equal(x1.real(), x2.real())
             imag = paddle.less_equal(x1.imag(), x2.imag())
             return paddle_backend.logical_and(real, imag)
