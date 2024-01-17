@@ -1601,6 +1601,7 @@ def zero_pad(
     """
     return current_backend(x).zero_pad(x, pad_width, out=out)
 
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -1615,7 +1616,7 @@ def insert(
     indices: Union[int, Iterable[int]],
     values: Union[Number, Iterable[Number]],
     *,
-    axis: Optional[int]=None,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1650,12 +1651,12 @@ def insert(
     >>> y = ivy.insert(x, 2, 0.)
     >>> print(y)
     ivy.array([1., 2., 0., 3., 4., 5., 6.])
-    
+
     >>> x = ivy.array([[1., 2., 3.],[4, 5, 6]])
     >>> y = ivy.insert(x, 2, 0.)
     >>> print(y)
     ivy.array([[1., 2., 0., 3., 4., 5., 6.]])
-    
+
     >>> x = ivy.array([[1., 2., 3.],[4, 5, 6]])
     >>> y = ivy.insert(x, 2, [0., 0., 0.])
     >>> print(y)
@@ -1682,7 +1683,7 @@ def insert(
                 [0., 0., 0.]])
 
     With :class:`ivy.Container` input:
-                
+
     >>> x = ivy.Container(a = ivy.native_array([1., 2., 3.]), b = ivy.native_array([3., 4., 5.]))
     >>> y = ivy.insert(x, 2, 0.)
     >>> print(y)

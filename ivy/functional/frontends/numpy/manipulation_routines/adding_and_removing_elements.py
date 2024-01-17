@@ -58,6 +58,7 @@ def unique(
 
     return Results(*values)
 
+
 @to_ivy_arrays_and_back
 def insert(arr, obj, values, axis=None, out=None):
     return ivy.insert(arr, obj, values, axis=axis, out=out)
