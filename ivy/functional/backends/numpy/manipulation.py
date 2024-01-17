@@ -293,3 +293,15 @@ def as_strided(
         shape=shape,
         strides=strides,
     )
+
+
+def insert(
+    x: np.ndarray,
+    indices: Union[int, List[int]],
+    values: Union[np.ndarray, List[np.ndarray]],
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.insert(x, indices, values, axis=axis)

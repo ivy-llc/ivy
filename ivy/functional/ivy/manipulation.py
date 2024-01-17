@@ -1600,3 +1600,95 @@ def zero_pad(
     }
     """
     return current_backend(x).zero_pad(x, pad_width, out=out)
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def insert(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    indices: Union[int, Iterable[int]],
+    values: Union[Number, Iterable[Number]],
+    *,
+    axis: Optional[int]=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Insert values along the given axis before the given indices.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    indices
+        Array-like of indices before which values are inserted.
+    values
+        Values to insert into x.
+    axis
+        Axis along which to insert values. Default is ``0``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        A copy of x with values inserted. Note that insert does not occur in-place: a new
+        array is returned. If axis is None then x is flattened first, otherwise insert
+        operates along the specified axis (default is 0, the first axis).
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1., 2., 3.,4, 5, 6])
+    >>> y = ivy.insert(x, 2, 0.)
+    >>> print(y)
+    ivy.array([1., 2., 0., 3., 4., 5., 6.])
+    
+    >>> x = ivy.array([[1., 2., 3.],[4, 5, 6]])
+    >>> y = ivy.insert(x, 2, 0.)
+    >>> print(y)
+    ivy.array([[1., 2., 0., 3., 4., 5., 6.]])
+    
+    >>> x = ivy.array([[1., 2., 3.],[4, 5, 6]])
+    >>> y = ivy.insert(x, 2, [0., 0., 0.])
+    >>> print(y)
+    ivy.array([[1., 2., 0., 0., 0., 3., 4., 5., 6.]])
+
+    >>> x = ivy.array([[1., 2., 3.],[4, 5, 6]])
+    >>> y = ivy.insert(x, 2, [0., 0., 0.], axis=1)
+    >>> print(y)
+    ivy.array([[1., 2., 0., 3.],
+                [4., 5., 0., 6.]])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1., 2., 3.,4, 5, 6])
+    >>> y = ivy.insert(x, 2, 0.)
+    >>> print(y)
+    ivy.array([1., 2., 0., 3., 4., 5., 6.])
+
+    >>> x = ivy.native_array([[1., 2., 3.],[4, 5, 6]])
+    >>> y = ivy.insert(x, 2, 0., axis=0)
+    >>> print(y)
+    ivy.array([[1., 2., 3.],
+                [4., 5., 6.],
+                [0., 0., 0.]])
+
+    With :class:`ivy.Container` input:
+                
+    >>> x = ivy.Container(a = ivy.native_array([1., 2., 3.]), b = ivy.native_array([3., 4., 5.]))
+    >>> y = ivy.insert(x, 2, 0.)
+    >>> print(y)
+    {
+        a: ivy.array([1., 2., 0., 3.]),
+        b: ivy.array([3., 4., 0., 5.])
+    }
+    """
+    return current_backend(x).insert(x, indices, values, axis=axis, out=out)
