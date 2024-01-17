@@ -14,8 +14,16 @@ def main():
     # iterate over demos and collect ivy and frontend functions used
     ivy_test_docs = ivy_tests_collection.find()
     frontend_test_docs = frontend_tests_collection.find()
-    ivy_functions = [ivy_test_doc["_id"] for ivy_test_doc in ivy_test_docs if ivy_test_doc.get("demos", None)]
-    frontend_functions = [frontend_test_doc["_id"] for frontend_test_doc in frontend_test_docs if frontend_test_doc.get("demos", None)]
+    ivy_functions = [
+        ivy_test_doc["_id"]
+        for ivy_test_doc in ivy_test_docs
+        if ivy_test_doc.get("demos", None)
+    ]
+    frontend_functions = [
+        frontend_test_doc["_id"]
+        for frontend_test_doc in frontend_test_docs
+        if frontend_test_doc.get("demos", None)
+    ]
     ivy_functions = sorted(list(set(ivy_functions)))
     frontend_functions = sorted(list(set(frontend_functions)))
 
