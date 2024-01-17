@@ -14,7 +14,7 @@ from . import backend_version
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -42,7 +42,7 @@ def l1_loss(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -72,7 +72,7 @@ def smooth_l1_loss(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -100,7 +100,7 @@ def huber_loss(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -127,7 +127,7 @@ def soft_margin_loss(
 
 
 @with_supported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float32", "float64")}},
+    {"2.6.0 and below": {"cpu": ("float32", "float64")}},
     backend_version,
 )
 def kl_div(
@@ -195,7 +195,7 @@ def _validate_poisson_nll_params(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
