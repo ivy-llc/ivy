@@ -342,7 +342,7 @@ def less(
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "int32",
             "int64",
             "float32",
