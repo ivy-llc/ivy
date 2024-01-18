@@ -85,7 +85,7 @@ def _squeeze_helper(query, x_ndim):
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("int8", "int16", "float16", "complex64", "complex128")
         }
     },
@@ -228,7 +228,7 @@ def gather(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("bfloat16", "float16")}},
+    {"2.6.0 and below": {"cpu": ("bfloat16", "float16")}},
     backend_version,
 )
 def gather_nd(

@@ -30,7 +30,7 @@ def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -97,7 +97,7 @@ def max_pool1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -168,7 +168,7 @@ def max_pool2d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -301,7 +301,7 @@ def dct(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("bfloat16", "bool", "float16")}, backend_version
+    {"2.6.0 and below": ("bfloat16", "bool", "float16")}, backend_version
 )
 def fft(
     x: paddle.Tensor,
@@ -345,7 +345,7 @@ def fft(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -367,7 +367,7 @@ def dropout1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -389,7 +389,7 @@ def dropout2d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -422,7 +422,7 @@ def ifft(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("int8", "float32", "float64"),
             "gpu": ("int8", "bfloat16", "float16", "float32", "float64"),
         },
@@ -514,7 +514,7 @@ def rfft(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
+    {"2.6.0 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
     backend_version,
 )
 def rfftn(
@@ -531,7 +531,7 @@ def rfftn(
 
 @with_supported_dtypes(
     {
-        "2.5.2 and below": (
+        "2.6.0 and below": (
             "complex64",
             "complex128",
         )
@@ -553,7 +553,7 @@ def fft2(
 # stft
 @with_supported_dtypes(
     {
-        "2.5.2 and below": (
+        "2.6.0 and below": (
             "complex64",
             "complex128",
         )
