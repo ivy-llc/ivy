@@ -649,8 +649,6 @@ def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             "int64",
             "float32",
             "float64",
-            "float16",
-            "bfloat16",
         )
     },
     backend_version,
