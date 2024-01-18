@@ -660,9 +660,6 @@ the steps explained below will help you in setting up a less resource-intensive 
    .. code-block:: none
 
       pip install -r requirements/requirements.txt
-
-   .. code-block:: none
-
       pip install -r requirements/optional.txt
 
 #. Once done, you can now open VSCode right from your terminal and get started with your development by just running:
