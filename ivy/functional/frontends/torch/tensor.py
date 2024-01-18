@@ -5,7 +5,6 @@ import math
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
-import ivy.functional.frontends.torch.nn.functional as torch_frontend_nn
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import (
     array as np_frontend_array,
 )
@@ -390,7 +389,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, "torch")
     def relu(self):
-        return torch_frontend_nn.relu(self)
+        return torch_frontend.nn.functional.relu(self)
 
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
@@ -1714,12 +1713,14 @@ class Tensor:
     )
     def log1p(self):
         promoted_type = ivy.promote_types(self.dtype, "float32")
-        return torch_frontend.log1p(self).to(promoted_type)
+        res = torch_frontend.log1p(self)
+        return res.to(promoted_type)
 
     @with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
     def log1p_(self):
         promoted_type = ivy.promote_types(self.dtype, "float32")
-        self.ivy_array = torch_frontend.log1p(self).to(promoted_type).ivy_array
+        res = torch_frontend.log1p(self)
+        self.ivy_array = res.to(promoted_type).ivy_array
         return self
 
     def baddbmm(self, batch1, batch2, *, beta=1, alpha=1):

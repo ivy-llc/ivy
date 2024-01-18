@@ -342,13 +342,9 @@ def narrow(input, dim, start, length):
 
 @to_ivy_arrays_and_back
 def nonzero(input, *, out=None, as_tuple=False):
-    ret = ivy.nonzero(input)
-    if as_tuple is False:
-        ret = ivy.matrix_transpose(ivy.stack(ret))
-
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    if as_tuple:
+        return ivy.nonzero(input, as_tuple=as_tuple)
+    return ivy.argwhere(input != 0, out=out)
 
 
 @to_ivy_arrays_and_back

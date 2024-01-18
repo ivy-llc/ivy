@@ -14,6 +14,7 @@ from ivy.utils.einsum_parser import legalise_einsum_expr
 # -------------------#
 
 
+@_scalar_output_to_0d_array
 def min(
     x: np.ndarray,
     /,

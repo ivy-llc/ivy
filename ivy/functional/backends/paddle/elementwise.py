@@ -28,7 +28,7 @@ def _elementwise_helper(x1, x2):
 
 
 @with_unsupported_dtypes(
-    {"2.6.0 and below": ("int8", "uint8", "float16", "bool", "bfloat16")},
+    {"2.6.0 and below": ("int8", "int16", "uint8", "float16", "bool", "bfloat16")},
     backend_version,
 )
 def add(
