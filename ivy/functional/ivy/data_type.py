@@ -193,7 +193,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
                         if frontend in key:
                             key = key.replace(frontend, frontends[frontend])
                     if "(" in key:
-                        key = key.split('(')[0]
+                        key = key.split("(")[0]
                     frontend_module = ".".join(key.split(".")[:-1])
                     frontend_fl = {key: frontend_fn}
                     res += list(
