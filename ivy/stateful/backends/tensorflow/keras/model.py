@@ -388,14 +388,14 @@ class Model(tf.keras.Model, ModelHelpers):
             # ToDo: verify variables in self.v are released once this method exits
             self._v = dict()
 
-        # also assign the keras model trainable and non-trainable weights now
-        self._assign_weights()
-
         # compute the module dict
         self._compute_module_dict()
 
         # once all variables built, find and assign buffers
         self._find_buffers()
+
+        # also assign the keras model trainable and non-trainable weights now
+        self._assign_weights()
 
         # wrap call methods if the model is fully built
         if built:
