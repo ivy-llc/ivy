@@ -231,8 +231,8 @@ This is a builtin package and doesn't require explicit installation.
 
       .. code-block:: none
 
-         wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
-         sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+         wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.20_amd64.deb
+         sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.20_amd64.deb
 
       PS: If the link gets expired at some point in the future, check http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/?C=M;O=D for a valid one.
 
