@@ -143,7 +143,7 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
 
 @with_unsupported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "uint8",
             "int8",
             "int16",
