@@ -650,7 +650,7 @@ the steps explained below will help you in setting up a less resource-intensive 
 
       pip install git+https://github.com/unifyai/ivy.git
 
-#. If you want to set up a local repository, you can do so by following :ref:`this guide <overview/contributing/setting_up:Forking and cloning the repo>`
+#. Or else, if you want to set up a local repository, you can do so by following :ref:`this guide <overview/contributing/setting_up:Forking and cloning the repo>`
    as explained above and install the required development dependencies by running:
 
    .. code-block:: none
@@ -660,6 +660,7 @@ the steps explained below will help you in setting up a less resource-intensive 
    .. code-block:: none
 
       pip install -r requirements/requirements.txt
+      pip install -r requirements/optional.txt
 
 #. Once done, you can now open VSCode right from your terminal and get started with your development by just running:
 
