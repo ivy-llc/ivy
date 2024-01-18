@@ -3,6 +3,7 @@ from hypothesis import strategies as st
 
 # local
 import ivy
+from ivy.functional.frontends.paddle.nn.functional.common import bilinear
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.test_linear_functions import (  # noqa: E501
@@ -228,4 +229,37 @@ def test_linear(
         x=x,
         weight=weight,
         bias=bias,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.bilinear",
+    dtype_x1_x2_weight_bias=bilinear(
+        dtypes=helpers.get_dtypes("valid", full=False),
+    ),
+)
+def test_bilinear(
+    *,
+    dtype_x1_x2_weight_bias,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    dtype, x1, x2, weight, bias = dtype_x1_x2_weight_bias
+    x2_transposed = ivy.swapaxes(x2, -1, -2)
+    result = ivy.linear(ivy.multiply(x1, x2_transposed), weight, bias=bias)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x1,
+        x2=x2,
+        weight=weight,
+        bias=bias,
+        result=result,
     )

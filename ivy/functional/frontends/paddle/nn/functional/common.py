@@ -92,3 +92,10 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
 def linear(x, weight, bias=None, name=None):
     weight = ivy.swapaxes(weight, -1, -2)
     return ivy.linear(x, weight, bias=bias)
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def bilinear(x1, x2, weight, bias=None, name=None):
+    x2_transposed = ivy.swapaxes(x2, -1, -2)
+    result = ivy.linear(ivy.multiply(x1, x2_transposed), weight, bias=bias)
+    return result
