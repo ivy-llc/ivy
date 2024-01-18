@@ -12,7 +12,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
+    {"2.6.0 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
     "paddle",
 )
 @to_ivy_arrays_and_back

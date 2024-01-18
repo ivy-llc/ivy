@@ -212,7 +212,7 @@ def foldl(
     return result
 
 
-@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def foldr(
     fn,
