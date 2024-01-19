@@ -40,8 +40,7 @@ class Module(ivy.Module):
                     for k, v in self.__dict__.items()
                     if isinstance(v, Parameter)
                 ]
-            ),
-            dynamic_backend=self._dynamic_backend,
+            )
         )
         # Created variables that were added using `register_paramter`,
         # since those would appear in `self._v`
