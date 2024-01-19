@@ -369,7 +369,10 @@ def map_nest_at_index(
     try:
         _result = nest_type(_result)
     except TypeError:
-        _result = nest_type(*_result)
+        try:
+            _result = nest_type(*_result)
+        except TypeError:
+            pass
     return _result
 
 
@@ -1510,7 +1513,7 @@ def nested_multi_map(
                     )
                 )
         ret = func(values, this_index_chain)
-        if to_ivy:
+        if to_ivy and ret is not None:
             if isinstance(nest, (ivy.Array, ivy.NativeArray)):
                 return ret
             else:

@@ -14,7 +14,7 @@ from . import backend_version
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -42,7 +42,7 @@ def l1_loss(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -66,13 +66,13 @@ def smooth_l1_loss(
     reduction: Optional[str] = "mean",
 ) -> paddle.Tensor:
     return paddle.nn.functional.smooth_l1_loss(
-        input, target, reduction=reduction, beta=beta
+        input, target, reduction=reduction, delta=beta
     )
 
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -100,7 +100,7 @@ def huber_loss(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "float16",
                 "int8",
@@ -127,7 +127,7 @@ def soft_margin_loss(
 
 
 @with_supported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float32", "float64")}},
+    {"2.6.0 and below": {"cpu": ("float32", "float64")}},
     backend_version,
 )
 def kl_div(
@@ -195,7 +195,7 @@ def _validate_poisson_nll_params(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -239,3 +239,27 @@ def poisson_nll_loss(
         cond = paddle.logical_and(target_arr >= zeroes, target_arr <= ones)
         loss = loss + paddle.where(cond, zeroes, striling_approx_term)
     return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def hinge_embedding_loss(
+    input: paddle.Tensor,
+    target: paddle.Tensor,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+) -> paddle.Tensor:
+    return paddle.nn.functional.hinge_embedding_loss(
+        input,
+        target,
+        margin=margin,
+        reduction=reduction,
+    )

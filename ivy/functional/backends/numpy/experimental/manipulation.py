@@ -402,6 +402,9 @@ def expand(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     shape = list(shape)
+    n_extra_dims = len(shape) - x.ndim
+    if n_extra_dims > 0:
+        x = np.expand_dims(x, tuple(range(n_extra_dims)))
     for i, dim in enumerate(shape):
         if dim < 0:
             shape[i] = x.shape[i]

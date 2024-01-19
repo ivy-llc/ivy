@@ -48,4 +48,4 @@ Please, follow the next process when you work on your subtask:
 
 [![Video](https://img.youtube.com/vi/wBKTOGmwfbo/0.jpg)](https://www.youtube.com/embed/wBKTOGmwfbo)
 
-For questions, please reach out on [discord](https://discord.gg/MDK979Ga) in the [todo list issues channel](https://discord.com/channels/799879767196958751/982728618469912627)!
+For questions, please reach out on [discord](https://discord.gg/MDK979Ga) in the [todo list issues thread](https://discord.com/channels/799879767196958751/1189903501011202128)!

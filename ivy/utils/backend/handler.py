@@ -96,7 +96,7 @@ def _determine_backend_from_args(args):
     >>> x = jnp.array([1])
     >>> print(_determine_backend_from_args(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>    # noqa
-    """
+    """  # noqa: E501
     arg_type = type(args)
     if isinstance(args, ivy.Array):
         args = args.data
@@ -175,7 +175,7 @@ def current_backend(*args, **kwargs):
     >>> x = np.array([2.0])
     >>> print(ivy.current_backend(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
-    """
+    """  # noqa: E501
     global implicit_backend
     # if a global backend has been set with
     # set_backend then this will be returned
@@ -358,7 +358,6 @@ def set_backend(backend: str, dynamic: bool = False):
         global ivy_original_dict
         if not backend_stack:
             ivy_original_dict = ivy.__dict__.copy()
-
         _clear_current_sub_backends()
         if isinstance(backend, str):
             temp_stack = []

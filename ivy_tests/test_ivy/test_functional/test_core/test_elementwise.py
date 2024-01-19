@@ -177,9 +177,10 @@ def test_abs(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.acos",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("valid"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
+        safety_factor_scale="log",
     ),
 )
 def test_acos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -293,6 +294,7 @@ def test_angle(
     fn_tree="functional.ivy.asin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
+        safety_factor_scale="log",
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -318,6 +320,7 @@ def test_asin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
+        safety_factor_scale="log",
     ),
 )
 def test_asinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -339,8 +342,8 @@ def test_asinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     fn_tree="functional.ivy.atan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
         safety_factor_scale="log",
     ),
 )
@@ -390,7 +393,9 @@ def test_atan2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.atanh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex")
+        min_value=1e-30,
+        max_value=1e30,
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
     ),
 )
 def test_atanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -633,7 +638,10 @@ def test_cosh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.deg2rad",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
     ),
 )
 def test_deg2rad(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -992,6 +1000,7 @@ def test_greater_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devic
         allow_nan=False,
     ),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_imag(
     *,

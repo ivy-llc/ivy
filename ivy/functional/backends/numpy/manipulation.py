@@ -70,7 +70,7 @@ def flip(
         return x
     if axis is None:
         axis = list(range(num_dims))
-    if type(axis) is int:
+    if isinstance(axis, int):
         axis = [axis]
     axis = [item + num_dims if item < 0 else item for item in axis]
     return np.flip(x, axis)
@@ -189,7 +189,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.26.2 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,

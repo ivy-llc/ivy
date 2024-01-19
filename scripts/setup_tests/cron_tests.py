@@ -2,7 +2,7 @@ import sys
 from get_all_tests import get_all_tests
 
 
-run_iter, gpu = int(sys.argv[1]), sys.argv[2]
+run_iter, gpu, tracer = int(sys.argv[1]), sys.argv[2], sys.argv[3]
 if gpu == "true":
     from setup_priority_tests import main
 
@@ -13,6 +13,8 @@ if gpu == "true":
 else:
     test_names = get_all_tests()
     tests_per_run = 150
+    if tracer == "true":
+        tests_per_run = 20
 num_tests = len(test_names)
 start = run_iter * tests_per_run
 end = (run_iter + 1) * tests_per_run

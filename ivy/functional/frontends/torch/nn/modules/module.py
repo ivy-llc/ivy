@@ -26,8 +26,6 @@ class Module(ivy.Module):
             **kwargs,
         )
         super().__setattr__("_frontend_module", True)
-        super().__setattr__("_nonetype_param_dict", {})
-        super().__setattr__("_nonetype_buffers_dict", {})
         super().__setattr__(
             "_attr_mapping", {"_parameters": "v", "_modules": "module_dict"}
         )
@@ -42,8 +40,7 @@ class Module(ivy.Module):
                     for k, v in self.__dict__.items()
                     if isinstance(v, Parameter)
                 ]
-            ),
-            dynamic_backend=self._dynamic_backend,
+            )
         )
         # Created variables that were added using `register_paramter`,
         # since those would appear in `self._v`
@@ -115,13 +112,9 @@ class Module(ivy.Module):
         super().__setattr__(name, module)
 
     def register_buffer(self, name: str, value: Optional["Tensor"]) -> None:
-        if value is None:
-            self._nonetype_buffers_dict[name] = value
         super().register_buffer(name, value)
 
     def register_parameter(self, name: str, value: Optional["Parameter"]) -> None:
-        if value is None:
-            self._nonetype_param_dict[name] = value
         super().register_parameter(name, value)
 
     def register_module(self, name: str, module: Optional["Module"]) -> None:
@@ -255,14 +248,6 @@ class Module(ivy.Module):
             v = self.__dict__["_v"]
             if name in v:
                 return v[name]
-        if "_nonetype_param_dict" in self.__dict__:
-            nonetype_param_dict = self.__dict__["_nonetype_param_dict"]
-            if name in nonetype_param_dict:
-                return nonetype_param_dict[name]
-        if "_nonetype_buffers_dict" in self.__dict__:
-            nonetype_buffers_dict = self.__dict__["_nonetype_buffers_dict"]
-            if name in nonetype_buffers_dict:
-                return nonetype_buffers_dict[name]
         # Adding this attribute mapping s.t if someone tries
         # to retrieve self._modules/self._parameters, we
         # can handle that here

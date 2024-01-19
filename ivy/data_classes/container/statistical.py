@@ -9,12 +9,101 @@ from ivy.data_classes.container.base import ContainerBase
 
 
 class _ContainerWithStatistical(ContainerBase):
+    @staticmethod
+    def _static_min(
+        x: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+        where: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """ivy.Container static method variant of ivy.min. This method simply
+        wraps the function, and so the docstring for ivy.min also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container. Should have a real-valued data type.
+        axis
+            axis or axes along which minimum values must be computed.
+            By default, the minimum value must be computed over the
+            entire array. If a tuple of integers, minimum values must
+            be computed over multiple axes. Default: ``None``.
+        keepdims
+            optional boolean, if ``True``, the reduced axes
+            (dimensions) must be included in the result as
+            singleton dimensions, and, accordingly, the result
+            must be compatible with the input array
+            (see :ref:`broadcasting`). Otherwise, if ``False``, the
+            reduced axes (dimensions) must not be included in the
+            result. Default: ``False``.
+        initial
+            The maximum value of an output element.
+            Must be present to allow computation on empty slice.
+        where
+            Elements to compare for minimum
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            if the minimum value was computed over the entire array,
+            a zero-dimensional array containing the minimum value;
+            otherwise, a non-zero-dimensional array containing the
+            minimum values. The returned array must have the same data type
+            as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+        >> > x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                               b=ivy.array([2, 3, 4]))
+        >> > z = x.min()
+        >> > print(z)
+        {
+            a: ivy.array(1),
+            b: ivy.array(2)
+        }
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3],[-1,0,2]]),
+        ...                   b=ivy.array([[2, 3, 4], [0, 1, 2]]))
+        >>> z = x.min(axis=1)
+        >>> print(z)
+        {
+            a:ivy.array([1,-1]),
+            b:ivy.array([2,0])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "min",
+            x,
+            axis=axis,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def min(
         self: ivy.Container,
         /,
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
+        initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+        where: Optional[Union[ivy.Array, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -42,6 +131,11 @@ class _ContainerWithStatistical(ContainerBase):
             (see :ref:`broadcasting`). Otherwise, if ``False``, the
             reduced axes (dimensions) must not be included in the
             result. Default: ``False``.
+        initial
+            The maximum value of an output element.
+            Must be present to allow computation on empty slice.
+        where
+            Elements to compare for minimum
         out
             optional output array, for writing the result to.
 
@@ -76,18 +170,16 @@ class _ContainerWithStatistical(ContainerBase):
             b:ivy.array([2,0])
         }
         """
-        return self.cont_handle_inplace(
-            self.cont_map(
-                lambda x_, _: (
-                    ivy.min(x_, axis=axis, keepdims=keepdims)
-                    if ivy.is_array(x_)
-                    else x_
-                ),
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_sequences=map_sequences,
-            ),
+        return self._static_min(
+            self,
+            axis=axis,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 

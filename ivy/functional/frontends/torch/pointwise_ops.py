@@ -5,7 +5,9 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 import ivy.functional.frontends.torch as torch_frontend
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+)
 
 
 @to_ivy_arrays_and_back
@@ -466,7 +468,7 @@ def round(input, *, decimals=0, out=None):
     m = ivy.full(input.shape, 10.0**decimals)
     upscale = ivy.multiply(input, m)
     rounded = ivy.round(upscale)
-    return ivy.divide(rounded, m, out=out)
+    return ivy.divide(rounded, m, out=out).astype(input.dtype)
 
 
 @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")

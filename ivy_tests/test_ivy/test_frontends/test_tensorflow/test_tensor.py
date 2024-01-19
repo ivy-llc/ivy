@@ -1552,6 +1552,7 @@ def test_tensorflow_ivy_array(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
         ground_truth_backend="tensorflow",
+        backend=backend_fw,
     )
     ivy.previous_backend()
 
