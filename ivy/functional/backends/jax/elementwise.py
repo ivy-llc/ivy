@@ -51,10 +51,12 @@ def add(
     return jnp.add(x1, x2)
 
 
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def asin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsin(x)
 
 
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def asinh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsinh(x)
 
@@ -68,6 +70,7 @@ def atan2(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.arctan2(x1, x2)
 
 
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def atanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arctanh(x)
 
@@ -247,6 +250,7 @@ def isfinite(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isfinite(x)
 
 
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def isinf(
     x: JaxArray,
     /,
@@ -514,6 +518,9 @@ def trapz(
     return jnp.trapz(y, x=x, dx=dx, axis=axis)
 
 
+@with_unsupported_dtypes(
+    {"0.4.23 and below": ("complex", "float16", "bfloat16")}, backend_version
+)
 def tan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tan(x)
 

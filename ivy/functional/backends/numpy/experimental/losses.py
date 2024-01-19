@@ -8,7 +8,7 @@ from ivy.func_wrapper import (
 from . import backend_version
 
 
-@with_unsupported_dtypes({"1.26.2 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def huber_loss(
     input: np.ndarray,
@@ -32,7 +32,7 @@ def huber_loss(
 
 
 # Implementation of smooth_l1_loss in the given format
-@with_unsupported_dtypes({"1.26.2 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def smooth_l1_loss(
     input: np.ndarray,
@@ -56,7 +56,7 @@ def smooth_l1_loss(
         return loss
 
 
-@with_unsupported_dtypes({"1.26.2 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def soft_margin_loss(
     input: np.ndarray,
@@ -75,15 +75,12 @@ def soft_margin_loss(
         return loss
 
 
-def _apply_loss_reduction(loss: np.ndarray, reduction: str, axis, out) -> np.ndarray:
+def _apply_loss_reduction(loss: np.ndarray, reduction: str) -> np.ndarray:
     if reduction == "sum":
-        return np.sum(loss, axis=axis, out=out)
+        return np.sum(loss)
     elif reduction == "mean":
-        return np.mean(loss, axis=axis, out=out)
+        return np.mean(loss)
     else:  # reduction == "none"
-        if out is not None:
-            out[...] = loss
-            return out
         return loss
 
 
@@ -106,14 +103,14 @@ def _validate_poisson_nll_params(
     if epsilon <= 0:
         raise ValueError(
             "The value of `epsilon` in poisson_nll_loss should be positive, but"
-            " received %f, which is not allowed" % epsilon
+            f" received {epsilon}, which is not allowed."
         )
 
     # Validate reduction
     if reduction not in ["sum", "mean", "none"]:
         raise ValueError(
             "The value of 'reduction' in poisson_nll_loss should be 'sum', 'mean' or"
-            " 'none', but received %s, which is not allowed." % reduction
+            f" 'none', but received {reduction}, which is not allowed."
         )
 
     # Validate shape
@@ -128,7 +125,7 @@ def _validate_poisson_nll_params(
 
 @with_supported_device_and_dtypes(
     {
-        "1.25.2 and below": {
+        "1.26.0 and below": {
             "cpu": ("float16", "float32", "float64"),
         }
     },
@@ -166,4 +163,30 @@ def poisson_nll_loss(
         ones = np.ones_like(target_arr, dtype=target_arr.dtype)
         cond = np.logical_and(target_arr >= zeroes, target_arr <= ones)
         loss = loss + np.where(cond, zeroes, striling_approx_term)
+    return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "1.26.0 and below": {
+            "cpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def hinge_embedding_loss(
+    input: np.ndarray,
+    target: np.ndarray,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+) -> np.ndarray:
+    zero_ = np.zeros([1], dtype=input.dtype)
+
+    relu_part = np.maximum(margin - input, 0)
+
+    loss = np.where(target == 1.0, input, zero_) + np.where(
+        target == -1.0, relu_part, zero_
+    )
+
     return _apply_loss_reduction(loss, reduction)

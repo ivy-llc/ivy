@@ -66,7 +66,7 @@ def expand_dims(
         ret = tf.reshape(x, shape=out_shape)
         return ret
     except (tf.errors.InvalidArgumentError, np.AxisError) as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+        raise ivy.utils.exceptions.IvyIndexError(error) from error
 
 
 def flip(
@@ -85,7 +85,7 @@ def flip(
             new_axis = list(range(num_dims))
         else:
             new_axis = axis
-        if type(new_axis) is int:
+        if isinstance(new_axis, int):
             new_axis = [new_axis]
         else:
             new_axis = new_axis
@@ -196,7 +196,7 @@ def stack(
     try:
         return tf.experimental.numpy.stack(arrays, axis)
     except ValueError as e:
-        raise ivy.utils.exceptions.IvyIndexError(e)
+        raise ivy.utils.exceptions.IvyIndexError(e) from e
 
 
 # Extra #

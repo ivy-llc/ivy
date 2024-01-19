@@ -449,6 +449,41 @@ def test_tensorflow_atanh(
     )
 
 
+# bessel_i1
+@handle_frontend_test(
+    fn_tree="tensorflow.math.bessel_i1",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=4,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_bessel_i1(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # bincount
 @handle_frontend_test(
     fn_tree="tensorflow.math.bincount",
@@ -2647,6 +2682,39 @@ def test_tensorflow_scalar_mul(
         on_device=on_device,
         scalar=scalar[0][0],
         x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.math.segment_sum",
+    data=helpers.array_values(dtype=helpers.get_dtypes("valid"), shape=(5, 6)),
+    segment_ids=helpers.array_values(
+        dtype=helpers.get_dtypes("signed_integer", prune_function=True),
+        shape=(5,),
+        min_value=0,
+        max_value=4,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_segment_sum(
+    *,
+    data,
+    segment_ids,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[str(data.dtype), "int32", "int64"],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=data,
+        segment_ids=np.sort(segment_ids),
     )
 
 

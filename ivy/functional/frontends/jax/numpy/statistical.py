@@ -404,7 +404,9 @@ def nanpercentile(
         if axis < 0:
             axis = axis + ndim
 
-        func = lambda elem: func1d(elem, *args, **kwargs)
+        def func(elem):
+            return func1d(elem, *args, **kwargs)
+
         for i in range(1, ndim - axis):
             func = ivy.vmap(func, in_axes=i, out_axes=-1)
         for i in range(axis):

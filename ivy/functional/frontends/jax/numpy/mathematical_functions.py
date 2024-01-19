@@ -90,7 +90,7 @@ def ceil(x, /):
     return ivy.ceil(x)
 
 
-@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def clip(a, a_min=None, a_max=None, out=None):
     return ivy.array(ivy.clip(a, a_min, a_max), dtype=a.dtype)
@@ -366,8 +366,8 @@ def einsum_path(subscripts, *operands, optimize="greedy"):
         # Explicit "einsum_path" is usually trusted, but we detect this kind of
         # mistake in order to prevent from returning an intermediate value.
         raise RuntimeError(
-            "Invalid einsum_path is specified: {} more operands has to be "
-            "contracted.".format(len(input_list) - 1)
+            f"Invalid einsum_path is specified: {len(input_list) - 1} "
+            "more operands has to be contracted."
         )
 
     # Return the path along with a nice string representation
@@ -377,13 +377,13 @@ def einsum_path(subscripts, *operands, optimize="greedy"):
     speedup = naive_cost / opt_cost
     max_i = max(size_list)
 
-    path_print = "  Complete contraction:  %s\n" % overall_contraction
-    path_print += "         Naive scaling:  %d\n" % len(indices)
-    path_print += "     Optimized scaling:  %d\n" % max(scale_list)
-    path_print += "      Naive FLOP count:  %.3e\n" % naive_cost
-    path_print += "  Optimized FLOP count:  %.3e\n" % opt_cost
-    path_print += "   Theoretical speedup:  %3.3f\n" % speedup
-    path_print += "  Largest intermediate:  %.3e elements\n" % max_i
+    path_print = f"  Complete contraction:  {overall_contraction}\n"
+    path_print += f"         Naive scaling:  {len(indices)}\n"
+    path_print += f"     Optimized scaling:  {max(scale_list)}\n"
+    path_print += f"      Naive FLOP count:  {naive_cost:.3e}\n"
+    path_print += f"  Optimized FLOP count:  {opt_cost:.3e}\n"
+    path_print += f"   Theoretical speedup:  {speedup:3.3f}\n"
+    path_print += f"  Largest intermediate:  {max_i:.3e} elements\n"
     path_print += "-" * 74 + "\n"
     path_print += "%6s %24s %40s\n" % header
     path_print += "-" * 74

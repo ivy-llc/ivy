@@ -768,7 +768,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
     @staticmethod
     def static_cond(
-        self: ivy.Container,
+        x: ivy.Container,
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -784,7 +784,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Parameters
         ----------
-            self
+            x
                 container with input arrays.
             p
                 order of the norm of the matrix (see ivy.norm).
@@ -803,7 +803,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "cond",
-            self,
+            x,
             p=p,
             out=out,
             key_chains=key_chains,

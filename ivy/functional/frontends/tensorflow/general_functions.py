@@ -20,7 +20,7 @@ import functools
 
 
 def _num_to_bit_list(value, num_dims):
-    return list(map(int, "{:0{size}b}".format(value, size=num_dims)))[::-1]
+    return list(map(int, f"{value:0{num_dims}b}"))[::-1]
 
 
 # --- Main --- #
@@ -212,7 +212,7 @@ def foldl(
     return result
 
 
-@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def foldr(
     fn,

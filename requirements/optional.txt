@@ -11,7 +11,7 @@ jaxlib # unpinned, we test for latest version now
 paddlepaddle # unpinned , mod_name=paddle
 tensorflow-cpu  # unpinned, we test for latest version now, mod_name=tensorflow
 torch # unpinned, we test for latest version now
-torch-scatter # unpinned, mod_name=torch_scatter
+# torch-scatter # unpinned, mod_name=torch_scatter
 scipy # unpinned
 dm-haiku # unpinned mod_name=haiku
 flax

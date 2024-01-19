@@ -414,6 +414,7 @@ def test_tensorflow_eigvals(
         rtol=1e-06,
         atol=1e-06,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
@@ -969,6 +970,7 @@ def test_tensorflow_qr(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
@@ -1120,6 +1122,7 @@ def test_tensorflow_svd(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
@@ -1308,7 +1311,7 @@ def tridiagonal_matrix_filter(x):
     for i in range(dim):
         for j in range(dim):
             cell = x[i][j]
-            if i == j or i == j - 1 or i == j + 1:
+            if i in [j, j - 1, j + 1]:
                 if cell == 0:
                     return False
             else:

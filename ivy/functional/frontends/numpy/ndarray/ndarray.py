@@ -329,7 +329,7 @@ class ndarray:
 
     def fill(self, num, /):
         self.ivy_array = np_frontend.full(self.shape, num).ivy_array
-        return
+        return None
 
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self, repeats, axis=axis)
@@ -415,7 +415,7 @@ class ndarray:
 
     @with_supported_device_and_dtypes(
         {
-            "1.26.2 and below": {
+            "1.26.3 and below": {
                 "cpu": (
                     "int64",
                     "float32",

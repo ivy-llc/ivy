@@ -30,10 +30,11 @@ def _convert_to_list(value, n, name="padding", _type=int):
     else:
         try:
             value_list = list(value)
-        except TypeError:
-            raise ValueError(
-                f"The input {name}'s type must be list or tuple. Received: {value}"
-            )
+        except TypeError as e:
+            raise TypeError(
+                f"The input {value}'s type must be list or tuple. Received:"
+                f" {type(value)}"
+            ) from e
         else:
             return value_list
 
@@ -158,7 +159,7 @@ def conv1d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16", "bfloat16")}},
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}},
     backend_version,
 )
 def conv1d_transpose(
@@ -219,7 +220,7 @@ def conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16", "bfloat16")}},
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}},
     backend_version,
 )
 def conv2d_transpose(
@@ -280,7 +281,7 @@ def depthwise_conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16",)}},
+    {"2.6.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv3d(
@@ -340,7 +341,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16",)}},
+    {"2.6.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv_general_dilated(

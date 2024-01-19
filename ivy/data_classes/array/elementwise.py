@@ -2731,40 +2731,6 @@ class _ArrayWithElementwise(abc.ABC):
             self._data, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
         )
 
-    def imag(
-        self: ivy.Array,
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.imag. This method simply
-        wraps the function, and so the docstring for ivy.imag also applies to
-        this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Array-like input.
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Returns an array with the imaginary part of complex numbers.
-
-        Examples
-        --------
-        >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
-        >>> b
-        ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
-        >>> ivy.imag(b)
-        ivy.array([2., 4., 6.])
-        >>> b.imag()
-        ivy.array([2., 4., 6.])
-        """
-        return ivy.imag(self._data, out=out)
-
     def angle(
         self: ivy.Array,
         /,
