@@ -21,8 +21,7 @@ def trace_graph(
     params_v=None,
     v=None
 ):
-    """Takes `fn` and traces it into a more efficient composition of backend
-    operations.
+    """Takes `fn` and traces it into a more efficient composition of backend operations.
 
     Parameters
     ----------
@@ -92,8 +91,8 @@ def trace_graph(
     >>> start = time.time()
     >>> graph(x)
     >>> print(time.time() - start)
-    0.0001785755157470703
-    """
+    0.0001785755157470703"""
+
     from ._compiler import trace_graph as _trace_graph
 
     return _trace_graph(
@@ -128,6 +127,7 @@ def transpile(
     static_argnames: Optional[Union[str, Iterable[str]]] = None,
     compile_mode: Optional[str] = None,
     graph_caching: bool = False,
+    graph_optimizations: bool = True,
     modes_to_trace: str = "all",
     stateful: Optional[List] = None,
     arg_stateful_idxs: Optional[List] = None,
@@ -156,8 +156,8 @@ def transpile(
 
     Returns
     -------
-    Either a transpiled Graph or a non-initialized LazyGraph.
-    """
+    Either a transpiled Graph or a non-initialized LazyGraph."""
+
     from ._compiler import transpile as _transpile
 
     return _transpile(
@@ -170,6 +170,7 @@ def transpile(
         static_argnames=static_argnames,
         compile_mode=compile_mode,
         graph_caching=graph_caching,
+        graph_optimizations=graph_optimizations,
         modes_to_trace=modes_to_trace,
         stateful=stateful,
         arg_stateful_idxs=arg_stateful_idxs,
@@ -185,6 +186,7 @@ def unify(
     *objs: Callable,
     source: Optional[str] = None,
     graph_caching: bool = False,
+    graph_optimizations: bool = True,
     args: Optional[Sequence] = None,
     kwargs: Optional[Mapping] = None,
     with_numpy: bool = True,
@@ -197,6 +199,7 @@ def unify(
         *objs,
         source=source,
         graph_caching=graph_caching,
+        graph_optimizations=graph_optimizations,
         args=args,
         kwargs=kwargs,
         with_numpy=with_numpy,
