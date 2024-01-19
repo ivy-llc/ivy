@@ -1811,7 +1811,7 @@ def test_torch_unflatten(
     dtype, x = dtype_and_values
 
     def factorization(n):
-        factors = []
+        factors = [1]
 
         def get_factor(n):
             x_fixed = 2
