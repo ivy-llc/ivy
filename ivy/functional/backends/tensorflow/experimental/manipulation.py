@@ -577,7 +577,7 @@ def unflatten(
     out: Optional[tf.Tensor] = None,
     name: Optional[str] = None,
 ) -> tf.Tensor:
-    dim = abs(len(x) + dim) if dim < 0 else dim
+    dim = abs(len(x.shape) + dim) if dim < 0 else dim
     res_shape = x.shape[:dim] + tf.TensorShape(shape) + x.shape[dim + 1 :]
     res = tf.reshape(x, res_shape, name)
     return res
