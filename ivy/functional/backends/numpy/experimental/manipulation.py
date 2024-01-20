@@ -611,6 +611,7 @@ def unflatten(
     shape: Tuple[int] = None,
     *,
     out: Optional[np.ndarray] = None,
+    order: Optional[str] = None,
 ) -> np.ndarray:
     dim = abs(len(x.shape) + dim) if dim < 0 else dim
     res_shape = x.shape[:dim] + shape + x.shape[dim + 1 :]
