@@ -315,7 +315,7 @@ def einsum_path(subscripts, *operands, optimize="greedy"):
     elif path_type == "optimal":
         path = optimal_path(input_sets, output_set, dimension_dict, memory_arg)
     else:
-        raise KeyError("Path name %s not found", path_type)
+        raise KeyError("Path name %s not found" % (path_type))
 
     cost_list, scale_list, size_list, contraction_list = [], [], [], []
 
