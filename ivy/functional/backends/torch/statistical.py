@@ -181,7 +181,9 @@ def std(
 
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
-@with_unsupported_dtypes({"2.1.2 and below": ("uint8",)}, backend_version)
+@with_unsupported_dtypes(
+    {"2.1.2 and below": ("uint8", "float16", "bfloat16")}, backend_version
+)
 def sum(
     x: torch.Tensor,
     /,
