@@ -23,9 +23,9 @@ def huber_loss(
     loss = tf.where(abs_diff <= delta, quadratic_loss, linear_loss)
 
     if reduction == "sum":
-        return tf.sum(loss)
+        return tf.reduce_sum(loss)
     elif reduction == "mean":
-        return tf.mean(loss)
+        return tf.reduce_mean(loss)
     else:
         return loss
 
