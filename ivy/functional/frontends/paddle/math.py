@@ -320,7 +320,6 @@ def heaviside(x, y, name=None):
     return ivy.heaviside(x, y)
 
 
-
 @with_supported_dtypes(
     {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
 )
