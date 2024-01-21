@@ -67,7 +67,7 @@ Our team will review your contribution, provide feedback if necessary, and then 
 .. raw:: html
 
     <iframe width="420" height="315" allow="fullscreen;"
-    src="https://youtu.be/EmN2T_O_Ggw" class="video" allowfullscreen="true">
+    src="https://www.youtube.com/embed/EmN2T_O_Ggw" class="video" allowfullscreen="true">
     </iframe>
 
 Frontend APIs
