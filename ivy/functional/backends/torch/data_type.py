@@ -72,6 +72,7 @@ class Finfo:
 # -------------------#
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def astype(
     x: torch.Tensor,
     dtype: torch.dtype,
@@ -90,7 +91,7 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     try:
         return list(torch.broadcast_tensors(*arrays))
     except RuntimeError as e:
-        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(e) from e
 
 
 def broadcast_to(

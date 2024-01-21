@@ -245,7 +245,7 @@ def poisson(
     ivy.array([[0., 2., 2.],
                [1., 2., 3.]])
     """
-    return ivy.current_backend().poisson(
+    return ivy.current_backend(lam).poisson(
         lam,
         shape=shape,
         device=device,

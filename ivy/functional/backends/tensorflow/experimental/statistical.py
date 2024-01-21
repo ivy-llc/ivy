@@ -53,6 +53,15 @@ def median(
     # TODO: Implement in pure tensorflow
 
 
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "float",
+            "complex",
+        )
+    },
+    backend_version,
+)
 def nanmean(
     a: Union[tf.Tensor, tf.Variable],
     /,

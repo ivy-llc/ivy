@@ -550,13 +550,13 @@ def take(
         if ivy.exists(axis):
             try:
                 x_shape = x.shape[axis]
-            except Exception:
+            except Exception as e:
                 rank = len(x.shape)
                 raise IndexError(
                     "IndexError: Dimension out of range"
                     f"(expected to be in range of[-{rank}, {rank-1}]"
                     f", but got {axis})"
-                )
+                ) from e
         else:
             x_shape = torch.prod(torch.tensor(x.shape))
 

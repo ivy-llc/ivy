@@ -77,7 +77,7 @@ class StratifiedKFold(KFold):
         ivy.seed(seed_value=self.random_state)
         y = ivy.array(y)
         y = column_or_1d(y)
-        _, y_idx, y_inv, _ = ivy.unique_all(y, return_index=True, return_inverse=True)
+        _, y_idx, y_inv, _ = ivy.unique_all(y)
         class_perm = ivy.unique_inverse(y_idx)
         y_encoded = class_perm[y_inv]
 

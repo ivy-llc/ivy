@@ -231,7 +231,7 @@ def test_einsum(
     keep_dims=st.booleans(),
 )
 def test_max(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, *_ = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -251,7 +251,7 @@ def test_max(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_devi
     keep_dims=st.booleans(),
 )
 def test_mean(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, dtype3, where = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,

@@ -12,7 +12,7 @@ path_hooks = []
 # expected. Import these modules along with Ivy initialization, as the import logic
 # assumes they exist in sys.modules.
 
-MODULES_TO_SKIP = ["ivy.compiler", "ivy.engines"]
+MODULES_TO_SKIP = ["ivy.compiler", "ivy.engines", "ivy.wrappers"]
 
 IS_COMPILING_WITH_BACKEND = False
 
