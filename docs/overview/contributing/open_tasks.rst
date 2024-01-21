@@ -62,6 +62,14 @@ Ensure that your solution addresses the issue effectively and doesn't introduce 
 Once you're confident in your fix, submit a pull request to the main repository.
 Our team will review your contribution, provide feedback if necessary, and then merge your changes once we're good to go.
 
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315" allow="fullscreen;"
+    src="https://youtu.be/EmN2T_O_Ggw" class="video" allowfullscreen="true">
+    </iframe>
+
 Frontend APIs
 -------------
 
