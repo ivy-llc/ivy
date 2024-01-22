@@ -378,6 +378,7 @@ def isfinite(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarra
 isfinite.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.26.3 and below": ("complex",)}, backend_version)
 @_scalar_output_to_0d_array
 def isinf(
     x: np.ndarray,

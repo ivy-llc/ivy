@@ -664,7 +664,7 @@ class Conv1DTranspose(Module):
         self._filter_size = filter_size
         self._strides = strides
         self._padding = padding
-        self._w_shape = (filter_size, input_channels, output_channels)
+        self._w_shape = (filter_size, output_channels, input_channels)
         self._b_shape = (
             (1, 1, output_channels) if data_format == "NWC" else (1, output_channels, 1)
         )
@@ -957,7 +957,7 @@ class Conv2DTranspose(Module):
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
-        self._w_shape = filter_shape + [input_channels, output_channels]
+        self._w_shape = filter_shape + [output_channels, input_channels]
         self._b_shape = (
             (1, 1, 1, output_channels)
             if data_format == "NHWC"
@@ -1393,7 +1393,7 @@ class Conv3DTranspose(Module):
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
-        self._w_shape = filter_shape + [input_channels, output_channels]
+        self._w_shape = filter_shape + [output_channels, input_channels]
         self._b_shape = (
             (1, 1, 1, 1, output_channels)
             if data_format == "NDHWC"

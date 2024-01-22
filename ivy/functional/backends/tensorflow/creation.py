@@ -93,6 +93,13 @@ def asarray(
     with tf.device(device):
         if tf.is_tensor(obj):
             ret = tf.cast(obj, dtype) if obj.dtype != dtype else obj
+        elif (
+            dtype is not None
+            and dtype.is_integer
+            and np.issubdtype(np.array(obj).dtype, np.floating)
+        ):
+            obj_np = np.array(obj)
+            ret = tf.convert_to_tensor(obj_np, dtype)
         else:
             ret = tf.convert_to_tensor(obj, dtype)
         return tf.identity(ret) if (copy or ret.device != device) else ret

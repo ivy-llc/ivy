@@ -323,32 +323,21 @@ def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.sum(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
     if dim is not None:
         sorted = True
     results = ivy.unique_all(input, axis=dim, by_value=sorted)
-
-    fields = ["output"]
-    if return_inverse:
-        fields.append("inverse_indices")
-    if return_counts:
-        fields.append("counts")
-
-    Results = namedtuple("Results", fields)
-
-    values = [results.values]
+    ret = (results.values,) if return_counts or return_inverse else results.values
     if return_inverse:
         inverse_indices = results.inverse_indices
-
         if dim is None:
             inverse_indices = inverse_indices.reshape(input.shape)
-
-        values.append(inverse_indices)
+        ret += (inverse_indices,)
     if return_counts:
-        values.append(results.counts)
-
-    return Results(*values)
+        ret += (results.counts,)
+    return ret
 
 
 @with_unsupported_dtypes(
@@ -361,7 +350,7 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     "torch",
 )
 @to_ivy_arrays_and_back
-def unique_consecutive(input, return_inverse, return_counts, dim):
+def unique_consecutive(input, return_inverse=False, return_counts=False, dim=None):
     output, inverse_indices, counts = ivy.unique_consecutive(input, axis=dim)
     ret = (output,)
     if return_inverse:

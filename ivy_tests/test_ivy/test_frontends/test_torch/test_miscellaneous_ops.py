@@ -513,7 +513,7 @@ def test_torch_cartesian_prod(
 @handle_frontend_test(
     fn_tree="torch.cdist",
     dtypes_and_x=helpers.dtype_and_values(
-        shape=st.shared(helpers.get_shape(min_num_dims=3, max_num_dims=3), key="shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=3), key="shape"),
         shared_dtype=True,
         num_arrays=2,
         allow_inf=False,

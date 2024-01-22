@@ -66,7 +66,7 @@ def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=Non
             except Exception:
                 import logging
 
-                logging.warn("API key is invalid, test_trace is skipped.")
+                logging.warning("API key is invalid, test_trace is skipped.")
     return fn
 
 
@@ -242,6 +242,7 @@ def test_function_backend_computation(
             target_fn,
             *copy_args,
             test_trace=test_flags.test_trace,
+            precision_mode=test_flags.precision_mode,
             **copy_kwargs,
         )
 
@@ -265,14 +266,24 @@ def test_function_backend_computation(
                     ret_from_target,
                     ret_np_flat_from_target,
                 ) = get_ret_and_flattened_np_array(
-                    fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out
+                    fw,
+                    instance.__getattribute__(fn_name),
+                    *args,
+                    **kwargs,
+                    out=out,
+                    precision_mode=test_flags.precision_mode,
                 )
             else:
                 (
                     ret_from_target,
                     ret_np_flat_from_target,
                 ) = get_ret_and_flattened_np_array(
-                    fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out
+                    fw,
+                    ivy_backend.__dict__[fn_name],
+                    *args,
+                    **kwargs,
+                    out=out,
+                    precision_mode=test_flags.precision_mode,
                 )
             test_ret = (
                 ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]

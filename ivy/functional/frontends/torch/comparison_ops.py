@@ -74,7 +74,7 @@ def eq(input, other, *, out=None):
 @to_ivy_arrays_and_back
 def equal(input, other):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
-    return ivy.all_equal(input, other)
+    return ivy.all(ivy.equal(input, other))
 
 
 @to_ivy_arrays_and_back

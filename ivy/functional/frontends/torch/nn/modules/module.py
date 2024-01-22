@@ -39,9 +39,11 @@ class Module(ivy.Module):
                     (k.replace(".", "/"), v)
                     for k, v in self.__dict__.items()
                     if isinstance(v, Parameter)
+                    and not k.startswith(
+                        ("_"),
+                    )
                 ]
-            ),
-            dynamic_backend=self._dynamic_backend,
+            )
         )
         # Created variables that were added using `register_paramter`,
         # since those would appear in `self._v`
@@ -104,6 +106,9 @@ class Module(ivy.Module):
         raise NotImplementedError(
             f'Module [{type(self).__name__}] is missing the required "forward" function'
         )
+
+    def call(self, inputs, *args, training=None, mask=None, **kwargs):
+        return self.forward(inputs, *args, **kwargs)
 
     def _forward(self, *a, **kw):
         ret = self._call_impl(*a, **kw)
@@ -232,7 +237,7 @@ class Module(ivy.Module):
         return ""
 
     def _call_impl(self, *args, **kwargs):
-        return self.forward(*args, **kwargs)
+        return self.call(*args, **kwargs)
 
     def __getattribute__(self, name: str) -> Any:
         if name == "__dict__":
