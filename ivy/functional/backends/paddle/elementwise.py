@@ -974,6 +974,10 @@ def exp(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return paddle.exp(x)
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("int32", "int64", "float32", "float64", "complex")},
+    backend_version,
+)
 def exp2(
     x: Union[paddle.Tensor, float, list, tuple],
     /,
