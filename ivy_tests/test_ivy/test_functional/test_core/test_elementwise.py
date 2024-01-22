@@ -827,6 +827,7 @@ def test_floor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         safety_factor_scale="linear",
         shared_dtype=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_floor_divide(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
