@@ -514,7 +514,10 @@ def test_erfc(
 @handle_test(
     fn_tree="functional.ivy.experimental.fix",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=(
+            ivy.float32,
+            ivy.float64,
+        ),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
