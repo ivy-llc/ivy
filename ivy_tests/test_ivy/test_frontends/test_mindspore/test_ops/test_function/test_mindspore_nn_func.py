@@ -83,7 +83,6 @@
 # LRN
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.lrn",
-# Update this to your actual function name
 #     d_type_and_x=helpers.dtype_and_values(
 #         available_dtypes=helpers.get_dtypes("valid"),
 #         num_arrays=1,
