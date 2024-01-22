@@ -6,6 +6,49 @@ import numpy as np
 
 
 @handle_frontend_test(
+    fn_tree="your.module.path.recall_score",  # Update with the correct module path
+    arrays_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        num_arrays=2,
+        min_value=-2,
+        max_value=2,
+        shared_dtype=True,
+        shape=(helpers.ints(min_value=2, max_value=5)),
+    ),
+    average=st.sampled_from(["binary", "micro", "macro"]),
+    sample_weight=st.none() | st.floats(min_value=0, max_value=1),
+)
+def test_recall_score(
+    arrays_and_dtypes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+    average,
+    sample_weight,
+):
+    dtypes, values = arrays_and_dtypes
+    # Ensure discrete values if float dtype
+    for i in range(2):
+        if "float" in dtypes[i]:
+            values[i] = np.floor(values[i])
+
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        frontend=frontend,
+        on_device=on_device,
+        y_true=values[0],
+        y_pred=values[1],
+        average=average,
+        sample_weight=sample_weight,
+    )
+
+
+@handle_frontend_test(
     fn_tree="sklearn.metrics.accuracy_score",
     arrays_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_integer"),
@@ -42,47 +85,4 @@ def test_sklearn_accuracy_score(
         y_pred=values[1],
         normalize=normalize,
         sample_weight=None,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="your.module.path.recall_score",  # Update with the correct module path
-    arrays_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
-        num_arrays=2,
-        min_value=-2,
-        max_value=2,
-        shared_dtype=True,
-        shape=(helpers.ints(min_value=2, max_value=5)),
-    ),
-    average=st.sampled_from(['binary', 'micro', 'macro']),
-    sample_weight=st.none() | st.floats(min_value=0, max_value=1),
-)
-def test_recall_score(
-    arrays_and_dtypes,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-    average,
-    sample_weight,
-):
-    dtypes, values = arrays_and_dtypes
-    # Ensure discrete values if float dtype
-    for i in range(2):
-        if "float" in dtypes[i]:
-            values[i] = np.floor(values[i])
-    
-    helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        frontend=frontend,
-        on_device=on_device,
-        y_true=values[0],
-        y_pred=values[1],
-        average=average,
-        sample_weight=sample_weight,
     )
