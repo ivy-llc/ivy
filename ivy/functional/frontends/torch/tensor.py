@@ -1391,7 +1391,7 @@ class Tensor:
 
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
-    def cumprod(self, dim, dtype):
+    def cumprod(self, dim, dtype=None):
         return torch_frontend.cumprod(self, dim, dtype=dtype)
 
     @numpy_to_torch_style_args
