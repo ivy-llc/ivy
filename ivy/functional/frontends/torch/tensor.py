@@ -141,7 +141,7 @@ class Tensor:
         if shape is not None:
             return torch_frontend.reshape(self, shape)
         if args:
-            if isinstance(args[0], (tuple, list, ivy.Shape)):
+            if isinstance(args[0], (tuple, list, ivy.Shape, ivy.NativeShape)):
                 shape = args[0]
                 return torch_frontend.reshape(self, shape)
             else:
@@ -301,7 +301,7 @@ class Tensor:
             shape_tup = size
         elif args and not ivy.exists(size):
             if (
-                isinstance(args[0], (tuple, list, ivy.Shape))
+                isinstance(args[0], (tuple, list, ivy.Shape, ivy.NativeShape))
                 or type(args[0]).__name__ == "Size"
             ) and len(args) == 1:
                 shape_tup = args[0]
@@ -468,7 +468,11 @@ class Tensor:
         if device is None:
             device = self.device
         if size is None:
-            size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
+            size = (
+                args[0]
+                if isinstance(args[0], (tuple, list, ivy.Shape, ivy.NativeShape))
+                else args
+            )
         return torch_frontend.ones(
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
@@ -659,7 +663,7 @@ class Tensor:
         if args and size:
             raise TypeError("expand() got multiple values for argument 'size'")
         if args:
-            if isinstance(args[0], (tuple, list, ivy.Shape)):
+            if isinstance(args[0], (tuple, list, ivy.Shape, ivy.NativeShape)):
                 size = args[0]
             else:
                 size = args
@@ -862,7 +866,7 @@ class Tensor:
         if dims is not None:
             return torch_frontend.permute(self, dims)
         if args:
-            if isinstance(args[0], (tuple, list, ivy.Shape)):
+            if isinstance(args[0], (tuple, list, ivy.Shape, ivy.NativeShape)):
                 dims = args[0]
                 return torch_frontend.permute(self, dims)
             else:
@@ -1087,7 +1091,7 @@ class Tensor:
                 "repeat() got multiple values for argument 'repeats'"
             )
         if args:
-            if isinstance(args[0], (tuple, list, ivy.Shape)):
+            if isinstance(args[0], (tuple, list, ivy.Shape, ivy.NativeShape)):
                 repeats = args[0]
             else:
                 repeats = args
