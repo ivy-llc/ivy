@@ -266,6 +266,7 @@ def allclose(
     return paddle.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan).squeeze(0)
 
 
+@with_unsupported_dtypes({"2.6.0 and below": ("float16",)}, backend_version)
 def fix(
     x: paddle.Tensor,
     /,

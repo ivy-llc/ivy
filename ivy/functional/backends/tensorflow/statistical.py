@@ -200,6 +200,7 @@ def cumprod(
     return tf.math.cumprod(x, axis, exclusive, reverse)
 
 
+@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
