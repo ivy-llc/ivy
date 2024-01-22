@@ -2870,3 +2870,64 @@ trim_zeros.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def unflatten(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    dim: int,
+    shape: Tuple[int],
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Expand a dimension of the input tensor over multiple dimensions.
+
+    Parameters
+    ----------
+    x
+        input tensor.
+    dim
+        dimension to be unflattened, specified as an index into input.shape.
+    shape
+        new shape of the unflattened dimension. One of its elements can be -1 in
+        which case the corresponding output dimension is inferred. Otherwise,
+        the product of sizes must equal input.shape[dim].
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        view of input with the specified dimension unflattened.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.permute_dims.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    >>> ivy.unflatten(torch.randn(3, 4, 1), dim=1, shape=(2, 2)).shape
+    torch.Size([3, 2, 2, 1])
+    >>> ivy.unflatten(torch.randn(3, 4, 1), dim=1, shape=(-1, 2)).shape
+    torch.Size([3, 2, 2, 1])
+    >>> ivy.unflatten(torch.randn(5, 12, 3), dim=-2, shape=(2, 2, 3, 1, 1)).shape
+    torch.Size([5, 2, 2, 3, 1, 1, 3])
+    """
+    return current_backend(x).unflatten(x, dim=dim, shape=shape, out=out)

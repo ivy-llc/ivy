@@ -545,6 +545,11 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
 
 
 @to_ivy_arrays_and_back
+def unflatten(input, /, *, dim, sizes):
+    return ivy.unflatten(input, dim=dim, shape=sizes, out=None)
+
+
+@to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
     # if N == 0:
     #     return ivy.array([], dtype=x.dtype)
