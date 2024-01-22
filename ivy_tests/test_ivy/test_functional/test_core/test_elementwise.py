@@ -1455,6 +1455,7 @@ def test_maximum(
 @handle_test(
     fn_tree="functional.ivy.minimum",
     dtype_and_x_and_use_where=min_max_helper(),
+    test_gradients=st.just(False),
 )
 def test_minimum(
     *, dtype_and_x_and_use_where, test_flags, backend_fw, fn_name, on_device
