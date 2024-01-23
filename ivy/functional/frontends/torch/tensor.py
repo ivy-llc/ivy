@@ -491,7 +491,6 @@ class Tensor:
                 "uint64",
                 "complex128",
                 "complex64",
-                "float16",
             )
         },
         "torch",
