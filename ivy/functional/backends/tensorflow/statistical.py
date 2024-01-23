@@ -12,7 +12,9 @@ from ivy.utils.einsum_parser import legalise_einsum_expr
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex", "bool", "uint64")}, backend_version
+)
 def min(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -37,6 +39,7 @@ def min(
     return result
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def max(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -197,6 +200,7 @@ def cumprod(
     return tf.math.cumprod(x, axis, exclusive, reverse)
 
 
+@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,

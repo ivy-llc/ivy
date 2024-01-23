@@ -30,15 +30,11 @@ def linear(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     # TODO: try to generalize this for >=2 dimensions
-    if len(x.shape) == 2 and len(weight.shape) == 2:
-        if x.shape[-1] == weight.shape[-2]:
-            result = tf.matmul(x, weight)
-        elif x.shape[-1] == weight.shape[-1]:
-            result = tf.matmul(x, weight, transpose_b=True)
-        else:
-            result = tf.einsum("...i,...ji->...j", x, weight)
-    else:
-        result = tf.einsum("...i,...ji->...j", x, weight)
+    result = (
+        tf.matmul(x, weight, transpose_b=True)
+        if len(x.shape) == len(weight.shape) == 2 and x.shape[-1] == weight.shape[-1]
+        else tf.einsum("...i,...ji->...j", x, weight)
+    )
 
     if bias is not None:
         return tf.add(result, bias)
@@ -720,8 +716,13 @@ def _cpu_lstm(
         h_tm1 = cell_states[0]  # previous memory state
         c_tm1 = cell_states[1]  # previous carry state
 
-        z = tf.keras.backend.dot(cell_inputs, kernel) + bias
-        z += tf.keras.backend.dot(h_tm1, recurrent_kernel) + recurrent_bias
+        z = tf.keras.backend.dot(cell_inputs, kernel)
+        if bias is not None:
+            z += bias
+
+        z += tf.keras.backend.dot(h_tm1, recurrent_kernel)
+        if recurrent_bias is not None:
+            z += recurrent_bias
 
         z0, z1, z2, z3 = tf.split(z, 4, axis=-1)
 

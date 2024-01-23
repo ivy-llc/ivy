@@ -4279,6 +4279,7 @@ def test_tensorflow_Svd(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 

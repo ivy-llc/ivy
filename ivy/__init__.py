@@ -69,6 +69,10 @@ class NativeShape:
     pass
 
 
+class NativeModule:
+    pass
+
+
 class Container:
     pass
 
@@ -443,8 +447,8 @@ class Shape(Sequence):
     def with_rank(self, rank):
         try:
             return self.merge_with(self.unknown_shape(rank=rank))
-        except ValueError:
-            raise ValueError(f"Shape {self} must have rank {rank}")
+        except ValueError as e:
+            raise ValueError(f"Shape {self} must have rank {rank}") from e
 
     def with_rank_at_least(self, rank):
         if self.rank is not None and self.rank < rank:
@@ -591,7 +595,7 @@ warning_level_stack = []
 nan_policy_stack = []
 dynamic_backend_stack = []
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
-
+cython_wrappers_stack = []
 
 # local
 import threading
@@ -741,7 +745,7 @@ invalid_complex_dtypes = ()
 
 locks = {"backend_setter": threading.Lock()}
 
-
+from .wrappers import *
 from .func_wrapper import *
 from .data_classes.array import Array, add_ivy_array_instance_methods
 from .data_classes.array.conversions import *
@@ -776,6 +780,7 @@ from ivy.utils.backend import (
     choose_random_backend,
     unset_backend,
 )
+from . import wrappers
 from . import func_wrapper
 from .utils import assertions, exceptions, verbosity
 from .utils.backend import handler
@@ -961,6 +966,7 @@ globals_vars = GlobalsDict({
     "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
     "nan_policy_stack": nan_policy_stack,
     "dynamic_backend_stack": dynamic_backend_stack,
+    "cython_wrappers_stack": cython_wrappers_stack,
 })
 
 _default_globals = copy.deepcopy(globals_vars)
@@ -1144,7 +1150,7 @@ def unset_nan_policy():
 ivy.dynamic_backend = dynamic_backend_stack[-1] if dynamic_backend_stack else True
 
 
-def set_dynamic_backend(flag):
+def set_dynamic_backend(flag):  # noqa: D209
     """Set the global dynamic backend setting to the provided flag (True or
     False)"""
     global dynamic_backend_stack
@@ -1164,6 +1170,37 @@ def unset_dynamic_backend():
         dynamic_backend_stack.pop()
         flag = dynamic_backend_stack[-1] if dynamic_backend_stack else True
         ivy.__setattr__("dynamic_backend", flag, True)
+
+
+# Cython wrappers
+
+ivy.cython_wrappers_mode = cython_wrappers_stack[-1] if cython_wrappers_stack else False
+
+
+@handle_exceptions
+def set_cython_wrappers_mode(flag: bool = True) -> None:
+    """Set the mode of whether to use cython wrappers for functions.
+
+    Parameter
+    ---------
+    flag
+        boolean whether to use cython wrappers for functions
+
+    Examples
+    --------
+    >>> ivy.set_cython_wrappers_mode(False)
+    >>> ivy.cython_wrappers_mode
+    False
+
+    >>> ivy.set_cython_wrappers_mode(True)
+    >>> ivy.cython_wrappers_mode
+    True
+    """
+    global cython_wrappers_stack
+    if flag not in [True, False]:
+        raise ValueError("cython_wrappers_mode must be a boolean value (True or False)")
+    cython_wrappers_stack.append(flag)
+    ivy.__setattr__("cython_wrappers_mode", flag, True)
 
 
 # Context Managers
@@ -1438,6 +1475,7 @@ GLOBAL_PROPS = [
     "default_int_dtype",
     "default_complex_dtype",
     "default_uint_dtype",
+    "cython_wrappers_mode",
 ]
 
 
@@ -1479,7 +1517,7 @@ class LoggingMode:
         logging.getLogger().setLevel(mode)
         self.logging_mode_stack.append(mode)
 
-    def unset_logging_mode(self):
+    def unset_logging_mode(self):  # noqa: D209
         """Remove the most recently set logging mode, returning to the previous
         one."""
         if len(self.logging_mode_stack) > 1:

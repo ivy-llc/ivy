@@ -27,7 +27,7 @@ def bincount(x, weights=None, minlength=0):
 
 
 def if_else(cond_fn, body_fn, orelse_fn, vars):
-    cond_keys = inspect.getargspec(cond_fn).args
+    cond_keys = inspect.getfullargspec(cond_fn).args
     cond_vars = dict(zip(cond_keys, vars))
     return ivy.if_else(cond_fn, body_fn, orelse_fn, cond_vars)
 

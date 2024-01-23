@@ -133,7 +133,7 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
     try:
         return jnp.broadcast_arrays(*arrays)
     except ValueError as e:
-        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(e) from e
 
 
 def broadcast_to(
