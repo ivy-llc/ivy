@@ -195,3 +195,11 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
     else:
         raise ValueError(f"Unknown data_format: {data_format}")
     return ivy.pad(x, padding, mode="constant", constant_values=0.0)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
+def bilinear(x1, x2, weight, bias=None, name=None):
+    x2_transposed = ivy.swapaxes(x2, -1, -2)
+    result = ivy.linear(ivy.multiply(x1, x2_transposed), weight, bias=bias)
+    return result
