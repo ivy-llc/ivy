@@ -77,6 +77,7 @@ def flip(
     return torch.flip(x, new_axis)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def permute_dims(
     x: torch.Tensor,
     /,
@@ -85,6 +86,9 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        newarr = torch.clone(x).detach()
+        return torch.permute(newarr, axes)
     return torch.permute(x, axes)
 
 

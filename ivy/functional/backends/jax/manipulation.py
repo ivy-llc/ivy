@@ -76,6 +76,9 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if copy:
+        newarr = jnp.copy(x)
+        return jnp.transpose(newarr, axes)
     return jnp.transpose(x, axes)
 
 

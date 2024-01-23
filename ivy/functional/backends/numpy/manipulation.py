@@ -84,6 +84,9 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        newarr = np.copy(x)
+        return np.transpose(newarr, axes)
     return np.transpose(x, axes)
 
 
