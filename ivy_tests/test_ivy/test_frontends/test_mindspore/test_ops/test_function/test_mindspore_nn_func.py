@@ -64,6 +64,49 @@ def _size_strategy():
         st.lists(st.integers(min_value=1, max_value=10), min_size=3, max_size=3),
     )
 
+# LRN
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.lrn",
+#     d_type_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#     ),
+#     depth_radius=st.integers(min_value=1, max_value=10),
+#     bias=st.floats(min_value=1.0),
+#     alpha=st.floats(min_value=0.1),
+#     beta=st.floats(min_value=0.1),
+#     norm_region="ACROSS_CHANNELS"
+# )
+# def test_mindspore_lrn(
+#     *,
+#     d_type_and_x,
+#     depth_radius,
+#     bias,
+#     alpha,
+#     beta,
+#     norm_region,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     dtype, x = d_type_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=x[0],
+#         depth_radius=depth_radius,
+#         bias=bias,
+#         alpha=alpha,
+#         beta=beta,
+#         norm_region=norm_region,
+#     )
+
+
 
 @st.composite
 def _x_and_filters(draw, dim: int = 2):

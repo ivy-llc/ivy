@@ -3,10 +3,53 @@ import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.ivy.experimental.layers import _broadcast_pooling_helper
-
+import copy
 
 # --- Helpers --- #
 # --------------- #
+def _LRN(
+    input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, norm_region="ACROSS_CHANNELS"
+):
+    """Compute expected result."""
+
+    output = copy.deepcopy(input)
+    batch_size = input.shape[0]
+    rows = input.shape[1]
+    cols = input.shape[2]
+    depth = input.shape[3]
+    for b in range(batch_size):
+        for r in range(rows):
+            for c in range(cols):
+                for d in range(depth):
+                    begin = max(0, d - depth_radius)
+                    end = min(depth, d + depth_radius + 1)
+                    patch = input[b, r, c, begin:end]
+                    output[b, r, c, d] /= ivy.pow(
+                        bias + alpha * ivy.sum(patch * patch), beta
+                    )
+    return output
+
+
+@with_supported_dtypes(
+    {
+        "2.0.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "mindspore",
+)
+@to_ivy_arrays_and_back
+def lrn(
+    input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, norm_region="ACROSS_CHANNELS"
+):
+    return _LRN(input, depth_radius, bias, alpha, beta, norm_region)
+
 
 
 def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
