@@ -64,6 +64,7 @@ def _size_strategy():
         st.lists(st.integers(min_value=1, max_value=10), min_size=3, max_size=3),
     )
 
+
 # LRN
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.lrn",
@@ -105,7 +106,6 @@ def _size_strategy():
 #         beta=beta,
 #         norm_region=norm_region,
 #     )
-
 
 
 @st.composite

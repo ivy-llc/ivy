@@ -5,13 +5,15 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.ivy.experimental.layers import _broadcast_pooling_helper
 import copy
 
+
 # --- Helpers --- #
 # --------------- #
+
+
 def _LRN(
     input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, norm_region="ACROSS_CHANNELS"
 ):
     """Compute expected result."""
-
     output = copy.deepcopy(input)
     batch_size = input.shape[0]
     rows = input.shape[1]
@@ -28,28 +30,6 @@ def _LRN(
                         bias + alpha * ivy.sum(patch * patch), beta
                     )
     return output
-
-
-@with_supported_dtypes(
-    {
-        "2.0.0 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "float16",
-            "float32",
-            "float64",
-        )
-    },
-    "mindspore",
-)
-@to_ivy_arrays_and_back
-def lrn(
-    input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, norm_region="ACROSS_CHANNELS"
-):
-    return _LRN(input, depth_radius, bias, alpha, beta, norm_region)
-
 
 
 def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
@@ -428,6 +408,27 @@ def kl_div(logits, labels, reduction="mean"):
 @to_ivy_arrays_and_back
 def log_softmax(input, axis=-1):
     return ivy.log_softmax(input)
+
+
+@with_supported_dtypes(
+    {
+        "2.0.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "mindspore",
+)
+@to_ivy_arrays_and_back
+def lrn(
+    input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, norm_region="ACROSS_CHANNELS"
+):
+    return _LRN(input, depth_radius, bias, alpha, beta, norm_region)
 
 
 @with_supported_dtypes(
