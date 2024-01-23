@@ -58,6 +58,10 @@ def concat(
     return ret
 
 
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("bfloat16", "float16")},
+    backend_version,
+)
 def expand_dims(
     x: paddle.Tensor,
     /,
@@ -101,6 +105,8 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if copy:
+        x = paddle.clone(x)
     return paddle.transpose(x, axes)
 
 
