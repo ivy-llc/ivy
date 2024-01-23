@@ -612,6 +612,10 @@ def negative(
     return paddle.neg(x)
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")},
+    backend_version,
+)
 def not_equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],

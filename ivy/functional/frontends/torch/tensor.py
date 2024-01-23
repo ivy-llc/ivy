@@ -2252,10 +2252,17 @@ class Tensor:
         return ret
 
     def index_put_(self, indices, values, accumulate=False):
+        def _set_add(index):
+            self[index] += values
+
+        def _set(index):
+            self[index] = values
+
         if accumulate:
-            self[indices] += values
+            ivy.map(fn=_set_add, unique={"index": indices})
         else:
-            self[indices] = values
+            ivy.map(fn=_set, unique={"index": indices})
+
         return self
 
     # Method aliases

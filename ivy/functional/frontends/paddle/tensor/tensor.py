@@ -619,7 +619,7 @@ class Tensor:
     def bitwise_xor(self, y, out=None, name=None):
         return paddle_frontend.bitwise_xor(self, y)
 
-    @with_supported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
     def any(self, axis=None, keepdim=False, name=None):
         return paddle_frontend.any(self, axis=axis, keepdim=keepdim)
 
