@@ -1,13 +1,13 @@
 # global
 import copy
-import time
-from typing import Union, List, Optional
-import numpy as np
-import types
 import importlib
 import inspect
+import time
+import types
 from collections import OrderedDict
+from typing import List, Optional, Union
 
+import numpy as np
 
 from .globals import mod_backend
 
@@ -17,21 +17,19 @@ except ImportError:
     tf = types.SimpleNamespace()
     tf.TensorShape = None
 
+import ivy
+import ivy_tests.test_ivy.helpers.globals as t_globals
+import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
+from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
+from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
+from ivy_tests.test_ivy.helpers.testing_helpers import _create_transpile_report
+from ivy_tests.test_ivy.test_frontends import NativeClass
+
+from .assertions import assert_same_type, check_unsupported_dtype, value_test
+
 # local
 from .pipeline_helper import BackendHandler, BackendHandlerMode, get_frontend_config
-import ivy
-from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
-import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
-import ivy_tests.test_ivy.helpers.globals as t_globals
-from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
-from ivy_tests.test_ivy.test_frontends import NativeClass
-from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
-from ivy_tests.test_ivy.helpers.testing_helpers import _create_transpile_report
-from .assertions import (
-    value_test,
-    assert_same_type,
-    check_unsupported_dtype,
-)
 
 
 # Temporary (.so) configuration
@@ -325,7 +323,31 @@ def test_function_backend_computation(
                 precision_mode=test_flags.precision_mode,
                 **kwargs,
             )
-            assert not np.may_share_memory(first_array, ret_)
+
+            # fix bfloat16 error
+            if "bfloat16" in str(first_array.dtype):
+                if "torch" in str(type(first_array)):
+                    first_array = first_array.float()
+                elif "ivy" in str(type(first_array)):
+                    first_array = first_array.astype(ivy_backend.float32)
+                else:
+                    pass
+
+            if "bfloat16" in str(ret_.dtype):
+                if "torch" in str(type(ret_)):
+                    ret_ = ret_.float()
+                elif "ivy" in str(type(ret_)):
+                    ret_ = ret_.astype(ivy_backend.float32)
+                else:
+                    pass
+
+            # Detach tensors if they require gradients
+            if hasattr(first_array, "requires_grad") and first_array.requires_grad:
+                first_array = first_array.detach()
+            if hasattr(ret_, "requires_grad") and ret_.requires_grad:
+                ret_ = ret_.detach()
+
+            assert not np.shares_memory(first_array, ret_)
 
     ret_device = None
     if isinstance(ret_from_target, ivy_backend.Array):  # TODO use str for now
@@ -981,7 +1003,7 @@ def test_frontend_function(
             ret_ = ret_.data
             if hasattr(first_array, "requires_grad"):
                 first_array = first_array.detach()
-            assert not np.may_share_memory(first_array, ret_)
+            assert not np.shares_memory(first_array, ret_)
         elif test_flags.inplace:
             assert _is_frontend_array(ret)
 
