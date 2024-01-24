@@ -651,7 +651,7 @@ def ivy_output_to_frontend(fn: Callable, frontend: str) -> Callable:
     return _output_to_frontend
 
 
-def frontend_to_ivy_arrays_and_back(
+def frontend_inputs_to_ivy_and_back(
     fn: Callable,
     frontend: str,
 ) -> Callable:
