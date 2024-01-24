@@ -589,6 +589,82 @@ def frontend_outputs_to_ivy_arrays(fn: Callable) -> Callable:
     return _outputs_to_ivy_arrays
 
 
+def frontend_inputs_to_ivy(fn: Callable) -> Callable:
+    """Converts frontend inputs (tensors, shapes, dtypes, etc) to their ivy
+    equivalent before passing them into the function."""
+
+    @functools.wraps(fn)
+    def _inputs_to_ivy_arrays(*args, **kwargs):
+        def _frontend_arg_to_ivy(x):
+            if hasattr(x, "ivy_array"):
+                return x.ivy_array
+            elif hasattr(x, "ivy_shape"):
+                return x.ivy_shape
+            elif hasattr(x, "ivy_dtype"):
+                return x.ivy_dtype
+            else:
+                return x
+
+        ivy_args = ivy.nested_map(_frontend_arg_to_ivy, args)
+        ivy_kwargs = ivy.nested_map(_frontend_arg_to_ivy, kwargs)
+        return fn(*ivy_args, **ivy_kwargs)
+
+    return _inputs_to_ivy_arrays
+
+
+def ivy_output_to_frontend(fn: Callable, frontend: str) -> Callable:
+    """Converts frontend ivy outputs to outputs in the types used by the given
+    frontend.
+
+    For example, ivy.Shape() will be converted to
+    ivy.functional.frontends.TensorShape() for the "tensorflow"
+    frontend.
+    """
+
+    @functools.wraps(fn)
+    def _output_to_frontend(*args, **kwargs):
+        def ivy_to_frontend(x):
+            if frontend == "jax":
+                if isinstance(x, ivy.Array):
+                    return ivy.functional.frontends.jax.Array(x)
+            if frontend == "numpy":
+                if isinstance(x, ivy.Array):
+                    return ivy.functional.frontends.numpy.array(x)
+            if frontend == "paddle":
+                if isinstance(x, ivy.Array):
+                    return ivy.functional.frontends.paddle.tensor(x)
+            if frontend == "tensorflow":
+                if isinstance(x, ivy.Array):
+                    return ivy.functional.frontends.tensorflow.Tensor(x)
+                if isinstance(x, ivy.Shape):
+                    return ivy.functional.frontends.tensorflow.TensorShape(x)
+            if frontend == "torch":
+                if isinstance(x, ivy.Array):
+                    return ivy.functional.frontends.torch.tensor(x)
+                if isinstance(x, ivy.Shape):
+                    return ivy.functional.frontends.torch.Size(x)
+            return x
+
+        ret = fn(*args, **kwargs)
+        return ivy.nested_map(ivy_to_frontend, ret)
+
+    return _output_to_frontend
+
+
+def frontend_to_ivy_arrays_and_back(
+    fn: Callable,
+    frontend: str = ivy.current_backend_str(),
+) -> Callable:
+    """Make `fn` receive ivy inputs and return frontend outputs in the given
+    framework.
+
+    For example, ivy.frontends.tensorflow.float32 would be converted to
+    ivy.float32 in the inputs, and ivy.Array would be converted to
+    ivy.frontends.tensorflow.EagerTensor in the outputs
+    """
+    return ivy_output_to_frontend(frontend_inputs_to_ivy(fn), frontend)
+
+
 def handle_view(fn: Callable) -> Callable:
     """Wrap `fn` and performs view handling if copy is False.
 
