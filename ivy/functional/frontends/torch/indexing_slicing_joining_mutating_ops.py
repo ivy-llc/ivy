@@ -1,6 +1,6 @@
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
     numpy_to_torch_style_args,
@@ -368,8 +368,17 @@ def row_stack(tensors, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.1.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+# @with_supported_dtypes(
+# {"2.1.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+# )
+@with_unsupported_dtypes(
+    {
+        "2.1.1 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
 )
 def scatter(input, dim, index, src):
     return ivy.put_along_axis(input, index, src, dim)
