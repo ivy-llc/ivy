@@ -2298,6 +2298,7 @@ class Tensor:
 
 class Size(tuple):
     def __new__(cls, iterable=()):
+        iterable = ivy.Shape([]) if not iterable else iterable
         new_iterable = []
         for i, item in enumerate(iterable):
             if isinstance(item, int):
@@ -2311,7 +2312,8 @@ class Size(tuple):
                 ) from e
         return super().__new__(cls, tuple(new_iterable))
 
-    def __init__(self, shape) -> None:
+    def __init__(self, shape=()) -> None:
+        shape = ivy.Shape([]) if not shape else shape
         self._ivy_shape = shape if isinstance(shape, ivy.Shape) else ivy.shape(shape)
 
     def __repr__(self):
@@ -2320,3 +2322,6 @@ class Size(tuple):
     @property
     def ivy_shape(self):
         return self._ivy_shape
+
+    def numel(self):
+        return int(ivy.astype(ivy.prod(self), ivy.int64))
