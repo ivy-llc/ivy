@@ -653,7 +653,7 @@ def ivy_output_to_frontend(fn: Callable, frontend: str) -> Callable:
 
 def frontend_to_ivy_arrays_and_back(
     fn: Callable,
-    frontend: str = ivy.current_backend_str(),
+    frontend: str,
 ) -> Callable:
     """Make `fn` receive ivy inputs and return frontend outputs in the given
     framework.
