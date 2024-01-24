@@ -101,8 +101,6 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if copy:
-        x = paddle.clone(x)
     return paddle.transpose(x, axes)
 
 
