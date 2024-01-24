@@ -913,7 +913,7 @@ def test_jax___truediv__(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_jax__abs_(
+def test_jax___abs__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -949,7 +949,7 @@ def test_jax__abs_(
         shared_dtype=True,
     ),
 )
-def test_jax__and_(
+def test_jax___and__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -984,7 +984,7 @@ def test_jax__and_(
         num_arrays=2,
     ),
 )
-def test_jax__eq_(
+def test_jax___eq__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1022,7 +1022,7 @@ def test_jax__eq_(
         num_arrays=2,
     ),
 )
-def test_jax__ge_(
+def test_jax___ge__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1060,7 +1060,7 @@ def test_jax__ge_(
         num_arrays=2,
     ),
 )
-def test_jax__gt_(
+def test_jax___gt__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1098,7 +1098,7 @@ def test_jax__gt_(
         num_arrays=2,
     ),
 )
-def test_jax__le_(
+def test_jax___le__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1137,7 +1137,7 @@ def test_jax__le_(
         shared_dtype=True,
     ),
 )
-def test_jax__lt_(
+def test_jax___lt__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1174,7 +1174,7 @@ def test_jax__lt_(
         num_arrays=2,
     ),
 )
-def test_jax__ne_(
+def test_jax___ne__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1211,7 +1211,7 @@ def test_jax__ne_(
         available_dtypes=helpers.get_dtypes("signed_integer"),
     ),
 )
-def test_jax__neg_(
+def test_jax___neg__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1247,7 +1247,7 @@ def test_jax__neg_(
         shared_dtype=True,
     ),
 )
-def test_jax__or_(
+def test_jax___or__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1281,7 +1281,7 @@ def test_jax__or_(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_jax__pos_(
+def test_jax___pos__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1317,7 +1317,7 @@ def test_jax__pos_(
         shared_dtype=True,
     ),
 )
-def test_jax__pow_(
+def test_jax___pow__(
     dtype_x_pow,
     frontend,
     frontend_method_data,
@@ -1355,7 +1355,7 @@ def test_jax__pow_(
         shared_dtype=True,
     ),
 )
-def test_jax__rand_(
+def test_jax___rand__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1391,7 +1391,7 @@ def test_jax__rand_(
         shared_dtype=True,
     ),
 )
-def test_jax__ror_(
+def test_jax___ror__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1423,7 +1423,7 @@ def test_jax__ror_(
     method_name="__rpow__",
     dtype_x_pow=_get_dtype_x_and_int(),
 )
-def test_jax__rpow_(
+def test_jax___rpow__(
     dtype_x_pow,
     frontend,
     frontend_method_data,
@@ -1461,7 +1461,7 @@ def test_jax__rpow_(
         shared_dtype=True,
     ),
 )
-def test_jax__rxor_(
+def test_jax___rxor__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1497,7 +1497,7 @@ def test_jax__rxor_(
         shared_dtype=True,
     ),
 )
-def test_jax__xor_(
+def test_jax___xor__(
     dtype_and_x,
     frontend,
     frontend_method_data,

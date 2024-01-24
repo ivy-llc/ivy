@@ -1416,7 +1416,7 @@ def test_torch___truediv__(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     dtype=helpers.get_dtypes("valid", full=False),
 )
-def test_torch__array__(
+def test_torch___array__(
     dtype_and_x,
     dtype,
     frontend,

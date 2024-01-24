@@ -756,7 +756,7 @@ def test_paddle___sub__(
         max_num_dims=0,
     ),
 )
-def test_paddle__float__(
+def test_paddle___float__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -796,7 +796,7 @@ def test_paddle__float__(
         safety_factor_scale="log",
     ),
 )
-def test_paddle__floordiv__(
+def test_paddle___floordiv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -836,7 +836,7 @@ def test_paddle__floordiv__(
         allow_neg_step=False,
     ).filter(lambda x: x[0][0] == x[0][-1] and _filter_query(x[-2])),
 )
-def test_paddle__getitem__(
+def test_paddle___getitem__(
     dtype_x_index,
     frontend_method_data,
     init_flags,
@@ -871,7 +871,7 @@ def test_paddle__getitem__(
         max_value=1e15,
     ),
 )
-def test_paddle__int__(
+def test_paddle___int__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -909,7 +909,7 @@ def test_paddle__int__(
         max_num_dims=0,
     ),
 )
-def test_paddle__invert__(
+def test_paddle___invert__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -945,7 +945,7 @@ def test_paddle__invert__(
         max_num_dims=5,
     ),
 )
-def test_paddle__len__(
+def test_paddle___len__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -983,7 +983,7 @@ def test_paddle__len__(
         max_value=1e15,
     ),
 )
-def test_paddle__long__(
+def test_paddle___long__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1024,7 +1024,7 @@ def test_paddle__long__(
         allow_inf=False,
     ),
 )
-def test_paddle__ne__(
+def test_paddle___ne__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1064,7 +1064,7 @@ def test_paddle__ne__(
         allow_inf=False,
     ),
 )
-def test_paddle__neg__(
+def test_paddle___neg__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1103,7 +1103,7 @@ def test_paddle__neg__(
         safety_factor_scale="log",
     ),
 )
-def test_paddle__rdiv__(
+def test_paddle___rdiv__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1140,7 +1140,7 @@ def test_paddle__rdiv__(
     method_name="reshape",
     dtype_x_shape=_reshape_helper(),
 )
-def test_paddle__reshape(
+def test_paddle_reshape(
     dtype_x_shape,
     frontend_method_data,
     init_flags,
@@ -1177,7 +1177,7 @@ def test_paddle__reshape(
     method_name="reshape_",
     dtype_x_shape=_reshape_helper(),
 )
-def test_paddle__reshape_(
+def test_paddle_reshape_(
     dtype_x_shape,
     frontend_method_data,
     init_flags,
@@ -1220,7 +1220,7 @@ def test_paddle__reshape_(
         allow_inf=False,
     ),
 )
-def test_paddle__rmul__(
+def test_paddle___rmul__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1259,7 +1259,7 @@ def test_paddle__rmul__(
         shared_dtype=True,
     ),
 )
-def test_paddle__rsub__(
+def test_paddle___rsub__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1300,7 +1300,7 @@ def test_paddle__rsub__(
         safety_factor_scale="log",
     ),
 )
-def test_paddle__rtruediv__(
+def test_paddle___rtruediv__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1341,7 +1341,7 @@ def test_paddle__rtruediv__(
         shared_dtype=True,
     ),
 )
-def test_paddle__xor__(
+def test_paddle___xor__(
     dtype_and_x,
     frontend,
     frontend_method_data,
