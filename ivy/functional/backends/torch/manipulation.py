@@ -49,7 +49,7 @@ def expand_dims(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if copy:
-        x = torch.clone(x).detach()
+        x = x.clone().detach()
     out_shape = _calculate_out_shape(axis, x.shape)
     # torch.reshape since it can operate on contiguous and non_contiguous tensors
     return x.reshape(out_shape)
