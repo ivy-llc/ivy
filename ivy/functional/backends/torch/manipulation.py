@@ -1,7 +1,7 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence, Iterable
+from typing import Iterable, List, Optional, Sequence, Tuple, Union
 
 import torch
 
@@ -11,6 +11,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
+
 from . import backend_version
 
 
@@ -146,12 +147,10 @@ def squeeze(
                 f"Expected size of axis to be 1 but was {x.shape[axis]}"
             )
         return torch.squeeze(x, axis)
+    if copy:
+        x = x.clone()
     if axis is None:
-        if copy:
-            newarr = torch.clone(x)
-            return torch.squeeze(newarr)
         return torch.squeeze(x)
-    newarr = torch.clone(x)
     if isinstance(axis, tuple):
         axis = list(axis)
     normalise_axis = [
@@ -168,12 +167,7 @@ def squeeze(
                 f" {shape}"
             )
         else:
-            if copy:
-                newarr = torch.squeeze(newarr, i)
-            else:
-                x = torch.squeeze(x, i)
-    if copy:
-        return newarr
+            x = torch.squeeze(x, i)
     return x
 
 

@@ -1,12 +1,14 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import List, Optional, Sequence, Tuple, Union
+
 import numpy as np
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
 
 
@@ -127,6 +129,8 @@ def squeeze(
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
+    if copy:
+        x = x.copy()
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
