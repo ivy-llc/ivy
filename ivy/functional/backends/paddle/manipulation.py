@@ -58,10 +58,6 @@ def concat(
     return ret
 
 
-@with_unsupported_dtypes(
-    {"2.6.0 and below": ("bfloat16", "float16")},
-    backend_version,
-)
 def expand_dims(
     x: paddle.Tensor,
     /,
