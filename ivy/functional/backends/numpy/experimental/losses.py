@@ -1,5 +1,4 @@
 import numpy as np
-from typing import Optional
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
@@ -15,8 +14,8 @@ def huber_loss(
     target: np.ndarray,
     /,
     *,
-    delta: Optional[float] = 1.0,
-    reduction: Optional[str] = "mean",
+    delta: float = 1.0,
+    reduction: str = "mean",
 ) -> np.ndarray:
     abs_diff = np.abs(input - target)
     quadratic_loss = 0.5 * (abs_diff**2)
@@ -39,8 +38,8 @@ def smooth_l1_loss(
     target: np.ndarray,
     /,
     *,
-    beta: Optional[float] = 1.0,
-    reduction: Optional[str] = "mean",
+    beta: float = 1.0,
+    reduction: str = "mean",
 ) -> np.ndarray:
     if beta < 1e-5:
         loss = np.abs(input - target)
@@ -63,7 +62,7 @@ def soft_margin_loss(
     target: np.ndarray,
     /,
     *,
-    reduction: Optional[str] = "mean",
+    reduction: str = "mean",
 ) -> np.ndarray:
     loss = np.sum(np.log1p(np.exp(-input * target))) / input.size
 
