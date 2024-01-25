@@ -134,6 +134,9 @@ class Tensor:
     def exp(self, name=None):
         return ivy.exp(self._ivy_array)
 
-    @with_supported_dtypes({"2.4.2 and below": ("float16", "float32")}, "paddle",)
+    @with_supported_dtypes(
+        {"2.4.2 and below": ("float16", "float32")},
+        "paddle",
+    )
     def count_nonzero(self):
         return ivy.count_nonzero(self._ivy_array)
