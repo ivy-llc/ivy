@@ -530,6 +530,10 @@ def zeros(
     return paddle.zeros(shape=shape).cast(dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("uint8", "int8", "int16", "float16", "bfloat16")}},
+    backend_version,
+)
 def zeros_like(
     x: paddle.Tensor,
     /,
