@@ -62,7 +62,7 @@ def flip(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if copy:
-        x = x.clone().detach()
+        x = x.clone()
     num_dims = len(x.shape)
     if not num_dims:
         return x
@@ -90,12 +90,7 @@ def permute_dims(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.6.0 and below": (
-            "bfloat16",
-            "float16",
-        )
-    },
+    {"2.1.2 and below": ("bfloat16",)},
     backend_version,
 )
 def reshape(
@@ -109,7 +104,7 @@ def reshape(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if copy:
-        x = x.clone().detach()
+        x = x.clone()
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if not allowzero:
         shape = [
@@ -251,7 +246,7 @@ def split(
 
 
 @with_unsupported_dtypes(
-    {"2.6.0 and below": ("int8", "int16", "uint8")}, backend_version
+    {"2.1.2 and below": ("int8", "int16", "uint8")}, backend_version
 )
 def repeat(
     x: torch.Tensor,
@@ -320,7 +315,7 @@ def swapaxes(
 
 
 @with_unsupported_dtypes(
-    {"2.6.0 and below": ("bool", "float16", "complex")}, backend_version
+    {"2.1.2 and below": ("bool", "float16", "complex")}, backend_version
 )
 def clip(
     x: torch.Tensor,
