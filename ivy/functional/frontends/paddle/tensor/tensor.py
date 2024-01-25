@@ -134,22 +134,6 @@ class Tensor:
     def exp(self, name=None):
         return ivy.exp(self._ivy_array)
 
-    @with_supported_dtypes(
-        {
-            "2.4.2 and below": (
-                "float32",
-                "float64",
-                "float16",
-            )
-        },
-        "paddle",
-    )
+    @with_supported_dtypes({"2.4.2 and below": ("float16", "float32")}, "paddle",)
     def count_nonzero(self):
-        # Implement the count_nonzero method here
-        if self._ivy_array is None:
-            raise ValueError("Tensor has not been initialized with an array.")
-
-        # Use the ivy library or any relevant method to count nonzero elements
-        nonzero_count = ivy.count_nonzero(self._ivy_array)
-
-        return nonzero_count
+        return ivy.count_nonzero(self._ivy_array)
