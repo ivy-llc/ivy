@@ -367,7 +367,6 @@ def row_stack(tensors, *, out=None):
     return ivy.vstack(tensors, out=out)
 
 
-@to_ivy_arrays_and_back
 # @with_supported_dtypes(
 # {"2.1.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
 # )
@@ -380,6 +379,7 @@ def row_stack(tensors, *, out=None):
     },
     "torch",
 )
+@to_ivy_arrays_and_back
 def scatter(input, dim, index, src):
     return ivy.put_along_axis(input, index, src, dim)
 
