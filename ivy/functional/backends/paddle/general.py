@@ -98,6 +98,8 @@ def get_item(
     *,
     copy: Optional[bool] = None,
 ) -> paddle.Tensor:
+    if x.numel() == 0:
+        return paddle.to_tensor([], dtype=x.dtype)
     if copy:
         x = paddle.clone(x)
 
