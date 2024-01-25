@@ -143,7 +143,7 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
 
 @with_unsupported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "uint8",
             "int8",
             "int16",
@@ -274,7 +274,4 @@ def dtype_bits(dtype_in: Union[paddle.dtype, str], /) -> int:
 def is_native_dtype(dtype_in: Union[paddle.dtype, str], /) -> bool:
     if not ivy.is_hashable_dtype(dtype_in):
         return False
-    if dtype_in in ivy_dtype_dict:
-        return True
-    else:
-        return False
+    return dtype_in in ivy_dtype_dict

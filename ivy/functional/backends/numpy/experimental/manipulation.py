@@ -18,7 +18,7 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, handle_out_argument
 
 # noinspection PyProtectedMember
 from . import backend_version
@@ -402,6 +402,9 @@ def expand(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     shape = list(shape)
+    n_extra_dims = len(shape) - x.ndim
+    if n_extra_dims > 0:
+        x = np.expand_dims(x, tuple(range(n_extra_dims)))
     for i, dim in enumerate(shape):
         if dim < 0:
             shape[i] = x.shape[i]
@@ -598,3 +601,19 @@ def put_along_axis(
 put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
     "replace",
 ]
+
+
+@handle_out_argument
+def unflatten(
+    x: np.ndarray,
+    /,
+    dim: int = 0,
+    shape: Tuple[int] = None,
+    *,
+    out: Optional[np.ndarray] = None,
+    order: Optional[str] = None,
+) -> np.ndarray:
+    dim = abs(len(x.shape) + dim) if dim < 0 else dim
+    res_shape = x.shape[:dim] + shape + x.shape[dim + 1 :]
+    res = np.reshape(x, res_shape)
+    return res

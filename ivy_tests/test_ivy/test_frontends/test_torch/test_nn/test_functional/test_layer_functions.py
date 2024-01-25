@@ -4,10 +4,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy.functional.ivy.layers import _get_embed_dim
-from ivy.functional.frontends.torch.nn.functional.layer_functions import (
-    _pack_padded_sequence,
-)
+from ivy.functional.ivy.layers import _get_embed_dim, _pack_padded_sequence
 from ivy_tests.test_ivy import helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _mha_helper
@@ -178,7 +175,7 @@ def test_torch_lstm(
 ):
     dtypes, kwargs = dtypes_kwargs
     # Todo: Debug the function to have this case passing as well
-    assume("batch_sizes" not in kwargs or not kwargs["bidirectional"])
+    assume("batch_sizes" not in kwargs)
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         backend_to_test=backend_fw,

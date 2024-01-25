@@ -1,5 +1,4 @@
-"""
-Tensorflow general functions.
+"""Tensorflow general functions.
 
 Collection of TensorFlow general functions, wrapped to fit Ivy syntax
 and signature.
@@ -50,7 +49,7 @@ def current_backend_str() -> str:
 
 def _check_query(query):
     return not isinstance(query, list) and (
-        not (ivy.is_array(query) and ivy.is_bool_dtype(query) and bool(query.ndim > 0))
+        not (ivy.is_array(query) and bool(query.ndim > 0))
     )
 
 
@@ -61,12 +60,15 @@ def get_item(
     *,
     copy: Optional[bool] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        if not len(query.shape):
+            return tf.expand_dims(x, 0)
     return x.__getitem__(query)
 
 
 get_item.partial_mixed_handler = lambda x, query, **kwargs: (
     all(_check_query(i) for i in query)
-    and len({i.shape for i in query if ivy.is_array(i)}) == 1
+    and len({i.shape for i in query if ivy.is_array(i)}) <= 1
     if isinstance(query, tuple)
     else _check_query(query)
 )

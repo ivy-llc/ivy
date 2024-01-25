@@ -30,6 +30,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltFrontendArrayStrategy,
     BuiltTranspileStrategy,
     BuiltPrecisionModeStrategy,
+    BuiltCythonWrapperStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -59,9 +60,8 @@ def _get_runtime_flag_value(flag):
 
 @st.composite
 def num_positional_args_method(draw, *, method):
-    """
-    Draws an integers randomly from the minimum and maximum number of positional
-    arguments a given method can take.
+    """Draws an integers randomly from the minimum and maximum number of
+    positional arguments a given method can take.
 
     Parameters
     ----------
@@ -91,9 +91,8 @@ def num_positional_args_method(draw, *, method):
 
 @st.composite
 def num_positional_args(draw, *, fn_name: Optional[str] = None):
-    """
-    Draws an integers randomly from the minimum and maximum number of positional
-    arguments a given function can take.
+    """Draws an integers randomly from the minimum and maximum number of
+    positional arguments a given function can take.
 
     Parameters
     ----------
@@ -158,8 +157,7 @@ def num_positional_args_helper(fn_name, backend):
 
 
 def _import_fn(fn_tree: str):
-    """
-    Import a function from function tree string.
+    """Import a function from function tree string.
 
     Parameters
     ----------
@@ -209,8 +207,7 @@ def _get_method_supported_devices_dtypes_helper(
 def _get_method_supported_devices_dtypes(
     method_name: str, class_module: str, class_name: str
 ):
-    """
-    Get supported devices and data types for a method in Ivy API.
+    """Get supported devices and data types for a method in Ivy API.
 
     Parameters
     ----------
@@ -234,15 +231,13 @@ def _get_method_supported_devices_dtypes(
         if mod_backend[backend_str]:
             # we gotta do this using multiprocessing
             proc, input_queue, output_queue = mod_backend[backend_str]
-            input_queue.put(
-                (
-                    "method supported dtypes",
-                    method_name,
-                    class_module.__name__,
-                    class_name,
-                    backend_str,
-                )
-            )
+            input_queue.put((
+                "method supported dtypes",
+                method_name,
+                class_module.__name__,
+                class_name,
+                backend_str,
+            ))
             supported_device_dtypes[backend_str] = output_queue.get()
         else:
             supported_device_dtypes[backend_str] = (
@@ -278,8 +273,7 @@ def _get_supported_devices_dtypes_helper(
 
 
 def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
-    """
-    Get supported devices and data types for a function in Ivy API.
+    """Get supported devices and data types for a function in Ivy API.
 
     Parameters
     ----------
@@ -344,10 +338,10 @@ def handle_test(
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
     container_flags=BuiltContainerStrategy,
+    test_cython_wrapper=BuiltCythonWrapperStrategy,
     **_given_kwargs,
 ):
-    """
-    Test wrapper for Ivy functions.
+    """Test wrapper for Ivy functions.
 
     The wrapper sets the required test globals and creates test flags strategies.
 
@@ -422,6 +416,7 @@ def handle_test(
             native_arrays=_get_runtime_flag_value(native_array_flags),
             container_flags=_get_runtime_flag_value(container_flags),
             precision_mode=_get_runtime_flag_value(precision_mode),
+            test_cython_wrapper=_get_runtime_flag_value(test_cython_wrapper),
         )
 
     def test_wrapper(test_fn):
@@ -489,8 +484,7 @@ def handle_frontend_test(
     precision_mode=BuiltPrecisionModeStrategy,
     **_given_kwargs,
 ):
-    """
-    Test wrapper for Ivy frontend functions.
+    """Test wrapper for Ivy frontend functions.
 
     The wrapper sets the required test globals and creates test flags strategies.
 
@@ -640,8 +634,7 @@ def handle_method(
     method_container_flags=BuiltContainerStrategy,
     **_given_kwargs,
 ):
-    """
-    Test wrapper for Ivy methods.
+    """Test wrapper for Ivy methods.
 
     The wrapper sets the required test globals and creates test flags strategies.
 
@@ -759,8 +752,7 @@ def handle_frontend_method(
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
-    """
-    Test wrapper for Ivy frontends methods.
+    """Test wrapper for Ivy frontends methods.
 
     The wrapper sets the required test globals and creates
     test flags strategies.

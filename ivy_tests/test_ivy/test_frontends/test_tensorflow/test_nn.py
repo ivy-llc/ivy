@@ -136,9 +136,13 @@ def _dropout_helper(draw):
 
 
 @st.composite
-def _generate_bias_data(draw):
+def _generate_bias_data(draw, keras_backend_fn=False):
     data_format = draw(st.sampled_from(["NC...", "N...C", None]))
     channel_dim = 1 if data_format == "NC..." else -1
+    if keras_backend_fn:
+        data_format = {"NC...": "channels_first", "N...C": "channels_last", None: None}[
+            data_format
+        ]
     dtype, value, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
@@ -926,6 +930,7 @@ def test_tensorflow_conv2d_transpose(
         padding,
         output_shape,
     ) = x_f_d_df
+    assume(isinstance(padding, str) or backend_fw in ["torch", "tensorflow"])
     _assume_tf_dilation_gt_1("tensorflow", on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -1186,24 +1191,37 @@ def test_tensorflow_dropout(
     on_device,
 ):
     (x_dtype, x), noise_shape, seed, rate = dtype_x_noiseshape
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=x_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        x=x[0],
-        rate=rate,
-        noise_shape=noise_shape,
-        seed=seed,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    frontend_ret = helpers.flatten_and_to_np(ret=frontend_ret)
-    for u, v, w in zip(ret, frontend_ret, x):
-        # cardinality test
-        assert u.shape == v.shape == w.shape
+    if rate == 0:
+        helpers.test_frontend_function(
+            input_dtypes=x_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            x=x[0],
+            rate=rate,
+            noise_shape=noise_shape,
+            seed=seed,
+        )
+    else:
+        ret = helpers.test_frontend_function(
+            input_dtypes=x_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            x=x[0],
+            rate=rate,
+            noise_shape=noise_shape,
+            seed=seed,
+        )
+        ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+        for u in ret:
+            # cardinality test
+            assert u.shape == x[0].shape
 
 
 # embedding_lookup
@@ -1470,7 +1488,7 @@ def test_tensorflow_max_pool2d(
 # max_pool3d
 @handle_frontend_test(
     fn_tree="tensorflow.nn.max_pool3d",
-    data_format=st.sampled_from(["NDHWC", "NCDHW"]),
+    data_format=st.just("NDHWC"),  # Pooling3DOp only supports NDHWC on device type CPU
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
     test_with_out=st.just(False),
 )

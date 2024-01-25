@@ -1,5 +1,4 @@
-"""
-TensorFlow random functions.
+"""TensorFlow random functions.
 
 Collection of TensorFlow random functions, wrapped to fit Ivy syntax and
 signature.
@@ -81,12 +80,10 @@ def multinomial(
 ) -> Union[tf.Tensor, tf.Variable]:
     if probs is None:
         probs = (
-            tf.ones(
-                (
-                    batch_size,
-                    population_size,
-                )
-            )
+            tf.ones((
+                batch_size,
+                population_size,
+            ))
             / population_size
         )
 
@@ -145,7 +142,7 @@ def randint(
     return tf.cast(tf.random.uniform(shape, low, high, "float32", seed=seed), dtype)
 
 
-def seed(*, seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0):
     tf.random.set_seed(seed_value)
     return
 

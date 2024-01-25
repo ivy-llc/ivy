@@ -1,4 +1,5 @@
-"""Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
+"""Collection of PyTorch network layers, wrapped to fit Ivy syntax and
+signature."""
 
 from typing import Optional, Tuple, Union, Sequence
 
@@ -13,7 +14,7 @@ from ivy.functional.ivy.layers import _get_embed_dim, _handle_padding, _deconv_l
 
 
 @with_supported_dtypes(
-    {"2.1.1 and below": ("float32", "float64", "complex")},
+    {"2.1.2 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def multi_head_attention(
@@ -116,7 +117,7 @@ multi_head_attention.partial_mixed_handler = (
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def linear(
@@ -253,7 +254,7 @@ def _tranpose_padding(
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -286,7 +287,7 @@ def conv1d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv1d_v_1p9p0_and_above(
@@ -324,7 +325,7 @@ def conv1d_v_1p9p0_and_above(
 
 @with_unsupported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -341,6 +342,7 @@ def conv1d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[torch.Tensor] = None,
@@ -348,7 +350,8 @@ def conv1d_transpose(
 ):
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
-    filters = filters.permute(1, 2, 0)
+    if filter_format == "channel_last":
+        filters = filters.permute(2, 1, 0)
     not_valid_pad, symmetric_padding, output_padding = _tranpose_padding(
         x.shape[2:],
         filters.shape[2:],
@@ -376,7 +379,7 @@ def conv1d_transpose(
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -409,7 +412,7 @@ def conv2d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv2d_v_1p9p0_and_above(
@@ -447,7 +450,7 @@ def conv2d_v_1p9p0_and_above(
 
 @with_unsupported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -464,6 +467,7 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[torch.Tensor] = None,
@@ -471,7 +475,8 @@ def conv2d_transpose(
 ):
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    filters = filters.permute(2, 3, 0, 1)
+    if filter_format == "channel_last":
+        filters = filters.permute(3, 2, 0, 1)
     not_valid_pad, symmetric_padding, output_padding = _tranpose_padding(
         x.shape[2:],
         filters.shape[2:],
@@ -502,7 +507,7 @@ def conv2d_transpose(
 
 @with_unsupported_dtypes(
     {
-        "2.1.1 and below": (
+        "2.1.2 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -543,7 +548,7 @@ def depthwise_conv2d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16", "bfloat16", "complex")}, backend_version
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")}, backend_version
 )
 # noinspection PyUnresolvedReferences
 def conv3d(
@@ -575,7 +580,7 @@ def conv3d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16", "bfloat16", "complex")}, backend_version
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")}, backend_version
 )
 def conv3d_v_1p9p0_and_above(
     x: torch.Tensor,
@@ -611,7 +616,7 @@ def conv3d_v_1p9p0_and_above(
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -623,6 +628,7 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[torch.Tensor] = None,
@@ -630,7 +636,8 @@ def conv3d_transpose(
 ) -> torch.Tensor:
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
-    filters = filters.permute(3, 4, 0, 1, 2)
+    if filter_format == "channel_last":
+        filters = filters.permute(4, 3, 0, 1, 2)
     not_valid_pad, symmetric_padding, output_padding = _tranpose_padding(
         x.shape[2:],
         filters.shape[2:],
@@ -662,7 +669,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_dilated(
@@ -711,7 +718,7 @@ def conv_general_dilated(
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_dilated_v_1p9p0_and_above(
@@ -765,7 +772,7 @@ def conv_general_dilated_v_1p9p0_and_above(
 
 
 @with_unsupported_dtypes(
-    {"2.1.1 and below": ("float16", "bfloat16", "complex")},
+    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_transpose(
@@ -777,6 +784,7 @@ def conv_general_transpose(
     *,
     dims: int = 2,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "channel_first",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
@@ -785,7 +793,8 @@ def conv_general_transpose(
 ):
     if data_format == "channel_last":
         x = x.permute(0, dims + 1, *range(1, dims + 1))
-    filters = filters.permute(dims, dims + 1, *range(dims))
+    if filter_format == "channel_last":
+        filters = filters.permute(dims + 1, dims, *range(dims))
     not_valid_pad, symmetric_padding, output_padding = _tranpose_padding(
         x.shape[2:],
         filters.shape[2:],
@@ -859,3 +868,28 @@ def scaled_dot_product_attention_v_2p0p0_and_above(
     if isinstance(mask, torch.Tensor):
         mask = torch.where(mask == 0, -torch.inf, 0)
     return torch.nn.functional.scaled_dot_product_attention(q, k, v, attn_mask=mask)
+
+
+def lstm(
+    input: torch.Tensor,
+    initial_states: Tuple[torch.Tensor],
+    all_weights: Tuple[torch.Tensor],
+    has_biases: bool,
+    num_layers: int,
+    dropout: float,
+    train: bool,
+    bidirectional: bool,
+    batch_first: bool = False,
+    batch_sizes: Sequence = None,
+):
+    return torch.lstm(
+        input,
+        initial_states,
+        all_weights,
+        has_biases,
+        num_layers,
+        dropout,
+        train,
+        bidirectional,
+        batch_first,
+    )

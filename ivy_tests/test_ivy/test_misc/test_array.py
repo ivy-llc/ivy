@@ -2257,7 +2257,8 @@ def test_array_function():
             return HANDLED_FUNCTIONS[func](*args, **kwargs)
 
     def implements(ivy_function):
-        """Register an __ivy_array_function__ implementation for MyArray objects."""
+        """Register an __ivy_array_function__ implementation for MyArray
+        objects."""
 
         def decorator(func):
             HANDLED_FUNCTIONS[ivy_function] = func
@@ -2552,9 +2553,9 @@ def test_array_property_strides(dtype_x, backend_fw):
         min_value=3.0,
         max_value=10.0,
     ),
-    op=st.sampled_from([
-        "!=", ">", "<", ">=", "<=", "*", "/", "%", "==", "&", "@", "**", "/"
-    ]),
+    op=st.sampled_from(
+        ["!=", ">", "<", ">=", "<=", "*", "/", "%", "==", "&", "@", "**", "/"]
+    ),
 )
 def test_dunder_wrapping(
     dtype_x,

@@ -19,7 +19,7 @@ def all(
     try:
         return jnp.all(x, axis, keepdims=keepdims)
     except ValueError as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+        raise ivy.utils.exceptions.IvyIndexError(error) from error
 
 
 def any(
@@ -34,4 +34,4 @@ def any(
     try:
         return jnp.any(x, axis, keepdims=keepdims, out=out)
     except ValueError as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+        raise ivy.utils.exceptions.IvyIndexError(error) from error

@@ -4,3 +4,4 @@ include ivy/compiler/*.so
 include ivy/compiler/*.py
 include binaries.json
 include available_configs.json
+include wrappers.json

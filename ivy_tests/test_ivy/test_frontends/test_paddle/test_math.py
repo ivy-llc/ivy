@@ -1331,7 +1331,7 @@ def test_paddle_inner(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100.0,
         max_value=100.0,
-        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -1717,6 +1717,39 @@ def test_paddle_logit(
         on_device=on_device,
         x=x[0],
         eps=1e-2,
+    )
+
+
+# logsumexp
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.logsumexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_num_dims=4,
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_logsumexp(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        axis=None,
     )
 
 

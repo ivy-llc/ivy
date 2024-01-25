@@ -142,7 +142,7 @@ def empty_like(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "uint8",
                 "int8",
@@ -356,7 +356,7 @@ def _slice_at_axis(sl, axis):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
+    {"2.6.0 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
 )
 def linspace(
     start: Union[paddle.Tensor, float],
@@ -414,7 +414,7 @@ def linspace(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -484,7 +484,7 @@ def ones_like(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -503,7 +503,7 @@ def tril(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -551,7 +551,7 @@ array = asarray
 def copy_array(
     x: paddle.Tensor,
     *,
-    to_ivy_array: Optional[bool] = True,
+    to_ivy_array: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if 0 in x.shape:
@@ -616,14 +616,14 @@ def one_hot(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.6.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def frombuffer(
     buffer: bytes,
-    dtype: Optional[paddle.dtype] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
+    dtype: paddle.dtype = float,
+    count: int = -1,
+    offset: int = 0,
 ) -> paddle.Tensor:
     dtype_bytes = int(ivy.Dtype(dtype).dtype_bits / 8)
     if str(dtype) == "bool":
@@ -658,7 +658,7 @@ def frombuffer(
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
+    k: int = 0,
     /,
     *,
     device: core.Place = None,

@@ -331,7 +331,7 @@ def transpose(a, axes=None):
         return a
     if not axes:
         axes = list(range(len(a.shape)))[::-1]
-    if type(axes) is int:
+    if isinstance(axes, int):
         axes = [axes]
     if (len(a.shape) == 0 and not axes) or (len(a.shape) == 1 and axes[0] == 0):
         return a
