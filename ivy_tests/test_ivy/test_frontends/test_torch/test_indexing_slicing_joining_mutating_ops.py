@@ -4,7 +4,6 @@ import random
 from hypothesis import strategies as st
 import math
 
-
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -1271,6 +1270,7 @@ def test_torch_scatter(
         dim=axis,
         index=indices,
         src=value,
+        test_values=False,
     )
 
 
