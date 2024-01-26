@@ -204,6 +204,15 @@ def pad(img, padding, fill=0, padding_mode="constant"):
     {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
+def rotate(img, angle, resample="nearest", center=None):
+    img = ivy.array(img)
+    return ivy.rotate(img, angle, resample=resample, center=center)
+
+
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
 def to_tensor(pic, data_format="CHW"):
     array = ivy.array(pic)
     return Tensor(array)
@@ -224,11 +233,3 @@ def vflip(img, data_format="CHW"):
     elif data_format.lower() == "hwc":
         axis = -3
     return ivy.flip(img, axis=axis)
-
-@with_supported_dtypes(
-    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
-)
-@to_ivy_arrays_and_back
-def rotate(img, angle, resample='nearest', center=None):
-    img = ivy.array(img)
-    return ivy.rotate(img, angle, resample=resample, center=center)
