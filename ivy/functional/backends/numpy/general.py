@@ -47,7 +47,7 @@ def set_item(
     val: np.ndarray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: bool = False,
 ) -> np.ndarray:
     if copy:
         x = np.copy(x)

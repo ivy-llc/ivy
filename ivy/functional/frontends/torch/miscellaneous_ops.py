@@ -240,6 +240,11 @@ def einsum(equation, *operands):
 
 
 @to_ivy_arrays_and_back
+def finfo(dtype):
+    return ivy.finfo(dtype)
+
+
+@to_ivy_arrays_and_back
 def flatten(input, start_dim=0, end_dim=-1):
     return ivy.flatten(input, start_dim=start_dim, end_dim=end_dim)
 
