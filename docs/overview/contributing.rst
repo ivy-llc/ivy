@@ -30,19 +30,16 @@ The contributor guide is split into the sections below, it's best to go from sta
 | (e) `Contributor Program <contributing/volunteer_program.rst>`_
 | How to climb up the ranks in our Contributor program 🧗
 |
-| (f) `Contributor Leaderboard <contributing/volunteer_ranks.rst>`_
-| See where you stand on our leaderboard 🏆
-|
-| (g) `Building the Docs <contributing/building_the_docs.rst>`_
+| (f) `Building the Docs <contributing/building_the_docs.rst>`_
 | How to build the documentation locally 🏗️
 |
-| (h) `Deep Dive <deep_dive.rst>`_
+| (g) `Deep Dive <deep_dive.rst>`_
 | Take a deep dive into the codebase 🤿
 |
-| (i) `Helpful Resources <contributing/helpful_resources.rst>`_
+| (h) `Helpful Resources <contributing/helpful_resources.rst>`_
 | Resources you would find useful when learning Ivy 📖
 |
-| (j) `Error Handling <contributing/error_handling.rst>`_
+| (i) `Error Handling <contributing/error_handling.rst>`_
 | Common errors you will be facing contributing to Ivy ❌
 
 .. toctree::
@@ -57,7 +54,6 @@ The contributor guide is split into the sections below, it's best to go from sta
    contributing/open_tasks.rst
    contributing/volunteer_program.rst
    contributing/contributor_rewards.rst
-   contributing/volunteer_ranks.rst
    contributing/helpful_resources.rst
    contributing/error_handling.rst
 
