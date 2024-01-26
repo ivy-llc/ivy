@@ -1,15 +1,16 @@
 # global
-from typing import Union, Optional
-
 import math
+from typing import Optional, Union
+
 import paddle
-import ivy.functional.backends.paddle as paddle_backend
+
 import ivy
+import ivy.functional.backends.paddle as paddle_backend
 from ivy import promote_types_of_inputs
 from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
     with_supported_device_and_dtypes,
     with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
     with_unsupported_dtypes,
 )
 
@@ -341,14 +342,7 @@ def less(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.6.0 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "float16",
-        )
-    },
+    {"2.6.0 and below": ("int8", "uint8", "int16", "float16", "bfloat16")},
     backend_version,
 )
 def multiply(
