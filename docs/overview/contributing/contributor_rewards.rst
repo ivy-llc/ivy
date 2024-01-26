@@ -11,7 +11,7 @@ It recognizes the crucial role of pinpointing problems which is fundamental in m
 
 **Merging Master** - These badges are formal recognitions for contributors whose pull requests consistently meet our high standards of quality and are successfully merged into the main codebase.
 
-**Merging Wizard** - These exclusive badges are awarded to contributors who successfully get *priority* pull requests merged. This recognition is for handling complex, high-priority tasks that have a substantial impact on the project's progress and success. Priority pull requests are those associated with `"Priority Open" issues <https://github.com/unifyai/ivy/labels/Failing%20Test>`_ found within each framework. 
+**Merging Wizard** - These exclusive badges are awarded to contributors who successfully get *priority* pull requests merged. This recognition is for handling complex, high-priority tasks that have a substantial impact on the project's progress and success. Priority pull requests are those associated with `"Priority Open" issues <https://github.com/unifyai/ivy/labels/Failing%20Test>`_ found within each framework.
 
 **Ivy Inspectors** - These badges are given in acknowledgment of the essential role played by those who review our pull requests. It honours the commitment to quality and diligence in ensuring that each code merge aligns with our high standards.
 
