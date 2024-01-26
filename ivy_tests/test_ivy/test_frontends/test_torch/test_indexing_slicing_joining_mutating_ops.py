@@ -1270,7 +1270,6 @@ def test_torch_scatter(
         dim=axis,
         index=indices,
         src=value,
-        test_values=False,
     )
 
 
