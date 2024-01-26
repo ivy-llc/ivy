@@ -95,7 +95,7 @@ def rand(
     if (
         isinstance(size, (list, tuple))
         and len(size) == 1
-        and isinstance(size[0], (list, tuple))
+        and isinstance(size[0], (list, tuple, ivy.Shape))
     ):
         size = size[0]
     seed = generator.initial_seed() if generator is not None else None
@@ -195,7 +195,7 @@ def randn(
     if (
         isinstance(size, (list, tuple))
         and len(size) == 1
-        and isinstance(size[0], (list, tuple))
+        and isinstance(size[0], (list, tuple, ivy.Shape))
     ):
         size = size[0]
     seed = generator.initial_seed() if generator is not None else None
@@ -255,6 +255,10 @@ def seed() -> int:
     return int(ivy.randint(-(2**63), 2**63 - 1))
 
 
+@with_supported_dtypes(
+    {"2.1.2 and below": ("uint8",)},
+    "torch",
+)
 @to_ivy_arrays_and_back
 def set_rng_state(new_state):
     return ivy.seed(seed_value=new_state)

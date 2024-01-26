@@ -89,9 +89,10 @@ class ModuleHelpers:
         return vs
 
     def _find_buffers(self):
-        for obj in self.__dict__.keys():
-            if isinstance(getattr(self, obj), ivy.Module):
-                self._buffers.update({obj: getattr(self, obj).buffers})
+        if hasattr(self, "_module_dict"):
+            for key, sub_module in self._module_dict.items():
+                if len(sub_module._buffers) > 0:
+                    self._buffers[key] = sub_module._buffers
 
     def _build_and_return_v(self, *args, **kwargs):
         self.build(*args, **kwargs)
@@ -128,7 +129,7 @@ class ModuleHelpers:
                 # Check if `v` contains `new_kc` before replacing in `ret_cont`
                 if v.cont_has_key_chain(new_kc):
                     ret_cont = ret_cont.cont_set_at_key_chain(
-                        "/".join(new_kc.split("/")[1:]), v.cont_at_key_chain(new_kc)
+                        "/".join(old_kc.split("/")[1:]), v.cont_at_key_chain(new_kc)
                     )
                 else:
                     continue

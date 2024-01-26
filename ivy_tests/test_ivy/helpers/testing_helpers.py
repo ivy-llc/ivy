@@ -30,6 +30,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltFrontendArrayStrategy,
     BuiltTranspileStrategy,
     BuiltPrecisionModeStrategy,
+    BuiltCythonWrapperStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -337,6 +338,7 @@ def handle_test(
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
     container_flags=BuiltContainerStrategy,
+    test_cython_wrapper=BuiltCythonWrapperStrategy,
     **_given_kwargs,
 ):
     """Test wrapper for Ivy functions.
@@ -414,6 +416,7 @@ def handle_test(
             native_arrays=_get_runtime_flag_value(native_array_flags),
             container_flags=_get_runtime_flag_value(container_flags),
             precision_mode=_get_runtime_flag_value(precision_mode),
+            test_cython_wrapper=_get_runtime_flag_value(test_cython_wrapper),
         )
 
     def test_wrapper(test_fn):

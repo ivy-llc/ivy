@@ -209,6 +209,9 @@ def test_torch_aminmax(
     fn_tree="torch.any",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=8,
+        large_abs_safety_factor=8,
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
@@ -843,6 +846,8 @@ def test_torch_quantile(
     input_dtype, x, axis, interpolation, q = dtype_and_x
     if type(axis) is tuple:
         axis = axis[0]
+    if interpolation == "nearest_jax":
+        interpolation = "nearest"
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,

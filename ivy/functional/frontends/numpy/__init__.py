@@ -425,8 +425,10 @@ def promote_numpy_dtypes(
     type1, type2 = ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)
     try:
         return numpy_promotion_table[(type1, type2)]
-    except KeyError:
-        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
+    except KeyError as e:
+        raise ivy.utils.exceptions.IvyException(
+            "these dtypes are not type promotable"
+        ) from e
 
 
 @handle_exceptions

@@ -796,7 +796,7 @@ def test_lgamma(
 @handle_test(
     fn_tree="functional.ivy.experimental.modf",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
         min_value=0,
         exclude_min=True,

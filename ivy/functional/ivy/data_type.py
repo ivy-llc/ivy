@@ -3,6 +3,7 @@ import ast
 import logging
 import inspect
 import math
+import functools
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable, Iterable, Any
 import numpy as np
@@ -48,6 +49,7 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
 
 
 def _handle_nestable_dtype_info(fn):
+    @functools.wraps(fn)
     def _handle_nestable_dtype_info_wrapper(type):
         if isinstance(type, ivy.Container):
             type = type.cont_map(lambda x, kc: fn(x))
@@ -188,16 +190,17 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             }
             for key in fl:
                 if "frontend" in key:
-                    fn_tree = key.split(".")
-                    root, tree, fn_name = fn_tree[0], fn_tree[1:-1], fn_tree[-1]
-                    root_module = importlib.import_module(
-                        ".".join([frontends[root], *tree])
-                    )
-                    frontend_fn = getattr(root_module, fn_name)
-                    frontend_fl = _get_function_list(frontend_fn)
+                    frontend_fn = fl[key]
+                    for frontend in frontends:
+                        if frontend in key:
+                            key = key.replace(frontend, frontends[frontend])
+                    if "(" in key:
+                        key = key.split("(")[0]
+                    frontend_module = ".".join(key.split(".")[:-1])
+                    frontend_fl = {key: frontend_fn}
                     res += list(
                         _get_functions_from_string(
-                            frontend_fl, __import__(frontend_fn.__module__)
+                            frontend_fl, importlib.import_module(frontend_module)
                         )
                     )
         to_visit.extend(set(res))

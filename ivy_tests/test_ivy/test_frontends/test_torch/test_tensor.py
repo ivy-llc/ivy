@@ -516,6 +516,37 @@ def test_torch___and__(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
+    method_name="__array__",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_torch___array__(
+    dtype_and_x,
+    dtype,
+    frontend,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    if x[0].dtype == "bfloat16":
+        return
+    dtype[0] = np.dtype(dtype[0])
+    ret_gt = torch.tensor(x[0]).__array__(dtype[0])
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        local_importer = ivy_backend.utils.dynamic_import
+        function_module = local_importer.import_module("ivy.functional.frontends.torch")
+        ret = function_module.tensor(x[0]).__array__(dtype[0])
+
+    helpers.value_test(
+        ret_np_flat=ret.ravel(),
+        ret_np_from_gt_flat=ret_gt.ravel(),
+        ground_truth_backend="torch",
+        backend=backend_fw,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
     method_name="__array_wrap__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -1406,37 +1437,6 @@ def test_torch___truediv__(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
-    )
-
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="__array__",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    dtype=helpers.get_dtypes("valid", full=False),
-)
-def test_torch__array__(
-    dtype_and_x,
-    dtype,
-    frontend,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    if x[0].dtype == "bfloat16":
-        return
-    dtype[0] = np.dtype(dtype[0])
-    ret_gt = torch.tensor(x[0]).__array__(dtype[0])
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        local_importer = ivy_backend.utils.dynamic_import
-        function_module = local_importer.import_module("ivy.functional.frontends.torch")
-        ret = function_module.tensor(x[0]).__array__(dtype[0])
-
-    helpers.value_test(
-        ret_np_flat=ret.ravel(),
-        ret_np_from_gt_flat=ret_gt.ravel(),
-        ground_truth_backend="torch",
-        backend=backend_fw,
     )
 
 
@@ -10384,8 +10384,8 @@ def test_torch_normal_(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -10510,9 +10510,10 @@ def test_torch_numpy(
     )
     # manual testing required as function return is numpy frontend
     helpers.value_test(
-        ret_np_flat=helpers.flatten_and_to_np(ret=ret),
+        ret_np_flat=helpers.flatten_and_to_np(ret=ret, backend=backend_fw),
         ret_np_from_gt_flat=frontend_ret[0],
         ground_truth_backend="torch",
+        backend=backend_fw,
     )
 
 

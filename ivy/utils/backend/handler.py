@@ -358,7 +358,6 @@ def set_backend(backend: str, dynamic: bool = False):
         global ivy_original_dict
         if not backend_stack:
             ivy_original_dict = ivy.__dict__.copy()
-
         _clear_current_sub_backends()
         if isinstance(backend, str):
             temp_stack = []

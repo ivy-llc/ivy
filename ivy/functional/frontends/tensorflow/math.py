@@ -13,6 +13,138 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _chbevl(x, coef, N):
+    """Evaluates the series.
+
+            N-1
+             - '
+      y  =   >   coef[i] T (x/2)
+             -            i
+            i=0
+
+    of Chebyshev polynomials Ti at argument x/2.
+
+    Coefficients are stored in reverse order, i.e. the zero
+    order term is last in the array.  Note N is the number of
+    coefficients, not the order.
+
+    If coefficients are for the interval a to b, x must
+    have been transformed to x -> 2(2x - b - a)/(b-a) before
+    entering the routine.  This maps x from (a, b) to (-1, 1),
+    over which the Chebyshev polynomials are defined.
+
+    If the coefficients are for the inverted interval, in
+    which (a, b) is mapped to (1/b, 1/a), the transformation
+    required is x -> 2(2ab/x - b - a)/(b-a).  If b is infinity,
+    this becomes x -> 4a/x - 1.
+    """
+    b0 = coef[0:1]
+    b1 = ivy.zeros_like(x)
+    i = N - 1
+    p = 1
+
+    while i > 0:
+        b2 = b1
+        b1 = b0
+        with ivy.PreciseMode(True):
+            b0 = x * b1 - b2 + coef[p : p + 1]
+        p += 1
+        i -= 1
+
+    return 0.5 * (b0 - b2)
+
+
+def _get_chebyshev_coefficients_for_exp_i1():
+    """Chebyshev coefficients for exp(-x) I1(x) / x in the interval [0,8].
+
+    lim(x->0){ exp(-x) I1(x) / x } = 1/2.
+
+    Returns list of 29 float elements
+    -------
+    """
+    return ivy.array(
+        [
+            2.77791411276104639959e-18,
+            -2.11142121435816608115e-17,
+            1.55363195773620046921e-16,
+            -1.10559694773538630805e-15,
+            7.60068429473540693410e-15,
+            -5.04218550472791168711e-14,
+            3.22379336594557470981e-13,
+            -1.98397439776494371520e-12,
+            1.17361862988909016308e-11,
+            -6.66348972350202774223e-11,
+            3.62559028155211703701e-10,
+            -1.88724975172282928790e-9,
+            9.38153738649577178388e-9,
+            -4.44505912879632808065e-8,
+            2.00329475355213526229e-7,
+            -8.56872026469545474066e-7,
+            3.47025130813767847674e-6,
+            -1.32731636560394358279e-5,
+            4.78156510755005422638e-5,
+            -1.61760815825896745588e-4,
+            5.12285956168575772895e-4,
+            -1.51357245063125314899e-3,
+            4.15642294431288815669e-3,
+            -1.05640848946261981558e-2,
+            2.47264490306265168283e-2,
+            -5.29459812080949914269e-2,
+            1.02643658689847095384e-1,
+            -1.76416518357834055153e-1,
+            2.52587186443633654823e-1,
+        ]
+    )
+
+
+def _get_chebyshev_coefficients_for_exp_sqrt_i1():
+    """Chebyshev coefficients for exp(-x) sqrt(x) I1(x) in the inverted
+    interval [8,infinity].
+
+    lim(x->inf){ exp(-x) sqrt(x) I1(x) } = 1/sqrt(2pi).
+
+    Returns a list of 25 elements containing float
+    -------
+    """
+    return ivy.array(
+        [
+            7.51729631084210481353e-18,
+            4.41434832307170791151e-18,
+            -4.65030536848935832153e-17,
+            -3.20952592199342395980e-17,
+            2.96262899764595013876e-16,
+            3.30820231092092828324e-16,
+            -1.88035477551078244854e-15,
+            -3.81440307243700780478e-15,
+            1.04202769841288027642e-14,
+            4.27244001671195135429e-14,
+            -2.10154184277266431302e-14,
+            -4.08355111109219731823e-13,
+            -7.19855177624590851209e-13,
+            2.03562854414708950722e-12,
+            1.41258074366137813316e-11,
+            3.25260358301548823856e-11,
+            -1.89749581235054123450e-11,
+            -5.58974346219658380687e-10,
+            -3.83538038596423702205e-9,
+            -2.63146884688951950684e-8,
+            -2.51223623787020892529e-7,
+            -3.88256480887769039346e-6,
+            -1.10588938762623716291e-4,
+            -9.76109749136146840777e-3,
+            7.78576235018280120474e-1,
+        ]
+    )
+
+
+# --- Main --- #
+# ------------ #
+
+
 @with_unsupported_dtypes(
     {
         "1.2.0": ("float16", "complex64", "complex128"),
@@ -102,6 +234,41 @@ def atan2(y, x, name=None):
 @to_ivy_arrays_and_back
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
+
+
+@with_supported_dtypes(
+    {"2.15.0 and below": ("float16", "float32", "float64")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def bessel_i1(x, name=None):
+    z = ivy.abs(x)
+    result = ivy.zeros_like(z)
+
+    mask1 = z <= 8.0
+
+    if ivy.any(mask1) > 0:
+        y = (z[mask1] / ivy.array([2.0])) - ivy.array([2.0])
+        result[mask1] = (
+            _chbevl(y, _get_chebyshev_coefficients_for_exp_i1(), 29)
+            * z[mask1]
+            * ivy.exp(z[mask1])
+        )
+
+    mask2 = ~mask1
+    if ivy.any(mask2) > 0:
+        result[mask2] = (
+            ivy.exp(z[mask2])
+            * _chbevl(
+                ivy.array([32.0]) / z[mask2] - ivy.array([2.0]),
+                _get_chebyshev_coefficients_for_exp_sqrt_i1(),
+                25,
+            )
+            / ivy.sqrt(z[mask2])
+        )
+
+    result[x < 0.0] = -result[x < 0.0]
+
+    return result
 
 
 @with_supported_dtypes(
@@ -454,7 +621,7 @@ def minimum(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.5.2 and below": ("bfloat16",)}, "paddle")
+@with_unsupported_dtypes({"2.6.0 and below": ("bfloat16",)}, "paddle")
 def mod(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.remainder(x, y)

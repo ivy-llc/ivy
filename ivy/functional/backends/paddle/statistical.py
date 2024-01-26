@@ -8,7 +8,6 @@ import paddle
 import ivy
 from ivy.func_wrapper import (
     with_supported_dtypes,
-    with_unsupported_dtypes,
     with_supported_device_and_dtypes,
 )
 import ivy.functional.backends.paddle as paddle_backend
@@ -22,7 +21,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("complex", "float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("complex", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def min(
@@ -68,7 +67,7 @@ def min(
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("complex", "float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("complex", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def max(
@@ -106,7 +105,7 @@ def max(
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("bool", "complex", "float32", "float64")}, backend_version
+    {"2.6.0 and below": ("bool", "complex", "float32", "float64")}, backend_version
 )
 def mean(
     x: paddle.Tensor,
@@ -136,7 +135,7 @@ def mean(
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def prod(
     x: paddle.Tensor,
@@ -184,8 +183,8 @@ def std(
     return _std(x, axis, correction, keepdims).cast(x.dtype)
 
 
-@with_unsupported_dtypes(
-    {"2.5.2 and below": ("int8", "int16", "uint8")},
+@with_supported_dtypes(
+    {"2.6.0 and below": ("bool", "float16", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def sum(
@@ -226,7 +225,7 @@ def var(
 # Extra #
 # ----- #
 @with_supported_dtypes(
-    {"2.5.2 and below": ("complex", "float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("complex", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def cumprod(
@@ -276,7 +275,7 @@ def cumprod(
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def cumsum(
     x: paddle.Tensor,
@@ -325,7 +324,7 @@ def cumsum(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("float32", "float64", "complex64", "complex128"),
             "gpu": (
                 "bfloat16",
