@@ -1,7 +1,7 @@
 Contributor Leaderboard
 =======================
 
-This page lists all of our amazing Contributors who have contributed to the project! We are grateful for your contributions and we hope to see you grow with the project! The ranks listed here are based on the `level of contribution <https://unify.ai/docs/ivy/overview/contributing/volunteer_program.html>`_\.
+This page lists all of our amazing Contributors who have contributed to the project! We are grateful for your contributions and we hope to see you grow with the project! The ranks listed here are based on the `level of contribution <contributing/contributor_rewards.rst>`_\.
 
 Top Contributors
 ----------------
