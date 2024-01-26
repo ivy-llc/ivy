@@ -888,6 +888,39 @@ def test_torch___lt__(
     )
 
 
+# __matmul__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__matmul__",
+    dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
+)
+def test_torch___matmul__(
+    dtype_tensor1_tensor2,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    dtype, tensor1, tensor2 = dtype_tensor1_tensor2
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": tensor1,
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={"other": tensor2},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # __mod__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1399,39 +1432,6 @@ def test_torch___truediv__(
         method_all_as_kwargs_np={
             "other": x[1],
         },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# __matmul__
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="__matmul__",
-    dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
-)
-def test_torch__matmul__(
-    dtype_tensor1_tensor2,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-    backend_fw,
-):
-    dtype, tensor1, tensor2 = dtype_tensor1_tensor2
-    helpers.test_frontend_method(
-        init_input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": tensor1,
-        },
-        method_input_dtypes=dtype,
-        method_all_as_kwargs_np={"other": tensor2},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
