@@ -399,12 +399,13 @@ def divide(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if paddle.is_complex(x1) or paddle.is_complex(x2):
-        angle_value = paddle.angle(x1) - paddle.angle(x2)
-        abs_value = paddle.abs(x1) / paddle.abs(x2)
-        return paddle.complex(
-            abs_value * paddle.cos(angle_value), abs_value * paddle.sin(angle_value)
-        )
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1) or paddle.is_complex(x2):
+            angle_value = paddle.angle(x1) - paddle.angle(x2)
+            abs_value = paddle.abs(x1) / paddle.abs(x2)
+            return paddle.complex(
+                abs_value * paddle.cos(angle_value), abs_value * paddle.sin(angle_value)
+            )
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     return (x1 / x2).astype(ret_dtype)
 
@@ -727,7 +728,16 @@ def square(
 
 
 @with_supported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("float32", "float64", "int32", "int64", "complex")}},
+    {
+        "2.6.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+                "int32",
+                "int64",
+            )
+        }
+    },
     backend_version,
 )
 def pow(
