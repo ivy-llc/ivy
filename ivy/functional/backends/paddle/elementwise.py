@@ -389,7 +389,7 @@ def logical_not(
 
 
 @with_supported_dtypes(
-    {"2.6.0 and below": ("float32", "float64", "int32", "int64", "complex")},
+    {"2.6.0 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def divide(
