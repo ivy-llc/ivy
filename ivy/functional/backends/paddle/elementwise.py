@@ -399,7 +399,7 @@ def divide(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if not (isinstance(x1, float) or isinstance(x2, float)):
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
         if paddle.is_complex(x1) or paddle.is_complex(x2):
             angle_value = paddle.angle(x1) - paddle.angle(x2)
             abs_value = paddle.abs(x1) / paddle.abs(x2)
