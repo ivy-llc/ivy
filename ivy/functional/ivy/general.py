@@ -2900,14 +2900,8 @@ set_item.mixed_backend_wrappers = {
 
 
 def _parse_query(query, x_shape):
-    query = query if isinstance(query, tuple) else (query,)
-    query_ = tuple(q.to_numpy() if ivy.is_array(q) else q for q in query)
-
-    # array containing all of x's flat indices
     x_ = ivy.arange(0, _numel(x_shape)).reshape(x_shape)
-
-    # use numpy's __getitem__ to get the queried indices
-    x_idxs = ivy.array(x_.to_numpy()[query_])
+    x_idxs = ivy.gather_nd(x_, query).expand_dims(axis=1)
     target_shape = x_idxs.shape
 
     if 0 in x_idxs.shape or 0 in x_shape:
@@ -2924,7 +2918,7 @@ def _parse_query(query, x_shape):
 
 def _numel(shape):
     shape = tuple(shape)
-    return ivy.prod(shape).to_scalar() if shape != () else 1
+    return ivy.prod(shape) if shape != () else 1
 
 
 def _broadcast_to(input, target_shape):
