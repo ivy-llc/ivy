@@ -727,16 +727,7 @@ def square(
 
 
 @with_supported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": (
-                "float32",
-                "float64",
-                "int32",
-                "int64",
-            )
-        }
-    },
+    {"2.6.0 and below": {"cpu": ("float32", "float64", "int32", "int64", "complex")}},
     backend_version,
 )
 def pow(
