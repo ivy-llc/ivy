@@ -4153,3 +4153,178 @@ def concat_from_sequence(
         map_sequences=map_sequences,
         out=out,
     )
+
+
+@staticmethod
+def _static_unflatten(
+    x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+    /,
+    *,
+    shape: Union[Tuple[int], ivy.Array, ivy.NativeArray, ivy.Container],
+    dim: Optional[Union[int, ivy.Container]] = 0,
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+    to_apply: Union[bool, ivy.Container] = True,
+    prune_unapplied: Union[bool, ivy.Container] = False,
+    map_sequences: Union[bool, ivy.Container] = False,
+) -> ivy.Container:
+    """ivy.Container static method variant of ivy.unflatten. This method simply
+    wraps the function, and so the docstring for ivy.unflatten also applies to
+    this method with minimal changes.
+
+    Parameters
+    ----------
+    x
+        input array
+    shape
+        array indices. Must have an integer data type.
+    dim
+        axis over which to select values. If `axis` is negative,
+        the function must determine the axis along which to select values
+        by counting from the last dimension.
+        By default, the flattened input array is used.
+    out
+        optional output array, for writing the result to. It must
+        have a shape that the inputs broadcast to.
+    key_chains
+        The key-chains to apply or not apply the method to.
+        Default is ``None``.
+    to_apply
+        If True, the method will be applied to key_chains,
+        otherwise key_chains will be skipped. Default is ``True``.
+    prune_unapplied
+        Whether to prune key_chains for which the function was
+        not applied. Default is ``False``.
+    map_sequences
+        Whether to also map method to sequences (lists, tuples).
+        Default is ``False``.
+
+    Returns
+    -------
+        ret
+            an array having the same data type as `x`.
+            The output array must have the same rank
+            (i.e., number of dimensions) as `x` and
+            must have the same shape as `x`,
+            except for the axis specified by `axis`
+            whose size must equal the number of elements in `indices`.
+
+
+    Examples
+    --------
+    With 'ivy.Container' input:
+
+    >>> x = ivy.Container(a = ivy.array([[True, False, False, True],
+                                         [False, True, False, True]])),
+    ...                     b = ivy.array([[1.2, 2.3, 3.4, 4.5],
+                                           [5.6, 6.7, 7.8, 8.9]]),
+    ...                     c = ivy.array([[1, 2, 3, 4],
+                                           [5, 6, 7, 8]]))
+    >>> dim = 1
+    >>> shape = (2, 2)
+    >>> y = ivy.Container._static_unflatten(x, shape=shape, dim=dim)
+    >>> print(y)
+    {
+        a: ivy.array([[[True, False], [False, True]],
+                      [[False, True], [False, True]]])
+        b: ivy.array([[[1.2, 2.3], [3.4, 4.5]], [[5.6, 6.7], [7.8, 8.9]]])
+        c: ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    }
+    """
+    return ContainerBase.cont_multi_map_in_function(
+        "unflatten",
+        x,
+        dim=dim,
+        shape=shape,
+        out=out,
+        key_chains=key_chains,
+        to_apply=to_apply,
+        prune_unapplied=prune_unapplied,
+        map_sequences=map_sequences,
+    )
+
+
+def unflatten(
+    self: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+    /,
+    *,
+    dim: Optional[Union[int, ivy.Container]] = 0,
+    shape: Union[Tuple[int], ivy.Array, ivy.NativeArray, ivy.Container],
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+    to_apply: Union[bool, ivy.Container] = True,
+    prune_unapplied: Union[bool, ivy.Container] = False,
+    map_sequences: Union[bool, ivy.Container] = False,
+) -> ivy.Container:
+    """ivy.Container instance method variant of ivy.unflatten. This method
+    simply wraps the function, and so the docstring for ivy.unflatten also
+    applies to this method with minimal changes.
+
+    Parameters
+    ----------
+    self
+        input array
+    shape
+        array indices. Must have an integer data type.
+    dim
+        axis over which to unflatten. If `axis` is negative,
+        the function must determine the axis along which to select values
+        by counting from the last dimension.
+        By default, the flattened input array is used.
+    out
+        optional output array, for writing the result to. It must
+        have a shape that the inputs broadcast to.
+    key_chains
+        The key-chains to apply or not apply the method to.
+        Default is ``None``.
+    to_apply
+        If True, the method will be applied to key_chains,
+        otherwise key_chains will be skipped. Default is ``True``.
+    prune_unapplied
+        Whether to prune key_chains for which the function was
+        not applied. Default is ``False``.
+    map_sequences
+        Whether to also map method to sequences (lists, tuples).
+        Default is ``False``.
+
+    Returns
+    -------
+        ret
+            an array having the same data type as `x`.
+            The output array must have the same rank
+            (i.e., number of dimensions) as `x` and
+            must have the same shape as `x`,
+            except for the axis specified by `dim`
+            which is replaced with a tuple specified in `shape`.
+
+
+    Examples
+    --------
+    With 'ivy.Container' input:
+
+    >>> x = ivy.Container(a = ivy.array([[True, False, False, True],
+                                         [False, True, False, True]])),
+    ...                     b = ivy.array([[1.2, 2.3, 3.4, 4.5],
+                                           [5.6, 6.7, 7.8, 8.9]]),
+    ...                     c = ivy.array([[1, 2, 3, 4],
+                                           [5, 6, 7, 8]]))
+    >>> dim = 1
+    >>> shape = (2, 2)
+    >>> y = x.unflatten(shape=shape, dim=dim)
+    >>> print(y)
+    {
+        a: ivy.array([[[True, False], [False, True]], [[False, True], [False, True]]])
+        b: ivy.array([[[1.2, 2.3], [3.4, 4.5]], [[5.6, 6.7], [7.8, 8.9]]])
+        c: ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    }
+    """
+    return self._static_unflatten(
+        self,
+        dim=dim,
+        shape=shape,
+        out=out,
+        key_chains=key_chains,
+        to_apply=to_apply,
+        prune_unapplied=prune_unapplied,
+        map_sequences=map_sequences,
+    )
