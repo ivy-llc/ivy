@@ -1141,8 +1141,6 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         dim: Optional[int] = 0,
         shape: Union[Tuple[int], ivy.Array, ivy.NativeArray],
         out: Optional[ivy.Array] = None,
-        mode: str = "fill",
-        fill_value: Optional[Number] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unflatten. This method
         simply wraps the function, and so the docstring for ivy.unflatten also
