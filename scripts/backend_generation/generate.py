@@ -167,8 +167,7 @@ def _should_install_backend(package_name):
             ) from e
     elif ret.lower() == "n":
         print(
-            Fore.YELLOW
-            + "Will continue without backend installed, "
+            Fore.YELLOW + "Will continue without backend installed, "
             "type checking won't be available.\n"
         )
     else:

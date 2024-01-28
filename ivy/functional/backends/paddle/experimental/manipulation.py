@@ -20,6 +20,7 @@ from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
     with_supported_dtypes,
     with_unsupported_dtypes,
+    handle_out_argument,
 )
 import paddle
 import ivy
@@ -905,3 +906,16 @@ put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mo
     "sum",
     "mul",
 ]
+
+
+@handle_out_argument
+def unflatten(
+    x: paddle.Tensor,
+    /,
+    dim: int = 0,
+    shape: Tuple[int] = None,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    res = paddle.unflatten(x, dim, shape)
+    return res

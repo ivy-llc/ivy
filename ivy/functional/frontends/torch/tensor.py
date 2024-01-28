@@ -761,9 +761,20 @@ class Tensor:
 
     def unfold(self, dimension, size, step):
         slices = []
-        for i in range(0, self.shape[dimension] - size + 1, step):
-            slices.append(self.ivy_array[i : i + size])
-        return torch_frontend.stack(slices)
+        self_shape = tuple(self.shape)
+        for i in range(0, self_shape[dimension] - size + 1, step):
+            slicing = [slice(None)] * len(self.shape)
+            slicing[dimension] = slice(i, i + size)
+            slices.append(self.ivy_array[tuple(slicing)])
+        stacked = torch_frontend.stack(slices, dim=dimension)
+        new_shape = list(self.shape)
+        num_slices = (self.shape[dimension] - size) // step + 1
+        new_shape[dimension] = num_slices
+        new_shape.insert(dimension + 1, size)
+        reshaped = stacked.reshape(new_shape)
+        dims = list(range(len(stacked.shape)))
+        dims[-2], dims[-1] = dims[-1], dims[-2]
+        return reshaped.permute(*dims)
 
     def long(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int64, copy=False)
@@ -1391,7 +1402,7 @@ class Tensor:
 
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
-    def cumprod(self, dim, dtype):
+    def cumprod(self, dim, dtype=None):
         return torch_frontend.cumprod(self, dim, dtype=dtype)
 
     @numpy_to_torch_style_args
@@ -2252,10 +2263,17 @@ class Tensor:
         return ret
 
     def index_put_(self, indices, values, accumulate=False):
+        def _set_add(index):
+            self[index] += values
+
+        def _set(index):
+            self[index] = values
+
         if accumulate:
-            self[indices] += values
+            ivy.map(fn=_set_add, unique={"index": indices})
         else:
-            self[indices] = values
+            ivy.map(fn=_set, unique={"index": indices})
+
         return self
 
     # Method aliases
@@ -2291,6 +2309,7 @@ class Tensor:
 
 class Size(tuple):
     def __new__(cls, iterable=()):
+        iterable = ivy.Shape([]) if not iterable else iterable
         new_iterable = []
         for i, item in enumerate(iterable):
             if isinstance(item, int):
@@ -2304,7 +2323,8 @@ class Size(tuple):
                 ) from e
         return super().__new__(cls, tuple(new_iterable))
 
-    def __init__(self, shape) -> None:
+    def __init__(self, shape=()) -> None:
+        shape = ivy.Shape([]) if not shape else shape
         self._ivy_shape = shape if isinstance(shape, ivy.Shape) else ivy.shape(shape)
 
     def __repr__(self):
@@ -2313,3 +2333,6 @@ class Size(tuple):
     @property
     def ivy_shape(self):
         return self._ivy_shape
+
+    def numel(self):
+        return int(ivy.astype(ivy.prod(self), ivy.int64))
