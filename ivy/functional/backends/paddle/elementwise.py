@@ -120,6 +120,9 @@ def isinf(
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
 def equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
