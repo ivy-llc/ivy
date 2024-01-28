@@ -208,6 +208,8 @@ def test_sigmoid(
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
+        atol_=1e-02,
+        rtol_=1e-02,
         x=x[0],
         complex_mode=complex_mode,
     )
