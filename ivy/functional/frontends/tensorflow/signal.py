@@ -20,16 +20,6 @@ def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float32", "float64", "float16", "bfloat16")},
-    "tensorflow",
-)
-@handle_tf_dtype
-@to_ivy_arrays_and_back
-def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
-    return ivy.kaiser_window(window_length, periodic=False, beta=beta, dtype=dtype)
-
-
-@with_supported_dtypes(
     {"2.13.0 and below": ("float16", "float32", "float64", "bfloat16")},
     "tensorflow",
 )
@@ -39,3 +29,11 @@ def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
     return ivy.dct(input, type=inverse_type, n=n, axis=axis, norm=norm)
 
 
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float32", "float64", "float16", "bfloat16")},
+    "tensorflow",
+)
+@handle_tf_dtype
+@to_ivy_arrays_and_back
+def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
+    return ivy.kaiser_window(window_length, periodic=False, beta=beta, dtype=dtype)

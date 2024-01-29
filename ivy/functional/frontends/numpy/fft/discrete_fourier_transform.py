@@ -142,11 +142,9 @@ def rfftn(a, s=None, axes=None, norm=None):
     return ivy.rfftn(a, s=s, axes=axes, norm=norm)
 
 
-
 _SWAP_DIRECTION_MAP = {
     None: "forward",
     "backward": "forward",
     "ortho": "ortho",
     "forward": "backward",
 }
-
