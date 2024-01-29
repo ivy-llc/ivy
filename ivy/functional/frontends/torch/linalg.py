@@ -198,10 +198,12 @@ def norm(input, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
     elif dim is None and ord is None:
         input = ivy.flatten(input)
         ret = ivy.vector_norm(input, axis=0, keepdims=keepdim, ord=2)
-    if isinstance(dim, int):
+    elif isinstance(dim, int):
         ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
-    elif isinstance(dim, tuple):
+    elif isinstance(dim, tuple) and len(dim) <= 2:
         ret = ivy.matrix_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+    elif isinstance(dim, tuple) and len(dim) > 2:
+        raise RuntimeError(f"linalg.norm: If dim is specified, it must be of length 1 or 2. Got {dim}")
     return ret
 
 
