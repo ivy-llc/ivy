@@ -516,6 +516,9 @@ class Tensor:
         self.ivy_array = self.not_equal(other).ivy_array
         return self
 
+    def eq(self, other):
+        return torch_frontend.eq(self, other)
+
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
@@ -2282,7 +2285,6 @@ class Tensor:
     ndimension = dim
     subtract = sub
     sub_ = subtract_
-    eq = equal
     arctan = atan
     arctan_ = atan_
     arctan2 = atan2
