@@ -120,6 +120,10 @@ def isinf(
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("bfloat16",)},
+    backend_version,
+)
 def equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -129,8 +133,8 @@ def equal(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        real = paddle.less_equal(x1.real(), x2.real())
-        imag = paddle.less_equal(x1.imag(), x2.imag())
+        real = paddle.equal(x1.real(), x2.real())
+        imag = paddle.equal(x1.imag(), x2.imag())
         return paddle_backend.logical_and(real, imag)
     return paddle.equal(x1, x2)
 
