@@ -65,6 +65,12 @@ class Tensor:
         {"2.6.0 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
         "paddle",
     )
+    def __truediv__(self, other):
+        if isinstance(other, Tensor):
+            return Tensor(self.ivy_array / other.ivy_array)
+        else:
+            return Tensor(self.ivy_array / other)
+
     def __add__(self, y, /, name=None):
         return paddle_frontend.add(self, y)
 
