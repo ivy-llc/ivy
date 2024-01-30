@@ -682,7 +682,10 @@ class Model(tf.keras.Model, ModelHelpers):
 
     def train(self, mode: bool = True):
         self._training = mode
+        for module in self.children():
+            module.train(mode)
         self.trainable = mode
+        return self
 
     def eval(self):
         return self.train(mode=False)
