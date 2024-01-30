@@ -3,6 +3,8 @@ import sys
 import logging
 import tensorflow as tf
 
+tf.experimental.numpy.experimental_enable_numpy_behavior(prefer_float32=True)
+
 for device in tf.config.experimental.list_physical_devices("GPU"):
     try:
         tf.config.experimental.set_memory_growth(device, True)

@@ -50,12 +50,10 @@ def add(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    if x1.dtype.is_bool and x2.dtype.is_bool:
-        return tf.math.logical_or(x1, x2)
     if alpha not in (1, None):
         with ivy.ArrayMode(False):
             x2 = multiply(x2, alpha)
-    return tf.add(x1, x2)
+    return tf.experimental.numpy.add(x1, x2)
 
 
 def asin(
@@ -64,7 +62,7 @@ def asin(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.asin(x)
+    return tf.experimental.numpy.arcsin(x)
 
 
 def asinh(
@@ -73,7 +71,7 @@ def asinh(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.asinh(x)
+    return tf.experimental.numpy.arcsinh(x)
 
 
 def atan(
@@ -82,7 +80,7 @@ def atan(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.atan(x)
+    return tf.experimental.numpy.arctan(x)
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
@@ -94,7 +92,7 @@ def atan2(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.math.atan2(x1, x2)
+    return tf.experimental.numpy.arctan2(x1, x2)
 
 
 def atanh(
@@ -103,7 +101,7 @@ def atanh(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.atanh(x)
+    return tf.experimental.numpy.arctanh(x)
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
@@ -201,14 +199,13 @@ def ceil(
         return tf.math.ceil(x)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("integer",)}, backend_version)
 def cos(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.cos(x)
+    return tf.experimental.numpy.cos(x)
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, backend_version)
@@ -218,7 +215,7 @@ def cosh(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.cosh(x)
+    return tf.experimental.numpy.cosh(x)
 
 
 def divide(
@@ -248,14 +245,13 @@ def equal(
     return tf.math.equal(x1, x2)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("integer",)}, backend_version)
 def exp(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.exp(x)
+    return tf.experimental.numpy.exp(x)
 
 
 def exp2(
@@ -267,14 +263,16 @@ def exp2(
     return tf.math.pow(2, x, name=None)
 
 
-@with_supported_dtypes({"2.15.0 and below": ("float", "complex")}, backend_version)
+@with_supported_dtypes(
+    {"2.15.0 and below": ("float", "complex", "integer")}, backend_version
+)
 def expm1(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.expm1(x)
+    return tf.experimental.numpy.expm1(x)
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
@@ -435,16 +433,14 @@ def less_equal(
     return tf.math.less_equal(x1, x2)
 
 
-@with_unsupported_dtypes(
-    {"2.15.0 and below": ("float16", "bfloat16", "integer")}, backend_version
-)
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def log(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.log(x)
+    return tf.experimental.numpy.log(x)
 
 
 def log10(
@@ -462,7 +458,7 @@ def log1p(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.log1p(x)
+    return tf.experimental.numpy.log1p(x)
 
 
 def log2(
@@ -570,7 +566,6 @@ def logical_xor(
     return tf.math.logical_xor(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def multiply(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -579,7 +574,7 @@ def multiply(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.math.multiply(x1, x2)
+    return tf.experimental.numpy.multiply(x1, x2)
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("bool", "unsigned")}, backend_version)
@@ -694,7 +689,7 @@ def sin(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.sin(x)
+    return tf.experimental.numpy.sin(x)
 
 
 def sinh(
@@ -703,7 +698,7 @@ def sinh(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.sinh(x)
+    return tf.experimental.numpy.sinh(x)
 
 
 def sqrt(
@@ -746,7 +741,7 @@ def tan(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.tan(x)
+    return tf.experimental.numpy.tan(x)
 
 
 def tanh(
@@ -756,7 +751,7 @@ def tanh(
     complex_mode="jax",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.tanh(x)
+    return tf.experimental.numpy.tanh(x)
 
 
 def trapz(
@@ -806,6 +801,8 @@ def erf(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if x.dtype.is_integer:
+        x = tf.cast(x, tf.float32)
     return tf.math.erf(x)
 
 
