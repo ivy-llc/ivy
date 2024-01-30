@@ -410,10 +410,11 @@ def array_repr(arr):
     dtype = arr.dtype
     device = arr.device
     data = ivy.to_numpy(arr)
-    
-    repr_str = f"Ivy Array (shape={shape}, dtype={dtype}, device={device}):\n{data}" # takes an Ivy array as input and generates a string representation
-    
+
+    repr_str = f"Ivy Array (shape={shape}, dtype={dtype}, device={device}):\n{data}"  # takes an Ivy array as input and generates a string representation
+
     return repr_str
+
 
 @handle_exceptions
 def promote_types_jax(
