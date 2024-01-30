@@ -4,6 +4,7 @@ from packaging import version
 import jaxlib
 import jax
 import jax.numpy as jnp
+import importlib
 from typing import Union
 
 # make ivy.Container compatible with jax pytree traversal
@@ -16,11 +17,15 @@ from ivy.func_wrapper import _dtype_from_version
 
 backend_version = {"version": jax.__version__}
 
-register_pytree_node(
-    ivy.Container,
-    lambda c: tree_flatten(c.cont_to_dict()),
-    lambda a, c: ivy.Container(tree_unflatten(a, c)),
-)
+try:
+    register_pytree_node(
+        ivy.Container,
+        lambda c: tree_flatten(c.cont_to_dict()),
+        lambda a, c: ivy.Container(tree_unflatten(a, c)),
+    )
+except Exception as e:
+    if "Duplicate custom PyTreeDef type registration" not in str(e):
+        raise
 
 
 # make ivy.Array compatible with jax pytree traversal
@@ -34,7 +39,12 @@ def _array_unflatten(aux_data, children):
     return ivy.Array(*children)
 
 
-register_pytree_node(ivy.Array, _array_flatten, _array_unflatten)
+try:
+    register_pytree_node(ivy.Array, _array_flatten, _array_unflatten)
+except Exception as e:
+    if "Duplicate custom PyTreeDef type registration" not in str(e):
+        raise
+
 
 # noinspection PyUnresolvedReferences
 if not ivy.is_local():
@@ -92,7 +102,7 @@ native_bool = jnp.dtype("bool")
 
 # update these to add new dtypes
 valid_dtypes = {
-    "0.4.18 and below": (
+    "0.4.23 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -111,7 +121,7 @@ valid_dtypes = {
     )
 }
 valid_numeric_dtypes = {
-    "0.4.18 and below": (
+    "0.4.23 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -130,7 +140,7 @@ valid_numeric_dtypes = {
 }
 
 valid_int_dtypes = {
-    "0.4.18 and below": (
+    "0.4.23 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -143,12 +153,12 @@ valid_int_dtypes = {
 }
 
 valid_uint_dtypes = {
-    "0.4.18 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+    "0.4.23 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 }
 valid_float_dtypes = {
-    "0.4.18 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+    "0.4.23 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 }
-valid_complex_dtypes = {"0.4.18 and below": (ivy.complex64, ivy.complex128)}
+valid_complex_dtypes = {"0.4.23 and below": (ivy.complex64, ivy.complex128)}
 
 
 # leave these untouched
@@ -163,12 +173,12 @@ valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version
 # invalid data types
 
 # update these to add new dtypes
-invalid_dtypes = {"0.4.18 and below": ()}
-invalid_numeric_dtypes = {"0.4.18 and below": ()}
-invalid_int_dtypes = {"0.4.18 and below": ()}
-invalid_float_dtypes = {"0.4.18 and below": ()}
-invalid_uint_dtypes = {"0.4.18 and below": ()}
-invalid_complex_dtypes = {"0.4.18 and below": ()}
+invalid_dtypes = {"0.4.23 and below": ()}
+invalid_numeric_dtypes = {"0.4.23 and below": ()}
+invalid_int_dtypes = {"0.4.23 and below": ()}
+invalid_float_dtypes = {"0.4.23 and below": ()}
+invalid_uint_dtypes = {"0.4.23 and below": ()}
+invalid_complex_dtypes = {"0.4.23 and below": ()}
 
 # leave these untouched
 invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)
@@ -231,8 +241,22 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+from . import module
+from .module import *
 
 
 # sub-backends
 from . import sub_backends
 from .sub_backends import *
+
+
+if importlib.util.find_spec("flax"):
+    import flax
+
+    NativeModule = flax.linen.Module
+elif importlib.util.find_spec("haiku"):
+    import haiku as hk
+
+    NativeModule = hk.Module
+else:
+    NativeModule = None

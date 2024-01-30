@@ -38,7 +38,7 @@ def ifft(x, n=None, axis=-1, norm=None, overwrite_x=False):
 def ifftn(
     x, s=None, axes=None, norm=None, overwrite_x=False, workers=None, *, plan=None
 ):
-    return ivy.ifftn(x, s=s, dim=axes, norm=norm)
+    return ivy.ifftn(x, s=s, axes=axes, norm=norm)
 
 
 @to_ivy_arrays_and_back

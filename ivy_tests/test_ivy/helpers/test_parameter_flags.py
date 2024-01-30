@@ -42,10 +42,13 @@ BuiltInstanceStrategy = DynamicFlag(st.booleans())
 BuiltInplaceStrategy = DynamicFlag(st.just(False))
 BuiltGradientStrategy = DynamicFlag(_gradient_strategy())
 BuiltWithOutStrategy = DynamicFlag(st.booleans())
+BuiltWithCopyStrategy = DynamicFlag(st.just(False))
+BuiltCompileStrategy = DynamicFlag(st.just(False))
 BuiltTraceStrategy = DynamicFlag(st.just(False))
 BuiltFrontendArrayStrategy = DynamicFlag(st.booleans())
 BuiltTranspileStrategy = DynamicFlag(st.just(False))
 BuiltPrecisionModeStrategy = DynamicFlag(st.booleans())
+BuiltCythonWrapperStrategy = DynamicFlag(st.just(False))
 
 
 flags_mapping = {
@@ -55,10 +58,12 @@ flags_mapping = {
     "instance_method": "BuiltInstanceStrategy",
     "test_gradients": "BuiltGradientStrategy",
     "with_out": "BuiltWithOutStrategy",
+    "with_copy": "BuiltWithCopyStrategy",
     "inplace": "BuiltInplace",
     "test_trace": "BuiltTraceStrategy",
     "transpile": "BuiltTranspileStrategy",
     "precision_mode": "BuiltPrecisionModeStrategy",
+    "test_cython_wrapper": "BuiltCythonWrapperStrategy",
 }
 
 
@@ -86,6 +91,7 @@ class FunctionTestFlags(TestFlags):
         ground_truth_backend,
         num_positional_args,
         with_out,
+        with_copy,
         instance_method,
         as_variable,
         native_arrays,
@@ -94,10 +100,12 @@ class FunctionTestFlags(TestFlags):
         test_trace,
         transpile,
         precision_mode,
+        test_cython_wrapper,
     ):
         self.ground_truth_backend = ground_truth_backend
         self.num_positional_args = num_positional_args
         self.with_out = with_out
+        self.with_copy = with_copy
         self.instance_method = instance_method
         self.native_arrays = native_arrays
         self.container = container
@@ -106,6 +114,7 @@ class FunctionTestFlags(TestFlags):
         self.test_trace = test_trace
         self.transpile = transpile
         self.precision_mode = precision_mode
+        self.test_cython_wrapper = test_cython_wrapper
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
@@ -126,6 +135,7 @@ class FunctionTestFlags(TestFlags):
             f"ground_truth_backend={self.ground_truth_backend}"
             f"num_positional_args={self.num_positional_args}. "
             f"with_out={self.with_out}. "
+            f"with_copy={self.with_copy}. "
             f"instance_method={self.instance_method}. "
             f"native_arrays={self.native_arrays}. "
             f"container={self.container}. "
@@ -148,6 +158,7 @@ def function_flags(
     num_positional_args,
     instance_method,
     with_out,
+    with_copy,
     test_gradients,
     test_trace,
     transpile,
@@ -155,6 +166,7 @@ def function_flags(
     native_arrays,
     container_flags,
     precision_mode,
+    test_cython_wrapper,
 ):
     return draw(
         st.builds(
@@ -162,6 +174,7 @@ def function_flags(
             ground_truth_backend=ground_truth_backend,
             num_positional_args=num_positional_args,
             with_out=with_out,
+            with_copy=with_copy,
             instance_method=instance_method,
             test_gradients=test_gradients,
             test_trace=test_trace,
@@ -170,6 +183,7 @@ def function_flags(
             native_arrays=native_arrays,
             container=container_flags,
             precision_mode=precision_mode,
+            test_cython_wrapper=test_cython_wrapper,
         )
     )
 
@@ -179,6 +193,7 @@ class FrontendFunctionTestFlags(TestFlags):
         self,
         num_positional_args,
         with_out,
+        with_copy,
         inplace,
         as_variable,
         native_arrays,
@@ -189,6 +204,7 @@ class FrontendFunctionTestFlags(TestFlags):
     ):
         self.num_positional_args = num_positional_args
         self.with_out = with_out
+        self.with_copy = with_copy
         self.inplace = inplace
         self.native_arrays = native_arrays
         self.as_variable = as_variable
@@ -213,6 +229,7 @@ class FrontendFunctionTestFlags(TestFlags):
         return (
             f"num_positional_args={self.num_positional_args}. "
             f"with_out={self.with_out}. "
+            f"with_copy={self.with_copy}. "
             f"inplace={self.inplace}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
@@ -232,6 +249,7 @@ def frontend_function_flags(
     *,
     num_positional_args,
     with_out,
+    with_copy,
     inplace,
     as_variable,
     native_arrays,
@@ -245,6 +263,7 @@ def frontend_function_flags(
             FrontendFunctionTestFlags,
             num_positional_args=num_positional_args,
             with_out=with_out,
+            with_copy=with_copy,
             inplace=inplace,
             as_variable=as_variable,
             native_arrays=native_arrays,

@@ -19,7 +19,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
 
 @st.composite
 def _det_helper(draw):
-    square = draw(helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])))
+    square = draw(helpers.ints(min_value=2, max_value=8).map(lambda x: (x, x)))
     shape_prefix = draw(helpers.get_shape())
     dtype_x = draw(
         helpers.dtype_and_values(
@@ -185,7 +185,7 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False, conjugate=False):
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([random_size, shared_size]),
+            shape=(random_size, shared_size),
             min_value=2,
             max_value=5,
         )
@@ -224,7 +224,7 @@ def _get_second_matrix_and_dtype(draw, *, transpose=False):
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([random_size, shared_size]),
+            shape=(random_size, shared_size),
             min_value=2,
             max_value=5,
         )
@@ -355,7 +355,7 @@ def dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     upper=st.booleans(),
 )
@@ -593,7 +593,7 @@ def test_inner(*, dtype_xy, test_flags, backend_fw, fn_name, on_device):
         small_abs_safety_factor=24,
         large_abs_safety_factor=24,
         safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: (x, x)),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     adjoint=st.booleans(),
 )
@@ -681,7 +681,7 @@ def test_matrix_norm(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=1e-3,
         max_value=20,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: (x, x)),
     ),
     n=helpers.ints(min_value=-6, max_value=6),
 )

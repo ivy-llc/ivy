@@ -185,6 +185,7 @@ def test_arange(
     x_dtype_x_and_dtype=_asarray_helper(),
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_asarray(
     *,
@@ -218,6 +219,7 @@ def test_asarray(
     fn_tree="functional.ivy.copy_array",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     to_ivy_array_bool=st.booleans(),
+    test_with_copy=st.just(True),
 )
 def test_copy_array(
     *,
@@ -846,6 +848,7 @@ def test_zeros(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
         min_dim_size=1,
         max_dim_size=5,
     ),
+    test_gradients=st.just(False),
 )
 def test_zeros_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x

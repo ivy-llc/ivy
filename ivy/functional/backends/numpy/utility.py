@@ -17,7 +17,7 @@ def all(
     try:
         return np.asarray(np.all(x, axis=axis, keepdims=keepdims, out=out))
     except np.AxisError as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+        raise ivy.utils.exceptions.IvyIndexError(error) from error
 
 
 all.support_native_out = True

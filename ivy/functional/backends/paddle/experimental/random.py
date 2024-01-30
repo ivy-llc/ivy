@@ -16,7 +16,7 @@ from ivy import with_supported_device_and_dtypes
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -91,8 +91,8 @@ def poisson(
     lam: Union[float, paddle.Tensor],
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: core.Place,
-    dtype: paddle.dtype,
+    device: core.Place = None,
+    dtype: paddle.dtype = None,
     seed: Optional[int] = None,
     fill_value: Optional[Union[float, int]] = 0,
     out: Optional[paddle.Tensor] = None,

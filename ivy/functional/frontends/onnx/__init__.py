@@ -191,8 +191,8 @@ def promote_types_onnx(
     type2: Union[ivy.Dtype, ivy.NativeDtype],
     /,
 ) -> ivy.Dtype:
-    """
-    Promote the datatypes type1 and type2, returning the data type they promote to.
+    """Promote the datatypes type1 and type2, returning the data type they
+    promote to.
 
     Parameters
     ----------
@@ -208,8 +208,10 @@ def promote_types_onnx(
     """
     try:
         ret = onnx_promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
-    except KeyError:
-        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
+    except KeyError as e:
+        raise ivy.utils.exceptions.IvyException(
+            "these dtypes are not type promotable"
+        ) from e
     return ret
 
 
@@ -219,9 +221,8 @@ def promote_types_of_onnx_inputs(
     x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Promote the dtype of the given native array inputs to a common dtype based on type
-    promotion rules.
+    """Promote the dtype of the given native array inputs to a common dtype
+    based on type promotion rules.
 
     While passing float or integer values or any other non-array input
     to this function, it should be noted that the return will be an

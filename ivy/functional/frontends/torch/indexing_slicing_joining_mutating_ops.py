@@ -6,6 +6,7 @@ from ivy.functional.frontends.torch.func_wrapper import (
     numpy_to_torch_style_args,
     to_ivy_shape,
 )
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -73,7 +74,7 @@ def conj(input):
 # diagonal_scatter
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.2 and below": (
             "bfloat16",
             "float16",
         )
@@ -88,7 +89,7 @@ def diagonal_scatter(input, src, offset=0, dim1=0, dim2=1):
     diagonal_indices = ivy.diagonal(
         indices.reshape(input.shape), offset=offset, axis1=dim1, axis2=dim2
     )
-    if not (src.shape == diagonal_indices.shape):
+    if src.shape != diagonal_indices.shape:
         raise ivy.utils.exceptions.IvyException(
             "src must have shape equal to specified diagonal of input. src size ="
             f" {src.shape}, diagonal size = {diagonal_indices.shape}"
@@ -173,7 +174,7 @@ def index_add(input, dim, index, source, *, alpha=1, out=None):
         while len(_to_adds) < _curr_idx:
             _to_adds.append(ivy.zeros_like(source[0]))
         _to_add_cum = ivy.get_item(source, index[0][1])
-        while (1 < len(index)) and (index[0][0] == index[1][0]):
+        while (len(index) > 1) and (index[0][0] == index[1][0]):
             _to_add_cum = _to_add_cum + ivy.get_item(source, index.pop(1)[1])
         index.pop(0)
         _to_adds.append(_to_add_cum)
@@ -199,7 +200,7 @@ def index_copy(input, dim, index, source, *, out=None):
         _curr_idx = index[0][0]
         for i in range(len(res), _curr_idx):
             res.append(ivy.get_item(input, i))
-        while (1 < len(index)) and (index[0][0] == index[1][0]):
+        while (len(index) > 1) and (index[0][0] == index[1][0]):
             index.pop(0)
         res.append(ivy.get_item(source, index[0][1]))
         index.pop(0)
@@ -214,7 +215,7 @@ def index_copy(input, dim, index, source, *, out=None):
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.1.2 and below": (
             "uint16",
             "uint32",
             "uint64",
@@ -341,13 +342,9 @@ def narrow(input, dim, start, length):
 
 @to_ivy_arrays_and_back
 def nonzero(input, *, out=None, as_tuple=False):
-    ret = ivy.nonzero(input)
-    if as_tuple is False:
-        ret = ivy.matrix_transpose(ivy.stack(ret))
-
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    if as_tuple:
+        return ivy.nonzero(input, as_tuple=as_tuple)
+    return ivy.argwhere(input != 0, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -419,8 +416,7 @@ def swapdims(input, dim0, dim1):
 def t(input):
     if input.ndim > 2:
         raise ivy.utils.exceptions.IvyException(
-            "t(input) expects a tensor with <= 2 dimensions, but self is %dD"
-            % input.ndim
+            f"t(input) expects a tensor with <= 2 dimensions, but self is {input.ndim}D"
         )
     if input.ndim == 2:
         return ivy.swapaxes(input, 0, 1)
@@ -508,4 +504,5 @@ def vstack(tensors, *, out=None):
 def where(condition, input=None, other=None):
     if not ivy.exists(input) and not ivy.exists(other):
         return nonzero(condition, as_tuple=True)
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.where(condition, input, other)
