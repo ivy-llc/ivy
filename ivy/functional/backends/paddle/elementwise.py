@@ -1182,6 +1182,10 @@ def isreal(
         return paddle.ones_like(x, dtype="bool")
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64", "complex")},
+    backend_version,
+)
 def fmod(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
