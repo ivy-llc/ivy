@@ -162,6 +162,9 @@ def max_pool2d(
                 "Nonzero explicit padding is not supported for depthwise max pooling"
             )
 
+    # max pooling Operation
+    # Memory management behavior set to 'strict' for inplace update
+    ivy.set_inplace_mode("strict")
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
     if depth_pooling:
