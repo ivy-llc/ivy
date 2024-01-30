@@ -3,6 +3,7 @@ import ast
 import logging
 import inspect
 import math
+import functools
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable, Iterable, Any
 import numpy as np
@@ -48,6 +49,7 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
 
 
 def _handle_nestable_dtype_info(fn):
+    @functools.wraps(fn)
     def _handle_nestable_dtype_info_wrapper(type):
         if isinstance(type, ivy.Container):
             type = type.cont_map(lambda x, kc: fn(x))

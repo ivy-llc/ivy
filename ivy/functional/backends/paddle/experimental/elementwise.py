@@ -162,7 +162,7 @@ def nansum(
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[paddle.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     result = paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
@@ -179,9 +179,9 @@ def isclose(
     b: paddle.Tensor,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -258,9 +258,9 @@ def allclose(
     x2: paddle.Tensor,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> bool:
     return paddle.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan).squeeze(0)
@@ -404,9 +404,9 @@ def gradient(
     x: paddle.Tensor,
     /,
     *,
-    spacing: Optional[Union[int, list, tuple]] = 1,
+    spacing: Union[int, list, tuple] = 1,
     axis: Optional[Union[int, list, tuple]] = None,
-    edge_order: Optional[int] = 1,
+    edge_order: int = 1,
 ) -> Union[paddle.Tensor, List[paddle.Tensor]]:
     """Https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/
     function_base.py#L969-L1312."""
@@ -645,7 +645,7 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, list, tuple]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:

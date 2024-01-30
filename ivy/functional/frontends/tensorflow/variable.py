@@ -188,7 +188,7 @@ class Variable:
         return tf_frontend.math.multiply(x, self._ivy_array, name=name)
 
     def __mod__(self, x, name="mod"):
-        return ivy.remainder(x, self._ivy_array, name=name)
+        return tf_frontend.math.mod(x, self._ivy_array, name=name)
 
     def __ne__(self, other):
         return tf_frontend.raw_ops.NotEqual(
