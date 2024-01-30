@@ -894,12 +894,10 @@ def logaddexp2(
         return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("complex64", "complex128")},
-    backend_version,
-)
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.real(x)
+    if paddle.is_complex(x):
+        return paddle.real(x)
+    return x
 
 
 @with_supported_device_and_dtypes(
