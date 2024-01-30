@@ -155,11 +155,12 @@ def less_equal(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if paddle.is_complex(x1):
-        if paddle.is_complex(x2):
-            real = paddle.less_equal(x1.real(), x2.real())
-            imag = paddle.less_equal(x1.imag(), x2.imag())
-            return paddle_backend.logical_and(real, imag)
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1):
+            if paddle.is_complex(x2):
+                real = paddle.less_equal(x1.real(), x2.real())
+                imag = paddle.less_equal(x1.imag(), x2.imag())
+                return paddle_backend.logical_and(real, imag)
 
     return paddle.less_equal(x1, x2)
 
