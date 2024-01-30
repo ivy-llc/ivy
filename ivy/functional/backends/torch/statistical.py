@@ -245,7 +245,7 @@ def var(
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": ("uint8", "float16", "bfloat16"),
+        "2.1.2 and below": ("uint8", "float16", "bfloat16", "bool"),
     },
     backend_version,
 )
