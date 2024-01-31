@@ -1165,7 +1165,7 @@ def test_paddle_fmax(
 @handle_frontend_test(
     fn_tree="paddle.fmin",
     dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
 def test_paddle_fmin(
