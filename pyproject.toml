@@ -24,6 +24,7 @@ exclude = ["__init__.py"]
 
 
 [tool.ruff]
+preview=true
 line-length = 88
 target-version = "py38"
 
@@ -50,6 +51,7 @@ select = [
 
 
 ignore = [
+    "F841", # Local variable `xyz` is assigned to but never used.
     "E203",	# Whitespace-before-punctuation.
     "E402", # Module-import-not-at-top-of-file.
     "E731", # Do not assign a lambda expression, use a def.
