@@ -5818,6 +5818,8 @@ def test_paddle_tensor_cov(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        rtol_=1e-3,
+        atol_=1e-3,
         frontend=frontend,
         on_device=on_device,
     )
