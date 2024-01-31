@@ -2234,6 +2234,27 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.1.2 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "int16",
+                "float16",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def tensor.unique(sorted=True, return_inverse=False, return_counts=False, dim=None):
+        return torch_frontend.tensor.unique(sorted, return_inverse, return_counts, dim)
+    
+
+    @with_unsupported_dtypes(
+        {
+            "2.1.2 and below": (
                 "float16",
                 "bfloat16",
             )
