@@ -81,7 +81,7 @@ def tensorflow_profile_start(
     Returns
     -------
     None
-    """
+    """  # noqa: E501
     from tensorflow.profiler.experimental import ProfilerOptions, start
 
     options = ProfilerOptions(
@@ -159,7 +159,7 @@ def torch_profiler_init(
     Returns
     -------
     Torch profiler instance.
-    """
+    """  # noqa: E501
     from torch.profiler import profile, tensorboard_trace_handler
 
     profiler = profile(

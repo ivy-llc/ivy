@@ -6,7 +6,6 @@ import functools
 import logging
 from tensorflow.python.util import nest
 from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
-from dataclasses import dataclass
 
 # A NodeDef holds two callables:
 # - flatten_fn should take the collection and return a flat list of values.
@@ -60,11 +59,12 @@ def _is_leaf(pytree: PyTree) -> bool:
 # context: some context that is useful in unflattening the pytree
 # children_specs: specs for each child of the root Node
 # num_leaves: the number of leaves
-@dataclass
 class TreeSpec:
-    type: Any
-    context: Context
-    children_specs: List["TreeSpec"]
+    def __init__(self, type, context, children_specs):
+        self.type: Any = type
+        self.context: Context = context
+        self.children_specs: List["TreeSpec"] = children_specs
+        self.num_leaves: int = sum([spec.num_leaves for spec in self.children_specs])
 
     def get_keychains(self, prefix="", sep="/"):
         keychains = []
@@ -75,9 +75,6 @@ class TreeSpec:
             else:  # Leaf node
                 keychains.append(new_prefix[: -len(sep)])
         return keychains
-
-    def __post_init__(self) -> None:
-        self.num_leaves: int = sum([spec.num_leaves for spec in self.children_specs])
 
     def __repr__(self, indent: int = 0) -> str:
         repr_prefix: str = f"TreeSpec({self.type.__name__}, {self.context}, ["

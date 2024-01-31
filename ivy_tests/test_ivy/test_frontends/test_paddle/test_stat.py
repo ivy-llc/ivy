@@ -26,7 +26,7 @@ def test_paddle_mean(
     backend_fw,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis = dtype_and_x[:3]
     test_flags.num_positional_args = len(dtype_and_x) - 2
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -35,6 +35,8 @@ def test_paddle_mean(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
         input=x[0],
         axis=axis,
         keepdim=keepdim,

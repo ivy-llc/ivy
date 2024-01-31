@@ -87,7 +87,11 @@ def _general_transpose_helper(draw):
 def _lstm_helper(draw):
     dtype = draw(helpers.get_dtypes("float", full=False))
 
-    has_biases = draw(st.booleans())
+    has_ih_bias = draw(st.booleans())
+    has_hh_bias = draw(st.booleans())
+    weights_transposed = draw(st.booleans())
+    return_sequences = draw(st.booleans())
+    return_states = draw(st.booleans())
     bidirectional = draw(st.booleans())
     dropout = draw(st.floats(min_value=0, max_value=0.99))
     train = draw(st.booleans()) and not dropout
@@ -155,7 +159,7 @@ def _lstm_helper(draw):
                 )
             )
             all_weights += [weight_ih, weight_hh]
-            if has_biases:
+            if has_ih_bias:
                 bias_ih = draw(
                     helpers.array_values(
                         dtype=dtype[0],
@@ -164,6 +168,8 @@ def _lstm_helper(draw):
                         max_value=1,
                     )
                 )
+                all_weights.append(bias_ih)
+            if has_hh_bias:
                 bias_hh = draw(
                     helpers.array_values(
                         dtype=dtype[0],
@@ -172,7 +178,12 @@ def _lstm_helper(draw):
                         max_value=1,
                     )
                 )
-                all_weights += [bias_ih, bias_hh]
+                all_weights.append(bias_hh)
+
+    if weights_transposed:
+        all_weights = [
+            ivy.swapaxes(w, 0, 1) if w.dims() == 2 else w for w in all_weights
+        ]
 
     if packed:
         batch_sizes = [seq_size]
@@ -199,11 +210,15 @@ def _lstm_helper(draw):
             "batch_sizes": batch_sizes,
             "initial_states": initial_states,
             "all_weights": all_weights,
-            "has_biases": has_biases,
             "num_layers": num_layers,
             "dropout": dropout,
             "train": train,
             "bidirectional": bidirectional,
+            "weights_transposed": weights_transposed,
+            "has_ih_bias": has_ih_bias,
+            "has_hh_bias": has_hh_bias,
+            "return_sequences": return_sequences,
+            "return_states": return_states,
         }
     else:
         dtypes = dtype
@@ -211,12 +226,16 @@ def _lstm_helper(draw):
             "input": input,
             "initial_states": initial_states,
             "all_weights": all_weights,
-            "has_biases": has_biases,
             "num_layers": num_layers,
             "dropout": dropout,
             "train": train,
             "bidirectional": bidirectional,
             "batch_first": batch_first,
+            "weights_transposed": weights_transposed,
+            "has_ih_bias": has_ih_bias,
+            "has_hh_bias": has_hh_bias,
+            "return_sequences": return_sequences,
+            "return_states": return_states,
         }
     return dtypes, kwargs
 

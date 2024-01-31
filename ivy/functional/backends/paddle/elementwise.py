@@ -155,8 +155,8 @@ def less_equal(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if paddle.is_complex(x1):
-        if paddle.is_complex(x2):
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1) and paddle.is_complex(x2):
             real = paddle.less_equal(x1.real(), x2.real())
             imag = paddle.less_equal(x1.imag(), x2.imag())
             return paddle_backend.logical_and(real, imag)
@@ -335,10 +335,11 @@ def less(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if paddle.is_complex(x1):
-        real = paddle.less_than(x1.real(), x2.real())
-        imag = paddle.less_than(x1.imag(), x2.imag())
-        return logical_and(real, imag)
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1) and paddle.is_complex(x2):
+            real = paddle.less_than(x1.real(), x2.real())
+            imag = paddle.less_than(x1.imag(), x2.imag())
+            return logical_and(real, imag)
 
     return paddle.less_than(x1, x2)
 
@@ -402,12 +403,13 @@ def divide(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if paddle.is_complex(x1) or paddle.is_complex(x2):
-        angle_value = paddle.angle(x1) - paddle.angle(x2)
-        abs_value = paddle.abs(x1) / paddle.abs(x2)
-        return paddle.complex(
-            abs_value * paddle.cos(angle_value), abs_value * paddle.sin(angle_value)
-        )
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1) or paddle.is_complex(x2):
+            angle_value = paddle.angle(x1) - paddle.angle(x2)
+            abs_value = paddle.abs(x1) / paddle.abs(x2)
+            return paddle.complex(
+                abs_value * paddle.cos(angle_value), abs_value * paddle.sin(angle_value)
+            )
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     return (x1 / x2).astype(ret_dtype)
 
@@ -457,8 +459,8 @@ def greater(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if paddle.is_complex(x1):
-        if paddle.is_complex(x1):
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1) and paddle.is_complex(x2):
             real = paddle.greater_than(x1.real(), x2.real())
             imag = paddle.greater_than(x1.imag(), x2.imag())
             return paddle.logical_and(real, imag)
@@ -487,8 +489,8 @@ def greater_equal(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if paddle.is_complex(x1):
-        if paddle.is_complex(x1):
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1) and paddle.is_complex(x2):
             real = paddle.greater_equal(x1.real(), x2.real())
             imag = paddle.greater_equal(x1.imag(), x2.imag())
             return paddle.logical_and(real, imag)
@@ -1182,6 +1184,10 @@ def isreal(
         return paddle.ones_like(x, dtype="bool")
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64", "complex")},
+    backend_version,
+)
 def fmod(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
