@@ -30,12 +30,13 @@ def _lstm_full(
         input,
         hx,
         params,
-        has_biases,
         num_layers,
         dropout,
         train,
         bidirectional,
         batch_first=batch_first,
+        has_ih_bias=has_biases,
+        has_hh_bias=has_biases,
     )
 
 
@@ -54,12 +55,13 @@ def _lstm_packed(
         data,
         hx,
         params,
-        has_biases,
         num_layers,
         dropout,
         train,
         bidirectional,
         batch_sizes=batch_sizes,
+        has_ih_bias=has_biases,
+        has_hh_bias=has_biases,
     )
 
 
