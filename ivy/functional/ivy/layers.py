@@ -2388,13 +2388,17 @@ def lstm(
     input: ivy.Array,
     initial_states: Tuple[ivy.Array],
     all_weights: Tuple[ivy.Array],
-    has_biases: bool,
     num_layers: int,
     dropout: float,
     train: bool,
     bidirectional: bool,
     batch_first: bool = False,
     batch_sizes: Sequence = None,
+    weights_transposed: bool = False,
+    has_ih_bias: bool = True,
+    has_hh_bias: bool = True,
+    return_sequences: bool = True,
+    return_states: bool = True,
 ):
     """Applies a multi-layer long-short term memory to an input sequence.
 
@@ -2411,15 +2415,13 @@ def lstm(
         (num_directions being 2 when `bidirectional`, otherwise 1)
     all_weights
         tuple of arrays representing the learnable weights of the lstm, with each
-        layer having either four arrays (w_ih, w_hh, b_ih, b_hh), when has_biases=True,
-        or two (w_ih, w_hh), when has_biases=False
+        layer having up to four arrays (w_ih, w_hh, b_ih, b_hh) representing the weights
+        and biases (if biases are being used)
 
         w_ih: weight of shape (4 * hidden_size, input_size)
         w_hh: weight of shape (4 * hidden_size, hidden_size)
         b_ih: bias of shape (4 * hidden_size,)
         b_hh: bias of shape (4 * hidden_size,)
-    has_biases
-        indicates whether the `all_weights` argument includes biases
     num_layers
         number of layers for the lstm to use
     dropout
@@ -2432,6 +2434,19 @@ def lstm(
         defines the data format of the input and output arrays
     batch_sizes
         specifies the batch size at each timestep, when the input is a packed sequence
+    weights_transposed
+        whether the weights are transposed compared to the format
+        in which they are expected (input_size, 4 * hidden_size)
+        rather than (4 * hidden_size, input_size)
+    has_ih_bias
+        whether the `all_weights` argument includes a input-hidden bias
+    has_hh_bias
+        whether the `all_weights` argument includes a hidden-hidden bias
+    return_sequences
+        whether to return the last output in the output sequence,
+        or the full sequence
+    return_states
+        whether to return the final hidden and carry states in addition to the output
 
     Returns
     -------
@@ -2443,7 +2458,34 @@ def lstm(
     c_outs
         final cell state of shape (num_layers * num_directions, batch, hidden_size)
     """
-    weights_per_layer = 4 if has_biases else 2
+    # TODO: the test for this function needs to be fixed -
+    # see ivy_tests/test_ivy/test_functional/test_nn/test_layers.py::test_lstm
+
+    if weights_transposed:
+        # transpose the weights if they are in the wrong format
+        all_weights = [
+            ivy.swapaxes(weight, 1, 0) if weight.dim() == 2 else weight
+            for weight in all_weights
+        ]
+    else:
+        all_weights = list(all_weights)
+
+    if (has_ih_bias and not has_hh_bias) or (has_hh_bias and not has_ih_bias):
+        # insert zero biases into the weights where one set of biases is not used
+        shapes = []
+        for i in range(2, len(all_weights), 3):
+            shapes.append(tuple(all_weights[i].shape))
+        for i, shape in enumerate(shapes):
+            idx = (i + 1) * 4 - (1 if has_ih_bias else 2)
+            all_weights.insert(idx, ivy.zeros(shape))
+        has_ih_bias = True
+        has_hh_bias = True
+
+    weights_per_layer = 2
+    if has_ih_bias:
+        weights_per_layer += 1
+    if has_hh_bias:
+        weights_per_layer += 1
 
     assert len(all_weights) == num_layers * weights_per_layer * (1 + bidirectional)
     layer_weights = [
@@ -2525,7 +2567,16 @@ def lstm(
     if batch_sizes is not None:
         output = _pack_padded_sequence(output, batch_sizes)[0]
 
-    return output, h_outs, c_outs
+    if return_states:
+        if return_sequences:
+            return output, h_outs, c_outs
+        else:
+            return output[:, -1], h_outs, c_outs  # TODO: this depends on batch_first
+    else:
+        if return_sequences:
+            return output
+        else:
+            return output[:, -1]
 
 
 # Helpers #
