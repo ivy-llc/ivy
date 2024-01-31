@@ -510,6 +510,14 @@ def silu(features, beta: float = 1.0):
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
+@to_ivy_arrays_and_back
+def sampled_softmax_loss(weight, bias, labels, inputs, num_sampled, num_classes,
+                          num_true=1, sampled_values=None, remove_accidental_hits=True,
+                          seed=None, name=None):
+    return ivy.sampled_softmax_loss(weight, bias, labels, inputs, num_sampled, num_classes,num_true = 1,
+                                    sampled_values = sampled_values, remove_accidental_hits = True,seed=seed,name=name)
+
+
 
 # Softsign
 @with_unsupported_dtypes(
