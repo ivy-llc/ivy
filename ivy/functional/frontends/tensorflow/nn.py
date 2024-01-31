@@ -219,7 +219,6 @@ def conv3d(
     )
 
 
-    
 @with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
@@ -389,7 +388,6 @@ def moments(x, axes, shift=None, keepdims=False, name=None):
     )
 
 
-
 @with_unsupported_dtypes(
     {
         "2.15.0 and below": (
@@ -529,10 +527,6 @@ def softmax(logits, axis=None, name=None):
 def softsign(x, name=None):
     return ivy.softsign(x)
 
-@with_unsupported_dtypes({"2.15.0 and below": ("float32",)}, "tensorflow")
-@to_ivy_arrays_and_back
-def zero_fraction(value, name=None):
-    return ivy.zero_fraction(value)
 
 # sufficient_statistics
 @to_ivy_arrays_and_back
@@ -639,3 +633,9 @@ def weighted_moments(x, axes, frequency_weights, keepdims=False, name=None):
         weighted_mean = ivy.squeeze(weighted_mean, axis=axes)
         weighted_variance = ivy.squeeze(weighted_variance, axis=axes)
     return weighted_mean, weighted_variance
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("float32",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def zero_fraction(value, name=None):
+    return ivy.zero_fraction(value)
