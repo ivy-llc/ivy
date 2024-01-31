@@ -1120,6 +1120,10 @@ class ContainerBase(dict, abc.ABC):
             return ivy.Container.cont_from_disk_as_pickled(filepath)
         elif format == "h5py":
             return ivy.Container.cont_from_disk_as_hdf5(filepath)
+        elif format == "pt":
+            return ivy.Container.cont_from_disk_as_pt(filepath)
+        elif format == "flax":
+            return ivy.Container.cont_from_disk_as_flax(filepath)
         else:
             raise ivy.utils.exceptions.IvyException("Unsupported format")
 
@@ -1217,6 +1221,66 @@ class ContainerBase(dict, abc.ABC):
         """
         with open(json_filepath) as json_data_file:
             return ivy.Container(json.load(json_data_file), ivyh=ivyh)
+
+    @staticmethod
+    def cont_from_disk_as_flax(ckpt_filepath, ivyh=None):
+        """Load container object from disk at the specified flax ckpt filepath.
+
+        Parameters
+        ----------
+        ckpt_filepath
+            Filepath where the container object is saved to disk.
+        ivyh
+            Handle to ivy module to use for the calculations. Default is ``None``, which
+            results in the global ivy.
+
+        Returns
+        -------
+            Container loaded from disk
+        """
+        from flax.training import checkpoints
+
+        ckpt = checkpoints.restore_checkpoint(
+            ckpt_dir="/workspaces/ivy/load-save-modules/jax_weights", target=None
+        )
+
+        container_dict = {}
+        weights = ckpt["model"]["params"]
+        for k, v in weights.items():
+            if isinstance(v, dict):
+                container_dict[k] = ivy.Container.cont_from_disk_as_flax(v, ivyh)
+            else:
+                container_dict[k] = ivy.default(ivyh, ivy).array(v, dtype=str(v.dtype))
+
+        return ivy.Container(container_dict, ivyh=ivyh)
+
+    @staticmethod
+    def cont_from_disk_as_pt(pt_filepath, ivyh=None):
+        """Load container object from disk at the specified pt filepath.
+
+        Parameters
+        ----------
+        pt_filepath
+            Filepath where the container object is saved to disk.
+        ivyh
+            Handle to ivy module to use for the calculations. Default is ``None``, which
+            results in the global ivy.
+
+        Returns
+        -------
+            Container loaded from disk
+        """
+        import torch
+
+        weights = torch.load(pt_filepath)
+        items = weights.items()
+        container_dict = {}
+        for key, value in items:
+            container_dict[key] = ivy.default(ivyh, ivy).array(
+                value.detach().numpy(), dtype=str(value.detach().numpy().dtype)
+            )
+
+        return ivy.Container(container_dict, ivyh=ivyh)
 
     @staticmethod
     def h5_file_size(h5_obj_or_filepath):
