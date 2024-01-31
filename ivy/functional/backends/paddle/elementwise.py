@@ -458,8 +458,8 @@ def greater(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if paddle.is_complex(x1):
-        if paddle.is_complex(x1):
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1) and paddle.is_complex(x2):
             real = paddle.greater_than(x1.real(), x2.real())
             imag = paddle.greater_than(x1.imag(), x2.imag())
             return paddle.logical_and(real, imag)
@@ -488,8 +488,8 @@ def greater_equal(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if paddle.is_complex(x1):
-        if paddle.is_complex(x1):
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1) and paddle.is_complex(x2):
             real = paddle.greater_equal(x1.real(), x2.real())
             imag = paddle.greater_equal(x1.imag(), x2.imag())
             return paddle.logical_and(real, imag)
