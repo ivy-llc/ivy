@@ -2250,7 +2250,7 @@ class Tensor:
     )
     def tensor.unique(sorted=True, return_inverse=False, return_counts=False, dim=None):
         return torch_frontend.tensor.unique(sorted, return_inverse, return_counts, dim)
-    
+
 
     @with_unsupported_dtypes(
         {
