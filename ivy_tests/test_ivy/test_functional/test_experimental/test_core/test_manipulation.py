@@ -1473,7 +1473,7 @@ def test_trim_zeros(
 
 # unflatten
 @handle_test(
-    fn_tree="functional.ivy.experimental.unflatten",
+    fn_tree="unflatten",
     shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
