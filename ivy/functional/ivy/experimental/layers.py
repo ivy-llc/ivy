@@ -591,7 +591,7 @@ def pool(
     Examples
     --------
     >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
-    >>> print(ivy.pool(x, (2, 2), 'MAX', (1, 1), 'SAME'))
+    >>> print(ivy.pool(x, (2, 2), 'MAX', strides=(1, 1), padding='SAME'))
     ivy.array([[[[ 1.,  2.],
                 [ 3.,  4.],
                 [ 4.,  5.]]],
@@ -599,7 +599,7 @@ def pool(
                 [ 9., 10.],
                 [10., 11.]]]])
     >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
-    >>> print(ivy.pool(x, 3, 'AVG', 1, 'VALID'))
+    >>> print(ivy.pool(x, 3, 'AVG', strides=1, padding='VALID'))
     ivy.array([[[[ 8.,  9.]],
             [[14., 15.]]],
             [[[32., 33.]],
