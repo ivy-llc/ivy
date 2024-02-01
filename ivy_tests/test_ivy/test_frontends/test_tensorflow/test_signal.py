@@ -177,40 +177,33 @@ def test_tensorflow_kaiser_bessel_derived_window(
 # kaiser_window
 @handle_frontend_test(
     fn_tree="tensorflow.signal.kaiser_window",
-    dtype_and_window_length=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer")
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_num_dims=0,
+        min_value=1,
+        max_value=10,
     ),
-    dtype_and_beta=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-    dtype=helpers.get_dtypes("numeric"),
+    periodic=st.booleans(),
+    beta=st.floats(min_value=0, max_value=5),
+    dtype=helpers.get_dtypes("float", full=False),
     test_with_out=st.just(False),
 )
 def test_tensorflow_kaiser_window(
-    *,
-    dtype_and_window_length,
-    dtype_and_beta,
-    dtype,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
+    *, dtype_and_x, periodic, beta, test_flags, backend_fw, fn_tree, on_device, frontend, #dtype
 ):
-    window_length_dtype, window_length = dtype_and_window_length
-    beta_dtype, beta = dtype_and_beta
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[window_length_dtype[0], beta_dtype[0]],
-        backend_to_test=backend_fw,
-        frontend=frontend,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
+        frontend=frontend,
         on_device=on_device,
-        window_length=window_length,
+        window_length=int(x[0]),
+        periodic=periodic,
         beta=beta,
-        dtype=dtype,
+        #dtype=dtype[0],
     )
-
 
 # test stft
 @handle_frontend_test(
