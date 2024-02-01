@@ -2930,4 +2930,4 @@ def unflatten(
     >>> ivy.unflatten(torch.randn(5, 12, 3), dim=-2, shape=(2, 2, 3, 1, 1)).shape
     torch.Size([5, 2, 2, 3, 1, 1, 3])
     """
-    return current_backend(x).unflatten(x, dim=dim, shape=shape, out=out)
+    return ivy.current_backend(x).unflatten(x, dim=dim, shape=shape, out=out)
