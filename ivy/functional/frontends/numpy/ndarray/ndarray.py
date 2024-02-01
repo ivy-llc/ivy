@@ -339,7 +339,7 @@ class ndarray:
 
     def setfield(self, value, dtype=None, offset=0):
         return np_frontend.setfield(self, value, dtype=dtype, offset=offset)
-        
+
     def squeeze(self, axis=None):
         return np_frontend.squeeze(self, axis=axis)
 
