@@ -559,7 +559,7 @@ def poisson_nll_loss(
     --------
     >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
     >>> target_tensor = ivy.array([2, 2, 2, 2], dtype=ivy.float64)
-    >>> loss = poisson_nll_loss(input_tensor, target_tensor, log_input=False)
+    >>> loss = ivy.poisson_nll_loss(input_tensor, target_tensor, log_input=False)
     >>> print(loss)
     ivy.array(0.91097307)
     """
