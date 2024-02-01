@@ -2157,13 +2157,16 @@ def set_min_base(val: float) -> None:
     >>> print(x)
     1e-05
 
-    Set the minimum base to 1e-04:
+    >>> # Set the minimum base to 1e-04:
     >>> ivy.set_min_base(1e-04)
 
     Retrieve the minimum base:
     >>> y = ivy.min_base
     >>> print(y)
     1e-04
+
+    >>> # unset the min_base
+    >>> ivy.unset_min_base()
     """
     global min_base_stack
 
