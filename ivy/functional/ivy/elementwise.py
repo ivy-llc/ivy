@@ -1851,7 +1851,7 @@ def cosh(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([1, 2, 3, 4])
+    >>> x = ivy.array([1., 2., 3., 4.])
     >>> y = ivy.cosh(x)
     >>> print(y)
     ivy.array([1.54,3.76,10.1,27.3])
