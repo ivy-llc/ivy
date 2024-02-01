@@ -1492,7 +1492,6 @@ def test_unflatten(
     dtype_and_values,
     on_device,
     fn_name,
-    frontend,
     test_flags,
     backend_fw,
     shape,
@@ -1539,7 +1538,6 @@ def test_unflatten(
     )
     helpers.test_function(
         input_dtypes=dtype,
-        frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
