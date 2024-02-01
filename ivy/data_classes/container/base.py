@@ -1271,14 +1271,7 @@ class ContainerBase(dict, abc.ABC):
         import torch
 
         weights = torch.load(pt_filepath)
-        items = weights.items()
-        container_dict = {}
-        for key, value in items:
-            container_dict[key] = ivy.default(ivyh, ivy).array(
-                value.detach().numpy(), dtype=str(value.detach().numpy().dtype)
-            )
-
-        return ivy.Container(container_dict, ivyh=ivyh)
+        return ivy.Container(weights, ivyh=ivyh).to_ivy()
 
     @staticmethod
     def h5_file_size(h5_obj_or_filepath):
