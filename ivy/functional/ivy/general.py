@@ -1056,7 +1056,7 @@ def clip_vector_norm(
     >>> print(y)
     {
         a: ivy.array([0., 0.894, 1.79]),
-        b: ivy.array([2.449, 2.65, 2.83])
+        b: ivy.array([1.27279221, 1.69705628, 2.12132034])
     }
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
