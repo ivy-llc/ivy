@@ -138,11 +138,11 @@ def l1_loss(
     --------
     >>> x = ivy.array([1.0, 2.0, 3.0])
     >>> y = ivy.array([0.5, 2.5, 2.0])
-    >>> print(ivy.l1_loss(x, y))
-    ivy.array(0.6)
+    >>> ivy.l1_loss(x, y)
+    ivy.array(0.666)
     >>> a = ivy.array([[1.0, 2.0], [3.0, 4.0]])
     >>> b = ivy.array([[0.5, 1.5], [2.5, 3.5]])
-    >>> print(ivy.l1_loss(a, b))
+    >>> ivy.l1_loss(a, b)
     ivy.array(0.5)
     """
     loss = ivy.abs(target - input)
