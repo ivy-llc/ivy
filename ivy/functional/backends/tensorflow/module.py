@@ -760,7 +760,7 @@ class Model(tf.keras.Model, ModelHelpers):
 
     def __getattr__(self, name):
         if name == "v":
-            if not super().__getattribute__("_v") and not self.built:
+            if not super().__getattribute__("_v") and not getattr(self, "built", False):
                 return self._build_and_return_v(
                     *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
@@ -782,7 +782,7 @@ class Model(tf.keras.Model, ModelHelpers):
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
-                and self.built
+                and getattr(self, "built", False)
             ):
                 self._rebuild()
             return ret
@@ -791,7 +791,7 @@ class Model(tf.keras.Model, ModelHelpers):
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
-                and self.built
+                and getattr(self, "built", False)
             ):
                 self._rebuild()
             return ret
