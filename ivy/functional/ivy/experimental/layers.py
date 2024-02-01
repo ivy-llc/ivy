@@ -92,14 +92,14 @@ def max_pool1d(
 
        [[16., 17., 18., 19.]]])
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
-    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True))
-    ivy.array([[[ 1.,  3.],
-            [ 5.,  7.],
-            [ 9., 11.]],
+    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=1, ceil_mode=True))
+    ivy.array([[[ 0.,  2.,  3.],
+        [ 4.,  6.,  7.],
+        [ 8., 10., 11.]],
 
-        [[13., 15.],
-            [17., 19.],
-            [21., 23.]]])
+       [[12., 14., 15.],
+        [16., 18., 19.],
+        [20., 22., 23.]]])
     """  # noqa: E501
     return ivy.current_backend(x).max_pool1d(
         x,
