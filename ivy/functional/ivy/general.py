@@ -2550,6 +2550,9 @@ def set_tmp_dir(tmp_dr: str) -> None:
     >>> y = ivy.tmp_dir
     >>> print(y)
     /my_tmp
+
+    >>> # Unset the tmp_dr
+    >>> ivy.unset_tmp_dir()
     """
     global tmp_dir_stack
     ivy.utils.assertions.check_isinstance(tmp_dr, str)
