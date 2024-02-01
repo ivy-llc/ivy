@@ -2426,7 +2426,7 @@ def tensordot(
 
     >>> x = ivy.native_array([[1., 2.], [2., 3.]])
     >>> y = ivy.native_array([[3., 4.], [4., 5.]])
-    >>> res = ivy.tensordot(x, y, axes = (1,1))
+    >>> res = ivy.tensordot(x, y, axes = ([1],[1]))
     >>> print(res)
     ivy.array([[11., 14.],
             [18., 23.]])
