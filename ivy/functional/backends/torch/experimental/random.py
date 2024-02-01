@@ -116,16 +116,14 @@ def bernoulli(
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    dtype = dtype if dtype is not None else probs.dtype
     if seed:
         torch.manual_seed(seed)
     if logits is not None:
-        if not _check_shapes_broadcastable(shape, logits.shape):
-            shape = logits.shape
-    elif probs is not None:
-        if not _check_shapes_broadcastable(shape, probs.shape):
-            shape = probs.shape
-    return (
-        torch.distributions.bernoulli.Bernoulli(probs=probs, logits=logits)
-        .sample(shape)
-        .to(device, dtype)
-    )
+        probs = torch.nn.functional.softmax(logits, -1)
+    if not _check_shapes_broadcastable(shape, probs.shape):
+        shape = probs.shape
+    return torch.bernoulli(probs, out=out).to(device, dtype).broadcast_to(shape)
+
+
+bernoulli.support_native_out = True

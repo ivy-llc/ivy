@@ -2,10 +2,156 @@
 from __future__ import annotations
 import re
 import tensorflow as tf
-from typing import Union
 import functools
 import logging
 from tensorflow.python.util import nest
+from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
+
+# A NodeDef holds two callables:
+# - flatten_fn should take the collection and return a flat list of values.
+#   It can also return some context that is used in reconstructing the
+#   collection.
+# - unflatten_fn should take a flat list of values and some context
+#   (returned by flatten_fn). It returns the collection by reconstructing
+#   it from the list and the context.
+Context = Any
+PyTree = Any
+FlattenFunc = Callable[[PyTree], Tuple[List, Context]]
+UnflattenFunc = Callable[[List, Context], PyTree]
+
+
+class NodeDef(NamedTuple):
+    flatten_fn: FlattenFunc
+    unflatten_fn: UnflattenFunc
+
+
+SUPPORTED_NODES: Dict[Type[Any], NodeDef] = {}
+
+
+def _register_pytree_node(
+    typ: Any, flatten_fn: FlattenFunc, unflatten_fn: UnflattenFunc
+) -> None:
+    SUPPORTED_NODES[typ] = NodeDef(flatten_fn, unflatten_fn)
+
+
+def _dict_flatten(d: Dict[Any, Any]) -> Tuple[List[Any], Context]:
+    return list(d.values()), list(d.keys())
+
+
+def _dict_unflatten(values: List[Any], context: Context) -> Dict[Any, Any]:
+    return {key: value for key, value in zip(context, values)}
+
+
+_register_pytree_node(dict, _dict_flatten, _dict_unflatten)
+
+
+def _get_node_type(pytree: Any) -> Any:
+    return type(pytree)
+
+
+# A leaf is defined as anything that is not a Node.
+def _is_leaf(pytree: PyTree) -> bool:
+    return _get_node_type(pytree) not in SUPPORTED_NODES.keys()
+
+
+# A TreeSpec represents the structure of a pytree. It holds:
+# "type": the type of root Node of the pytree
+# context: some context that is useful in unflattening the pytree
+# children_specs: specs for each child of the root Node
+# num_leaves: the number of leaves
+class TreeSpec:
+    def __init__(self, type, context, children_specs):
+        self.type: Any = type
+        self.context: Context = context
+        self.children_specs: List["TreeSpec"] = children_specs
+        self.num_leaves: int = sum([spec.num_leaves for spec in self.children_specs])
+
+    def get_keychains(self, prefix="", sep="/"):
+        keychains = []
+        for key, child_spec in zip(self.context, self.children_specs):
+            new_prefix = prefix + key + sep if prefix else key + sep
+            if child_spec.children_specs:  # Non-leaf node
+                keychains.extend(child_spec.get_keychains(new_prefix, sep))
+            else:  # Leaf node
+                keychains.append(new_prefix[: -len(sep)])
+        return keychains
+
+    def __repr__(self, indent: int = 0) -> str:
+        repr_prefix: str = f"TreeSpec({self.type.__name__}, {self.context}, ["
+        children_specs_str: str = ""
+        if len(self.children_specs):
+            indent += len(repr_prefix)
+            children_specs_str += self.children_specs[0].__repr__(indent)
+            children_specs_str += "," if len(self.children_specs) > 1 else ""
+            children_specs_str += ",".join([
+                "\n" + " " * indent + child.__repr__(indent)
+                for child in self.children_specs[1:]
+            ])
+        repr_suffix: str = f"{children_specs_str}])"
+        return repr_prefix + repr_suffix
+
+
+class LeafSpec(TreeSpec):
+    def __init__(self) -> None:
+        super().__init__(None, None, [])
+        self.num_leaves = 1
+
+    def __repr__(self, indent: int = 0) -> str:
+        return "*"
+
+
+def tree_flatten(pytree: PyTree) -> Tuple[List[Any], TreeSpec]:
+    """Flattens a pytree into a list of values and a TreeSpec that can be used
+    to reconstruct the pytree."""
+    if _is_leaf(pytree):
+        return [pytree], LeafSpec()
+
+    node_type = _get_node_type(pytree)
+    flatten_fn = _dict_flatten
+    child_pytrees, context = flatten_fn(pytree)
+
+    # Recursively flatten the children
+    result: List[Any] = []
+    children_specs: List["TreeSpec"] = []
+    for child in child_pytrees:
+        flat, child_spec = tree_flatten(child)
+        result += flat
+        children_specs.append(child_spec)
+
+    return result, TreeSpec(node_type, context, children_specs)
+
+
+def tree_unflatten(values: List[Any], spec: TreeSpec) -> PyTree:
+    """Given a list of values and a TreeSpec, builds a pytree.
+
+    This is the inverse operation of `tree_flatten`.
+    """
+    if not isinstance(spec, TreeSpec):
+        raise TypeError(
+            f"tree_unflatten(values, spec): Expected `spec` to be instance of "
+            f"TreeSpec but got item of type {type(spec)}."
+        )
+    if len(values) != spec.num_leaves:
+        raise TypeError(
+            f"tree_unflatten(values, spec): `values` has length {len(values)} "
+            f"but the spec refers to a pytree that holds {spec.num_leaves} "
+            f"items ({spec})."
+        )
+    if isinstance(spec, LeafSpec):
+        return values[0]
+
+    unflatten_fn = _dict_unflatten
+
+    # Recursively unflatten the children
+    start = 0
+    end = 0
+    child_pytrees = []
+    for child_spec in spec.children_specs:
+        end += child_spec.num_leaves
+        child_pytrees.append(tree_unflatten(values[start:end], child_spec))
+        start = end
+
+    return unflatten_fn(child_pytrees, spec.context)
 
 
 class ModelHelpers:
@@ -224,7 +370,6 @@ class Model(tf.keras.Model, ModelHelpers):
             return vs
         _visited[id(obj)] = True
         if isinstance(obj, Model) and obj is not self:
-
             if not obj.built and without_initialisation:
                 return lambda: obj._build_and_return_v(
                     *obj._args, dynamic_backend=self._dynamic_backend, **obj._kwargs
@@ -285,50 +430,49 @@ class Model(tf.keras.Model, ModelHelpers):
         return self.v
 
     def _assign_weights(self):
-        model_weights = []
+        model_weights = {}
+        existing_ids = [id(w) for w in self.weights]
 
         # trainable weights
-        for kc, x in self.v.items():
-
-            # Only add weights for this layer
-            if isinstance(x, dict):
-                continue
-
-            self.v[kc] = (
+        flattened_v, v_spec = tree_flatten(self.v)
+        flattened_kc = v_spec.get_keychains()
+        new_weights = [None] * len(flattened_v)
+        for i, (kc, x) in enumerate(zip(flattened_kc, flattened_v)):
+            new_weights[i] = (
                 self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=True)
-                if x is not None
+                if x is not None and id(x) not in existing_ids
                 else x
             )
             if isinstance(x, tf.Variable):
-                self.v[kc].assign(x.value())
-            (
-                model_weights.append(self.v[kc].numpy())
-                if self.v[kc] is not None
-                else self.v[kc]
-            )
+                new_weights[i].assign(x.value())
+            if new_weights[i] is not None:
+                model_weights[id(new_weights[i])] = new_weights[i].numpy()
+        self.v = tree_unflatten(new_weights, v_spec)
 
         # non-trainable weights
-        for kc, x in self.buffers.items():
-
-            # Only add weights for this layer
-            if isinstance(x, dict):
-                continue
-
-            self.buffers[kc] = (
+        flattened_buf, buf_spec = tree_flatten(self.buffers)
+        flattened_kc = buf_spec.get_keychains()
+        new_buf = [None] * len(flattened_buf)
+        for i, (kc, x) in enumerate(zip(flattened_kc, flattened_buf)):
+            new_buf[i] = (
                 self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=False)
-                if x is not None
+                if x is not None and id(x) not in existing_ids
                 else x
             )
             if isinstance(x, tf.Variable):
-                self.buffers[kc].assign(x.value())
-            (
-                model_weights.append(self.buffers[kc].numpy())
-                if self.buffers[kc] is not None
-                else self.buffers[kc]
-            )
+                new_buf[i].assign(x.value())
+            if new_buf[i] is not None:
+                model_weights[id(new_buf[i])] = new_buf[i].numpy()
+        self.buffers = tree_unflatten(new_buf, buf_spec)
+
+        def _sort_weights(model_weights, weights):
+            sorted_weights = []
+            for weight in weights:
+                sorted_weights.append(model_weights[id(weight)])
+            return sorted_weights
 
         if model_weights:
-            self.set_weights(model_weights)
+            self.set_weights(_sort_weights(model_weights, self.weights))
 
     def build(
         self,
@@ -535,7 +679,10 @@ class Model(tf.keras.Model, ModelHelpers):
 
     def train(self, mode: bool = True):
         self._training = mode
+        for module in self.children():
+            module.train(mode)
         self.trainable = mode
+        return self
 
     def eval(self):
         return self.train(mode=False)

@@ -1,7 +1,7 @@
 # global
 import ivy
 from collections import OrderedDict
-from typing import Any, Dict, Iterator, List, Optional, Set, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Set, Tuple, Callable
 
 # local
 from ivy.functional.frontends.torch.nn.parameter import Parameter
@@ -115,7 +115,26 @@ class Module(ivy.Module):
         return ret
 
     def add_module(self, name: str, module: Optional["Module"]) -> None:
+        if not isinstance(module, Module) and module is not None:
+            raise TypeError(f"{type(module)} is not a Module subclass")
+        elif not isinstance(name, str):
+            raise TypeError(f"module name should be a string. Got {type(name)}")
+        elif hasattr(self, name) and name not in self._modules:
+            raise KeyError(f"attribute '{name}' already exists")
+        elif "." in name:
+            raise KeyError(f'module name can\'t contain ".", got: {name}')
+        elif name == "":
+            raise KeyError('module name can\'t be empty string ""')
+
+        self._modules[name] = module
+
         super().__setattr__(name, module)
+
+    def apply(self, fn: Callable[["Module"], None]):
+        for module in self.children():
+            module.apply(fn)
+        fn(self)
+        return self
 
     def register_buffer(self, name: str, value: Optional["Tensor"]) -> None:
         super().register_buffer(name, value)
