@@ -189,7 +189,15 @@ def test_tensorflow_kaiser_bessel_derived_window(
     test_with_out=st.just(False),
 )
 def test_tensorflow_kaiser_window(
-    *, dtype_and_x, periodic, beta, test_flags, backend_fw, fn_tree, on_device, frontend, #dtype
+    *,
+    dtype_and_x,
+    periodic,
+    beta,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    frontend,  # dtype
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -202,8 +210,9 @@ def test_tensorflow_kaiser_window(
         window_length=int(x[0]),
         periodic=periodic,
         beta=beta,
-        #dtype=dtype[0],
+        # dtype=dtype[0],
     )
+
 
 # test stft
 @handle_frontend_test(
