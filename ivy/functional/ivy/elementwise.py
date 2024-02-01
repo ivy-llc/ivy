@@ -4230,12 +4230,12 @@ def log2(
     >>> y = ivy.empty_like(x)
     >>> ivy.log2(x, out=y)
     >>> print(y)
-    ivy.array([[nan, 0., 2.58, inf],[inf, nan, nan, nan]])
+    ivy.array([[nan, 0., 2.58, inf],[-inf, nan, nan, nan]])
     >>> x = ivy.array([[float('nan'), 1, 7.0, float('+inf')],
     ...               [+0, -3.0, -8, float('-inf')]])
     >>> ivy.log2(x, out=x)
     >>> print(x)
-    ivy.array([[nan, 0., 2.81, inf],[inf, nan, nan, nan]])
+    ivy.array([[nan, 0., 2.81, inf],[-inf, nan, nan, nan]])
 
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
