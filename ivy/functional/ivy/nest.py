@@ -369,7 +369,10 @@ def map_nest_at_index(
     try:
         _result = nest_type(_result)
     except TypeError:
-        _result = nest_type(*_result)
+        try:
+            _result = nest_type(*_result)
+        except TypeError:
+            pass
     return _result
 
 

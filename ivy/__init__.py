@@ -69,6 +69,10 @@ class NativeShape:
     pass
 
 
+class NativeModule:
+    pass
+
+
 class Container:
     pass
 
@@ -443,8 +447,8 @@ class Shape(Sequence):
     def with_rank(self, rank):
         try:
             return self.merge_with(self.unknown_shape(rank=rank))
-        except ValueError:
-            raise ValueError(f"Shape {self} must have rank {rank}")
+        except ValueError as e:
+            raise ValueError(f"Shape {self} must have rank {rank}") from e
 
     def with_rank_at_least(self, rank):
         if self.rank is not None and self.rank < rank:

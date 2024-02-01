@@ -513,7 +513,7 @@ def test_torch_cartesian_prod(
 @handle_frontend_test(
     fn_tree="torch.cdist",
     dtypes_and_x=helpers.dtype_and_values(
-        shape=st.shared(helpers.get_shape(min_num_dims=3, max_num_dims=3), key="shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=3), key="shape"),
         shared_dtype=True,
         num_arrays=2,
         allow_inf=False,
@@ -1774,6 +1774,86 @@ def test_torch_triu_indices(
         row=row,
         col=col,
         offset=offset,
+    )
+
+
+# unflatten
+@handle_frontend_test(
+    fn_tree="torch.unflatten",
+    shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        shape_key="shape",
+    ),
+    get_axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        max_size=1,
+        min_size=1,
+        force_int=True,
+    ),
+)
+def test_torch_unflatten(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+    shape,
+    get_axis,
+):
+    if type(get_axis) is not tuple:
+        axis = get_axis
+    else:
+        axis = 0 if get_axis is None else get_axis[0]
+    dtype, x = dtype_and_values
+
+    def factorization(n):
+        factors = [1]
+
+        def get_factor(n):
+            x_fixed = 2
+            cycle_size = 2
+            x = 2
+            factor = 1 if n % 2 else 2
+
+            while factor == 1:
+                for count in range(cycle_size):
+                    if factor > 1:
+                        break
+                    x = (x * x + 1) % n
+                    factor = math.gcd(x - x_fixed, n)
+
+                cycle_size *= 2
+                x_fixed = x
+
+            return factor
+
+        while n > 1:
+            next = get_factor(n)
+            factors.append(next)
+            n //= next
+
+        return factors
+
+    shape_ = (
+        tuple(factorization(shape[axis]))
+        if tuple(factorization(shape[axis]))
+        else shape
+    )
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        input=x[0],
+        dim=axis,
+        sizes=shape_,
     )
 
 

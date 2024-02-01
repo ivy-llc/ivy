@@ -1,7 +1,7 @@
 # global
 import ivy
 from collections import OrderedDict
-from typing import Any, Dict, Iterator, List, Optional, Set, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Set, Tuple, Callable
 
 # local
 from ivy.functional.frontends.torch.nn.parameter import Parameter
@@ -39,9 +39,11 @@ class Module(ivy.Module):
                     (k.replace(".", "/"), v)
                     for k, v in self.__dict__.items()
                     if isinstance(v, Parameter)
+                    and not k.startswith(
+                        ("_"),
+                    )
                 ]
-            ),
-            dynamic_backend=self._dynamic_backend,
+            )
         )
         # Created variables that were added using `register_paramter`,
         # since those would appear in `self._v`
@@ -105,12 +107,34 @@ class Module(ivy.Module):
             f'Module [{type(self).__name__}] is missing the required "forward" function'
         )
 
+    def call(self, inputs, *args, training=None, mask=None, **kwargs):
+        return self.forward(inputs, *args, **kwargs)
+
     def _forward(self, *a, **kw):
         ret = self._call_impl(*a, **kw)
         return ret
 
     def add_module(self, name: str, module: Optional["Module"]) -> None:
+        if not isinstance(module, Module) and module is not None:
+            raise TypeError(f"{type(module)} is not a Module subclass")
+        elif not isinstance(name, str):
+            raise TypeError(f"module name should be a string. Got {type(name)}")
+        elif hasattr(self, name) and name not in self._modules:
+            raise KeyError(f"attribute '{name}' already exists")
+        elif "." in name:
+            raise KeyError(f'module name can\'t contain ".", got: {name}')
+        elif name == "":
+            raise KeyError('module name can\'t be empty string ""')
+
+        self._modules[name] = module
+
         super().__setattr__(name, module)
+
+    def apply(self, fn: Callable[["Module"], None]):
+        for module in self.children():
+            module.apply(fn)
+        fn(self)
+        return self
 
     def register_buffer(self, name: str, value: Optional["Tensor"]) -> None:
         super().register_buffer(name, value)
@@ -232,7 +256,7 @@ class Module(ivy.Module):
         return ""
 
     def _call_impl(self, *args, **kwargs):
-        return self.forward(*args, **kwargs)
+        return self.call(*args, **kwargs)
 
     def __getattribute__(self, name: str) -> Any:
         if name == "__dict__":

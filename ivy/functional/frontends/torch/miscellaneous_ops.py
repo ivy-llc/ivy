@@ -95,19 +95,20 @@ def cartesian_prod(*tensors):
 @with_unsupported_dtypes({"2.1.2 and below": "float16"}, "torch")
 @to_ivy_arrays_and_back
 def cdist(x1, x2, p=2.0, compute_mode="use_mm_for_euclid_dist_if_necessary"):
-    if len(x1.shape) != 3 or len(x2.shape) != 3:
-        raise ivy.exceptions.IvyError(
-            "Both ivy arrays need to have 3 dimensions (BxRxM)"
-        )
-
-    if (
-        compute_mode != "use_mm_for_euclid_dist_if_necessary"
-        and compute_mode != "use_mm_for_euclid_dist"
-        and compute_mode != "donot_use_mm_for_euclid_dist"
-    ):
-        raise ivy.exceptions.IvyError(
-            f"{compute_mode} is not a valid value for compute_mode"
-        )
+    if len(x1.shape) == 2 and len(x2.shape) == 2:
+        x1_first_dim, x2_first_dim = x1.shape[0], x2.shape[0]
+        if (
+            compute_mode == "use_mm_for_euclid_dist_if_necessary"
+            and (x1_first_dim > 25 or x2_first_dim > 25)
+            or compute_mode == "use_mm_for_euclid_dist"
+        ):
+            return ivy.vector_norm(x1[:, None, :] - x2[None, :, :], axis=-1, ord=p)
+        else:
+            distances = ivy.zeros((x1_first_dim, x2_first_dim), dtype=x1.dtype)
+            for i in range(x1_first_dim):
+                for j in range(x2_first_dim):
+                    distances[i, j] = ivy.vector_norm(x1[i, :] - x2[j, :], ord=p)
+            return distances
     if p == 2:
         B, P, M = x1.shape
         _, R, _ = x2.shape
@@ -236,6 +237,11 @@ def einsum(equation, *operands):
     if len(operands) == 1 and isinstance(operands[0], (list, tuple)):
         operands = operands[0]
     return ivy.einsum(equation, *operands)
+
+
+@to_ivy_arrays_and_back
+def finfo(dtype):
+    return ivy.finfo(dtype)
 
 
 @to_ivy_arrays_and_back
@@ -541,6 +547,11 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
     # TODO: Handle layout flag when possible.
     sample_matrix = ivy.triu(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
+
+
+@to_ivy_arrays_and_back
+def unflatten(input, /, *, dim, sizes):
+    return ivy.unflatten(input, dim=dim, shape=sizes, out=None)
 
 
 @to_ivy_arrays_and_back

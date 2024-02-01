@@ -14,6 +14,7 @@ from ivy.utils.einsum_parser import legalise_einsum_expr
 # -------------------#
 
 
+@_scalar_output_to_0d_array
 def min(
     x: np.ndarray,
     /,
@@ -177,7 +178,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.26.3 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("bfloat16", "bool")}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,

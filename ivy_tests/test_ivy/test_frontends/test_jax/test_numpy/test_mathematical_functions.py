@@ -1103,9 +1103,9 @@ def test_jax_einsum_path(
         **kw,
         optimize=optimize,
     )
-    len(ret[0]) == len(ret_gt[0])
-    all(x == y for x, y in zip(ret[0], ret_gt[0]))
-    ret[1] == str(ret_gt[1])
+    assert len(ret[0]) == len(ret_gt[0])
+    assert all(x == y for x, y in zip(ret[0], ret_gt[0]))
+    assert ret[1] == str(ret_gt[1])
 
 
 # exp

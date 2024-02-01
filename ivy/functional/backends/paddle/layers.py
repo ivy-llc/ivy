@@ -30,10 +30,11 @@ def _convert_to_list(value, n, name="padding", _type=int):
     else:
         try:
             value_list = list(value)
-        except TypeError:
-            raise ValueError(
-                f"The input {name}'s type must be list or tuple. Received: {value}"
-            )
+        except TypeError as e:
+            raise TypeError(
+                f"The input {value}'s type must be list or tuple. Received:"
+                f" {type(value)}"
+            ) from e
         else:
             return value_list
 
@@ -148,8 +149,8 @@ def conv1d(
     /,
     *,
     data_format: str = "NWC",
-    filter_format: Optional[str] = "channel_last",
-    x_dilations: Optional[Union[int, Tuple[int]]] = 1,
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
@@ -158,7 +159,7 @@ def conv1d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16", "bfloat16")}},
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}},
     backend_version,
 )
 def conv1d_transpose(
@@ -209,8 +210,8 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    filter_format: Optional[str] = "channel_last",
-    x_dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
@@ -219,7 +220,7 @@ def conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16", "bfloat16")}},
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}},
     backend_version,
 )
 def conv2d_transpose(
@@ -231,8 +232,8 @@ def conv2d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     filter_format: str = "channel_last",
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
@@ -272,15 +273,15 @@ def depthwise_conv2d(
     padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16",)}},
+    {"2.6.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv3d(
@@ -290,10 +291,10 @@ def conv3d(
     padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NDHWC",
-    filter_format: Optional[str] = "channel_last",
-    x_dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
-    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+    data_format: str = "NDHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
@@ -331,8 +332,8 @@ def conv3d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     filter_format: str = "channel_last",
-    data_format: Optional[str] = "NDHWC",
-    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+    data_format: str = "NDHWC",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -340,7 +341,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16",)}},
+    {"2.6.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv_general_dilated(
@@ -350,16 +351,12 @@ def conv_general_dilated(
     padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: Optional[int] = 2,
-    data_format: Optional[str] = "channel_last",
-    filter_format: Optional[str] = "channel_last",
-    feature_group_count: Optional[int] = 1,
-    x_dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
-    dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
+    dims: int = 2,
+    data_format: str = "channel_last",
+    filter_format: str = "channel_last",
+    feature_group_count: int = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
@@ -431,14 +428,12 @@ def conv_general_transpose(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: Optional[int] = 2,
+    dims: int = 2,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     filter_format: str = "channel_last",
-    data_format: Optional[str] = "NDHWC",
-    dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
-    feature_group_count: Optional[int] = 1,
+    data_format: str = "NDHWC",
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    feature_group_count: int = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):

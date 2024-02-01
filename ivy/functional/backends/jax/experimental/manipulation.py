@@ -15,6 +15,7 @@ import jax.numpy as jnp
 import jax.lax as jlax
 from numbers import Number
 from collections import namedtuple
+from ivy.func_wrapper import handle_out_argument
 
 # local
 import ivy
@@ -442,11 +443,11 @@ def take(
         if ivy.exists(axis):
             try:
                 x_shape = x.shape[axis]
-            except Exception:
+            except Exception as e:
                 raise ValueError(
                     f"axis {axis} is out of bounds for array of dimension"
                     f" {len(x.shape)}"
-                )
+                ) from e
         else:
             x_shape = jnp.prod(x.shape)
 
@@ -468,3 +469,19 @@ def take(
 
 def trim_zeros(a: JaxArray, /, *, trim: Optional[str] = "bf") -> JaxArray:
     return jnp.trim_zeros(a, trim=trim)
+
+
+@handle_out_argument
+def unflatten(
+    x: JaxArray,
+    /,
+    dim: int = 0,
+    shape: Tuple[int] = None,
+    *,
+    out: Optional[JaxArray] = None,
+    order: Optional[str] = None,
+) -> JaxArray:
+    dim = abs(len(x.shape) + dim) if dim < 0 else dim
+    res_shape = x.shape[:dim] + shape + x.shape[dim + 1 :]
+    res = jnp.reshape(x, res_shape)
+    return res
