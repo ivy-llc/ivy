@@ -2287,7 +2287,7 @@ def exp(
     --------
     With :class:Number:
 
-    >>> x = 3
+    >>> x = 3.
     >>> y = ivy.exp(x)
     >>> print(y)
     ivy.array(20.08553692)
