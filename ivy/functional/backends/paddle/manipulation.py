@@ -22,6 +22,10 @@ from ...ivy.manipulation import _calculate_out_shape
 # -------------------#
 
 
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("bfloat16", "float16")},
+    backend_version,
+)
 def concat(
     xs: Union[Tuple[paddle.Tensor, ...], List[paddle.Tensor]],
     /,
