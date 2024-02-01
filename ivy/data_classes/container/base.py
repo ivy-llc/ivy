@@ -1240,9 +1240,7 @@ class ContainerBase(dict, abc.ABC):
         """
         from flax.training import checkpoints
 
-        ckpt = checkpoints.restore_checkpoint(
-            ckpt_dir="/workspaces/ivy/load-save-modules/jax_weights", target=None
-        )
+        ckpt = checkpoints.restore_checkpoint(ckpt_dir=ckpt_filepath, target=None)
 
         container_dict = {}
         weights = ckpt["model"]["params"]
