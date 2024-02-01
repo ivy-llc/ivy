@@ -883,8 +883,6 @@ def lstm(
     weights_transposed: bool = False,
     has_ih_bias: bool = True,
     has_hh_bias: bool = True,
-    return_sequences: bool = True,
-    return_states: bool = True,
 ):
     if weights_transposed:
         # transpose the weights if they are in the wrong format
@@ -924,15 +922,4 @@ def lstm(
         batch_first,
     )
 
-    if return_states:
-        if return_sequences:
-            return ret
-        else:
-            return tuple(
-                [ret[0][:, -1], ret[1], ret[2]]
-            )  # TODO: this depends on batch_first
-    else:
-        if return_sequences:
-            return ret[0]
-        else:
-            return ret[0][:, -1]
+    return ret[0][:, -1], ret[0], (ret[1], ret[2])
