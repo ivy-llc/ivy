@@ -1440,9 +1440,40 @@ def test_top_k(
     )
 
 
+@handle_test(
+    fn_tree="trim_zeros",
+    dt_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=-100,
+        max_value=100,
+    ),
+    test_with_out=st.just(False),
+)
+def test_trim_zeros(
+    *,
+    dt_a,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dt, a = dt_a
+    helpers.test_function(
+        input_dtypes=dt,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        a=a[0],
+    )
+
+
 # unflatten
 @handle_test(
-    fn_tree="torch.unflatten",
+    fn_tree="unflatten",
     shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -1456,7 +1487,7 @@ def test_top_k(
         force_int=True,
     ),
 )
-def test_torch_unflatten(
+def test_unflatten(
     *,
     dtype_and_values,
     on_device,
@@ -1517,37 +1548,6 @@ def test_torch_unflatten(
         input=x[0],
         dim=axis,
         sizes=shape_,
-    )
-
-
-@handle_test(
-    fn_tree="trim_zeros",
-    dt_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_value=-100,
-        max_value=100,
-    ),
-    test_with_out=st.just(False),
-)
-def test_trim_zeros(
-    *,
-    dt_a,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    dt, a = dt_a
-    helpers.test_function(
-        input_dtypes=dt,
-        test_flags=test_flags,
-        on_device=on_device,
-        fw=backend_fw,
-        fn_name=fn_name,
-        a=a[0],
     )
 
 
