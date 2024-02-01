@@ -2858,13 +2858,13 @@ def vector_norm(
 
     ivy.array([4.64158917])
 
-    >>> x = ivy.array([1,2,3,4], dtype = ivy.float16)
-    >>> z = ivy.empty(shape = 1)
+    >>> x = ivy.array([1.,2.,3.,4.], dtype = ivy.float16)
+    >>> z = ivy.empty(shape = 1, dtype=ivy.float16)
     >>> y = ivy.vector_norm(x, ord = 0, out = z)
     >>> print(y)
     ivy.array(4.)
 
-    >>> x = ivy.arange(8).reshape((2,2,2))
+    >>> x = ivy.arange(8, dtype=ivy.float32).reshape((2,2,2))
     >>> y = ivy.vector_norm(x, axis = (0,1), ord = float("-inf"))
     >>> print(y)
     ivy.array([0, 1])
