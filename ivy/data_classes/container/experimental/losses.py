@@ -143,7 +143,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         >>> z = x.l1_loss(y)
         >>> print(z)
         {
-            a: ivy.array(1.),
+            a: ivy.array(0.),
             b: ivy.array(0.)
         }
         """
@@ -314,8 +314,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
         >>> z = x.log_poisson_loss(y)
         >>> print(z)
         {
-            a: ivy.array(1.),
-            b: ivy.array(0.)
+            a: ivy.array(3.3890561),
+            b: ivy.array(123.413159)
         }
         """
         return self._static_log_poisson_loss(
@@ -477,15 +477,14 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 0, 2]), b=ivy.array([3, 2, 1]))
-        >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),
-        b=ivy.array([0.8, 0.2, 0.2]))
+        >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
         >>> z = x.smooth_l1_loss(y)
         >>> print(z)
         {
-            a: ivy.array(0.9),
-            b: ivy.array(0.25)
+            a: ivy.array(0.43333333),
+            b: ivy.array(1.10666666)
         }
-        """
+        """  # noqa: E501
         return self._static_smooth_l1_loss(
             self,
             target,

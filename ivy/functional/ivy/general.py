@@ -4194,7 +4194,7 @@ def vmap(
     >>> x = ivy.array(ivy.arange(60).reshape((3, 5, 4)))
     >>> y = ivy.array(ivy.arange(40).reshape((5, 4, 2)))
     >>> z = ivy.vmap(ivy.matmul, (1, 0), 1)(x, y)
-    >>> print(z.shape)
+    >>> z.shape
     (3, 5, 2)
     """
     # TODO: optimize in the numpy and tensorflow backends and extend functionality

@@ -258,12 +258,12 @@ def smooth_l1_loss(
 
     Examples
     --------
-    >>> input = ivy.array([1.0, 2.0, 3.0])
-    >>> target = ivy.array([2.5, 1.8, 3.2])
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([2.5, 1.8, 3.2])
     >>> ivy.smooth_l1_loss(x, y, beta=1.0)
     ivy.array(0.3467)
-    >>> input = ivy.array([1.0, 2.0, 3.0])
-    >>> target = ivy.array([6.0, 2.0, 3.0])
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([6.0, 2.0, 3.0])
     >>> ivy.smooth_l1_loss(x, y, beta=1.0)
     ivy.array(1.5)
     >>> input = ivy.array([2.0, 3.0, 5.0, 7.0])

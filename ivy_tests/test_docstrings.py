@@ -6,6 +6,7 @@ from io import StringIO
 import numpy as np
 import sys
 
+
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 import pytest
 
@@ -115,19 +116,12 @@ def check_docstring_examples_run(
     # the temp skip list consists of functions
     # which have an issue with their implementation
     skip_list_temp = [
-        "outer",
-        "split",
-        "det",
-        "cumprod",
-        "sinc",
-        "grad",
-        "try_else_none",
+        "outer",  # Failing only torch backend:
+        # (https://pytorch.org/docs/stable/generated/torch.outer.html)
         # all examples are wrong including functional/ivy
-        "einops_reduce",
-        "max_unpool1d",
         "pool",
         "put_along_axis",
-        "result_type",
+        "result_type",  # different ouput coming for diff backends in 1st example.
         # works only if no backend set
         "rfftn",
         # examples works but exec throws error or generate diff results
@@ -135,72 +129,47 @@ def check_docstring_examples_run(
         "searchsorted",
         # generates different results in different backends
         "eigh_tridiagonal",
-        "log_poisson_loss",
         "dct",
-        "idct",
+        "choose" "idct",
         "set_item",
-        "l1_normalize",
-        "histogram",
-        "native_array",
-        "function_supported_devices",
-        "acosh",
+        "l1_normalize",  # Failing for TF, Torch backends.
+        "histogram",  # Failing for TF, Torch backends.
         "bitwise_invert",
-        "cosh",
-        "exp",
-        "sinh",
-        "reciprocal",
-        "deg2rad",
+        "deg2rad",  # Failing for TF backend.
         "value_and_grad",
         "vector_norm",
-        "set_nest_at_index",
-        "set_nest_at_indices",
         "layer_norm",
-        "where",
         "trace",
         "eigvalsh",
         "conv2d_transpose",
         # fails due to different backend and their view types
         "sequence_length",
         "max_pool1d",
-        "vmap",
         "inner",
         "slogdet",
+        "solve",
         "svdvals",
         "nested_map",
-        "dill",
-        "hardtanh",
         "hardshrink",
         "rfft",
         "general_inner_product",
-        "l1_loss",
-        "smooth_l1_loss",
-        "poisson_nll_loss",
-        "choose",
         "cummax",
         "one_hot",
-        "tpu_is_available",
-        "log2",
-        "maximum",
-        "minimum",
+        "maximum",  # Failing only for torch backend.
+        "minimum",  # Failing only for torch backend.
         "get_referrers_recursive",
-        "clip_vector_norm",
-        "set_min_base",
-        "scatter_flat",
+        "scatter_flat",  # Function Already failing for 3 backends
         "scatter_nd",
         "gather",
         "multiprocessing",
         "execute_with_gradients",
-        "solve",
-        "tensordot",
         "cross_entropy",
         "binary_cross_entropy",
         "sparse_cross_entropy",
-        "reptile_step",
         "insert_into_nest_at_index",
         "if_else",
         "while_loop",
-        "trace_graph",
-        "set_tmp_dir",
+        "trace_graph",  #  SystemExit: Please sign up for free pilot access.
     ]
 
     # skip list for array and container docstrings
@@ -390,6 +359,9 @@ def check_docstring_examples_run(
             )
             break
     return docstr_result
+
+
+dict1 = {"where": ivy.where}
 
 
 @pytest.mark.parametrize("backend", ["jax", "numpy", "tensorflow", "torch"])
