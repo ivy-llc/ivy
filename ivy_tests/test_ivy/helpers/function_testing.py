@@ -325,6 +325,8 @@ def test_function_backend_computation(
                 precision_mode=test_flags.precision_mode,
                 **kwargs,
             )
+            first_array = ivy_backend.stop_gradient(first_array).to_numpy()
+            ret_ = ivy_backend.stop_gradient(ret_).to_numpy()
             assert not np.may_share_memory(first_array, ret_)
 
     ret_device = None

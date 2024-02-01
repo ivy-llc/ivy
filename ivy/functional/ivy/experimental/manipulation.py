@@ -98,9 +98,9 @@ def flatten(
     /,
     *,
     copy: Optional[bool] = None,
-    start_dim: Optional[int] = 0,
-    end_dim: Optional[int] = -1,
-    order: Optional[str] = "C",
+    start_dim: int = 0,
+    end_dim: int = -1,
+    order: str = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor. If
@@ -2231,7 +2231,7 @@ fill_diagonal.mixed_backend_wrappers = {
 def unfold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    mode: Optional[int] = 0,
+    mode: int = 0,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2303,10 +2303,10 @@ def fold(
 def partial_unfold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    mode: Optional[int] = 0,
-    skip_begin: Optional[int] = 1,
-    skip_end: Optional[int] = 0,
-    ravel_tensors: Optional[bool] = False,
+    mode: int = 0,
+    skip_begin: int = 1,
+    skip_end: int = 0,
+    ravel_tensors: bool = False,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2363,7 +2363,7 @@ def partial_fold(
     /,
     mode: int,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-    skip_begin: Optional[int] = 1,
+    skip_begin: int = 1,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2404,8 +2404,8 @@ def partial_fold(
 def partial_tensor_to_vec(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    skip_begin: Optional[int] = 1,
-    skip_end: Optional[int] = 0,
+    skip_begin: int = 1,
+    skip_end: int = 0,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2449,7 +2449,7 @@ def partial_vec_to_tensor(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-    skip_begin: Optional[int] = 1,
+    skip_begin: int = 1,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2828,7 +2828,7 @@ def trim_zeros(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    trim: Optional[str] = "fb",
+    trim: str = "fb",
 ) -> ivy.Array:
     """ivy.Container instance method variant of ivy.trim_zeros. This method
     simply wraps the function, and so the docstring for ivy.trim_zeros also

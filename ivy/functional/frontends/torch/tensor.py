@@ -516,6 +516,9 @@ class Tensor:
         self.ivy_array = self.not_equal(other).ivy_array
         return self
 
+    def eq(self, other):
+        return torch_frontend.eq(self, other)
+
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
@@ -761,9 +764,20 @@ class Tensor:
 
     def unfold(self, dimension, size, step):
         slices = []
-        for i in range(0, self.shape[dimension] - size + 1, step):
-            slices.append(self.ivy_array[i : i + size])
-        return torch_frontend.stack(slices)
+        self_shape = tuple(self.shape)
+        for i in range(0, self_shape[dimension] - size + 1, step):
+            slicing = [slice(None)] * len(self.shape)
+            slicing[dimension] = slice(i, i + size)
+            slices.append(self.ivy_array[tuple(slicing)])
+        stacked = torch_frontend.stack(slices, dim=dimension)
+        new_shape = list(self.shape)
+        num_slices = (self.shape[dimension] - size) // step + 1
+        new_shape[dimension] = num_slices
+        new_shape.insert(dimension + 1, size)
+        reshaped = stacked.reshape(new_shape)
+        dims = list(range(len(stacked.shape)))
+        dims[-2], dims[-1] = dims[-1], dims[-2]
+        return reshaped.permute(*dims)
 
     def long(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int64, copy=False)
@@ -2271,7 +2285,6 @@ class Tensor:
     ndimension = dim
     subtract = sub
     sub_ = subtract_
-    eq = equal
     arctan = atan
     arctan_ = atan_
     arctan2 = atan2
@@ -2298,7 +2311,7 @@ class Tensor:
 
 class Size(tuple):
     def __new__(cls, iterable=()):
-        iterable = ivy.Shape([]) if not iterable else iterable
+        iterable = ivy.Shape([]) if iterable == () else iterable
         new_iterable = []
         for i, item in enumerate(iterable):
             if isinstance(item, int):
@@ -2313,7 +2326,7 @@ class Size(tuple):
         return super().__new__(cls, tuple(new_iterable))
 
     def __init__(self, shape=()) -> None:
-        shape = ivy.Shape([]) if not shape else shape
+        shape = ivy.Shape([]) if shape == () else shape
         self._ivy_shape = shape if isinstance(shape, ivy.Shape) else ivy.shape(shape)
 
     def __repr__(self):

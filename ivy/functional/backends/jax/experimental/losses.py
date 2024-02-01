@@ -1,5 +1,4 @@
 import jax.numpy as jnp
-from typing import Optional
 from ivy.functional.backends.jax import JaxArray
 
 # local
@@ -30,8 +29,8 @@ def smooth_l1_loss(
     target: JaxArray,
     /,
     *,
-    beta: Optional[float] = 1.0,
-    reduction: Optional[str] = "mean",
+    beta: float = 1.0,
+    reduction: str = "mean",
 ) -> JaxArray:
     if beta < 1e-5:
         loss = jnp.abs(input - target)
@@ -52,7 +51,7 @@ def soft_margin_loss(
     target: JaxArray,
     /,
     *,
-    reduction: Optional[str] = "mean",
+    reduction: str = "mean",
 ) -> JaxArray:
     loss = jnp.sum(jnp.log1p(jnp.exp(-input * target))) / jnp.size(input)
 
