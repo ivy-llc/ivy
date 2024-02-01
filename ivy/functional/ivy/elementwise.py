@@ -333,7 +333,7 @@ def acosh(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 10]), b=ivy.array([1., 10, 6]))
+    >>> x = ivy.Container(a=ivy.array([1., 2., 10.]), b=ivy.array([1., 10., 6.]))
     >>> y = ivy.acosh(x)
     >>> print(y)
     {
