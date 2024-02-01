@@ -1945,6 +1945,7 @@ def slogdet(
     >>> print(y)
     slogdet(sign=ivy.array(1.), logabsdet=ivy.array(1.60943794))
 
+    >>> ivy.set_backend('numpy') # As the precision of results depends on backend.
     >>> x = ivy.array([[1.2, 2.0, 3.1],
     ...                [6.0, 5.2, 4.0],
     ...                [9.0, 8.0, 7.0]])
@@ -1954,6 +1955,7 @@ def slogdet(
 
     With :class:`ivy.Container` input:
 
+    >>> ivy.unset_backend() # unset backend again.
     >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
     ...                                [3.0, 4.0]]),
     ...                   b=ivy.array([[1.0, 2.0],
