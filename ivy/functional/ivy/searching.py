@@ -92,9 +92,10 @@ def argmax(
     ivy.array([1])
 
     >>> x = ivy.array([-0., 1., -1.])
-    >>> ivy.argmax(x, out=x)
-    >>> print(x)
-    ivy.array([1])
+    >>> z = ivy.zeros((1,3), dtype=ivy.int64)
+    >>> ivy.argmax(x, out=z)
+    >>> print(z)
+    ivy.array([1.,1.,1.])
 
     >>> x = ivy.array([[1., -0., -1.], [-2., 3., 2.]])
     >>> y = ivy.argmax(x, axis=1)
@@ -112,7 +113,7 @@ def argmax(
     ivy.array([0, 2]) int64
 
     >>> x = ivy.array([[4., 0., -1.],[2., -3., 6], [2., -3., 6]])
-    >>> z = ivy.zeros((1,3), dtype=ivy.int64)
+    >>> z = ivy.zeros((3,1), dtype=ivy.int64)
     >>> y = ivy.argmax(x, axis=1, keepdims=True, out=z)
     >>> print(z)
     ivy.array([[0],[2],[2]])

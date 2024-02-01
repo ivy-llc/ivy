@@ -116,7 +116,6 @@ def check_docstring_examples_run(
     # which have an issue with their implementation
     skip_list_temp = [
         "outer",
-        "argmax",
         "split",
         "det",
         "cumprod",
