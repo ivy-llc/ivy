@@ -1491,7 +1491,7 @@ def test_unflatten(
     *,
     dtype_and_values,
     on_device,
-    fn_tree,
+    fn_name,
     frontend,
     test_flags,
     backend_fw,
@@ -1537,12 +1537,12 @@ def test_unflatten(
         if tuple(factorization(shape[axis]))
         else shape
     )
-    helpers.test_frontend_function(
+    helpers.test_function(
         input_dtypes=dtype,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
-        fn_tree=fn_tree,
+        fn_name=fn_name,
         on_device=on_device,
         test_values=False,
         input=x[0],
