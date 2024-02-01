@@ -1907,19 +1907,19 @@ def native_array(
 
     >>> x = [1, 2, 3]
     >>> x_native = ivy.native_array(x)
-    >>> print(x_native)
+    >>> x_native
     [1 2 3]
 
     With :class:`np.ndarray` input:
     >>> y = np.array([4, 5, 6])
     >>> y_native = ivy.native_array(y)
-    >>> print(y_native)
+    >>> y_native
     [4 5 6]
 
     With :class:`ivy.Array` input:
     >>> z = ivy.array([7, 8, 9])
     >>> z_native = ivy.native_array(z)
-    >>> print(z_native)
+    >>> z_native
     [7 8 9]
     """
     # ToDo: Make this more efficient,
