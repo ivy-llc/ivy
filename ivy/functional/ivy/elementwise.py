@@ -5959,7 +5959,7 @@ def sinh(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([1, 2, 3])
+    >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.sinh(x)
     >>> print(y)
         ivy.array([1.18, 3.63, 10.])
