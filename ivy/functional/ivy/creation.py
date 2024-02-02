@@ -2002,7 +2002,7 @@ def one_hot(
     >>> ivy.one_hot(x, 5, out=z)
     ivy.array([[1., 0., 0., 0., 0.]])
     >>> print(z)
-    ivy.array([[1., 0., 0., 0., 0.]])
+    ivy.array([[1., 0., 0., 0., 0.], [1., 0., 0., 0., 0.]])
 
     With :class:`ivy.Container` input:
 
@@ -2021,7 +2021,7 @@ def one_hot(
     }
 
     >>> x = ivy.Container(a=ivy.array([2]), \
-        b=ivy.array([]), c=ivy.native_array([4]))
+        b=ivy.array([], dtype=ivy.int32), c=ivy.native_array([4]))
     >>> y = 7
     >>> z = x.one_hot(y)
     >>> print(z)
