@@ -1820,8 +1820,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> import ivy.numpy as np
-        >>> x = ivy.Container(a=np.array([1., -2.]), b=np.array([0.4, -0.2]))
+        >>> x = ivy.Container(a=ivy.array([1., -2.]), b=ivy.array([0.4, -0.2]))
         >>> y = ivy.Container.hardshrink(x)
         >>> print(y)
         {
