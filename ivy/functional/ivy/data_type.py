@@ -153,7 +153,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             continue
         is_frontend_fn = "frontend" in fn.__module__
         is_backend_fn = "backend" in fn.__module__ and not is_frontend_fn
-        is_einops_fn = "einops" in fn.__name__
+        is_einops_fn = hasattr(fn, "__name__") and "einops" in fn.__name__
         if is_backend_fn:
             f_supported = get_fn(fn, False)
             if hasattr(fn, "partial_mixed_handler"):
@@ -197,6 +197,10 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
                     if "(" in key:
                         key = key.split("(")[0]
                     frontend_module = ".".join(key.split(".")[:-1])
+                    if (
+                        frontend_module == ""
+                    ):  # single edge case: fn='frontend_outputs_to_ivy_arrays'
+                        continue
                     frontend_fl = {key: frontend_fn}
                     res += list(
                         _get_functions_from_string(

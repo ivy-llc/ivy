@@ -12,7 +12,7 @@ from ...test_numpy.test_indexing_routines.test_inserting_data_into_arrays import
     _helper_r_,
     _helper_c_,
 )
-import ivy.functional.frontends.jax.numpy as jnp_frontend
+import ivy.functional.frontends.jax.numpy as jnp
 
 
 # --- Helpers --- #
@@ -291,7 +291,7 @@ def test_jax_mask_indices(
 def test_jax_numpy_c_(inputs, backend_fw):
     ret_gt = c_.__getitem__(tuple(inputs))
     with BackendHandler.update_backend(backend_fw):
-        ret = jnp_frontend.c_.__getitem__(tuple(inputs))
+        ret = jnp.c_.__getitem__(tuple(inputs))
     assert np.allclose(ret.ivy_array, ret_gt)
 
 
@@ -331,7 +331,7 @@ def test_jax_numpy_r_(inputs, backend_fw):
     inputs, *_ = inputs
     ret_gt = r_.__getitem__(tuple(inputs))
     with BackendHandler.update_backend(backend_fw):
-        ret = jnp_frontend.r_.__getitem__(tuple(inputs))
+        ret = jnp.r_.__getitem__(tuple(inputs))
     assert np.allclose(ret.ivy_array, ret_gt)
 
 

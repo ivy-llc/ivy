@@ -172,6 +172,7 @@ def _import_fn(fn_tree: str):
     split_index = fn_tree.rfind(".")
     fn_name = fn_tree[split_index + 1 :]
     module_to_import = fn_tree[:split_index]
+    print(module_to_import)
     mod = importlib.import_module(module_to_import)
     try:
         callable_fn = mod.__dict__[fn_name]
