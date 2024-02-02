@@ -16,6 +16,22 @@ ACTIVATION_FUNCTIONS = [
 ]
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+# helper
+# note: defined to avoid AST call extraction of
+# 'tf_frontend.keras.activations.__dict__.items()
+# or 'tf_frontend.keras.activations.__dict__.values()'
+def _get_tf_keras_activations():
+    return tf_frontend.keras.activations.__dict__.items()
+
+
+# --- Main --- #
+# ------------ #
+
+
 @with_supported_dtypes(
     {"2.15.0 and below": ("float16", "float32", "float64")},
     "tensorflow",
@@ -80,14 +96,6 @@ def get(identifier):
         raise ValueError(f"Could not interpret function identifier: {identifier}")
 
 
-# helper
-# note: defined to avoid AST call extraction of
-# 'tf_frontend.keras.activations.__dict__.items()
-# or 'tf_frontend.keras.activations.__dict__.values()'
-def get_tf_keras_activations():
-    return tf_frontend.keras.activations.__dict__.items()
-
-
 @to_ivy_arrays_and_back
 def hard_sigmoid(x):
     dtype_in = x.dtype
@@ -140,7 +148,7 @@ def serialize(activation, use_legacy_format=False, custom_objects=None):
                 if custom_func == activation:
                     return name
 
-        tf_keras_frontend_activations = get_tf_keras_activations()
+        tf_keras_frontend_activations = _get_tf_keras_activations()()
 
         # Check if the function is in the ACTIVATION_FUNCTIONS list
         if activation.__name__ in ACTIVATION_FUNCTIONS:
@@ -148,7 +156,7 @@ def serialize(activation, use_legacy_format=False, custom_objects=None):
 
         # Check if the function is in the TensorFlow frontend activations
         elif activation in [fn for name, fn in tf_keras_frontend_activations]:
-            for name, tf_func in get_tf_keras_activations():
+            for name, tf_func in _get_tf_keras_activations()():
                 if tf_func == activation:
                     return name
 
