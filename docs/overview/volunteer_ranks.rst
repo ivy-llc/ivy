@@ -27,6 +27,6 @@ Core Contributors
    * - Name
      - Github ID
      - Badges
-   * - Muhammad ishaque 
+   * - Muhammad ishaque
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Master Bronze
