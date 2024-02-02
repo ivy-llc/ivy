@@ -1545,7 +1545,7 @@ def test_unflatten(
         test_values=False,
         input=x[0],
         dim=axis,
-        sizes=shape_,
+        shape=shape_,
     )
 
 
