@@ -1543,7 +1543,7 @@ def test_unflatten(
         fn_name=fn_name,
         on_device=on_device,
         test_values=False,
-        input=x[0],
+        x=x[0],
         dim=axis,
         shape=shape_,
     )
