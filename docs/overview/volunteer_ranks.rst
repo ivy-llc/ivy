@@ -15,8 +15,11 @@ Top Contributors
    * - V\. Sai Suraj
      - `Sai-Suraj-27 <https://github.com/Sai-Suraj-27>`_
      - Merging Master Gold, Debugging Dynamo Silver
-Rising Contributors
--------------------
+   * - samunder singh
+     - `samthakur587 <https://github.com/samthakur587>`_
+     - Merging Master Gold, Debugging Dynamo Silver
+Core Contributors
+-----------------
 .. list-table::
    :widths: 50 50 50
    :header-rows: 1
@@ -24,6 +27,6 @@ Rising Contributors
    * - Name
      - Github ID
      - Badges
-   * - samunder singh
-     - `samthakur587 <https://github.com/samthakur587>`_
-     - Merging Master Silver, Debugging Dynamo Silver
+   * - Muhammad ishaque 
+     - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
+     - Merging Master Bronze
