@@ -1497,7 +1497,7 @@ def test_unflatten(
     shape,
     get_axis,
 ):
-    if type(get_axis) is not tuple:
+    if type(get_axis) is tuple:
         axis = get_axis
     else:
         axis = 0 if get_axis is None else get_axis[0]
