@@ -664,7 +664,9 @@ def handle_method(
         )
 
         if init_num_positional_args is None:
-            init_num_positional_args = num_positional_args(fn_name=init_tree)
+            init_num_positional_args = num_positional_args(
+                fn_name=method_tree.rpartition(".")[0]
+            )
 
         possible_arguments["init_flags"] = pf.init_method_flags(
             num_positional_args=init_num_positional_args,
