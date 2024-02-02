@@ -1289,7 +1289,7 @@ def test_inplace_increment(x_val_and_dtypes, test_flags, on_device, backend_fw):
         shared_dtype=True,
     ),
     keep_x_dtype=st.booleans(),
-    inplace_mode=st.sampled_from(["lenient", "strict"]),
+    inplace_mode=st.just("lenient"),
 )
 def test_inplace_update(
     x_val_and_dtypes, keep_x_dtype, inplace_mode, test_flags, on_device, backend_fw

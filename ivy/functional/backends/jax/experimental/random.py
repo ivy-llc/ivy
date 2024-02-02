@@ -117,6 +117,7 @@ def bernoulli(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dtype = dtype if dtype is not None else probs.dtype
     if seed:
         rng_input = jax.random.PRNGKey(seed)
     else:
@@ -126,4 +127,4 @@ def bernoulli(
         probs = jax.nn.softmax(logits, axis=-1)
     if hasattr(probs, "shape") and not _check_shapes_broadcastable(shape, probs.shape):
         shape = probs.shape
-    return jax.random.bernoulli(rng_input, probs, shape=shape)
+    return jax.random.bernoulli(rng_input, probs, shape=shape).astype(dtype)

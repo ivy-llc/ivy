@@ -87,6 +87,9 @@ def empty_like(x, dtype=None, name=None):
     return ivy.empty_like(x, dtype=dtype)
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
 @to_ivy_arrays_and_back
 def eye(num_rows, num_columns=None, dtype=None, name=None):
     return ivy.eye(num_rows, num_columns, dtype=dtype)

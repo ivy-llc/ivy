@@ -147,7 +147,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"0.4.23 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"0.4.23 and below": ("bfloat16", "bool")}, backend_version)
 def cumprod(
     x: JaxArray,
     /,
