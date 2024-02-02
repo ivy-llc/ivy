@@ -20,7 +20,6 @@ ACTIVATION_FUNCTIONS = [
 # --------------- #
 
 
-# helper
 # note: defined to avoid AST call extraction of
 # 'tf_frontend.keras.activations.__dict__.items()
 # or 'tf_frontend.keras.activations.__dict__.values()'
