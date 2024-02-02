@@ -1122,8 +1122,6 @@ class ContainerBase(dict, abc.ABC):
             return ivy.Container.cont_from_disk_as_hdf5(filepath)
         elif format == "pt":
             return ivy.Container.cont_from_disk_as_pt(filepath)
-        elif format == "flax":
-            return ivy.Container.cont_from_disk_as_flax(filepath)
         else:
             raise ivy.utils.exceptions.IvyException("Unsupported format")
 
