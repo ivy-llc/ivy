@@ -2947,6 +2947,7 @@ def rfft(
     >>> x = ivy.array([2.3,3.14,7.2])
     >>> y = ivy.zeros(2)
     >>> ivy.rfft(x, out=y)
+    >>> print(x)
     ivy.array([12.639999+0.j      , -2.87    +3.516063j])
 
     >>> x = ivy.array([-1.2, 3.4, -5.6])
@@ -3031,7 +3032,7 @@ def rfftn(
     Examples
     --------
     >>> x = ivy.array([1, 2, 3, 4], dtype=ivy.float32)
-    >>> result = ivy.rfftn(x, s=(4,))
+    >>> result = ivy.rfftn(x, s=(4,), axes=(0,))
     >>> print(result)
     ivy.array([10.+0.j, -2.+2.j, -2.+0.j])
 

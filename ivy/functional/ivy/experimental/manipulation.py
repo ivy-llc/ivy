@@ -1797,10 +1797,10 @@ def put_along_axis(
     >>> axis = 1
     >>> indices = ivy.argmax(arr, axis=axis, keepdims=True)
     >>> value = 100
-    >>> ivy.put_along_axis(arr, indices, value, axis, mode='add')
+    >>> ivy.put_along_axis(arr, indices, value, axis, mode='sum')
     >>> print(arr)
-    ivy.array([[ 10, 130, 20],
-               [ 160, 40, 50]])
+    ivy.array([[10, 30, 20],
+              [60, 40, 50]])
     """
     arr_shape = arr.shape
 
