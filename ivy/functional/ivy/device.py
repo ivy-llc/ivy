@@ -1169,7 +1169,7 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
 
     is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
-    is_einops_fn = "einops" in fn.__name__
+    is_einops_fn = hasattr(fn, "__name__") and "einops" in fn.__name__
     if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             supported = set(all_devices).difference(supported)
