@@ -2884,9 +2884,9 @@ trim_zeros.mixed_backend_wrappers = {
 def unflatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    *,
     dim: int,
     shape: Tuple[int],
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Expand a dimension of the input tensor over multiple dimensions.

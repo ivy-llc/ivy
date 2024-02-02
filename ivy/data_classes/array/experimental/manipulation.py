@@ -1137,9 +1137,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def unflatten(
         self: Union[int, ivy.Array, ivy.NativeArray],
         /,
-        *,
-        dim: Optional[int] = 0,
         shape: Union[Tuple[int], ivy.Array, ivy.NativeArray],
+        dim: Optional[int] = 0,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unflatten. This method

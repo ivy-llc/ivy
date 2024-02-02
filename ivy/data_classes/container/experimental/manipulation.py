@@ -4069,9 +4069,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def _static_unflatten(
         x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
-        *,
         shape: Union[Tuple[int], ivy.Array, ivy.NativeArray, ivy.Container],
         dim: Optional[Union[int, ivy.Container]] = 0,
+        *,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -4156,9 +4156,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def unflatten(
         self: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
-        *,
-        dim: Optional[Union[int, ivy.Container]] = 0,
         shape: Union[Tuple[int], ivy.Array, ivy.NativeArray, ivy.Container],
+        dim: Optional[Union[int, ivy.Container]] = 0,
+        *,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
