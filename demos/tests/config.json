@@ -1,0 +1,59 @@
+{
+    "learn_the_basics": {
+        "01_write_ivy_code.ipynb": {
+            "value": [16, 19, 21]
+        },
+        "02_unify_code.ipynb": {
+            "array_values": [12]
+        },
+        "03_trace_code.ipynb": {
+            "array_values": [10, 14],
+            "benchmark": [16, 17]
+        },
+        "04_transpile_code.ipynb": {
+            "array_values": [10]
+        },
+        "05_lazy_vs_eager.ipynb": {
+            "array_values": [14, 16, 19, 21, 24, 26]
+        },
+        "06_how_to_use_decorators.ipynb": {
+            "array_values": [12, 15, 19, 22, 26, 29]
+        },
+        "08_transpile_any_model.ipynb": {
+            "value": [13],
+            "array_values": [15]
+        }
+    },
+    "guides": {
+        "01_transpiling_a_torch_model.ipynb": {
+            "value": [13, 17]
+        }
+    },
+    "examples_and_demos": {
+        "alexnet_demo.ipynb": {
+            "install": [3],
+            "array_values": [15, 18],
+            "array_values_i1": [23, 28, 32, 37, 39]
+        },
+        "bert_demo.ipynb": {
+            "value": [11, 20, 25, 30, 34, 39]
+        },
+        "image_segmentation_with_ivy_unet.ipynb": {
+            "install": [3]
+        },
+        "mmpretrain_to_jax.ipynb": {
+            "benchmark": [21, 22]
+        },
+        "resnet_demo.ipynb": {
+            "install": [4],
+            "array_values": [27, 29, 41, 43]
+        },
+        "torch_to_jax.ipynb": {
+            "benchmark_x3": [18, 19]
+        },
+        "xgboost_demo.ipynb": {
+            "value": [11, 21, 40, 57, 59],
+            "benchmark": [15, 16, 18, 19, 25, 26, 27, 28, 33, 34, 35, 36, 42, 43, 44, 45]
+        }
+    }
+}
