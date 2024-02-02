@@ -1903,7 +1903,7 @@ def general_inner_product(
 
     >>> a = ivy.array([1, 2, 3])
     >>> b = ivy.array([4, 5, 6])
-    >>> result = ivy.general_inner_product(a, b, n_modes=1)
+    >>> result = ivy.general_inner_product(a, b, 1)
     >>> print(result)
     ivy.array(32)
 
@@ -1915,7 +1915,7 @@ def general_inner_product(
 
     >>> a = ivy.array([[1, 1], [1, 1]])
     >>> b = ivy.array([[1, 2, 3, 4],[1, 1, 1, 1]])
-    >>> result = ivy.general_inner_product(a, b, n_modes=1)
+    >>> result = ivy.general_inner_product(a, b, 1)
     >>> print(result)
     ivy.array([[2, 3, 4, 5],
        [2, 3, 4, 5]])
