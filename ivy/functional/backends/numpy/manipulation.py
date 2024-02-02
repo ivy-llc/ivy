@@ -52,9 +52,6 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        newarr = np.copy(x)
-        return np.expand_dims(newarr, axis)
     return np.expand_dims(x, axis)
 
 

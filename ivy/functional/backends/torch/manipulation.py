@@ -40,7 +40,6 @@ def concat(
 concat.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def expand_dims(
     x: torch.Tensor,
     /,
@@ -49,8 +48,6 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if copy:
-        x = x.clone().detach()
     out_shape = _calculate_out_shape(axis, x.shape)
     # torch.reshape since it can operate on contiguous and non_contiguous tensors
     return x.reshape(out_shape)
