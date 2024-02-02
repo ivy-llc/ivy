@@ -1038,6 +1038,29 @@ def test_container_from_dict_w_cont_types(on_device):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
+def test_container_from_disk_as_pt():
+    import torch
+
+    save_filepath = "container_on_disk.pt"
+
+    dict_1 = {
+        "a": torch.tensor([1.0, 2.0, 3.0], dtype=torch.float32),
+        "b": {
+            "c": torch.tensor([4.0, 5.0, 6.0], dtype=torch.float32),
+            "d": torch.tensor([7.0, 8.0, 9.0], dtype=torch.float32),
+        },
+    }
+
+    torch.save(dict_1, save_filepath)
+    assert os.path.exists(save_filepath)
+
+    container_1 = Container(dict_1).to_numpy()
+    container_2 = Container.cont_from_disk_as_pt(save_filepath).to_numpy()
+
+    assert np.array_equal(ivy.to_numpy(container_1.a), ivy.to_numpy(container_2.a))
+    os.remove(save_filepath)
+
+
 def test_container_from_flat_list(on_device):
     dict_in = {
         "a": ivy.array([1], device=on_device),
