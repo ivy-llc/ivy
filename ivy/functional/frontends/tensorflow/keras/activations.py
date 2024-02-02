@@ -147,7 +147,7 @@ def serialize(activation, use_legacy_format=False, custom_objects=None):
                 if custom_func == activation:
                     return name
 
-        tf_keras_frontend_activations = _get_tf_keras_activations()()
+        tf_keras_frontend_activations = _get_tf_keras_activations()
 
         # Check if the function is in the ACTIVATION_FUNCTIONS list
         if activation.__name__ in ACTIVATION_FUNCTIONS:
@@ -155,7 +155,7 @@ def serialize(activation, use_legacy_format=False, custom_objects=None):
 
         # Check if the function is in the TensorFlow frontend activations
         elif activation in [fn for name, fn in tf_keras_frontend_activations]:
-            for name, tf_func in _get_tf_keras_activations()():
+            for name, tf_func in tf_keras_frontend_activations:
                 if tf_func == activation:
                     return name
 
