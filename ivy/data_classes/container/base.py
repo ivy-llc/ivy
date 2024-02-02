@@ -1223,36 +1223,6 @@ class ContainerBase(dict, abc.ABC):
             return ivy.Container(json.load(json_data_file), ivyh=ivyh)
 
     @staticmethod
-    def cont_from_disk_as_flax(ckpt_filepath, ivyh=None):
-        """Load container object from disk at the specified flax ckpt filepath.
-
-        Parameters
-        ----------
-        ckpt_filepath
-            Filepath where the container object is saved to disk.
-        ivyh
-            Handle to ivy module to use for the calculations. Default is ``None``, which
-            results in the global ivy.
-
-        Returns
-        -------
-            Container loaded from disk
-        """
-        from flax.training import checkpoints
-
-        ckpt = checkpoints.restore_checkpoint(ckpt_dir=ckpt_filepath, target=None)
-
-        container_dict = {}
-        weights = ckpt["model"]["params"]
-        for k, v in weights.items():
-            if isinstance(v, dict):
-                container_dict[k] = ivy.Container.cont_from_disk_as_flax(v, ivyh)
-            else:
-                container_dict[k] = ivy.default(ivyh, ivy).array(v, dtype=str(v.dtype))
-
-        return ivy.Container(container_dict, ivyh=ivyh)
-
-    @staticmethod
     def cont_from_disk_as_pt(pt_filepath, ivyh=None):
         """Load container object from disk at the specified pt filepath.
 
