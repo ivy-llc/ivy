@@ -1135,7 +1135,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         )
 
     def unflatten(
-        x: Union[int, ivy.Array, ivy.NativeArray],
+        self: Union[int, ivy.Array, ivy.NativeArray],
         /,
         *,
         dim: Optional[int] = 0,
@@ -1148,7 +1148,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             input array
         shape
             array indices. Must have an integer data type.
@@ -1179,12 +1179,12 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> x = ivy.array([[1.2, 2.3, 3.4, 4.5],
                            [5.6, 6.7, 7.8, 8.9]])
         >>> shape = (2, 2)
-        >>> y = ivy.unflatten(x, shape=shape, dim=dim, out=y)
+        >>> y = x.unflatten(shape=shape, dim=dim, out=y)
         >>> print(y)
         ivy.array([[[1.2, 2.3], [3.4, 4.5]], [[5.6, 6.7], [7.8, 8.9]]])
         """
         return ivy.unflatten(
-            x,
+            self,
             dim=dim,
             shape=shape,
             out=out,
