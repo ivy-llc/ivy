@@ -908,6 +908,20 @@ put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mo
 ]
 
 
+@with_supported_dtypes(
+    {
+        "2.6.0 and below": (
+            "int32",
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+            "bool",
+        )
+    },
+    backend_version,
+)
 @handle_out_argument
 def unflatten(
     x: paddle.Tensor,
