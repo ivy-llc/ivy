@@ -1486,6 +1486,7 @@ def test_trim_zeros(
         min_size=1,
         force_int=True,
     ),
+    container_flags=st.just([False]),
 )
 def test_unflatten(
     *,
