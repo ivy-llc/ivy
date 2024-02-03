@@ -2279,6 +2279,18 @@ class Tensor:
 
         return self
 
+    @with_unsupported_dtypes({"2.1.2 and below": ("float16", "complex")}, "torch")
+    def erfinv(self, *, out=None):
+        return torch_frontend.erfinv(self, out=out)
+
+    @with_unsupported_dtypes({"2.1.2 and below": ("float16", "complex")}, "torch")
+    def erfinv_(self, *, out=None):
+        ret = self.erfinv(out=out)
+        self._ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self._ivy_array.dtype)
+        )
+        return self
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
