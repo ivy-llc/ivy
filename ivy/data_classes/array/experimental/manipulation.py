@@ -1135,7 +1135,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         )
 
     def unflatten(
-        self: Union[int, ivy.Array, ivy.NativeArray],
+        self: ivy.Array,
         /,
         shape: Union[Tuple[int], ivy.Array, ivy.NativeArray],
         dim: Optional[int] = 0,

@@ -4154,7 +4154,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         )
 
     def unflatten(
-        self: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+        self: ivy.Container,
         /,
         shape: Union[Tuple[int], ivy.Array, ivy.NativeArray, ivy.Container],
         dim: Optional[Union[int, ivy.Container]] = 0,
