@@ -93,9 +93,12 @@ def asarray(
     with tf.device(device):
         if tf.is_tensor(obj):
             ret = tf.cast(obj, dtype) if obj.dtype != dtype else obj
-        elif dtype.is_integer and np.issubdtype(
-            (obj_np := np.array(obj)).dtype, np.floating
+        elif (
+            dtype is not None
+            and dtype.is_integer
+            and np.issubdtype(np.array(obj).dtype, np.floating)
         ):
+            obj_np = np.array(obj)
             ret = tf.convert_to_tensor(obj_np, dtype)
         else:
             ret = tf.convert_to_tensor(obj, dtype)
@@ -390,9 +393,9 @@ def one_hot(
 @with_unsupported_dtypes({"2.15.0 and below": ("uint32", "uint64")}, backend_version)
 def frombuffer(
     buffer: bytes,
-    dtype: Optional[tf.DType] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
+    dtype: tf.DType = float,
+    count: int = -1,
+    offset: int = 0,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(buffer, bytearray):
         buffer = bytes(buffer)

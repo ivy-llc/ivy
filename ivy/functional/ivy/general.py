@@ -1574,7 +1574,7 @@ def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
 
 @handle_exceptions
 def to_native_shape(
-    shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list]
+    shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list],
 ) -> ivy.NativeShape:
     """Return the input shape in its native backend framework form.
 

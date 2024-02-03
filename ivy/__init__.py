@@ -69,6 +69,10 @@ class NativeShape:
     pass
 
 
+class NativeModule:
+    pass
+
+
 class Container:
     pass
 

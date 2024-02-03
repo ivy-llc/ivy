@@ -323,6 +323,7 @@ def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.sum(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
     if dim is not None:
@@ -333,7 +334,7 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
         inverse_indices = results.inverse_indices
         if dim is None:
             inverse_indices = inverse_indices.reshape(input.shape)
-        ret += (results.inverse_indices,)
+        ret += (inverse_indices,)
     if return_counts:
         ret += (results.counts,)
     return ret

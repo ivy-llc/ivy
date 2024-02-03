@@ -856,6 +856,8 @@ def reciprocal(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if x.dtype.is_integer:
+        x = tf.cast(x, tf.float32)
     return tf.math.reciprocal(x)
 
 
@@ -870,6 +872,7 @@ def deg2rad(
     return radians
 
 
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
 def rad2deg(
     x: Union[tf.Tensor, tf.Variable],
     /,

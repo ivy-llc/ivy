@@ -240,6 +240,11 @@ def einsum(equation, *operands):
 
 
 @to_ivy_arrays_and_back
+def finfo(dtype):
+    return ivy.finfo(dtype)
+
+
+@to_ivy_arrays_and_back
 def flatten(input, start_dim=0, end_dim=-1):
     return ivy.flatten(input, start_dim=start_dim, end_dim=end_dim)
 
@@ -542,6 +547,11 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
     # TODO: Handle layout flag when possible.
     sample_matrix = ivy.triu(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
+
+
+@to_ivy_arrays_and_back
+def unflatten(input, /, *, dim, sizes):
+    return ivy.unflatten(input, dim=dim, shape=sizes, out=None)
 
 
 @to_ivy_arrays_and_back

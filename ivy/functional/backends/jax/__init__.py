@@ -4,6 +4,7 @@ from packaging import version
 import jaxlib
 import jax
 import jax.numpy as jnp
+import importlib
 from typing import Union
 
 # make ivy.Container compatible with jax pytree traversal
@@ -240,8 +241,22 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+from . import module
+from .module import *
 
 
 # sub-backends
 from . import sub_backends
 from .sub_backends import *
+
+
+if importlib.util.find_spec("flax"):
+    import flax
+
+    NativeModule = flax.linen.Module
+elif importlib.util.find_spec("haiku"):
+    import haiku as hk
+
+    NativeModule = hk.Module
+else:
+    NativeModule = None

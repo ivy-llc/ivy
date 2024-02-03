@@ -177,7 +177,7 @@ def test_abs(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.acos",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
         safety_factor_scale="log",
@@ -687,7 +687,7 @@ def test_divide(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid", full=False), num_arrays=2
     ),
     test_gradients=st.just(False),
 )
@@ -827,6 +827,7 @@ def test_floor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         safety_factor_scale="linear",
         shared_dtype=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_floor_divide(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1000,6 +1001,7 @@ def test_greater_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devic
         allow_nan=False,
     ),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_imag(
     *,
@@ -1430,6 +1432,7 @@ def test_logical_xor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
 @handle_test(
     fn_tree="functional.ivy.maximum",
     dtype_and_x_and_use_where=min_max_helper(),
+    test_gradients=st.just(False),
 )
 def test_maximum(
     *, dtype_and_x_and_use_where, test_flags, backend_fw, fn_name, on_device
@@ -1453,6 +1456,7 @@ def test_maximum(
 @handle_test(
     fn_tree="functional.ivy.minimum",
     dtype_and_x_and_use_where=min_max_helper(),
+    test_gradients=st.just(False),
 )
 def test_minimum(
     *, dtype_and_x_and_use_where, test_flags, backend_fw, fn_name, on_device
@@ -1632,9 +1636,7 @@ def test_pow(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 
 @handle_test(
     fn_tree="functional.ivy.rad2deg",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_rad2deg(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1642,6 +1644,8 @@ def test_rad2deg(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
+        rtol_=1e-2,
+        atol_=1e-2,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],

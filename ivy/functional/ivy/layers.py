@@ -2379,6 +2379,190 @@ def lstm_update(
     return ret, (ht, ct)
 
 
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def lstm(
+    input: ivy.Array,
+    initial_states: Tuple[ivy.Array],
+    all_weights: Tuple[ivy.Array],
+    num_layers: int,
+    dropout: float,
+    train: bool,
+    bidirectional: bool,
+    batch_first: bool = False,
+    batch_sizes: Sequence = None,
+    weights_transposed: bool = False,
+    has_ih_bias: bool = True,
+    has_hh_bias: bool = True,
+):
+    """Applies a multi-layer long-short term memory to an input sequence.
+
+    Parameters
+    ----------
+    input
+        input array of shape (seq_len, batch, input_size) when `batch_first` is False
+        or (batch, seq_len, input_size) when `batch_first` is True
+    initial_states
+        tuple of two arrays (h_0, c_0) where h_0 is the initial hidden state of shape
+        (num_layers * num_directions, batch, hidden_size) and c_0 is the initial cell
+        state of shape (num_layers * num_directions, batch, hidden_size)
+
+        (num_directions being 2 when `bidirectional`, otherwise 1)
+    all_weights
+        tuple of arrays representing the learnable weights of the lstm, with each
+        layer having up to four arrays (w_ih, w_hh, b_ih, b_hh) representing the weights
+        and biases (if biases are being used)
+
+        w_ih: weight of shape (4 * hidden_size, input_size)
+        w_hh: weight of shape (4 * hidden_size, hidden_size)
+        b_ih: bias of shape (4 * hidden_size,)
+        b_hh: bias of shape (4 * hidden_size,)
+    num_layers
+        number of layers for the lstm to use
+    dropout
+        dropout rate
+    train
+        whether to run the lstm in train mode or eval mode
+    bidirectional
+        whether the lstm is bidirectional or unidirectional
+    batch_first
+        defines the data format of the input and output arrays
+    batch_sizes
+        specifies the batch size at each timestep, when the input is a packed sequence
+    weights_transposed
+        whether the weights are transposed compared to the format
+        in which they are expected (input_size, 4 * hidden_size)
+        rather than (4 * hidden_size, input_size)
+    has_ih_bias
+        whether the `all_weights` argument includes a input-hidden bias
+    has_hh_bias
+        whether the `all_weights` argument includes a hidden-hidden bias
+
+    Returns
+    -------
+    output
+        output array of shape (seq_len, batch, num_directions * hidden_size) or
+        (batch, seq_len, num_directions * hidden_size), depending on `batch_first`
+    h_outs
+        final hidden state of shape (num_layers * num_directions, batch, hidden_size)
+    c_outs
+        final cell state of shape (num_layers * num_directions, batch, hidden_size)
+    """
+    # TODO: the test for this function needs to be fixed -
+    # see ivy_tests/test_ivy/test_functional/test_nn/test_layers.py::test_lstm
+
+    if weights_transposed:
+        # transpose the weights if they are in the wrong format
+        all_weights = [
+            ivy.swapaxes(weight, 1, 0) if weight.dim() == 2 else weight
+            for weight in all_weights
+        ]
+    else:
+        all_weights = list(all_weights)
+
+    if (has_ih_bias and not has_hh_bias) or (has_hh_bias and not has_ih_bias):
+        # insert zero biases into the weights where one set of biases is not used
+        shapes = []
+        for i in range(2, len(all_weights), 3):
+            shapes.append(tuple(all_weights[i].shape))
+        for i, shape in enumerate(shapes):
+            idx = (i + 1) * 4 - (1 if has_ih_bias else 2)
+            all_weights.insert(idx, ivy.zeros(shape))
+        has_ih_bias = True
+        has_hh_bias = True
+
+    weights_per_layer = 2
+    if has_ih_bias:
+        weights_per_layer += 1
+    if has_hh_bias:
+        weights_per_layer += 1
+
+    assert len(all_weights) == num_layers * weights_per_layer * (1 + bidirectional)
+    layer_weights = [
+        all_weights[i : i + weights_per_layer]
+        for i in range(0, len(all_weights), weights_per_layer)
+    ]
+
+    if batch_sizes is not None:
+        input, batch_sizes = _pad_packed_sequence(input, batch_sizes)
+
+    if batch_first:
+        input = ivy.swapaxes(input, 0, 1)
+
+    if dropout and train:
+        raise ivy.utils.exceptions.IvyNotImplementedException()
+
+    unidirectional = not bidirectional
+
+    h0, c0 = initial_states
+    h_outs, c_outs = [], []
+
+    output = input
+    for i in range(num_layers):
+        if unidirectional:
+            if weights_per_layer == 4:
+                weight_ih, weight_hh, (bias_i, bias_h) = _transform_weights(
+                    layer_weights, i
+                )
+            else:
+                weight_ih, weight_hh = _transform_weights_no_bias(layer_weights, i)
+                bias_i = bias_h = None
+
+            state_indices = i, i + 1
+        else:
+            if weights_per_layer == 4:
+                weight_ih_f, weight_hh_f, (bias_i_f, bias_h_f) = _transform_weights(
+                    layer_weights, 2 * i
+                )
+                weight_ih_b, weight_hh_b, (bias_i_b, bias_h_b) = _transform_weights(
+                    layer_weights, 2 * i + 1
+                )
+            else:
+                weight_ih_f, weight_hh_f = _transform_weights_no_bias(
+                    layer_weights, 2 * i
+                )
+                weight_ih_b, weight_hh_b = _transform_weights_no_bias(
+                    layer_weights, 2 * i + 1
+                )
+                bias_i_f = bias_h_f = bias_i_b = bias_h_b = None
+
+            weight_ih = weight_ih_f, weight_ih_b
+            weight_hh = weight_hh_f, weight_hh_b
+            bias_i = bias_i_f, bias_i_b
+            bias_h = bias_h_f, bias_h_b
+
+            state_indices = 2 * i, 2 * i + 2
+
+        output, (h_out, c_out) = _lstm_layer(
+            output,
+            (
+                _retrieve_state(h0, *state_indices, num_layers),
+                _retrieve_state(c0, *state_indices, num_layers),
+            ),
+            (weight_ih, weight_hh),
+            (bias_i, bias_h),
+            bidirectional,
+            batch_first=False,
+            batch_sizes=batch_sizes,
+        )
+        h_outs.append(h_out)
+        c_outs.append(c_out)
+
+    if batch_first:
+        output = ivy.swapaxes(output, 0, 1)
+
+    h_outs = h_out if num_layers == 1 else ivy.concat(h_outs, axis=0)
+    c_outs = c_out if num_layers == 1 else ivy.concat(c_outs, axis=0)
+
+    if batch_sizes is not None:
+        output = _pack_padded_sequence(output, batch_sizes)[0]
+
+    return output[:, -1], output, (h_outs, c_outs)
+
+
 # Helpers #
 
 
@@ -2621,6 +2805,139 @@ def _convert_boxes_to_roi_format(boxes):
     ids = ivy.concat(temp, axis=0)
     rois = ivy.concat([ids, concat_boxes], axis=1)
     return rois
+
+
+def _lstm_cell(
+    x,
+    init_h,
+    init_c,
+    kernel,
+    recurrent_kernel,
+    bias,
+    recurrent_bias,
+    batch_first,
+    batch_sizes=None,
+):
+    init_h = ivy.squeeze(init_h, axis=0)
+    init_c = ivy.squeeze(init_c, axis=0)
+    out, states = ivy.lstm_update(
+        x,
+        init_h,
+        init_c,
+        kernel,
+        recurrent_kernel,
+        bias=bias,
+        recurrent_bias=recurrent_bias,
+        time_major=not batch_first,
+    )
+    h, c = states
+    h = ivy.expand_dims(h) if len(h.shape) == 2 else h
+    c = ivy.expand_dims(c) if len(c.shape) == 2 else c
+    return out, (h, c)
+
+
+def _lstm_layer(
+    x, hidden, weights, biases, bidirectional, batch_first, batch_sizes=None
+):
+    if not bidirectional:
+        result, (h, c) = _lstm_cell(
+            x,
+            *hidden,
+            *weights,
+            *biases,
+            batch_first=batch_first,
+            batch_sizes=batch_sizes,
+        )
+    else:
+        result_fw, (h_fw, c_fw) = _lstm_cell(
+            x,
+            hidden[0][:1],
+            hidden[1][:1],
+            weights[0][0],
+            weights[1][0],
+            biases[0][0],
+            biases[1][0],
+            batch_first=batch_first,
+            batch_sizes=batch_sizes,
+        )
+        x_reversed = ivy.flip(x, axis=0)
+        result_bw, (h_bw, c_bw) = _lstm_cell(
+            x_reversed,
+            hidden[0][1:],
+            hidden[1][1:],
+            weights[0][1],
+            weights[1][1],
+            biases[0][1],
+            biases[1][1],
+            batch_first=batch_first,
+            batch_sizes=batch_sizes,
+        )
+        result_bw = ivy.flip(result_bw, axis=0)
+        result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
+        c = ivy.concat([c_fw, c_bw], axis=0)
+        h = ivy.concat([h_fw, h_bw], axis=0)
+    return result, (h, c)
+
+
+def _pack_padded_sequence(input, lengths):
+    input = ivy.swapaxes(input, 0, 1)
+    data = []
+    batch_sizes = []
+    for i in range(int(max(lengths))):
+        valid_data_mask = ivy.array(lengths) > i
+        data.append(input[valid_data_mask, i])
+        batch_sizes.append(int(sum(valid_data_mask)))
+    data = ivy.concat(data)
+    batch_sizes = ivy.array(batch_sizes, dtype=ivy.int64)
+    return data, batch_sizes
+
+
+def _pad_packed_sequence(data, batch_sizes):
+    padded_data = ivy.full(
+        (len(batch_sizes), int(max(batch_sizes)), *data.shape[1:]),
+        0,
+        dtype=data.dtype,
+        device=data.device,
+    )
+    data_offset = 0
+    for i, batch_size in enumerate(batch_sizes):
+        batch_size = int(batch_size)
+        padded_data[i, :batch_size] = data[data_offset : data_offset + batch_size]
+        data_offset += batch_size
+    lengths = ivy.sum(
+        ivy.arange(1, int(max(batch_sizes)) + 1)[:, ivy.newaxis] <= batch_sizes,
+        axis=1,
+        dtype=ivy.int64,
+    )
+    return padded_data, lengths
+
+
+def _retrieve_state(x, start, end, num_layers):
+    return x if num_layers == 1 else _slice_along_axis(x, start=start, stop=end, axis=0)
+
+
+def _transform_weights(layer_weights, layer_index):
+    weights = layer_weights[layer_index]
+    weight_ih, weight_hh, bias_ih, bias_hh = weights
+    return (
+        ivy.swapaxes(weight_ih, 0, 1),
+        ivy.swapaxes(weight_hh, 0, 1),
+        (bias_ih, bias_hh),
+    )
+
+
+def _transform_weights_no_bias(layer_weights, layer_index):
+    weights = layer_weights[layer_index]
+    weight_ih, weight_hh = weights
+    return ivy.swapaxes(weight_ih, 0, 1), ivy.swapaxes(weight_hh, 0, 1)
+
+
+def _slice_along_axis(x, start=0, stop=None, stride=1, axis=0):
+    if axis >= 0:
+        slices = [slice(None)] * axis + [slice(start, stop, stride)]
+    else:
+        slices = [Ellipsis, slice(start, stop, stride)] + [slice(None)] * (-1 - axis)
+    return x[tuple(slices)]
 
 
 @handle_exceptions

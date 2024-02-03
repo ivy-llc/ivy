@@ -111,6 +111,7 @@ if __name__ == "__main__":
                     image = "unifyai/ivy:latest-gpu"
                     device_str = " --device=gpu:0"
                     device_access_str = " --gpus all"
+                    os.system("docker pull unifyai/ivy:latest-gpu")
 
                 os.system(
                     f"docker run{device_access_str} --name test-container -v "
@@ -249,10 +250,6 @@ if __name__ == "__main__":
 
             # delete the container
             os.system("docker rm -f test-container")
-
-    # delete pulled image before terminating
-    if device == "gpu":
-        os.system("docker rmi unifyai/ivy:latest-gpu")
 
     # if any tests fail, the workflow fails
     if failed:

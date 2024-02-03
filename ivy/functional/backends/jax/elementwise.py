@@ -28,6 +28,7 @@ def abs(
     return jnp.where(x != 0, jnp.absolute(x), 0)
 
 
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def acos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arccos(x)
 
@@ -51,10 +52,12 @@ def add(
     return jnp.add(x1, x2)
 
 
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def asin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsin(x)
 
 
+@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
 def asinh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsinh(x)
 

@@ -1,7 +1,7 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence, Iterable
+from typing import Iterable, List, Optional, Sequence, Tuple, Union
 
 import torch
 
@@ -11,6 +11,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
+
 from . import backend_version
 
 
@@ -61,7 +62,7 @@ def flip(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if copy:
-        x = x.clone().detach()
+        x = x.clone()
     num_dims = len(x.shape)
     if not num_dims:
         return x
@@ -88,6 +89,10 @@ def permute_dims(
     return torch.permute(x, axes)
 
 
+@with_unsupported_dtypes(
+    {"2.1.2 and below": ("bfloat16",)},
+    backend_version,
+)
 def reshape(
     x: torch.Tensor,
     /,
@@ -98,6 +103,8 @@ def reshape(
     allowzero: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        x = x.clone()
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if not allowzero:
         shape = [
