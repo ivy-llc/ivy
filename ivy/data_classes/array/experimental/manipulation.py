@@ -1138,7 +1138,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: Union[int, ivy.Array, ivy.NativeArray],
         /,
         shape: Union[Tuple[int], ivy.Array, ivy.NativeArray],
-        dim: Optional[int] = 0,
+        dim: int = 0,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
