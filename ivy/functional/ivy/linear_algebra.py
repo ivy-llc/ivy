@@ -2610,7 +2610,7 @@ def trace(
     ...                       [7, 0, 6]])
     ...    )
     >>> offset = ivy.Container(a=1, b=0)
-    >>> y = ivy.trace(x, offset)
+    >>> y = ivy.trace(x, offset=offset)
     >>> print(y)
     {
         a: ivy.array(6),
