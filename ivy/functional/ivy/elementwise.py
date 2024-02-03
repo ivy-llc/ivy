@@ -6963,7 +6963,7 @@ def deg2rad(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x=ivy.array([0,90,180,270,360])
+    >>> x=ivy.array([0,90,180,270,360], dtype=ivy.float32)
     >>> y=ivy.deg2rad(x)
     >>> print(y)
     ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
@@ -6989,7 +6989,7 @@ def deg2rad(
     With :class:`ivy.Container` input:
 
     >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),
-    ...                 b=ivy.array([0,90,180,270,360]))
+    ...                 b=ivy.array([0,90.,180,270,360], dtype=ivy.float32))
     >>> y=ivy.deg2rad(x)
     >>> print(y)
     {
@@ -6997,7 +6997,7 @@ def deg2rad(
         b: ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
     }
 
-    >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),
+    >>> x=ivy.Container(a=ivy.array([0,90,180,270,360], dtype=ivy.float32),
     ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))
     >>> y=ivy.deg2rad(x)
     >>> print(y)
