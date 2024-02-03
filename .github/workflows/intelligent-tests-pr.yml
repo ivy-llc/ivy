@@ -18,17 +18,30 @@ jobs:
       - name: Download all test results
         uses: actions/download-artifact@v3
 
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 1
+
       - name: Combined Test Results
         run: |
           find . -name "test_results_*.txt" -exec cat {} + > combined_test_results.txt
           echo "Test results summary:"
           cat combined_test_results.txt
 
-      - name: Test Failures
+      - name: Label Test Failures
         run: |
-          find . -name "test_failures_*.txt" -exec cat {} + > combined_failures.txt
+          find . -name "test_failures_*.txt" -exec cat {} + > ivy/combined_failures.txt
           pip install pymongo
+          cd ivy
           python3 scripts/run_tests/label_failures.py combined_failures.txt labeled_combined_failures.txt
+
+      - name: Display Test Failures
+        run: |
+          cd ivy
           if [ -s labeled_combined_failures.txt ]
           then
               echo "The CI captured the following failing tests based on your changes:"
@@ -68,7 +81,7 @@ jobs:
       - name: Install ivy and fetch binaries
         run: |
           cd ivy
-          pip3 install -e .
+          sudo pip3 install -e .
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
@@ -106,12 +119,6 @@ jobs:
         with:
           name: test_failures_${{ matrix.branch }}
           path: ivy/test_failures_${{ matrix.branch }}.txt
-
-      - name: Upload Labelling Script
-        uses: actions/upload-artifact@v3
-        with:
-          name: scripts
-          path: ivy/scripts
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'

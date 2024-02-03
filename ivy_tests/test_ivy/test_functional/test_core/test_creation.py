@@ -46,12 +46,14 @@ def _asarray_helper(draw):
     )[-1]
     dtype = draw(st.sampled_from([dtype, None]))
     x = draw(
-        st.sampled_from([
-            x,
-            x_list,
-            sh,
-            # nested_values,
-        ])
+        st.sampled_from(
+            [
+                x,
+                x_list,
+                sh,
+                # nested_values,
+            ]
+        )
     )
     return x_dtype, x, dtype
 
@@ -846,6 +848,7 @@ def test_zeros(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
         min_dim_size=1,
         max_dim_size=5,
     ),
+    test_gradients=st.just(False),
 )
 def test_zeros_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x

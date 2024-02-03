@@ -1,4 +1,5 @@
-"""Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
+"""Collection of Jax network layers, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import jax.lax as jlax
@@ -130,6 +131,7 @@ def conv1d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[JaxArray] = None,
@@ -141,7 +143,8 @@ def conv1d_transpose(
         x_shape = list(x.shape[1:2])
     else:
         x_shape = list(x.shape[2:])
-    filters = jnp.swapaxes(filters, -1, -2)
+    if filter_format == "channel_first":
+        filters = jnp.transpose(filters, (2, 1, 0))
     padding = _get_tranpose_padding(
         x_shape, filters.shape, strides, padding, 1, dilations, output_shape
     )
@@ -198,6 +201,7 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[JaxArray] = None,
@@ -209,7 +213,8 @@ def conv2d_transpose(
         x_shape = list(x.shape[1:3])
     else:
         x_shape = list(x.shape[2:])
-    filters = jnp.swapaxes(filters, -1, -2)
+    if filter_format == "channel_first":
+        filters = jnp.transpose(filters, (2, 3, 1, 0))
     padding = _get_tranpose_padding(
         x_shape, filters.shape, strides, padding, 2, dilations, output_shape
     )
@@ -299,13 +304,15 @@ def conv3d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    filter_format: str = "channel_last",
     data_format: str = "NDHWC",
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
-    filters = jnp.swapaxes(filters, -1, -2)
+    if filter_format == "channel_first":
+        filters = jnp.transpose(filters, (2, 3, 4, 1, 0))
     if data_format == "NDHWC":
         x_shape = list(x.shape[1:4])
     else:
@@ -417,15 +424,17 @@ def conv_general_transpose(
     *,
     dims: int = 2,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    feature_group_count: Optional[int] = 1,
+    feature_group_count: int = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
-    filters = jnp.swapaxes(filters, -1, -2)
+    if filter_format == "channel_first":
+        filters = jnp.transpose(filters, (*range(2, dims + 2), 1, 0))
     df = _get_x_data_format(dims, "channel_last")
     filter_df = _get_filter_dataformat(dims)
     if data_format == "channel_first":

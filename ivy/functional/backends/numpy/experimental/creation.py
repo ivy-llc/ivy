@@ -32,7 +32,7 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: str = None,
+    device: Optional[str] = None,
 ) -> Tuple[np.ndarray, ...]:
     return tuple(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)))
 
@@ -98,7 +98,7 @@ def unsorted_segment_min(
     elif data.dtype in [np.int32, np.int64, np.int8, np.int16, np.uint8]:
         init_val = np.iinfo(data.dtype).max
     else:
-        raise ValueError("Unsupported data type")
+        raise TypeError("Unsupported data type")
 
     res = np.full((num_segments,) + data.shape[1:], init_val, dtype=data.dtype)
 

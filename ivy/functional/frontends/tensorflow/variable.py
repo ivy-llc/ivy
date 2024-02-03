@@ -188,7 +188,7 @@ class Variable:
         return tf_frontend.math.multiply(x, self._ivy_array, name=name)
 
     def __mod__(self, x, name="mod"):
-        return ivy.remainder(x, self._ivy_array, name=name)
+        return tf_frontend.math.mod(x, self._ivy_array, name=name)
 
     def __ne__(self, other):
         return tf_frontend.raw_ops.NotEqual(
@@ -277,12 +277,14 @@ class IndexedSlices:
 
     @property
     def dense_shape(self):
-        """A 1-D `Tensor` containing the shape of the corresponding dense tensor."""
+        """A 1-D `Tensor` containing the shape of the corresponding dense
+        tensor."""
         return self._dense_shape
 
     @property
     def device(self):
-        """The name of the device on which `values` will be produced, or `None`."""
+        """The name of the device on which `values` will be produced, or
+        `None`."""
         return self.values.device
 
     @property
@@ -295,7 +297,7 @@ class IndexedSlices:
             self._indices,
             self._values,
             (
-                ", dense_shape=%s" % (self._dense_shape,)
+                f", dense_shape={self._dense_shape}"
                 if self._dense_shape is not None
                 else ""
             ),

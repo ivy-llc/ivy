@@ -5,7 +5,7 @@ from . import backend_version
 import math
 
 
-@with_unsupported_dtypes({"2.14.0 and below": "uint8"}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": "uint8"}, backend_version)
 def l1_normalize(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -30,7 +30,7 @@ def l2_normalize(
     return tf.math.divide(x, denorm)
 
 
-@with_supported_dtypes({"2.14.0 and below": ("float32", "float16")}, backend_version)
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float16")}, backend_version)
 def local_response_norm(
     x: Union[tf.Tensor, tf.Variable],
     size,
@@ -66,7 +66,7 @@ def local_response_norm(
 local_response_norm.partial_mixed_handler = lambda x, size, **kwargs: size % 2 != 0
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def batch_norm(
     x: Union[tf.Tensor, tf.Variable],
     mean: Union[tf.Tensor, tf.Variable],
@@ -107,7 +107,14 @@ def batch_norm(
         runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
             n - 1
         )
-    xnormalized = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
+
+    inv = 1.0 / tf.math.sqrt(variance + eps)
+    offset = 0 if offset is None else offset
+    if scale is not None:
+        inv = tf.math.multiply(inv, scale)
+    xnormalized = tf.math.add(tf.math.multiply(x, inv), offset)
+    xnormalized = tf.math.subtract(xnormalized, tf.math.multiply(mean, inv))
+    # the above approach is faster than tf.nn.batch_normalization
 
     if data_format == "NCS":
         xnormalized = tf.transpose(

@@ -20,15 +20,23 @@ if __name__ == "__main__":
     gpu_flag = sys.argv[5]
     workflow_id = sys.argv[6]
     priority_flag = sys.argv[7]
+    tracer_flag = sys.argv[8]
 
-    if len(sys.argv) > 8 and sys.argv[8] != "null":
-        run_id = sys.argv[8]
+    if len(sys.argv) > 9 and sys.argv[9] != "null":
+        run_id = sys.argv[9]
     else:
         run_id = f"https://github.com/unifyai/ivy/actions/runs/{workflow_id}"
 
     device = "cpu"
     if gpu_flag == "true":
         device = "gpu"
+
+    tracer_str = ""
+    if tracer_flag == "true":
+        tracer_flag = "tracer_"
+        tracer_str = " --with-trace-testing"
+    else:
+        tracer_flag = ""
 
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
@@ -73,7 +81,7 @@ if __name__ == "__main__":
                 backends = [backend.strip()]
                 backend_name, backend_version = backend.split("/")
                 other_backends = [
-                    fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")
+                    fw for fw in BACKENDS if (fw not in (backend_name, "paddle"))
                 ]
                 for other_backend in other_backends:
                     backends.append(
@@ -95,21 +103,24 @@ if __name__ == "__main__":
 
             else:
                 device_str = ""
+                device_access_str = ""
                 image = "unifyai/ivy:latest"
 
                 # gpu tests
                 if device == "gpu":
                     image = "unifyai/ivy:latest-gpu"
                     device_str = " --device=gpu:0"
+                    device_access_str = " --gpus all"
+                    os.system("docker pull unifyai/ivy:latest-gpu")
 
                 os.system(
-                    'docker run --name test-container -v "$(pwd)":/ivy -v '
-                    f'"$(pwd)"/.hypothesis:/.hypothesis -e REDIS_URL={redis_url} '
-                    f"-e REDIS_PASSWD={redis_pass} -itd {image}"
+                    f"docker run{device_access_str} --name test-container -v "
+                    '"$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis -e '
+                    f"REDIS_URL={redis_url} -e REDIS_PASSWD={redis_pass} -itd {image}"
                 )
                 command = (
                     "docker exec test-container python3 -m pytest --tb=short"
-                    f" {test_path} {device_str} --backend {backend}"
+                    f" {test_path}{device_str} --backend {backend}{tracer_str}"
                 )
                 os.system(command)
 
@@ -205,12 +216,16 @@ if __name__ == "__main__":
                 "_id": function_name,
                 "test_path": test_path,
                 "submodule": submodule,
-                f"{prefix_str}{backend}.{version}.status.{device}": not failed,
-                f"{prefix_str}{backend}.{version}.workflow.{device}": run_id,
+                f"{prefix_str}{backend}.{version}.{tracer_flag}status.{device}": (
+                    not failed
+                ),
+                f"{prefix_str}{backend}.{version}.{tracer_flag}workflow.{device}": (
+                    run_id
+                ),
             }
 
             # add transpilation metrics if report generated
-            if not failed and report_content:
+            if not failed and report_content and not tracer_flag:
                 if is_frontend_test:
                     test_info = {
                         **test_info,

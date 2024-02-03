@@ -113,9 +113,9 @@ def test_jax_choose(
     on_device,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
-    choices = ivy.array([
-        np.random.randint(0, 10, size=x.shape) for _ in range(len(dtypes))
-    ])
+    choices = ivy.array(
+        [np.random.randint(0, 10, size=x.shape) for _ in range(len(dtypes))]
+    )
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         backend_to_test=backend_fw,
