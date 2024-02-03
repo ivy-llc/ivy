@@ -912,8 +912,8 @@ put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mo
 def unflatten(
     x: paddle.Tensor,
     /,
-    dim: int = 0,
     shape: Tuple[int] = None,
+    dim: int = 0,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
