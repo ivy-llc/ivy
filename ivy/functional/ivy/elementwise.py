@@ -1200,7 +1200,8 @@ def bitwise_invert(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=[False, True, False], b=[True, True, False])
+    >>> x = ivy.Container(a=ivy.array([False, True, False]),
+    ...                   b=ivy.array([True, True, False]))
     >>> y = ivy.bitwise_invert(x)
     >>> print(y)
     {
@@ -1220,7 +1221,7 @@ def bitwise_invert(
     >>> x = False
     >>> y = ivy.bitwise_invert(x)
     >>> print(y)
-    ivy.array(True)
+    True
     """
     return ivy.current_backend(x).bitwise_invert(x, out=out)
 
