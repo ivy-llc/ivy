@@ -4230,8 +4230,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         """
         return self._static_unflatten(
             self,
-            dim=dim,
             shape=shape,
+            dim=dim,
             out=out,
             key_chains=key_chains,
             to_apply=to_apply,
