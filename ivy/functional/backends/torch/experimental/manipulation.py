@@ -649,8 +649,8 @@ def trim_zeros(a: torch.Tensor, /, *, trim: Optional[str] = "bf") -> torch.Tenso
 def unflatten(
     x: torch.Tensor,
     /,
-    dim: Optional[int] = 0,
     shape: Tuple[int] = None,
+    dim: Optional[int] = 0,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
