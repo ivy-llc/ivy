@@ -1482,8 +1482,8 @@ def test_trim_zeros(
     ),
     get_axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        max_size=1,
-        min_size=1,
+        max_size=0,
+        min_size=0,
         force_int=True,
     ),
     container_flags=st.just([False]),
@@ -1530,6 +1530,8 @@ def test_unflatten(
             factors.append(next)
             n //= next
 
+        if len(factors) > 1:
+            factors.remove(1)
         return factors
 
     shape_ = (

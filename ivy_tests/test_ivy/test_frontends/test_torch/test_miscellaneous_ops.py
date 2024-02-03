@@ -1788,8 +1788,8 @@ def test_torch_triu_indices(
     ),
     get_axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        max_size=1,
-        min_size=1,
+        max_size=0,
+        min_size=0,
         force_int=True,
     ),
 )
@@ -1835,7 +1835,8 @@ def test_torch_unflatten(
             next = get_factor(n)
             factors.append(next)
             n //= next
-
+        if len(factors) > 1:
+            factors.remove(1)
         return factors
 
     shape_ = (
