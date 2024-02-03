@@ -1788,8 +1788,8 @@ def test_torch_triu_indices(
     ),
     get_axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        max_size=1,
-        min_size=1,
+        max_size=0,
+        min_size=0,
         force_int=True,
     ),
 )
@@ -1804,10 +1804,9 @@ def test_torch_unflatten(
     shape,
     get_axis,
 ):
-    if type(get_axis) is not tuple:
-        axis = get_axis
-    else:
-        axis = 0 if get_axis is None else get_axis[0]
+    axis = get_axis
+    if type(axis) is tuple:
+        axis = 0 if not get_axis else get_axis[0]
     dtype, x = dtype_and_values
 
     def factorization(n):
@@ -1835,7 +1834,8 @@ def test_torch_unflatten(
             next = get_factor(n)
             factors.append(next)
             n //= next
-
+        if len(factors) > 1:
+            factors.remove(1)
         return factors
 
     shape_ = (
