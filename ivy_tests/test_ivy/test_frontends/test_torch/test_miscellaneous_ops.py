@@ -1806,7 +1806,7 @@ def test_torch_unflatten(
 ):
     axis = get_axis
     if type(axis) is tuple:
-        axis = 0 if get_axis is None else get_axis[0]
+        axis = 0 if not get_axis else get_axis[0]
     dtype, x = dtype_and_values
 
     def factorization(n):
