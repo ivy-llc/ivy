@@ -6848,12 +6848,12 @@ def minimum(
 
     >>> x = ivy.array([1, 5, 9, 8, 3, 7])
     >>> y = ivy.array([[9], [3], [2]])
-    >>> z = ivy.zeros((3, 6))
+    >>> z = ivy.zeros((3, 6), dtype=ivy.int32)
     >>> ivy.minimum(x, y, out=z)
     >>> print(z)
-    ivy.array([[1.,5.,9.,8.,3.,7.],
-               [1.,3.,3.,3.,3.,3.],
-               [1.,2.,2.,2.,2.,2.]])
+    ivy.array([[1, 5, 9, 8, 3, 7],
+               [1, 3, 3, 3, 3, 3],
+               [1, 2, 2, 2, 2, 2]])
 
     >>> x = ivy.array([[7, 3]])
     >>> y = ivy.array([0, 7])
