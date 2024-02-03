@@ -6758,12 +6758,12 @@ def maximum(
 
     >>> x = ivy.array([1, 5, 9, 8, 3, 7])
     >>> y = ivy.array([[9], [3], [2]])
-    >>> z = ivy.zeros((3, 6))
+    >>> z = ivy.zeros((3, 6), dtype=ivy.int32)
     >>> ivy.maximum(x, y, out=z)
     >>> print(z)
-    ivy.array([[9., 9., 9., 9., 9., 9.],
-           [3., 5., 9., 8., 3., 7.],
-           [2., 5., 9., 8., 3., 7.]])
+    ivy.array([[9, 9, 9, 9, 9, 9],
+               [3, 5, 9, 8, 3, 7],
+               [2, 5, 9, 8, 3, 7]])
 
     >>> x = ivy.array([[7, 3]])
     >>> y = ivy.array([0, 7])

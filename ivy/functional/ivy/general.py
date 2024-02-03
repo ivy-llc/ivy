@@ -2865,10 +2865,10 @@ def set_item(
     >>> val = ivy.array([10, 10])
     >>> ivy.set_item(x, query, val)
     >>> print(x)
-
     ivy.array([10, 10, 20])
+
     >>> x = ivy.array([[0, -1, 20], [5, 2, -8]])
-    >>> query = ([1, 1])
+    >>> query = ivy.array([1, 1])
     >>> val = ivy.array([10, 10])
     >>> y = ivy.set_item(x, query, val, copy=True)
     >>> print(y)
