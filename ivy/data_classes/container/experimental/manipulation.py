@@ -4144,8 +4144,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "unflatten",
             x,
-            dim=dim,
             shape=shape,
+            dim=dim,
             out=out,
             key_chains=key_chains,
             to_apply=to_apply,

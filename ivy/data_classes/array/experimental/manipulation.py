@@ -1185,8 +1185,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.unflatten(
             self._data,
-            dim=dim,
             shape=shape,
+            dim=dim,
             out=out,
         )
 
