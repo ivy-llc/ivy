@@ -2948,7 +2948,7 @@ def rfft(
     >>> y = ivy.zeros(2)
     >>> ivy.rfft(x, out=y)
     >>> print(x)
-    ivy.array([12.639999+0.j      , -2.87    +3.516063j])
+    ivy.array([2.29999995, 3.1400001 , 7.19999981])
 
     >>> x = ivy.array([-1.2, 3.4, -5.6])
     >>> ivy.rfft(x, n=4, out=x)
