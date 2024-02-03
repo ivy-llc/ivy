@@ -1546,8 +1546,8 @@ def test_unflatten(
         on_device=on_device,
         test_values=False,
         x=x[0],
-        dim=axis,
         shape=shape_,
+        dim=axis,
     )
 
 
