@@ -2,6 +2,7 @@
 from hypothesis import strategies as st, assume
 import hypothesis.extra.numpy as nph
 import numpy as np
+import math
 
 # local
 import ivy
@@ -1467,6 +1468,85 @@ def test_trim_zeros(
         fw=backend_fw,
         fn_name=fn_name,
         a=a[0],
+    )
+
+
+# unflatten
+@handle_test(
+    fn_tree="functional.ivy.experimental.unflatten",
+    shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        shape_key="shape",
+    ),
+    get_axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        max_size=0,
+        min_size=0,
+        force_int=True,
+    ),
+)
+def test_unflatten(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_name,
+    test_flags,
+    backend_fw,
+    shape,
+    get_axis,
+):
+    axis = get_axis
+    if type(axis) is tuple:
+        axis = 0 if not get_axis else get_axis[0]
+    dtype, x = dtype_and_values
+
+    def factorization(n):
+        factors = [1]
+
+        def get_factor(n):
+            x_fixed = 2
+            cycle_size = 2
+            x = 2
+            factor = 1 if n % 2 else 2
+
+            while factor == 1:
+                for count in range(cycle_size):
+                    if factor > 1:
+                        break
+                    x = (x * x + 1) % n
+                    factor = math.gcd(x - x_fixed, n)
+
+                cycle_size *= 2
+                x_fixed = x
+
+            return factor
+
+        while n > 1:
+            next = get_factor(n)
+            factors.append(next)
+            n //= next
+
+        if len(factors) > 1:
+            factors.remove(1)
+        return factors
+
+    shape_ = (
+        tuple(factorization(shape[axis]))
+        if tuple(factorization(shape[axis]))
+        else shape
+    )
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        test_values=False,
+        x=x[0],
+        shape=shape_,
+        dim=axis,
     )
 
 

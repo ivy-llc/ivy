@@ -602,3 +602,15 @@ def erfc(
     return np.where(underflow, result_underflow, result_no_underflow).astype(
         input_dtype
     )
+
+
+# TODO: Remove this once native function is available.
+# Compute an approximation of the error function complement (1 - erf(x)).
+def erfinv(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    with ivy.ArrayMode(False):
+        return np.sqrt(2) * erfc(x)
