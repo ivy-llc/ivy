@@ -116,60 +116,36 @@ def check_docstring_examples_run(
     # the temp skip list consists of functions
     # which have an issue with their implementation
     skip_list_temp = [
-        "outer",  # Failing only torch backend:
-        # (https://pytorch.org/docs/stable/generated/torch.outer.html)
-        # all examples are wrong including functional/ivy
-        "pool",
-        "put_along_axis",
-        "result_type",  # different ouput coming for diff backends in 1st example.
-        # works only if no backend set
-        "rfftn",
-        # examples works but exec throws error or generate diff results
-        "scaled_dot_product_attention",
-        "searchsorted",
-        # generates different results in different backends
-        "eigh_tridiagonal",
+        "outer",  # Failing only torch backend as inputs must be 1-D.
+        "pool",  # Maximum recursion depth exceeded ivy.pool
+        "put_along_axis",  # Depends on scatter_nd for numpy.
+        "result_type",  # Different ouput coming for diff backends in 1st example.
+        "scaled_dot_product_attention",  # Different backends giving different answers.
+        "eigh_tridiagonal",  # Failing only for TF backend
         "dct",
-        "choose" "idct",
-        "set_item",
-        "l1_normalize",  # Failing for TF, Torch backends.
-        "histogram",  # Failing for TF, Torch backends.
-        "bitwise_invert",
-        "deg2rad",  # Failing for TF backend.
-        "value_and_grad",
-        "vector_norm",
-        "layer_norm",
-        "trace",
-        "eigvalsh",
-        "conv2d_transpose",
-        # fails due to different backend and their view types
-        "sequence_length",
-        "max_pool1d",
-        "inner",
-        "slogdet",
+        "choose",  # Maximum recurion depth exceeded (No backend choose fn).
+        "idct",  # Function already failing for all 5 backends.
+        "set_item",  # Different errors for diff backends (jax, torch)
+        "l1_normalize",  # Function already failing for all 5 backends.
+        "histogram",  # Failing for TF, Torch backends (TODO's left)
+        "value_and_grad",  # Failing only for Torch backend. (Requires_grad=True)
+        "layer_norm",  # Failing only for Torch backend.
+        "eigvalsh",  # Failing only Jax Backend + only for Native Array Example.
+        "conv2d_transpose",  # Function already failing for all 5 backends.
         "solve",
-        "svdvals",
-        "nested_map",
-        "hardshrink",
-        "rfft",
-        "general_inner_product",
-        "cummax",
-        "one_hot",
-        "maximum",  # Failing only for torch backend.
-        "minimum",  # Failing only for torch backend.
-        "get_referrers_recursive",
+        "one_hot",  # One small example failing for all backends except torch.
         "scatter_flat",  # Function Already failing for 3 backends
-        "scatter_nd",
+        "scatter_nd",  #
+        "execute_with_gradients",  # Function Already failing for 4 backends.
         "gather",
         "multiprocessing",
-        "execute_with_gradients",
-        "cross_entropy",
-        "binary_cross_entropy",
-        "sparse_cross_entropy",
-        "insert_into_nest_at_index",
         "if_else",
+        "trace_graph",  # SystemExit: Please sign up for free pilot access.
+        "dill",
+        "smooth_l1_loss",  # Function already failing for all 5 backends.
+        "cummax",  # Function already failing for all 5 backends.
+        "insert_into_nest_at_index",
         "while_loop",
-        "trace_graph",  #  SystemExit: Please sign up for free pilot access.
     ]
 
     # skip list for array and container docstrings
@@ -359,9 +335,6 @@ def check_docstring_examples_run(
             )
             break
     return docstr_result
-
-
-dict1 = {"where": ivy.where}
 
 
 @pytest.mark.parametrize("backend", ["jax", "numpy", "tensorflow", "torch"])
