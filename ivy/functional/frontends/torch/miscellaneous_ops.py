@@ -240,6 +240,11 @@ def einsum(equation, *operands):
 
 
 @to_ivy_arrays_and_back
+def erfinv(input, *, out=None):
+    return ivy.erfinv(input, out=out)
+
+
+@to_ivy_arrays_and_back
 def finfo(dtype):
     return ivy.finfo(dtype)
 
