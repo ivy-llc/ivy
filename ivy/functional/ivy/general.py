@@ -217,12 +217,7 @@ def get_referrers_recursive(
     >>> example_function = lambda: (obj := [1, 2, 3]) and ivy.get_referrers_recursive(obj, max_depth=2)
     >>> result = example_function()
     >>> print(result)
-    Container(
-        'ref_id_1': Container(
-            'ref_id_2': 'tracked',
-            'ref_id_3': 'tracked'
-        )
-    )
+    {repr:[1,2,3]}
     """  # noqa: E501
     seen_set = ivy.default(seen_set, set())
     local_set = ivy.default(local_set, set())
