@@ -95,7 +95,7 @@ def argmax(
     >>> z = ivy.zeros((1,3), dtype=ivy.int64)
     >>> ivy.argmax(x, out=z)
     >>> print(z)
-    ivy.array([1.,1.,1.])
+    ivy.array(1)
 
     >>> x = ivy.array([[1., -0., -1.], [-2., 3., 2.]])
     >>> y = ivy.argmax(x, axis=1)

@@ -239,7 +239,7 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
     >>> nest = [[1, 2], [3, 4]]
     >>> index = (1, 1)
     >>> value = 99
-    >>> insert_into_nest_at_index(nest, index, value)
+    >>> ivy.insert_into_nest_at_index(nest, index, value)
     >>> print(nest)
     [[1, 2], [3, 99, 4]]
     """

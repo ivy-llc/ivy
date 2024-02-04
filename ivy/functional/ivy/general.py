@@ -3029,8 +3029,8 @@ def inplace_update(
     >>> ivy.inplace_update(x, y)
     >>> print(x)
     {
-        a: ivy.array([1, 1]),
-        b: ivy.array([2, 2])
+        a: ivy.array([1]),
+        b: ivy.array([2])
     }
 
     With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:, and backend
