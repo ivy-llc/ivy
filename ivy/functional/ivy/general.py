@@ -214,9 +214,7 @@ def get_referrers_recursive(
     Examples
     --------
     >>> import gc
-    >>> def example_function():
-    ...     obj = [1, 2, 3]
-    ...     return get_referrers_recursive(obj, max_depth=2)
+    >>> example_function = lambda: (obj := [1, 2, 3]) and ivy.get_referrers_recursive(obj, max_depth=2)
     >>> result = example_function()
     >>> print(result)
     Container(
@@ -225,7 +223,7 @@ def get_referrers_recursive(
             'ref_id_3': 'tracked'
         )
     )
-    """
+    """  # noqa: E501
     seen_set = ivy.default(seen_set, set())
     local_set = ivy.default(local_set, set())
     ret_cont = ivy.Container(
