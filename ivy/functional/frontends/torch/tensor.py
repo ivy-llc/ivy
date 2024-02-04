@@ -516,6 +516,9 @@ class Tensor:
         self.ivy_array = self.not_equal(other).ivy_array
         return self
 
+    def eq(self, other):
+        return torch_frontend.eq(self, other)
+
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
@@ -2276,13 +2279,24 @@ class Tensor:
 
         return self
 
+    @with_unsupported_dtypes({"2.1.2 and below": ("float16", "complex")}, "torch")
+    def erfinv(self, *, out=None):
+        return torch_frontend.erfinv(self, out=out)
+
+    @with_unsupported_dtypes({"2.1.2 and below": ("float16", "complex")}, "torch")
+    def erfinv_(self, *, out=None):
+        ret = self.erfinv(out=out)
+        self._ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self._ivy_array.dtype)
+        )
+        return self
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
     ndimension = dim
     subtract = sub
     sub_ = subtract_
-    eq = equal
     arctan = atan
     arctan_ = atan_
     arctan2 = atan2
@@ -2309,7 +2323,7 @@ class Tensor:
 
 class Size(tuple):
     def __new__(cls, iterable=()):
-        iterable = ivy.Shape([]) if not iterable else iterable
+        iterable = ivy.Shape([]) if iterable == () else iterable
         new_iterable = []
         for i, item in enumerate(iterable):
             if isinstance(item, int):
@@ -2324,7 +2338,7 @@ class Size(tuple):
         return super().__new__(cls, tuple(new_iterable))
 
     def __init__(self, shape=()) -> None:
-        shape = ivy.Shape([]) if not shape else shape
+        shape = ivy.Shape([]) if shape == () else shape
         self._ivy_shape = shape if isinstance(shape, ivy.Shape) else ivy.shape(shape)
 
     def __repr__(self):
